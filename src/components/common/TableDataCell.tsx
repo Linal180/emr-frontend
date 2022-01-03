@@ -5,7 +5,7 @@ import { TableCell, Typography, Box } from "@material-ui/core";
 import { IDetailCellProps } from "../../interfacesTypes";
 import { DetailTooltip } from "../../styles/tableStyles";
 
-const TestDetailCell: FC<IDetailCellProps> = ({ description }) => {
+const TableDataCell: FC<IDetailCellProps> = ({ description }) => {
   return (
     <TableCell>
       <Box minWidth={170} maxWidth={170}>
@@ -23,4 +23,4 @@ const TestDetailCell: FC<IDetailCellProps> = ({ description }) => {
   );
 };
 
-export default TestDetailCell;
+export default TableDataCell;

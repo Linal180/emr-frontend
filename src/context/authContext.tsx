@@ -1,7 +1,7 @@
 // packages block
 import { createContext, FC, useEffect, useState } from "react";
 // graphql, interfaces/types and constants block
-import { TOKEN, USER_EMAIL } from "../constants";
+import { TOKEN } from "../constants";
 import { AuthContextProps } from "../interfacesTypes";
 import { User, useGetLoggedInUserLazyQuery } from "../generated/graphql";
 
@@ -29,8 +29,6 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
         if (user) {
           setUser(user);
-          const { email } = user;
-          localStorage.setItem(USER_EMAIL, email || "");
         }
       }
     }

@@ -1,5 +1,5 @@
 // packages block
-import { FC, MouseEvent, useContext, useState, useEffect, useRef, } from "react";
+import { FC, MouseEvent, useContext, useState, } from "react";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
 import { AccountCircle, Menu as MenuIcon, NotificationsNone as NotificationIcon } from "@material-ui/icons";
@@ -7,7 +7,7 @@ import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, Badge, Ap
 // history, app context, auth context, utils and header styles block
 import history from "../../history";
 import { AppContext, AuthContext } from "../../context";
-import { firstLatterUppercase, getNotifications, handleLogout, setNotificationsInLocalStorage } from "../../utils";
+import { firstLatterUppercase, handleLogout } from "../../utils";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { notificationType } from "../../interfacesTypes";
 
@@ -16,7 +16,7 @@ const Header: FC = (): JSX.Element => {
   const { setIsLoggedIn, user, setUser } = useContext(AuthContext);
   const { isSidebarOpen, setIsSidebarOpen } = useContext(AppContext)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [notifications, setNotifications] = useState<notificationType[]>([]);
+  const [notifications] = useState<notificationType[]>([]);
 
   const handleDrawerOpen = () => setIsSidebarOpen(true)
   const handleProfileMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
