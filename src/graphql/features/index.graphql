@@ -1,0 +1,89 @@
+mutation CreateFeature($createFeatureInput: CreateFeatureInput!) {
+    createFeature(createFeatureInput: $createFeatureInput) {
+      response {
+        name
+        status
+        message
+        error
+      }
+
+      feature {
+        id
+        name
+        updatedAt
+        createdAt
+      }
+    }
+}
+
+mutation UpdateFeature($updateFeatureInput: UpdateFeatureInput!) {
+    updateFeature(updateFeatureInput: $updateFeatureInput) {
+      response {
+        name
+        status
+        message
+        error
+      }
+      
+      feature {
+        id
+        name
+        updatedAt
+        createdAt
+      }
+    }
+}
+
+mutation RemoveFeature($removeFeature: RemoveFeature!) {
+    removeFeature(removeFeature: $removeFeature) {
+      response {
+        name
+        status
+        message
+        error
+      }
+    }
+}
+
+query FindAllFeatures($featuresInput: FeaturesInput!){
+    findAllFeatures(featuresInput:$featuresInput) {
+      response {
+        name
+        status
+        message
+        error
+      }
+      
+      features{
+        id
+        name
+        createdAt
+        updatedAt
+      }
+
+      pagination {
+        page
+        limit
+        totalCount
+        totalPages
+      }
+    }
+}
+
+query GetFeature($getFeature: GetFeature!){
+    getFeature(getFeature: $getFeature) {
+      response {
+        name
+        status
+        message
+        error
+      }
+
+      feature {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+}

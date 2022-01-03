@@ -1,0 +1,43 @@
+query FindAllPhases($phasesInput: PhasesInput!){
+  findAllPhases(phasesInput: $phasesInput){
+    response{
+      status
+      message
+    }
+
+    phases{
+      id
+      name
+      order
+      isCurrentPhase
+      updatedAt
+      createdAt
+    }
+    
+    pagination{
+      page
+      limit
+      totalCount
+      totalPages
+    }
+  }
+}
+
+mutation UpdatePhaseStatus($updatePhaseStatusInput: UpdatePhaseStatusInput!){
+  updatePhaseStatus(updatePhaseStatusInput:$updatePhaseStatusInput){
+    response{
+      status
+      error
+      message
+    }
+    
+    phase{
+      id
+      name
+      order
+      isCurrentPhase
+      createdAt
+      updatedAt
+    }
+  }
+}

@@ -1,0 +1,89 @@
+ mutation CreateTag($createTagInput: CreateTagInput!) {
+    createTag(createTagInput: $createTagInput) {
+      response {
+        name
+        status
+        message
+        error
+      }
+
+      tag {
+         id
+        name
+        updatedAt
+        createdAt
+      }
+    }
+  }
+
+mutation UpdateTag($updateTagInput: UpdateTagInput!) {
+    updateTag(updateTagInput: $updateTagInput) {
+      response {
+        name
+        status
+        message
+        error
+      }
+      
+      tag {
+        id
+        name
+        updatedAt
+        createdAt
+      }
+    }
+  }
+
+mutation RemoveTag($removeTag: RemoveTag!) {
+    removeTag(removeTag: $removeTag) {
+      response {
+        name
+        status
+        message
+        error
+      }
+    }
+  }
+
+query FindAllTags($tagsInput: TagsInput!){
+    findAllTags(tagsInput:$tagsInput) {
+      response {
+        name
+        status
+        message
+        error
+      }
+      
+      tags{
+        id
+        name
+        createdAt
+        updatedAt
+      }
+
+      pagination {
+        page
+        limit
+        totalCount
+        totalPages
+      }
+    }
+}
+
+query GetTagQuery($getTag: GetTag!){
+    getTag(getTag: $getTag) {
+      response {
+        name
+        status
+        message
+        error
+      }
+
+      tag {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+}

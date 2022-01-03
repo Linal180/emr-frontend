@@ -1,0 +1,239 @@
+query GetProperty($getProperty: GetProperty!) {
+	getProperty(getProperty: $getProperty) {
+    property {
+      id
+      name
+      address
+      description
+      detailOverview
+      createdAt
+      updatedAt
+
+      location {
+        id
+        name
+        description
+        longitude
+        latitude
+        address
+        detailOverview
+        createdAt
+        updatedAt
+      }
+
+      tags {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      
+      features {
+        id
+        name
+        updatedAt
+        createdAt
+      }
+
+      attachments {
+        id
+        title
+        subTitle
+        description
+        type
+        metaType
+        key
+        typeId
+        url   
+        isLocked    
+        createdAt
+        isLocked
+        updatedAt
+      }
+    }
+  }
+}
+
+query GetAllProperties($propertiesInput: PropertiesInput!){
+  findAllProperties(propertiesInput:$propertiesInput){
+    response{
+      status
+      error
+      message
+    }
+
+    pagination{
+      page
+      limit
+      totalCount
+      totalPages
+    }
+
+    properties{
+      id
+      name
+      address
+      description
+      detailOverview
+      createdAt
+      updatedAt
+      
+      location {
+        id
+        name
+        description
+        longitude
+        latitude
+        address
+        detailOverview
+        updatedAt
+        createdAt
+      }
+
+      tags {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+
+      features{
+        id
+        name
+        updatedAt
+        createdAt
+      }
+    }
+  }
+}
+
+mutation CreateProperty($createPropertyInput: CreatePropertyInput!){
+  createProperty(createPropertyInput:$createPropertyInput){
+    response{
+      status
+      error
+      message
+      name
+    }
+
+   property {
+      id
+      name
+    }
+  }
+}
+
+mutation UpdateProperty($updatePropertyInput: UpdatePropertyInput!){
+  updateProperty(updatePropertyInput:$updatePropertyInput){
+    response{
+      status
+      error
+      message
+      name
+    }
+
+    property {
+      id
+      name
+      address
+      description
+      detailOverview
+      createdAt
+      updatedAt
+
+      location {
+        id
+        name
+        description
+        longitude
+        latitude
+        address
+        detailOverview
+        createdAt
+        updatedAt
+      }
+
+      tags {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+
+      features{
+        id
+        name
+        updatedAt
+        createdAt
+      }
+
+      attachments{
+        id
+        url
+        key
+        type
+        title
+        subTitle
+        description
+        metaType
+        typeId
+        isLocked
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+mutation RemoveProperty($removeProperty: RemoveProperty!){
+	removeProperty(removeProperty:$removeProperty){
+    response{
+      status
+      error
+      message
+      name
+    }
+
+    property{
+      id
+    }  
+  }
+}
+
+
+mutation UpdatePropertyFeatures($updatePropertyFeatureInput: UpdatePropertyFeatureInput!){
+  updatePropertyFeature(updatePropertyFeatureInput: $updatePropertyFeatureInput){
+    response{
+      status
+      error
+      message
+      name
+    }
+
+    feature{
+      id
+      name
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation UpdatePropertyTags($updatePropertyTagInput: UpdatePropertyTagInput!){
+  updatePropertyTag(updatePropertyTagInput: $updatePropertyTagInput){
+    response{
+      status
+      error
+      message
+      name
+    }
+
+    tag {
+      id
+      name
+      createdAt
+      updatedAt
+    }
+   
+  }
+}

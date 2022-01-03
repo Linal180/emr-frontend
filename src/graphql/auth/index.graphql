@@ -1,0 +1,147 @@
+mutation Login($loginUser: LoginUserInput!) {
+  login(loginUser: $loginUser) {
+    access_token
+    response {
+      message
+      status
+    }
+
+    roles {
+      id
+      role
+      createdAt
+      updatedAt
+
+      nextRole {
+        states {
+          role
+          action
+        }
+      }
+    }
+  }
+}
+
+query GetLoggedInUser {
+  me {
+    response {
+      status
+      error
+      message
+    }
+
+    user {
+      id
+      firstName
+      lastName
+      status
+      email
+      zipCode
+      phone
+      emailVerified
+      createdAt
+      updatedAt
+
+      roles {
+        id
+        role
+        createdAt
+        updatedAt
+
+        nextRole {
+          states {
+            role
+            action
+          }
+        }
+      }
+    }
+  }
+}
+
+
+mutation ForgetPassword($forgotPasswordInput: ForgotPasswordInput!) {
+  forgotPassword(forgotPassword: $forgotPasswordInput) {
+    response {
+      name
+      message
+      status
+    }
+  }
+}
+
+mutation ResetPassword($resetPassword: ResetPasswordInput!){
+  resetPassword(resetPassword:$resetPassword){
+     user {
+      id
+      firstName
+      lastName
+      status
+      email
+      zipCode
+      phone
+      createdAt
+      updatedAt
+      emailVerified
+      
+      roles {
+        id
+        role
+        createdAt
+        updatedAt
+
+        nextRole {
+          states {
+            role
+            action
+          }
+        }
+      }
+    }
+
+    response{
+      status
+      message
+      error
+    }
+  }
+}
+
+mutation RegisterUser($user: RegisterUserInput!) {
+  registerUser(user: $user) {
+    user {
+      id
+      email
+      firstName
+      lastName
+      status
+      emailVerified
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation EmailVerification($verifyEmail: VerifyEmailInput!){
+  verifyEmail(verifyEmail: $verifyEmail){
+    response{
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation ResendVerificationEmail($resendVerificationEmail: ResendVerificationEmail!){
+  resendVerificationEmail(resendVerificationEmail:$resendVerificationEmail){
+    response{
+      error
+      status
+      message
+    }
+  }
+}

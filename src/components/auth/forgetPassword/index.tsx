@@ -1,0 +1,109 @@
+// packages block
+import { Link } from "react-router-dom";
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { Grid, Box, TextField, Button, Typography, CircularProgress } from "@material-ui/core";
+// components block
+import Alert from "../../common/Alert";
+// context, constants, graphql,svgs, interfaces and styles block
+import history from "../../../history";
+import { requiredLabel } from "../../../utils";
+import { MainLogo } from "../../../assets/svgs";
+import { useLoginStyles } from "../../../styles/loginStyles";
+import { ForgetPasswordInputs } from "../../../interfacesTypes";
+import { useForgetPasswordMutation } from "../../../generated/graphql";
+import { forgetPasswordValidationSchema } from "../../../validationSchemas";
+import { SEND_EMAIL, FORGET_PASSWORD_SUCCESS, FORGOT_PASSWORD_MESSAGE, SIGN_IN, BACK_TO, LOGIN_ROUTE, ADMIN_PORTAL, EMAIL, ROOT_ROUTE } from "../../../constants";
+
+const ForgetPasswordComponent = (): JSX.Element => {
+  const classes = useLoginStyles();
+
+  const { control, handleSubmit, reset, formState: { errors } } = useForm<ForgetPasswordInputs>({
+    mode: "all",
+    resolver: yupResolver(forgetPasswordValidationSchema)
+  });
+
+  const [forgotPassword, { loading }] = useForgetPasswordMutation({
+    onError() {
+      return null;
+    },
+
+    onCompleted() {
+      Alert.success(FORGET_PASSWORD_SUCCESS);
+      history.push(LOGIN_ROUTE)
+      reset({ email: "" });
+    }
+  });
+
+  const onSubmit: SubmitHandler<ForgetPasswordInputs> = async (data) => {
+    await forgotPassword({
+      variables: {
+        forgotPasswordInput: data,
+      },
+    });
+  };
+
+  const { email: { message: emailError } = {} } = errors;
+
+  return (
+    <Box className={classes.root}>
+      <Box className={classes.loginFormContainer}>
+        <Grid container justifyContent="center" alignItems="center">
+          <MainLogo />
+        </Grid>
+
+        <Box py={2}>
+          <Typography variant="h3" component="h3" color="primary" className={classes.heading}>{ADMIN_PORTAL}</Typography>
+        </Box>
+
+        <Box pb={1}>
+          <Typography variant="body1">{FORGOT_PASSWORD_MESSAGE}</Typography>
+        </Box>
+
+        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+          <Controller
+            name="email"
+            control={control}
+            defaultValue=""
+
+            render={({ field, fieldState: { invalid } }) => (
+              <TextField
+                margin="normal"
+                variant="outlined"
+                fullWidth
+                type="email"
+                label={requiredLabel(EMAIL)}
+                InputLabelProps={{
+                  className: classes.labelText,
+                }}
+                {...field}
+                error={invalid}
+                helperText={emailError}
+              />
+            )}
+          />
+
+          <Box pt={2}>
+            <Button className={classes.button} type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+              <Typography className={classes.buttonText}>{SEND_EMAIL}</Typography>
+
+              {loading && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </form>
+
+        <Box mt={2}>
+          <Grid container justifyContent="center" alignItems="center">
+            <Typography variant="body2">
+              {BACK_TO}
+            </Typography>
+
+            <Link to={ROOT_ROUTE} className={classes.signinLink}>{SIGN_IN}</Link>
+          </Grid>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
+
+export default ForgetPasswordComponent;

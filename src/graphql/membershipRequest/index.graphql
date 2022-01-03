@@ -1,0 +1,392 @@
+mutation UpdateRequest($updateRequestInput: UpdateRequestInput!){
+  changeRequestStatus(updateRequestInput: $updateRequestInput){
+    response{
+      status
+      error
+      message
+    }
+    
+    request{
+      id
+      url
+      userId
+      createdAt
+      updatedAt
+      description
+      membershipId
+      requestStatus
+      envelopeExpiry
+      signedDocumentUrl
+     	docuSignEnvelopeId
+
+      user{
+        id
+        email
+        phone
+        status
+        zipCode
+        lastName
+        firstName
+        emailVerified
+        createdAt
+        updatedAt
+        
+        roles {
+          id
+          role
+          createdAt
+          updatedAt
+
+          nextRole{
+            states{
+              role
+              action
+            }
+          }
+        }
+      }
+
+      membership{
+        id
+        name
+        phaseId
+        createdAt
+        updatedAt
+        initialPayment
+        noOfProperties
+        noOfAllowedNights
+        annualOperatingFee
+        annualManagementFee
+        noOfConsecutiveNightsAllowed
+        noOfAdvanceNightsReservations
+
+        phase{
+          id
+          name
+          order
+          isCurrentPhase
+          createdAt
+          updatedAt
+        }
+      }
+
+      attachments{
+        id
+        url
+        type
+        typeId
+        isLocked
+        isLocked
+        metaType
+        description
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query GetUserMembershipRequest($getRequest: GetRequest!){
+  getRequest(getRequest:$getRequest) {
+    response{
+      status
+      error
+      message
+    }
+
+    request {
+      id
+      url
+      userId
+      createdAt
+      updatedAt
+      description
+      membershipId
+      requestStatus
+      envelopeExpiry
+      signedDocumentUrl
+      docuSignEnvelopeId
+
+     	user {
+        id
+        firstName
+        lastName
+        status
+        email
+        zipCode
+        phone
+        emailVerified
+        createdAt
+        updatedAt
+
+        roles {
+          id
+          role
+          createdAt
+          updatedAt
+
+          nextRole{
+            states{
+              role
+              action
+            }
+          }
+        }
+      }
+      
+      membership{
+        id
+        name
+        initialPayment
+        annualOperatingFee
+        annualManagementFee
+        noOfAllowedNights
+        noOfProperties
+        noOfAdvanceNightsReservations
+        noOfConsecutiveNightsAllowed
+        phaseId
+        createdAt
+        updatedAt
+
+        phase{
+          id
+          name
+          order
+          isCurrentPhase
+          createdAt
+          updatedAt
+        }
+      }
+
+      attachments{
+        id
+        url
+        type
+        description
+        metaType
+        typeId
+        isLocked
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query FindAllRequests($requestsInput: RequestsInput!){
+  getAllRequests(requestsInput:$requestsInput) {
+    response {
+      error
+      status
+      message
+    }
+
+    requests {
+      id
+      url
+      userId
+      createdAt
+      updatedAt
+      description
+      membershipId
+      requestStatus
+      envelopeExpiry
+      signedDocumentUrl
+      docuSignEnvelopeId
+
+      user {
+        id
+        firstName
+        lastName
+        status
+        email
+        zipCode
+        phone
+        emailVerified
+        createdAt
+        updatedAt
+        
+        roles {
+          id
+          role
+          createdAt
+          updatedAt
+
+          nextRole{
+            states{
+              role
+              action
+            }
+          }
+        }
+      }
+
+      membership {
+        id
+        name
+        phaseId
+        createdAt
+        updatedAt
+        noOfProperties
+        initialPayment
+        noOfAllowedNights
+        annualOperatingFee
+        annualManagementFee
+        noOfConsecutiveNightsAllowed
+        noOfAdvanceNightsReservations
+
+        phase {
+          id
+          name
+          order
+          isCurrentPhase
+          createdAt
+          updatedAt
+        }
+      }
+
+      attachments {
+        id
+        url
+        type
+        description
+        metaType
+        typeId
+        isLocked
+        createdAt
+        updatedAt
+        isLocked
+      }
+    }
+    
+    pagination{
+      page
+      limit
+      totalCount
+      totalPages
+    }
+  }
+}
+
+query GetMembership($getMembership: GetMembership!){
+  getMembership(getMembership: $getMembership){
+    response {
+      status
+      error
+      message
+    }
+    
+    membership {
+      id
+      name
+      initialPayment
+      annualOperatingFee
+      annualManagementFee
+      noOfProperties
+      noOfAllowedNights
+      noOfAdvanceNightsReservations
+      noOfConsecutiveNightsAllowed
+      phaseId
+      createdAt
+      updatedAt
+      
+      phase {
+      	id
+        name
+        order
+        isCurrentPhase
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query FindAllMemberships($membershipsInput: MembershipsInput!){
+  findAllMemberships(membershipsInput: $membershipsInput){
+    response{
+      status
+      error
+      message
+    }
+      
+    memberships{
+      id
+      name
+      phaseId
+      createdAt
+      updatedAt
+      noOfProperties
+      initialPayment
+      annualOperatingFee
+      annualManagementFee
+      noOfAllowedNights
+      noOfAdvanceNightsReservations
+      noOfConsecutiveNightsAllowed
+
+      phase{
+        id
+        name
+        order
+        isCurrentPhase
+        createdAt
+        updatedAt
+      }
+    }
+
+    pagination{
+      page
+      limit
+      totalCount
+      totalPages
+    }
+  }
+}
+
+mutation RemoveRequest($removeRequest: RemoveRequest!){
+  removeRequest(removeRequest: $removeRequest){
+    response {
+      status
+      message
+      error
+    }
+    
+    request{
+      id
+      url
+      userId
+      createdAt
+      updatedAt
+      description
+      membershipId
+      requestStatus
+      envelopeExpiry
+      signedDocumentUrl
+      docuSignEnvelopeId
+    }
+  }
+}
+
+query GetUserRequest($getUserRequest: GetUserRequest!){
+  getUserRequest(getUserRequest:$getUserRequest){
+    response {
+      error
+      status
+      message
+    }
+
+    request{
+      id
+      url
+      userId
+      createdAt
+      updatedAt
+      description
+      membershipId
+      requestStatus
+      envelopeExpiry
+      signedDocumentUrl
+      docuSignEnvelopeId
+    }
+  }
+}

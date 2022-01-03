@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'CenturyOldStyleStdBold';
+  src: url('./fonts/CenturyOldStyleStd-Bold.woff2') format('woff2'),
+       url('./fonts//CenturyOldStyleStd-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
