@@ -1,8 +1,6 @@
 // packages block
 import { Group, ContactMail, GolfCourse } from "@material-ui/icons";
 // graphql and interfaces block
-import { UserRole } from "../generated/graphql";
-import { multiOptionType } from "../interfacesTypes";
 
 
 // regex
@@ -280,29 +278,29 @@ export const MAPPED_ROLES = {
 }
 
 
-export const ROLES_OPTIONS_FOR_SUPER_ADMIN: multiOptionType[] = [
-  { value: UserRole.Staff, label: MAPPED_ROLES.Staff },
-  { value: UserRole.Owner, label: MAPPED_ROLES.Owner },
-  { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
-  { value: UserRole.Investor, label: MAPPED_ROLES.Investor },
-  { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
-  { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
-];
+// export const ROLES_OPTIONS_FOR_SUPER_ADMIN: multiOptionType[] = [
+//   { value: UserRole.Staff, label: MAPPED_ROLES.Staff },
+//   { value: UserRole.Owner, label: MAPPED_ROLES.Owner },
+//   { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
+//   { value: UserRole.Investor, label: MAPPED_ROLES.Investor },
+//   { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
+//   { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
+// ];
 
 
-export const ROLES_OPTIONS_FOR_ADMIN: multiOptionType[] = [
-  { value: UserRole.Staff, label: MAPPED_ROLES.Staff },
-  { value: UserRole.Owner, label: MAPPED_ROLES.Owner },
-  { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
-  { value: UserRole.Investor, label: MAPPED_ROLES.Investor },
-  { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
-  { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
-];
+// export const ROLES_OPTIONS_FOR_ADMIN: multiOptionType[] = [
+//   { value: UserRole.Staff, label: MAPPED_ROLES.Staff },
+//   { value: UserRole.Owner, label: MAPPED_ROLES.Owner },
+//   { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
+//   { value: UserRole.Investor, label: MAPPED_ROLES.Investor },
+//   { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
+//   { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
+// ];
 
 
-export const ROLES_OPTIONS_FOR_NEW_USER: multiOptionType[] = [
-  { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
-  { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
-  { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
-  { value: UserRole.Staff, label: MAPPED_ROLES.Staff }
-];
+// export const ROLES_OPTIONS_FOR_NEW_USER: multiOptionType[] = [
+//   { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
+//   { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
+//   { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
+//   { value: UserRole.Staff, label: MAPPED_ROLES.Staff }
+// ];

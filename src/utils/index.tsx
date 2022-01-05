@@ -178,27 +178,27 @@ export const dateFormat = (date: string): string => {
     : "N/A";
 };
 
-export const renderItemColor = (status: string): string => {
-  switch (status) {
-    case RequestStatus.InProgress:
-      return colors.yellow[700]
+// export const renderItemColor = (status: string): string => {
+//   switch (status) {
+//     case RequestStatus.InProgress:
+//       return colors.yellow[700]
 
-    case RequestStatus.Declined:
-      return colors.red[700]
+//     case RequestStatus.Declined:
+//       return colors.red[700]
 
-    case RequestStatus.UpdateNeed:
-      return colors.lightBlue[700]
+//     case RequestStatus.UpdateNeed:
+//       return colors.lightBlue[700]
 
-    case RequestStatus.Approved:
-      return colors.green[700]
+//     case RequestStatus.Approved:
+//       return colors.green[700]
 
-    case RequestStatus.UpdateDone:
-      return colors.purple[500]
+//     case RequestStatus.UpdateDone:
+//       return colors.purple[500]
 
-    default:
-      return colors.grey[700]
-  }
-}
+//     default:
+//       return colors.grey[700]
+//   }
+// }
 
 
 // export const renderUserStatusColor = (status: UserStatus | undefined): string => {

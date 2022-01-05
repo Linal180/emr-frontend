@@ -87,7 +87,7 @@ const Header: FC = (): JSX.Element => {
           <Button aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} color="primary">
             <Box className="header-account-button" display="flex">
               <AccountCircle />
-              <Box ml={1} minWidth={100}>{`${user?.firstName || ""} ${user?.lastName || ""}`}</Box>
+              <Box ml={1} minWidth={100}>USER NAME</Box>
             </Box>
           </Button>
 
