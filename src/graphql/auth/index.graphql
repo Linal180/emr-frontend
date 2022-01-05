@@ -11,13 +11,6 @@ mutation Login($loginUser: LoginUserInput!) {
       role
       createdAt
       updatedAt
-
-      nextRole {
-        states {
-          role
-          action
-        }
-      }
     }
   }
 }
@@ -32,13 +25,15 @@ query GetLoggedInUser {
 
     user {
       id
-      firstName
-      lastName
-      status
       email
-      zipCode
-      phone
+      token
+      status
+      userId
+      userType
+      facilityId
+      inviteSentAt
       emailVerified
+      inviteAcceptedAt
       createdAt
       updatedAt
 
@@ -47,13 +42,6 @@ query GetLoggedInUser {
         role
         createdAt
         updatedAt
-
-        nextRole {
-          states {
-            role
-            action
-          }
-        }
       }
     }
   }
@@ -74,28 +62,23 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
   resetPassword(resetPassword:$resetPassword){
      user {
       id
-      firstName
-      lastName
-      status
       email
-      zipCode
-      phone
+      token
+      status
+      userId
+      userType
+      facilityId
+      inviteSentAt
+      emailVerified
+      inviteAcceptedAt
       createdAt
       updatedAt
-      emailVerified
-      
+
       roles {
         id
         role
         createdAt
         updatedAt
-
-        nextRole {
-          states {
-            role
-            action
-          }
-        }
       }
     }
 
@@ -112,22 +95,57 @@ mutation RegisterUser($user: RegisterUserInput!) {
     user {
       id
       email
-      firstName
-      lastName
+      token
       status
+      userId
+      userType
+      facilityId
+      inviteSentAt
       emailVerified
+      inviteAcceptedAt
+      createdAt
+      updatedAt
+
+      roles {
+        id
+        role
+        createdAt
+        updatedAt
+      }
     }
-    
-    response {
-      error
+
+    response{
       status
       message
+      error
     }
   }
 }
 
 mutation EmailVerification($verifyEmail: VerifyEmailInput!){
   verifyEmail(verifyEmail: $verifyEmail){
+    user {
+      id
+      email
+      token
+      status
+      userId
+      userType
+      facilityId
+      inviteSentAt
+      emailVerified
+      inviteAcceptedAt
+      createdAt
+      updatedAt
+
+      roles {
+        id
+        role
+        createdAt
+        updatedAt
+      }
+    }
+
     response{
       error
       status
@@ -138,6 +156,28 @@ mutation EmailVerification($verifyEmail: VerifyEmailInput!){
 
 mutation ResendVerificationEmail($resendVerificationEmail: ResendVerificationEmail!){
   resendVerificationEmail(resendVerificationEmail:$resendVerificationEmail){
+    user {
+      id
+      email
+      token
+      status
+      userId
+      userType
+      facilityId
+      inviteSentAt
+      emailVerified
+      inviteAcceptedAt
+      createdAt
+      updatedAt
+
+      roles {
+        id
+        role
+        createdAt
+        updatedAt
+      }
+    }
+
     response{
       error
       status
