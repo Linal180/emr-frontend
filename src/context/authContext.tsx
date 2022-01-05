@@ -40,7 +40,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   useEffect(() => {
     hasToken && setIsLoggedIn(true);
-    isLoggedIn && hasToken && fetchUser();
+    // isLoggedIn && hasToken && fetchUser();
   }, [isLoggedIn, hasToken, fetchUser, loading]);
 
   return (

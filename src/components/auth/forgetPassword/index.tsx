@@ -13,7 +13,7 @@ import { useLoginStyles } from "../../../styles/loginStyles";
 import { ForgetPasswordInputs } from "../../../interfacesTypes";
 import { useForgetPasswordMutation } from "../../../generated/graphql";
 import { forgetPasswordValidationSchema } from "../../../validationSchemas";
-import { SEND_EMAIL, FORGET_PASSWORD_SUCCESS, FORGOT_PASSWORD_MESSAGE, SIGN_IN, BACK_TO, LOGIN_ROUTE, ADMIN_PORTAL, EMAIL, ROOT_ROUTE } from "../../../constants";
+import { SEND_EMAIL, FORGET_PASSWORD_SUCCESS, FORGOT_PASSWORD_MESSAGE, SIGN_IN, BACK_TO, LOGIN_ROUTE, EMR_ADMIN_PORTAL, EMAIL, ROOT_ROUTE } from "../../../constants";
 
 const ForgetPasswordComponent = (): JSX.Element => {
   const classes = useLoginStyles();
@@ -24,7 +24,7 @@ const ForgetPasswordComponent = (): JSX.Element => {
   });
 
   const [forgotPassword, { loading }] = useForgetPasswordMutation({
-    onError() {
+    onError(message) {
       return null;
     },
 
@@ -53,7 +53,7 @@ const ForgetPasswordComponent = (): JSX.Element => {
         </Grid>
 
         <Box py={2}>
-          <Typography variant="h3" component="h3" color="primary" className={classes.heading}>{ADMIN_PORTAL}</Typography>
+          <Typography variant="h3" component="h3" color="primary" className={classes.heading}>{EMR_ADMIN_PORTAL}</Typography>
         </Box>
 
         <Box pb={1}>

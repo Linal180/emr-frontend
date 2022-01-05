@@ -13,6 +13,7 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 // constants
 export const HASH = "#";
 export const N_A = "N/A";
+export const EMR = "EMR";
 export const TRUE = "TRUE";
 export const TEXT = "text";
 export const PLAN = "Plan";
@@ -39,7 +40,7 @@ export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
 export const PHASE_TEXT = "Phase";
-export const USERS_TEXT = "Users";
+export const DASHBOARD_TEXT = "Dashboard";
 export const LATITUDE = "Latitude";
 export const COMMENTS = "Comments";
 export const PASSWORD = "password";
@@ -106,7 +107,7 @@ export const MEMBERSHIP_PLANS = "Membership Plans";
 export const CURRENT_PASSWORD = "Current password";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const USER_STATUS_PLACEHOLDER = "User Status";
-export const ADMIN_PORTAL = "BOCA Plus Admin Portal";
+export const EMR_ADMIN_PORTAL = "EMR Admin Portal";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
@@ -146,24 +147,9 @@ export const RELATIONSHIP_MANAGER = "RELATIONSHIP_MANAGER";
 
 
 // routes paths
-export const TAG = "/tag";
-export const USER = "/user";
-export const TAGS = "/tags";
-export const PHASE = "/phase"
-export const STATE = "/state";
 export const ROOT_ROUTE = "/";
-export const USERS = "/users";
-export const STATES = "/states";
-export const PROFILE = "/profile";
-export const FEATURE = "/feature";
-export const REQUEST = "/request";
 export const LOGIN_ROUTE = "/login";
-export const PROPERTY = "/property";
-export const FEATURES = "/features";
-export const LOCATION = "/location";
-export const REQUESTS = "/requests";
-export const LOCATIONS = "/locations";
-export const PROPERTIES = "/properties";
+export const DASHBOARD_ROUTE = "/dashboard";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
@@ -200,7 +186,9 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 
 // ALERT MESSAGES
+export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const INVALID_EMAIL = "Invalid email address";
+export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const USER_EXIST = "User already exists with this email.";
@@ -230,38 +218,8 @@ export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click o
 
 export const LEFT_NAV_LIST_ITEMS = [
   {
-    title: USERS_TEXT,
-    link: USERS,
-    icon: Group,
-  },
-  // {
-  //   title: LOCATIONS_TEXT,
-  //   link: LOCATIONS,
-  //   icon: LocationCity,
-  // },
-  // {
-  //   title: PROPERTIES_TEXT,
-  //   link: PROPERTIES,
-  //   icon: Landscape,
-  // },
-  // {
-  //   title: FEATURES_TEXT,
-  //   link: FEATURES,
-  //   icon: FormatListNumbered,
-  // },
-  // {
-  //   title: TAGS_TEXT,
-  //   link: TAGS,
-  //   icon: LocalOffer,
-  // },
-  {
-    title: MEMBERSHIP_REQUEST_TEXT,
-    link: REQUESTS,
-    icon: ContactMail
-  },
-  {
-    title: PHASE_TEXT,
-    link: PHASE,
+    title: DASHBOARD_TEXT,
+    link: DASHBOARD_ROUTE,
     icon: GolfCourse
   }
 ];

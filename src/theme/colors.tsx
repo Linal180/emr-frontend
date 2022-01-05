@@ -1,10 +1,11 @@
+export const GRAY = "#f9f9f9";
 export const BLACK = "#000000";
 export const WHITE = "#FFFFFF";
+export const GREEN = "#1DC894";
+export const LIGHT_GRAY = "#ddd"
 export const SKY_BLUE = "#24A6DC";
 export const DARK_BLUE = "#001933";
 export const LIGHT_ORANGE = "#D5CAA3";
 export const PRIMARY_COLOR = "#0056B1";
 export const SECONDARY_COLOR = "#D68541";
-export const GRAY = "#f9f9f9";
-export const LIGHT_GRAY = "#ddd"
 export const BOX_SHADOW_COLOR = "rgba(0, 0, 0, 0.15)";
