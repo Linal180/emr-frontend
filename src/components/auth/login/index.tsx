@@ -59,7 +59,7 @@ const LoginComponent = (): JSX.Element => {
                 return history.push(locationState as string);
               }
 
-              history.push(USERS);
+              history.push("/");
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }
@@ -78,7 +78,7 @@ const LoginComponent = (): JSX.Element => {
   };
 
   useEffect(() => {
-    localStorage.getItem(TOKEN) && history.push(USERS)
+    localStorage.getItem(TOKEN) && history.push('/')
   }, []);
 
   const { email: { message: emailError } = {}, password: { message: passwordError } = {} } = errors;

@@ -17,7 +17,7 @@ const mainListItems: FC = () => (
           <ListItemIcon>
             <nav.icon />
           </ListItemIcon>
-          <ListItemText primary={nav.title} />
+          <ListItemText primary={nav.title} className="list-item-text" />
         </ListItem>
       )
     })}
