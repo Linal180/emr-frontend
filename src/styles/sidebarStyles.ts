@@ -14,6 +14,11 @@ export const useSidebarStyles = makeStyles((theme) => ({
     position: "relative",
     whiteSpace: "nowrap",
     marginTop: "5.5rem",
+    borderRight: "0px",
+    backgroundColor: "#F2F3F5",
+    borderRadius:"20px",
+    minHeight:"calc(100vh - 55px)",
+    marginLeft: "30px",
     width: DRAWER_WIDTH,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,

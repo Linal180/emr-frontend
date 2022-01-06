@@ -44,7 +44,7 @@ export const STATUS = "Status";
 export const SSN = "SSN / TIN";
 export const TAGS_TEXT = "Tags";
 export const ACTION = "Actions";
-export const DRAWER_WIDTH = 240;
+export const DRAWER_WIDTH = 300;
 export const SUCCESS = "success";
 export const COMMENT = "Comment";
 export const SIGN_IN = "Sign in";
@@ -53,21 +53,7 @@ export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
 export const USERS_TEXT = "Users";
-export const EMR_TEXT = "EMR";
-export const DOCTORS_TEXT = "Doctors";
-export const PATIENTS_TEXT = "Patients";
 export const STAFF_TEXT = "Staff";
-export const APPOINTMENTS_TEXT = "Appointments";
-export const VIEW_APPOINTMENTS_TEXT = "View Appointment";
-export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
-export const FACILITIES_TEXT = "Facilities";
-export const LIST_FACILITIES_TEXT = "List Facilities";
-export const REPORTS_TEXT = "Reports";
-export const LAB_RESULTS_TEXT = "Lab Results";
-export const BILLING_TEXT = "Billing";
-export const INVOICES_TEXT = "Invoices";
-export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
-export const DASHBOARD_TEXT = "Dashboard";
 export const LATITUDE = "Latitude";
 export const COMMENTS = "Comments";
 export const PASSWORD = "password";
@@ -82,6 +68,9 @@ export const ADDRESS_1 = "Address 1";
 export const ACTIVATED = "ACTIVATED";
 export const LAST_NAME = "Last name";
 export const ADDRESS_2 = "Address 2";
+export const BILLING_TEXT = "Billing";
+export const REPORTS_TEXT = "Reports";
+export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
 export const FIRST_NAME = "First name";
 export const PHASE_NAME = "Phase name";
@@ -90,12 +79,16 @@ export const SEND_EMAIL = "Send Email";
 export const FEATURES_TEXT = "Features";
 export const TOKEN = "boca_admin_token";
 export const REQUESTS_TEXT = "Requests";
+export const CLINICAL_TEXT = "Clinical";
+export const INVOICES_TEXT = "Invoices";
+export const PATIENTS_TEXT = "Patients";
 export const PASSWORD_LABEL = "Password";
 export const DESCRIPTION = "Description";
 export const CREATE_USER = "Create User";
 export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
+export const DASHBOARD_TEXT = "Dashboard";
 export const LOCATIONS_TEXT = "Locations";
 export const USER_ROLE = "boca_admin_role";
 export const PHONE_NUMBER = "Phone number";
@@ -104,10 +97,13 @@ export const DELETE_MEDIA = "Delete Media";
 export const VERIFY_EMAIL = "Verify Email";
 export const SEARCH_PLACEHOLDER = "Search";
 export const UNAUTHORIZED = "Unauthorized";
+export const FACILITIES_TEXT = "Facilities";
+export const MANAGEMENT_TEXT = "Management";
 export const PROPERTIES_TEXT = "Properties";
 export const TOKEN_INVALID = "Token Invalid";
 export const RESET_FILTERS = "Reset Filters";
 export const NO_DATA_FOUND = "No data found";
+export const LAB_RESULTS_TEXT = "Lab Results";
 export const BACK_TO_HOME = "Back to homepage";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const EXCEPTION = "Forbidden exception";
@@ -116,6 +112,7 @@ export const REQUEST_DETAIL = "Request Detail";
 export const REQUEST_STATUS = "Request Status";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const EMAIL_VERIFIED = "Email Verified?";
+export const APPOINTMENTS_TEXT = "Appointments";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
 export const MEMBERSHIP_NAME = "Membership name";
@@ -137,12 +134,15 @@ export const USER_STATUS_PLACEHOLDER = "User Status";
 export const EMR_ADMIN_PORTAL = "EMR Admin Portal";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
+export const LIST_FACILITIES_TEXT = "List Facilities";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
+export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 export const CONTACT_INFORMATION = "Contact information";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const INDIVIDUAL_NAME = "Individual Name / Trust";
 export const PROFILE_INFORMATION = "Profile information";
+export const VIEW_APPOINTMENTS_TEXT = "View Appointment";
 export const VIEW_OWNERSHIP_REQUEST = "Ownership Request";
 export const PASSWORDS_MUST_MATCH = "Passwords must match";
 export const CONFIRM_YOUR_PASSWORD = "Confirm your password";
@@ -150,6 +150,7 @@ export const ANNUAL_OPERATING_DUES = "Annual Operating Dues";
 export const NOT_FOUND_EXCEPTION_CAP = "NOT FOUND EXCEPTION";
 export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const REQUEST_MEMBERSHIP_PLAN = "Request Membership Plan";
+export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const THANKYOU_MESSAGE = "Thank you for your interest in BOCA+.";
@@ -157,14 +158,10 @@ export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
 export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_USER_DESCRIPTION = "Are you sure you want to delete this user?";
-export const DELETE_MEDIA_DESCRIPTION =
-  "Are you sure you want to delete this media?";
-export const DELETE_REQUEST_DESCRIPTION =
-  "Are you sure you want to delete this request?";
-export const ANNUAL_MANAGEMENT_FEE =
-  "Annual Management Fee (based on initial capital contribution)";
-export const LOOKS_LIKE_EMPTY =
-  "Looks like an empty space. You can go back to homepage by clicking the button below";
+export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
+export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
+export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
+export const LOOKS_LIKE_EMPTY = "Looks like an empty space. You can go back to homepage by clicking the button below";
 
 // Roles
 export const STAFF = "STAFF";
@@ -291,7 +288,7 @@ export const APP_MENU_ITEMS = [
     index:1
   },
   {
-    name: DASHBOARD_TEXT,
+    name: MANAGEMENT_TEXT,
     index:2
   },
   {
@@ -325,7 +322,7 @@ export const APP_MENU_ITEMS = [
     ],
   },
   {
-    name: DASHBOARD_TEXT,
+    name: CLINICAL_TEXT,
     index:5,
   },
   {

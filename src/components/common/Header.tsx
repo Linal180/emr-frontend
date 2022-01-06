@@ -6,15 +6,13 @@ import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, T
 import { EMR } from "../../constants";
 import { handleLogout } from "../../utils";
 import { BellIcon, HelpIcon } from "../../assets/svgs";
-import { AppContext, AuthContext } from "../../context";
+import {  AuthContext } from "../../context";
 import { useHeaderStyles } from "../../styles/headerStyles";
 
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
-  const { isSidebarOpen, setIsSidebarOpen } = useContext(AppContext)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const handleDrawerOpen = () => setIsSidebarOpen(true)
   const handleMenuClose = () => setAnchorEl(null);
 
   const handleLogoutButton = () => {
@@ -47,7 +45,7 @@ const Header: FC = (): JSX.Element => {
   return (
     <AppBar
       position="absolute"
-      className={clsx(classes.appBar, isSidebarOpen && classes.appBarShift)}
+      className={clsx(classes.appBar, classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
         <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
