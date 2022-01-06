@@ -1,7 +1,7 @@
 // packages block
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { ListItem, ListItemIcon, ListItemText, List } from "@material-ui/core";
 // constants, history, utils block
 import { LEFT_NAV_LIST_ITEMS } from "../../constants";
 import history from "../../history";

@@ -5,7 +5,9 @@ import { Box, IconButton, Drawer, Typography } from "@material-ui/core";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import dotenv from "dotenv";
 // components block
-import ListItems from "./ListItems";
+// import ListItems from "./ListItems";
+import AppMenu from "./AppMenu";
+
 import { MainLogo } from "../../assets/svgs";
 // styles and context block
 import { useSidebarStyles } from "../../styles/sidebarStyles";
@@ -17,7 +19,6 @@ const Sidebar: FC = (): JSX.Element => {
   const { isSidebarOpen, setIsSidebarOpen } = useContext(AppContext);
   const classes = useSidebarStyles();
 
-  const handleDrawerClose = () => setIsSidebarOpen(false);
   const version = isSidebarOpen
     ? `Version ${process.env.REACT_APP_VERSION}`
     : `${process.env.REACT_APP_VERSION}`;
@@ -44,7 +45,8 @@ const Sidebar: FC = (): JSX.Element => {
         </Box>
 
         <Box className="sideBarNav">
-          <ListItems />
+          {/* <ListItems /> */}
+          <AppMenu />
         </Box>
       </Box>
 

@@ -79,24 +79,17 @@ const Header: FC = (): JSX.Element => {
       className={clsx(classes.appBar, isSidebarOpen && classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
-        {!isSidebarOpen && (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton)}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
+        {!isSidebarOpen && <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="open drawer"
+          onClick={handleDrawerOpen}
+          className={clsx(classes.menuButton)}
+        >
+          <MenuIcon />
+        </IconButton>}
         {isSidebarOpen && (
-          <IconButton
-            onClick={handleDrawerClose}
-            edge="start"
-            className={clsx(classes.menuButton)}
-            color="inherit"
-          >
+          <IconButton onClick={handleDrawerClose}>
             <ChevronLeftIcon />
           </IconButton>
         )}

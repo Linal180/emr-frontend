@@ -6,6 +6,14 @@ import {
   LocalMall,
   BookOutlined,
 } from "@material-ui/icons";
+import {
+  DashboardIcon,
+  UsersIcon,
+  AppointmentsIcon,
+  FacilitiesIcon,
+  ReportsIcon,
+  BillingIcon,
+} from "../assets/svgs";
 // graphql and interfaces block
 
 // regex
@@ -49,10 +57,24 @@ export const USERS_TEXT = "Users";
 export const EMR_TEXT = "EMR";
 
 export const DASHBOARD_TEXT = "Dashboard";
+
+export const DOCTORS_TEXT = "Doctors";
+export const PATIENTS_TEXT = "Patients";
+export const STAFF_TEXT = "Staff";
+
 export const APPOINTMENTS_TEXT = "Appointments";
+export const VIEW_APPOINTMENTS_TEXT = "View Appointment";
+export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
+
 export const FACILITIES_TEXT = "Facilities";
+export const LIST_FACILITIES_TEXT = "List Facilities";
+
 export const REPORTS_TEXT = "Reports";
+export const LAB_RESULTS_TEXT = "Lab Results";
+
 export const BILLING_TEXT = "Billing";
+export const INVOICES_TEXT = "Invoices";
+export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 
 export const LATITUDE = "Latitude";
 export const COMMENTS = "Comments";
@@ -289,6 +311,86 @@ export const LEFT_NAV_LIST_ITEMS = [
     title: BILLING_TEXT,
     link: "/",
     icon: LocalAtm,
+  },
+];
+export const APP_MENU_ITEMS = [
+  
+  {
+    name: DASHBOARD_TEXT,
+    link: "/",
+    Icon: DashboardIcon,
+    index:1
+  },
+  {
+    name: DASHBOARD_TEXT,
+    index:2
+  },
+  {
+    name: USERS_TEXT,
+    Icon: UsersIcon,
+    index:3,
+    items: [
+      {
+        name: DOCTORS_TEXT,
+        link: "/",
+      },
+      {
+        name: PATIENTS_TEXT,
+      },
+      {
+        name: STAFF_TEXT,
+      },
+    ],
+  },
+  {
+    name: APPOINTMENTS_TEXT,
+    Icon: AppointmentsIcon,
+    index:4,
+    items: [
+      {
+        name: VIEW_APPOINTMENTS_TEXT,
+      },
+      {
+        name: SCHEDULE_APPOINTMENTS_TEXT,
+      },
+    ],
+  },
+  {
+    name: DASHBOARD_TEXT,
+    index:5,
+  },
+  {
+    name: FACILITIES_TEXT,
+    Icon: FacilitiesIcon,
+    index:6,
+    items: [
+      {
+        name: LIST_FACILITIES_TEXT,
+      },
+    ],
+  },
+  {
+    name: REPORTS_TEXT,
+    Icon: ReportsIcon,
+    index:7,
+    items: [
+      {
+        name: LAB_RESULTS_TEXT,
+      },
+    ],
+  },
+  {
+    name: BILLING_TEXT,
+    Icon: BillingIcon,
+    index:8,
+    items: [
+      {
+        name: INVOICES_TEXT,
+      },
+      {
+        name: INSURANCE_CLAIMS_TEXT,
+      },
+    ],
   },
 ];
 
