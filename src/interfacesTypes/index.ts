@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, FacilityPayload, FacilitiesPayload } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -229,4 +229,10 @@ export interface IShowPasswordProps {
   passwordType: string;
   isPassword: boolean | undefined;
   handleShowPassword: () => void;
+}
+
+export interface ListingTableProps {
+  headers: string[];
+  records: FacilitiesPayload['facility'];
+  recordType: 'Facility' | 'Staff'
 }

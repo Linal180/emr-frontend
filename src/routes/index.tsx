@@ -11,12 +11,11 @@ import EmailVerification from "../pages/auth/verifyEmail";
 import ForgetPassword from "../pages/auth/forgetPassword";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 // constants
-import { DASHBOARD_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, ROOT_ROUTE, VERIFY_EMAIL_ROUTE } from "../constants";
+import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, ROOT_ROUTE, VERIFY_EMAIL_ROUTE } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
   return (
     <Switch>
-      <PublicRoute exact path="/" component={Facilities} />
 
       <PublicRoute path={LOGIN_ROUTE} component={Login} exact />
       <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
@@ -24,6 +23,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
       
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
+      <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
       <PrivateRoute exact path={ROOT_ROUTE} component={Dashboard} />
 
       <Route component={PageNotFound} />
