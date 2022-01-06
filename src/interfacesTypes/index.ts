@@ -1,5 +1,5 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode } from "react";
+import { ComponentType, Dispatch, ReactNode , ElementType} from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
@@ -163,10 +163,6 @@ export interface IFieldTypes {
   fieldType?: string;
 }
 
-interface Message {
-  message: string;
-}
-
 export type RecordType = {
   id: string;
   name: string;
@@ -209,7 +205,6 @@ export type ResetPasswordInputs = {
   repeatPassword: string;
 };
 
-
 interface IControlLabel {
   controllerLabel: string | JSX.Element;
   fieldType?: string;
@@ -231,8 +226,21 @@ export interface IShowPasswordProps {
   handleShowPassword: () => void;
 }
 
-export interface ListingTableProps {
-  headers: string[];
-  records: FacilitiesPayload['facility'];
-  recordType: 'Facility' | 'Staff'
+export type SubMenuTypes = {
+  name: string;
+  link: string | null;
+};
+
+export interface AppMenuItemTypes {
+  name: string;
+  link?: string;
+  Icon?: ElementType;
+  items?: SubMenuTypes[];
+  index?: number;
 }
+
+export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;
+
+export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
+  items?: AppMenuItemProps[];
+};

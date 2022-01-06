@@ -45,22 +45,25 @@ export const STATUS = "Status";
 export const SSN = "SSN / TIN";
 export const TAGS_TEXT = "Tags";
 export const ACTION = "Actions";
-export const DRAWER_WIDTH = 240;
-export const TOKEN = "emr_token";
+export const DRAWER_WIDTH = 300;
 export const SUCCESS = "success";
 export const COMMENT = "Comment";
 export const SIGN_IN = "Sign in";
+export const TOKEN = "emr_token";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
-export const STAFF_TEXT = "Staff";
 export const USERS_TEXT = "Users";
+export const STAFF_TEXT = "Staff";
+export const LATITUDE = "Latitude";
+export const COMMENTS = "Comments";
 export const PASSWORD = "password";
 export const ACTIVATE = "Activate";
 export const ZIP_CODE = "Zip code";
 export const VERIFIED = "Verified";
 export const LAST_NAME = "Last name";
+export const ADDRESS_2 = "Address 2";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
 export const DOCTORS_TEXT = "Doctors";
@@ -69,6 +72,7 @@ export const FIRST_NAME = "First name";
 export const SEND_EMAIL = "Send Email";
 export const START_DATE = "Start date";
 export const REQUESTS_TEXT = "Requests";
+export const CLINICAL_TEXT = "Clinical";
 export const INVOICES_TEXT = "Invoices";
 export const PATIENTS_TEXT = "Patients";
 export const PASSWORD_LABEL = "Password";
@@ -87,6 +91,7 @@ export const DELETE_MEDIA = "Delete Media";
 export const VERIFY_EMAIL = "Verify Email";
 export const SEARCH_PLACEHOLDER = "Search";
 export const UNAUTHORIZED = "Unauthorized";
+export const MANAGEMENT_TEXT = "Management";
 export const PROPERTIES_TEXT = "Properties";
 export const FACILITIES_TEXT = "Facilities";
 export const TOKEN_INVALID = "Token Invalid";
@@ -100,8 +105,8 @@ export const DELETE_REQUEST = "Delete Request";
 export const REQUEST_DETAIL = "Request Detail";
 export const REQUEST_STATUS = "Request Status";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
-export const APPOINTMENTS_TEXT = "Appointments";
 export const EMAIL_VERIFIED = "Email Verified?";
+export const APPOINTMENTS_TEXT = "Appointments";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
 export const MEMBERSHIP_NAME = "Membership name";
@@ -126,12 +131,12 @@ export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const LIST_FACILITIES_TEXT = "List Facilities";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
 export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
-export const VIEW_APPOINTMENTS_TEXT = "View Appointment";
 export const CONTACT_INFORMATION = "Contact information";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const INDIVIDUAL_NAME = "Individual Name / Trust";
 export const PROFILE_INFORMATION = "Profile information";
+export const VIEW_APPOINTMENTS_TEXT = "View Appointment";
 export const VIEW_OWNERSHIP_REQUEST = "Ownership Request";
 export const PASSWORDS_MUST_MATCH = "Passwords must match";
 export const CONFIRM_YOUR_PASSWORD = "Confirm your password";
@@ -268,11 +273,13 @@ export const APP_MENU_ITEMS = [
     name: DASHBOARD_TEXT,
     link: "/",
     Icon: DashboardIcon,
+    items: [],
     index: 1
   },
   {
-    name: DASHBOARD_TEXT,
-    index: 2
+    name: MANAGEMENT_TEXT,
+    items: [],
+    index:2
   },
   {
     name: USERS_TEXT,
@@ -305,8 +312,9 @@ export const APP_MENU_ITEMS = [
     ],
   },
   {
-    name: DASHBOARD_TEXT,
-    index: 5,
+    name: CLINICAL_TEXT,
+    items: [],
+    index:5,
   },
   {
     name: FACILITIES_TEXT,
