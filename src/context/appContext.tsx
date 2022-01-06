@@ -5,7 +5,7 @@ import { AppContextProps } from "../interfacesTypes";
 
 export const AppContext = createContext<AppContextProps>({
   isSidebarOpen: true,
-  setIsSidebarOpen() {},
+  setIsSidebarOpen() { },
 });
 
 export const AppContextProvider: FC = ({ children }): JSX.Element => {

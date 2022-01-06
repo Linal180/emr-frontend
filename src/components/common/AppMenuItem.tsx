@@ -52,7 +52,7 @@ const AppMenuItem: FC<AppMenuItemProps> = (props) => {
       </List>
     </Collapse>
   )
-  
+
   return (
     <>
       {MenuItemRoot}

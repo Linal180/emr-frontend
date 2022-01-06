@@ -40,6 +40,7 @@ export const EMAIL = "Email";
 export const PHONE = "Phone";
 export const PAGE_LIMIT = 10;
 export const RESET = "Reset";
+export const EMR_TEXT = "EMR";
 export const STATUS = "Status";
 export const SSN = "SSN / TIN";
 export const TAGS_TEXT = "Tags";
@@ -48,6 +49,7 @@ export const DRAWER_WIDTH = 300;
 export const SUCCESS = "success";
 export const COMMENT = "Comment";
 export const SIGN_IN = "Sign in";
+export const TOKEN = "emr_token";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
@@ -57,15 +59,9 @@ export const STAFF_TEXT = "Staff";
 export const LATITUDE = "Latitude";
 export const COMMENTS = "Comments";
 export const PASSWORD = "password";
-export const STATE_LABEL = "State";
 export const ACTIVATE = "Activate";
 export const ZIP_CODE = "Zip code";
 export const VERIFIED = "Verified";
-export const STATES_TEXT = "States";
-export const STATUS_EVENT = "status";
-export const LONGITUDE = "Longitude";
-export const ADDRESS_1 = "Address 1";
-export const ACTIVATED = "ACTIVATED";
 export const LAST_NAME = "Last name";
 export const ADDRESS_2 = "Address 2";
 export const BILLING_TEXT = "Billing";
@@ -73,11 +69,7 @@ export const REPORTS_TEXT = "Reports";
 export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
 export const FIRST_NAME = "First name";
-export const PHASE_NAME = "Phase name";
-export const DEACTIVATE = "Deactivate";
 export const SEND_EMAIL = "Send Email";
-export const FEATURES_TEXT = "Features";
-export const TOKEN = "boca_admin_token";
 export const REQUESTS_TEXT = "Requests";
 export const CLINICAL_TEXT = "Clinical";
 export const INVOICES_TEXT = "Invoices";
@@ -88,8 +80,8 @@ export const CREATE_USER = "Create User";
 export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
-export const DASHBOARD_TEXT = "Dashboard";
 export const LOCATIONS_TEXT = "Locations";
+export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const PHONE_NUMBER = "Phone number";
 export const NEW_PASSWORD = "New password";
@@ -97,9 +89,9 @@ export const DELETE_MEDIA = "Delete Media";
 export const VERIFY_EMAIL = "Verify Email";
 export const SEARCH_PLACEHOLDER = "Search";
 export const UNAUTHORIZED = "Unauthorized";
-export const FACILITIES_TEXT = "Facilities";
 export const MANAGEMENT_TEXT = "Management";
 export const PROPERTIES_TEXT = "Properties";
+export const FACILITIES_TEXT = "Facilities";
 export const TOKEN_INVALID = "Token Invalid";
 export const RESET_FILTERS = "Reset Filters";
 export const NO_DATA_FOUND = "No data found";
@@ -127,11 +119,11 @@ export const USER_EMAIL = "boca_admin_user_email";
 export const UPLOAD_DOCUMENT = "Uploaded Document";
 export const USER_INFORMATION = "User information";
 export const CONFIRM_PASSWORD = "Confirm password";
+export const EMR_ADMIN_PORTAL = "EMR Admin Portal";
 export const MEMBERSHIP_PLANS = "Membership Plans";
 export const CURRENT_PASSWORD = "Current password";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const USER_STATUS_PLACEHOLDER = "User Status";
-export const EMR_ADMIN_PORTAL = "EMR Admin Portal";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const LIST_FACILITIES_TEXT = "List Facilities";
@@ -205,20 +197,13 @@ export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
-export const DELETE_USER_INFO =
-  "This will delete all the information associated with the user.";
-export const ValidMessage = (fieldName: string, Example?: string) =>
-  `Please enter valid ${fieldName.toLowerCase()}`;
-export const MaxLength = (fieldName: string, length: number) =>
-  `${fieldName} can be up to ${length} characters long`;
-export const MinLength = (fieldName: string, length: number) =>
-  `${fieldName} should be at least ${length} characters long`;
-export const USER_REQUEST_CANNOT_EDITED_NOTE =
-  "Note: Investor has not signed the document. So, this request cannot be edited.";
-export const PASSWORD_VALIDATION_MESSAGE =
-  "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
-export const PHASE_CANNOT_CHANGE_NOTE =
-  "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
+export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
+export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;
+export const MaxLength = (fieldName: string, length: number) => `${fieldName} can be up to ${length} characters long`;
+export const MinLength = (fieldName: string, length: number) => `${fieldName} should be at least ${length} characters long`;
+export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
+export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
+export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
@@ -280,12 +265,12 @@ export const LEFT_NAV_LIST_ITEMS = [
   },
 ];
 export const APP_MENU_ITEMS = [
-  
+
   {
     name: DASHBOARD_TEXT,
     link: "/",
     Icon: DashboardIcon,
-    index:1
+    index: 1
   },
   {
     name: MANAGEMENT_TEXT,
@@ -294,7 +279,7 @@ export const APP_MENU_ITEMS = [
   {
     name: USERS_TEXT,
     Icon: UsersIcon,
-    index:3,
+    index: 3,
     items: [
       {
         name: DOCTORS_TEXT,
@@ -311,7 +296,7 @@ export const APP_MENU_ITEMS = [
   {
     name: APPOINTMENTS_TEXT,
     Icon: AppointmentsIcon,
-    index:4,
+    index: 4,
     items: [
       {
         name: VIEW_APPOINTMENTS_TEXT,
@@ -328,7 +313,7 @@ export const APP_MENU_ITEMS = [
   {
     name: FACILITIES_TEXT,
     Icon: FacilitiesIcon,
-    index:6,
+    index: 6,
     items: [
       {
         name: LIST_FACILITIES_TEXT,
@@ -338,7 +323,7 @@ export const APP_MENU_ITEMS = [
   {
     name: REPORTS_TEXT,
     Icon: ReportsIcon,
-    index:7,
+    index: 7,
     items: [
       {
         name: LAB_RESULTS_TEXT,
@@ -348,7 +333,7 @@ export const APP_MENU_ITEMS = [
   {
     name: BILLING_TEXT,
     Icon: BillingIcon,
-    index:8,
+    index: 8,
     items: [
       {
         name: INVOICES_TEXT,
