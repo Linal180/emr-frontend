@@ -66,6 +66,10 @@ export type CreateStaffInput = {
   roleType?: Maybe<UserRole>;
 };
 
+export type DisableStaff = {
+  id: Scalars['String'];
+};
+
 export type FacilitiesPayload = {
   __typename?: 'FacilitiesPayload';
   facility?: Maybe<Array<Maybe<Facility>>>;
@@ -149,6 +153,7 @@ export type Mutation = {
   createFacility: FacilityPayload;
   createStaff: StaffPayload;
   deactivateUser: UserPayload;
+  disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
   login: AccessUserPayload;
   registerUser: UserPayload;
@@ -183,6 +188,11 @@ export type MutationCreateStaffArgs = {
 
 export type MutationDeactivateUserArgs = {
   user: UserIdInput;
+};
+
+
+export type MutationDisableStaffArgs = {
+  disableStaff: DisableStaff;
 };
 
 

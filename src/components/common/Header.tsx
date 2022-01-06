@@ -12,9 +12,8 @@ import { useHeaderStyles } from "../../styles/headerStyles";
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
-  const { isSidebarOpen, setIsSidebarOpen } = useContext(AppContext)
+  const { isSidebarOpen } = useContext(AppContext)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const handleDrawerOpen = () => setIsSidebarOpen(true)
   const handleMenuClose = () => setAnchorEl(null);
 
   const handleLogoutButton = () => {

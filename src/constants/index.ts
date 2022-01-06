@@ -40,11 +40,13 @@ export const EMAIL = "Email";
 export const PHONE = "Phone";
 export const PAGE_LIMIT = 10;
 export const RESET = "Reset";
+export const EMR_TEXT = "EMR";
 export const STATUS = "Status";
 export const SSN = "SSN / TIN";
 export const TAGS_TEXT = "Tags";
 export const ACTION = "Actions";
 export const DRAWER_WIDTH = 240;
+export const TOKEN = "emr_token";
 export const SUCCESS = "success";
 export const COMMENT = "Comment";
 export const SIGN_IN = "Sign in";
@@ -52,44 +54,22 @@ export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
-export const USERS_TEXT = "Users";
-export const EMR_TEXT = "EMR";
-export const DOCTORS_TEXT = "Doctors";
-export const PATIENTS_TEXT = "Patients";
 export const STAFF_TEXT = "Staff";
-export const APPOINTMENTS_TEXT = "Appointments";
-export const VIEW_APPOINTMENTS_TEXT = "View Appointment";
-export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
-export const FACILITIES_TEXT = "Facilities";
-export const LIST_FACILITIES_TEXT = "List Facilities";
-export const REPORTS_TEXT = "Reports";
-export const LAB_RESULTS_TEXT = "Lab Results";
-export const BILLING_TEXT = "Billing";
-export const INVOICES_TEXT = "Invoices";
-export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
-export const DASHBOARD_TEXT = "Dashboard";
-export const LATITUDE = "Latitude";
-export const COMMENTS = "Comments";
+export const USERS_TEXT = "Users";
 export const PASSWORD = "password";
-export const STATE_LABEL = "State";
 export const ACTIVATE = "Activate";
 export const ZIP_CODE = "Zip code";
 export const VERIFIED = "Verified";
-export const STATES_TEXT = "States";
-export const STATUS_EVENT = "status";
-export const LONGITUDE = "Longitude";
-export const ADDRESS_1 = "Address 1";
-export const ACTIVATED = "ACTIVATED";
 export const LAST_NAME = "Last name";
-export const ADDRESS_2 = "Address 2";
+export const BILLING_TEXT = "Billing";
+export const REPORTS_TEXT = "Reports";
+export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
 export const FIRST_NAME = "First name";
-export const PHASE_NAME = "Phase name";
-export const DEACTIVATE = "Deactivate";
 export const SEND_EMAIL = "Send Email";
-export const FEATURES_TEXT = "Features";
-export const TOKEN = "boca_admin_token";
 export const REQUESTS_TEXT = "Requests";
+export const INVOICES_TEXT = "Invoices";
+export const PATIENTS_TEXT = "Patients";
 export const PASSWORD_LABEL = "Password";
 export const DESCRIPTION = "Description";
 export const CREATE_USER = "Create User";
@@ -97,6 +77,7 @@ export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const LOCATIONS_TEXT = "Locations";
+export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const PHONE_NUMBER = "Phone number";
 export const NEW_PASSWORD = "New password";
@@ -105,9 +86,11 @@ export const VERIFY_EMAIL = "Verify Email";
 export const SEARCH_PLACEHOLDER = "Search";
 export const UNAUTHORIZED = "Unauthorized";
 export const PROPERTIES_TEXT = "Properties";
+export const FACILITIES_TEXT = "Facilities";
 export const TOKEN_INVALID = "Token Invalid";
 export const RESET_FILTERS = "Reset Filters";
 export const NO_DATA_FOUND = "No data found";
+export const LAB_RESULTS_TEXT = "Lab Results";
 export const BACK_TO_HOME = "Back to homepage";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const EXCEPTION = "Forbidden exception";
@@ -115,6 +98,7 @@ export const DELETE_REQUEST = "Delete Request";
 export const REQUEST_DETAIL = "Request Detail";
 export const REQUEST_STATUS = "Request Status";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
+export const APPOINTMENTS_TEXT = "Appointments";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
@@ -130,14 +114,17 @@ export const USER_EMAIL = "boca_admin_user_email";
 export const UPLOAD_DOCUMENT = "Uploaded Document";
 export const USER_INFORMATION = "User information";
 export const CONFIRM_PASSWORD = "Confirm password";
+export const EMR_ADMIN_PORTAL = "EMR Admin Portal";
 export const MEMBERSHIP_PLANS = "Membership Plans";
 export const CURRENT_PASSWORD = "Current password";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const USER_STATUS_PLACEHOLDER = "User Status";
-export const EMR_ADMIN_PORTAL = "EMR Admin Portal";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
+export const LIST_FACILITIES_TEXT = "List Facilities";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
+export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
+export const VIEW_APPOINTMENTS_TEXT = "View Appointment";
 export const CONTACT_INFORMATION = "Contact information";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
@@ -150,6 +137,7 @@ export const ANNUAL_OPERATING_DUES = "Annual Operating Dues";
 export const NOT_FOUND_EXCEPTION_CAP = "NOT FOUND EXCEPTION";
 export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const REQUEST_MEMBERSHIP_PLAN = "Request Membership Plan";
+export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const THANKYOU_MESSAGE = "Thank you for your interest in BOCA+.";
@@ -157,14 +145,10 @@ export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
 export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_USER_DESCRIPTION = "Are you sure you want to delete this user?";
-export const DELETE_MEDIA_DESCRIPTION =
-  "Are you sure you want to delete this media?";
-export const DELETE_REQUEST_DESCRIPTION =
-  "Are you sure you want to delete this request?";
-export const ANNUAL_MANAGEMENT_FEE =
-  "Annual Management Fee (based on initial capital contribution)";
-export const LOOKS_LIKE_EMPTY =
-  "Looks like an empty space. You can go back to homepage by clicking the button below";
+export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
+export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
+export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
+export const LOOKS_LIKE_EMPTY = "Looks like an empty space. You can go back to homepage by clicking the button below";
 
 // Roles
 export const STAFF = "STAFF";
@@ -208,20 +192,13 @@ export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
-export const DELETE_USER_INFO =
-  "This will delete all the information associated with the user.";
-export const ValidMessage = (fieldName: string, Example?: string) =>
-  `Please enter valid ${fieldName.toLowerCase()}`;
-export const MaxLength = (fieldName: string, length: number) =>
-  `${fieldName} can be up to ${length} characters long`;
-export const MinLength = (fieldName: string, length: number) =>
-  `${fieldName} should be at least ${length} characters long`;
-export const USER_REQUEST_CANNOT_EDITED_NOTE =
-  "Note: Investor has not signed the document. So, this request cannot be edited.";
-export const PASSWORD_VALIDATION_MESSAGE =
-  "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
-export const PHASE_CANNOT_CHANGE_NOTE =
-  "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
+export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
+export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;
+export const MaxLength = (fieldName: string, length: number) => `${fieldName} can be up to ${length} characters long`;
+export const MinLength = (fieldName: string, length: number) => `${fieldName} should be at least ${length} characters long`;
+export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
+export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
+export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
@@ -283,21 +260,21 @@ export const LEFT_NAV_LIST_ITEMS = [
   },
 ];
 export const APP_MENU_ITEMS = [
-  
+
   {
     name: DASHBOARD_TEXT,
     link: "/",
     Icon: DashboardIcon,
-    index:1
+    index: 1
   },
   {
     name: DASHBOARD_TEXT,
-    index:2
+    index: 2
   },
   {
     name: USERS_TEXT,
     Icon: UsersIcon,
-    index:3,
+    index: 3,
     items: [
       {
         name: DOCTORS_TEXT,
@@ -314,7 +291,7 @@ export const APP_MENU_ITEMS = [
   {
     name: APPOINTMENTS_TEXT,
     Icon: AppointmentsIcon,
-    index:4,
+    index: 4,
     items: [
       {
         name: VIEW_APPOINTMENTS_TEXT,
@@ -326,12 +303,12 @@ export const APP_MENU_ITEMS = [
   },
   {
     name: DASHBOARD_TEXT,
-    index:5,
+    index: 5,
   },
   {
     name: FACILITIES_TEXT,
     Icon: FacilitiesIcon,
-    index:6,
+    index: 6,
     items: [
       {
         name: LIST_FACILITIES_TEXT,
@@ -341,7 +318,7 @@ export const APP_MENU_ITEMS = [
   {
     name: REPORTS_TEXT,
     Icon: ReportsIcon,
-    index:7,
+    index: 7,
     items: [
       {
         name: LAB_RESULTS_TEXT,
@@ -351,7 +328,7 @@ export const APP_MENU_ITEMS = [
   {
     name: BILLING_TEXT,
     Icon: BillingIcon,
-    index:8,
+    index: 8,
     items: [
       {
         name: INVOICES_TEXT,
