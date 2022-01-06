@@ -1,7 +1,6 @@
 // packages block
-import { Group, ContactMail, GolfCourse } from "@material-ui/icons";
+import { GolfCourse } from "@material-ui/icons";
 // graphql and interfaces block
-
 
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;

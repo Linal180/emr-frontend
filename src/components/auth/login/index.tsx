@@ -1,7 +1,7 @@
 // packages block
 import { useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
-import { Link, useLocation } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
@@ -53,7 +53,7 @@ const LoginComponent = (): JSX.Element => {
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
               setIsLoggedIn(true);
-              
+
               Alert.success(LOGIN_SUCCESSFULLY)
               history.push(DASHBOARD_ROUTE);
             } else {

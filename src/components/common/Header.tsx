@@ -1,27 +1,20 @@
 // packages block
-import { FC, MouseEvent, useContext, useState, } from "react";
+import { FC, useContext, useState, } from "react";
 import clsx from "clsx";
-import { Link } from "react-router-dom";
-import { Help, NotificationsNone as NotificationIcon } from "@material-ui/icons";
-import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, Badge, AppBar, Input, TextField } from "@material-ui/core";
+import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField } from "@material-ui/core";
 // history, app context, auth context, utils and header styles block
-import history from "../../history";
-import { AppContext, AuthContext } from "../../context";
-import { notificationType } from "../../interfacesTypes";
-import { useHeaderStyles } from "../../styles/headerStyles";
-import { firstLatterUppercase, handleLogout } from "../../utils";
 import { EMR } from "../../constants";
+import { handleLogout } from "../../utils";
 import { BellIcon, HelpIcon } from "../../assets/svgs";
+import { AppContext, AuthContext } from "../../context";
+import { useHeaderStyles } from "../../styles/headerStyles";
 
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { setIsLoggedIn, setUser } = useContext(AuthContext);
   const { isSidebarOpen, setIsSidebarOpen } = useContext(AppContext)
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [notifications] = useState<notificationType[]>([]);
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const handleDrawerOpen = () => setIsSidebarOpen(true)
-  const handleProfileMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
   const handleLogoutButton = () => {
@@ -31,7 +24,6 @@ const Header: FC = (): JSX.Element => {
     setIsLoggedIn(false);
   }
 
-  const dashboardText = firstLatterUppercase(history.location.pathname.substring(1)).split("/", 1).toString()
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "header-profile-menu";
 
@@ -70,7 +62,6 @@ const Header: FC = (): JSX.Element => {
           <IconButton edge="start" color="inherit">
             <HelpIcon />
           </IconButton>
-
 
           <Button variant="contained" color="secondary">New Goal</Button>
           {renderMenu}

@@ -2,7 +2,7 @@
 import { createTheme } from "@material-ui/core/styles";
 import { colors } from "@material-ui/core";
 // color-constants and font-family block
-import { PRIMARY_COLOR, WHITE, BLACK, LATO, GREEN, BOX_SHADOW_COLOR } from ".";
+import { PRIMARY_COLOR, WHITE, BLACK, LATO, GREEN } from ".";
 
 export const theme = createTheme({
   palette: {
@@ -150,7 +150,6 @@ export const theme = createTheme({
     MuiOutlinedInput: {
       root: {
         "& $notchedOutline": {
-          height: 42,
           backgroundColor: "rgba(255, 255, 255, 0.1)",
           borderRadius: 5
         },
