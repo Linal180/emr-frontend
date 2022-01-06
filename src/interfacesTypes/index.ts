@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, FacilityPayload, FacilitiesPayload } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -205,7 +205,6 @@ export type ResetPasswordInputs = {
   repeatPassword: string;
 };
 
-
 interface IControlLabel {
   controllerLabel: string | JSX.Element;
   fieldType?: string;
@@ -226,7 +225,6 @@ export interface IShowPasswordProps {
   isPassword: boolean | undefined;
   handleShowPassword: () => void;
 }
-
 
 export type SubMenuTypes = {
   name: string;

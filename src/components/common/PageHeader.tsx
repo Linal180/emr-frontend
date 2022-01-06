@@ -14,13 +14,11 @@ const PageHeader: FC<IPageHeader> = ({ setOpen, isOpen, title, buttonText, hasCo
       </Typography>
       {!noAdd && <>
         {hasComponent ? (
-          <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
-            <Add />
+          <Button color="secondary" variant="contained" component={Link} to={linkToPage || ""}>
             {buttonText || ""}
           </Button>
         ) : (
-          <Button color="primary" variant="contained" onClick={() => setOpen && setOpen(!isOpen)}>
-            <Add />
+          <Button color="secondary" variant="contained" onClick={() => setOpen && setOpen(!isOpen)}>
             {buttonText}
           </Button>
         )}
