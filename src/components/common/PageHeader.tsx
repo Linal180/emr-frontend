@@ -1,7 +1,6 @@
 // packages block
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { Add } from "@material-ui/icons";
 import { Box, Typography, Button } from "@material-ui/core";
 // interfaces/types block
 import { IPageHeader } from "../../interfacesTypes";

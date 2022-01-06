@@ -34,6 +34,19 @@ export interface Children {
   children: ReactNode;
 }
 
+export interface BreadcrumbProps {
+  link?: string;
+  path?: string[];
+  title?: string;
+  hasButton?: boolean;
+  buttonText?: string;
+}
+
+export interface MainLayoutProps {
+  children: ReactNode,
+  breadcrumb?: BreadcrumbProps
+}
+
 export interface TableLoaderType {
   numberOfRows: number;
   numberOfColumns: number;

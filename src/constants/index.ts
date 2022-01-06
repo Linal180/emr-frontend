@@ -130,6 +130,7 @@ export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const LIST_FACILITIES_TEXT = "List Facilities";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
+export const FACILITIES_LISTING = "Facilities Listing";
 export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 export const CONTACT_INFORMATION = "Contact information";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
