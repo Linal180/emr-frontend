@@ -1,14 +1,10 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode } from "react";
+import { ComponentType, Dispatch, ReactNode , ElementType} from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import {
-  Location, LoginUserInput, User, Attachment, Property, AttachmentType, TagsPayload, LocationsPayload,
-  FeaturesPayload, UpdateUserInput
-
-} from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, FacilityPayload, FacilitiesPayload } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -32,15 +28,6 @@ export interface AuthContextProps {
 export interface AppContextProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: Dispatch<React.SetStateAction<boolean>>;
-}
-
-export interface ListContextInterface {
-  tagsList: TagsPayload["tags"];
-  featuresList: FeaturesPayload["features"];
-  locationsList: LocationsPayload["locations"];
-  setTagsList: Function;
-  setFeaturesList: Function;
-  setLocationsList: Function;
 }
 
 export interface Children {
@@ -78,15 +65,6 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
-export interface MediaModalTypes extends DialogTypes {
-  imageModuleType: AttachmentType;
-  itemId: string;
-  metaType: string;
-  setEdit: Function
-  setAttachments: Function;
-  attachment?: Attachment;
-  attachments?: Attachment[]
-}
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
 }
@@ -178,42 +156,11 @@ export interface IDropzoneImage {
   imageForView?: string,
 }
 
-export interface DropzoneImageType {
-  imageModuleType: AttachmentType;
-  isEdit?: boolean;
-  attachmentId: string;
-  itemId: string;
-  metaType: string;
-  isDisabled?: boolean;
-  attachment?: Attachment;
-  handleClose: Function;
-  setAttachments: Function;
-  setActiveStep?: Function
-  reset: Function;
-  hasHighlight?: boolean
-}
-export interface ICreateMediaInput {
-  title?: string;
-  subTitle?: string;
-  description?: string;
-}
-
 export interface IFieldTypes {
   label: string | JSX.Element
   isMultiline?: boolean;
   isRequired?: boolean;
   fieldType?: string;
-}
-
-interface Message {
-  message: string;
-}
-
-export interface MediaLocationDataType extends Message {
-  location: Location;
-}
-export interface MediaPropertyDataType extends Message {
-  property: Property;
 }
 
 export type RecordType = {
@@ -258,7 +205,6 @@ export type ResetPasswordInputs = {
   repeatPassword: string;
 };
 
-
 interface IControlLabel {
   controllerLabel: string | JSX.Element;
   fieldType?: string;
@@ -266,6 +212,7 @@ interface IControlLabel {
   error?: string;
   isPassword?: boolean;
 }
+
 export interface ResetPasswordInputControlProps extends IControlLabel {
   control: Control<ResetPasswordInputs, object>;
   controllerName: ResetPasswordControlTypes;
@@ -278,3 +225,22 @@ export interface IShowPasswordProps {
   isPassword: boolean | undefined;
   handleShowPassword: () => void;
 }
+
+export type SubMenuTypes = {
+  name: string;
+  link: string | null;
+};
+
+export interface AppMenuItemTypes {
+  name: string;
+  link?: string;
+  Icon?: ElementType;
+  items?: SubMenuTypes[];
+  index?: number;
+}
+
+export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;
+
+export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
+  items?: AppMenuItemProps[];
+};

@@ -1,7 +1,7 @@
 // packages block
 import { useContext, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
-import { Link, useLocation } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
@@ -16,11 +16,10 @@ import { MainLogo } from "../../../assets/svgs";
 import { useLoginStyles } from "../../../styles/loginStyles";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
-import { ADMIN, ADMIN_PORTAL, ADMIN_PORTAL_MESSAGE, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD, NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, USERS, WRONG_EMAIL_OR_PASSWORD } from "../../../constants";
+import { ADMIN, EMR_ADMIN_PORTAL, ADMIN_PORTAL_MESSAGE, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD, NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE, SOMETHING_WENT_WRONG, LOGIN_SUCCESSFULLY } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
   const classes = useLoginStyles();
-  const { state: locationState } = useLocation();
   const { setIsLoggedIn } = useContext(AuthContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
@@ -40,7 +39,6 @@ const LoginComponent = (): JSX.Element => {
     onCompleted(data) {
       if (data) {
         const { login: { response, access_token, roles } } = data
-
         if (response) {
           const { status } = response
 
@@ -55,14 +53,13 @@ const LoginComponent = (): JSX.Element => {
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
               setIsLoggedIn(true);
-              if (locationState) {
-                return history.push(locationState as string);
-              }
-
-              history.push(USERS);
+              Alert.success(LOGIN_SUCCESSFULLY)
+              history.push(DASHBOARD_ROUTE);
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }
+          } else {
+            Alert.error(SOMETHING_WENT_WRONG)
           }
         }
       }
@@ -78,7 +75,7 @@ const LoginComponent = (): JSX.Element => {
   };
 
   useEffect(() => {
-    localStorage.getItem(TOKEN) && history.push(USERS)
+    localStorage.getItem(TOKEN) && history.push(DASHBOARD_ROUTE)
   }, []);
 
   const { email: { message: emailError } = {}, password: { message: passwordError } = {} } = errors;
@@ -91,7 +88,7 @@ const LoginComponent = (): JSX.Element => {
         </Grid>
 
         <Box py={1}>
-          <Typography variant="h3" component="h3" className={classes.heading} color="primary">{ADMIN_PORTAL}</Typography>
+          <Typography variant="h3" component="h3" className={classes.heading} color="primary">{EMR_ADMIN_PORTAL}</Typography>
         </Box>
 
         <Box pb={1}>

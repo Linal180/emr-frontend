@@ -1,0 +1,266 @@
+query FindAllFacilities($facilityInput: FacilityInput!) {
+	findAllFacility(facilityInput: $facilityInput) {
+    facility {
+      id
+      name
+      email
+      phone
+      mobile
+      fax
+      stateImmunizationId
+      practiceType
+      federalTaxId
+      checkPayableTo
+      bankAccount
+      revenueCode
+      tamxonomyCode
+      pos
+      merchantId
+      hpsaModifier
+      serviceLocationQualifies
+      excludeChargesFromPatient
+      startDate
+      npi
+      createdAt
+      updatedAt
+
+      staff {
+        id
+        firstName
+        lastName
+        email
+        dob
+        phone
+        mobile
+        gender
+        createdAt
+        updatedAt
+        
+        user {
+          id
+          email
+          token
+          status
+          userId
+          userType
+          facilityId
+          inviteSentAt
+          emailVerified
+          inviteAcceptedAt
+          createdAt
+          updatedAt
+        }
+      }
+    }
+
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+
+    response {
+      name
+      error
+      status
+			message
+    }
+  }
+}
+
+query GetFacility($getFacility: GetFacility!){
+	getFacility(getFacility: $getFacility){
+    facility{
+      id
+      name
+      email
+      phone
+      mobile
+      fax
+      stateImmunizationId
+      practiceType
+      federalTaxId
+      checkPayableTo
+      bankAccount
+      revenueCode
+      tamxonomyCode
+      pos
+      merchantId
+      hpsaModifier
+      serviceLocationQualifies
+      excludeChargesFromPatient
+      startDate
+      npi
+      createdAt
+      updatedAt
+    
+      staff {
+        id
+        firstName
+        lastName
+        email
+        dob
+        phone
+        mobile
+        gender
+        createdAt
+        updatedAt
+
+        user {
+          id
+          email
+          token
+          status
+          userId
+          userType
+          facilityId
+          inviteSentAt
+          emailVerified
+          inviteAcceptedAt
+          createdAt
+          updatedAt
+        }
+      }
+    }
+
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation RemoveFacility($removeFacility: RemoveFacility!){
+	removeFacility(removeFacility: $removeFacility){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
+  updateFacility(updateFacilityInput: $updateFacilityInput){
+    facility{
+      id
+      name
+      email
+      phone
+      mobile
+      fax
+      stateImmunizationId
+      practiceType
+      federalTaxId
+      checkPayableTo
+      bankAccount
+      revenueCode
+      tamxonomyCode
+      pos
+      merchantId
+      hpsaModifier
+      serviceLocationQualifies
+      excludeChargesFromPatient
+      startDate
+      npi
+      createdAt
+      updatedAt
+
+      staff {
+        id
+        firstName
+        lastName
+        email
+        dob
+        phone
+        mobile
+        gender
+        createdAt
+        updatedAt
+
+        user {
+          id
+          email
+          token
+          status
+          userId
+          userType
+          facilityId
+          inviteSentAt
+          emailVerified
+          inviteAcceptedAt
+          createdAt
+          updatedAt
+        }
+      }
+    }
+
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
+  createFacility(createFacilityInput: $createFacilityInput){
+    facility {
+      id
+      name
+      email
+      phone
+      mobile
+      fax
+      stateImmunizationId
+      practiceType
+      federalTaxId
+      checkPayableTo
+      bankAccount
+      revenueCode
+      tamxonomyCode
+      pos
+      merchantId
+      hpsaModifier
+      serviceLocationQualifies
+      excludeChargesFromPatient
+      startDate
+      npi
+      createdAt
+      updatedAt
+
+      staff {
+        id
+        firstName
+        lastName
+        email
+        dob
+        phone
+        mobile
+        gender
+
+        user {
+          id
+          email
+          token
+          status
+          userId
+          userType
+          facilityId
+          inviteSentAt
+          emailVerified
+          inviteAcceptedAt
+          createdAt
+          updatedAt
+        }
+      }
+    }
+
+    response{
+      name
+      status
+      message
+    }
+  }
+}

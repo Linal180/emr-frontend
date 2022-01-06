@@ -9,13 +9,13 @@ import Alert from "../../common/Alert";
 import ResetPasswordController from "./ResetPasswordController";
 // context, constants, graphql, interfaces, utils and styles block
 import history from "../../../history";
-import { requiredLabel } from "../../../utils";
+import { getToken, requiredLabel } from "../../../utils";
 import { MainLogo } from "../../../assets/svgs";
 import { useLoginStyles } from "../../../styles/loginStyles";
 import { ResetPasswordInputs } from "../../../interfacesTypes";
 import { useResetPasswordMutation, } from "../../../generated/graphql";
 import { resetPasswordValidationSchema } from "../../../validationSchemas";
-import { BACK_TO, LOGIN_ROUTE, RESET, RESET_PASSWORD_MESSAGE, RESET_PASSWORD_SUCCESS, SIGN_IN, ADMIN_PORTAL, RESET_PASSWORD_TOKEN_NOT_FOUND, PASSWORD_LABEL, CONFIRM_PASSWORD } from "../../../constants";
+import { BACK_TO, LOGIN_ROUTE, RESET, RESET_PASSWORD_MESSAGE, RESET_PASSWORD_SUCCESS, SIGN_IN, EMR_ADMIN_PORTAL, RESET_PASSWORD_TOKEN_NOT_FOUND, PASSWORD_LABEL, CONFIRM_PASSWORD, ROOT_ROUTE, LOGGED_OUT_BEFORE_RESETTING_PASSWORD } from "../../../constants";
 
 const ResetPasswordComponent = (): JSX.Element => {
   const classes = useLoginStyles();
@@ -46,9 +46,14 @@ const ResetPasswordComponent = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (!token) {
-      Alert.error(RESET_PASSWORD_TOKEN_NOT_FOUND)
-      history.push(LOGIN_ROUTE)
+    if (getToken()) {
+      Alert.error(LOGGED_OUT_BEFORE_RESETTING_PASSWORD)
+      history.push(ROOT_ROUTE)
+    } else {
+      if (!token) {
+        Alert.error(RESET_PASSWORD_TOKEN_NOT_FOUND)
+        history.push(LOGIN_ROUTE)
+      }
     }
   }, [token])
 
@@ -62,7 +67,7 @@ const ResetPasswordComponent = (): JSX.Element => {
         </Grid>
 
         <Box py={2}>
-          <Typography variant="h3" component="h3" color="primary" className={classes.heading}>{ADMIN_PORTAL}</Typography>
+          <Typography variant="h3" component="h3" color="primary" className={classes.heading}>{EMR_ADMIN_PORTAL}</Typography>
         </Box>
 
         <Box pb={1}>

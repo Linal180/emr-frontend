@@ -1,13 +1,18 @@
-	// packages block
+// packages block
 import { createTheme } from "@material-ui/core/styles";
 import { colors } from "@material-ui/core";
 // color-constants and font-family block
-import { PRIMARY_COLOR, WHITE, BLACK, LATO, } from ".";
+import { PRIMARY_COLOR, WHITE, BLACK, LATO, GREEN } from ".";
 
 export const theme = createTheme({
   palette: {
     primary: {
       main: PRIMARY_COLOR,
+      contrastText: WHITE,
+    },
+
+    secondary: {
+      main: GREEN,
       contrastText: WHITE,
     },
 
@@ -129,5 +134,29 @@ export const theme = createTheme({
         color: PRIMARY_COLOR
       }
     },
+
+    MuiButton: {
+      contained: {
+        borderRadius: 5
+      },
+
+      label: {
+        fontSize: 13,
+        fontWeight: 600,
+        fontStyle: 'normal',
+      }
+    },
+
+    MuiOutlinedInput: {
+      root: {
+        "& $notchedOutline": {
+          backgroundColor: "rgba(255, 255, 255, 0.1)",
+          borderRadius: 5
+        },
+        "&:hover $notchedOutline": {
+          borderColor: GREEN
+        },
+      }
+    }
   },
 });
