@@ -1,0 +1,93 @@
+query FindAllFacilities($facilityInput: FacilityInput!) {
+	findAllFacility(facilityInput: $facilityInput) {
+    facility{
+      id
+      name
+      fax
+    }
+
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+
+    response {
+      name
+      error
+      status
+			message
+    }
+  }
+}
+
+query GetFacility($getFacility: GetFacility!){
+	getFacility(getFacility: $getFacility){
+    facility{
+      id
+      fax
+      name
+      phone
+    }
+
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation RemoveFacility($removeFacility: RemoveFacility!){
+	removeFacility(removeFacility: $removeFacility){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
+  updateFacility(updateFacilityInput: $updateFacilityInput){
+    facility{
+      id
+      fax
+      pos
+      name
+      phone
+      mobile
+      hpsaModifier
+      practiceType
+      stateImmunizationId
+    }
+
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
+  createFacility(createFacilityInput: $createFacilityInput){
+    facility{
+      id
+      fax
+      pos
+      name
+      phone
+      mobile
+      hpsaModifier
+      practiceType
+      stateImmunizationId
+    }
+
+    response{
+      name
+      status
+      message
+    }
+  }
+}

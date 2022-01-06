@@ -9,6 +9,8 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    background: "linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.3) 100%),url(/images/header.jpg) center no-repeat",
+    backgroundSize: "cover",
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -75,11 +77,16 @@ export const useHeaderStyles = makeStyles((theme) => ({
       backgroundColor: '#E3EEFA',
     },
   },
+
   link: {
     fontsize: 16,
     textAlign: 'left',
     color: "black",
     fontWeight: 'bold',
   },
+
+  cursor: {
+    cursor: 'pointer',
+  }
 
 }));

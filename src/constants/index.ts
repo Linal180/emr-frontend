@@ -26,6 +26,7 @@ export const PASSWORD_REGEX =
 // constants
 export const HASH = "#";
 export const N_A = "N/A";
+export const EMR = "EMR";
 export const TRUE = "TRUE";
 export const TEXT = "text";
 export const PLAN = "Plan";
@@ -51,31 +52,22 @@ export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
-export const PHASE_TEXT = "Phase";
 export const USERS_TEXT = "Users";
-
 export const EMR_TEXT = "EMR";
-
-export const DASHBOARD_TEXT = "Dashboard";
-
 export const DOCTORS_TEXT = "Doctors";
 export const PATIENTS_TEXT = "Patients";
 export const STAFF_TEXT = "Staff";
-
 export const APPOINTMENTS_TEXT = "Appointments";
 export const VIEW_APPOINTMENTS_TEXT = "View Appointment";
 export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
-
 export const FACILITIES_TEXT = "Facilities";
 export const LIST_FACILITIES_TEXT = "List Facilities";
-
 export const REPORTS_TEXT = "Reports";
 export const LAB_RESULTS_TEXT = "Lab Results";
-
 export const BILLING_TEXT = "Billing";
 export const INVOICES_TEXT = "Invoices";
 export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
-
+export const DASHBOARD_TEXT = "Dashboard";
 export const LATITUDE = "Latitude";
 export const COMMENTS = "Comments";
 export const PASSWORD = "password";
@@ -142,7 +134,7 @@ export const MEMBERSHIP_PLANS = "Membership Plans";
 export const CURRENT_PASSWORD = "Current password";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const USER_STATUS_PLACEHOLDER = "User Status";
-export const ADMIN_PORTAL = "BOCA Plus Admin Portal";
+export const EMR_ADMIN_PORTAL = "EMR Admin Portal";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
@@ -164,8 +156,7 @@ export const THANKYOU_MESSAGE = "Thank you for your interest in BOCA+.";
 export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
 export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
-export const DELETE_USER_DESCRIPTION =
-  "Are you sure you want to delete this user?";
+export const DELETE_USER_DESCRIPTION = "Are you sure you want to delete this user?";
 export const DELETE_MEDIA_DESCRIPTION =
   "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION =
@@ -185,24 +176,9 @@ export const PROPERTY_MANAGER = "PROPERTY_MANAGER";
 export const RELATIONSHIP_MANAGER = "RELATIONSHIP_MANAGER";
 
 // routes paths
-export const TAG = "/tag";
-export const USER = "/user";
-export const TAGS = "/tags";
-export const PHASE = "/phase";
-export const STATE = "/state";
 export const ROOT_ROUTE = "/";
-export const USERS = "/users";
-export const STATES = "/states";
-export const PROFILE = "/profile";
-export const FEATURE = "/feature";
-export const REQUEST = "/request";
 export const LOGIN_ROUTE = "/login";
-export const PROPERTY = "/property";
-export const FEATURES = "/features";
-export const LOCATION = "/location";
-export const REQUESTS = "/requests";
-export const LOCATIONS = "/locations";
-export const PROPERTIES = "/properties";
+export const DASHBOARD_ROUTE = "/dashboard";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
@@ -248,7 +224,9 @@ export const PHASE_CANNOT_CHANGE_NOTE =
   "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
+export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const INVALID_EMAIL = "Invalid email address";
+export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const USER_EXIST = "User already exists with this email.";
@@ -263,28 +241,19 @@ export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Reset password token not found.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Managers can access Admin Portal!";
-export const PRECONDITION_FAILED_EXCEPTION_MESSAGE =
-  "Resource can't be deleted.";
-export const WRONG_EMAIL_OR_PASSWORD =
-  "You have entered wrong email or password";
-export const RESET_PASSWORD_SUCCESS =
-  "Your password has been changed successfully.";
-export const LOGIN_MESSAGE =
-  "Please sign in to explore all that BOCA+ has to offer.";
-export const INVALID_OR_EXPIRED_TOKEN_MESSAGE =
-  "Sorry! Your token is expired or invalid.";
-export const FORGOT_PASSWORD_MESSAGE =
-  "Please enter your email to get a reset-password link.";
-export const FORGET_PASSWORD_SUCCESS =
-  "An email has been sent to your registered email address";
-export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE =
-  "You can't verify a email while you are logged in.";
-export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE =
-  "Email changed or not verified, please verify your email";
-export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
-  "Sorry! Your verification token is expired or invalid";
-export const EXPIRE_TOKEN_MESSAGE =
-  "Your token has been expired. Please click on the button below to get an email again.";
+export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
+export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
+export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
+export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
+export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or invalid.";
+export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
+export const FORGOT_PASSWORD_MESSAGE = "Please enter your email to get a reset-password link.";
+export const FORGET_PASSWORD_SUCCESS = "An email has been sent to your registered email address";
+export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a email while you are logged in.";
+export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
+export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
+export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
+
 
 export const LEFT_NAV_LIST_ITEMS = [
   {
@@ -403,28 +372,3 @@ export const MAPPED_ROLES = {
   PropertyManager: "Property Manager",
   RelationshipManager: "Relations Owner",
 };
-
-// export const ROLES_OPTIONS_FOR_SUPER_ADMIN: multiOptionType[] = [
-//   { value: UserRole.Staff, label: MAPPED_ROLES.Staff },
-//   { value: UserRole.Owner, label: MAPPED_ROLES.Owner },
-//   { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
-//   { value: UserRole.Investor, label: MAPPED_ROLES.Investor },
-//   { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
-//   { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
-// ];
-
-// export const ROLES_OPTIONS_FOR_ADMIN: multiOptionType[] = [
-//   { value: UserRole.Staff, label: MAPPED_ROLES.Staff },
-//   { value: UserRole.Owner, label: MAPPED_ROLES.Owner },
-//   { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
-//   { value: UserRole.Investor, label: MAPPED_ROLES.Investor },
-//   { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
-//   { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
-// ];
-
-// export const ROLES_OPTIONS_FOR_NEW_USER: multiOptionType[] = [
-//   { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
-//   { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
-//   { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager },
-//   { value: UserRole.Staff, label: MAPPED_ROLES.Staff }
-// ];

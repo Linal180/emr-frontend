@@ -1,42 +1,20 @@
 // packages block
-import { FC, MouseEvent, useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { FC, useContext, useState, } from "react";
 import clsx from "clsx";
-import {
-  AccountCircle,
-  Menu as MenuIcon,
-  NotificationsNone as NotificationIcon,
-} from "@material-ui/icons";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import {
-  Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Toolbar,
-  Typography,
-  Badge,
-  AppBar,
-} from "@material-ui/core";
+import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField } from "@material-ui/core";
 // history, app context, auth context, utils and header styles block
-import history from "../../history";
+import { EMR } from "../../constants";
+import { handleLogout } from "../../utils";
+import { BellIcon, HelpIcon } from "../../assets/svgs";
 import { AppContext, AuthContext } from "../../context";
-import { firstLatterUppercase, handleLogout } from "../../utils";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { notificationType } from "../../interfacesTypes";
 
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { setIsLoggedIn, user, setUser } = useContext(AuthContext);
-  const { isSidebarOpen, setIsSidebarOpen } = useContext(AppContext);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [notifications] = useState<notificationType[]>([]);
-
-  const handleDrawerOpen = () => setIsSidebarOpen(true);
-  const handleDrawerClose = () => setIsSidebarOpen(false);
-  const handleProfileMenuOpen = (event: MouseEvent<HTMLElement>) =>
-    setAnchorEl(event.currentTarget);
+  const { setIsLoggedIn, setUser } = useContext(AuthContext);
+  const { isSidebarOpen, setIsSidebarOpen } = useContext(AppContext)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const handleDrawerOpen = () => setIsSidebarOpen(true)
   const handleMenuClose = () => setAnchorEl(null);
 
   const handleLogoutButton = () => {
@@ -46,11 +24,6 @@ const Header: FC = (): JSX.Element => {
     setIsLoggedIn(false);
   };
 
-  const dashboardText = firstLatterUppercase(
-    history.location.pathname.substring(1)
-  )
-    .split("/", 1)
-    .toString();
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "header-profile-menu";
 
@@ -65,11 +38,9 @@ const Header: FC = (): JSX.Element => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem component={Link} to="/profile" onClick={handleMenuClose}>
-        Profile
+      <MenuItem onClick={handleLogoutButton}>
+        Logout
       </MenuItem>
-
-      <MenuItem onClick={handleLogoutButton}>Logout</MenuItem>
     </Menu>
   );
 
@@ -79,80 +50,23 @@ const Header: FC = (): JSX.Element => {
       className={clsx(classes.appBar, isSidebarOpen && classes.appBarShift)}
     >
       <Toolbar className={classes.toolbar}>
-        {!isSidebarOpen && <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          className={clsx(classes.menuButton)}
-        >
-          <MenuIcon />
-        </IconButton>}
-        {isSidebarOpen && (
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        )}
-
-        <Typography
-          component="h1"
-          variant="h4"
-          color="inherit"
-          noWrap
-          className={classes.title}
-        >
-          {dashboardText}
+        <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
+          <Box className={classes.cursor}>
+            {EMR}
+          </Box>
         </Typography>
 
         <Box>
-          <div className={classes.dropdown}>
-            <IconButton edge="start" color="inherit">
-              <Badge
-                badgeContent={notifications.length}
-                color="secondary"
-                className="customHeaderBadge"
-              >
-                <NotificationIcon />
-              </Badge>
-              <div className={classes.dropdownContent}>
-                {notifications.length === 0 ? (
-                  <Typography variant="h6" className={classes.link}>
-                    No New Notification
-                  </Typography>
-                ) : (
-                  notifications.map(({ url, message }, index) => (
-                    <Link
-                      to={{
-                        pathname: url,
-                        key: Math.random().toString(),
-                        state: { fromNotification: true },
-                      }}
-                      className={classes.link}
-                      key={index + message}
-                    >
-                      <Typography variant="h6">{message}</Typography>
-                    </Link>
-                  ))
-                )}
-              </div>
-            </IconButton>
-          </div>
+          <TextField variant="outlined" placeholder="Global Search" />
+          <IconButton edge="start" color="inherit">
+            <BellIcon />
+          </IconButton>
 
-          <Button
-            aria-label="account of current user"
-            aria-controls={menuId}
-            aria-haspopup="true"
-            onClick={handleProfileMenuOpen}
-            color="primary"
-          >
-            <Box className="header-account-button" display="flex">
-              <AccountCircle />
-              <Box ml={1} minWidth={100}>
-                USER NAME
-              </Box>
-            </Box>
-          </Button>
+          <IconButton edge="start" color="inherit">
+            <HelpIcon />
+          </IconButton>
 
+          <Button variant="contained" color="secondary">New Goal</Button>
           {renderMenu}
         </Box>
       </Toolbar>
