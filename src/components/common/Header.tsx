@@ -48,7 +48,7 @@ const Header: FC = (): JSX.Element => {
     <AppBar position="absolute" className={clsx(classes.appBar, isSidebarOpen && classes.appBarShift)}>
       <Toolbar className={classes.toolbar}>
         <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
-          <Box onClick={handleDrawerOpen} className={classes.cursor}>
+          <Box className={classes.cursor}>
             {EMR}
           </Box>
         </Typography>

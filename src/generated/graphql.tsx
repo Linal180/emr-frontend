@@ -21,6 +21,13 @@ export type AccessUserPayload = {
   roles?: Maybe<Array<Role>>;
 };
 
+export type AllStaffPayload = {
+  __typename?: 'AllStaffPayload';
+  allstaff?: Maybe<Array<Maybe<Staff>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type CreateFacilityInput = {
   bankAccount?: Maybe<Scalars['String']>;
   checkPayableTo?: Maybe<Scalars['String']>;
@@ -41,6 +48,22 @@ export type CreateFacilityInput = {
   serviceLocationQualifies?: Maybe<Scalars['String']>;
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+};
+
+export type CreateStaffInput = {
+  adminId?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  /** Staff gender */
+  gender?: Maybe<Gender>;
+  lastName: Scalars['String'];
+  mobile?: Maybe<Scalars['String']>;
+  password: Scalars['String'];
+  phone?: Maybe<Scalars['String']>;
+  /** Send Investor Type from the ENUM - Sign-up */
+  roleType?: Maybe<UserRole>;
 };
 
 export type FacilitiesPayload = {
@@ -70,6 +93,7 @@ export type Facility = {
   practiceType: PracticeType;
   revenueCode: Scalars['String'];
   serviceLocationQualifies: Scalars['String'];
+  staff?: Maybe<Array<Staff>>;
   startDate: Scalars['String'];
   stateImmunizationId: Scalars['String'];
   tamxonomyCode: Scalars['String'];
@@ -95,7 +119,18 @@ export type ForgotPasswordPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The user gender assigned */
+export enum Gender {
+  Female = 'FEMALE',
+  Male = 'MALE',
+  Other = 'OTHER'
+}
+
 export type GetFacility = {
+  id: Scalars['String'];
+};
+
+export type GetStaff = {
   id: Scalars['String'];
 };
 
@@ -112,17 +147,20 @@ export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
   createFacility: FacilityPayload;
+  createStaff: StaffPayload;
   deactivateUser: UserPayload;
   forgotPassword: ForgotPasswordPayload;
   login: AccessUserPayload;
   registerUser: UserPayload;
   removeFacility: FacilityPayload;
+  removeStaff: StaffPayload;
   removeUser: UserPayload;
   resendVerificationEmail: UserPayload;
   resetPassword: UserPayload;
   updateFacility: FacilityPayload;
   updatePassword: UserPayload;
   updateRole: UserPayload;
+  updateStaff: StaffPayload;
   updateUser: UserPayload;
   verifyEmail: UserPayload;
 };
@@ -135,6 +173,11 @@ export type MutationActivateUserArgs = {
 
 export type MutationCreateFacilityArgs = {
   createFacilityInput: CreateFacilityInput;
+};
+
+
+export type MutationCreateStaffArgs = {
+  createStaffInput: CreateStaffInput;
 };
 
 
@@ -160,6 +203,11 @@ export type MutationRegisterUserArgs = {
 
 export type MutationRemoveFacilityArgs = {
   removeFacility: RemoveFacility;
+};
+
+
+export type MutationRemoveStaffArgs = {
+  removeStaff: RemoveStaff;
 };
 
 
@@ -190,6 +238,11 @@ export type MutationUpdatePasswordArgs = {
 
 export type MutationUpdateRoleArgs = {
   user: UpdateRoleInput;
+};
+
+
+export type MutationUpdateStaffArgs = {
+  updateStaffInput: UpdateStaffInput;
 };
 
 
@@ -228,7 +281,9 @@ export type Query = {
   fetchAllUsers: UsersPayload;
   fetchUser: UserPayload;
   findAllFacility: FacilitiesPayload;
+  findAllStaff: AllStaffPayload;
   getFacility: FacilityPayload;
+  getStaff: StaffPayload;
   getUser: UserPayload;
   me: UserPayload;
   searchUser: UsersPayload;
@@ -245,8 +300,18 @@ export type QueryFindAllFacilityArgs = {
 };
 
 
+export type QueryFindAllStaffArgs = {
+  staffInput: StaffInput;
+};
+
+
 export type QueryGetFacilityArgs = {
   getFacility: GetFacility;
+};
+
+
+export type QueryGetStaffArgs = {
+  getStaff: GetStaff;
 };
 
 
@@ -272,6 +337,10 @@ export type RegisterUserInput = {
 };
 
 export type RemoveFacility = {
+  id: Scalars['String'];
+};
+
+export type RemoveStaff = {
   id: Scalars['String'];
 };
 
@@ -306,6 +375,32 @@ export type RolesPayload = {
   roles?: Maybe<Array<Maybe<Role>>>;
 };
 
+export type Staff = {
+  __typename?: 'Staff';
+  createdAt: Scalars['String'];
+  dob: Scalars['String'];
+  email: Scalars['String'];
+  facility?: Maybe<Array<Facility>>;
+  firstName: Scalars['String'];
+  gender: Gender;
+  id: Scalars['String'];
+  lastName: Scalars['String'];
+  mobile: Scalars['String'];
+  phone: Scalars['String'];
+  updatedAt: Scalars['String'];
+  user?: Maybe<User>;
+};
+
+export type StaffInput = {
+  paginationOptions: PaginationInput;
+};
+
+export type StaffPayload = {
+  __typename?: 'StaffPayload';
+  response?: Maybe<ResponsePayload>;
+  staff?: Maybe<Staff>;
+};
+
 export type UpdateFacilityInput = {
   bankAccount?: Maybe<Scalars['String']>;
   checkPayableTo?: Maybe<Scalars['String']>;
@@ -338,6 +433,23 @@ export type UpdatePasswordInput = {
 export type UpdateRoleInput = {
   id: Scalars['String'];
   roles: Array<UserRole>;
+};
+
+export type UpdateStaffInput = {
+  adminId?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  /** Staff gender */
+  gender?: Maybe<Gender>;
+  id: Scalars['String'];
+  lastName?: Maybe<Scalars['String']>;
+  mobile?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+  /** Send Investor Type from the ENUM - Sign-up */
+  roleType?: Maybe<UserRole>;
 };
 
 export type UpdateUserInput = {
@@ -460,6 +572,41 @@ export type ResendVerificationEmailMutationVariables = Exact<{
 
 
 export type ResendVerificationEmailMutation = { __typename?: 'Mutation', resendVerificationEmail: { __typename?: 'UserPayload', user?: Maybe<{ __typename?: 'User', id: string, email: string, token: string, status: UserStatus, userId: string, userType: string, facilityId: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string, roles?: Maybe<Array<Maybe<{ __typename?: 'Role', id: string, role: UserRole, createdAt: string, updatedAt: string }>>> }>, response?: Maybe<{ __typename?: 'ResponsePayload', error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type FindAllFacilitiesQueryVariables = Exact<{
+  facilityInput: FacilityInput;
+}>;
+
+
+export type FindAllFacilitiesQuery = { __typename?: 'Query', findAllFacility: { __typename?: 'FacilitiesPayload', facility?: Maybe<Array<Maybe<{ __typename?: 'Facility', id: string, name: string, fax: string }>>>, pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type GetFacilityQueryVariables = Exact<{
+  getFacility: GetFacility;
+}>;
+
+
+export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: Maybe<{ __typename?: 'Facility', id: string, fax: string, name: string, phone: string }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type RemoveFacilityMutationVariables = Exact<{
+  removeFacility: RemoveFacility;
+}>;
+
+
+export type RemoveFacilityMutation = { __typename?: 'Mutation', removeFacility: { __typename?: 'FacilityPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type UpdateFacilityMutationVariables = Exact<{
+  updateFacilityInput: UpdateFacilityInput;
+}>;
+
+
+export type UpdateFacilityMutation = { __typename?: 'Mutation', updateFacility: { __typename?: 'FacilityPayload', facility?: Maybe<{ __typename?: 'Facility', id: string, fax: string, pos: string, name: string, phone: string, mobile: string, hpsaModifier: string, practiceType: PracticeType, stateImmunizationId: string }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type CreateFacilityMutationVariables = Exact<{
+  createFacilityInput: CreateFacilityInput;
+}>;
+
+
+export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', facility?: Maybe<{ __typename?: 'Facility', id: string, fax: string, pos: string, name: string, phone: string, mobile: string, hpsaModifier: string, practiceType: PracticeType, stateImmunizationId: string }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
 
 
 export const LoginDocument = gql`
@@ -828,3 +975,231 @@ export function useResendVerificationEmailMutation(baseOptions?: Apollo.Mutation
 export type ResendVerificationEmailMutationHookResult = ReturnType<typeof useResendVerificationEmailMutation>;
 export type ResendVerificationEmailMutationResult = Apollo.MutationResult<ResendVerificationEmailMutation>;
 export type ResendVerificationEmailMutationOptions = Apollo.BaseMutationOptions<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>;
+export const FindAllFacilitiesDocument = gql`
+    query FindAllFacilities($facilityInput: FacilityInput!) {
+  findAllFacility(facilityInput: $facilityInput) {
+    facility {
+      id
+      name
+      fax
+    }
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    response {
+      name
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllFacilitiesQuery__
+ *
+ * To run a query within a React component, call `useFindAllFacilitiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllFacilitiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllFacilitiesQuery({
+ *   variables: {
+ *      facilityInput: // value for 'facilityInput'
+ *   },
+ * });
+ */
+export function useFindAllFacilitiesQuery(baseOptions: Apollo.QueryHookOptions<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>(FindAllFacilitiesDocument, options);
+      }
+export function useFindAllFacilitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>(FindAllFacilitiesDocument, options);
+        }
+export type FindAllFacilitiesQueryHookResult = ReturnType<typeof useFindAllFacilitiesQuery>;
+export type FindAllFacilitiesLazyQueryHookResult = ReturnType<typeof useFindAllFacilitiesLazyQuery>;
+export type FindAllFacilitiesQueryResult = Apollo.QueryResult<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>;
+export const GetFacilityDocument = gql`
+    query GetFacility($getFacility: GetFacility!) {
+  getFacility(getFacility: $getFacility) {
+    facility {
+      id
+      fax
+      name
+      phone
+    }
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFacilityQuery__
+ *
+ * To run a query within a React component, call `useGetFacilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFacilityQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFacilityQuery({
+ *   variables: {
+ *      getFacility: // value for 'getFacility'
+ *   },
+ * });
+ */
+export function useGetFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetFacilityQuery, GetFacilityQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFacilityQuery, GetFacilityQueryVariables>(GetFacilityDocument, options);
+      }
+export function useGetFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFacilityQuery, GetFacilityQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFacilityQuery, GetFacilityQueryVariables>(GetFacilityDocument, options);
+        }
+export type GetFacilityQueryHookResult = ReturnType<typeof useGetFacilityQuery>;
+export type GetFacilityLazyQueryHookResult = ReturnType<typeof useGetFacilityLazyQuery>;
+export type GetFacilityQueryResult = Apollo.QueryResult<GetFacilityQuery, GetFacilityQueryVariables>;
+export const RemoveFacilityDocument = gql`
+    mutation RemoveFacility($removeFacility: RemoveFacility!) {
+  removeFacility(removeFacility: $removeFacility) {
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveFacilityMutationFn = Apollo.MutationFunction<RemoveFacilityMutation, RemoveFacilityMutationVariables>;
+
+/**
+ * __useRemoveFacilityMutation__
+ *
+ * To run a mutation, you first call `useRemoveFacilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveFacilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeFacilityMutation, { data, loading, error }] = useRemoveFacilityMutation({
+ *   variables: {
+ *      removeFacility: // value for 'removeFacility'
+ *   },
+ * });
+ */
+export function useRemoveFacilityMutation(baseOptions?: Apollo.MutationHookOptions<RemoveFacilityMutation, RemoveFacilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveFacilityMutation, RemoveFacilityMutationVariables>(RemoveFacilityDocument, options);
+      }
+export type RemoveFacilityMutationHookResult = ReturnType<typeof useRemoveFacilityMutation>;
+export type RemoveFacilityMutationResult = Apollo.MutationResult<RemoveFacilityMutation>;
+export type RemoveFacilityMutationOptions = Apollo.BaseMutationOptions<RemoveFacilityMutation, RemoveFacilityMutationVariables>;
+export const UpdateFacilityDocument = gql`
+    mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
+  updateFacility(updateFacilityInput: $updateFacilityInput) {
+    facility {
+      id
+      fax
+      pos
+      name
+      phone
+      mobile
+      hpsaModifier
+      practiceType
+      stateImmunizationId
+    }
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateFacilityMutationFn = Apollo.MutationFunction<UpdateFacilityMutation, UpdateFacilityMutationVariables>;
+
+/**
+ * __useUpdateFacilityMutation__
+ *
+ * To run a mutation, you first call `useUpdateFacilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFacilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFacilityMutation, { data, loading, error }] = useUpdateFacilityMutation({
+ *   variables: {
+ *      updateFacilityInput: // value for 'updateFacilityInput'
+ *   },
+ * });
+ */
+export function useUpdateFacilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFacilityMutation, UpdateFacilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateFacilityMutation, UpdateFacilityMutationVariables>(UpdateFacilityDocument, options);
+      }
+export type UpdateFacilityMutationHookResult = ReturnType<typeof useUpdateFacilityMutation>;
+export type UpdateFacilityMutationResult = Apollo.MutationResult<UpdateFacilityMutation>;
+export type UpdateFacilityMutationOptions = Apollo.BaseMutationOptions<UpdateFacilityMutation, UpdateFacilityMutationVariables>;
+export const CreateFacilityDocument = gql`
+    mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
+  createFacility(createFacilityInput: $createFacilityInput) {
+    facility {
+      id
+      fax
+      pos
+      name
+      phone
+      mobile
+      hpsaModifier
+      practiceType
+      stateImmunizationId
+    }
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateFacilityMutationFn = Apollo.MutationFunction<CreateFacilityMutation, CreateFacilityMutationVariables>;
+
+/**
+ * __useCreateFacilityMutation__
+ *
+ * To run a mutation, you first call `useCreateFacilityMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFacilityMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFacilityMutation, { data, loading, error }] = useCreateFacilityMutation({
+ *   variables: {
+ *      createFacilityInput: // value for 'createFacilityInput'
+ *   },
+ * });
+ */
+export function useCreateFacilityMutation(baseOptions?: Apollo.MutationHookOptions<CreateFacilityMutation, CreateFacilityMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFacilityMutation, CreateFacilityMutationVariables>(CreateFacilityDocument, options);
+      }
+export type CreateFacilityMutationHookResult = ReturnType<typeof useCreateFacilityMutation>;
+export type CreateFacilityMutationResult = Apollo.MutationResult<CreateFacilityMutation>;
+export type CreateFacilityMutationOptions = Apollo.BaseMutationOptions<CreateFacilityMutation, CreateFacilityMutationVariables>;

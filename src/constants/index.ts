@@ -207,6 +207,7 @@ export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password
 export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
 export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or invalid.";
+export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
 export const FORGOT_PASSWORD_MESSAGE = "Please enter your email to get a reset-password link.";
 export const FORGET_PASSWORD_SUCCESS = "An email has been sent to your registered email address";
 export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a email while you are logged in.";

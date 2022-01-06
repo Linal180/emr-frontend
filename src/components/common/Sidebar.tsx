@@ -17,30 +17,19 @@ const Sidebar: FC = (): JSX.Element => {
   const classes = useSidebarStyles();
 
   const handleDrawerClose = () => setIsSidebarOpen(false);
-  const version = isSidebarOpen ? `Version ${process.env.REACT_APP_VERSION}` : `${process.env.REACT_APP_VERSION}`
 
   return (
-    <Drawer variant="permanent" classes={{ paper: clsx(classes.drawerPaper, !isSidebarOpen && classes.drawerPaperClose) }} open={isSidebarOpen}>
+    <Drawer variant="permanent" classes={{ paper: clsx(classes.drawerPaper, !isSidebarOpen && classes.drawerPaperClose) }}>
       <Box minHeight="calc(100vh - 55px)">
         <Box className={classes.toolbarIcon}>
           <Box flex={1}>
             <MainLogo />
           </Box>
-
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
         </Box>
 
         <Box className="sideBarNav">
           <ListItems />
         </Box>
-      </Box>
-
-      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" pb={1.5}>
-        <Typography variant="body2" align="center">
-          {version}
-        </Typography>
       </Box>
     </Drawer>
   );
