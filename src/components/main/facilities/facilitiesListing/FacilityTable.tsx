@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, useEffect, useContext, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Delete, Search, Visibility } from "@material-ui/icons";
@@ -141,15 +141,11 @@ const FacilityTable: FC = (): JSX.Element => {
                         {staff?.map((staffEntity) => {
                           const { id: staffId, firstName, lastName } = staffEntity || {};
 
-                          if (staffEntity) {
-                            return (
-                              <Box key={`staff-${staffId}`} component="span" borderRadius={50}>
-                                {firstName} {" "} {lastName}
-                              </Box>
-                            )
-                          } else {
-                            return "N/A";
-                          }
+                          return staffEntity && (
+                            <Box key={`staff-${staffId}`} component="span" borderRadius={50}>
+                              {firstName} {" "} {lastName}
+                            </Box>
+                          )
                         })}
                       </Grid>
                     </TableCell>
@@ -184,7 +180,7 @@ const FacilityTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !facilities) || error || !facilities?.length) && (
+        {((!loading && !facilities) || error || !!facilities?.length) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>
