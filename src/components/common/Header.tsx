@@ -1,6 +1,5 @@
 // packages block
 import { FC, useContext, useState, } from "react";
-import clsx from "clsx";
 import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField } from "@material-ui/core";
 // history, app context, auth context, utils and header styles block
 import { EMR } from "../../constants";
@@ -45,7 +44,7 @@ const Header: FC = (): JSX.Element => {
   return (
     <AppBar
       position="absolute"
-      className={clsx(classes.appBar, classes.appBarShift)}
+      className={classes.appBar}
     >
       <Toolbar className={classes.toolbar}>
         <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
@@ -55,16 +54,16 @@ const Header: FC = (): JSX.Element => {
         </Typography>
 
         <Box>
-          <TextField variant="outlined" placeholder="Global Search" />
-          <IconButton edge="start" color="inherit">
+          <TextField variant="outlined" placeholder="Global Search" className={classes.input} />
+          <IconButton edge="start" color="inherit" className={classes.menuButton}>
             <BellIcon />
           </IconButton>
 
-          <IconButton edge="start" color="inherit">
+          <IconButton edge="start" color="inherit" className={classes.menuButton}>
             <HelpIcon />
           </IconButton>
 
-          <Button variant="contained" color="secondary">New Goal</Button>
+          <Button variant="contained" color="secondary" className={classes.goalButton}>New Goal</Button>
           {renderMenu}
         </Box>
       </Toolbar>

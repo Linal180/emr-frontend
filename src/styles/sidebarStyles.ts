@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core";
+import { SIDEBAR_BACKGROUND_COLOR } from "../theme";
 
 import { DRAWER_WIDTH } from "../constants";
 
@@ -15,7 +16,7 @@ export const useSidebarStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
     marginTop: "5.5rem",
     borderRight: "0px",
-    backgroundColor: "#F2F3F5",
+    backgroundColor: SIDEBAR_BACKGROUND_COLOR,
     borderRadius:"20px",
     minHeight:"calc(100vh - 55px)",
     marginLeft: "30px",

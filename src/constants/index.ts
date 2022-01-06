@@ -270,10 +270,12 @@ export const APP_MENU_ITEMS = [
     name: DASHBOARD_TEXT,
     link: "/",
     Icon: DashboardIcon,
+    items: [],
     index: 1
   },
   {
     name: MANAGEMENT_TEXT,
+    items: [],
     index:2
   },
   {
@@ -308,6 +310,7 @@ export const APP_MENU_ITEMS = [
   },
   {
     name: CLINICAL_TEXT,
+    items: [],
     index:5,
   },
   {

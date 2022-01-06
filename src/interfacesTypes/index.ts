@@ -227,16 +227,22 @@ export interface IShowPasswordProps {
   handleShowPassword: () => void;
 }
 
+
+export type SubMenuTypes = {
+  name: string;
+  link: string | null;
+};
+
 export interface AppMenuItemTypes {
   name: string;
-  link: string;
-  Icon: ElementType<any>;
-  items: Control<SubMenuTypes, object>;
-  index: number;
+  link?: string;
+  Icon?: ElementType;
+  items?: SubMenuTypes[];
+  index?: number;
 }
 
+export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;
 
-export type SubMenuTypes= {
-  name: string;
-  link: string;
+export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
+  items?: AppMenuItemProps[];
 };
