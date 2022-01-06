@@ -13,6 +13,7 @@ export const useSidebarStyles = makeStyles((theme) => ({
   drawerPaper: {
     position: "relative",
     whiteSpace: "nowrap",
+    marginTop: "5.5rem",
     width: DRAWER_WIDTH,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
@@ -22,6 +23,7 @@ export const useSidebarStyles = makeStyles((theme) => ({
 
   drawerPaperClose: {
     overflowX: "hidden",
+    minWidth:"78px",
 
     "& .MuiListItem-gutters": {
       paddingLeft: 22,

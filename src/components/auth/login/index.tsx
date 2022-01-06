@@ -53,7 +53,6 @@ const LoginComponent = (): JSX.Element => {
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
               setIsLoggedIn(true);
-
               Alert.success(LOGIN_SUCCESSFULLY)
               history.push(DASHBOARD_ROUTE);
             } else {

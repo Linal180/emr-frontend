@@ -116,6 +116,14 @@ img, svg {
   background: #E3EEFA;
 }
 
+.list-item-text {
+  color: #4A4B68 ;
+}
+.list-item-text > span  {
+  font-weight: 600 !important;
+
+}
+
 .overflow-visible {
   overflow: visible !important;
 }
@@ -171,4 +179,7 @@ input[type="email"] {
 
 .textTransform-capitalize {
   text-transform: capitalize;
+}
+.padding-left {
+  padding-left: 0px !important;
 }

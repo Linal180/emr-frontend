@@ -19,7 +19,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
   appBarShift: {
     marginLeft: DRAWER_WIDTH,
-    width: `calc(100% - ${DRAWER_WIDTH}px)`,
+    width: `calc(100%)`,
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,

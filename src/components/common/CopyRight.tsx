@@ -9,7 +9,7 @@ const CopyRight: FC = (): JSX.Element => {
         {"Copyright © "}
 
         <Link color="inherit" href="/" target="_blank">
-          Boca+
+          EMR
         </Link>
         {" "}
         {new Date().getFullYear()}

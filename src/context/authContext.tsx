@@ -8,8 +8,8 @@ import { User, useGetLoggedInUserLazyQuery } from "../generated/graphql";
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
   isLoggedIn: false,
-  setIsLoggedIn: () => { },
-  setUser: (user: User | null) => { },
+  setIsLoggedIn: () => {},
+  setUser: (user: User | null) => {},
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
@@ -25,13 +25,15 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { me: { user } } = data;
+        const {
+          me: { user },
+        } = data;
 
         if (user) {
           setUser(user);
         }
       }
-    }
+    },
   });
 
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);

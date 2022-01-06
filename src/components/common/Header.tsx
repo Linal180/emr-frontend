@@ -22,7 +22,7 @@ const Header: FC = (): JSX.Element => {
     setUser(null);
     handleLogout();
     setIsLoggedIn(false);
-  }
+  };
 
   const isMenuOpen = Boolean(anchorEl);
   const menuId = "header-profile-menu";
@@ -45,7 +45,10 @@ const Header: FC = (): JSX.Element => {
   );
 
   return (
-    <AppBar position="absolute" className={clsx(classes.appBar, isSidebarOpen && classes.appBarShift)}>
+    <AppBar
+      position="absolute"
+      className={clsx(classes.appBar, isSidebarOpen && classes.appBarShift)}
+    >
       <Toolbar className={classes.toolbar}>
         <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
           <Box className={classes.cursor}>
