@@ -1,43 +1,19 @@
-import React from "react";
-import PropTypes from "prop-types";
-import List from "@material-ui/core/List";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import Collapse from "@material-ui/core/Collapse";
-import IconExpandLess from "@material-ui/icons/ExpandLess";
-import IconExpandMore from "@material-ui/icons/ExpandMore";
+import {FC, useState} from "react";
+import {ListItemIcon, ListItemText, List, Divider, Collapse} from "@material-ui/core";
+import {ExpandLess, ExpandMore} from "@material-ui/icons";
 import AppMenuItemComponent from "./AppMenuItemComponent";
+import {useAppMenuStyles} from "../../styles/appMenuStyles"
+import {AppMenuItemProps} from "../../interfacesTypes"
 
-import { makeStyles, createStyles } from "@material-ui/core/styles";
-
-export const AppMenuItemPropTypes = {
-  name: PropTypes.string.isRequired,
-  link: PropTypes.string,
-  Icon: PropTypes.elementType,
-  items: PropTypes.array,
-  index: PropTypes.number,
-};
-
-// TypeScript compile-time props type, infered from propTypes
-type AppMenuItemPropTypes = PropTypes.InferProps<typeof AppMenuItemPropTypes>;
-type AppMenuItemPropsWithoutItems = Omit<AppMenuItemPropTypes, "items">;
-
-// Improve child items declaration
-export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
-  items?: AppMenuItemProps[];
-};
-
-const AppMenuItem: React.FC<AppMenuItemProps> = (props) => {
+const AppMenuItem: FC<AppMenuItemProps> = (props) => {
   const { name, link, Icon, index, items = [] } = props;
-  const classes = useStyles();
+  const classes = useAppMenuStyles();
   const isExpandable = items && items.length > 0;
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  
   function handleClick() {
     setOpen(!open);
   }
-
-  const leftNavClass = index === 2 || index === 5 ? "padding-left" : "";
 
   const MenuItemRoot = (
     <AppMenuItemComponent
@@ -50,13 +26,14 @@ const AppMenuItem: React.FC<AppMenuItemProps> = (props) => {
           <Icon />
         </ListItemIcon>
       )}
-      <ListItemText primary={name} inset={!Icon} className={leftNavClass} />
-      {isExpandable && !open && <IconExpandMore />}
-      {isExpandable && open && <IconExpandLess />}
+      
+      <ListItemText primary={name} inset={!Icon} className={index === 2 || index === 5 ? classes.leftNavBar : ""} />
+      {isExpandable && !open && <ExpandMore />}
+      {isExpandable && open && <ExpandLess />}
     </AppMenuItemComponent>
   );
 
-  const MenuItemChildren = isExpandable ? (
+  const MenuItemChildren = isExpandable && (
     <Collapse in={open} timeout="auto" unmountOnExit>
       <Divider />
       <List component="div" disablePadding>
@@ -65,7 +42,7 @@ const AppMenuItem: React.FC<AppMenuItemProps> = (props) => {
         ))}
       </List>
     </Collapse>
-  ) : null;
+  )
 
   return (
     <>
@@ -74,21 +51,5 @@ const AppMenuItem: React.FC<AppMenuItemProps> = (props) => {
     </>
   );
 };
-
-const useStyles = makeStyles((theme) =>
-  createStyles({
-    menuItem: {
-      "&.active": {
-        background: "rgba(0, 0, 0, 0.08)",
-        "& .MuiListItemIcon-root": {
-          color: "#fff",
-        },
-      },
-    },
-    menuItemIcon: {
-      color: "#97c05c",
-    },
-  })
-);
 
 export default AppMenuItem;
