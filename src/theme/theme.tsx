@@ -2,7 +2,7 @@
 import { createTheme } from "@material-ui/core/styles";
 import { colors } from "@material-ui/core";
 // color-constants and font-family block
-import { PRIMARY_COLOR, WHITE, BLACK, LATO, GREEN } from ".";
+import { PRIMARY_COLOR, WHITE, BLACK, GREEN, POPPINS } from ".";
 
 export const theme = createTheme({
   palette: {
@@ -26,7 +26,12 @@ export const theme = createTheme({
   },
 
   typography: {
-    fontFamily: LATO,
+    fontFamily: POPPINS,
+
+    h3: {
+      fontSize: 30,
+      fontWeight: 600
+    },
 
     h4: {
       fontSize: 24,
@@ -43,9 +48,13 @@ export const theme = createTheme({
       fontWeight: 600
     },
 
+    body1: {
+      fontSize: 14,
+    },
+
     body2: {
-      fontSize: 13
-    }
+      fontSize: 12
+    },
   },
 
   overrides: {

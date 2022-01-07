@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Grid, Box, TextField, Button, Typography, CircularProgress } from "@material-ui/core";
+import { Box, TextField, Button, Typography, CircularProgress, FormControl, InputLabel } from "@material-ui/core";
 // components block
 import Alert from "../../common/Alert";
 // context, constants, graphql,svgs, interfaces and styles block
@@ -48,58 +48,50 @@ const ForgetPasswordComponent = (): JSX.Element => {
   return (
     <Box className={classes.root}>
       <Box className={classes.loginFormContainer}>
-        <Grid container justifyContent="center" alignItems="center">
-          <MainLogo />
-        </Grid>
-
-        <Box py={2}>
-          <Typography variant="h3" component="h3" color="primary" className={classes.heading}>{EMR_ADMIN_PORTAL}</Typography>
-        </Box>
-
-        <Box pb={1}>
+        <Box pb={3}>
+          <Typography variant="h3">{EMR_ADMIN_PORTAL}</Typography>
           <Typography variant="body1">{FORGOT_PASSWORD_MESSAGE}</Typography>
         </Box>
 
-        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Controller
             name="email"
             control={control}
             defaultValue=""
 
             render={({ field, fieldState: { invalid } }) => (
-              <TextField
-                margin="normal"
-                variant="outlined"
-                fullWidth
-                type="email"
-                label={requiredLabel(EMAIL)}
-                InputLabelProps={{
-                  className: classes.labelText,
-                }}
-                {...field}
-                error={invalid}
-                helperText={emailError}
-              />
+              <FormControl fullWidth margin="normal">
+                <InputLabel shrink htmlFor="email">
+                  {requiredLabel(EMAIL)}
+                </InputLabel>
+
+                <TextField
+                  id="email"
+                  variant="outlined"
+                  fullWidth
+                  type="email"
+                  {...field}
+                  error={invalid}
+                  helperText={emailError}
+                />
+              </FormControl>
             )}
           />
 
-          <Box pt={2}>
-            <Button className={classes.button} type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
-              <Typography className={classes.buttonText}>{SEND_EMAIL}</Typography>
-
+          <Box py={2}>
+            <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+              {SEND_EMAIL}
               {loading && <CircularProgress size={20} color="inherit" />}
             </Button>
           </Box>
         </form>
 
-        <Box mt={2}>
-          <Grid container justifyContent="center" alignItems="center">
-            <Typography variant="body2">
-              {BACK_TO}
-            </Typography>
+        <Box justifyContent="center" alignItems="center" display="flex">
+          <Typography variant="body2">
+            {BACK_TO}
+          </Typography>
 
-            <Link to={ROOT_ROUTE} className={classes.signinLink}>{SIGN_IN}</Link>
-          </Grid>
+          <Typography component={Link} to={ROOT_ROUTE}>{SIGN_IN}</Typography>
         </Box>
       </Box>
     </Box>

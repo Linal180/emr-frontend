@@ -62,19 +62,12 @@ const ResetPasswordComponent = (): JSX.Element => {
   return (
     <Box className={classes.root}>
       <Box className={classes.loginFormContainer}>
-        <Grid container justifyContent="center" alignItems="center">
-          <MainLogo />
-        </Grid>
-
-        <Box py={2}>
-          <Typography variant="h3" component="h3" color="primary" className={classes.heading}>{EMR_ADMIN_PORTAL}</Typography>
-        </Box>
-
-        <Box pb={1}>
+        <Box pb={3}>
+          <Typography variant="h3">{EMR_ADMIN_PORTAL}</Typography>
           <Typography variant="body1">{RESET_PASSWORD_MESSAGE}</Typography>
         </Box>
 
-        <form onSubmit={handleSubmit(onSubmit)} className={classes.form}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <ResetPasswordController
             control={control}
             controllerName="password"
@@ -93,22 +86,20 @@ const ResetPasswordComponent = (): JSX.Element => {
             error={repeatPasswordError}
           />
 
-          <Box pt={2}>
-            <Button className={classes.button} type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
-              <Typography className={classes.buttonText}>{RESET}</Typography>
-
+          <Box py={2}>
+            <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+              {RESET}
               {loading && <CircularProgress size={20} color="inherit" />}
             </Button>
           </Box>
         </form>
 
-        <Box mt={2}>
-          <Grid container justifyContent="center" alignItems="center">
-            <Typography variant="body2">
-              {BACK_TO}
-            </Typography>
-            <Link to="/" className={classes.signinLink}>{SIGN_IN}</Link>
-          </Grid>
+        <Box justifyContent="center" alignItems="center" display="flex">
+          <Typography variant="body2">
+            {BACK_TO}
+          </Typography>
+
+          <Typography component={Link} to={ROOT_ROUTE}>{SIGN_IN}</Typography>
         </Box>
       </Box>
     </Box>
