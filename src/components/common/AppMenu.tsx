@@ -1,9 +1,12 @@
-import React from "react";
+// packages block
+import React, { FC } from "react";
 import List from "@material-ui/core/List";
-import {APP_MENU_ITEMS} from "../../constants"
+// component block
 import AppMenuItem from "./AppMenuItem";
+// constant block
+import { APP_MENU_ITEMS } from "../../constants";
 
-const AppMenu: React.FC = () => {
+const AppMenu: FC = () => {
   return (
     <List component="nav" disablePadding>
       {APP_MENU_ITEMS.map((item, index) => (

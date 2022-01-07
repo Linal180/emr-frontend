@@ -1,16 +1,19 @@
-import {FC, useState} from "react";
-import {ListItemIcon, ListItemText, List, Divider, Collapse} from "@material-ui/core";
-import {ExpandLess, ExpandMore} from "@material-ui/icons";
+// packages block
+import { FC, useState } from "react";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import { ListItemIcon, ListItemText, List, Divider, Collapse } from "@material-ui/core";
+// component block
 import AppMenuItemComponent from "./AppMenuItemComponent";
-import {useAppMenuStyles} from "../../styles/appMenuStyles"
-import {AppMenuItemProps} from "../../interfacesTypes"
+// styles and interface block
+import { useAppMenuStyles } from "../../styles/appMenuStyles"
+import { AppMenuItemProps } from "../../interfacesTypes"
 
 const AppMenuItem: FC<AppMenuItemProps> = (props) => {
   const { name, link, Icon, index, items = [] } = props;
   const classes = useAppMenuStyles();
   const isExpandable = items && items.length > 0;
   const [open, setOpen] = useState(false);
-  
+
   function handleClick() {
     setOpen(!open);
   }
@@ -26,7 +29,7 @@ const AppMenuItem: FC<AppMenuItemProps> = (props) => {
           <Icon />
         </ListItemIcon>
       )}
-      
+
       <ListItemText primary={name} inset={!Icon} className={index === 2 || index === 5 ? classes.leftNavBar : ""} />
       {isExpandable && !open && <ExpandMore />}
       {isExpandable && open && <ExpandLess />}

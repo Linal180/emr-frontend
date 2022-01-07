@@ -272,7 +272,7 @@ export const APP_MENU_ITEMS = [
 
   {
     name: DASHBOARD_TEXT,
-    link: "/",
+    link: DASHBOARD_ROUTE,
     Icon: DashboardIcon,
     items: [],
     index: 1
@@ -280,7 +280,7 @@ export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,
     items: [],
-    index:2
+    index: 2
   },
   {
     name: USERS_TEXT,
@@ -315,7 +315,7 @@ export const APP_MENU_ITEMS = [
   {
     name: CLINICAL_TEXT,
     items: [],
-    index:5,
+    index: 5,
   },
   {
     name: FACILITIES_TEXT,
@@ -324,6 +324,7 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: LIST_FACILITIES_TEXT,
+        link: FACILITIES_ROUTE,
       },
     ],
   },
