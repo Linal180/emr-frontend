@@ -8,14 +8,7 @@ import ShowPassword from "../../common/ShowPassword";
 import { PASSWORD, TEXT } from "../../../constants";
 import { PasswordType, ResetPasswordInputControlProps } from "../../../interfacesTypes";
 
-const ResetPasswordController: FC<ResetPasswordInputControlProps> = ({
-  control,
-  controllerName,
-  controllerLabel,
-  fieldType,
-  error,
-  isPassword
-}): JSX.Element => {
+const ResetPasswordController: FC<ResetPasswordInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, isPassword }): JSX.Element => {
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
 
   const handleClickShowPassword = () => {

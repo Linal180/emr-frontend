@@ -1,11 +1,9 @@
 import { makeStyles } from "@material-ui/core/styles";
-
-import { PRIMARY_COLOR, SECONDARY_COLOR, WHITE } from "../theme";
+import { SECONDARY_COLOR, WHITE } from "../theme";
 
 export const useLoginStyles = makeStyles((theme) => ({
   root: {
-    background:
-      "linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.3) 100%),url(/images/cover.jpg) center no-repeat",
+    background: "linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.3) 100%),url(/images/cover.jpg) center no-repeat",
     backgroundSize: "cover",
     display: "flex",
     minHeight: "100vh",
@@ -15,7 +13,7 @@ export const useLoginStyles = makeStyles((theme) => ({
   },
 
   loginFormContainer: {
-    padding: "45px 56px 56px",
+    padding: 45,
     maxWidth: 650,
     width: '100%',
     background: WHITE,

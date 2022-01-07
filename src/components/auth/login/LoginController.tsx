@@ -25,7 +25,7 @@ const LoginController: FC<LoginInputControlProps> = ({ control, controllerName, 
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth>
+        <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={controllerName}>
             {controllerLabel}
           </InputLabel>
@@ -34,7 +34,6 @@ const LoginController: FC<LoginInputControlProps> = ({ control, controllerName, 
             type={fieldType === "password" ? passwordType : fieldType}
             id={controllerName}
             variant="outlined"
-            margin="normal"
             error={invalid}
             fullWidth
             helperText={error && error}
