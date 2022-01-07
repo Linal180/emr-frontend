@@ -1,9 +1,0 @@
-@font-face {
-  font-family: 'CenturyOldStyleStdRegular';
-  src: url('./fonts/CenturyOldStyleStdRegular.eot');
-  src: url('./fonts/CenturyOldStyleStdRegular.eot') format('embedded-opentype'),
-       url('./fonts/CenturyOldStyleStdRegular.woff2') format('woff2'),
-       url('./fonts/CenturyOldStyleStdRegular.woff') format('woff'),
-       url('./fonts/CenturyOldStyleStdRegular.ttf') format('truetype'),
-       url('./fonts/CenturyOldStyleStdRegular.svg#CenturyOldStyleStdRegular') format('svg');
-}

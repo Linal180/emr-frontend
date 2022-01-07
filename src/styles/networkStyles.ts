@@ -1,5 +1,6 @@
 // packages block
 import { makeStyles } from "@material-ui/core/styles";
+import { POPPINS } from "../theme";
 
 export const useNetworkStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +25,7 @@ export const useNetworkStyles = makeStyles((theme) => ({
   pageNotFoundText: {
     fontSize: 382,
     opacity: 0.1,
-    fontFamily: 'Arial Black, Gadget, sans- serif',
+    fontFamily: POPPINS,
     fontWeight: 900,
     lineHeight: '186px'
   },
