@@ -149,7 +149,7 @@ const FacilityTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !facilities) || error || !!facilities?.length) && (
+        {((!loading && !facilities) || error || !facilities?.length) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, FacilityPayload, FacilitiesPayload } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, FacilityPayload, FacilitiesPayload, UserRole, CreateStaffInput } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -257,3 +257,16 @@ export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;
 export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
   items?: AppMenuItemProps[];
 };
+
+// ----------------
+type AddStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password" | "phone" | "mobile" | "dob" |  "gender" | "roleType" | "adminId" | "facilityId";
+
+export interface AddStaffInputControlProps extends IControlLabel {
+  control: Control<CreateStaffInput, object>;
+  controllerName: AddStaffControlTypes;
+}
+
+export interface MappedRoleInterface {
+  value: UserRole;
+  label: string;
+}

@@ -142,7 +142,7 @@ const StaffTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !staff) || error || !!staff?.length) && (
+        {((!loading && !staff) || error || !staff?.length) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

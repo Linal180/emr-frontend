@@ -6,16 +6,10 @@ import {
   LocalMall,
   BookOutlined,
 } from "@material-ui/icons";
-import {
-  DashboardIcon,
-  UsersIcon,
-  AppointmentsIcon,
-  FacilitiesIcon,
-  ReportsIcon,
-  BillingIcon,
-} from "../assets/svgs";
 // graphql and interfaces block
-
+import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
+import { UserRole } from "../generated/graphql";
+import {MappedRoleInterface} from '../interfacesTypes'
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
@@ -29,6 +23,9 @@ export const ADD_STAFF = "Add Staff";
 export const VIEW_STAFF = "View Staff";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
+export const STAFF_BASIC_INFO = "Staff Basic Info";
+export const MOBILE = "Mobile";
+export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
 export const EMR = "EMR";
@@ -220,6 +217,8 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
+export const STAFF_ALREADY_EXIST = "Staff already exists";
+export const STAFF_CREATED = "Staff created successfully!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -364,12 +363,12 @@ export const APP_MENU_ITEMS = [
   },
 ];
 
-export const MAPPED_ROLES = {
-  Staff: "Staff",
-  Admin: "Manager",
-  Owner: "Member Owner",
-  SuperAdmin: "Developer",
-  Investor: "Potential Investor",
-  PropertyManager: "Property Manager",
-  RelationshipManager: "Relations Owner",
-};
+export const MAPPED_ROLES: MappedRoleInterface[] = [
+  { value: UserRole.SuperAdmin, label: "Super Admin" },
+  { value: UserRole.Admin, label: 'Admin' },
+  { value: UserRole.Billing, label: 'Billing' },
+  { value: UserRole.Doctor, label: 'Doctor' },
+  { value: UserRole.Nurse, label: "Nurse" },
+  { value: UserRole.Patient, label: "Patient" },
+  { value: UserRole.Staff, label: "Staff" },
+];
