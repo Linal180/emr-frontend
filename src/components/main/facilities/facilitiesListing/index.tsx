@@ -4,7 +4,7 @@ import MainLayout from "../../../common/MainLayout";
 import FacilityTable from "./FacilityTable";
 import { ADD_FACILITY, FACILITIES_LISTING, FACILITIES_ROUTE, FACILITIES_TEXT } from "../../../../constants";
 
-const UsersComponent = (): JSX.Element => {
+const FacilityComponent = (): JSX.Element => {
   const breadcrumb = {
     hasButton: true,
     title: FACILITIES_TEXT,
@@ -20,4 +20,4 @@ const UsersComponent = (): JSX.Element => {
   )
 };
 
-export default UsersComponent;
+export default FacilityComponent;

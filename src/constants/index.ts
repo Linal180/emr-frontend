@@ -26,6 +26,7 @@ export const PASSWORD_REGEX =
 // constants
 export const ALL_STAFF = "Staff";
 export const ADD_STAFF = "Add Staff";
+export const VIEW_STAFF = "View Staff";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
 export const HASH = "#";

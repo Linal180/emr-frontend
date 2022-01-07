@@ -2,14 +2,14 @@
 import MainLayout from "../../../common/MainLayout";
 // constants block
 import StaffTable from "./StaffTable";
-import { ADD_STAFF, ALL_STAFF, FACILITIES_ROUTE, STAFF_LISTING } from "../../../../constants";
+import { ADD_STAFF, ALL_STAFF, STAFF_LISTING, STAFF_ROUTE } from "../../../../constants";
 
-const UsersComponent = (): JSX.Element => {
+const StaffComponent = (): JSX.Element => {
   const breadcrumb = {
     hasButton: true,
     title: ALL_STAFF,
     buttonText: ADD_STAFF,
-    link: `${FACILITIES_ROUTE}/new`,
+    link: `${STAFF_ROUTE}/new`,
     path: [ALL_STAFF, STAFF_LISTING],
   }
 
@@ -20,4 +20,4 @@ const UsersComponent = (): JSX.Element => {
   )
 };
 
-export default UsersComponent;
+export default StaffComponent;
