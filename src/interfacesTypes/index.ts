@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, FacilityPayload, FacilitiesPayload } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, CreateFacilityInput } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -257,3 +257,11 @@ export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;
 export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
   items?: AppMenuItemProps[];
 };
+
+export type CreateFacilityInterface = CreateFacilityInput;
+
+type CreateFacilityControlTypes = "address" | "address2" | "city" | "cliaIdNumber" | "code" | "country" | "email" | "facilityId" | "fax" | "federalTaxId" | "insurancePlanType" | "mammographyCertificationNumber" | "mobile" | "name" | "npi" | "pager" | "phone" | "practiceType" | "revenueCode" | "serviceCode" | "state" | "stateImmunizationId" | "tamxonomyCode" | "userId" | "zipCode";
+export interface CreateFacilityInputControlProps extends IControlLabel {
+  control: Control<CreateFacilityInterface, object>;
+  controllerName: CreateFacilityControlTypes;
+}

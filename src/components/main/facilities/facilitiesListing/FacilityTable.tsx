@@ -5,13 +5,12 @@ import Pagination from "@material-ui/lab/Pagination";
 import { Search } from "@material-ui/icons";
 import { Box, Grid, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
-import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
 import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, NO_FACILITY_MESSAGE, ZIP_CODE, CITY, CODE, FAX, STATE } from "../../../../constants";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP_CODE, CITY, CODE, FAX, STATE } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -63,16 +62,6 @@ const FacilityTable: FC = (): JSX.Element => {
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
 
   const handleSearch = () => { }
-
-  const onDeleteClick = (id: string) => {
-    if (id) {
-      // to be implemented
-    }
-  };
-
-  const handleDeleteUser = async () => {
-    // to be implemented
-  };
 
   return (
     <>
