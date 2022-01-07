@@ -3,32 +3,43 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
     facility {
       id
       name
-      email
-      phone
-      mobile
-      fax
-      stateImmunizationId
       practiceType
+      code
+      cliaIdNumber
       federalTaxId
-      checkPayableTo
-      bankAccount
+      isPrivate
       revenueCode
       tamxonomyCode
-      pos
-      merchantId
-      hpsaModifier
-      serviceLocationQualifies
-      excludeChargesFromPatient
-      startDate
+      insurancePlanType
+      mammographyCertificationNumber
       npi
+      serviceCode
       createdAt
       updatedAt
+      
+      contacts {
+        id
+        email
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
 
       staff {
         id
         firstName
         lastName
         email
+        username
         dob
         phone
         mobile
@@ -43,7 +54,6 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
           status
           userId
           userType
-          facilityId
           inviteSentAt
           emailVerified
           inviteAcceptedAt
@@ -73,32 +83,43 @@ query GetFacility($getFacility: GetFacility!){
     facility{
       id
       name
-      email
-      phone
-      mobile
-      fax
-      stateImmunizationId
       practiceType
+      code
+      cliaIdNumber
       federalTaxId
-      checkPayableTo
-      bankAccount
+      isPrivate
       revenueCode
       tamxonomyCode
-      pos
-      merchantId
-      hpsaModifier
-      serviceLocationQualifies
-      excludeChargesFromPatient
-      startDate
+      insurancePlanType
+      mammographyCertificationNumber
       npi
+      serviceCode
       createdAt
       updatedAt
+      
+      contacts {
+        id
+        email
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
     
       staff {
         id
         firstName
         lastName
         email
+        username
         dob
         phone
         mobile
@@ -113,7 +134,6 @@ query GetFacility($getFacility: GetFacility!){
           status
           userId
           userType
-          facilityId
           inviteSentAt
           emailVerified
           inviteAcceptedAt
@@ -146,32 +166,43 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
     facility{
       id
       name
-      email
-      phone
-      mobile
-      fax
-      stateImmunizationId
       practiceType
+      code
+      cliaIdNumber
       federalTaxId
-      checkPayableTo
-      bankAccount
+      isPrivate
       revenueCode
       tamxonomyCode
-      pos
-      merchantId
-      hpsaModifier
-      serviceLocationQualifies
-      excludeChargesFromPatient
-      startDate
+      insurancePlanType
+      mammographyCertificationNumber
       npi
+      serviceCode
       createdAt
       updatedAt
+      
+      contacts {
+        id
+        email
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
 
       staff {
         id
         firstName
         lastName
         email
+        username
         dob
         phone
         mobile
@@ -186,7 +217,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
           status
           userId
           userType
-          facilityId
           inviteSentAt
           emailVerified
           inviteAcceptedAt
@@ -209,36 +239,49 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
     facility {
       id
       name
-      email
-      phone
-      mobile
-      fax
-      stateImmunizationId
       practiceType
+      code
+      cliaIdNumber
       federalTaxId
-      checkPayableTo
-      bankAccount
+      isPrivate
       revenueCode
       tamxonomyCode
-      pos
-      merchantId
-      hpsaModifier
-      serviceLocationQualifies
-      excludeChargesFromPatient
-      startDate
+      insurancePlanType
+      mammographyCertificationNumber
       npi
+      serviceCode
       createdAt
       updatedAt
+      
+      contacts {
+        id
+        email
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
 
       staff {
         id
         firstName
         lastName
         email
+        username
         dob
         phone
         mobile
         gender
+        createdAt
+        updatedAt
 
         user {
           id
@@ -247,7 +290,6 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
           status
           userId
           userType
-          facilityId
           inviteSentAt
           emailVerified
           inviteAcceptedAt
