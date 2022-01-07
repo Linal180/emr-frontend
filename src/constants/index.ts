@@ -24,6 +24,10 @@ export const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
+export const ALL_STAFF = "Staff";
+export const ADD_STAFF = "Add Staff";
+export const STAFF_LISTING = "Staff Listing";
+export const PRIMARY_PROVIDER = "Primary Provider";
 export const HASH = "#";
 export const N_A = "N/A";
 export const EMR = "EMR";
@@ -175,10 +179,11 @@ export const RELATIONSHIP_MANAGER = "RELATIONSHIP_MANAGER";
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
 export const DASHBOARD_ROUTE = "/dashboard";
+export const FACILITIES_ROUTE = "/facilities";
+export const STAFF_ROUTE = "/staff";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
-export const FACILITIES_ROUTE = "/facilities";
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -300,6 +305,7 @@ export const APP_MENU_ITEMS = [
       },
       {
         name: STAFF_TEXT,
+        link: STAFF_ROUTE
       },
     ],
   },

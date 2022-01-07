@@ -27,7 +27,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children, breadcrumb }): JSX.Element 
           {breadcrumb && <Breadcrumb link={link} title={title} path={path} hasButton={hasButton} buttonText={buttonText} />}
 
           <Box minHeight="calc(100vh - 230px)">
-            <Paper className={classes.paper}>{children}</Paper>
+            {children && <Paper className={classes.paper}>{children}</Paper>}
           </Box>
 
           <Box pt={4}>

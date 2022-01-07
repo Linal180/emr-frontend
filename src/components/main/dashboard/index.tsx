@@ -1,16 +1,19 @@
 // components block
 import MainLayout from "../../common/MainLayout";
-import PageHeader from "../../common/PageHeader";
 // constants block
 import { DASHBOARD_TEXT } from "../../../constants";
 
-const DashboardComponent = (): JSX.Element => (
-  <MainLayout>
-    <PageHeader
-      title={DASHBOARD_TEXT}
-      hasComponent
-    />
-  </MainLayout>
-);
+const DashboardComponent = (): JSX.Element => {
+  const breadcrumb = {
+    hasButton: false,
+    title: DASHBOARD_TEXT,
+    path: [DASHBOARD_TEXT],
+  }
+
+  return (
+    <MainLayout breadcrumb={breadcrumb}>
+    </MainLayout>
+  )
+};
 
 export default DashboardComponent;
