@@ -1,6 +1,7 @@
 // component block
 import MainLayout from "../../../common/MainLayout";
 // constant block
+import UpdateStaffForm from "./UpdateStaffForm";
 import { VIEW_STAFF, STAFF_TEXT, USERS_TEXT } from "../../../../constants";
 
 const ViewStaffComponent = () => {
@@ -11,7 +12,7 @@ const ViewStaffComponent = () => {
 
   return (
     <MainLayout breadcrumb={breadcrumb}>
-
+      <UpdateStaffForm />
     </MainLayout>
   )
 };

@@ -1,10 +1,10 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode , ElementType} from "react";
+import { ComponentType, Dispatch, ReactNode, ElementType } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, FacilityPayload, FacilitiesPayload, UserRole, CreateStaffInput } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, FacilityPayload, FacilitiesPayload, UserRole, CreateStaffInput, Gender, StaffPayload, UpdateStaffInput } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -258,15 +258,28 @@ export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
   items?: AppMenuItemProps[];
 };
 
-// ----------------
-type AddStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password" | "phone" | "mobile" | "dob" |  "gender" | "roleType" | "adminId" | "facilityId";
+type AddStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password" | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
+type UpdateStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "phone" | "mobile" | "dob" | "gender" | "facilityId";
 
 export interface AddStaffInputControlProps extends IControlLabel {
   control: Control<CreateStaffInput, object>;
   controllerName: AddStaffControlTypes;
 }
 
+export interface UpdateStaffInputControlProps extends IControlLabel {
+  control: Control<UpdateStaffInput, object>;
+  controllerName: UpdateStaffControlTypes;
+}
 export interface MappedRoleInterface {
   value: UserRole;
   label: string;
+}
+
+export interface MappedGenderInterface {
+  value: Gender;
+  label: string;
+}
+
+export type ParamsType = {
+  id: string
 }

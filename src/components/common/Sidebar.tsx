@@ -2,9 +2,10 @@
 import { FC } from "react";
 import { Box, Drawer } from "@material-ui/core";
 import dotenv from "dotenv";
+// components block
 import AppMenu from "./AppMenu";
+// styles block
 import { useSidebarStyles } from "../../styles/sidebarStyles";
-import { EMR } from "../../constants";
 dotenv.config();
 
 const Sidebar: FC = (): JSX.Element => {
@@ -16,12 +17,7 @@ const Sidebar: FC = (): JSX.Element => {
       classes={{ paper: classes.drawerPaper, }}
       open={true}
     >
-      <Box className={classes.toolbarIcon}>
-        <Box flex={1}>
-          <h1>{EMR}</h1>
-        </Box>
-      </Box>
-
+      <Box className={classes.toolbarIcon} />
       <Box className="sideBarNav">
         <AppMenu />
       </Box>

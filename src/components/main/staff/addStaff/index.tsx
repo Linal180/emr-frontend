@@ -1,7 +1,7 @@
 // packages block
 import { FC } from 'react';
 // component block
-import StaffForm from "./StaffForm";
+import AddStaffForm from "./AddStaffForm";
 import MainLayout from "../../../common/MainLayout";
 // constant block
 import { ADD_STAFF, STAFF_TEXT, USERS_TEXT } from "../../../../constants";
@@ -14,7 +14,7 @@ const AddStaffComponent: FC = () => {
 
   return (
     <MainLayout breadcrumb={breadcrumb}>
-      <StaffForm />
+      <AddStaffForm />
     </MainLayout>
   )
 };

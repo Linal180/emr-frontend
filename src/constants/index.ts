@@ -1,15 +1,11 @@
 // packages block
-import {
-  LocalAtm,
-  ReportSharp,
-  Home,
-  LocalMall,
-  BookOutlined,
-} from "@material-ui/icons";
+import { LocalAtm, ReportSharp, Home, LocalMall, BookOutlined } from "@material-ui/icons";
 // graphql and interfaces block
 import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { UserRole } from "../generated/graphql";
-import {MappedRoleInterface} from '../interfacesTypes'
+import { Gender, UserRole } from "../generated/graphql";
+import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
+
+
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
@@ -28,6 +24,7 @@ export const MOBILE = "Mobile";
 export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
+export const DOB = "Date of Birth";
 export const EMR = "EMR";
 export const CODE = "Code";
 export const CITY = "City";
@@ -87,6 +84,7 @@ export const CREATE_USER = "Create User";
 export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
+export const DELETE_STAFF = "Delete Staff";
 export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
@@ -159,6 +157,7 @@ export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
 export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_USER_DESCRIPTION = "Are you sure you want to delete this user?";
+export const DELETE_STAFF_DESCRIPTION = "Are you sure you want to delete this staff?";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
@@ -219,10 +218,12 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const STAFF_CREATED = "Staff created successfully!";
+export const STAFF_UPDATED = "Staff updated successfully!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
+export const CANT_DELETE_STAFF = "This staff can't be deleted.";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const USER_EXIST = "User already exists with this email.";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
@@ -372,3 +373,9 @@ export const MAPPED_ROLES: MappedRoleInterface[] = [
   { value: UserRole.Patient, label: "Patient" },
   { value: UserRole.Staff, label: "Staff" },
 ];
+
+export const MAPPED_GENDER: MappedGenderInterface[] = [
+  { value: Gender.Male, label: 'Male' },
+  { value: Gender.Female, label: 'Female' },
+  { value: Gender.Other, label: 'Other' },
+]

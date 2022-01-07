@@ -10,12 +10,16 @@ import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, NO_FACILITY_MESSAGE, ZIP_CODE, CITY, CODE, FAX, STATE, FIRST_NAME, LAST_NAME, PRIMARY_PROVIDER, STAFF_ROUTE } from "../../../../constants";
+import { EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, NO_FACILITY_MESSAGE, ZIP_CODE, CITY, CODE, FAX, STATE, FIRST_NAME, LAST_NAME, PRIMARY_PROVIDER, STAFF_ROUTE, HASH, DELETE_STAFF, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 
 const StaffTable: FC = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [deleteStaffId, setDeleteStaffId] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
 
@@ -54,6 +58,26 @@ const StaffTable: FC = (): JSX.Element => {
     }
   });
 
+  const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
+    onError() {
+      Alert.error(CANT_DELETE_STAFF)
+      setOpenDelete(false)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { removeStaff: { response } } = data
+
+        if (response) {
+          const { message } = response
+          message && Alert.success(message);
+          setOpenDelete(false)
+          findAllStaff();
+        }
+      }
+    }
+  });
+
   useEffect(() => {
     if (!searchQuery) {
       findAllStaff()
@@ -66,12 +90,21 @@ const StaffTable: FC = (): JSX.Element => {
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      // to be implemented
+      setDeleteStaffId(id)
+      setOpenDelete(true)
     }
   };
 
-  const handleDeleteUser = async () => {
-    // to be implemented
+  const handleDeleteStaff = async () => {
+    if (deleteStaffId) {
+      await removeStaff({
+        variables: {
+          removeStaff: {
+            id: deleteStaffId
+          }
+        }
+      })
+    }
   };
 
   return (
@@ -104,8 +137,7 @@ const StaffTable: FC = (): JSX.Element => {
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              {renderTh(FIRST_NAME)}
-              {renderTh(LAST_NAME)}
+              {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(PRIMARY_PROVIDER)}
@@ -126,15 +158,23 @@ const StaffTable: FC = (): JSX.Element => {
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">
-                      {(page - 1) * PAGE_LIMIT + (index + 1)}
-                    </TableCell>
-
                     <TableCell scope="row"><Link to={`${STAFF_ROUTE}/${id}`}>{firstName} {lastName}</Link></TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">{username}</TableCell>
-                    <TableCell scope="row"></TableCell>
+                    <TableCell scope="row">
+                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                        <Link to={`${STAFF_ROUTE}/${id}`}>
+                          <IconButton size="small">
+                            <EditIcon />
+                          </IconButton>
+                        </Link>
+
+                        <IconButton aria-label="delete" color="secondary" size="small" onClick={() => onDeleteClick(id || '')}>
+                          <TrashIcon />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
                   </TableRow>
                 );
               })
@@ -158,6 +198,15 @@ const StaffTable: FC = (): JSX.Element => {
             />
           </Box>
         )}
+
+        <ConfirmationModal
+          title={DELETE_STAFF}
+          isOpen={openDelete}
+          isLoading={deleteStaffLoading}
+          description={DELETE_STAFF_DESCRIPTION}
+          handleDelete={handleDeleteStaff}
+          setOpen={(open: boolean) => setOpenDelete(open)}
+        />
       </Box>
     </>
   );

@@ -5,9 +5,9 @@ import { Controller } from "react-hook-form";
 //components
 // styles, constants, utils and interfaces block
 import { PASSWORD, TEXT } from "../../../../constants";
-import { AddStaffInputControlProps } from "../../../../interfacesTypes";
+import { UpdateStaffInputControlProps } from "../../../../interfacesTypes";
 
-const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const UpdateStaffController: FC<UpdateStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error }): JSX.Element => {
   return (
     <Controller
       name={controllerName}
@@ -35,4 +35,4 @@ const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controller
   );
 };
 
-export default AddStaffController;
+export default UpdateStaffController;
