@@ -197,7 +197,8 @@ export const theme = createTheme({
         marginRight: 0,
         fontSize: 12,
         opacity: 0.8,
-        color: GRAY_TWO
+        color: GRAY_TWO,
+        fontWeight: 500,
       }
     }
   },
