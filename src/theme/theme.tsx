@@ -2,8 +2,9 @@
 import { createTheme } from "@material-ui/core/styles";
 import { colors } from "@material-ui/core";
 // color-constants and font-family block
-import { PRIMARY_COLOR, WHITE, BLACK, LATO, GREEN } from ".";
+import { PRIMARY_COLOR, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, SECONDARY_COLOR, GRAY_TWO, GRAY_THREE } from ".";
 
+const customTheme = createTheme()
 export const theme = createTheme({
   palette: {
     primary: {
@@ -26,7 +27,12 @@ export const theme = createTheme({
   },
 
   typography: {
-    fontFamily: LATO,
+    fontFamily: POPPINS,
+
+    h3: {
+      fontSize: 30,
+      fontWeight: 600
+    },
 
     h4: {
       fontSize: 24,
@@ -43,9 +49,13 @@ export const theme = createTheme({
       fontWeight: 600
     },
 
+    body1: {
+      fontSize: 14,
+    },
+
     body2: {
-      fontSize: 13
-    }
+      fontSize: 12
+    },
   },
 
   overrides: {
@@ -150,12 +160,45 @@ export const theme = createTheme({
     MuiOutlinedInput: {
       root: {
         "& $notchedOutline": {
-          backgroundColor: "rgba(255, 255, 255, 0.1)",
-          borderRadius: 5
+          borderRadius: 4,
+          border: `1px solid ${GRAY_ONE}`,
+          fontFamily: POPPINS,
         },
-        "&:hover $notchedOutline": {
-          borderColor: GREEN
+
+        "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {
+          border: `1px solid ${SECONDARY_COLOR}`,
         },
+      }
+    },
+
+    MuiInputLabel: {
+      shrink: {
+        transform: 'scale(1)',
+        color: GRAY_THREE
+      },
+
+      formControl: {
+        top: -20
+      }
+    },
+
+    MuiFormControl: {
+      marginNormal: {
+        position: 'relative',
+        paddingBottom: customTheme.spacing(3)
+      }
+    },
+
+    MuiFormHelperText: {
+      contained: {
+        position: 'absolute',
+        bottom: -20,
+        marginLeft: 0,
+        marginRight: 0,
+        fontSize: 12,
+        opacity: 0.8,
+        color: GRAY_TWO,
+        fontWeight: 500,
       }
     }
   },
