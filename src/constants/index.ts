@@ -27,6 +27,10 @@ export const PASSWORD_REGEX =
 export const HASH = "#";
 export const N_A = "N/A";
 export const EMR = "EMR";
+export const CODE = "Code";
+export const CITY = "City";
+export const STATE = "State";
+export const FAX = "Fax";
 export const TRUE = "TRUE";
 export const TEXT = "text";
 export const PLAN = "Plan";
@@ -130,6 +134,7 @@ export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const LIST_FACILITIES_TEXT = "List Facilities";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
+export const FACILITIES_LISTING = "Facilities Listing";
 export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 export const CONTACT_INFORMATION = "Contact information";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
@@ -271,7 +276,7 @@ export const APP_MENU_ITEMS = [
 
   {
     name: DASHBOARD_TEXT,
-    link: "/",
+    link: DASHBOARD_ROUTE,
     Icon: DashboardIcon,
     items: [],
     index: 1
@@ -279,7 +284,7 @@ export const APP_MENU_ITEMS = [
   {
     name: MANAGEMENT_TEXT,
     items: [],
-    index:2
+    index: 2
   },
   {
     name: USERS_TEXT,
@@ -314,7 +319,7 @@ export const APP_MENU_ITEMS = [
   {
     name: CLINICAL_TEXT,
     items: [],
-    index:5,
+    index: 5,
   },
   {
     name: FACILITIES_TEXT,
@@ -323,6 +328,7 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: LIST_FACILITIES_TEXT,
+        link: FACILITIES_ROUTE,
       },
     ],
   },

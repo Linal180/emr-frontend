@@ -6,10 +6,12 @@ import Header from "./Header";
 import Sidebar from "./Sidebar";
 import CopyRight from "./CopyRight";
 // interfaces/types and main layout styles block
-import { Children } from "../../interfacesTypes";
+import { MainLayoutProps } from "../../interfacesTypes";
 import { useMainLayoutStyles } from "../../styles/mainLayoutStyles";
+import Breadcrumb from "./Breadcrumb";
 
-const MainLayout: FC<Children> = ({ children }): JSX.Element => {
+const MainLayout: FC<MainLayoutProps> = ({ children, breadcrumb }): JSX.Element => {
+  const { link, title, path, hasButton, buttonText } = breadcrumb || {}
   const classes = useMainLayoutStyles();
 
   return (
@@ -22,6 +24,8 @@ const MainLayout: FC<Children> = ({ children }): JSX.Element => {
         <Box className={classes.appBarSpacer} />
 
         <Box p={3}>
+          {breadcrumb && <Breadcrumb link={link} title={title} path={path} hasButton={hasButton} buttonText={buttonText} />}
+
           <Box minHeight="calc(100vh - 230px)">
             <Paper className={classes.paper}>{children}</Paper>
           </Box>

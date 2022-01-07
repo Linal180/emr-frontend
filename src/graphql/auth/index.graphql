@@ -30,7 +30,6 @@ query GetLoggedInUser {
       status
       userId
       userType
-      facilityId
       inviteSentAt
       emailVerified
       inviteAcceptedAt
@@ -42,6 +41,55 @@ query GetLoggedInUser {
         role
         createdAt
         updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+        
+        contacts {
+          id
+          email
+          mobile
+          pager
+          fax
+          address
+          address2
+          zipCode
+          city
+          state
+          country
+          userId
+          createdAt
+          updatedAt
+        }
+
+        staff {
+          id
+          firstName
+          lastName
+          email
+          username
+          dob
+          phone
+          mobile
+          gender
+          createdAt
+          updatedAt
+        }
       }
     }
   }
@@ -67,7 +115,6 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
       status
       userId
       userType
-      facilityId
       inviteSentAt
       emailVerified
       inviteAcceptedAt
@@ -79,6 +126,55 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
         role
         createdAt
         updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+        
+        contacts {
+          id
+          email
+          mobile
+          pager
+          fax
+          address
+          address2
+          zipCode
+          city
+          state
+          country
+          userId
+          createdAt
+          updatedAt
+        }
+
+        staff {
+          id
+          firstName
+          lastName
+          email
+          username
+          dob
+          phone
+          mobile
+          gender
+          createdAt
+          updatedAt
+        }
       }
     }
 
@@ -99,7 +195,6 @@ mutation RegisterUser($user: RegisterUserInput!) {
       status
       userId
       userType
-      facilityId
       inviteSentAt
       emailVerified
       inviteAcceptedAt
@@ -111,6 +206,55 @@ mutation RegisterUser($user: RegisterUserInput!) {
         role
         createdAt
         updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+        
+        contacts {
+          id
+          email
+          mobile
+          pager
+          fax
+          address
+          address2
+          zipCode
+          city
+          state
+          country
+          userId
+          createdAt
+          updatedAt
+        }
+
+        staff {
+          id
+          firstName
+          lastName
+          email
+          username
+          dob
+          phone
+          mobile
+          gender
+          createdAt
+          updatedAt
+        }
       }
     }
 
@@ -131,7 +275,6 @@ mutation EmailVerification($verifyEmail: VerifyEmailInput!){
       status
       userId
       userType
-      facilityId
       inviteSentAt
       emailVerified
       inviteAcceptedAt
@@ -143,6 +286,55 @@ mutation EmailVerification($verifyEmail: VerifyEmailInput!){
         role
         createdAt
         updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+        
+        contacts {
+          id
+          email
+          mobile
+          pager
+          fax
+          address
+          address2
+          zipCode
+          city
+          state
+          country
+          userId
+          createdAt
+          updatedAt
+        }
+
+        staff {
+          id
+          firstName
+          lastName
+          email
+          username
+          dob
+          phone
+          mobile
+          gender
+          createdAt
+          updatedAt
+        }
       }
     }
 
@@ -163,7 +355,6 @@ mutation ResendVerificationEmail($resendVerificationEmail: ResendVerificationEma
       status
       userId
       userType
-      facilityId
       inviteSentAt
       emailVerified
       inviteAcceptedAt
@@ -175,6 +366,55 @@ mutation ResendVerificationEmail($resendVerificationEmail: ResendVerificationEma
         role
         createdAt
         updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+        
+        contacts {
+          id
+          email
+          mobile
+          pager
+          fax
+          address
+          address2
+          zipCode
+          city
+          state
+          country
+          userId
+          createdAt
+          updatedAt
+        }
+
+        staff {
+          id
+          firstName
+          lastName
+          email
+          username
+          dob
+          phone
+          mobile
+          gender
+          createdAt
+          updatedAt
+        }
       }
     }
 
