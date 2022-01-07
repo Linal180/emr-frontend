@@ -115,7 +115,8 @@ const FacilityTable: FC = (): JSX.Element => {
             ) : (
               facilities?.map((facility: FacilityPayload['facility'], index: number) => {
                 const { id, name, code, contacts } = facility || {};
-                const { email, phone, fax, zipCode, city, state } = contacts && contacts[0] || {}
+                const facilityContact = contacts && contacts[0] 
+                const { email, phone, fax, zipCode, city, state } = facilityContact || {}
 
                 return (
                   <TableRow key={id}>
