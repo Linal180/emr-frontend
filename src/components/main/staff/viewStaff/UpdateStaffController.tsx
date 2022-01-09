@@ -1,10 +1,8 @@
 // packages block
 import { FormControl, InputLabel, TextField } from "@material-ui/core";
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Controller } from "react-hook-form";
-//components
 // styles, constants, utils and interfaces block
-import { PASSWORD, TEXT } from "../../../../constants";
 import { UpdateStaffInputControlProps } from "../../../../interfacesTypes";
 
 const UpdateStaffController: FC<UpdateStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error }): JSX.Element => {

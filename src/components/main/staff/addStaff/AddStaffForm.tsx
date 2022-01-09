@@ -1,5 +1,5 @@
 // packages block
-import { useContext, useEffect, FC } from 'react'
+import { FC } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
 // components block
@@ -8,14 +8,11 @@ import AddStaffController from "./AddStaffController";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { AuthContext } from "../../../../context";
 import { MappedRoleInterface } from "../../../../interfacesTypes";
-import { CreateStaffInput, useCreateStaffMutation, UserRole, Gender, useGetStaffLazyQuery, useUpdateStaffMutation } from "../../../../generated/graphql";
-import { EMAIL, FIRST_NAME, LAST_NAME, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, STAFF_ROUTE, USERNAME, DOB, MAPPED_GENDER, PASSWORD, STAFF_UPDATED } from "../../../../constants";
-import ViewDataLoader from '../../../common/ViewDataLoader';
+import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
+import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, STAFF_ROUTE, USERNAME } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
-  const { user } = useContext(AuthContext)
   const methods = useForm<CreateStaffInput>({ mode: "all" });
   const { reset, handleSubmit, control, formState: { errors } } = methods;
 
@@ -53,10 +50,8 @@ const AddStaffForm: FC = () => {
     dob: { message: dobError } = {},
     phone: { message: phoneError } = {},
     mobile: { message: mobileError } = {},
-    adminId: { message: adminIdError } = {},
     username: { message: usernameError } = {},
     password: { message: passwordError } = {},
-    roleType: { message: roleTypeError } = {},
     lastName: { message: lastNameError } = {},
     firstName: { message: firstNameError } = {},
   } = errors;

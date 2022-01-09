@@ -1,10 +1,10 @@
-import React, { forwardRef } from 'react'
+import React from 'react'
 import ListItem from '@material-ui/core/ListItem'
-import { NavLink, NavLinkProps } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 export interface AppMenuItemComponentProps {
   className?: string
-  link?: string | null 
+  link?: string | null
   onClick?: (event: React.MouseEvent<HTMLElement>) => void
 }
 
@@ -27,7 +27,7 @@ const AppMenuItemComponent: React.FC<AppMenuItemComponentProps> = props => {
       button
       className={className}
       children={children}
-      component={forwardRef((props: NavLinkProps, ref: any) => <NavLink exact {...props} innerRef={ref} />)}
+      component={Link}
       to={link}
     />
   )

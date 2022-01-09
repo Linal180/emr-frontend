@@ -31,7 +31,7 @@ const UpdateStaffForm: FC = () => {
         const { status } = response
 
         if (staff && status && status === 200) {
-          const { firstName, lastName, username, email, phone, mobile, dob, gender, facility } = staff || {}
+          const { firstName, lastName, username, email, phone, mobile, dob, gender } = staff || {}
 
           dob && setValue('dob', dob)
           email && setValue('email', email)
@@ -68,9 +68,10 @@ const UpdateStaffForm: FC = () => {
     }
   });
 
-  const fetchStaff = async () => {
+
+  useEffect(() => {
     if (id) {
-      await getStaff({
+      getStaff({
         variables: {
           getStaff: {
             id
@@ -80,11 +81,7 @@ const UpdateStaffForm: FC = () => {
     } else {
       Alert.error('Staff not found!')
     }
-  };
-
-  useEffect(() => {
-    fetchStaff()
-  }, [])
+  }, [getStaff, id])
 
   const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, email, phone, mobile, dob, gender }) => {
     if (id) {
