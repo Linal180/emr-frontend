@@ -15,6 +15,7 @@ export const PASSWORD_REGEX =
 
 // constants
 export const ALL_STAFF = "Staff";
+export const CREATE_STAFF = "Create Staff";
 export const ADD_STAFF = "Add Staff";
 export const VIEW_STAFF = "View Staff";
 export const STAFF_LISTING = "Staff Listing";
@@ -105,6 +106,7 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
+export const VIEW_FACILITY = "View Facility";
 export const PHONE_NUMBER = "Phone number";
 export const NEW_PASSWORD = "New password";
 export const DELETE_MEDIA = "Delete Media";
@@ -397,3 +399,13 @@ export const MAPPED_GENDER: MappedGenderInterface[] = [
   { value: Gender.Female, label: 'Female' },
   { value: Gender.Other, label: 'Other' },
 ]
+
+// Breadcrumb links
+export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
+export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
+export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: ''}
+export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
+export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
+export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: ''}
+export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE  }
+export const USERS_BREAD = { text: USERS_TEXT, link: ''  }

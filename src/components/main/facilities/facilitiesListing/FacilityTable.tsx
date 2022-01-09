@@ -40,7 +40,7 @@ const FacilityTable: FC = (): JSX.Element => {
       const { findAllFacility } = data || {};
 
       if (findAllFacility) {
-        const { facility, pagination, } = findAllFacility
+        const { facility, pagination } = findAllFacility
 
         if (!searchQuery) {
           if (pagination) {

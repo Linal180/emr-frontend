@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { CreateFacilityInput, LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, CreateBillingAddressInput, CreateContactInput, CreateFacilityItemInput } from "../generated/graphql";
+import { CreateFacilityInput, LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, CreateBillingAddressInput, CreateContactInput, CreateFacilityItemInput, FacilitiesPayload } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -30,21 +30,23 @@ export interface AppContextProps {
   setIsSidebarOpen: Dispatch<React.SetStateAction<boolean>>;
 }
 
+export interface ListContextInterface {
+  facilityList: FacilitiesPayload['facility'];
+  setFacilityList: Function;
+}
+
 export interface Children {
   children: ReactNode;
 }
 
+type Path = { text: string; link: string }
+
 export interface BreadcrumbProps {
-  link?: string;
-  path?: string[];
-  title?: string;
-  hasButton?: boolean;
-  buttonText?: string;
+  path: Path[]
 }
 
 export interface MainLayoutProps {
   children: ReactNode,
-  breadcrumb?: BreadcrumbProps
 }
 
 export interface TableLoaderType {
@@ -125,7 +127,8 @@ export interface IPageHeader {
   linkToPage?: string;
   title: string;
   buttonText?: string;
-  noAdd?: boolean
+  noAdd?: boolean;
+  path?: Path[];
 }
 
 export interface IMaterialStepper {

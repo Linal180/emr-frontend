@@ -1,19 +1,19 @@
 // component block
-import MainLayout from "../../../common/MainLayout";
-// constant block
 import UpdateStaffForm from "./UpdateStaffForm";
-import { VIEW_STAFF, STAFF_TEXT, USERS_TEXT } from "../../../../constants";
+// constant block
+import { STAFF_BREAD, STAFF_EDIT_BREAD, USERS_BREAD, VIEW_STAFF } from "../../../../constants";
+import PageHeader from "../../../common/PageHeader";
 
 const ViewStaffComponent = () => {
-  const breadcrumb = {
-    title: VIEW_STAFF,
-    path: [USERS_TEXT, STAFF_TEXT, VIEW_STAFF],
-  }
-
   return (
-    <MainLayout breadcrumb={breadcrumb}>
+    <>
+      <PageHeader
+        title={VIEW_STAFF}
+        path={[USERS_BREAD, STAFF_BREAD, STAFF_EDIT_BREAD]}
+      />
+
       <UpdateStaffForm />
-    </MainLayout>
+    </>
   )
 };
 

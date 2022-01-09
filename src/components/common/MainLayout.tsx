@@ -8,10 +8,8 @@ import CopyRight from "./CopyRight";
 // interfaces/types and main layout styles block
 import { MainLayoutProps } from "../../interfacesTypes";
 import { useMainLayoutStyles } from "../../styles/mainLayoutStyles";
-import Breadcrumb from "./Breadcrumb";
 
-const MainLayout: FC<MainLayoutProps> = ({ children, breadcrumb }): JSX.Element => {
-  const { link, title, path, hasButton, buttonText } = breadcrumb || {}
+const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const classes = useMainLayoutStyles();
 
   return (
@@ -24,10 +22,9 @@ const MainLayout: FC<MainLayoutProps> = ({ children, breadcrumb }): JSX.Element 
         <Box className={classes.appBarSpacer} />
 
         <Box p={3}>
-          {breadcrumb && <Breadcrumb link={link} title={title} path={path} hasButton={hasButton} buttonText={buttonText} />}
 
           <Box minHeight="calc(100vh - 230px)">
-            {children && <Paper className={classes.paper}>{children}</Paper>}
+            <Paper className={classes.paper}>{children}</Paper>
           </Box>
 
           <Box pt={4}>

@@ -38,7 +38,6 @@ const AddFacilityComponent: FC = () => {
 
   const onSubmit: SubmitHandler<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput> = async () => {
     console.log("createFacility");
-
   };
 
   return (

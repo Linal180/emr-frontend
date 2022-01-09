@@ -1,5 +1,5 @@
 // packages block
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
 // components block
@@ -8,17 +8,19 @@ import AddStaffController from "./AddStaffController";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
 import history from "../../../../history";
+import { ListContext } from '../../../../context/listContext';
 import { MappedRoleInterface } from "../../../../interfacesTypes";
 import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
-import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, STAFF_ROUTE, USERNAME } from "../../../../constants";
+import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, USERNAME } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
+  const { facilityList } = useContext(ListContext)
   const methods = useForm<CreateStaffInput>({ mode: "all" });
   const { reset, handleSubmit, control, formState: { errors } } = methods;
 
   const [createStaff, { loading }] = useCreateStaffMutation({
-    onError() {
-      return null;
+    onError({message}) {
+      Alert.error(message)
     },
 
     onCompleted(data) {
@@ -40,7 +42,7 @@ const AddStaffForm: FC = () => {
     await createStaff({
       variables: {
         createStaffInput: {
-          firstName, lastName, username, email, password, phone, mobile, roleType, dob, gender, facilityId: "a817ee18-40af-4207-8413-7e6bed8744bc"
+          firstName, lastName, username, email, password, phone, mobile, roleType, dob, gender, facilityId
         }
       }
     })
@@ -195,17 +197,45 @@ const AddStaffForm: FC = () => {
                 }}
               />
             </Grid>
+
+            <Grid item md={6} sm={12} xs={12}>
+              <Controller
+                name="facilityId"
+                defaultValue={""}
+                control={control}
+                render={({ field }) => {
+                  return (
+                    <FormControl fullWidth>
+                      <InputLabel id="demo-customized-select-label-facility" shrink>Facility</InputLabel>
+                      <Select
+                        labelId="demo-customized-select-label-facility"
+                        id="demo-customized-select-f"
+                        variant="outlined"
+                        value={field.value}
+                        onChange={field.onChange}
+                      >
+                        {facilityList?.map((facility) => {
+                          const { id, name } = facility || {};
+
+                          return <MenuItem key={id} value={id}>{name}</MenuItem>;
+                        })}
+                      </Select>
+                    </FormControl>
+                  )
+                }}
+              />
+            </Grid>
           </Grid>
 
           <Box display="flex" justifyContent="flex-end" pt={2}>
             <Button type="submit" variant="contained" color="primary" disabled={loading}>
-              Create User
+              {CREATE_STAFF}
               {loading && <CircularProgress size={20} color="inherit" />}
             </Button>
           </Box>
         </form>
       </CardComponent>
-    </FormProvider>
+    </FormProvider >
   );
 };
 

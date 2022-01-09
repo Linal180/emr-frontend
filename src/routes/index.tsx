@@ -20,26 +20,24 @@ import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, 
 
 const Routes: FC = (): JSX.Element => {
   return (
-    <MainLayout>
-      <Switch>
-        <PublicRoute path={LOGIN_ROUTE} component={Login} exact />
-        <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
-        <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
-        <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
+    <Switch>
+      <PublicRoute path={LOGIN_ROUTE} component={Login} exact />
+      <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
+      <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
+      <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
 
+      <MainLayout>
         <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
-        <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
         <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
         <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
         <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
-
-
+        <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
         <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
         <PrivateRoute exact path={ROOT_ROUTE} component={Dashboard} />
+      </MainLayout>
 
-        <Route component={PageNotFound} />3
-      </Switch>
-    </MainLayout>
+      <Route component={PageNotFound} />
+    </Switch>
   );
 };
 
