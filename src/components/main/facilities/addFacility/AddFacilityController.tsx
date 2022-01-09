@@ -12,9 +12,7 @@ const CreateFacilityController: FC<CreateFacilityInputControlProps> = ({ control
       control={control}
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={controllerName}>
-            {controllerLabel}
-          </InputLabel>
+          <InputLabel shrink htmlFor={controllerName}>{controllerLabel}</InputLabel>
 
           <TextField
             type={fieldType}
@@ -22,7 +20,7 @@ const CreateFacilityController: FC<CreateFacilityInputControlProps> = ({ control
             error={invalid}
             fullWidth
             {...field}
-            helperText={error ? error : "hello world"}
+            helperText={error}
           />
         </FormControl>
       )}

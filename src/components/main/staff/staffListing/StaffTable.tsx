@@ -7,13 +7,13 @@ import { Box, Grid, IconButton, Table, TableBody, TableCell, TableHead, TextFiel
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, NO_FACILITY_MESSAGE, ZIP_CODE, CITY, CODE, FAX, STATE, FIRST_NAME, LAST_NAME, PRIMARY_PROVIDER, STAFF_ROUTE, HASH, DELETE_STAFF, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
-import ConfirmationModal from "../../../common/ConfirmationModal";
+import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
 
 const StaffTable: FC = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('');

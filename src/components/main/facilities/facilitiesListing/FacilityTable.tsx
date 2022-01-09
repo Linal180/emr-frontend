@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, useEffect, useState, useContext } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Search } from "@material-ui/icons";
@@ -9,13 +9,11 @@ import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, NO_FACILITY_MESSAGE, ZIP_CODE, CITY, CODE, FAX, STATE } from "../../../../constants";
-import { AuthContext } from "../../../../context";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
+import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery } from "../../../../generated/graphql";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP_CODE, CITY, CODE, FAX, STATE } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
-  const { user } = useContext(AuthContext)
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(0);
@@ -65,6 +63,8 @@ const FacilityTable: FC = (): JSX.Element => {
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
 
   const handleSearch = () => { }
+
+  const onDeleteClick = (id: string) => { }
 
   return (
     <>

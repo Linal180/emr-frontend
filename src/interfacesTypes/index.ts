@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, CreateFacilityInput, FacilityPayload, FacilitiesPayload, UserRole, CreateStaffInput, Gender, StaffPayload, UpdateStaffInput } from "../generated/graphql";
+import { CreateFacilityInput, LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, CreateBillingAddressInput, CreateContactInput, CreateFacilityItemInput } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -258,14 +258,9 @@ export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
   items?: AppMenuItemProps[];
 };
 
-export type CreateFacilityInterface = CreateFacilityInput;
+type AddStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
+  | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
 
-type CreateFacilityControlTypes = "address" | "address2" | "city" | "cliaIdNumber" | "code" | "country" | "email" | "facilityId" | "fax" | "federalTaxId" | "insurancePlanType" | "mammographyCertificationNumber" | "mobile" | "name" | "npi" | "pager" | "phone" | "practiceType" | "revenueCode" | "serviceCode" | "state" | "stateImmunizationId" | "tamxonomyCode" | "userId" | "zipCode";
-export interface CreateFacilityInputControlProps extends IControlLabel {
-  control: Control<CreateFacilityInterface, object>;
-  controllerName: CreateFacilityControlTypes;
-}
-type AddStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password" | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
 type UpdateStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "phone" | "mobile" | "dob" | "gender" | "facilityId";
 
 export interface AddStaffInputControlProps extends IControlLabel {
@@ -277,6 +272,7 @@ export interface UpdateStaffInputControlProps extends IControlLabel {
   control: Control<UpdateStaffInput, object>;
   controllerName: UpdateStaffControlTypes;
 }
+
 export interface MappedRoleInterface {
   value: UserRole;
   label: string;
@@ -289,4 +285,16 @@ export interface MappedGenderInterface {
 
 export type ParamsType = {
   id: string
+}
+
+type CreateFacilityControlTypes = "code" | "country" | "email" | "facilityId" | "fax"
+  | "address" | "address2" | "city" | "cliaIdNumber"
+  | "federalTaxId" | "insurancePlanType" | "mammographyCertificationNumber"
+  | "mobile" | "name" | "npi" | "pager" | "phone" | "practiceType"
+  | "revenueCode" | "serviceCode" | "state" | "stateImmunizationId"
+  | "tamxonomyCode" | "userId" | "zipCode";
+
+export interface CreateFacilityInputControlProps extends IControlLabel {
+  control: Control<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput, object>;
+  controllerName: CreateFacilityControlTypes;
 }

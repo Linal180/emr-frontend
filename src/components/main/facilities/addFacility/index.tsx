@@ -1,5 +1,4 @@
 // packages block
-import { yupResolver } from "@hookform/resolvers/yup";
 import { Grid } from "@material-ui/core";
 import { FormProvider, useForm } from "react-hook-form";
 // components block
@@ -7,14 +6,11 @@ import AddFacilityController from "./AddFacilityController";
 import CardComponent from "../../../common/CardComponent";
 import SelectController from "./SelectController";
 // utils, interfaces and graphql block
-import { addUserValidationSchema } from "../../../../validationSchemas";
-import { ADD_FACILITY, ADDRESS, ADDRESS_2, CITY, CLIA_ID_NUMBER, CODE, COUNTRY, EMAIL, FACILITY_ID, FAX, FEDERAL_TAX_ID, INSURANCE_PLAN_TYPE, MAMMOGRAPHY_CERTIFICATION_NUMBER, MOBILE, NAME, NPI, PAGER, PHONE, PRACTICE_TYPE, REVENUE_CODE, SERVICE_CODE, STATE, STATEIMMUNIZATION_ID, TAMXONOMY_CODE, USER_ID, ZIP_CODE } from "../../../../constants";
-import { CreateFacilityInput } from "../../../../generated/graphql";
+import { CreateBillingAddressInput, CreateContactInput, CreateFacilityInput, CreateFacilityItemInput } from "../../../../generated/graphql";
+import { ADD_FACILITY, ADDRESS, ADDRESS_2, CITY, CLIA_ID_NUMBER, CODE, COUNTRY, EMAIL, FACILITY_ID, FAX, FEDERAL_TAX_ID, INSURANCE_PLAN_TYPE, MAMMOGRAPHY_CERTIFICATION_NUMBER, MOBILE, NAME, NPI, PAGER, PHONE, PRACTICE_TYPE, REVENUE_CODE, SERVICE_CODE, STATE, STATE_IMMUNIZATION_ID, TAMXONOMY_CODE, ZIP_CODE } from "../../../../constants";
 
 const AddFacilityComponent = (): JSX.Element => {
-  const methods = useForm<CreateFacilityInput>({
-    mode: "all",
-  });
+  const methods = useForm<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput>({ mode: "all" });
   const { control } = methods;
 
   return (
@@ -198,7 +194,7 @@ const AddFacilityComponent = (): JSX.Element => {
                 fieldType="text"
                 controllerName="stateImmunizationId"
                 control={control}
-                controllerLabel={STATEIMMUNIZATION_ID}
+                controllerLabel={STATE_IMMUNIZATION_ID}
               />
 
               <AddFacilityController
@@ -206,13 +202,6 @@ const AddFacilityComponent = (): JSX.Element => {
                 controllerName="tamxonomyCode"
                 control={control}
                 controllerLabel={TAMXONOMY_CODE}
-              />
-
-              <AddFacilityController
-                fieldType="text"
-                controllerName="userId"
-                control={control}
-                controllerLabel={USER_ID}
               />
             </CardComponent>
           </Grid>
