@@ -3,8 +3,8 @@ import { Select, InputLabel, FormControl, MenuItem } from "@material-ui/core";
 import { FC } from "react";
 import { Controller } from "react-hook-form";
 // styles, constants, utils and interfaces block
-import { CreateFacilityInputControlProps } from "../../../../interfacesTypes";
-import { DROPDOWN_ONE_TEXT, DROPDOWN_TWO_TEXT, DROPDOWN_THREE_TEXT, DROPDOWN_FOUR_TEXT } from "../../../../constants";
+import { CreateFacilityInputControlProps, MappedRoleInterface } from "../../../../interfacesTypes";
+import { MAPPED_ROLES } from "../../../../constants";
 
 const SelectController: FC<CreateFacilityInputControlProps> = ({ control, controllerName }): JSX.Element => {
   return (
@@ -19,12 +19,11 @@ const SelectController: FC<CreateFacilityInputControlProps> = ({ control, contro
             id={controllerName}
             variant="outlined"
           >
-            <MenuItem value="">
-              <em>{DROPDOWN_ONE_TEXT}</em>
-            </MenuItem>
-            <MenuItem value={10}>{DROPDOWN_TWO_TEXT}</MenuItem>
-            <MenuItem value={20}>{DROPDOWN_THREE_TEXT}</MenuItem>
-            <MenuItem value={30}>{DROPDOWN_FOUR_TEXT}</MenuItem>
+            {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
+              const { label, value } = role;
+
+              return <MenuItem key={index} value={value}>{label}</MenuItem>;
+            })}
           </Select>
         </FormControl>
       )}

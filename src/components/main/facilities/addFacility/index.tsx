@@ -1,21 +1,49 @@
 // packages block
-import { Grid } from "@material-ui/core";
-import { FormProvider, useForm } from "react-hook-form";
+import { FC } from 'react';
+import { Button, Box, CircularProgress, Grid } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
+import Alert from "../../../common/Alert";
 import AddFacilityController from "./AddFacilityController";
 import CardComponent from "../../../common/CardComponent";
 import SelectController from "./SelectController";
 // utils, interfaces and graphql block
-import { CreateBillingAddressInput, CreateContactInput, CreateFacilityInput, CreateFacilityItemInput } from "../../../../generated/graphql";
-import { ADD_FACILITY, ADDRESS, ADDRESS_2, CITY, CLIA_ID_NUMBER, CODE, COUNTRY, EMAIL, FACILITY_ID, FAX, FEDERAL_TAX_ID, INSURANCE_PLAN_TYPE, MAMMOGRAPHY_CERTIFICATION_NUMBER, MOBILE, NAME, NPI, PAGER, PHONE, PRACTICE_TYPE, REVENUE_CODE, SERVICE_CODE, STATE, STATE_IMMUNIZATION_ID, TAMXONOMY_CODE, ZIP_CODE } from "../../../../constants";
+import history from "../../../../history";
+import { CreateBillingAddressInput, CreateContactInput, CreateFacilityInput, CreateFacilityItemInput, useCreateFacilityMutation } from "../../../../generated/graphql";
+import { ADD_FACILITY, ADDRESS, ADDRESS_2, CITY, CLIA_ID_NUMBER, CODE, COUNTRY, EMAIL, FACILITY_ID, FAX, FEDERAL_TAX_ID, INSURANCE_PLAN_TYPE, MAMMOGRAPHY_CERTIFICATION_NUMBER, MOBILE, NAME, NPI, PAGER, PHONE, PRACTICE_TYPE, REVENUE_CODE, SERVICE_CODE, STATE, STATE_IMMUNIZATION_ID, TAMXONOMY_CODE, ZIP_CODE, FACILITY_CREATED, FACILITIES_ROUTE } from "../../../../constants";
 
-const AddFacilityComponent = (): JSX.Element => {
+const AddFacilityComponent: FC = () => {
   const methods = useForm<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput>({ mode: "all" });
-  const { control } = methods;
+  const { reset, handleSubmit, control, formState: { errors } } = methods;
+
+  const [createFacility, { loading }] = useCreateFacilityMutation({
+    onError() {
+      return null;
+    },
+
+    onCompleted(data) {
+      const { createFacility: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(FACILITY_CREATED);
+          reset()
+          history.push(FACILITIES_ROUTE)
+        }
+      }
+    }
+  });
+
+  const onSubmit: SubmitHandler<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput> = async () => {
+    console.log("createFacility");
+
+  };
 
   return (
     <FormProvider {...methods}>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           <Grid lg={6} item>
             <CardComponent cardTitle={ADD_FACILITY} isEdit={true}>
@@ -206,6 +234,13 @@ const AddFacilityComponent = (): JSX.Element => {
             </CardComponent>
           </Grid>
         </Grid>
+
+        <Box display="flex" justifyContent="flex-end" pt={2}>
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+            Create Facility
+            {loading && <CircularProgress size={20} color="inherit" />}
+          </Button>
+        </Box>
       </form>
     </FormProvider>
   );
