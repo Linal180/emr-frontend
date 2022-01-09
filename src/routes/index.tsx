@@ -21,22 +21,22 @@ import ViewStaff from "../pages/main/staff/viewStaff";
 const Routes: FC = (): JSX.Element => {
   return (
     <MainLayout>
-    <Switch>
-      <PublicRoute path={LOGIN_ROUTE} component={Login} exact />
-      <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
-      <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
-      <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
-      <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
-      <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
-      <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
-      <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
-      <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
+      <Switch>
+        <PublicRoute path={LOGIN_ROUTE} component={Login} exact />
+        <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
+        <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
+        <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
+        <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
+        <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
+        <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
+        <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
+        <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
 
 
-      <PrivateRoute exact path={ROOT_ROUTE} component={Dashboard} />
-      <Route component={PageNotFound} />
-    </Switch>
+        <PrivateRoute exact path={ROOT_ROUTE} component={Dashboard} />
+        <Route component={PageNotFound} />
+      </Switch>
     </MainLayout>
   );
 };

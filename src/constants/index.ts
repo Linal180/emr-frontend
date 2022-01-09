@@ -72,7 +72,6 @@ export const FACILITY_ID = "Facility ID";
 export const FEDERAL_TAX_ID = "Federal Tax ID";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
-export const MOBILE = "Mobile";
 export const NPI = "NPI";
 export const PAGER = "Pager";
 export const PRACTICE_TYPE = "Practice Type";

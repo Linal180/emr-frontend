@@ -8,13 +8,12 @@ import CardComponent from "../../../common/CardComponent";
 import SelectController from "./SelectController";
 // utils, interfaces and graphql block
 import { addUserValidationSchema } from "../../../../validationSchemas";
-import { CreateFacilityInterface } from "../../../../interfacesTypes"
 import { ADD_FACILITY, ADDRESS, ADDRESS_2, CITY, CLIA_ID_NUMBER, CODE, COUNTRY, EMAIL, FACILITY_ID, FAX, FEDERAL_TAX_ID, INSURANCE_PLAN_TYPE, MAMMOGRAPHY_CERTIFICATION_NUMBER, MOBILE, NAME, NPI, PAGER, PHONE, PRACTICE_TYPE, REVENUE_CODE, SERVICE_CODE, STATE, STATEIMMUNIZATION_ID, TAMXONOMY_CODE, USER_ID, ZIP_CODE } from "../../../../constants";
+import { CreateFacilityInput } from "../../../../generated/graphql";
 
 const AddFacilityComponent = (): JSX.Element => {
-  const methods = useForm<CreateFacilityInterface>({
+  const methods = useForm<CreateFacilityInput>({
     mode: "all",
-    resolver: yupResolver(addUserValidationSchema)
   });
   const { control } = methods;
 
