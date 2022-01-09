@@ -1,15 +1,15 @@
 // packages block
 import { FC } from "react";
-import { Card, CardContent, CardHeader, colors, IconButton, Box } from "@material-ui/core";
-import { Edit, Save, ArrowBack, Visibility } from "@material-ui/icons";
 import { Link } from "react-router-dom";
+import { Edit, Save, ArrowBack, Visibility } from "@material-ui/icons";
+import { Card, CardContent, CardHeader, colors, IconButton, Box } from "@material-ui/core";
 // interfaces/types block
-import { REQUESTS, VIEW_SIGNED_DOCUMENT, VIEW_OWNERSHIP_REQUEST } from "../../constants";
 import { CardComponentType } from "../../interfacesTypes";
+import { VIEW_SIGNED_DOCUMENT } from "../../constants";
 import { useFacilityStyles } from "../../styles/facilityStyles";
 
 const CardComponent: FC<CardComponentType> = ({ children, cardTitle, isEdit, hasEdit, onEditClick, disableEditIcon, disableSaveIcon, hideSaveIcon, link, requestLink }): JSX.Element => {
-  const classes = useFacilityStyles();
+  const classes = useFacilityStyles()
 
   return (
     <Box pb={4}>
@@ -19,17 +19,6 @@ const CardComponent: FC<CardComponentType> = ({ children, cardTitle, isEdit, has
             action={
               hasEdit ? (
                 <Box display="flex" alignItems="center">
-                  {requestLink && (
-                    <Link to={`${REQUESTS}/${requestLink}`}>
-                      <Box display="flex" alignItems="center">
-                        <Visibility color="primary" />
-                        <Box pl={0.8} fontSize={14}>
-                          {VIEW_OWNERSHIP_REQUEST}
-                        </Box>
-                      </Box>
-                    </Link>
-                  )}
-
                   {isEdit ? (
                     <Box>
                       {!hideSaveIcon && (
