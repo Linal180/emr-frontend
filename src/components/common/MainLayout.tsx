@@ -1,6 +1,6 @@
 // packages block
 import { FC } from "react";
-import { Box, CssBaseline, Paper } from "@material-ui/core";
+import { Box, CssBaseline } from "@material-ui/core";
 // components block
 import Header from "./Header";
 import Sidebar from "./Sidebar";
