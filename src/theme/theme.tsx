@@ -154,8 +154,9 @@ export const theme = createTheme({
     MuiButton: {
       contained: {
         borderRadius: 6,
-        padding: '9px 20px',
         maxHeight: 42,
+        padding: '9px 20px',
+        boxShadow: 'none'
       },
 
       label: {
