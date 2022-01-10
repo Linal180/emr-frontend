@@ -1,5 +1,5 @@
 import { withStyles, Theme, Tooltip, makeStyles, colors } from "@material-ui/core";
-import { PRIMARY_COLOR } from "../theme";
+import { BLUE_TWO } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -16,7 +16,7 @@ export const useUserTableStyles = makeStyles((theme: Theme) => ({
   active: {
     height: 19,
     width: 19,
-    color: PRIMARY_COLOR
+    color: BLUE_TWO
   },
 
   deActive: {

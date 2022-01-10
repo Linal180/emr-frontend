@@ -7,7 +7,7 @@ import { LEFT_NAV_LIST_ITEMS } from "../../constants";
 import history from "../../history";
 import { firstLatterUppercase } from "../../utils";
 
-const mainListItems: FC = () => (
+const MainListItems: FC = () => (
   <>
     {LEFT_NAV_LIST_ITEMS.map((nav, index) => {
       const leftNavClass = nav.title === firstLatterUppercase(history.location.pathname.substring(1)).split("/", 1).toString() ? 'left-side-nav active' : 'left-side-nav'
@@ -24,4 +24,4 @@ const mainListItems: FC = () => (
   </>
 )
 
-export default mainListItems
+export default MainListItems

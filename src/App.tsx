@@ -9,8 +9,8 @@ import { SnackbarUtilsConfigrator, CloseButton } from "./components/common/Alert
 import client from './apollo'
 import { theme } from "./theme/theme";
 import { AuthContextProvider, AppContextProvider } from './context'
-import './styles/styles.css'
 import { ListContextProvider } from "./context/listContext";
+import './styles/styles.css'
 
 const App = () => {
   return (
@@ -19,15 +19,15 @@ const App = () => {
       <SnackbarUtilsConfigrator />
 
       <ApolloProvider client={client}>
-        <AuthContextProvider>
-          <AppContextProvider>
-            <ListContextProvider>
-              <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <AuthContextProvider>
+            <AppContextProvider>
+              <ListContextProvider>
                 <AppContainer />
-              </ThemeProvider>
-            </ListContextProvider>
-          </AppContextProvider>
-        </AuthContextProvider>
+              </ListContextProvider>
+            </AppContextProvider>
+          </AuthContextProvider>
+        </ThemeProvider>
       </ApolloProvider>
     </SnackbarProvider>
   );

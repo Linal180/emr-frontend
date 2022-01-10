@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core/styles";
-import { SECONDARY_COLOR, WHITE } from "../theme";
+import { BLUE_ONE, WHITE } from "../theme";
 
 export const useLoginStyles = makeStyles((theme) => ({
   root: {
@@ -13,10 +13,10 @@ export const useLoginStyles = makeStyles((theme) => ({
   },
 
   loginFormContainer: {
-    padding: 45,
-    maxWidth: 650,
     width: '100%',
     background: WHITE,
+    padding: 45,
+    maxWidth: 650,
     borderRadius: 12,
 
     [theme.breakpoints.down("md")]: {
@@ -25,6 +25,6 @@ export const useLoginStyles = makeStyles((theme) => ({
   },
 
   passwordIcon: {
-    color: SECONDARY_COLOR
+    color: BLUE_ONE
   },
 }));
