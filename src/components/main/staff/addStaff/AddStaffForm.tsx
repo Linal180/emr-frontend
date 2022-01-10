@@ -8,18 +8,20 @@ import AddStaffController from "./AddStaffController";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
 import history from "../../../../history";
+import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { MappedRoleInterface } from "../../../../interfacesTypes";
 import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
 import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, USERNAME } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
+  const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const methods = useForm<CreateStaffInput>({ mode: "all" });
   const { reset, handleSubmit, control, formState: { errors } } = methods;
 
   const [createStaff, { loading }] = useCreateStaffMutation({
-    onError({message}) {
+    onError({ message }) {
       Alert.error(message)
     },
 
@@ -39,13 +41,16 @@ const AddStaffForm: FC = () => {
   });
 
   const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, password, email, phone, mobile, roleType, dob, gender, facilityId }) => {
-    await createStaff({
-      variables: {
-        createStaffInput: {
-          firstName, lastName, username, email, password, phone, mobile, roleType, dob, gender, facilityId
+    if (user) {
+      const { id } = user
+      await createStaff({
+        variables: {
+          createStaffInput: {
+            firstName, lastName, username, email, password, phone, mobile, roleType, dob, gender, facilityId, adminId: id
+          }
         }
-      }
-    })
+      })
+    }
   };
 
   const { email: { message: emailError } = {},

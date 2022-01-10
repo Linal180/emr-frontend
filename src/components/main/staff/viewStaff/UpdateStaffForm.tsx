@@ -20,8 +20,8 @@ const UpdateStaffForm: FC = () => {
   const { reset, setValue, handleSubmit, control, formState: { errors } } = methods;
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
-    onError() {
-      return null;
+    onError({message}) {
+      Alert.error(message)
     },
 
     onCompleted(data) {
@@ -88,7 +88,7 @@ const UpdateStaffForm: FC = () => {
       await updateStaff({
         variables: {
           updateStaffInput: {
-            id, firstName, lastName, username, email, phone, mobile, dob, gender, facilityId: "a817ee18-40af-4207-8413-7e6bed8744bc"
+            id, firstName, lastName, username, email, phone, mobile, dob, gender
           }
         }
       })
