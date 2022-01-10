@@ -2,7 +2,7 @@
 import { createTheme } from "@material-ui/core/styles";
 import { colors } from "@material-ui/core";
 // color-constants and font-family block
-import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE } from ".";
+import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
@@ -41,7 +41,7 @@ export const theme = createTheme({
 
     h5: {
       fontSize: 16,
-      fontWeight: 600,
+      fontWeight: 500,
       color: BLACK_ONE,
     },
 
@@ -68,12 +68,8 @@ export const theme = createTheme({
           "& table": {
             '& tbody': {
               "& tr": {
-                '&:nth-of-type(odd)': {
-                  backgroundColor: WHITE,
-                },
-
-                '&:nth-of-type(even)': {
-                  backgroundColor: '#f1f1f1',
+                "& th": {
+                  backgroundColor: "rgba((245, 248, 250), 0.3)"
                 },
               }
             }
@@ -214,6 +210,16 @@ export const theme = createTheme({
         opacity: 0.8,
         color: GRAY_TWO,
         fontWeight: 500,
+      }
+    },
+
+    MuiTableCell: {
+      root: {
+        borderBottom: `1px solid ${WHITE_THREE}`
+      },
+
+      head: {
+        backgroundColor: 'rgba(245, 248, 250, 0.3)'
       }
     }
   },

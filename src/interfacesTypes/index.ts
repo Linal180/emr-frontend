@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { CreateFacilityInput, LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, CreateBillingAddressInput, CreateContactInput, CreateFacilityItemInput, FacilitiesPayload } from "../generated/graphql";
+import { CreateFacilityInput, LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -253,8 +253,8 @@ export interface AppMenuItemTypes {
   Icon?: ElementType;
   items?: SubMenuTypes[];
   index?: number;
-  activeCollpase?:number;
-  setActiveCollapse?:(item:number) => void;
+  activeCollpase?: number;
+  setActiveCollapse?: (item: number) => void;
 }
 
 export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;
@@ -292,7 +292,7 @@ export type ParamsType = {
   id: string
 }
 
-type CreateFacilityControlTypes = "code" | "country" | "email" | "facilityId" | "fax"
+type FacilityControlTypes = "code" | "country" | "email" | "facilityId" | "fax"
   | "address" | "address2" | "city" | "cliaIdNumber"
   | "federalTaxId" | "insurancePlanType" | "mammographyCertificationNumber"
   | "mobile" | "name" | "npi" | "pager" | "phone" | "practiceType"
@@ -300,6 +300,11 @@ type CreateFacilityControlTypes = "code" | "country" | "email" | "facilityId" | 
   | "tamxonomyCode" | "userId" | "zipCode";
 
 export interface CreateFacilityInputControlProps extends IControlLabel {
-  control: Control<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput, object>;
-  controllerName: CreateFacilityControlTypes;
+  controllerName: FacilityControlTypes;
 }
+
+export interface UpdateFacilityInputControlProps extends IControlLabel {
+  controllerName: FacilityControlTypes;
+}
+
+export type CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput

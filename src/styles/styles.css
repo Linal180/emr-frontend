@@ -181,6 +181,10 @@ input[type="email"] {
   padding-left: 0px;
 }
 
+.pointer-cursor {
+  cursor: pointer;
+}
+
 .active {
   color: #009EF6;
 }

@@ -1,11 +1,11 @@
 // packages block
-import { TextField, InputLabel, FormControl } from "@material-ui/core";
 import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { TextField, InputLabel, FormControl } from "@material-ui/core";
 // styles, constants, utils and interfaces block
-import { CreateFacilityInputControlProps } from "../../../../interfacesTypes";
+import { UpdateFacilityInputControlProps } from "../../../../interfacesTypes";
 
-const CreateFacilityController: FC<CreateFacilityInputControlProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const UpdateFacilityController: FC<UpdateFacilityInputControlProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
   const { control } = useFormContext();
 
   return (
@@ -30,4 +30,4 @@ const CreateFacilityController: FC<CreateFacilityInputControlProps> = ({ control
   );
 };
 
-export default CreateFacilityController;
+export default UpdateFacilityController;

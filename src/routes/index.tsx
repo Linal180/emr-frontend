@@ -14,6 +14,7 @@ import ResetPassword from "../pages/auth/resetPassword";
 import MainLayout from "../components/common/MainLayout";
 import EmailVerification from "../pages/auth/verifyEmail";
 import ForgetPassword from "../pages/auth/forgetPassword";
+import ViewFacility from "../pages/main/facilities/viewFacility";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 import AddFacilityComponent from "../components/main/facilities/addFacility"
 import Patients from "../pages/main/patients/patientsListing";
@@ -44,6 +45,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
           <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
           <PrivateRoute exact path={ROOT_ROUTE} component={Dashboard} />
         </Switch>
       </MainLayout>

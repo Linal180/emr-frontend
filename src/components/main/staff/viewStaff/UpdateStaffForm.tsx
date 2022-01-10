@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC } from 'react'
+import { useEffect, FC, useContext } from 'react'
 import { useParams } from 'react-router';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
@@ -12,15 +12,17 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
 import { CreateStaffInput, UserRole, Gender, useGetStaffLazyQuery, useUpdateStaffMutation, UpdateStaffInput } from "../../../../generated/graphql";
-import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, STAFF_BASIC_INFO, STAFF_ROUTE, USERNAME, DOB, MAPPED_GENDER, STAFF_UPDATED } from "../../../../constants";
+import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, STAFF_BASIC_INFO, STAFF_ROUTE, USERNAME, DOB, MAPPED_GENDER, STAFF_UPDATED, UPDATE_STAFF } from "../../../../constants";
+import { ListContext } from '../../../../context/listContext';
 
 const UpdateStaffForm: FC = () => {
   const { id } = useParams<ParamsType>();
+  const { facilityList } = useContext(ListContext)
   const methods = useForm<UpdateStaffInput>({ mode: "all" });
   const { reset, setValue, handleSubmit, control, formState: { errors } } = methods;
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
-    onError({message}) {
+    onError({ message }) {
       Alert.error(message)
     },
 
@@ -31,7 +33,8 @@ const UpdateStaffForm: FC = () => {
         const { status } = response
 
         if (staff && status && status === 200) {
-          const { firstName, lastName, username, email, phone, mobile, dob, gender } = staff || {}
+          const { firstName, lastName, username, email, phone, mobile, dob, gender, facility } = staff || {}
+          const { id: facilityId } = facility || {}
 
           dob && setValue('dob', dob)
           email && setValue('email', email)
@@ -41,7 +44,7 @@ const UpdateStaffForm: FC = () => {
           lastName && setValue('lastName', lastName)
           username && setValue('username', username)
           firstName && setValue('firstName', firstName)
-          setValue('facilityId', "a817ee18-40af-4207-8413-7e6bed8744bc")
+          facilityId && setValue('facilityId', facilityId)
           setValue('roleType', UserRole.Staff)
         }
       }
@@ -209,11 +212,38 @@ const UpdateStaffForm: FC = () => {
                   }}
                 />
               </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
+                <Controller
+                  name="facilityId"
+                  defaultValue={""}
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <FormControl fullWidth margin='normal'>
+                        <InputLabel id="demo-customized-select-label-facility" shrink>Facility</InputLabel>
+                        <Select
+                          labelId="demo-customized-select-label-facility"
+                          id="demo-customized-select-f"
+                          variant="outlined"
+                          onChange={field.onChange}
+                        >
+                          {facilityList?.map((facility) => {
+                            const { id, name } = facility || {};
+
+                            return <MenuItem key={id} value={id}>{name}</MenuItem>;
+                          })}
+                        </Select>
+                      </FormControl>
+                    )
+                  }}
+                />
+              </Grid>
             </Grid>
 
             <Box display="flex" justifyContent="flex-end" pt={2}>
               <Button type="submit" variant="contained" color="primary" disabled={updateStaffLoading}>
-                Update User
+                {UPDATE_STAFF}
                 {updateStaffLoading && <CircularProgress size={20} color="inherit" />}
               </Button>
             </Box>
