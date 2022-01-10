@@ -4,6 +4,7 @@ export const GRAY_TWO = "#B5B5C3"
 export const GRAY_THREE = "#464E5F"
 export const GRAY_FOUR = "#dddddd"
 export const GRAY_FIVE = "#F5F8FA"
+export const GRAY_SIX = "#EFF2F5"
 
 export const BLACK = "#000000";
 export const BLACK_ONE = "#3F4254";

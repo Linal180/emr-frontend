@@ -1,7 +1,7 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
-import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE } from ".";
+import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
@@ -195,5 +195,38 @@ export const theme = createTheme({
         color: BLACK_TWO,
       }
     },
+
+    MuiCard: {
+      root: {
+        background: WHITE,
+        borderRadius: 12,
+        boxShadow: 'none'
+      }
+    },
+
+    MuiCardHeader: {
+      root: {
+        padding: "18px 30px",
+        borderBottom: `1px solid ${GRAY_SIX}`,
+        marginBottom: 30,
+      },
+
+      content: {
+        "& .MuiTypography-h5": {
+          fontSize: 20,
+          fontWeight: 600
+        }
+      }
+    },
+
+    MuiCardContent: {
+      root: {
+        padding: "0 27px",
+
+        "&:last-child": {
+          paddingBottom: 0
+        }
+      }
+    }
   },
 });
