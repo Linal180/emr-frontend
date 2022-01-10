@@ -2,7 +2,7 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow, Divider } from "@material-ui/core";
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";

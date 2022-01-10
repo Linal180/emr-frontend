@@ -1,6 +1,6 @@
 // packages block
 import { FC, useState } from "react";
-import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, Divider } from "@material-ui/core";
+import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -33,7 +33,6 @@ const ClaimFeedTable: FC = (): JSX.Element => {
           }}
         />
       </Box>
-      <Divider />
 
       <Box className="table-overflow">
         <Table aria-label="customized table">
