@@ -3,7 +3,7 @@ import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Search } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Grid, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
+import { Box, Grid, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow, FormControl, InputLabel } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
@@ -112,23 +112,23 @@ const StaffTable: FC = (): JSX.Element => {
       <Box pt={1}>
         <Grid container spacing={1}>
           <Grid item sm={4}>
-            <TextField
-              name="searchQuery"
-              value={searchQuery}
-              onChange={({ target: { value } }) => setSearchQuery(value)}
-              onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-              placeholder="Search"
-              variant="outlined"
-              label="Search"
-              margin="none"
-              fullWidth
-              InputProps={{
-                endAdornment:
-                  <IconButton color="default" onClick={handleSearch}>
-                    <Search color="inherit" />
-                  </IconButton>
-              }}
-            />
+            <FormControl fullWidth margin="normal">
+              <InputLabel shrink>Search</InputLabel>
+              <TextField
+                name="searchQuery"
+                value={searchQuery}
+                onChange={({ target: { value } }) => setSearchQuery(value)}
+                onKeyPress={({ key }) => key === "Enter" && handleSearch()}
+                variant="outlined"
+                fullWidth
+                InputProps={{
+                  endAdornment:
+                    <IconButton color="default" onClick={handleSearch}>
+                      <Search color="inherit" />
+                    </IconButton>
+                }}
+              />
+            </FormControl>
           </Grid>
         </Grid>
       </Box>
