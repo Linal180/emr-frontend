@@ -16,6 +16,7 @@ export const PASSWORD_REGEX =
 // constants
 export const ALL_STAFF = "Staff";
 export const CREATE_STAFF = "Create Staff";
+export const CREATE_FACILITY = "Create facility";
 export const ADD_STAFF = "Add Staff";
 export const VIEW_STAFF = "View Staff";
 export const STAFF_LISTING = "Staff Listing";

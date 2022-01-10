@@ -1,9 +1,10 @@
 // packages block
 import { FC } from 'react';
-import { ADD_STAFF, STAFF_BREAD, STAFF_NEW_BREAD, USERS_BREAD } from '../../../../constants';
-import PageHeader from '../../../common/PageHeader';
 // component block
 import AddStaffForm from "./AddStaffForm";
+import PageHeader from '../../../common/PageHeader';
+// constants block
+import { ADD_STAFF, STAFF_BREAD, STAFF_NEW_BREAD, USERS_BREAD } from '../../../../constants';
 
 const AddStaffComponent: FC = () => {
   return (
