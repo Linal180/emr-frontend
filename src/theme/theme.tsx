@@ -41,7 +41,7 @@ export const theme = createTheme({
 
     h5: {
       fontSize: 16,
-      fontWeight: 600,
+      fontWeight: 500,
       color: BLACK_ONE,
     },
 

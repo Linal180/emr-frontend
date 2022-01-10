@@ -17,7 +17,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => (
       <Sidebar />
 
       <Box component="main" flex={1} paddingLeft={3.75}>
-        <Box minHeight="calc(100vh - 230px)">
+        <Box minHeight="calc(100vh - 170px)">
           {children}
         </Box>
 

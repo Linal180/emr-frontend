@@ -10,16 +10,16 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP_CODE, CITY, CODE, FAX, STATE } from "../../../../constants";
+import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [deleteFacilityId, setDeleteFacilityId] = useState<string>("");
   const [facilities, setFacilities] = useState<FacilitiesPayload['facility']>([]);
@@ -136,7 +136,7 @@ const FacilityTable: FC = (): JSX.Element => {
               {renderTh(CODE)}
               {renderTh(CITY)}
               {renderTh(STATE)}
-              {renderTh(ZIP_CODE)}
+              {renderTh(ZIP)}
               {renderTh(FAX)}
               {renderTh(PHONE)}
               {renderTh(EMAIL)}
