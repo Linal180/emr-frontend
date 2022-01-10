@@ -62,116 +62,120 @@ const AddFacilityForm: FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3}>
-          <Grid md={6} item>
-            <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
-              <AddFacilityController
-                fieldType="text"
-                controllerName="name"
-                controllerLabel={NAME}
-              />
+        <Box maxHeight="calc(100vh - 240px)" overflow="auto">
+          <Grid container spacing={3}>
+            <Grid md={6} item>
+              <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="name"
+                  controllerLabel={NAME}
+                />
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="cliaIdNumber"
-                controllerLabel={CLIA_ID_NUMBER}
-              />
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="cliaIdNumber"
+                  controllerLabel={CLIA_ID_NUMBER}
+                />
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="insurancePlanType"
-                controllerLabel={INSURANCE_PLAN_TYPE}
-              />
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="insurancePlanType"
+                  controllerLabel={INSURANCE_PLAN_TYPE}
+                />
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="npi"
-                controllerLabel={NPI}
-              />
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="npi"
+                  controllerLabel={NPI}
+                />
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="code"
-                controllerLabel={CODE}
-              />
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="code"
+                  controllerLabel={CODE}
+                />
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="tamxonomyCode"
-                controllerLabel={TAMXONOMY_CODE}
-              />
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="tamxonomyCode"
+                  controllerLabel={TAMXONOMY_CODE}
+                />
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="revenueCode"
-                controllerLabel={REVENUE_CODE}
-              />
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="revenueCode"
+                  controllerLabel={REVENUE_CODE}
+                />
 
-              <Controller
-                name="practiceType"
-                defaultValue={PracticeType.Hospital}
-                render={({ field }) => <FormControl fullWidth>
-                  <InputLabel id="demo-customized-select-label-practice-type" shrink>Practice Type</InputLabel>
-                  <Select
-                    labelId="demo-customized-select-label-practice-type"
-                    id="demo-customized-select-1"
-                    variant="outlined"
-                  >
-                    {MAPPED_PRACTICE_TYPES.map((type, index: number) => {
-                      const { label, value } = type;
+                <Controller
+                  name="practiceType"
+                  defaultValue={PracticeType.Hospital}
+                  render={({ field }) => (
+                    <FormControl fullWidth margin="normal">
+                      <InputLabel id="practice-type" shrink>Practice Type</InputLabel>
 
-                      return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                    })}
-                  </Select>
-                </FormControl>
-                }
-              />
-            </CardComponent>
+                      <Select
+                        labelId="practice-type"
+                        id="practice-type-select"
+                        variant="outlined"
+                      >
+                        {MAPPED_PRACTICE_TYPES.map((type, index: number) => {
+                          const { label, value } = type;
+
+                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
+                        })}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </CardComponent>
+            </Grid>
+
+            <Grid item md={6}>
+              <CardComponent cardTitle={FACILITY_CONTACT_INFO} isEdit={true}>
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="email"
+                  controllerLabel={EMAIL}
+                />
+
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="phone"
+                  controllerLabel={PHONE}
+                />
+
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="fax"
+                  controllerLabel={FAX}
+                />
+
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="city"
+                  controllerLabel={CITY}
+                />
+
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="state"
+                  controllerLabel={STATE}
+                />
+
+                <AddFacilityController
+                  fieldType="text"
+                  controllerName="country"
+                  controllerLabel={COUNTRY}
+                />
+              </CardComponent>
+            </Grid>
           </Grid>
-
-          <Grid item md={6}>
-            <CardComponent cardTitle={FACILITY_CONTACT_INFO} isEdit={true}>
-              <AddFacilityController
-                fieldType="text"
-                controllerName="email"
-                controllerLabel={EMAIL}
-              />
-
-              <AddFacilityController
-                fieldType="text"
-                controllerName="phone"
-                controllerLabel={PHONE}
-              />
-
-              <AddFacilityController
-                fieldType="text"
-                controllerName="fax"
-                controllerLabel={FAX}
-              />
-
-              <AddFacilityController
-                fieldType="text"
-                controllerName="city"
-                controllerLabel={CITY}
-              />
-
-              <AddFacilityController
-                fieldType="text"
-                controllerName="state"
-                controllerLabel={STATE}
-              />
-
-              <AddFacilityController
-                fieldType="text"
-                controllerName="country"
-                controllerLabel={COUNTRY}
-              />
-            </CardComponent>
-          </Grid>
-        </Grid>
+        </Box>
 
         <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          <Button type="submit" variant="contained" color="secondary" disabled={loading}>
             {CREATE_FACILITY}
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
