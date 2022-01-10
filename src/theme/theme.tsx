@@ -2,13 +2,13 @@
 import { createTheme } from "@material-ui/core/styles";
 import { colors } from "@material-ui/core";
 // color-constants and font-family block
-import { PRIMARY_COLOR, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, SECONDARY_COLOR, GRAY_TWO, GRAY_THREE } from ".";
+import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
   palette: {
     primary: {
-      main: PRIMARY_COLOR,
+      main: BLUE_TWO,
       contrastText: WHITE,
     },
 
@@ -35,7 +35,7 @@ export const theme = createTheme({
     },
 
     h4: {
-      fontSize: 24,
+      fontSize: 20,
       fontWeight: 600
     },
 
@@ -68,7 +68,7 @@ export const theme = createTheme({
             '& tbody': {
               "& tr": {
                 '&:nth-of-type(odd)': {
-                  backgroundColor: "#fff",
+                  backgroundColor: WHITE,
                 },
 
                 '&:nth-of-type(even)': {
@@ -139,9 +139,15 @@ export const theme = createTheme({
       },
     },
 
+    MuiToolbar: {
+      gutters: {
+        padding: "15px 30px",
+      }
+    },
+
     MuiCheckbox: {
       root: {
-        color: PRIMARY_COLOR
+        color: BLUE_TWO
       }
     },
 
@@ -166,8 +172,12 @@ export const theme = createTheme({
         },
 
         "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {
-          border: `1px solid ${SECONDARY_COLOR}`,
+          border: `1px solid ${BLUE_ONE}`,
         },
+      },
+
+      input: {
+        padding: 14,
       }
     },
 
