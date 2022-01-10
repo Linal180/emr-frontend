@@ -292,12 +292,51 @@ export type ParamsType = {
   id: string
 }
 
-type FacilityControlTypes = "code" | "country" | "email" | "facilityId" | "fax"
-  | "address" | "address2" | "city" | "cliaIdNumber"
-  | "federalTaxId" | "insurancePlanType" | "mammographyCertificationNumber"
-  | "mobile" | "name" | "npi" | "pager" | "phone" | "practiceType"
-  | "revenueCode" | "serviceCode" | "state" | "stateImmunizationId"
-  | "tamxonomyCode" | "userId" | "zipCode";
+type FacilityControlTypes =
+  | "name"
+  | "practiceType"
+  | "code"
+
+  | "email"
+  | "phone"
+  | "fax"
+  | "zipCode"
+  | "address"
+  | "address2"
+  | "city"
+  | "state"
+  | "country"
+
+  | "billingEmail"
+  | "billingPhone"
+  | "billingFax"
+  | "billingZipCode"
+  | "billingAddress"
+  | "billingAddress2"
+  | "billingCity"
+  | "billingState"
+  | "billingCountry"
+  | "billingPracticeType"
+  | "billingBankAccount"
+  
+  | "cliaIdNumber"
+  | "federalTaxId"
+  | "revenueCode"
+  | "tamxonomyCode"
+  | "facilityType"
+  | "insurancePlanType"
+  | "mammographyCertificationNumber"
+  | "npi"
+  | "merchantId"
+  | "billingType"
+  | "stateImmunizationId"
+  | "locationId"
+  | "pos"
+
+  | "facilityId"
+  | "mobile"
+  | "pager"
+  | "serviceCode"
 
 export interface CreateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;

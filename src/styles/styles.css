@@ -194,3 +194,8 @@ input[type="email"] {
   padding-bottom: 15px;
   padding-left: 30px;
 }
+
+.overflowY-auto {
+  overflow-y: auto;
+  overflow-x: hidden;
+}

@@ -1,7 +1,7 @@
 // packages block
 import { FC } from "react";
 import { Edit, Save, ArrowBack } from "@material-ui/icons";
-import { Card, CardContent, CardHeader, colors, IconButton, Box } from "@material-ui/core";
+import { Card, CardContent, CardHeader, IconButton, Box } from "@material-ui/core";
 // interfaces/types block
 import { CardComponentType } from "../../interfacesTypes";
 
