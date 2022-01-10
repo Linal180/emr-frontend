@@ -9,7 +9,7 @@ import AddFacilityController from "./AddFacilityController";
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { CreateFacilityInput, PracticeType, useCreateFacilityMutation } from "../../../../generated/graphql";
-import { CITY, CLIA_ID_NUMBER, CODE, COUNTRY, FACILITY_TYPE, FACILITY_IDS, CREATE_FACILITY, BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CONTACT_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE, FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, BANK_ACCOUNT, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, MERCHANT_ID, STATE_IMMUNIZATION_ID, LOCATION_ID } from "../../../../constants";
+import { CITY, CLIA_ID_NUMBER, CODE, COUNTRY, FACILITY_TYPE, FACILITY_IDS, CREATE_FACILITY, BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CONTACT_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE, FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, BANK_ACCOUNT, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, MERCHANT_ID, STATE_IMMUNIZATION_ID, LOCATION_ID, POS } from "../../../../constants";
 
 const AddFacilityForm: FC = () => {
   const methods = useForm<CreateFacilityInput>({ mode: "all" });
@@ -258,23 +258,41 @@ const AddFacilityForm: FC = () => {
 
           <Grid item md={6}>
             <CardComponent cardTitle={FACILITY_IDS} isEdit={true}>
-              <AddFacilityController
-                fieldType="text"
-                controllerName="cliaIdNumber"
-                controllerLabel={CLIA_ID_NUMBER}
-              />
+              <Grid container spacing={3}>
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="cliaIdNumber"
+                    controllerLabel={CLIA_ID_NUMBER}
+                  />
+                </Grid>
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="federalTaxId"
-                controllerLabel={FEDERAL_TAX_ID}
-              />
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="federalTaxId"
+                    controllerLabel={FEDERAL_TAX_ID}
+                  />
+                </Grid>
+              </Grid>
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="tamxonomyCode"
-                controllerLabel={TAMXONOMY_CODE}
-              />
+              <Grid container spacing={3}>
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="tamxonomyCode"
+                    controllerLabel={TAMXONOMY_CODE}
+                  />
+                </Grid>
+
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="revenueCode"
+                    controllerLabel={REVENUE_CODE}
+                  />
+                </Grid>
+              </Grid>
 
               <AddFacilityController
                 fieldType="text"
@@ -290,45 +308,63 @@ const AddFacilityForm: FC = () => {
 
               <AddFacilityController
                 fieldType="text"
-                controllerName="revenueCode"
-                controllerLabel={REVENUE_CODE}
-              />
-
-              <AddFacilityController
-                fieldType="text"
                 controllerName="mammographyCertificationNumber"
                 controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
               />
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="npi"
-                controllerLabel={NPI}
-              />
+              <Grid container spacing={3}>
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="npi"
+                    controllerLabel={NPI}
+                  />
+                </Grid>
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="merchantId"
-                controllerLabel={MERCHANT_ID}
-              />
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="pos"
+                    controllerLabel={POS}
+                  />
+                </Grid>
+              </Grid>
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="billingType"
-                controllerLabel={PHONE}
-              />
+              <Grid container spacing={3}>
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="merchantId"
+                    controllerLabel={MERCHANT_ID}
+                  />
+                </Grid>
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="stateImmunizationId"
-                controllerLabel={STATE_IMMUNIZATION_ID}
-              />
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="billingType"
+                    controllerLabel={PHONE}
+                  />
+                </Grid>
+              </Grid>
 
-              <AddFacilityController
-                fieldType="text"
-                controllerName="locationId"
-                controllerLabel={LOCATION_ID}
-              />
+              <Grid container spacing={3}>
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="stateImmunizationId"
+                    controllerLabel={STATE_IMMUNIZATION_ID}
+                  />
+                </Grid>
+
+                <Grid item md={6}>
+                  <AddFacilityController
+                    fieldType="text"
+                    controllerName="locationId"
+                    controllerLabel={LOCATION_ID}
+                  />
+                </Grid>
+              </Grid>
             </CardComponent>
           </Grid>
         </Grid>

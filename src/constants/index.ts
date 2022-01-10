@@ -95,6 +95,7 @@ export const REVENUE_CODE = "Revenue Code";
 export const SERVICE_CODE = "Service Code";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const LOCATION_ID = "Location ID";
+export const POS = "Place of Service Code (POS)";
 export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
 export const LAST_NAME = "Last name";

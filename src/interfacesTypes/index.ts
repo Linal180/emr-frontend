@@ -331,6 +331,7 @@ type FacilityControlTypes =
   | "billingType"
   | "stateImmunizationId"
   | "locationId"
+  | "pos"
 
   | "facilityId"
   | "mobile"
