@@ -27,13 +27,15 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
 
       <MainLayout>
-        <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
-        <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
-        <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
-        <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
-        <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
-        <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
-        <PrivateRoute exact path={ROOT_ROUTE} component={Dashboard} />
+        <Switch>
+          <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
+          <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
+          <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
+          <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
+          <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
+          <PrivateRoute exact path={ROOT_ROUTE} component={Dashboard} />
+        </Switch>
       </MainLayout>
 
       <Route component={PageNotFound} />
