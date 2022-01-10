@@ -9,7 +9,7 @@ import AddFacilityController from "./AddFacilityController";
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { CreateFacilityInput, PracticeType, useCreateFacilityMutation } from "../../../../generated/graphql";
-import { CITY, CLIA_ID_NUMBER, CODE, COUNTRY, CREATE_FACILITY, EMAIL, FACILITIES_ROUTE, FACILITY_BASIC_INFO, FACILITY_CONTACT_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE } from "../../../../constants";
+import { CITY, CLIA_ID_NUMBER, CODE, COUNTRY, CREATE_FACILITY, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CONTACT_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE } from "../../../../constants";
 
 const AddFacilityForm: FC = () => {
   const methods = useForm<CreateFacilityInput>({ mode: "all" });
@@ -64,7 +64,7 @@ const AddFacilityForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           <Grid md={6} item>
-            <CardComponent cardTitle={FACILITY_BASIC_INFO} isEdit={true}>
+            <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
               <AddFacilityController
                 fieldType="text"
                 controllerName="name"

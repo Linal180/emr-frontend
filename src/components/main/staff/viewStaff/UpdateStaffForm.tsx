@@ -33,7 +33,8 @@ const UpdateStaffForm: FC = () => {
         const { status } = response
 
         if (staff && status && status === 200) {
-          const { firstName, lastName, username, email, phone, mobile, dob, gender } = staff || {}
+          const { firstName, lastName, username, email, phone, mobile, dob, gender, facility } = staff || {}
+          const { id: facilityId } = facility || {}
 
           dob && setValue('dob', dob)
           email && setValue('email', email)
@@ -43,6 +44,7 @@ const UpdateStaffForm: FC = () => {
           lastName && setValue('lastName', lastName)
           username && setValue('username', username)
           firstName && setValue('firstName', firstName)
+          facilityId && setValue('facilityId', facilityId)
           setValue('roleType', UserRole.Staff)
         }
       }
@@ -218,13 +220,12 @@ const UpdateStaffForm: FC = () => {
                   control={control}
                   render={({ field }) => {
                     return (
-                      <FormControl fullWidth>
+                      <FormControl fullWidth margin='normal'>
                         <InputLabel id="demo-customized-select-label-facility" shrink>Facility</InputLabel>
                         <Select
                           labelId="demo-customized-select-label-facility"
                           id="demo-customized-select-f"
                           variant="outlined"
-                          value={field.value}
                           onChange={field.onChange}
                         >
                           {facilityList?.map((facility) => {

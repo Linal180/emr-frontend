@@ -158,7 +158,7 @@ const StaffTable: FC = (): JSX.Element => {
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row"><Link to={`${STAFF_ROUTE}/${id}`}>{firstName} {lastName}</Link></TableCell>
+                    <TableCell scope="row">{firstName} {lastName}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">{username}</TableCell>

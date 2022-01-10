@@ -152,7 +152,8 @@ export const RequiredMessage = (fieldName: string) => `${fieldName} is required`
 export const getPracticeType = (type: PracticeType): string => {
   switch (type) {
     case PracticeType.Hospital:
-      return 'Hospital'
+      console.log("Sss")
+      return PracticeType.Hospital
     case PracticeType.Clinic:
       return 'Clinic'
     case PracticeType.Lab:

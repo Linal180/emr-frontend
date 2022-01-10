@@ -1,7 +1,7 @@
 // packages block
-import { TextField, InputLabel, FormControl } from "@material-ui/core";
 import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { TextField, InputLabel, FormControl } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { UpdateFacilityInputControlProps } from "../../../../interfacesTypes";
 

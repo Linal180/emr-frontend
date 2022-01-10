@@ -10,13 +10,13 @@ import UpdateFacilityController from './UpdateFacilityController';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { getPracticeType } from "../../../../utils";
-import { ParamsType } from '../../../../interfacesTypes';
-import { FacilityPayload, PracticeType, UpdateFacilityItemInput, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
-import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, FACILITY_BASIC_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY } from "../../../../constants";
+import { CustomUpdateFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
+import { FacilityPayload, PracticeType, UpdateFacilityInput, UpdateFacilityItemInput, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
+import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, FACILITY_CONTACT_INFO, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE } from "../../../../constants";
 
 const UpdateFacilityForm: FC = () => {
   const { id } = useParams<ParamsType>();
-  const methods = useForm<UpdateFacilityItemInput>({ mode: "all" });
+  const methods = useForm<CustomUpdateFacilityInputProps>({ mode: "all" });
   const { reset, handleSubmit, setValue, formState: { errors } } = methods;
   const [facility, setFacility] = useState<FacilityPayload['facility']>()
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
@@ -34,6 +34,7 @@ const UpdateFacilityForm: FC = () => {
           const {
             name, cliaIdNumber, federalTaxId, insurancePlanType,
             npi, code, tamxonomyCode, revenueCode, practiceType,
+            contacts, billingAddress
           } = facility
 
           setFacility(facility)
@@ -47,6 +48,17 @@ const UpdateFacilityForm: FC = () => {
           tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
           revenueCode && setValue('revenueCode', revenueCode)
           practiceType && setValue('practiceType', getPracticeType(practiceType) as PracticeType)
+
+          if (contacts) {
+            const { email, phone, mobile, fax, city, state, country } = contacts[0]
+            email && setValue('email', email)
+            phone && setValue('phone', phone)
+            mobile && setValue('mobile', mobile)
+            fax && setValue('fax', fax)
+            city && setValue('city', city)
+            state && setValue('state', state)
+            country && setValue('country', country)
+          }
 
         }
       }
@@ -87,28 +99,34 @@ const UpdateFacilityForm: FC = () => {
     }
   }, [getFacility, id])
 
-  const onSubmit: SubmitHandler<UpdateFacilityItemInput> = async (inputs: any) => {
-    if (id) {
-      const {
-        name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode,
-        revenueCode, practiceType, phone, email, fax, city, state, country
-      } = inputs
+  const onSubmit: SubmitHandler<CustomUpdateFacilityInputProps> = async ({
+    name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode,
+    practiceType, phone, email, fax, city, state, country
+  }) => {
+    if (facility) {
 
-      await updateFacility({
-        variables: {
-          updateFacilityInput: {
-            updateFacilityItemInput: {
-              id, name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode, practiceType
-            },
-            updateContactInput: {
-              id, phone, email, fax, city, state, country
-            },
-            updateBillingAddressInput: {
-              id, phone, email, fax, city, state, country
-            },
+      const { contacts, billingAddress } = facility;
+
+      if (id && contacts && billingAddress) {
+        const { id: contactId } = contacts[0]
+        const { id: billingId } = billingAddress[0]
+
+        await updateFacility({
+          variables: {
+            updateFacilityInput: {
+              updateFacilityItemInput: {
+                id, name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode, practiceType
+              },
+              updateContactInput: {
+                id: contactId, phone, email, fax, city, state, country
+              },
+              updateBillingAddressInput: {
+                id: billingId, phone, email, fax, city, state, country
+              },
+            }
           }
-        }
-      })
+        })
+      }
     }
   };
 
@@ -117,7 +135,7 @@ const UpdateFacilityForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container spacing={3}>
           <Grid md={6} item>
-            <CardComponent cardTitle={FACILITY_BASIC_INFO} isEdit={true}>
+            <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
               <UpdateFacilityController
                 fieldType="text"
                 controllerName="name"
@@ -178,6 +196,46 @@ const UpdateFacilityForm: FC = () => {
                   </Select>
                 </FormControl>
                 }
+              />
+            </CardComponent>
+          </Grid>
+
+          <Grid item md={6}>
+            <CardComponent cardTitle={FACILITY_CONTACT_INFO} isEdit={true}>
+              <UpdateFacilityController
+                fieldType="text"
+                controllerName="email"
+                controllerLabel={EMAIL}
+              />
+
+              <UpdateFacilityController
+                fieldType="text"
+                controllerName="phone"
+                controllerLabel={PHONE}
+              />
+
+              <UpdateFacilityController
+                fieldType="text"
+                controllerName="fax"
+                controllerLabel={FAX}
+              />
+
+              <UpdateFacilityController
+                fieldType="text"
+                controllerName="city"
+                controllerLabel={CITY}
+              />
+
+              <UpdateFacilityController
+                fieldType="text"
+                controllerName="state"
+                controllerLabel={STATE}
+              />
+
+              <UpdateFacilityController
+                fieldType="text"
+                controllerName="country"
+                controllerLabel={COUNTRY}
               />
             </CardComponent>
           </Grid>

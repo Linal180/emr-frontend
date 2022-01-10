@@ -185,7 +185,7 @@ const AddStaffForm: FC = () => {
                 control={control}
                 render={({ field }) => {
                   return (
-                    <FormControl fullWidth>
+                    <FormControl fullWidth margin='normal'>
                       <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
                       <Select
                         labelId="demo-customized-select-label-gender"
@@ -213,7 +213,7 @@ const AddStaffForm: FC = () => {
                 control={control}
                 render={({ field }) => {
                   return (
-                    <FormControl fullWidth>
+                    <FormControl fullWidth margin='normal'>
                       <InputLabel id="demo-customized-select-label-facility" shrink>Facility</InputLabel>
                       <Select
                         labelId="demo-customized-select-label-facility"
