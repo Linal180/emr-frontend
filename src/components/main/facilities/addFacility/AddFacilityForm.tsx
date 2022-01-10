@@ -14,7 +14,7 @@ import { ADD_FACILITY, ADDRESS, ADDRESS_2, CITY, CLIA_ID_NUMBER, CODE, COUNTRY, 
 
 const AddFacilityForm: FC = () => {
   const methods = useForm<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput>({ mode: "all" });
-  const { reset, handleSubmit, control, formState: { errors } } = methods;
+  const { reset, handleSubmit, control } = methods;
 
   const [createFacility, { loading }] = useCreateFacilityMutation({
     onError() {
