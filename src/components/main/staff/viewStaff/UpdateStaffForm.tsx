@@ -12,7 +12,7 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
 import { CreateStaffInput, UserRole, Gender, useGetStaffLazyQuery, useUpdateStaffMutation, UpdateStaffInput } from "../../../../generated/graphql";
-import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, STAFF_BASIC_INFO, STAFF_ROUTE, USERNAME, DOB, MAPPED_GENDER, STAFF_UPDATED } from "../../../../constants";
+import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, STAFF_BASIC_INFO, STAFF_ROUTE, USERNAME, DOB, MAPPED_GENDER, STAFF_UPDATED, UPDATE_STAFF } from "../../../../constants";
 
 const UpdateStaffForm: FC = () => {
   const { id } = useParams<ParamsType>();
@@ -213,7 +213,7 @@ const UpdateStaffForm: FC = () => {
 
             <Box display="flex" justifyContent="flex-end" pt={2}>
               <Button type="submit" variant="contained" color="primary" disabled={updateStaffLoading}>
-                Update User
+                {UPDATE_STAFF}
                 {updateStaffLoading && <CircularProgress size={20} color="inherit" />}
               </Button>
             </Box>

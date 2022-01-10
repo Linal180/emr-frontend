@@ -184,3 +184,7 @@ input[type="email"] {
 .padding-left {
   padding-left: 0px;
 }
+
+.pointer-cursor {
+  cursor: pointer;
+}

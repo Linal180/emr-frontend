@@ -1,24 +1,26 @@
 // packages block
 import { FC } from 'react';
-import { Button, Box, CircularProgress, Grid, FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import AddFacilityController from "./AddFacilityController";
 import CardComponent from "../../../common/CardComponent";
-import SelectController from "./SelectController";
+import AddFacilityController from "./AddFacilityController";
 // utils, interfaces and graphql block
 import history from "../../../../history";
-import { CreateBillingAddressInput, CreateContactInput, CreateFacilityInput, CreateFacilityItemInput, PracticeType, useCreateFacilityMutation, UserRole } from "../../../../generated/graphql";
-import { ADD_FACILITY, CITY, CLIA_ID_NUMBER, CODE, COUNTRY, EMAIL, FACILITY_ID, FAX, FEDERAL_TAX_ID, INSURANCE_PLAN_TYPE, MAMMOGRAPHY_CERTIFICATION_NUMBER, MOBILE, NAME, NPI, PAGER, PHONE, PRACTICE_TYPE, REVENUE_CODE, SERVICE_CODE, STATE, STATE_IMMUNIZATION_ID, TAMXONOMY_CODE, ZIP_CODE, FACILITY_CREATED, FACILITIES_ROUTE, CREATE_FACILITY, FACILITY_BASIC_INFO, MAPPED_PRACTICE_TYPES, FACILITY_CONTACT_INFO, FACILITY_BILLING_INFO } from "../../../../constants";
+import { CreateFacilityInput, PracticeType, useCreateFacilityMutation } from "../../../../generated/graphql";
+import { CITY, CLIA_ID_NUMBER, CODE, COUNTRY, CREATE_FACILITY, EMAIL, FACILITIES_ROUTE, FACILITY_BASIC_INFO, FACILITY_CONTACT_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE } from "../../../../constants";
 
 const AddFacilityForm: FC = () => {
   const methods = useForm<CreateFacilityInput>({ mode: "all" });
-  const { reset, handleSubmit, control, formState: { errors } } = methods;
+  const { reset, handleSubmit, formState: { errors } } = methods;
 
   const [createFacility, { loading }] = useCreateFacilityMutation({
     onError({ message }) {
-      Alert.error(message)
+      if (message === FORBIDDEN_EXCEPTION) {
+        Alert.error("Email or username already exists!")
+      } else
+        Alert.error(message)
     },
 
     onCompleted(data) {
@@ -36,78 +38,26 @@ const AddFacilityForm: FC = () => {
     }
   });
 
-  const onSubmit: SubmitHandler<CreateFacilityInput> = async () => {
+  const onSubmit: SubmitHandler<CreateFacilityInput> = async (inputs: any) => {
+    const { name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode, practiceType, phone, email, fax, city, state, country } = inputs;
+
+    await createFacility({
+      variables: {
+        createFacilityInput: {
+          createFacilityItemInput: {
+            name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode, practiceType
+          },
+          createContactInput: {
+            phone, email, fax, city, state, country
+          },
+          createBillingAddressInput: {
+            phone, email, fax, city, state, country
+          },
+        }
+      }
+    })
+
   };
-  // const onSubmit: SubmitHandler<CreateFacilityInput> = async ({ createFacilityItemInput: {
-  //   name,
-  //   cliaIdNumber,
-  //   federalTaxId,
-  //   insurancePlanType,
-  //   npi,
-  //   code,
-  //   tamxonomyCode,
-  //   revenueCode,
-  //   practiceType
-  // },
-  //   createContactInput: {
-  //     phone,
-  //     email,
-  //     fax,
-  //     city,
-  //     state,
-  //     country
-  //   },
-  //   createBillingAddressInput: {
-  //     phone: billingPhone,
-  //     email: billingEmail,
-  //     fax: billingEax,
-  //     city: billingCity,
-  //     state: billingState,
-  //     country: billingCountry
-  //   }
-  // }) => {
-  //   await createFacility({
-  //     variables: {
-  //       createFacilityInput: {
-  //         createFacilityItemInput: {
-  //           name,
-  //           cliaIdNumber,
-  //           federalTaxId,
-  //           insurancePlanType,
-  //           npi,
-  //           code,
-  //           tamxonomyCode,
-  //           revenueCode,
-  //           practiceType
-  //         },
-  //         createContactInput: {
-  //           phone,
-  //           email,
-  //           fax,
-  //           city,
-  //           state,
-  //           country
-  //         },
-  //         createBillingAddressInput: {
-  //           phone,
-  //           email,
-  //           fax,
-  //           city,
-  //           state,
-  //           country
-  //         },
-  //         // createBillingAddressInput: {
-  //         //   phone: billingPhone,
-  //         //   email: billingEmail,
-  //         //   fax: billingEax,
-  //         //   city: billingCity,
-  //         //   state: billingState,
-  //         //   country: billingCountry
-  //         // }
-  //       }
-  //     }
-  //   })
-  // };
 
   return (
     <FormProvider {...methods}>

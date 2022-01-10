@@ -300,3 +300,9 @@ type CreateFacilityControlTypes = "code" | "country" | "email" | "facilityId" | 
 export interface CreateFacilityInputControlProps extends IControlLabel {
   controllerName: CreateFacilityControlTypes;
 }
+
+type UpdateFacilityControlTypes = "name" | "cliaIdNumber" | "federalTaxId" | "insurancePlanType" | "npi" | "code" | "tamxonomyCode" | "revenueCode" | "practiceType";
+
+export interface UpdateFacilityInputControlProps extends IControlLabel {
+  controllerName: UpdateFacilityControlTypes;
+}

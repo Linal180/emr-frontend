@@ -12,7 +12,7 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { MappedRoleInterface } from "../../../../interfacesTypes";
 import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
-import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, USERNAME } from "../../../../constants";
+import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, USERNAME, FORBIDDEN_EXCEPTION } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
@@ -22,7 +22,10 @@ const AddStaffForm: FC = () => {
 
   const [createStaff, { loading }] = useCreateStaffMutation({
     onError({ message }) {
-      Alert.error(message)
+      if (message === FORBIDDEN_EXCEPTION) {
+        Alert.error("Email or username already exists!")
+      } else
+        Alert.error(message)
     },
 
     onCompleted(data) {

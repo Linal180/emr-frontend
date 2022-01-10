@@ -7,7 +7,9 @@ import { BreadcrumbProps } from '../../interfacesTypes'
 
 const Breadcrumb: FC<BreadcrumbProps> = ({ path }) => {
   const handleClick = (link: string) => {
-    history.push(link);
+    if (link) {
+      history.push(link);
+    }
   };
 
   return (
@@ -15,7 +17,7 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ path }) => {
       {path.map(bread => {
         const { text, link } = bread;
 
-        return <Link color="textPrimary" onClick={() => handleClick(link)}>
+        return <Link color="textPrimary" className="pointer-cursor" onClick={() => handleClick(link)}>
           {text}
         </Link>
       })}
