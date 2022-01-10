@@ -1,27 +1,31 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import Pagination from "@material-ui/lab/Pagination";
 import { Search } from "@material-ui/icons";
-import { Box, Grid, FormControl, InputLabel, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
+import Pagination from "@material-ui/lab/Pagination";
+import { Box, Grid, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow, FormControl, InputLabel } from "@material-ui/core";
 // components block
+import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { EditIcon, TrashIcon } from "../../../../assets/svgs";
-import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP_CODE, CITY, CODE, FAX, STATE } from "../../../../constants";
+import { EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
+import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
 
-const FacilityTable: FC = (): JSX.Element => {
+const StaffTable: FC = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  const [totalPage, setTotalPage] = useState<number>(0);
-  const [facilities, setFacilities] = useState<FacilitiesPayload['facility']>([]);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [deleteStaffId, setDeleteStaffId] = useState<string>("");
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
 
-  const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
+  const [findAllStaff, { loading, error }] = useFindAllStaffLazyQuery({
     variables: {
-      facilityInput: {
+      staffInput: {
         paginationOptions: {
           page: 1,
           limit: PAGE_LIMIT
@@ -37,18 +41,38 @@ const FacilityTable: FC = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { findAllFacility } = data || {};
+      const { findAllStaff } = data || {};
 
-      if (findAllFacility) {
-        const { facility, pagination } = findAllFacility
+      if (findAllStaff) {
+        const { allstaff, pagination, } = findAllStaff
 
         if (!searchQuery) {
           if (pagination) {
             const { totalPages } = pagination
-            totalPages && setTotalPage(totalPages)
+            totalPages && setTotalPages(totalPages)
           }
 
-          facility && setFacilities(facility)
+          allstaff && setStaff(allstaff)
+        }
+      }
+    }
+  });
+
+  const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
+    onError() {
+      Alert.error(CANT_DELETE_STAFF)
+      setOpenDelete(false)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { removeStaff: { response } } = data
+
+        if (response) {
+          const { message } = response
+          message && Alert.success(message);
+          setOpenDelete(false)
+          findAllStaff();
         }
       }
     }
@@ -56,22 +80,39 @@ const FacilityTable: FC = (): JSX.Element => {
 
   useEffect(() => {
     if (!searchQuery) {
-      findAllFacility()
+      findAllStaff()
     }
-  }, [page, findAllFacility, searchQuery]);
+  }, [page, findAllStaff, searchQuery]);
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
 
   const handleSearch = () => { }
 
-  const onDeleteClick = (id: string) => { }
+  const onDeleteClick = (id: string) => {
+    if (id) {
+      setDeleteStaffId(id)
+      setOpenDelete(true)
+    }
+  };
+
+  const handleDeleteStaff = async () => {
+    if (deleteStaffId) {
+      await removeStaff({
+        variables: {
+          removeStaff: {
+            id: deleteStaffId
+          }
+        }
+      })
+    }
+  };
 
   return (
     <>
       <Box pt={1}>
         <Grid container spacing={1}>
           <Grid item sm={4}>
-          <FormControl fullWidth margin="normal">
+            <FormControl fullWidth margin="normal">
               <InputLabel shrink>Search</InputLabel>
               <TextField
                 name="searchQuery"
@@ -97,13 +138,9 @@ const FacilityTable: FC = (): JSX.Element => {
           <TableHead>
             <TableRow>
               {renderTh(NAME)}
-              {renderTh(CODE)}
-              {renderTh(CITY)}
-              {renderTh(STATE)}
-              {renderTh(ZIP_CODE)}
-              {renderTh(FAX)}
-              {renderTh(PHONE)}
               {renderTh(EMAIL)}
+              {renderTh(PHONE)}
+              {renderTh(PRIMARY_PROVIDER)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -116,24 +153,18 @@ const FacilityTable: FC = (): JSX.Element => {
                 </TableCell>
               </TableRow>
             ) : (
-              facilities?.map((facility: FacilityPayload['facility'], index: number) => {
-                const { id, name, code, contacts } = facility || {};
-                const facilityContact = contacts && contacts[0]
-                const { email, phone, fax, zipCode, city, state } = facilityContact || {}
+              staff?.map((record: StaffPayload['staff'], index: number) => {
+                const { id, firstName, lastName, email, phone, username } = record || {};
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">{code}</TableCell>
-                    <TableCell scope="row">{city}</TableCell>
-                    <TableCell scope="row">{state}</TableCell>
-                    <TableCell scope="row">{zipCode}</TableCell>
-                    <TableCell scope="row">{fax}</TableCell>
-                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row"><Link to={`${STAFF_ROUTE}/${id}`}>{firstName} {lastName}</Link></TableCell>
                     <TableCell scope="row">{email}</TableCell>
+                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row">{username}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${FACILITIES_ROUTE}/${id}`}>
+                        <Link to={`${STAFF_ROUTE}/${id}`}>
                           <IconButton size="small">
                             <EditIcon />
                           </IconButton>
@@ -151,25 +182,34 @@ const FacilityTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !facilities) || error || !facilities?.length) && (
+        {((!loading && !staff) || error || !staff?.length) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>
         )}
 
-        {totalPage > 1 && (
+        {totalPages > 1 && (
           <Box display="flex" justifyContent="flex-end" pt={3}>
             <Pagination
-              count={totalPage}
+              count={totalPages}
               shape="rounded"
               page={page}
               onChange={handleChange}
             />
           </Box>
         )}
+
+        <ConfirmationModal
+          title={DELETE_STAFF}
+          isOpen={openDelete}
+          isLoading={deleteStaffLoading}
+          description={DELETE_STAFF_DESCRIPTION}
+          handleDelete={handleDeleteStaff}
+          setOpen={(open: boolean) => setOpenDelete(open)}
+        />
       </Box>
     </>
   );
 };
 
-export default FacilityTable;
+export default StaffTable;

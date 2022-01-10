@@ -1,10 +1,10 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode , ElementType} from "react";
+import { ComponentType, Dispatch, ReactNode, ElementType } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, CreateFacilityInput } from "../generated/graphql";
+import { CreateFacilityInput, LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, CreateBillingAddressInput, CreateContactInput, CreateFacilityItemInput, FacilitiesPayload } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -30,21 +30,23 @@ export interface AppContextProps {
   setIsSidebarOpen: Dispatch<React.SetStateAction<boolean>>;
 }
 
+export interface ListContextInterface {
+  facilityList: FacilitiesPayload['facility'];
+  setFacilityList: Function;
+}
+
 export interface Children {
   children: ReactNode;
 }
 
+type Path = { text: string; link: string }
+
 export interface BreadcrumbProps {
-  link?: string;
-  path?: string[];
-  title?: string;
-  hasButton?: boolean;
-  buttonText?: string;
+  path: Path[]
 }
 
 export interface MainLayoutProps {
   children: ReactNode,
-  breadcrumb?: BreadcrumbProps
 }
 
 export interface TableLoaderType {
@@ -125,7 +127,8 @@ export interface IPageHeader {
   linkToPage?: string;
   title: string;
   buttonText?: string;
-  noAdd?: boolean
+  noAdd?: boolean;
+  path?: Path[];
 }
 
 export interface IMaterialStepper {
@@ -258,10 +261,43 @@ export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
   items?: AppMenuItemProps[];
 };
 
-export type CreateFacilityInterface = CreateFacilityInput;
+type AddStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
+  | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
 
-type CreateFacilityControlTypes = "address" | "address2" | "city" | "cliaIdNumber" | "code" | "country" | "email" | "facilityId" | "fax" | "federalTaxId" | "insurancePlanType" | "mammographyCertificationNumber" | "mobile" | "name" | "npi" | "pager" | "phone" | "practiceType" | "revenueCode" | "serviceCode" | "state" | "stateImmunizationId" | "tamxonomyCode" | "userId" | "zipCode";
+type UpdateStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "phone" | "mobile" | "dob" | "gender" | "facilityId";
+
+export interface AddStaffInputControlProps extends IControlLabel {
+  control: Control<CreateStaffInput, object>;
+  controllerName: AddStaffControlTypes;
+}
+
+export interface UpdateStaffInputControlProps extends IControlLabel {
+  control: Control<UpdateStaffInput, object>;
+  controllerName: UpdateStaffControlTypes;
+}
+
+export interface MappedRoleInterface {
+  value: UserRole;
+  label: string;
+}
+
+export interface MappedGenderInterface {
+  value: Gender;
+  label: string;
+}
+
+export type ParamsType = {
+  id: string
+}
+
+type CreateFacilityControlTypes = "code" | "country" | "email" | "facilityId" | "fax"
+  | "address" | "address2" | "city" | "cliaIdNumber"
+  | "federalTaxId" | "insurancePlanType" | "mammographyCertificationNumber"
+  | "mobile" | "name" | "npi" | "pager" | "phone" | "practiceType"
+  | "revenueCode" | "serviceCode" | "state" | "stateImmunizationId"
+  | "tamxonomyCode" | "userId" | "zipCode";
+
 export interface CreateFacilityInputControlProps extends IControlLabel {
-  control: Control<CreateFacilityInterface, object>;
+  control: Control<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput, object>;
   controllerName: CreateFacilityControlTypes;
 }

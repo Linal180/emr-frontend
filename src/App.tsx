@@ -10,6 +10,7 @@ import client from './apollo'
 import { theme } from "./theme/theme";
 import { AuthContextProvider, AppContextProvider } from './context'
 import './styles/styles.css'
+import { ListContextProvider } from "./context/listContext";
 
 const App = () => {
   return (
@@ -20,9 +21,11 @@ const App = () => {
       <ApolloProvider client={client}>
         <AuthContextProvider>
           <AppContextProvider>
-            <ThemeProvider theme={theme}>
-              <AppContainer />
-            </ThemeProvider>
+            <ListContextProvider>
+              <ThemeProvider theme={theme}>
+                <AppContainer />
+              </ThemeProvider>
+            </ListContextProvider>
           </AppContextProvider>
         </AuthContextProvider>
       </ApolloProvider>

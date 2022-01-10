@@ -1,10 +1,6 @@
 // components block
 import FacilityTable from "./FacilityTable";
 
-const UsersComponent = (): JSX.Element => {
-  return (
-      <FacilityTable />
-  )
-};
+const FacilityComponent = (): JSX.Element => <FacilityTable />
 
-export default UsersComponent;
+export default FacilityComponent;

@@ -6,7 +6,6 @@ import { DASHBOARD_TEXT } from "../../../constants";
 const DashboardComponent = (): JSX.Element => (
   <PageHeader
     title={DASHBOARD_TEXT}
-    hasComponent
   />
 );
 

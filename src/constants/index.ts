@@ -1,20 +1,10 @@
 // packages block
-import {
-  LocalAtm,
-  ReportSharp,
-  Home,
-  LocalMall,
-  BookOutlined,
-} from "@material-ui/icons";
-import {
-  DashboardIcon,
-  UsersIcon,
-  AppointmentsIcon,
-  FacilitiesIcon,
-  ReportsIcon,
-  BillingIcon,
-} from "../assets/svgs";
+import { LocalAtm, ReportSharp, Home, LocalMall, BookOutlined } from "@material-ui/icons";
 // graphql and interfaces block
+import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
+import { Gender, UserRole } from "../generated/graphql";
+import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
+
 
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;
@@ -24,9 +14,20 @@ export const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
+export const ALL_STAFF = "Staff";
+export const CREATE_STAFF = "Create Staff";
+export const ADD_STAFF = "Add Staff";
+export const VIEW_STAFF = "View Staff";
+export const STAFF_LISTING = "Staff Listing";
+export const PRIMARY_PROVIDER = "Primary Provider";
+export const STAFF_BASIC_INFO = "Staff Basic Info";
+export const MOBILE = "Mobile";
+export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
+export const DOB = "Date of Birth";
 export const EMR = "EMR";
+export const LOGOUT_TEXT = "Logout";
 export const CODE = "Code";
 export const CITY = "City";
 export const STATE = "State";
@@ -73,19 +74,14 @@ export const FACILITY_ID = "Facility ID";
 export const FEDERAL_TAX_ID = "Federal Tax ID";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
-export const MOBILE = "Mobile";
 export const NPI = "NPI";
 export const PAGER = "Pager";
 export const PRACTICE_TYPE = "Practice Type";
 export const REVENUE_CODE = "Revenue Code";
 export const SERVICE_CODE = "Service Code";
-export const STATEIMMUNIZATION_ID = "State Immunization ID";
+export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
-export const DROPDOWN_ONE_TEXT = "None";
-export const DROPDOWN_TWO_TEXT = "Ten";
-export const DROPDOWN_THREE_TEXT = "Twenty";
-export const DROPDOWN_FOUR_TEXT = "Thirty";
 export const LAST_NAME = "Last name";
 export const ADDRESS_2 = "Address 2";
 export const BILLING_TEXT = "Billing";
@@ -105,10 +101,12 @@ export const CREATE_USER = "Create User";
 export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
+export const DELETE_STAFF = "Delete Staff";
 export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
+export const VIEW_FACILITY = "View Facility";
 export const PHONE_NUMBER = "Phone number";
 export const NEW_PASSWORD = "New password";
 export const DELETE_MEDIA = "Delete Media";
@@ -177,6 +175,7 @@ export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
 export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_USER_DESCRIPTION = "Are you sure you want to delete this user?";
+export const DELETE_STAFF_DESCRIPTION = "Are you sure you want to delete this staff?";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
@@ -196,10 +195,11 @@ export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
 export const REQUESTS = "/requests";
 export const DASHBOARD_ROUTE = "/dashboard";
+export const FACILITIES_ROUTE = "/facilities";
+export const STAFF_ROUTE = "/staff";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
-export const FACILITIES_ROUTE = "/facilities";
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -235,10 +235,15 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
+export const STAFF_ALREADY_EXIST = "Staff already exists";
+export const STAFF_CREATED = "Staff created successfully!";
+export const FACILITY_CREATED = "Facility created successfully!";
+export const STAFF_UPDATED = "Staff updated successfully!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
+export const CANT_DELETE_STAFF = "This staff can't be deleted.";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const USER_EXIST = "User already exists with this email.";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
@@ -321,6 +326,7 @@ export const APP_MENU_ITEMS = [
       },
       {
         name: STAFF_TEXT,
+        link: STAFF_ROUTE
       },
     ],
   },
@@ -378,12 +384,28 @@ export const APP_MENU_ITEMS = [
   },
 ];
 
-export const MAPPED_ROLES = {
-  Staff: "Staff",
-  Admin: "Manager",
-  Owner: "Member Owner",
-  SuperAdmin: "Developer",
-  Investor: "Potential Investor",
-  PropertyManager: "Property Manager",
-  RelationshipManager: "Relations Owner",
-};
+export const MAPPED_ROLES: MappedRoleInterface[] = [
+  { value: UserRole.SuperAdmin, label: "Super Admin" },
+  { value: UserRole.Admin, label: 'Admin' },
+  { value: UserRole.Billing, label: 'Billing' },
+  { value: UserRole.Doctor, label: 'Doctor' },
+  { value: UserRole.Nurse, label: "Nurse" },
+  { value: UserRole.Patient, label: "Patient" },
+  { value: UserRole.Staff, label: "Staff" },
+];
+
+export const MAPPED_GENDER: MappedGenderInterface[] = [
+  { value: Gender.Male, label: 'Male' },
+  { value: Gender.Female, label: 'Female' },
+  { value: Gender.Other, label: 'Other' },
+]
+
+// Breadcrumb links
+export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
+export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
+export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: ''}
+export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
+export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
+export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: ''}
+export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE  }
+export const USERS_BREAD = { text: USERS_TEXT, link: ''  }

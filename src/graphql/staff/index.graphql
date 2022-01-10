@@ -1,0 +1,244 @@
+query FindAllStaff($staffInput: StaffInput!) {
+	findAllStaff(staffInput: $staffInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+
+    response {
+      name
+      error
+      status
+			message
+    }
+
+    allstaff {
+      id
+      firstName
+      lastName
+      email
+      username
+      dob
+      phone
+      mobile
+      gender
+      createdAt
+      updatedAt
+      
+      user {
+        id
+        email
+        token
+        status
+        userId
+        userType
+        inviteSentAt
+        emailVerified
+        inviteAcceptedAt
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query GetStaff($getStaff: GetStaff!){
+	getStaff(getStaff: $getStaff){
+    response {
+      name
+      error
+      status
+			message
+    }
+
+    staff {
+      id
+      firstName
+      lastName
+      email
+      username
+      dob
+      phone
+      mobile
+      gender
+      createdAt
+      updatedAt
+      
+      user {
+        id
+        email
+        token
+        status
+        userId
+        userType
+        inviteSentAt
+        emailVerified
+        inviteAcceptedAt
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+mutation RemoveStaff($removeStaff: RemoveStaff!){
+	removeStaff(removeStaff: $removeStaff){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
+  updateStaff(updateStaffInput: $updateStaffInput){
+    response {
+      name
+      error
+      status
+			message
+    }
+
+    staff {
+      id
+      firstName
+      lastName
+      email
+      username
+      dob
+      phone
+      mobile
+      gender
+      createdAt
+      updatedAt
+      
+      user {
+        id
+        email
+        token
+        status
+        userId
+        userType
+        inviteSentAt
+        emailVerified
+        inviteAcceptedAt
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+mutation CreateStaff($createStaffInput: CreateStaffInput!) {
+  createStaff(createStaffInput: $createStaffInput){
+    response {
+      name
+      error
+      status
+			message
+    }
+
+    staff {
+      id
+      firstName
+      lastName
+      email
+      username
+      dob
+      phone
+      mobile
+      gender
+      createdAt
+      updatedAt
+      
+      user {
+        id
+        email
+        token
+        status
+        userId
+        userType
+        inviteSentAt
+        emailVerified
+        inviteAcceptedAt
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
