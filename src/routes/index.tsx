@@ -9,14 +9,20 @@ import Dashboard from "../pages/main/dashboard";
 import AddStaff from "../pages/main/staff/addStaff";
 import Staff from "../pages/main/staff/staffListing";
 import ViewStaff from "../pages/main/staff/viewStaff";
+import Doctors from "../pages/main/doctors/doctorsListing"
 import ResetPassword from "../pages/auth/resetPassword";
 import MainLayout from "../components/common/MainLayout";
 import EmailVerification from "../pages/auth/verifyEmail";
 import ForgetPassword from "../pages/auth/forgetPassword";
+import ViewFacility from "../pages/main/facilities/viewFacility";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 import AddFacilityComponent from "../components/main/facilities/addFacility"
+import Patients from "../pages/main/patients/patientsListing";
+import Appointments from "../pages/main/appointments/appointmentsListing";
+import LabResults from "../pages/main/reports/labResultsListing";
+import ClaimFeed from "../pages/main/billing/claimFeedListing";
 // constants
-import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, ROOT_ROUTE, STAFF_ROUTE, VERIFY_EMAIL_ROUTE } from "../constants";
+import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, ROOT_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
   return (
@@ -29,11 +35,17 @@ const Routes: FC = (): JSX.Element => {
       <MainLayout>
         <Switch>
           <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
+          <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
+          <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
+          <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
+          <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
+          <PrivateRoute exact path={CLAIMS_ROUTE} component={ClaimFeed} />
           <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
           <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
           <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
           <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
           <PrivateRoute exact path={ROOT_ROUTE} component={Dashboard} />
         </Switch>
       </MainLayout>

@@ -1,5 +1,5 @@
-import { withStyles, Theme, Tooltip, makeStyles, colors } from "@material-ui/core";
-import { PRIMARY_COLOR } from "../theme";
+import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
+import { GRAY_FIVE, WHITE, WHITE_THREE } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -12,22 +12,21 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
   },
 }))(Tooltip);
 
-export const useUserTableStyles = makeStyles((theme: Theme) => ({
-  active: {
-    height: 19,
-    width: 19,
-    color: PRIMARY_COLOR
+export const useTableStyles = makeStyles(() => ({
+  tablesSearchIcon: {
+    backgroundColor: GRAY_FIVE,
+    borderRadius: 6,
+    maxWidth: 265
   },
 
-  deActive: {
-    height: 19,
-    width: 19,
-    color: colors.red["500"]
+  mainTableContainer: {
+    background: WHITE,
+    borderRadius: 12,
+    overflow: "auto"
   },
 
-  disable: {
-    height: 19,
-    width: 19,
-    color: "rgba(0, 0, 0, 0.16)"
-  },
+  searchContainer: {
+    padding: "15px 30px",
+    borderBottom: `1px solid ${WHITE_THREE}`
+  }
 }))

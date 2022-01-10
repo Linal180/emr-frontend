@@ -1,11 +1,13 @@
 // packages block
 import { TextField, InputLabel, FormControl } from "@material-ui/core";
 import { FC } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 // styles, constants, utils and interfaces block
 import { CreateFacilityInputControlProps } from "../../../../interfacesTypes";
 
-const CreateFacilityController: FC<CreateFacilityInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const CreateFacilityController: FC<CreateFacilityInputControlProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+  const { control } = useFormContext();
+
   return (
     <Controller
       name={controllerName}

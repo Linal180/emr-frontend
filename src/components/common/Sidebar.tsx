@@ -1,32 +1,58 @@
 // packages block
-import { FC } from "react";
+import { FC, MouseEvent, useState } from "react";
 import { AccountCircle } from "@material-ui/icons";
-import { Box, Drawer, Button } from "@material-ui/core";
+import { Box, Drawer, Button, Menu, MenuItem } from "@material-ui/core";
 import dotenv from "dotenv";
 // components block
 import AppMenu from "./AppMenu";
 // utils, styles  block
 import { handleLogout } from "../../utils";
 import { useSidebarStyles } from "../../styles/sidebarStyles";
+import { SettingIcon } from "../../assets/svgs"
 dotenv.config();
 
 const Sidebar: FC = (): JSX.Element => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const classes = useSidebarStyles();
+  const isMenuOpen = Boolean(anchorEl);
+  const menuId = "header-profile-menu";
+  const handleMenuClose = () => setAnchorEl(null);
+  const handleProfileMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+
+  const renderMenu = (
+    <Menu
+      getContentAnchorEl={null}
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "center" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleLogout}>
+        Logout
+      </MenuItem>
+    </Menu>
+  );
 
   return (
-    <Drawer variant="permanent" classes={{ paper: classes.drawerPaper, }} open={true}>
-      <Box minHeight="calc(100vh - 300px)">
-
-        <Box className={classes.toolbarIcon} />
-        <Box className="sideBarNav">
-          <AppMenu />
-        </Box>
+    <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }} open={true}>
+      <Box minHeight="calc(100vh - 300px)" pt={2}>
+        <AppMenu />
       </Box>
-
-      <Box display="flex" flexDirection="column" alignItems="center" pt={15} pb={1.5}>
-        <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center">
-          <AccountCircle />
-          <Button onClick={handleLogout}>logout</Button>
+      <Box display="flex" flexDirection="column" alignItems="flex-start" pt={15} pb={1.5} width={'inherit'}>
+        <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" width={'inherit'}>
+          <Button aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} fullWidth>
+            <Box display="flex" minWidth={250}>
+              <AccountCircle />
+              <Box ml={1}>Administrator</Box>
+            </Box>
+            <Box display="flex">
+              <SettingIcon />
+            </Box>
+          </Button>
+          {renderMenu}
         </Box>
       </Box>
     </Drawer>

@@ -21,6 +21,7 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
         id
         email
         mobile
+        phone
         pager
         fax
         address
@@ -100,6 +101,7 @@ query GetFacility($getFacility: GetFacility!){
       contacts {
         id
         email
+        phone
         mobile
         pager
         fax
@@ -113,7 +115,23 @@ query GetFacility($getFacility: GetFacility!){
         createdAt
         updatedAt
       }
-    
+
+      billingAddress {
+        id
+        email
+        mobile
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
+
       staff {
         id
         firstName
@@ -183,6 +201,7 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
       contacts {
         id
         email
+        phone
         mobile
         pager
         fax
@@ -257,6 +276,7 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
         id
         email
         mobile
+        phone
         pager
         fax
         address

@@ -1,14 +1,13 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
-import { colors } from "@material-ui/core";
 // color-constants and font-family block
-import { PRIMARY_COLOR, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, SECONDARY_COLOR, GRAY_TWO, GRAY_THREE } from ".";
+import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
   palette: {
     primary: {
-      main: PRIMARY_COLOR,
+      main: BLUE_TWO,
       contrastText: WHITE,
     },
 
@@ -35,13 +34,14 @@ export const theme = createTheme({
     },
 
     h4: {
-      fontSize: 24,
+      fontSize: 20,
       fontWeight: 600
     },
 
     h5: {
       fontSize: 16,
-      fontWeight: 600
+      fontWeight: 500,
+      color: BLACK_ONE,
     },
 
     h6: {
@@ -64,96 +64,60 @@ export const theme = createTheme({
         html: {
           WebkitFontSmoothing: "auto",
 
-          "& table": {
-            '& tbody': {
-              "& tr": {
-                '&:nth-of-type(odd)': {
-                  backgroundColor: "#fff",
-                },
-
-                '&:nth-of-type(even)': {
-                  backgroundColor: '#f1f1f1',
-                },
-              }
-            }
-          },
-
           "& .MuiListItem-gutters": {
             transition: '.3s all ease-in'
           },
 
-          "& .MuiDropzoneArea-root": {
-            borderWidth: 2,
-            borderColor: colors.grey[500],
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: 200,
-            position: "relative",
-
-            "& .MuiTypography-h5": {
-              fontSize: 16,
-              color: colors.grey[600],
-            },
-
-            "& .MuiDropzonePreviewList-root": {
-              position: "absolute",
-              margin: 0,
-              width: "100%",
-
-              "& .MuiDropzonePreviewList-imageContainer": {
-                left: 0,
-                top: 0,
-                height: "100%",
-                maxWidth: "100%",
-                padding: 0,
-                flexBasis: "100%",
-
-                "& img": {
-                  width: "100%",
-                  height: 200,
-                  objectFit: "cover",
-                },
-
-                "& .MuiDropzonePreviewList-removeButton": {
-                  "& svg": {
-                    color: colors.red[500],
-                  },
-                },
+          "& .MuiPagination-ul": {
+            "& li": {
+              "& button": {
+                height: 28,
+                minWidth: 28,
+                borderRadius: 6,
+                color: BLACK_TWO,
+                fontSize: 14,
+                fontWeight: 500,
               },
+
+              "& .Mui-selected": {
+                backgroundColor: BLUE_THREE,
+                color: WHITE,
+              }
             },
 
-            "& .MuiDropzoneArea-textContainer": {
-              "& svg": {
-                fill: colors.grey[400],
-                display: "block",
-                margin: "auto",
-              },
-            },
-
-            "& .MuiDropzoneArea-text": {
-              margin: "0 0 5px",
-            },
-          },
+            "& li:first-child, & li:last-child": {
+              "& button": {
+                backgroundColor: WHITE,
+              }
+            }
+          }
         },
       },
     },
 
+    MuiToolbar: {
+      gutters: {
+        padding: "15px 30px !important",
+      }
+    },
+
     MuiCheckbox: {
       root: {
-        color: PRIMARY_COLOR
+        color: BLUE_TWO
       }
     },
 
     MuiButton: {
       contained: {
-        borderRadius: 5
+        borderRadius: 6,
+        maxHeight: 42,
+        padding: '9px 20px',
+        boxShadow: 'none'
       },
 
       label: {
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: 600,
-        fontStyle: 'normal',
       }
     },
 
@@ -166,8 +130,14 @@ export const theme = createTheme({
         },
 
         "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {
-          border: `1px solid ${SECONDARY_COLOR}`,
+          border: `1px solid ${BLUE_ONE}`,
         },
+      },
+
+      input: {
+        height: 42,
+        padding: '11px 14px',
+        boxSizing: 'border-box'
       }
     },
 
@@ -199,6 +169,63 @@ export const theme = createTheme({
         opacity: 0.8,
         color: GRAY_TWO,
         fontWeight: 500,
+      }
+    },
+
+    MuiTableRow: {
+      root: {
+        "& th:first-child, & td:first-child": {
+          paddingLeft: 30
+        }
+      }
+    },
+
+    MuiTableCell: {
+      root: {
+        borderBottom: `1px solid ${WHITE_THREE}`,
+        padding: "14px 11px",
+      },
+
+      head: {
+        backgroundColor: 'rgba(245, 248, 250, 0.3)'
+      },
+
+      body: {
+        fontSize: 14,
+        color: BLACK_TWO,
+      }
+    },
+
+    MuiCard: {
+      root: {
+        background: WHITE,
+        borderRadius: 12,
+        boxShadow: 'none'
+      }
+    },
+
+    MuiCardHeader: {
+      root: {
+        padding: "18px 30px",
+        borderBottom: `1px solid ${GRAY_SIX}`,
+        marginBottom: 30,
+      },
+
+      content: {
+        "& .MuiTypography-h5": {
+          fontSize: 20,
+          fontWeight: 600
+        }
+      }
+    },
+
+    MuiCardContent: {
+      root: {
+        padding: "0 27px",
+
+        "&:last-child": {
+          paddingBottom: 0
+        }
       }
     }
   },

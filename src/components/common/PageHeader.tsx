@@ -8,7 +8,7 @@ import Breadcrumb from "./Breadcrumb";
 
 const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path }): JSX.Element => {
   return (
-    <Box display="flex" alignItems="center" justifyContent="space-between" pb={2}>
+    <Box display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
       <Box>
         <Typography component="h4" variant="h4">{title}</Typography>
         {path && <Breadcrumb path={path} />}

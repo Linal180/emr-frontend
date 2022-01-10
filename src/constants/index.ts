@@ -2,7 +2,7 @@
 import { LocalAtm, ReportSharp, Home, LocalMall, BookOutlined } from "@material-ui/icons";
 // graphql and interfaces block
 import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Gender, UserRole } from "../generated/graphql";
+import { Gender, PracticeType, UserRole } from "../generated/graphql";
 import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
 
@@ -16,12 +16,35 @@ export const PASSWORD_REGEX =
 // constants
 export const ALL_STAFF = "Staff";
 export const CREATE_STAFF = "Create Staff";
+export const CREATE_FACILITY = "Create facility";
 export const ADD_STAFF = "Add Staff";
+export const ADD_DOCTOR = "Add Doctor";
+export const ADD_PATIENT = "Add Patient";
+export const ADD_RESULT = "Add Result";
+export const ADD_APPOINTMENT = "Add Appointment";
 export const VIEW_STAFF = "View Staff";
+export const UPDATE_STAFF = "Update Staff";
+export const UPDATE_FACILITY = "Update Facility";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
+export const PROVIDER = "Provider";
 export const STAFF_BASIC_INFO = "Staff Basic Info";
+export const FACILITY_INFO = "Facility Information";
+export const FACILITY_CONTACT = "Contact";
+export const BILLING_ADDRESS = "Billing Address";
+export const FACILITY_CONTACT_INFO = "Facility Contact Information";
+export const FACILITY_BILLING_INFO = "Facility BIling Information";
+export const FACILITY_IDS = "Facility IDs";
+export const FACILITY_TYPE = "Facility Type";
+export const MERCHANT_ID = "Merchant ID";
 export const MOBILE = "Mobile";
+export const BILLING_TYPE = "Billing Type";
+export const BANK_ACCOUNT = "Bank Account";
+export const VISIT = "Visit";
+export const TEST = "Test";
+export const TEST_TAKEN = "Test Taken";
+export const PRESCRIBED_BY = "Prescribed By";
+export const REPORTS = "Reports";
 export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
@@ -43,10 +66,16 @@ export const ERROR = "error";
 export const UNITS = "Units";
 export const EMAIL = "Email";
 export const PHONE = "Phone";
-export const PAGE_LIMIT = 10;
+export const PAGE_LIMIT = 8;
+export const SPECIALITY = "Speciality";
+export const INSURANCE = "Insurance";
+export const LAST_APPOINTMENT = "Last Apntmnt";
 export const RESET = "Reset";
+export const REASON = "Reason";
+export const BILLED = "Billed";
 export const EMR_TEXT = "EMR";
 export const STATUS = "Status";
+export const CLAIMED = "Claimed";
 export const SSN = "SSN / TIN";
 export const TAGS_TEXT = "Tags";
 export const ACTION = "Actions";
@@ -65,11 +94,13 @@ export const LATITUDE = "Latitude";
 export const COMMENTS = "Comments";
 export const PASSWORD = "password";
 export const ACTIVATE = "Activate";
+export const ZIP = "Zip";
 export const ZIP_CODE = "Zip code";
 export const VERIFIED = "Verified";
 export const ADDRESS = "Address";
 export const CLIA_ID_NUMBER = "CLIA ID Number";
 export const COUNTRY = "Country";
+export const FACILITY = "Facility";
 export const FACILITY_ID = "Facility ID";
 export const FEDERAL_TAX_ID = "Federal Tax ID";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
@@ -80,6 +111,8 @@ export const PRACTICE_TYPE = "Practice Type";
 export const REVENUE_CODE = "Revenue Code";
 export const SERVICE_CODE = "Service Code";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
+export const LOCATION_ID = "Location ID";
+export const POS = "Place of Service Code (POS)";
 export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
 export const LAST_NAME = "Last name";
@@ -95,6 +128,12 @@ export const REQUESTS_TEXT = "Requests";
 export const CLINICAL_TEXT = "Clinical";
 export const INVOICES_TEXT = "Invoices";
 export const PATIENTS_TEXT = "Patients";
+export const PATIENT = "Patient";
+export const DATE = "Date";
+export const DOCTOR = "Doctor";
+export const DURATION = "Duration";
+export const RECURRING = "Recurring";
+export const SUPER_BILL = "Super Bill";
 export const PASSWORD_LABEL = "Password";
 export const DESCRIPTION = "Description";
 export const CREATE_USER = "Create User";
@@ -102,6 +141,7 @@ export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const DELETE_STAFF = "Delete Staff";
+export const DELETE_FACILITY = "Delete Facility";
 export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
@@ -129,6 +169,8 @@ export const REQUEST_STATUS = "Request Status";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
+export const APPOINTMENT_TEXT = "Appointment";
+export const CLAIM_FEED_TEXT = "Claim Feed";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
 export const MEMBERSHIP_NAME = "Membership name";
@@ -176,6 +218,7 @@ export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_USER_DESCRIPTION = "Are you sure you want to delete this user?";
 export const DELETE_STAFF_DESCRIPTION = "Are you sure you want to delete this staff?";
+export const DELETE_FACILITY_DESCRIPTION = "Are you sure you want to delete this facility?";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
@@ -197,6 +240,12 @@ export const REQUESTS = "/requests";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const FACILITIES_ROUTE = "/facilities";
 export const STAFF_ROUTE = "/staff";
+export const DOCTORS_ROUTE = "/doctors";
+export const PATIENTS_ROUTE = "/patients";
+export const APPOINTMENTS_ROUTE = "/appointments";
+export const VIEW_APPOINTMENTS_ROUTE = "/View Appointments";
+export const LAB_RESULTS_ROUTE = "/lab-results";
+export const CLAIMS_ROUTE = "/insurance-claims";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
@@ -238,12 +287,14 @@ export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const STAFF_CREATED = "Staff created successfully!";
 export const FACILITY_CREATED = "Facility created successfully!";
+export const FACILITY_UPDATED = "Facility updated successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const CANT_DELETE_STAFF = "This staff can't be deleted.";
+export const CANT_DELETE_FACILITY = "This facility can't be deleted.";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const USER_EXIST = "User already exists with this email.";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
@@ -319,10 +370,11 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: DOCTORS_TEXT,
-        link: "/",
+        link: DOCTORS_ROUTE
       },
       {
         name: PATIENTS_TEXT,
+        link: PATIENTS_ROUTE
       },
       {
         name: STAFF_TEXT,
@@ -337,6 +389,7 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: VIEW_APPOINTMENTS_TEXT,
+        link: VIEW_APPOINTMENTS_ROUTE
       },
       {
         name: SCHEDULE_APPOINTMENTS_TEXT,
@@ -366,6 +419,7 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: LAB_RESULTS_TEXT,
+        link: LAB_RESULTS_ROUTE,
       },
     ],
   },
@@ -379,6 +433,7 @@ export const APP_MENU_ITEMS = [
       },
       {
         name: INSURANCE_CLAIMS_TEXT,
+        link: CLAIMS_ROUTE,
       },
     ],
   },
@@ -400,12 +455,28 @@ export const MAPPED_GENDER: MappedGenderInterface[] = [
   { value: Gender.Other, label: 'Other' },
 ]
 
+export const MAPPED_PRACTICE_TYPES = [
+  { value: PracticeType.Hospital, label: 'Hospital' },
+  { value: PracticeType.Clinic, label: 'Clinic' },
+  { value: PracticeType.Lab, label: 'Lab' },
+]
+
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
-export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: ''}
+export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
+export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
+export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
 export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: ''}
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE  }
 export const USERS_BREAD = { text: USERS_TEXT, link: ''  }
+export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: ''  }
+export const BILLING_BREAD = { text: BILLING_TEXT, link: ''  }
+export const REPORTS_BREAD = { text: REPORTS_TEXT, link: ''  }
+export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE }
+export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
+export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
+
+

@@ -8,7 +8,7 @@ import client from "../apollo";
 import history from "../history";
 import { TOKEN, USER_EMAIL } from "../constants";
 import { TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role } from "../generated/graphql"
+import { Maybe, UserRole, Role, PracticeType } from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -148,3 +148,17 @@ export const getToken = () => {
 
 
 export const RequiredMessage = (fieldName: string) => `${fieldName} is required`;
+
+export const getPracticeType = (type: PracticeType): string => {
+  switch (type) {
+    case PracticeType.Hospital:
+      console.log("Sss")
+      return PracticeType.Hospital
+    case PracticeType.Clinic:
+      return 'Clinic'
+    case PracticeType.Lab:
+      return 'Lab'
+    default:
+      return 'Hospital'
+  }
+};
