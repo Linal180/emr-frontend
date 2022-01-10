@@ -298,6 +298,5 @@ type CreateFacilityControlTypes = "code" | "country" | "email" | "facilityId" | 
   | "tamxonomyCode" | "userId" | "zipCode";
 
 export interface CreateFacilityInputControlProps extends IControlLabel {
-  control: Control<CreateFacilityInput | CreateBillingAddressInput | CreateFacilityItemInput | CreateContactInput, object>;
   controllerName: CreateFacilityControlTypes;
 }

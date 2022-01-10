@@ -2,7 +2,7 @@
 import { LocalAtm, ReportSharp, Home, LocalMall, BookOutlined } from "@material-ui/icons";
 // graphql and interfaces block
 import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Gender, UserRole } from "../generated/graphql";
+import { Gender, PracticeType, UserRole } from "../generated/graphql";
 import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
 
@@ -22,6 +22,9 @@ export const VIEW_STAFF = "View Staff";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
 export const STAFF_BASIC_INFO = "Staff Basic Info";
+export const FACILITY_BASIC_INFO = "Facility Basic Information";
+export const FACILITY_CONTACT_INFO = "Facility Contact Information";
+export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const MOBILE = "Mobile";
 export const USERNAME = "Username";
 export const HASH = "#";
@@ -399,6 +402,12 @@ export const MAPPED_GENDER: MappedGenderInterface[] = [
   { value: Gender.Male, label: 'Male' },
   { value: Gender.Female, label: 'Female' },
   { value: Gender.Other, label: 'Other' },
+]
+
+export const MAPPED_PRACTICE_TYPES = [
+  { value: PracticeType.Hospital, label: 'Hospital' },
+  { value: PracticeType.Clinic, label: 'Clinic' },
+  { value: PracticeType.Lab, label: 'Lab' },
 ]
 
 // Breadcrumb links
