@@ -6,10 +6,12 @@ export const GRAY_FOUR = "#dddddd"
 export const GRAY_FIVE = "#F5F8FA"
 
 export const BLACK = "#000000";
+export const BLACK_ONE = "#3F4254";
 
 export const WHITE = "#FFFFFF";
 export const WHITE_ONE = "#F2F3F5";
 export const WHITE_TWO = "#E5E5E5";
+export const WHITE_THREE = "#F3F6F9";
 
 export const GREEN = "#1DC894";
 

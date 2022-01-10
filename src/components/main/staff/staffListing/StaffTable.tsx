@@ -108,8 +108,8 @@ const StaffTable: FC = (): JSX.Element => {
   };
 
   return (
-    <Box>
-      <Box pt={1} className="listing-header">
+    <Box className={classes.mainTableContainer}>
+      <Box className={classes.searchContainer}>
         <TextField
           name="searchQuery"
           className={classes.tablesSearchIcon}
@@ -127,7 +127,6 @@ const StaffTable: FC = (): JSX.Element => {
           }}
         />
       </Box>
-      <Divider />
 
       <Box className="table-overflow">
         <Table aria-label="customized table">

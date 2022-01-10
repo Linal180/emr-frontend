@@ -21,9 +21,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => (
           {children}
         </Box>
 
-        <Box pt={4}>
-          <CopyRight />
-        </Box>
+        <CopyRight />
       </Box>
     </Box>
   </>

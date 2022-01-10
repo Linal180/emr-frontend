@@ -69,27 +69,23 @@ const FacilityTable: FC = (): JSX.Element => {
   return (
     <>
       <Box pt={1}>
-        <Grid container spacing={1}>
-          <Grid item sm={4}>
-          <FormControl fullWidth margin="normal">
-              <InputLabel shrink>Search</InputLabel>
-              <TextField
-                name="searchQuery"
-                value={searchQuery}
-                onChange={({ target: { value } }) => setSearchQuery(value)}
-                onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-                variant="outlined"
-                fullWidth
-                InputProps={{
-                  endAdornment:
-                    <IconButton color="default" onClick={handleSearch}>
-                      <Search color="inherit" />
-                    </IconButton>
-                }}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+        <FormControl fullWidth margin="normal">
+          <InputLabel shrink>Search</InputLabel>
+          <TextField
+            name="searchQuery"
+            value={searchQuery}
+            onChange={({ target: { value } }) => setSearchQuery(value)}
+            onKeyPress={({ key }) => key === "Enter" && handleSearch()}
+            variant="outlined"
+            fullWidth
+            InputProps={{
+              endAdornment:
+                <IconButton color="default" onClick={handleSearch}>
+                  <Search color="inherit" />
+                </IconButton>
+            }}
+          />
+        </FormControl>
       </Box>
 
       <Box className="table-overflow">
