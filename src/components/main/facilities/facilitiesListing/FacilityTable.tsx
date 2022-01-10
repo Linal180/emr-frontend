@@ -2,20 +2,21 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Search } from "@material-ui/icons";
-import { Box, Grid, FormControl, InputLabel, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { EditIcon, TrashIcon } from "../../../../assets/svgs";
-import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP_CODE, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION } from "../../../../constants";
-import ConfirmationModal from "../../../common/ConfirmationModal";
+import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
+import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery } from "../../../../generated/graphql";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP_CODE, CITY, CODE, FAX, STATE } from "../../../../constants";
+import { useTableStyles } from "../../../../styles/tableStyles";
 
 const FacilityTable: FC = (): JSX.Element => {
+  const classes = useTableStyles()
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -107,29 +108,24 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   };
   return (
-    <>
-      <Box pt={1}>
-        <Grid container spacing={1}>
-          <Grid item sm={4}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel shrink>Search</InputLabel>
-              <TextField
-                name="searchQuery"
-                value={searchQuery}
-                onChange={({ target: { value } }) => setSearchQuery(value)}
-                onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-                variant="outlined"
-                fullWidth
-                InputProps={{
-                  endAdornment:
-                    <IconButton color="default" onClick={handleSearch}>
-                      <Search color="inherit" />
-                    </IconButton>
-                }}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+    <Box className={classes.mainTableContainer}>
+      <Box className={classes.searchContainer}>
+        <TextField
+          value={searchQuery}
+          className={classes.tablesSearchIcon}
+          onChange={({ target: { value } }) => setSearchQuery(value)}
+          onKeyPress={({ key }) => key === "Enter" && handleSearch()}
+          name="searchQuery"
+          variant="outlined"
+          placeholder="Search"
+          fullWidth
+          InputProps={{
+            startAdornment:
+              <IconButton color="default">
+                <TablesSearchIcon />
+              </IconButton>
+          }}
+        />
       </Box>
 
       <Box className="table-overflow">
@@ -217,7 +213,7 @@ const FacilityTable: FC = (): JSX.Element => {
           setOpen={(open: boolean) => setOpenDelete(open)}
         />
       </Box>
-    </>
+    </Box>
   );
 };
 
