@@ -22,6 +22,7 @@ export const useTableStyles = makeStyles(() => ({
   mainTableContainer: {
     background: WHITE,
     borderRadius: 12,
+    overflow: "auto"
   },
 
   searchContainer: {

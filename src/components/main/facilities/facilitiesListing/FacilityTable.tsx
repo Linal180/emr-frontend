@@ -24,7 +24,7 @@ const FacilityTable: FC = (): JSX.Element => {
   const [deleteFacilityId, setDeleteFacilityId] = useState<string>("");
   const [facilities, setFacilities] = useState<FacilitiesPayload['facility']>([]);
 
-  const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
+  const [findAllFacility, { loading }] = useFindAllFacilitiesLazyQuery({
     variables: {
       facilityInput: {
         paginationOptions: {
@@ -108,112 +108,114 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   };
   return (
-    <Box className={classes.mainTableContainer}>
-      <Box className={classes.searchContainer}>
-        <TextField
-          value={searchQuery}
-          className={classes.tablesSearchIcon}
-          onChange={({ target: { value } }) => setSearchQuery(value)}
-          onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-          name="searchQuery"
-          variant="outlined"
-          placeholder="Search"
-          fullWidth
-          InputProps={{
-            startAdornment:
-              <IconButton color="default">
-                <TablesSearchIcon />
-              </IconButton>
-          }}
-        />
-      </Box>
+    <>
+      <Box className={classes.mainTableContainer}>
+        <Box className={classes.searchContainer}>
+          <TextField
+            value={searchQuery}
+            className={classes.tablesSearchIcon}
+            onChange={({ target: { value } }) => setSearchQuery(value)}
+            onKeyPress={({ key }) => key === "Enter" && handleSearch()}
+            name="searchQuery"
+            variant="outlined"
+            placeholder="Search"
+            fullWidth
+            InputProps={{
+              startAdornment:
+                <IconButton color="default">
+                  <TablesSearchIcon />
+                </IconButton>
+            }}
+          />
+        </Box>
 
-      <Box className="table-overflow">
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {renderTh(NAME)}
-              {renderTh(CODE)}
-              {renderTh(CITY)}
-              {renderTh(STATE)}
-              {renderTh(ZIP)}
-              {renderTh(FAX)}
-              {renderTh(PHONE)}
-              {renderTh(EMAIL)}
-              {renderTh(ACTION, "center")}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {loading ? (
+        <Box className="table-overflow">
+          <Table aria-label="customized table">
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={10}>
-                  <TableLoader numberOfRows={10} numberOfColumns={5} />
-                </TableCell>
+                {renderTh(NAME)}
+                {renderTh(CODE)}
+                {renderTh(CITY)}
+                {renderTh(STATE)}
+                {renderTh(ZIP)}
+                {renderTh(FAX)}
+                {renderTh(PHONE)}
+                {renderTh(EMAIL)}
+                {renderTh(ACTION, "center")}
               </TableRow>
-            ) : (
-              facilities?.map((facility: FacilityPayload['facility'], index: number) => {
-                const { id, name, code, contacts } = facility || {};
-                const facilityContact = contacts && contacts[0]
-                const { email, phone, fax, zipCode, city, state } = facilityContact || {}
+            </TableHead>
 
-                return (
-                  <TableRow key={id}>
-                    <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">{code}</TableCell>
-                    <TableCell scope="row">{city}</TableCell>
-                    <TableCell scope="row">{state}</TableCell>
-                    <TableCell scope="row">{zipCode}</TableCell>
-                    <TableCell scope="row">{fax}</TableCell>
-                    <TableCell scope="row">{phone}</TableCell>
-                    <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">
-                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${FACILITIES_ROUTE}/${id}`}>
-                          <IconButton size="small">
-                            <EditIcon />
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                facilities?.map((facility: FacilityPayload['facility'], index: number) => {
+                  const { id, name, code, contacts } = facility || {};
+                  const facilityContact = contacts && contacts[0]
+                  const { email, phone, fax, zipCode, city, state } = facilityContact || {}
+
+                  return (
+                    <TableRow key={id}>
+                      <TableCell scope="row">{name}</TableCell>
+                      <TableCell scope="row">{code}</TableCell>
+                      <TableCell scope="row">{city}</TableCell>
+                      <TableCell scope="row">{state}</TableCell>
+                      <TableCell scope="row">{zipCode}</TableCell>
+                      <TableCell scope="row">{fax}</TableCell>
+                      <TableCell scope="row">{phone}</TableCell>
+                      <TableCell scope="row">{email}</TableCell>
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <Link to={`${FACILITIES_ROUTE}/${id}`}>
+                            <IconButton size="small">
+                              <EditIcon />
+                            </IconButton>
+                          </Link>
+
+                          <IconButton aria-label="delete" color="secondary" size="small" onClick={() => onDeleteClick(id || '')}>
+                            <TrashIcon />
                           </IconButton>
-                        </Link>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
 
-                        <IconButton aria-label="delete" color="secondary" size="small" onClick={() => onDeleteClick(id || '')}>
-                          <TrashIcon />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+          {((!loading && !facilities)) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          )}
 
-        {((!loading && !facilities) || error || !facilities?.length) && (
-          <Box display="flex" justifyContent="center" pb={12} pt={5}>
-            <NoDataFoundComponent />
-          </Box>
-        )}
-
-        {totalPage > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
-            <Pagination
-              count={totalPage}
-              shape="rounded"
-              page={page}
-              onChange={handleChange}
-            />
-          </Box>
-        )}
-
-        <ConfirmationModal
-          title={DELETE_FACILITY}
-          isOpen={openDelete}
-          isLoading={deleteFacilityLoading}
-          description={DELETE_FACILITY_DESCRIPTION}
-          handleDelete={handleDeleteFacility}
-          setOpen={(open: boolean) => setOpenDelete(open)}
-        />
+          <ConfirmationModal
+            title={DELETE_FACILITY}
+            isOpen={openDelete}
+            isLoading={deleteFacilityLoading}
+            description={DELETE_FACILITY_DESCRIPTION}
+            handleDelete={handleDeleteFacility}
+            setOpen={(open: boolean) => setOpenDelete(open)}
+          />
+        </Box>
       </Box>
-    </Box>
+
+      {totalPage > 1 && (
+        <Box display="flex" justifyContent="flex-end" pt={2.25}>
+          <Pagination
+            count={totalPage}
+            shape="rounded"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
+    </>
   );
 };
 

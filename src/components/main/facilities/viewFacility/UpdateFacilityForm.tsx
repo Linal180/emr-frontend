@@ -11,15 +11,15 @@ import UpdateFacilityController from './UpdateFacilityController';
 import history from "../../../../history";
 import { getPracticeType } from "../../../../utils";
 import { CustomUpdateFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
-import { FacilityPayload, PracticeType, UpdateFacilityInput, UpdateFacilityItemInput, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
+import { FacilityPayload, PracticeType, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
 import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, FACILITY_CONTACT_INFO, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE } from "../../../../constants";
 
 const UpdateFacilityForm: FC = () => {
   const { id } = useParams<ParamsType>();
   const methods = useForm<CustomUpdateFacilityInputProps>({ mode: "all" });
-  const { reset, handleSubmit, setValue, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue } = methods;
   const [facility, setFacility] = useState<FacilityPayload['facility']>()
-  const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
+  const [getFacility] = useGetFacilityLazyQuery({
     onError({ message }) {
       Alert.error(message)
     },
@@ -34,7 +34,7 @@ const UpdateFacilityForm: FC = () => {
           const {
             name, cliaIdNumber, federalTaxId, insurancePlanType,
             npi, code, tamxonomyCode, revenueCode, practiceType,
-            contacts, billingAddress
+            contacts,
           } = facility
 
           setFacility(facility)
