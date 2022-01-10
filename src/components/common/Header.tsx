@@ -1,7 +1,7 @@
 // packages block
 import { FC, useContext, useState, } from "react";
 import { Link } from "react-router-dom";
-import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField, Badge, InputAdornment } from "@material-ui/core";
+import { Box, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField, Badge, InputAdornment } from "@material-ui/core";
 // history, app context, auth context, utils and header styles block
 import { EMR, ROOT_ROUTE } from "../../constants";
 import { handleLogout } from "../../utils";
@@ -63,13 +63,9 @@ const Header: FC = (): JSX.Element => {
             </Badge>
           </Box>
 
-          <Box mr={1.25}>
-            <IconButton color="inherit" className={classes.menuButton}>
-              <HelpIcon />
-            </IconButton>
-          </Box>
-
-          <Button variant="contained" color="secondary">New Goal</Button>
+          <IconButton color="inherit" className={classes.menuButton}>
+            <HelpIcon />
+          </IconButton>
 
           {renderMenu}
         </Box>

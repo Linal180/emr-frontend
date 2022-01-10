@@ -12,12 +12,14 @@ const Breadcrumb: FC<BreadcrumbProps> = ({ path }) => {
 
   return (
     <Breadcrumbs aria-label="breadcrumb">
-      {path.map(bread => {
+      {path.map((bread, index) => {
         const { text, link } = bread;
 
-        return <Link color="textPrimary" onClick={() => handleClick(link)}>
-          {text}
-        </Link>
+        return (
+          <Link color="textPrimary" key={`${text}-${index}`} onClick={() => handleClick(link)}>
+            {text}
+          </Link>
+        )
       })}
     </Breadcrumbs>
   )
