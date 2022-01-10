@@ -4,7 +4,6 @@ import { Box, CssBaseline } from "@material-ui/core";
 // components block
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import CopyRight from "./CopyRight";
 // interfaces/types and main layout styles block
 import { MainLayoutProps } from "../../interfacesTypes";
 

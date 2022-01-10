@@ -2,7 +2,7 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow, Typography } from "@material-ui/core";
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
@@ -24,7 +24,7 @@ const FacilityTable: FC = (): JSX.Element => {
   const [deleteFacilityId, setDeleteFacilityId] = useState<string>("");
   const [facilities, setFacilities] = useState<FacilitiesPayload['facility']>([]);
 
-  const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
+  const [findAllFacility, { loading }] = useFindAllFacilitiesLazyQuery({
     variables: {
       facilityInput: {
         paginationOptions: {
