@@ -14,6 +14,7 @@ const AppMenuItem: FC<AppMenuItemProps> = (props) => {
   const classes = useAppMenuStyles();
   const isExpandable = items && items.length > 0;
   const activeSidebarClass = name.toLowerCase().includes(history.location.pathname.substring(1).split("/", 1).toString().toLowerCase()) ? 'active' : ''
+  console.log((history.location.pathname.substring(1).split("/", 1).toString().toLowerCase()));
 
   const MenuItemRoot = (
     <AppMenuItemComponent
