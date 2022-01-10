@@ -153,13 +153,14 @@ export const theme = createTheme({
 
     MuiButton: {
       contained: {
-        borderRadius: 5
+        borderRadius: 6,
+        padding: '9px 20px',
+        maxHeight: 42,
       },
 
       label: {
-        fontSize: 13,
+        fontSize: 14,
         fontWeight: 600,
-        fontStyle: 'normal',
       }
     },
 
@@ -177,7 +178,9 @@ export const theme = createTheme({
       },
 
       input: {
-        padding: 14,
+        height: 42,
+        padding: '11px 14px',
+        boxSizing: 'border-box'
       }
     },
 
