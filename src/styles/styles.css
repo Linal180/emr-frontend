@@ -112,11 +112,6 @@ img, svg {
   cursor: pointer;
 }
 
-.left-side-nav:hover,
-.active {
-  background: #E3EEFA;
-}
-
 .list-item-text {
   color: #4A4B68 ;
 }
@@ -181,6 +176,11 @@ input[type="email"] {
 .textTransform-capitalize {
   text-transform: capitalize;
 }
+
 .padding-left {
   padding-left: 0px;
+}
+
+.active {
+  color: #009EF6;
 }
