@@ -2,11 +2,12 @@
 import { FC, useContext, useState, } from "react";
 import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField } from "@material-ui/core";
 // history, app context, auth context, utils and header styles block
-import { EMR } from "../../constants";
+import { EMR, ROOT_ROUTE } from "../../constants";
 import { handleLogout } from "../../utils";
 import { BellIcon, HelpIcon } from "../../assets/svgs";
-import {  AuthContext } from "../../context";
+import { AuthContext } from "../../context";
 import { useHeaderStyles } from "../../styles/headerStyles";
+import { Link } from "react-router-dom";
 
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
@@ -42,28 +43,31 @@ const Header: FC = (): JSX.Element => {
   );
 
   return (
-    <AppBar
-      position="absolute"
-      className={classes.appBar}
-    >
-      <Toolbar className={classes.toolbar}>
-        <Typography component="h1" variant="h4" color="inherit" noWrap className={classes.title}>
-          <Box className={classes.cursor}>
-            {EMR}
-          </Box>
+    <AppBar position="absolute" className={classes.appBar}>
+      <Toolbar>
+        <Typography variant="h4" color="inherit" noWrap component={Link} to={ROOT_ROUTE}>
+          {EMR}
         </Typography>
 
-        <Box>
-          <TextField variant="outlined" placeholder="Global Search" className={classes.input} />
-          <IconButton edge="start" color="inherit" className={classes.menuButton}>
-            <BellIcon />
-          </IconButton>
+        <Box flex={1} alignItems="center" display="flex" justifyContent="flex-end">
+          <Box mr={1.25}>
+            <TextField variant="outlined" placeholder="Global Search" />
+          </Box>
 
-          <IconButton edge="start" color="inherit" className={classes.menuButton}>
-            <HelpIcon />
-          </IconButton>
+          <Box mr={1.25}>
+            <IconButton color="inherit" size="medium" className={classes.menuButton}>
+              <BellIcon />
+            </IconButton>
+          </Box>
 
-          <Button variant="contained" color="secondary" className={classes.goalButton}>New Goal</Button>
+          <Box mr={1.25}>
+            <IconButton color="inherit" className={classes.menuButton}>
+              <HelpIcon />
+            </IconButton>
+          </Box>
+
+          <Button variant="contained" color="secondary">New Goal</Button>
+
           {renderMenu}
         </Box>
       </Toolbar>

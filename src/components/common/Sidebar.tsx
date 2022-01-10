@@ -14,18 +14,15 @@ const Sidebar: FC = (): JSX.Element => {
   const classes = useSidebarStyles();
 
   return (
-    <Drawer variant="permanent" classes={{ paper: classes.drawerPaper, }} open={true}>
-      <Box minHeight="calc(100vh - 300px)">
-
-        <Box className={classes.toolbarIcon} />
-        <Box className="sideBarNav">
-          <AppMenu />
-        </Box>
+    <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }} open={true}>
+      <Box minHeight="calc(100vh - 300px)" pt={2}>
+        <AppMenu />
       </Box>
 
       <Box display="flex" flexDirection="column" alignItems="center" pt={15} pb={1.5}>
         <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center">
           <AccountCircle />
+
           <Button onClick={handleLogout}>logout</Button>
         </Box>
       </Box>
