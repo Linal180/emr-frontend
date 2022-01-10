@@ -1,9 +1,8 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Search } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Grid, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow, FormControl, InputLabel } from "@material-ui/core";
+import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow, Divider } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
@@ -11,9 +10,10 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { EditIcon, TrashIcon, TablesSearchIcon } from '../../../../assets/svgs'
 import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
 import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
+import { useTableStyles } from "../../../../styles/tableStyles";
 
 const StaffTable: FC = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -22,7 +22,7 @@ const StaffTable: FC = (): JSX.Element => {
   const [deleteStaffId, setDeleteStaffId] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
-
+  const classes = useTableStyles()
   const [findAllStaff, { loading, error }] = useFindAllStaffLazyQuery({
     variables: {
       staffInput: {
@@ -108,29 +108,24 @@ const StaffTable: FC = (): JSX.Element => {
   };
 
   return (
-    <>
-      <Box pt={1}>
-        <Grid container spacing={1}>
-          <Grid item sm={4}>
-            <FormControl fullWidth margin="normal">
-              <InputLabel shrink>Search</InputLabel>
-              <TextField
-                name="searchQuery"
-                value={searchQuery}
-                onChange={({ target: { value } }) => setSearchQuery(value)}
-                onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-                variant="outlined"
-                fullWidth
-                InputProps={{
-                  endAdornment:
-                    <IconButton color="default" onClick={handleSearch}>
-                      <Search color="inherit" />
-                    </IconButton>
-                }}
-              />
-            </FormControl>
-          </Grid>
-        </Grid>
+    <Box className={classes.mainTableContainer}>
+      <Box className={classes.searchContainer}>
+        <TextField
+          name="searchQuery"
+          className={classes.tablesSearchIcon}
+          value={searchQuery}
+          onChange={({ target: { value } }) => setSearchQuery(value)}
+          onKeyPress={({ key }) => key === "Enter" && handleSearch()}
+          placeholder="Search"
+          variant="outlined"
+          fullWidth
+          InputProps={{
+            startAdornment:
+              <IconButton color="default">
+                <TablesSearchIcon />
+              </IconButton>
+          }}
+        />
       </Box>
 
       <Box className="table-overflow">
@@ -208,7 +203,7 @@ const StaffTable: FC = (): JSX.Element => {
           setOpen={(open: boolean) => setOpenDelete(open)}
         />
       </Box>
-    </>
+    </Box>
   );
 };
 

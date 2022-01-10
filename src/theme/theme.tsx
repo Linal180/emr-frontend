@@ -2,7 +2,7 @@
 import { createTheme } from "@material-ui/core/styles";
 import { colors } from "@material-ui/core";
 // color-constants and font-family block
-import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, WHITE_TWO } from ".";
+import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
@@ -41,7 +41,8 @@ export const theme = createTheme({
 
     h5: {
       fontSize: 16,
-      fontWeight: 600
+      fontWeight: 600,
+      color: BLACK_ONE,
     },
 
     h6: {
@@ -154,8 +155,9 @@ export const theme = createTheme({
     MuiButton: {
       contained: {
         borderRadius: 6,
-        padding: '9px 20px',
         maxHeight: 42,
+        padding: '9px 20px',
+        boxShadow: 'none'
       },
 
       label: {
