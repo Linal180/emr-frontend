@@ -1,13 +1,13 @@
 // packages block
 import { FC, useContext, useState, } from "react";
-import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField } from "@material-ui/core";
+import { Link } from "react-router-dom";
+import { Box, Button, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField, Badge, InputAdornment } from "@material-ui/core";
 // history, app context, auth context, utils and header styles block
 import { EMR, ROOT_ROUTE } from "../../constants";
 import { handleLogout } from "../../utils";
-import { BellIcon, HelpIcon } from "../../assets/svgs";
+import { BellIcon, HeaderSearchIcon, HelpIcon } from "../../assets/svgs";
 import { AuthContext } from "../../context";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { Link } from "react-router-dom";
 
 const Header: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
@@ -26,15 +26,8 @@ const Header: FC = (): JSX.Element => {
   const menuId = "header-profile-menu";
 
   const renderMenu = (
-    <Menu
-      getContentAnchorEl={null}
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "center" }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
+    <Menu getContentAnchorEl={null} anchorEl={anchorEl} anchorOrigin={{ vertical: "bottom", horizontal: "center" }} id={menuId}
+      transformOrigin={{ vertical: "top", horizontal: "center" }} open={isMenuOpen} onClose={handleMenuClose} keepMounted
     >
       <MenuItem onClick={handleLogoutButton}>
         Logout
@@ -51,13 +44,23 @@ const Header: FC = (): JSX.Element => {
 
         <Box flex={1} alignItems="center" display="flex" justifyContent="flex-end">
           <Box mr={1.25}>
-            <TextField variant="outlined" placeholder="Global Search" />
+            <TextField variant="outlined" placeholder="Global Search"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <HeaderSearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Box>
 
           <Box mr={1.25}>
-            <IconButton color="inherit" size="medium" className={classes.menuButton}>
-              <BellIcon />
-            </IconButton>
+            <Badge color="secondary" variant="dot" anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+              <IconButton color="inherit" size="medium" className={classes.menuButton}>
+                <BellIcon />
+              </IconButton>
+            </Badge>
           </Box>
 
           <Box mr={1.25}>

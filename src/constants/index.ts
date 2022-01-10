@@ -329,7 +329,6 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: DOCTORS_TEXT,
-        link: "/",
       },
       {
         name: PATIENTS_TEXT,

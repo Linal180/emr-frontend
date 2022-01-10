@@ -17,6 +17,10 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
     "& input": {
       color: WHITE,
+    },
+
+    "& .MuiFormControl-root.MuiTextField-root": {
+      minWidth: 240,
     }
   },
 
@@ -24,9 +28,10 @@ export const useHeaderStyles = makeStyles((theme) => ({
     borderRadius: 6,
     padding: 9,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    transition: 'all .3s ease-in',
 
     "&:hover": {
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      backgroundColor: 'rgba(255, 255, 255, 0.3)',
     }
   },
 }));

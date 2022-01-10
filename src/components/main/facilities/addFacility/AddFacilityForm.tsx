@@ -13,7 +13,7 @@ import { CITY, CLIA_ID_NUMBER, CODE, COUNTRY, CREATE_FACILITY, EMAIL, FACILITIES
 
 const AddFacilityForm: FC = () => {
   const methods = useForm<CreateFacilityInput>({ mode: "all" });
-  const { reset, handleSubmit, formState: { errors } } = methods;
+  const { reset, handleSubmit } = methods;
 
   const [createFacility, { loading }] = useCreateFacilityMutation({
     onError({ message }) {
