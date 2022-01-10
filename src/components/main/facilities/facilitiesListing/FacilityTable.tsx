@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
+import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -18,6 +19,9 @@ const FacilityTable: FC = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [deleteFacilityId, setDeleteFacilityId] = useState<string>("");
   const [facilities, setFacilities] = useState<FacilitiesPayload['facility']>([]);
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
@@ -55,6 +59,26 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   });
 
+  const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
+    onError() {
+      Alert.error(CANT_DELETE_FACILITY)
+      setOpenDelete(false)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { removeFacility: { response } } = data
+
+        if (response) {
+          const { message } = response
+          message && Alert.success(message);
+          setOpenDelete(false)
+          findAllFacility();
+        }
+      }
+    }
+  });
+
   useEffect(() => {
     if (!searchQuery) {
       findAllFacility()
@@ -65,8 +89,24 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const handleSearch = () => { }
 
-  const onDeleteClick = (id: string) => { }
+  const onDeleteClick = (id: string) => {
+    if (id) {
+      setDeleteFacilityId(id)
+      setOpenDelete(true)
+    }
+  };
 
+  const handleDeleteFacility = async () => {
+    if (deleteFacilityId) {
+      await removeFacility({
+        variables: {
+          removeFacility: {
+            id: deleteFacilityId
+          }
+        }
+      })
+    }
+  };
   return (
     <Box className={classes.mainTableContainer}>
       <Box className={classes.searchContainer}>
@@ -163,6 +203,15 @@ const FacilityTable: FC = (): JSX.Element => {
             />
           </Box>
         )}
+
+        <ConfirmationModal
+          title={DELETE_FACILITY}
+          isOpen={openDelete}
+          isLoading={deleteFacilityLoading}
+          description={DELETE_FACILITY_DESCRIPTION}
+          handleDelete={handleDeleteFacility}
+          setOpen={(open: boolean) => setOpenDelete(open)}
+        />
       </Box>
     </Box>
   );

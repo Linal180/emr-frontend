@@ -1,12 +1,14 @@
 // packages block
-import { Select, InputLabel, FormControl, MenuItem } from "@material-ui/core";
 import { FC } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
+import { Select, InputLabel, FormControl, MenuItem } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { CreateFacilityInputControlProps, MappedRoleInterface } from "../../../../interfacesTypes";
 import { MAPPED_ROLES } from "../../../../constants";
 
-const SelectController: FC<CreateFacilityInputControlProps> = ({ control, controllerName }): JSX.Element => {
+const SelectController: FC<CreateFacilityInputControlProps> = ({ controllerName }): JSX.Element => {
+  const { control } = useFormContext()
+
   return (
     <Controller
       name={controllerName}

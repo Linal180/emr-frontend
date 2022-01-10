@@ -2,7 +2,7 @@
 import { LocalAtm, ReportSharp, Home, LocalMall, BookOutlined } from "@material-ui/icons";
 // graphql and interfaces block
 import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Gender, UserRole } from "../generated/graphql";
+import { Gender, PracticeType, UserRole } from "../generated/graphql";
 import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
 
@@ -19,9 +19,14 @@ export const CREATE_STAFF = "Create Staff";
 export const CREATE_FACILITY = "Create facility";
 export const ADD_STAFF = "Add Staff";
 export const VIEW_STAFF = "View Staff";
+export const UPDATE_STAFF = "Update Staff";
+export const UPDATE_FACILITY = "Update Facility";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
 export const STAFF_BASIC_INFO = "Staff Basic Info";
+export const FACILITY_INFO = "Facility Information";
+export const FACILITY_CONTACT_INFO = "Facility Contact Information";
+export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const MOBILE = "Mobile";
 export const USERNAME = "Username";
 export const HASH = "#";
@@ -103,6 +108,7 @@ export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const DELETE_STAFF = "Delete Staff";
+export const DELETE_FACILITY = "Delete Facility";
 export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
@@ -177,6 +183,7 @@ export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_USER_DESCRIPTION = "Are you sure you want to delete this user?";
 export const DELETE_STAFF_DESCRIPTION = "Are you sure you want to delete this staff?";
+export const DELETE_FACILITY_DESCRIPTION = "Are you sure you want to delete this facility?";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
@@ -239,12 +246,14 @@ export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const STAFF_CREATED = "Staff created successfully!";
 export const FACILITY_CREATED = "Facility created successfully!";
+export const FACILITY_UPDATED = "Facility updated successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const CANT_DELETE_STAFF = "This staff can't be deleted.";
+export const CANT_DELETE_FACILITY = "This facility can't be deleted.";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const USER_EXIST = "User already exists with this email.";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
@@ -398,6 +407,12 @@ export const MAPPED_GENDER: MappedGenderInterface[] = [
   { value: Gender.Male, label: 'Male' },
   { value: Gender.Female, label: 'Female' },
   { value: Gender.Other, label: 'Other' },
+]
+
+export const MAPPED_PRACTICE_TYPES = [
+  { value: PracticeType.Hospital, label: 'Hospital' },
+  { value: PracticeType.Clinic, label: 'Clinic' },
+  { value: PracticeType.Lab, label: 'Lab' },
 ]
 
 // Breadcrumb links
