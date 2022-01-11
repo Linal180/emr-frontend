@@ -190,16 +190,16 @@ const AddFacilityForm: FC = () => {
                   controllerLabel={INSURANCE_PLAN_TYPE}
                   error={insurancePlanTypeError}
                 />
-
-                <AddFacilityController
-                  fieldType="text"
-                  controllerName="mammographyCertificationNumber"
-                  controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
-                  error={mammographyCertificationNumberError}
-                />
-
                 <Grid container spacing={3}>
-                  <Grid item md={4}>
+                  <Grid item md={6}>
+                    <AddFacilityController
+                      fieldType="text"
+                      controllerName="mammographyCertificationNumber"
+                      controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
+                      error={mammographyCertificationNumberError}
+                    />
+                  </Grid>
+                  <Grid item md={6}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="npi"

@@ -11,7 +11,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { renderTh } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION } from "../../../../constants";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_ACCOUNT_DESCRIPTION } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 
@@ -198,7 +198,7 @@ const FacilityTable: FC = (): JSX.Element => {
             title={DELETE_FACILITY}
             isOpen={openDelete}
             isLoading={deleteFacilityLoading}
-            description={DELETE_FACILITY_DESCRIPTION}
+            description={DELETE_ACCOUNT_DESCRIPTION}
             handleDelete={handleDeleteFacility}
             setOpen={(open: boolean) => setOpenDelete(open)}
           />

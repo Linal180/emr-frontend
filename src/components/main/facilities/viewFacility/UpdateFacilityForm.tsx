@@ -269,16 +269,16 @@ const UpdateFacilityForm: FC = () => {
                   controllerLabel={INSURANCE_PLAN_TYPE}
                   error={insurancePlanTypeError}
                 />
-
-                <UpdateFacilityController
-                  fieldType="text"
-                  controllerName="mammographyCertificationNumber"
-                  controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
-                  error={mammographyCertificationNumberError}
-                />
-
                 <Grid container spacing={3}>
-                  <Grid item md={4}>
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="mammographyCertificationNumber"
+                      controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
+                      error={mammographyCertificationNumberError}
+                    />
+                  </Grid>
+                  <Grid item md={6}>
                     <UpdateFacilityController
                       fieldType="text"
                       controllerName="npi"
@@ -286,31 +286,31 @@ const UpdateFacilityForm: FC = () => {
                       error={npiError}
                     />
                   </Grid>
-
-                  <Controller
-                    name="serviceCode"
-                    defaultValue={ServiceCode.Ambulance_24}
-                    render={({ field }) => (
-                      <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
-                        <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
-                        <Select
-                          labelId="serviceCode"
-                          id="serviceCode-id"
-                          variant="outlined"
-                          value={field.value}
-                          onChange={field.onChange}
-                        >
-                          {MAPPED_SERVICE_CODES.map((code, index: number) => {
-                            const { label, value } = code;
-
-                            return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                          })}
-                        </Select>
-                        <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
-                      </FormControl>
-                    )}
-                  />
                 </Grid>
+
+                <Controller
+                  name="serviceCode"
+                  defaultValue={ServiceCode.Ambulance_24}
+                  render={({ field }) => (
+                    <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
+                      <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
+                      <Select
+                        labelId="serviceCode"
+                        id="serviceCode-id"
+                        variant="outlined"
+                        value={field.value}
+                        onChange={field.onChange}
+                      >
+                        {MAPPED_SERVICE_CODES.map((code, index: number) => {
+                          const { label, value } = code;
+
+                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
+                        })}
+                      </Select>
+                      <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
+                    </FormControl>
+                  )}
+                />
               </CardComponent>
             </Grid>
 

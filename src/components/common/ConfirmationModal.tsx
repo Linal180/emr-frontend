@@ -33,10 +33,10 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
         </Box>
       </DialogContent>
 
-      <Box display="flex" ml={4}>
+      <Box display="flex" ml={4} pb={2}>
         <FormControlLabel
           control={
-            <Checkbox
+            <Checkbox color="primary"
               checked={state.confirmDelete}
               onChange={handleChange("confirmDelete")}
             />
