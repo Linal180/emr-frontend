@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { CreateFacilityInput, LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -296,7 +296,6 @@ type FacilityControlTypes =
   | "name"
   | "practiceType"
   | "code"
-
   | "email"
   | "phone"
   | "fax"
@@ -306,7 +305,6 @@ type FacilityControlTypes =
   | "city"
   | "state"
   | "country"
-
   | "billingEmail"
   | "billingPhone"
   | "billingFax"
@@ -316,14 +314,11 @@ type FacilityControlTypes =
   | "billingCity"
   | "billingState"
   | "billingCountry"
-  | "billingPracticeType"
   | "billingBankAccount"
-  
   | "cliaIdNumber"
   | "federalTaxId"
   | "revenueCode"
   | "tamxonomyCode"
-  | "facilityType"
   | "insurancePlanType"
   | "mammographyCertificationNumber"
   | "npi"
@@ -331,14 +326,26 @@ type FacilityControlTypes =
   | "billingType"
   | "stateImmunizationId"
   | "locationId"
-  | "pos"
-
-  | "facilityId"
+  | "serviceCode"
   | "mobile"
   | "pager"
   | "serviceCode"
 
-export interface CreateFacilityInputControlProps extends IControlLabel {
+
+  interface CustomBillingAddressInputs {
+    billingEmail: string;
+    billingPhone: string;
+    billingFax: string;
+    billingZipCode: string;
+    billingAddress: string;
+    billingAddress2: string;
+    billingCity: string;
+    billingState: string;
+    billingCountry: string;
+    billingBankAccount: string;
+
+  }
+  export interface CreateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
@@ -346,4 +353,4 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput
+export type  CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput & CustomBillingAddressInputs

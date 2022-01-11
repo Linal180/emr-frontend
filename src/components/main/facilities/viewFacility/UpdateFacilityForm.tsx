@@ -1,8 +1,9 @@
 // packages block
 import { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { Box, Button, CircularProgress, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import CardComponent from "../../../common/CardComponent";
@@ -10,15 +11,20 @@ import UpdateFacilityController from './UpdateFacilityController';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { getPracticeType } from "../../../../utils";
+import { facilitySchema } from '../../../../validationSchemas';
 import { CustomUpdateFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
-import { FacilityPayload, PracticeType, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
-import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, FACILITY_CONTACT_INFO, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE } from "../../../../constants";
+import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
+import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BANK_ACCOUNT, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, PRACTICE_TYPE, ZIP } from "../../../../constants";
 
 const UpdateFacilityForm: FC = () => {
   const { id } = useParams<ParamsType>();
-  const methods = useForm<CustomUpdateFacilityInputProps>({ mode: "all" });
-  const { reset, handleSubmit, setValue } = methods;
+  const methods = useForm<CustomUpdateFacilityInputProps>({
+    mode: "all",
+    resolver: yupResolver(facilitySchema)
+  });
+  const { reset, handleSubmit, setValue, formState: { errors } } = methods;
   const [facility, setFacility] = useState<FacilityPayload['facility']>()
+
   const [getFacility] = useGetFacilityLazyQuery({
     onError({ message }) {
       Alert.error(message)
@@ -32,9 +38,9 @@ const UpdateFacilityForm: FC = () => {
 
         if (facility && status && status === 200) {
           const {
-            name, cliaIdNumber, federalTaxId, insurancePlanType,
+            name, cliaIdNumber, federalTaxId, insurancePlanType, mammographyCertificationNumber,
             npi, code, tamxonomyCode, revenueCode, practiceType,
-            contacts,
+            contacts, billingAddress,
           } = facility
 
           setFacility(facility)
@@ -47,11 +53,15 @@ const UpdateFacilityForm: FC = () => {
           code && setValue('code', code)
           tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
           revenueCode && setValue('revenueCode', revenueCode)
+          mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
           practiceType && setValue('practiceType', getPracticeType(practiceType) as PracticeType)
 
           if (contacts) {
-            const { email, phone, mobile, fax, city, state, country } = contacts[0]
+            const { email, phone, zipCode, mobile, fax, address, address2, city, state, country } = contacts[0]
             email && setValue('email', email)
+            address && setValue('address', address)
+            address2 && setValue('address2', address2)
+            zipCode && setValue('zipCode', zipCode)
             phone && setValue('phone', phone)
             mobile && setValue('mobile', mobile)
             fax && setValue('fax', fax)
@@ -60,6 +70,17 @@ const UpdateFacilityForm: FC = () => {
             country && setValue('country', country)
           }
 
+          if (billingAddress) {
+            const { email, zipCode, fax, address, address2, city, state, country } = billingAddress[0]
+            email && setValue('billingEmail', email)
+            address && setValue('billingAddress', address)
+            address2 && setValue('billingAddress2', address2)
+            zipCode && setValue('billingZipCode', zipCode)
+            fax && setValue('billingFax', fax)
+            city && setValue('billingCity', city)
+            state && setValue('billingState', state)
+            country && setValue('billingCountry', country)
+          }
         }
       }
     }
@@ -99,11 +120,13 @@ const UpdateFacilityForm: FC = () => {
     }
   }, [getFacility, id])
 
-  const onSubmit: SubmitHandler<CustomUpdateFacilityInputProps> = async ({
-    name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode,
-    practiceType, phone, email, fax, city, state, country
-  }) => {
+  const onSubmit: SubmitHandler<CustomUpdateFacilityInputProps> = async (inputs) => {
     if (facility) {
+      const {
+        name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
+        revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode,
+        zipCode,
+      } = inputs;
 
       const { contacts, billingAddress } = facility;
 
@@ -115,13 +138,11 @@ const UpdateFacilityForm: FC = () => {
           variables: {
             updateFacilityInput: {
               updateFacilityItemInput: {
-                id, name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode, practiceType
+                id, name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '', practiceType: practiceType || PracticeType.Hospital, serviceCode: serviceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
               },
-              updateContactInput: {
-                id: contactId, phone, email, fax, city, state, country
-              },
+              updateContactInput: { id: contactId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '' },
               updateBillingAddressInput: {
-                id: billingId, phone, email, fax, city, state, country
+                id: billingId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || ''
               },
             }
           }
@@ -130,119 +151,333 @@ const UpdateFacilityForm: FC = () => {
     }
   };
 
+  const {
+    npi: { message: npiError } = {},
+    fax: { message: faxError } = {},
+    name: { message: nameError } = {},
+    code: { message: codeError } = {},
+    city: { message: cityError } = {},
+    state: { message: stateError } = {},
+    email: { message: emailError } = {},
+    phone: { message: phoneError } = {},
+    country: { message: countryError } = {},
+    zipCode: { message: zipCodeError } = {},
+    address: { message: addressError } = {},
+    address2: { message: address2Error } = {},
+    serviceCode: { message: serviceCodeError } = {},
+    revenueCode: { message: revenueCodeError } = {},
+    cliaIdNumber: { message: cliaIdNumberError } = {},
+    federalTaxId: { message: federalTaxIdError } = {},
+    practiceType: { message: practiceTypeError } = {},
+    tamxonomyCode: { message: tamxonomyCodeError } = {},
+    insurancePlanType: { message: insurancePlanTypeError } = {},
+    mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
+  } = errors;
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Grid container spacing={3}>
-          <Grid md={6} item>
-            <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="name"
-                controllerLabel={NAME}
-              />
+        <Box maxHeight="calc(100vh - 240px)" className="overflowY-auto">
+          <Grid container spacing={3}>
+            <Grid md={6} item>
+              <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="name"
+                  controllerLabel={NAME}
+                  error={nameError}
+                />
 
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="cliaIdNumber"
-                controllerLabel={CLIA_ID_NUMBER}
-              />
+                <Controller
+                  name="practiceType"
+                  defaultValue={PracticeType.Hospital}
+                  render={({ field }) => (
+                    <FormControl fullWidth margin='normal' error={Boolean(practiceTypeError)}>
+                      <InputLabel id="practiceType" shrink>{PRACTICE_TYPE}</InputLabel>
+                      <Select
+                        labelId="practiceType"
+                        id="practiceType-id"
+                        variant="outlined"
+                        value={field.value}
+                        onChange={field.onChange}
+                      >
+                        {MAPPED_PRACTICE_TYPES.map((type, index: number) => {
+                          const { label, value } = type;
 
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="insurancePlanType"
-                controllerLabel={INSURANCE_PLAN_TYPE}
-              />
+                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
+                        })}
+                      </Select>
+                      <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
+                    </FormControl>
+                  )}
+                />
 
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="npi"
-                controllerLabel={NPI}
-              />
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="code"
+                  controllerLabel={CODE}
+                  error={codeError}
+                />
+              </CardComponent>
 
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="code"
-                controllerLabel={CODE}
-              />
+              <Box pb={3} />
 
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="tamxonomyCode"
-                controllerLabel={TAMXONOMY_CODE}
-              />
+              <CardComponent cardTitle={FACILITY_IDS} isEdit={true}>
+                <Grid container spacing={3}>
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="cliaIdNumber"
+                      controllerLabel={CLIA_ID_NUMBER}
+                      error={cliaIdNumberError}
+                    />
+                  </Grid>
 
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="revenueCode"
-                controllerLabel={REVENUE_CODE}
-              />
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="federalTaxId"
+                      controllerLabel={FEDERAL_TAX_ID}
+                      error={federalTaxIdError}
+                    />
+                  </Grid>
+                </Grid>
 
-              <Controller
-                name="practiceType"
-                defaultValue={PracticeType.Hospital}
-                render={({ field }) => <FormControl fullWidth>
-                  <InputLabel id="demo-customized-select-label-practice-type" shrink>Practice Type</InputLabel>
-                  <Select
-                    labelId="demo-customized-select-label-practice-type"
-                    id="demo-customized-select-1"
-                    variant="outlined"
-                  >
-                    {MAPPED_PRACTICE_TYPES.map((type, index: number) => {
-                      const { label, value } = type;
+                <Grid container spacing={3}>
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="tamxonomyCode"
+                      controllerLabel={TAMXONOMY_CODE}
+                      error={tamxonomyCodeError}
+                    />
+                  </Grid>
 
-                      return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                    })}
-                  </Select>
-                </FormControl>
-                }
-              />
-            </CardComponent>
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="revenueCode"
+                      controllerLabel={REVENUE_CODE}
+                      error={revenueCodeError}
+                    />
+                  </Grid>
+                </Grid>
+
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="insurancePlanType"
+                  controllerLabel={INSURANCE_PLAN_TYPE}
+                  error={insurancePlanTypeError}
+                />
+
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="mammographyCertificationNumber"
+                  controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
+                  error={mammographyCertificationNumberError}
+                />
+
+                <Grid container spacing={3}>
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="npi"
+                      controllerLabel={NPI}
+                      error={npiError}
+                    />
+                  </Grid>
+
+                  <Controller
+                    name="serviceCode"
+                    defaultValue={ServiceCode.Ambulance_24}
+                    render={({ field }) => (
+                      <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
+                        <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
+                        <Select
+                          labelId="serviceCode"
+                          id="serviceCode-id"
+                          variant="outlined"
+                          value={field.value}
+                          onChange={field.onChange}
+                        >
+                          {MAPPED_SERVICE_CODES.map((code, index: number) => {
+                            const { label, value } = code;
+
+                            return <MenuItem key={index} value={value}>{label}</MenuItem>;
+                          })}
+                        </Select>
+                        <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
+                      </FormControl>
+                    )}
+                  />
+                </Grid>
+              </CardComponent>
+            </Grid>
+
+            <Grid item md={6}>
+              <CardComponent cardTitle={BILLING_ADDRESS} isEdit={true}>
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="billingEmail"
+                  controllerLabel={EMAIL}
+                />
+
+                <Grid container spacing={3}>
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="billingPhone"
+                      controllerLabel={PHONE}
+                    />
+                  </Grid>
+
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="billingFax"
+                      controllerLabel={FAX}
+                    />
+                  </Grid>
+                </Grid>
+
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="billingZipCode"
+                  controllerLabel={ZIP}
+                />
+
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="billingAddress"
+                  controllerLabel={ADDRESS}
+                />
+
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="billingAddress2"
+                  controllerLabel={ADDRESS_2}
+                />
+
+                <Grid container spacing={3}>
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="billingCity"
+                      controllerLabel={CITY}
+                    />
+
+                  </Grid>
+
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="billingState"
+                      controllerLabel={STATE}
+                    />
+                  </Grid>
+
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="billingCountry"
+                      controllerLabel={COUNTRY}
+                    />
+                  </Grid>
+
+                  <UpdateFacilityController
+                    fieldType="text"
+                    controllerName="billingBankAccount"
+                    controllerLabel={BANK_ACCOUNT}
+                  />
+                </Grid>
+              </CardComponent>
+
+              <Box pb={3} />
+
+              <CardComponent cardTitle={FACILITY_CONTACT} isEdit={true}>
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="email"
+                  controllerLabel={EMAIL}
+                  error={emailError}
+                />
+
+                <Grid container spacing={3}>
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="phone"
+                      controllerLabel={PHONE}
+                      error={phoneError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="fax"
+                      controllerLabel={FAX}
+                      error={faxError}
+                    />
+                  </Grid>
+                </Grid>
+
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="zipCode"
+                  controllerLabel={ZIP}
+                  error={zipCodeError}
+                />
+
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="address"
+                  controllerLabel={ADDRESS}
+                  error={addressError}
+                />
+
+                <UpdateFacilityController
+                  fieldType="text"
+                  controllerName="address2"
+                  controllerLabel={ADDRESS_2}
+                  error={address2Error}
+                />
+
+                <Grid container spacing={3}>
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="city"
+                      controllerLabel={CITY}
+                      error={cityError}
+                    />
+                  </Grid>
+
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="state"
+                      controllerLabel={STATE}
+                      error={stateError}
+                    />
+                  </Grid>
+
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="country"
+                      controllerLabel={COUNTRY}
+                      error={countryError}
+                    />
+                  </Grid>
+                </Grid>
+              </CardComponent>
+            </Grid>
           </Grid>
-
-          <Grid item md={6}>
-            <CardComponent cardTitle={FACILITY_CONTACT_INFO} isEdit={true}>
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="email"
-                controllerLabel={EMAIL}
-              />
-
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="phone"
-                controllerLabel={PHONE}
-              />
-
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="fax"
-                controllerLabel={FAX}
-              />
-
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="city"
-                controllerLabel={CITY}
-              />
-
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="state"
-                controllerLabel={STATE}
-              />
-
-              <UpdateFacilityController
-                fieldType="text"
-                controllerName="country"
-                controllerLabel={COUNTRY}
-              />
-            </CardComponent>
-          </Grid>
-        </Grid>
+        </Box>
 
         <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+          <Button type="submit" variant="contained" color="secondary" disabled={loading}>
             {UPDATE_FACILITY}
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>

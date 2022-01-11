@@ -103,7 +103,6 @@ query GetFacility($getFacility: GetFacility!){
         email
         phone
         mobile
-        pager
         fax
         address
         address2

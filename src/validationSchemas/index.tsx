@@ -2,8 +2,15 @@
 import * as yup from "yup";
 // utils and constants block
 import { RequiredMessage } from "../utils";
-import { INVALID_EMAIL, REQUIRED_MESSAGE, ALPHABETS_REGEX, MaxLength, MinLength, NUMBER_REGEX, ValidMessage, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, CONFIRM_YOUR_PASSWORD, PASSWORDS_MUST_MATCH, FIRST_NAME, LAST_NAME, PHONE_NUMBER, ZIP_CODE, EMAIL, PASSWORD_LABEL, NAME, PASSWORD, MOBILE_NUMBER, USER_NAME, DOB, GENDER, ROLE, FACILITY } from "../constants";
-import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  ADDRESS, ADDRESS_2, ALPHABETS_REGEX, CITY, CLIA_ID_NUMBER, CODE,
+  CONFIRM_YOUR_PASSWORD, COUNTRY, DOB, EMAIL, FACILITY, FAX, FEDERAL_TAX_ID,
+  FIRST_NAME, GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME, MAMMOGRAPHY_CERTIFICATION_NUMBER,
+  MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX, PASSWORD, PASSWORDS_MUST_MATCH,
+  PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE, PHONE_NUMBER, PRACTICE_TYPE,
+  REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, USER_NAME,
+  ValidMessage, ZIP_CODE
+} from "../constants";
 
 const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
 const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
@@ -11,14 +18,6 @@ const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWOR
 const passwordAndRepeatPasswordSchema = {
   password: yup.string().required(RequiredMessage(PASSWORD)).matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
   repeatPassword: yup.string().oneOf([yup.ref("password"), null], PASSWORDS_MUST_MATCH).required(CONFIRM_YOUR_PASSWORD),
-}
-
-const basicUserSchema = {
-  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
-  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  phone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
-  mobile: yup.string().matches(NUMBER_REGEX, ValidMessage(MOBILE_NUMBER)).min(8, MinLength(MOBILE_NUMBER, 8)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
-  zipCode: yup.string().matches(NUMBER_REGEX, ValidMessage(ZIP_CODE)).required(RequiredMessage(ZIP_CODE))
 }
 
 export const loginValidationSchema = yup.object({
@@ -57,54 +56,25 @@ export const updateStaffSchema = yup.object({
   ...emailSchema,
 })
 
-
-
-
-
-
-
-
-
-// -----------------------------------------------------------------------------------------
-
-
-
-
-
-// export const updateRoleSchema = yup.object({
-//   id: yup.string().required(),
-//   roles: yup.string().required(REQUIRED_MESSAGE)
-// });
-
-// export const userUpdateSchema = yup.object({
-//   id: yup.string().required(REQUIRED_MESSAGE),
-//   ...emailSchema,
-//   ...basicUserSchema
-// });
-
-// export const addUserValidationSchema = yup.object({
-//   ...emailSchema,
-//   ...basicUserSchema,
-//   ...passwordAndRepeatPasswordSchema,
-//   roleType: yup.string().required(REQUIRED_MESSAGE),
-// });
-
-
-// export const featureAndTagValidationSchema = yup.object({ name: yup.string().max(20, MaxLength(NAME, 20)).min(3, MinLength(NAME, 3)).required(REQUIRED_MESSAGE) });
-
-// export const changePasswordValidationSchema = yup.object({
-//   oldPassword: yup.string().required(REQUIRED_MESSAGE),
-//   newPassword: yup.string().required(REQUIRED_MESSAGE).matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
-//   repeatPassword: yup.string().oneOf([yup.ref("newPassword"), null], PASSWORDS_MUST_MATCH).required(CONFIRM_YOUR_PASSWORD),
-// });
-
-// export const updateUserRoleSchema = yup.object({
-//   id: yup.string().required(),
-//   roles: yup.string().required(REQUIRED_MESSAGE)
-// });
-
-// export const updateUserSchema = yup.object({
-//   id: yup.string().required(REQUIRED_MESSAGE),
-//   ...emailSchema,
-//   ...basicUserSchema
-// });
+export const facilitySchema = yup.object({
+  name: yup.string().required(RequiredMessage(NAME)),
+  practiceType: yup.string().required(RequiredMessage(PRACTICE_TYPE)),
+  code: yup.string().required(RequiredMessage(CODE)),
+  email: yup.string().required(RequiredMessage(EMAIL)),
+  phone: yup.string().required(RequiredMessage(PHONE)),
+  fax: yup.string().required(RequiredMessage(FAX)),
+  zipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
+  address: yup.string().required(RequiredMessage(ADDRESS)),
+  address2: yup.string().required(RequiredMessage(ADDRESS_2)),
+  city: yup.string().required(RequiredMessage(CITY)),
+  state: yup.string().required(RequiredMessage(STATE)),
+  country: yup.string().required(RequiredMessage(COUNTRY)),
+  cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER)),
+  federalTaxId: yup.string().required(RequiredMessage(FEDERAL_TAX_ID)),
+  revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE)),
+  tamxonomyCode: yup.string().required(RequiredMessage(TAMXONOMY_CODE)),
+  insurancePlanType: yup.string().required(RequiredMessage(INSURANCE_PLAN_TYPE)),
+  mammographyCertificationNumber: yup.string().required(RequiredMessage(MAMMOGRAPHY_CERTIFICATION_NUMBER)),
+  npi: yup.string().required(RequiredMessage(NPI)),
+  serviceCode: yup.string().required(RequiredMessage(SERVICE_CODE)),
+})
