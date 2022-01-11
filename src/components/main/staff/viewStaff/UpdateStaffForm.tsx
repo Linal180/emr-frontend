@@ -127,7 +127,7 @@ const UpdateStaffForm: FC = () => {
               <CardComponent cardTitle={IDENTIFICATION}>
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <Grid container>
+                    <Grid>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <UpdateStaffController
