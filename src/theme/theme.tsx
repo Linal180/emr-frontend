@@ -1,18 +1,18 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
-import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE } from ".";
+import { PINK, BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
   palette: {
     primary: {
-      main: BLUE_TWO,
+      main: GREEN,
       contrastText: WHITE,
     },
 
     secondary: {
-      main: GREEN,
+      main: PINK,
       contrastText: WHITE,
     },
 

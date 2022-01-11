@@ -16,7 +16,7 @@ const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPa
 
       {!noAdd && <>
         {hasComponent &&
-          <Button color="secondary" variant="contained" component={Link} to={linkToPage || ""}>
+          <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
             {buttonText || ""}
           </Button>
         }
