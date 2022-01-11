@@ -1,24 +1,37 @@
 // packages block
 import { FC } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import CardComponent from "../../../common/CardComponent";
 import AddFacilityController from "./AddFacilityController";
 // utils, interfaces and graphql block
 import history from "../../../../history";
-import { CreateFacilityInput, PracticeType, useCreateFacilityMutation } from "../../../../generated/graphql";
-import { CITY, CLIA_ID_NUMBER, CODE, COUNTRY, FACILITY_TYPE, FACILITY_IDS, CREATE_FACILITY, BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE, FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, BANK_ACCOUNT, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, MERCHANT_ID, STATE_IMMUNIZATION_ID, LOCATION_ID, POS } from "../../../../constants";
+import { facilitySchema } from '../../../../validationSchemas';
+import { CustomUpdateFacilityInputProps } from '../../../../interfacesTypes';
+import { PracticeType, ServiceCode, useCreateFacilityMutation } from "../../../../generated/graphql";
+import {
+  CITY, CLIA_ID_NUMBER, CODE, COUNTRY, FACILITY_IDS, CREATE_FACILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION,
+  INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE,
+  FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, BANK_ACCOUNT, FEDERAL_TAX_ID,
+  MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, MAPPED_SERVICE_CODES
+} from "../../../../constants";
 
 const AddFacilityForm: FC = () => {
-  const methods = useForm<CreateFacilityInput>({ mode: "all" });
-  const { reset, handleSubmit } = methods;
+  const methods = useForm<CustomUpdateFacilityInputProps>({
+    mode: "all",
+    resolver: yupResolver(facilitySchema)
+  });
+
+  const { reset, handleSubmit, formState: { errors } } = methods;
 
   const [createFacility, { loading }] = useCreateFacilityMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
-        Alert.error("Email or username already exists!")
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
       } else
         Alert.error(message)
     },
@@ -38,25 +51,49 @@ const AddFacilityForm: FC = () => {
     }
   });
 
-  const onSubmit: SubmitHandler<CreateFacilityInput> = async (inputs: any) => {
-    const { name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode, practiceType, phone, email, fax, city, state, country } = inputs;
+  const onSubmit: SubmitHandler<CustomUpdateFacilityInputProps> = async (inputs) => {
+    const {
+      name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
+      revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode,
+      zipCode,
+    } = inputs;
 
     await createFacility({
       variables: {
         createFacilityInput: {
           createFacilityItemInput: {
-            name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, revenueCode, practiceType
+            name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '', practiceType: practiceType || PracticeType.Hospital, serviceCode: serviceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
           },
-          createContactInput: {
-            phone, email, fax, city, state, country
-          },
-          createBillingAddressInput: {
-            phone, email, fax, city, state, country
-          },
+
+          createContactInput: { phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '' },
+          createBillingAddressInput: { phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '' },
         }
       }
     })
   };
+
+  const {
+    npi: { message: npiError } = {},
+    fax: { message: faxError } = {},
+    name: { message: nameError } = {},
+    code: { message: codeError } = {},
+    city: { message: cityError } = {},
+    state: { message: stateError } = {},
+    email: { message: emailError } = {},
+    phone: { message: phoneError } = {},
+    country: { message: countryError } = {},
+    zipCode: { message: zipCodeError } = {},
+    address: { message: addressError } = {},
+    address2: { message: address2Error } = {},
+    serviceCode: { message: serviceCodeError } = {},
+    revenueCode: { message: revenueCodeError } = {},
+    cliaIdNumber: { message: cliaIdNumberError } = {},
+    federalTaxId: { message: federalTaxIdError } = {},
+    practiceType: { message: practiceTypeError } = {},
+    tamxonomyCode: { message: tamxonomyCodeError } = {},
+    insurancePlanType: { message: insurancePlanTypeError } = {},
+    mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
+  } = errors;
 
   return (
     <FormProvider {...methods}>
@@ -69,18 +106,21 @@ const AddFacilityForm: FC = () => {
                   fieldType="text"
                   controllerName="name"
                   controllerLabel={NAME}
+                  error={nameError}
                 />
 
                 <Controller
                   name="practiceType"
                   defaultValue={PracticeType.Hospital}
                   render={({ field }) => (
-                    <FormControl fullWidth margin='normal'>
-                      <InputLabel id="demo-customized-select-label-practice-type" shrink>Practice Type</InputLabel>
+                    <FormControl fullWidth margin='normal' error={Boolean(practiceTypeError)}>
+                      <InputLabel id="practiceType" shrink>{PRACTICE_TYPE}</InputLabel>
                       <Select
-                        labelId="demo-customized-select-label-practice-type"
-                        id="demo-customized-select-1"
+                        labelId="practiceType"
+                        id="practiceType-id"
                         variant="outlined"
+                        value={field.value}
+                        onChange={field.onChange}
                       >
                         {MAPPED_PRACTICE_TYPES.map((type, index: number) => {
                           const { label, value } = type;
@@ -88,6 +128,7 @@ const AddFacilityForm: FC = () => {
                           return <MenuItem key={index} value={value}>{label}</MenuItem>;
                         })}
                       </Select>
+                      <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
                     </FormControl>
                   )}
                 />
@@ -96,6 +137,7 @@ const AddFacilityForm: FC = () => {
                   fieldType="text"
                   controllerName="code"
                   controllerLabel={CODE}
+                  error={codeError}
                 />
               </CardComponent>
 
@@ -108,6 +150,7 @@ const AddFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="cliaIdNumber"
                       controllerLabel={CLIA_ID_NUMBER}
+                      error={cliaIdNumberError}
                     />
                   </Grid>
 
@@ -116,6 +159,7 @@ const AddFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="federalTaxId"
                       controllerLabel={FEDERAL_TAX_ID}
+                      error={federalTaxIdError}
                     />
                   </Grid>
                 </Grid>
@@ -126,6 +170,7 @@ const AddFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="tamxonomyCode"
                       controllerLabel={TAMXONOMY_CODE}
+                      error={tamxonomyCodeError}
                     />
                   </Grid>
 
@@ -134,84 +179,61 @@ const AddFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="revenueCode"
                       controllerLabel={REVENUE_CODE}
+                      error={revenueCodeError}
                     />
                   </Grid>
                 </Grid>
 
                 <AddFacilityController
                   fieldType="text"
-                  controllerName="facilityType"
-                  controllerLabel={FACILITY_TYPE}
-                />
-
-                <AddFacilityController
-                  fieldType="text"
                   controllerName="insurancePlanType"
                   controllerLabel={INSURANCE_PLAN_TYPE}
+                  error={insurancePlanTypeError}
                 />
 
                 <AddFacilityController
                   fieldType="text"
                   controllerName="mammographyCertificationNumber"
                   controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
+                  error={mammographyCertificationNumberError}
                 />
 
                 <Grid container spacing={3}>
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="npi"
                       controllerLabel={NPI}
+                      error={npiError}
                     />
                   </Grid>
 
-                  <Grid item md={6}>
-                    <AddFacilityController
-                      fieldType="text"
-                      controllerName="pos"
-                      controllerLabel={POS}
-                    />
-                  </Grid>
-                </Grid>
+                  <Controller
+                    name="serviceCode"
+                    defaultValue={ServiceCode.Ambulance_24}
+                    render={({ field }) => (
+                      <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
+                        <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
+                        <Select
+                          labelId="serviceCode"
+                          id="serviceCode-id"
+                          variant="outlined"
+                          value={field.value}
+                          onChange={field.onChange}
+                        >
+                          {MAPPED_SERVICE_CODES.map((code, index: number) => {
+                            const { label, value } = code;
 
-                <Grid container spacing={3}>
-                  <Grid item md={6}>
-                    <AddFacilityController
-                      fieldType="text"
-                      controllerName="merchantId"
-                      controllerLabel={MERCHANT_ID}
-                    />
-                  </Grid>
-
-                  <Grid item md={6}>
-                    <AddFacilityController
-                      fieldType="text"
-                      controllerName="billingType"
-                      controllerLabel={PHONE}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6}>
-                    <AddFacilityController
-                      fieldType="text"
-                      controllerName="stateImmunizationId"
-                      controllerLabel={STATE_IMMUNIZATION_ID}
-                    />
-                  </Grid>
-
-                  <Grid item md={6}>
-                    <AddFacilityController
-                      fieldType="text"
-                      controllerName="locationId"
-                      controllerLabel={LOCATION_ID}
-                    />
-                  </Grid>
+                            return <MenuItem key={index} value={value}>{label}</MenuItem>;
+                          })}
+                        </Select>
+                        <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
               </CardComponent>
             </Grid>
-
 
             <Grid item md={6}>
               <CardComponent cardTitle={BILLING_ADDRESS} isEdit={true}>
@@ -266,14 +288,15 @@ const AddFacilityForm: FC = () => {
                     />
 
                   </Grid>
+
                   <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="billingState"
                       controllerLabel={STATE}
                     />
-
                   </Grid>
+
                   <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
@@ -284,26 +307,20 @@ const AddFacilityForm: FC = () => {
 
                   <AddFacilityController
                     fieldType="text"
-                    controllerName="billingPracticeType"
-                    controllerLabel={PRACTICE_TYPE}
-                  />
-
-                  <AddFacilityController
-                    fieldType="text"
                     controllerName="billingBankAccount"
                     controllerLabel={BANK_ACCOUNT}
                   />
-
                 </Grid>
               </CardComponent>
 
               <Box pb={3} />
-              
+
               <CardComponent cardTitle={FACILITY_CONTACT} isEdit={true}>
                 <AddFacilityController
                   fieldType="text"
                   controllerName="email"
                   controllerLabel={EMAIL}
+                  error={emailError}
                 />
 
                 <Grid container spacing={3}>
@@ -312,6 +329,7 @@ const AddFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="phone"
                       controllerLabel={PHONE}
+                      error={phoneError}
                     />
                   </Grid>
 
@@ -320,6 +338,7 @@ const AddFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="fax"
                       controllerLabel={FAX}
+                      error={faxError}
                     />
                   </Grid>
                 </Grid>
@@ -328,18 +347,21 @@ const AddFacilityForm: FC = () => {
                   fieldType="text"
                   controllerName="zipCode"
                   controllerLabel={ZIP}
+                  error={zipCodeError}
                 />
 
                 <AddFacilityController
                   fieldType="text"
                   controllerName="address"
                   controllerLabel={ADDRESS}
+                  error={addressError}
                 />
 
                 <AddFacilityController
                   fieldType="text"
                   controllerName="address2"
                   controllerLabel={ADDRESS_2}
+                  error={address2Error}
                 />
 
                 <Grid container spacing={3}>
@@ -348,22 +370,25 @@ const AddFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="city"
                       controllerLabel={CITY}
+                      error={cityError}
                     />
-
                   </Grid>
+
                   <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="state"
                       controllerLabel={STATE}
+                      error={stateError}
                     />
-
                   </Grid>
+
                   <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="country"
                       controllerLabel={COUNTRY}
+                      error={countryError}
                     />
                   </Grid>
                 </Grid>
@@ -379,7 +404,7 @@ const AddFacilityForm: FC = () => {
           </Button>
         </Box>
       </form >
-    </FormProvider >
+    </FormProvider>
   );
 };
 

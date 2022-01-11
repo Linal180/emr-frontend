@@ -2,7 +2,7 @@
 import { LocalAtm, ReportSharp, Home, LocalMall, BookOutlined } from "@material-ui/icons";
 // graphql and interfaces block
 import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Gender, PracticeType, UserRole } from "../generated/graphql";
+import { Gender, PracticeType, ServiceCode, UserRole } from "../generated/graphql";
 import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
 
@@ -295,6 +295,7 @@ export const STAFF_CREATED = "Staff created successfully!";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const FACILITY_UPDATED = "Facility updated successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
+export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email or username already exists!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -467,6 +468,50 @@ export const MAPPED_PRACTICE_TYPES = [
   { value: PracticeType.Lab, label: 'Lab' },
 ]
 
+const MAPPED_SERVICE_CODE = {
+  AMBULANCE_41: "Ambulance 41",
+  AMBULANCE_42: "Ambulance 42",
+  AMBULANCE_24: "Ambulance 24",
+  ASSISTED_LIVING_13: "Assisted Living 13",
+  BIRTHING_CENTER_25: "Birthing Center 25",
+  COMMUNITY_MENTAL_HEALTH_CENTER_53: "CMHC 53",
+  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61: "CIRF 61",
+  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62: "CORF 62",
+  CUSTODIAL_CARE_FACILITY_33: "CAF 33",
+  EMERGENCY_ROOM_23: "Emergency Room 23",
+  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65: "ESRDTF 65",
+  FEDERALLY_QUALIFIED_HEALTH_CENTER_50: "FQHC 50",
+  GROUP_HOME_14: "Group Home 14",
+  HOMELESS_SHELTER_04: "Homeless Shelter 04",
+  HOSPICE_34: "HOSPICE 34",
+  INDEPENDENT_CLINIC_49: "Independent Clinic 49",
+  INDEPENDENT_LABORATORY_81: "Independent Lab 81",
+  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05: "IHSFSF 05",
+  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06: "IHSPBF 06",
+}
+
+export const MAPPED_SERVICE_CODES = [
+  { value: ServiceCode.Hospice_34, label: MAPPED_SERVICE_CODE.HOSPICE_34 },
+  { value: ServiceCode.Ambulance_41, label: MAPPED_SERVICE_CODE.AMBULANCE_41 },
+  { value: ServiceCode.Ambulance_42, label: MAPPED_SERVICE_CODE.AMBULANCE_42 },
+  { value: ServiceCode.Ambulance_24, label: MAPPED_SERVICE_CODE.AMBULANCE_24 },
+  { value: ServiceCode.GroupHome_14, label: MAPPED_SERVICE_CODE.GROUP_HOME_14 },
+  { value: ServiceCode.EmergencyRoom_23, label: MAPPED_SERVICE_CODE.EMERGENCY_ROOM_23 },
+  { value: ServiceCode.AssistedLiving_13, label: MAPPED_SERVICE_CODE.ASSISTED_LIVING_13 },
+  { value: ServiceCode.BirthingCenter_25, label: MAPPED_SERVICE_CODE.BIRTHING_CENTER_25 },
+  { value: ServiceCode.HomelessShelter_04, label: MAPPED_SERVICE_CODE.HOMELESS_SHELTER_04 },
+  { value: ServiceCode.IndependentClinic_49, label: MAPPED_SERVICE_CODE.INDEPENDENT_CLINIC_49 },
+  { value: ServiceCode.IndependentLaboratory_81, label: MAPPED_SERVICE_CODE.INDEPENDENT_LABORATORY_81 },
+  { value: ServiceCode.CustodialCareFacility_33, label: MAPPED_SERVICE_CODE.CUSTODIAL_CARE_FACILITY_33 },
+  { value: ServiceCode.CommunityMentalHealthCenter_53, label: MAPPED_SERVICE_CODE.COMMUNITY_MENTAL_HEALTH_CENTER_53 },
+  { value: ServiceCode.FederallyQualifiedHealthCenter_50, label: MAPPED_SERVICE_CODE.FEDERALLY_QUALIFIED_HEALTH_CENTER_50 },
+  { value: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, label: MAPPED_SERVICE_CODE.END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65 },
+  { value: ServiceCode.IndianHealthServiceFreeStandingFacility_05, label: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05 },
+  { value: ServiceCode.IndianHealthServiceProviderBasedFacility_06, label: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06 },
+  { value: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, label: MAPPED_SERVICE_CODE.COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61 },
+  { value: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, label: MAPPED_SERVICE_CODE.COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62 }
+]
+
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
@@ -475,12 +520,12 @@ export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
-export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: ''}
-export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE  }
-export const USERS_BREAD = { text: USERS_TEXT, link: ''  }
-export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: ''  }
-export const BILLING_BREAD = { text: BILLING_TEXT, link: ''  }
-export const REPORTS_BREAD = { text: REPORTS_TEXT, link: ''  }
+export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }
+export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }
+export const USERS_BREAD = { text: USERS_TEXT, link: '' }
+export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: '' }
+export const BILLING_BREAD = { text: BILLING_TEXT, link: '' }
+export const REPORTS_BREAD = { text: REPORTS_TEXT, link: '' }
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE }
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
