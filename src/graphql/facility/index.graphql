@@ -119,6 +119,7 @@ query GetFacility($getFacility: GetFacility!){
         id
         email
         mobile
+        phone
         fax
         address
         address2
@@ -194,8 +195,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
       mammographyCertificationNumber
       npi
       serviceCode
-      createdAt
-      updatedAt
       
       contacts {
         id
@@ -211,8 +210,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
         state
         country
         userId
-        createdAt
-        updatedAt
       }
 
       staff {
@@ -225,8 +222,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
         phone
         mobile
         gender
-        createdAt
-        updatedAt
 
         user {
           id
@@ -238,8 +233,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
           inviteSentAt
           emailVerified
           inviteAcceptedAt
-          createdAt
-          updatedAt
         }
       }
     }

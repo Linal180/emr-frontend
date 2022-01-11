@@ -54,7 +54,7 @@ const AddFacilityForm: FC = () => {
   const onSubmit: SubmitHandler<CustomUpdateFacilityInputProps> = async (inputs) => {
     const {
       name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
-      revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode,
+      revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode, address, address2,
       zipCode,
     } = inputs;
 
@@ -65,8 +65,8 @@ const AddFacilityForm: FC = () => {
             name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '', practiceType: practiceType || PracticeType.Hospital, serviceCode: serviceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
           },
 
-          createContactInput: { phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '' },
-          createBillingAddressInput: { phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '' },
+          createContactInput: { phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || '' },
+          createBillingAddressInput: { phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || '' },
         }
       }
     })

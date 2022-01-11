@@ -71,8 +71,9 @@ const UpdateFacilityForm: FC = () => {
           }
 
           if (billingAddress) {
-            const { email, zipCode, fax, address, address2, city, state, country } = billingAddress[0]
+            const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
             email && setValue('billingEmail', email)
+            phone && setValue('billingPhone', phone)
             address && setValue('billingAddress', address)
             address2 && setValue('billingAddress2', address2)
             zipCode && setValue('billingZipCode', zipCode)
@@ -124,8 +125,7 @@ const UpdateFacilityForm: FC = () => {
     if (facility) {
       const {
         name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
-        revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode,
-        zipCode,
+        revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode, address2, address, zipCode,
       } = inputs;
 
       const { contacts, billingAddress } = facility;
@@ -140,9 +140,9 @@ const UpdateFacilityForm: FC = () => {
               updateFacilityItemInput: {
                 id, name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '', practiceType: practiceType || PracticeType.Hospital, serviceCode: serviceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
               },
-              updateContactInput: { id: contactId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '' },
+              updateContactInput: { id: contactId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || '' },
               updateBillingAddressInput: {
-                id: billingId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || ''
+                id: billingId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || ''
               },
             }
           }
