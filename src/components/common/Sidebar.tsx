@@ -43,15 +43,15 @@ const Sidebar: FC = (): JSX.Element => {
       </Box>
       <Box display="flex" flexDirection="column" alignItems="flex-start" pt={15} pb={1.5} width={'inherit'}>
         <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" width={'inherit'}>
-          <Button aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen} fullWidth>
-            <Box display="flex" minWidth={250}>
-              <AccountCircle />
-              <Box ml={1}>Administrator</Box>
-            </Box>
-            <Box display="flex">
+          <Box display="flex" minWidth={200}>
+            <AccountCircle />
+            <Box ml={1}>Administrator</Box>
+          </Box>
+          <Box display="flex">
+            <Button aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen}>
               <SettingIcon />
-            </Box>
-          </Button>
+            </Button>
+          </Box>
           {renderMenu}
         </Box>
       </Box>

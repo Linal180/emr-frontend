@@ -21,3 +21,5 @@ export const BLUE = "#596ed5"
 export const BLUE_ONE = "#009EF6";
 export const BLUE_TWO = "#0056B1";
 export const BLUE_THREE = "#00A3FF";
+
+export const ORANGE = "#FFF9F4";
