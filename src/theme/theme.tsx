@@ -1,7 +1,7 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
-import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX } from ".";
+import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
@@ -114,10 +114,10 @@ export const theme = createTheme({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'flex-end',
-        background: '#FFF9F4',
-        border: '1px dashed #F89C47',
+        background: ORANGE,
+        border: `1px dashed ${ORANGE}`,
         borderRadius: 6,
-        minHeight: 103,
+        minHeight: 83,
         margin: 30,
         padding: 16
       }

@@ -4,7 +4,7 @@ import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle,
 // interfaces/types block/theme/svgs/constants
 import { ConfirmationTypes } from "../../interfacesTypes";
 import { DeleteWarningIcon } from "../../assets/svgs";
-import { DELETE_RECORD_TEXT, DELETE_RECORD_LEARN_MORE_TEXT } from "../../constants";
+import { DELETE_RECORD_LEARN_MORE_TEXT } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success }): JSX.Element => {
   const [state, setState] = useState({
@@ -26,9 +26,6 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
         <Box display="flex">
           <DeleteWarningIcon />
           <CardContent>
-            <Typography>
-              {DELETE_RECORD_TEXT}
-            </Typography>
             <Typography>
               {DELETE_RECORD_LEARN_MORE_TEXT}
             </Typography>
