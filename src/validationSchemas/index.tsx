@@ -42,8 +42,8 @@ const staffBasicSchema = {
   mobile: yup.string().matches(NUMBER_REGEX, ValidMessage(MOBILE_NUMBER)).min(8, MinLength(MOBILE_NUMBER, 8)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
   dob: yup.string().required(RequiredMessage(DOB)),
   gender: yup.string().required(RequiredMessage(GENDER)),
-  role: yup.string().required(RequiredMessage(ROLE)),
-  facility: yup.string().required(RequiredMessage(FACILITY)),
+  roleType: yup.string().required(RequiredMessage(ROLE)),
+  facilityId: yup.string().required(RequiredMessage(FACILITY)),
 }
 
 export const addStaffSchema = yup.object({

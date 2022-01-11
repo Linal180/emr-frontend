@@ -165,12 +165,13 @@ const AddStaffForm: FC = () => {
                 defaultValue={UserRole.Staff}
                 control={control}
                 render={({ field }) => (
-                  <FormControl fullWidth margin='normal'>
-                    <InputLabel id="role" shrink>{ROLE}</InputLabel>
+                  <FormControl fullWidth margin='normal' error={Boolean(roleError)}>
+                    <InputLabel id="roleType" shrink>{ROLE}</InputLabel>
                     <Select
-                      labelId="role"
+                      labelId="roleType"
                       id="select-role"
                       variant="outlined"
+                      value={field.value}
                       onChange={field.onChange}
                     >
                       {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
@@ -192,7 +193,7 @@ const AddStaffForm: FC = () => {
                 control={control}
                 render={({ field }) => {
                   return (
-                    <FormControl fullWidth margin='normal'>
+                    <FormControl fullWidth margin='normal' error={Boolean(genderError)}>
                       <InputLabel id="gender" shrink>{GENDER}</InputLabel>
                       <Select
                         labelId="gender"
@@ -207,7 +208,7 @@ const AddStaffForm: FC = () => {
                           return <MenuItem key={value} value={value}>{label}</MenuItem>;
                         })}
                       </Select>
-                      <FormHelperText>{genderError}</FormHelperText>
+                      <FormHelperText>{genderError && genderError}</FormHelperText>
                     </FormControl>
                   )
                 }}
@@ -221,7 +222,7 @@ const AddStaffForm: FC = () => {
                 control={control}
                 render={({ field }) => {
                   return (
-                    <FormControl fullWidth margin='normal'>
+                    <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
                       <InputLabel id="facility" shrink>{FACILITY}</InputLabel>
                       <Select
                         labelId="facility"
