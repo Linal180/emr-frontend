@@ -1,7 +1,7 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
-import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX } from ".";
+import { BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
@@ -98,6 +98,28 @@ export const theme = createTheme({
     MuiToolbar: {
       gutters: {
         padding: "15px 30px !important",
+      }
+    },
+
+    MuiDialog: {
+      paperWidthSm: {
+        borderRadius: 10,
+        maxWidth: 810,
+        minHeight: 265
+      }
+    },
+
+    MuiDialogContent: {
+      root: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        background: ORANGE,
+        border: `1px dashed ${ORANGE}`,
+        borderRadius: 6,
+        minHeight: 83,
+        margin: 30,
+        padding: 16
       }
     },
 

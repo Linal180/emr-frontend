@@ -38,7 +38,7 @@ const FacilityTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      return null;
+      setFacilities([])
     },
 
     onCompleted(data) {
