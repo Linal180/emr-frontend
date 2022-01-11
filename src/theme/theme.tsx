@@ -101,6 +101,34 @@ export const theme = createTheme({
       }
     },
 
+    MuiDialog: {
+      paperWidthSm: {
+        borderRadius: 10,
+        maxWidth: 810,
+        minHeight: 265
+      }
+    },
+
+    MuiDialogContent: {
+      root: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'flex-end'
+      }
+    },
+
+    MuiDialogTitle: {
+      root: {
+        "&.MuiPaper-root": {
+        background: '#FFF9F4',
+        border: '1px dashed #F89C47',
+        borderRadius: 6,
+        minHeight: 103,
+        padding: 30
+    },
+      },
+    },
+
     MuiCheckbox: {
       root: {
         color: BLUE_TWO
