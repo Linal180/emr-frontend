@@ -207,30 +207,31 @@ const AddFacilityForm: FC = () => {
                       error={npiError}
                     />
                   </Grid>
+                  <Grid item md={12} spacing={3}>
+                    <Controller
+                      name="serviceCode"
+                      defaultValue={ServiceCode.Ambulance_24}
+                      render={({ field }) => (
+                        <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
+                          <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
+                          <Select
+                            labelId="serviceCode"
+                            id="serviceCode-id"
+                            variant="outlined"
+                            value={field.value}
+                            onChange={field.onChange}
+                          >
+                            {MAPPED_SERVICE_CODES.map((code, index: number) => {
+                              const { label, value } = code;
 
-                  <Controller
-                    name="serviceCode"
-                    defaultValue={ServiceCode.Ambulance_24}
-                    render={({ field }) => (
-                      <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
-                        <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
-                        <Select
-                          labelId="serviceCode"
-                          id="serviceCode-id"
-                          variant="outlined"
-                          value={field.value}
-                          onChange={field.onChange}
-                        >
-                          {MAPPED_SERVICE_CODES.map((code, index: number) => {
-                            const { label, value } = code;
-
-                            return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                          })}
-                        </Select>
-                        <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
-                      </FormControl>
-                    )}
-                  />
+                              return <MenuItem key={index} value={value}>{label}</MenuItem>;
+                            })}
+                          </Select>
+                          <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
+                        </FormControl>
+                      )}
+                    />
+                  </Grid>
                 </Grid>
               </CardComponent>
             </Grid>
@@ -304,12 +305,13 @@ const AddFacilityForm: FC = () => {
                       controllerLabel={COUNTRY}
                     />
                   </Grid>
-
+                  <Grid item md={12} spacing={3}>
                   <AddFacilityController
                     fieldType="text"
                     controllerName="billingBankAccount"
                     controllerLabel={BANK_ACCOUNT}
                   />
+                  </Grid>
                 </Grid>
               </CardComponent>
 
@@ -398,7 +400,7 @@ const AddFacilityForm: FC = () => {
         </Box>
 
         <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="secondary" disabled={loading}>
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {CREATE_FACILITY}
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>

@@ -165,7 +165,7 @@ const StaffTable: FC = (): JSX.Element => {
                           </IconButton>
                         </Link>
 
-                        <IconButton aria-label="delete" color="secondary" size="small" onClick={() => onDeleteClick(id || '')}>
+                        <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
                         </IconButton>
                       </Box>

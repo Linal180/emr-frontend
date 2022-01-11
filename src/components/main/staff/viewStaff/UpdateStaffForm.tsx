@@ -127,7 +127,7 @@ const UpdateStaffForm: FC = () => {
               <CardComponent cardTitle={IDENTIFICATION}>
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <Grid container spacing={2}>
+                    <Grid container>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <UpdateStaffController
@@ -184,7 +184,7 @@ const UpdateStaffForm: FC = () => {
                             control={control}
                             render={({ field }) => {
                               return (
-                                <FormControl fullWidth error={Boolean(genderError)}  margin='normal'>
+                                <FormControl fullWidth error={Boolean(genderError)} margin='normal'>
                                   <InputLabel id="gender" shrink>{GENDER}</InputLabel>
                                   <Select
                                     labelId="gender"

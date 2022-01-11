@@ -217,6 +217,7 @@ export const REQUEST_MEMBERSHIP_PLAN = "Request Membership Plan";
 export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
+export const DELETE_RECORD_TEXT = "You are about delete record";
 export const THANKYOU_MESSAGE = "Thank you for your interest in BOCA+.";
 export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
 export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
