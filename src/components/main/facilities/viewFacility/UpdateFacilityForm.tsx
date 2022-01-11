@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -15,8 +15,10 @@ import { facilitySchema } from '../../../../validationSchemas';
 import { CustomUpdateFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
 import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
 import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BANK_ACCOUNT, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, PRACTICE_TYPE, ZIP } from "../../../../constants";
+import { ListContext } from '../../../../context/listContext';
 
 const UpdateFacilityForm: FC = () => {
+  const { fetchAllFacilityList } = useContext(ListContext)
   const { id } = useParams<ParamsType>();
   const methods = useForm<CustomUpdateFacilityInputProps>({
     mode: "all",
@@ -71,8 +73,9 @@ const UpdateFacilityForm: FC = () => {
           }
 
           if (billingAddress) {
-            const { email, zipCode, fax, address, address2, city, state, country } = billingAddress[0]
+            const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
             email && setValue('billingEmail', email)
+            phone && setValue('billingPhone', phone)
             address && setValue('billingAddress', address)
             address2 && setValue('billingAddress2', address2)
             zipCode && setValue('billingZipCode', zipCode)
@@ -99,6 +102,7 @@ const UpdateFacilityForm: FC = () => {
 
         if (status && status === 200) {
           Alert.success(FACILITY_UPDATED);
+          fetchAllFacilityList();
           reset()
           history.push(FACILITIES_ROUTE)
         }
@@ -124,8 +128,7 @@ const UpdateFacilityForm: FC = () => {
     if (facility) {
       const {
         name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
-        revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode,
-        zipCode,
+        revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode, address2, address, zipCode,
       } = inputs;
 
       const { contacts, billingAddress } = facility;
@@ -140,9 +143,9 @@ const UpdateFacilityForm: FC = () => {
               updateFacilityItemInput: {
                 id, name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '', practiceType: practiceType || PracticeType.Hospital, serviceCode: serviceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
               },
-              updateContactInput: { id: contactId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '' },
+              updateContactInput: { id: contactId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || '' },
               updateBillingAddressInput: {
-                id: billingId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || ''
+                id: billingId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || ''
               },
             }
           }
@@ -171,6 +174,14 @@ const UpdateFacilityForm: FC = () => {
     practiceType: { message: practiceTypeError } = {},
     tamxonomyCode: { message: tamxonomyCodeError } = {},
     insurancePlanType: { message: insurancePlanTypeError } = {},
+    billingCity: { message: billingCityError } = {},
+    billingPhone: { message: billingPhoneError } = {},
+    billingEmail: { message: billingEmailError } = {},
+    billingState: { message: billingStateError } = {},
+    billingAddress: { message: billingAddressError } = {},
+    billingZipCode: { message: billingZipCodeError } = {},
+    billingAddress2: { message: billingAddress2Error } = {},
+    billingFax: { message: billingFaxError } = {},
     mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
   } = errors;
 
@@ -320,6 +331,7 @@ const UpdateFacilityForm: FC = () => {
                   fieldType="text"
                   controllerName="billingEmail"
                   controllerLabel={EMAIL}
+                  error={billingEmailError}
                 />
 
                 <Grid container spacing={3}>
@@ -328,6 +340,7 @@ const UpdateFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="billingPhone"
                       controllerLabel={PHONE}
+                      error={billingPhoneError}
                     />
                   </Grid>
 
@@ -336,6 +349,7 @@ const UpdateFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="billingFax"
                       controllerLabel={FAX}
+                      error={billingFaxError}
                     />
                   </Grid>
                 </Grid>
@@ -344,18 +358,21 @@ const UpdateFacilityForm: FC = () => {
                   fieldType="text"
                   controllerName="billingZipCode"
                   controllerLabel={ZIP}
+                  error={billingZipCodeError}
                 />
 
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="billingAddress"
                   controllerLabel={ADDRESS}
+                  error={billingAddressError}
                 />
 
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="billingAddress2"
                   controllerLabel={ADDRESS_2}
+                  error={billingAddress2Error}
                 />
 
                 <Grid container spacing={3}>
@@ -364,6 +381,7 @@ const UpdateFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="billingCity"
                       controllerLabel={CITY}
+                      error={billingCityError}
                     />
 
                   </Grid>
@@ -373,6 +391,7 @@ const UpdateFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="billingState"
                       controllerLabel={STATE}
+                      error={billingStateError}
                     />
                   </Grid>
 
@@ -381,6 +400,7 @@ const UpdateFacilityForm: FC = () => {
                       fieldType="text"
                       controllerName="billingCountry"
                       controllerLabel={COUNTRY}
+                      error={billingCityError}
                     />
                   </Grid>
 
