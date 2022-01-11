@@ -11,6 +11,7 @@ import { Action, ActionType, initialState, listContextReducer, State as LocalSta
 export const ListContext = createContext<ListContextInterface>({
   facilityList: [],
   setFacilityList: () => { },
+  fetchAllFacilityList: () => { },
 });
 
 export const ListContextProvider: FC = ({ children }): JSX.Element => {
@@ -19,6 +20,9 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const { facilityPages, facilityList } = state;
 
   const [findAllFacility] = useFindAllFacilitiesLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
     onError({ message }) {
       Alert.error(message);
     },
@@ -40,6 +44,8 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   })
 
   const fetchAllFacilityList = useCallback((page = 1) => {
+    dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [] })
+
     findAllFacility({
       variables: {
         facilityInput: {
@@ -64,6 +70,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
       value={{
         facilityList,
         setFacilityList,
+        fetchAllFacilityList,
       }}
     >
       {children}

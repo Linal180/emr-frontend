@@ -33,6 +33,7 @@ export interface AppContextProps {
 export interface ListContextInterface {
   facilityList: FacilitiesPayload['facility'];
   setFacilityList: Function;
+  fetchAllFacilityList: Function;
 }
 
 export interface Children {

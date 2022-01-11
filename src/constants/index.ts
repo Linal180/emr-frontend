@@ -8,10 +8,10 @@ import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;
+export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const LONGITUDE_LATITUDE_REGEX = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}/;
-export const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
 export const ALL_STAFF = "Staff";
@@ -284,6 +284,7 @@ export const MaxLength = (fieldName: string, length: number) => `${fieldName} ca
 export const MinLength = (fieldName: string, length: number) => `${fieldName} should be at least ${length} characters long`;
 export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
 export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
+export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
