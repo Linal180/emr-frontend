@@ -200,12 +200,13 @@ const UpdateStaffForm: FC = () => {
                   defaultValue={UserRole.Staff}
                   control={control}
                   render={({ field }) => (
-                    <FormControl fullWidth margin='normal'>
-                      <InputLabel id="role" shrink>{ROLE}</InputLabel>
+                    <FormControl fullWidth margin='normal' error={Boolean(genderError)}>
+                      <InputLabel id="roleType" shrink>{ROLE}</InputLabel>
                       <Select
-                        labelId="role"
+                        labelId="roleType"
                         id="select-role"
                         variant="outlined"
+                        value={field.value}
                         onChange={field.onChange}
                       >
                         {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
@@ -227,11 +228,11 @@ const UpdateStaffForm: FC = () => {
                   control={control}
                   render={({ field }) => {
                     return (
-                      <FormControl fullWidth>
-                        <InputLabel id="demo-customized-select-label-gender" shrink>{GENDER}</InputLabel>
+                      <FormControl fullWidth error={Boolean(genderError)}>
+                        <InputLabel id="gender" shrink>{GENDER}</InputLabel>
                         <Select
-                          labelId="demo-customized-select-label-gender"
-                          id="demo-customized-select-1"
+                          labelId="gender"
+                          id="gender-id"
                           variant="outlined"
                           value={field.value}
                           onChange={field.onChange}
@@ -256,12 +257,13 @@ const UpdateStaffForm: FC = () => {
                   control={control}
                   render={({ field }) => {
                     return (
-                      <FormControl fullWidth margin='normal'>
-                        <InputLabel id="demo-customized-select-label-facility" shrink>{FACILITY}</InputLabel>
+                      <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
+                        <InputLabel id="facilityId" shrink>{FACILITY}</InputLabel>
                         <Select
-                          labelId="demo-customized-select-label-facility"
-                          id="demo-customized-select-f"
+                          labelId="facilityId"
+                          id="facility-id"
                           variant="outlined"
+                          value={field.value}
                           onChange={field.onChange}
                         >
                           {facilityList?.map((facility) => {
