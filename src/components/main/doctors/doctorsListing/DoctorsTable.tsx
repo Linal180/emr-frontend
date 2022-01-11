@@ -6,7 +6,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
 import { TablesSearchIcon } from '../../../../assets/svgs'
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, SPECIALITY, FACILITY } from "../../../../constants";
+import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, SPECIALTY, FACILITY } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 
 const DoctorsTable: FC = (): JSX.Element => {
@@ -42,7 +42,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               {renderTh(LAST_NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(SPECIALITY)}
+              {renderTh(SPECIALTY)}
               {renderTh(FACILITY)}
               {renderTh(ACTION, "center")}
             </TableRow>

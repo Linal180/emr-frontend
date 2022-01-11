@@ -12,7 +12,7 @@ const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controller
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth>
+        <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={controllerName}>
             {controllerLabel}
           </InputLabel>
@@ -20,7 +20,6 @@ const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controller
           <TextField
             fullWidth
             error={invalid}
-            margin="normal"
             type={fieldType}
             variant="outlined"
             id={controllerName}
