@@ -75,7 +75,7 @@ const AddStaffForm: FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 40px)">
+        <Box minHeight="calc(100vh - 300px)">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
@@ -155,7 +155,7 @@ const AddStaffForm: FC = () => {
                   </Grid>
                 </Grid>
 
-                <Grid item md={6} sm={12} xs={12}>
+                <Grid item md={12} sm={12} xs={12}>
                   <AddStaffController
                     fieldType="date"
                     controllerName="dob"

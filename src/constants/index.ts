@@ -229,7 +229,7 @@ export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this me
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const LOOKS_LIKE_EMPTY = "Looks like an empty space. You can go back to homepage by clicking the button below";
-export const DELETE_RECORD_LEARN_MORE_TEXT = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nisl scelerisque convallis ante vivamus amet non. Learn more";
+export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 
 // Roles
 export const STAFF = "STAFF";
