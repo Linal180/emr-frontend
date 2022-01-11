@@ -1,9 +1,10 @@
 // packages block
 import { FC, useState, ChangeEvent } from "react";
-import { Card, CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, Divider, FormControlLabel, Checkbox, Typography, Box } from "@material-ui/core";
-// interfaces/types block/theme/svgs
+import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, Divider, FormControlLabel, Checkbox, Typography, Box } from "@material-ui/core";
+// interfaces/types block/theme/svgs/constants
 import { ConfirmationTypes } from "../../interfacesTypes";
 import { DeleteWarningIcon } from "../../assets/svgs";
+import { DELETE_RECORD_TEXT, DELETE_RECORD_LEARN_MORE_TEXT } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success }): JSX.Element => {
   const [state, setState] = useState({
@@ -22,16 +23,20 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
       <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <Divider />
       <DialogContent>
-        <Card>
-          <Box display="flex">
-            <DeleteWarningIcon />
-            <CardContent>
-              <Typography>
-                You are about delete record</Typography>
-              <Typography>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nisl scelerisque convallis ante vivamus amet non. Learn more</Typography>
-            </CardContent>
-          </Box>
-        </Card>
+        <Box display="flex">
+          <DeleteWarningIcon />
+          <CardContent>
+            <Typography>
+              {DELETE_RECORD_TEXT}
+            </Typography>
+            <Typography>
+              {DELETE_RECORD_LEARN_MORE_TEXT}
+            </Typography>
+          </CardContent>
+        </Box>
+      </DialogContent>
+
+      <Box display="flex" ml={4}>
         <FormControlLabel
           control={
             <Checkbox
@@ -41,7 +46,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
           }
           label={description}
         />
-      </DialogContent>
+      </Box>
       <Divider />
       <DialogActions>
         <Button onClick={handleClose} color="default">

@@ -113,20 +113,14 @@ export const theme = createTheme({
       root: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'flex-end'
-      }
-    },
-
-    MuiDialogTitle: {
-      root: {
-        "&.MuiPaper-root": {
+        justifyContent: 'flex-end',
         background: '#FFF9F4',
         border: '1px dashed #F89C47',
         borderRadius: 6,
         minHeight: 103,
-        padding: 30
-    },
-      },
+        margin: 30,
+        padding: 16
+      }
     },
 
     MuiCheckbox: {
