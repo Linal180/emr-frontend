@@ -37,7 +37,7 @@ const StaffTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      return null;
+      setStaff([]);
     },
 
     onCompleted(data) {
