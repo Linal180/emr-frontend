@@ -1,7 +1,8 @@
 // packages block
 import { FC, useContext } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import AddStaffController from "./AddStaffController";
@@ -10,14 +11,18 @@ import CardComponent from "../../../common/CardComponent";
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
+import { addStaffSchema } from '../../../../validationSchemas';
 import { MappedRoleInterface } from "../../../../interfacesTypes";
 import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
-import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, USERNAME, FORBIDDEN_EXCEPTION } from "../../../../constants";
+import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_BASIC_INFO, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, USERNAME, FORBIDDEN_EXCEPTION, FACILITY, GENDER, ROLE } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
-  const methods = useForm<CreateStaffInput>({ mode: "all" });
+  const methods = useForm<CreateStaffInput>({
+    mode: "all",
+    resolver: yupResolver(addStaffSchema)
+  });
   const { reset, handleSubmit, control, formState: { errors } } = methods;
 
   const [createStaff, { loading }] = useCreateStaffMutation({
@@ -64,8 +69,10 @@ const AddStaffForm: FC = () => {
     password: { message: passwordError } = {},
     lastName: { message: lastNameError } = {},
     firstName: { message: firstNameError } = {},
+    roleType: { message: roleError } = {},
+    gender: { message: genderError } = {},
+    facilityId: { message: facilityError } = {},
   } = errors;
-
 
   return (
     <FormProvider {...methods}>
@@ -157,24 +164,25 @@ const AddStaffForm: FC = () => {
                 name="roleType"
                 defaultValue={UserRole.Staff}
                 control={control}
-                render={({ field }) => {
-                  return (
-                    <FormControl fullWidth>
-                      <InputLabel id="demo-customized-select-label-role" shrink>Role</InputLabel>
-                      <Select
-                        labelId="demo-customized-select-label-role"
-                        id="demo-customized-select"
-                        variant="outlined"
-                      >
-                        {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
-                          const { label, value } = role;
+                render={({ field }) => (
+                  <FormControl fullWidth margin='normal' error={Boolean(roleError)}>
+                    <InputLabel id="roleType" shrink>{ROLE}</InputLabel>
+                    <Select
+                      labelId="roleType"
+                      id="select-role"
+                      variant="outlined"
+                      value={field.value}
+                      onChange={field.onChange}
+                    >
+                      {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
+                        const { label, value } = role;
 
-                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                        })}
-                      </Select>
-                    </FormControl>
-                  )
-                }}
+                        return <MenuItem key={index} value={value}>{label}</MenuItem>;
+                      })}
+                    </Select>
+                    <FormHelperText>{roleError && roleError}</FormHelperText>
+                  </FormControl>
+                )}
               />
             </Grid>
 
@@ -185,11 +193,11 @@ const AddStaffForm: FC = () => {
                 control={control}
                 render={({ field }) => {
                   return (
-                    <FormControl fullWidth margin='normal'>
-                      <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                    <FormControl fullWidth margin='normal' error={Boolean(genderError)}>
+                      <InputLabel id="gender" shrink>{GENDER}</InputLabel>
                       <Select
-                        labelId="demo-customized-select-label-gender"
-                        id="demo-customized-select-1"
+                        labelId="gender"
+                        id="select-gender"
                         variant="outlined"
                         value={field.value}
                         onChange={field.onChange}
@@ -200,6 +208,7 @@ const AddStaffForm: FC = () => {
                           return <MenuItem key={value} value={value}>{label}</MenuItem>;
                         })}
                       </Select>
+                      <FormHelperText>{genderError && genderError}</FormHelperText>
                     </FormControl>
                   )
                 }}
@@ -213,11 +222,11 @@ const AddStaffForm: FC = () => {
                 control={control}
                 render={({ field }) => {
                   return (
-                    <FormControl fullWidth margin='normal'>
-                      <InputLabel id="demo-customized-select-label-facility" shrink>Facility</InputLabel>
+                    <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
+                      <InputLabel id="facility" shrink>{FACILITY}</InputLabel>
                       <Select
-                        labelId="demo-customized-select-label-facility"
-                        id="demo-customized-select-f"
+                        labelId="facility"
+                        id="select-facility"
                         variant="outlined"
                         value={field.value}
                         onChange={field.onChange}
@@ -228,6 +237,7 @@ const AddStaffForm: FC = () => {
                           return <MenuItem key={id} value={id}>{name}</MenuItem>;
                         })}
                       </Select>
+                      <FormHelperText>{facilityError && facilityError}</FormHelperText>
                     </FormControl>
                   )
                 }}
