@@ -13,7 +13,7 @@ const AppMenuItem: FC<AppMenuItemProps> = (props) => {
   const { name, link, Icon, index, items = [], activeCollpase, setActiveCollapse } = props;
   const classes = useAppMenuStyles();
   const isExpandable = items && items.length > 0;
-  const activeSidebarClass = name.toLowerCase().includes(history.location.pathname.substring(1).split("/", 1).toString().toLowerCase()) ? 'active' : ''
+  const activeSidebarClass = name.toLowerCase().replaceAll(" ", "").includes(history.location.pathname.substring(1).split("/", 1).toString().toLowerCase().replaceAll("-", "")) || (isExpandable && activeCollpase === index) ? 'active' : ''
 
   const MenuItemRoot = (
     <AppMenuItemComponent
