@@ -222,7 +222,9 @@ export const THANKYOU_MESSAGE = "Thank you for your interest in BOCA+.";
 export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
 export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
-export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete Account";
+export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
+export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
+export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
@@ -447,13 +449,10 @@ export const APP_MENU_ITEMS = [
 ];
 
 export const MAPPED_ROLES: MappedRoleInterface[] = [
-  { value: UserRole.SuperAdmin, label: "Super Admin" },
   { value: UserRole.Admin, label: 'Admin' },
-  { value: UserRole.Billing, label: 'Billing' },
-  { value: UserRole.Doctor, label: 'Doctor' },
   { value: UserRole.Nurse, label: "Nurse" },
-  { value: UserRole.Patient, label: "Patient" },
   { value: UserRole.Staff, label: "Staff" },
+  { value: UserRole.Billing, label: 'Billing' },
 ];
 
 export const MAPPED_GENDER: MappedGenderInterface[] = [
@@ -530,4 +529,96 @@ export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROU
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
 
-
+// ---------------------- DUMMY DATA --------------------
+export const dummyDoctorsList = [
+  {
+    id: 1,
+    firstName: "Smith",
+    lastName: "John",
+    email: "john60@alxtel.com",
+    phone: +14842634724,
+    specialty: "Physician Assistant",
+    code: 45025,
+  },
+  {
+    id: 2,
+    firstName: "Helmet",
+    lastName: "Smith",
+    email: "smith0@alxtel.com",
+    phone: +16102458096,
+    specialty: "Pharmacist",
+    code: 65065,
+  },
+  {
+    id: 3,
+    firstName: "Ala",
+    lastName: "Dude",
+    email: "dude34@alxtel.com",
+    phone: +14844493827,
+    specialty: "Periodontics",
+    code: 25525,
+  },
+  {
+    id: 4,
+    firstName: "Harry",
+    lastName: "Steve",
+    email: "harry45@alxtel.com",
+    phone: +14845219734,
+    specialty: "Pediatric Dentist",
+    code: 88025,
+  },
+  {
+    id: 5,
+    firstName: "Chris",
+    lastName: "Handle",
+    email: "dakeve00@alxtel.com",
+    phone: +18143519562,
+    specialty: "Pediatric Dermatology",
+    code: 12025,
+  },
+  {
+    id: 6,
+    firstName: "Bolt",
+    lastName: "Tick",
+    email: "bolt@alxtel.com",
+    phone: +14845219734,
+    specialty: "Neurology",
+    code: 67025,
+  },
+  {
+    id: 7,
+    firstName: "Lara",
+    lastName: "Bell",
+    email: "lara@alxtel.com",
+    phone: +14842989327,
+    specialty: "Gastroenterology",
+    code: 33325,
+  },
+  {
+    id: 8,
+    firstName: "Hymen",
+    lastName: "Stoke",
+    email: "stoke@alxtel.com",
+    phone: +16102458766,
+    specialty: "Neurology",
+    code: 19825,
+  },
+  {
+    id: 9,
+    firstName: "Black",
+    lastName: "Pointer",
+    email: "pointer@alxtel.com",
+    phone: +15854380126,
+    specialty: "Physician Assistant",
+    code: 45025,
+  },
+  {
+    id: 10,
+    firstName: "Mira",
+    lastName: "Khan",
+    email: "khan39@alxtel.com",
+    phone: +16102458766,
+    specialty: "Pediatric Dentist",
+    code: 89025,
+  },
+]

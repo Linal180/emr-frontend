@@ -43,7 +43,7 @@ const Sidebar: FC = (): JSX.Element => {
       </Box>
       <Box display="flex" flexDirection="column" alignItems="flex-start" pt={15} pb={1.5} width={'inherit'}>
         <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" width={'inherit'}>
-          <Box display="flex" minWidth={200}>
+          <Box display="flex" minWidth={200} alignItems="center">
             <AccountCircle />
             <Box ml={1}>Administrator</Box>
           </Box>

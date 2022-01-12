@@ -13,12 +13,14 @@ import LoginController from "./LoginController";
 import history from "../../../history";
 import { requiredLabel } from "../../../utils";
 import { AuthContext } from "../../../context";
+import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import { ADMIN, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD, NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE, SOMETHING_WENT_WRONG, LOGIN_SUCCESSFULLY } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
+  const { fetchAllFacilityList } = useContext(ListContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: "",
@@ -51,6 +53,7 @@ const LoginComponent = (): JSX.Element => {
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
               setIsLoggedIn(true);
+              fetchAllFacilityList();
               Alert.success(LOGIN_SUCCESSFULLY)
               history.push(DASHBOARD_ROUTE);
             } else {

@@ -202,12 +202,18 @@ export interface IDetailCellProps {
   description: string
 }
 
-export interface SelectStateType {
+interface SelectorOptionType {
+  value: string;
+  label: string
+}
+
+export interface SelectorProps {
   name: string
-  loading: boolean
-  options: string[]
-  value: string | undefined
-  error: string | undefined
+  label: string
+  loading?: boolean
+  options: SelectorOptionType[]
+  value?: any
+  error?: string | undefined
 }
 
 export type notificationType = { url: string, type: string, message: string, channelName: string }
@@ -227,6 +233,7 @@ interface IControlLabel {
   fieldType?: string;
   pattern?: ValidationRule<RegExp> | undefined;
   error?: string;
+  disabled?: boolean;
   isPassword?: boolean;
 }
 

@@ -10,11 +10,10 @@ import CardComponent from "../../../common/CardComponent";
 import UpdateFacilityController from './UpdateFacilityController';
 // utils, interfaces and graphql block
 import history from "../../../../history";
-import { getPracticeType } from "../../../../utils";
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomUpdateFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
 import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
-import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BANK_ACCOUNT, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, PRACTICE_TYPE, ZIP } from "../../../../constants";
+import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, PRACTICE_TYPE, ZIP } from "../../../../constants";
 import { ListContext } from '../../../../context/listContext';
 
 const UpdateFacilityForm: FC = () => {
@@ -41,48 +40,51 @@ const UpdateFacilityForm: FC = () => {
         if (facility && status && status === 200) {
           const {
             name, cliaIdNumber, federalTaxId, insurancePlanType, mammographyCertificationNumber,
-            npi, code, tamxonomyCode, revenueCode, practiceType,
+            npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode,
             contacts, billingAddress,
           } = facility
 
           setFacility(facility)
 
+          npi && setValue('npi', npi)
           name && setValue('name', name)
+          code && setValue('code', code)
+          revenueCode && setValue('revenueCode', revenueCode)
           cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
           federalTaxId && setValue('federalTaxId', federalTaxId)
-          insurancePlanType && setValue('insurancePlanType', insurancePlanType)
-          npi && setValue('npi', npi)
-          code && setValue('code', code)
           tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
-          revenueCode && setValue('revenueCode', revenueCode)
+          serviceCode && setValue('serviceCode', serviceCode as ServiceCode)
+          insurancePlanType && setValue('insurancePlanType', insurancePlanType)
+          practiceType && setValue('practiceType', practiceType as PracticeType)
           mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
-          practiceType && setValue('practiceType', getPracticeType(practiceType) as PracticeType)
 
           if (contacts) {
             const { email, phone, zipCode, mobile, fax, address, address2, city, state, country } = contacts[0]
-            email && setValue('email', email)
-            address && setValue('address', address)
-            address2 && setValue('address2', address2)
-            zipCode && setValue('zipCode', zipCode)
-            phone && setValue('phone', phone)
-            mobile && setValue('mobile', mobile)
+
             fax && setValue('fax', fax)
             city && setValue('city', city)
+            email && setValue('email', email)
             state && setValue('state', state)
+            phone && setValue('phone', phone)
+            mobile && setValue('mobile', mobile)
+            zipCode && setValue('zipCode', zipCode)
+            address && setValue('address', address)
             country && setValue('country', country)
+            address2 && setValue('address2', address2)
           }
 
           if (billingAddress) {
             const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
-            email && setValue('billingEmail', email)
-            phone && setValue('billingPhone', phone)
-            address && setValue('billingAddress', address)
-            address2 && setValue('billingAddress2', address2)
-            zipCode && setValue('billingZipCode', zipCode)
+
             fax && setValue('billingFax', fax)
             city && setValue('billingCity', city)
+            email && setValue('billingEmail', email)
             state && setValue('billingState', state)
+            phone && setValue('billingPhone', phone)
+            address && setValue('billingAddress', address)
             country && setValue('billingCountry', country)
+            zipCode && setValue('billingZipCode', zipCode)
+            address2 && setValue('billingAddress2', address2)
           }
         }
       }
@@ -167,21 +169,21 @@ const UpdateFacilityForm: FC = () => {
     zipCode: { message: zipCodeError } = {},
     address: { message: addressError } = {},
     address2: { message: address2Error } = {},
+    billingFax: { message: billingFaxError } = {},
     serviceCode: { message: serviceCodeError } = {},
     revenueCode: { message: revenueCodeError } = {},
+    billingCity: { message: billingCityError } = {},
     cliaIdNumber: { message: cliaIdNumberError } = {},
     federalTaxId: { message: federalTaxIdError } = {},
     practiceType: { message: practiceTypeError } = {},
-    tamxonomyCode: { message: tamxonomyCodeError } = {},
-    insurancePlanType: { message: insurancePlanTypeError } = {},
-    billingCity: { message: billingCityError } = {},
     billingPhone: { message: billingPhoneError } = {},
     billingEmail: { message: billingEmailError } = {},
     billingState: { message: billingStateError } = {},
+    tamxonomyCode: { message: tamxonomyCodeError } = {},
     billingAddress: { message: billingAddressError } = {},
     billingZipCode: { message: billingZipCodeError } = {},
     billingAddress2: { message: billingAddress2Error } = {},
-    billingFax: { message: billingFaxError } = {},
+    insurancePlanType: { message: insurancePlanTypeError } = {},
     mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
   } = errors;
 
@@ -211,6 +213,7 @@ const UpdateFacilityForm: FC = () => {
                         variant="outlined"
                         value={field.value}
                         onChange={field.onChange}
+                        
                       >
                         {MAPPED_PRACTICE_TYPES.map((type, index: number) => {
                           const { label, value } = type;
@@ -218,6 +221,7 @@ const UpdateFacilityForm: FC = () => {
                           return <MenuItem key={index} value={value}>{label}</MenuItem>;
                         })}
                       </Select>
+
                       <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
                     </FormControl>
                   )}
@@ -280,6 +284,7 @@ const UpdateFacilityForm: FC = () => {
                   controllerLabel={INSURANCE_PLAN_TYPE}
                   error={insurancePlanTypeError}
                 />
+
                 <Grid container spacing={3}>
                   <Grid item md={6}>
                     <UpdateFacilityController
@@ -289,6 +294,7 @@ const UpdateFacilityForm: FC = () => {
                       error={mammographyCertificationNumberError}
                     />
                   </Grid>
+
                   <Grid item md={6}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -328,6 +334,7 @@ const UpdateFacilityForm: FC = () => {
             <Grid item md={6}>
               <CardComponent cardTitle={BILLING_ADDRESS} isEdit={true}>
                 <UpdateFacilityController
+                  disabled
                   fieldType="text"
                   controllerName="billingEmail"
                   controllerLabel={EMAIL}
@@ -335,7 +342,7 @@ const UpdateFacilityForm: FC = () => {
                 />
 
                 <Grid container spacing={3}>
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
                       controllerName="billingPhone"
@@ -344,7 +351,7 @@ const UpdateFacilityForm: FC = () => {
                     />
                   </Grid>
 
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
                       controllerName="billingFax"
@@ -352,14 +359,16 @@ const UpdateFacilityForm: FC = () => {
                       error={billingFaxError}
                     />
                   </Grid>
-                </Grid>
 
-                <UpdateFacilityController
-                  fieldType="text"
-                  controllerName="billingZipCode"
-                  controllerLabel={ZIP}
-                  error={billingZipCodeError}
-                />
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="billingZipCode"
+                      controllerLabel={ZIP}
+                      error={billingZipCodeError}
+                    />
+                  </Grid>
+                </Grid>
 
                 <UpdateFacilityController
                   fieldType="text"
@@ -403,12 +412,6 @@ const UpdateFacilityForm: FC = () => {
                       error={billingCityError}
                     />
                   </Grid>
-
-                  <UpdateFacilityController
-                    fieldType="text"
-                    controllerName="billingBankAccount"
-                    controllerLabel={BANK_ACCOUNT}
-                  />
                 </Grid>
               </CardComponent>
 
@@ -416,6 +419,7 @@ const UpdateFacilityForm: FC = () => {
 
               <CardComponent cardTitle={FACILITY_CONTACT} isEdit={true}>
                 <UpdateFacilityController
+                  disabled
                   fieldType="text"
                   controllerName="email"
                   controllerLabel={EMAIL}
@@ -423,7 +427,7 @@ const UpdateFacilityForm: FC = () => {
                 />
 
                 <Grid container spacing={3}>
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
                       controllerName="phone"
@@ -432,7 +436,7 @@ const UpdateFacilityForm: FC = () => {
                     />
                   </Grid>
 
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
                       controllerName="fax"
@@ -440,14 +444,16 @@ const UpdateFacilityForm: FC = () => {
                       error={faxError}
                     />
                   </Grid>
-                </Grid>
 
-                <UpdateFacilityController
-                  fieldType="text"
-                  controllerName="zipCode"
-                  controllerLabel={ZIP}
-                  error={zipCodeError}
-                />
+                  <Grid item md={4}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="zipCode"
+                      controllerLabel={ZIP}
+                      error={zipCodeError}
+                    />
+                  </Grid>
+                </Grid>
 
                 <UpdateFacilityController
                   fieldType="text"

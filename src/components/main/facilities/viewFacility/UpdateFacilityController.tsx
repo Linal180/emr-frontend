@@ -5,7 +5,7 @@ import { TextField, InputLabel, FormControl } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { UpdateFacilityInputControlProps } from "../../../../interfacesTypes";
 
-const UpdateFacilityController: FC<UpdateFacilityInputControlProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const UpdateFacilityController: FC<UpdateFacilityInputControlProps> = ({ controllerName, controllerLabel, fieldType, error, disabled }): JSX.Element => {
   const { control } = useFormContext();
 
   return (
@@ -20,6 +20,7 @@ const UpdateFacilityController: FC<UpdateFacilityInputControlProps> = ({ control
             type={fieldType}
             variant="outlined"
             error={invalid}
+            disabled={disabled}
             fullWidth
             {...field}
             helperText={error}
