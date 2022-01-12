@@ -96,6 +96,11 @@ query GetStaff($getStaff: GetStaff!){
         inviteAcceptedAt
         createdAt
         updatedAt
+
+        roles {
+          id
+          role
+        }
       }
 
       facility {
@@ -163,6 +168,11 @@ mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
         inviteAcceptedAt
         createdAt
         updatedAt
+
+        roles {
+          id
+          role
+        }
       }
 
       facility {
