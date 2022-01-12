@@ -446,13 +446,10 @@ export const APP_MENU_ITEMS = [
 ];
 
 export const MAPPED_ROLES: MappedRoleInterface[] = [
-  { value: UserRole.SuperAdmin, label: "Super Admin" },
   { value: UserRole.Admin, label: 'Admin' },
-  { value: UserRole.Billing, label: 'Billing' },
-  { value: UserRole.Doctor, label: 'Doctor' },
   { value: UserRole.Nurse, label: "Nurse" },
-  { value: UserRole.Patient, label: "Patient" },
   { value: UserRole.Staff, label: "Staff" },
+  { value: UserRole.Billing, label: 'Billing' },
 ];
 
 export const MAPPED_GENDER: MappedGenderInterface[] = [

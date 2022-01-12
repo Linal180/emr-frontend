@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
@@ -23,7 +23,7 @@ const AddStaffForm: FC = () => {
     mode: "all",
     resolver: yupResolver(addStaffSchema)
   });
-  const { reset, handleSubmit, control, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue, control, formState: { errors } } = methods;
 
   const [createStaff, { loading }] = useCreateStaffMutation({
     onError({ message }) {
@@ -47,6 +47,10 @@ const AddStaffForm: FC = () => {
       }
     }
   });
+
+  useEffect(() => {
+    setValue("facilityId", facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : "")
+  }, [facilityList, setValue]);
 
   const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, password, email, phone, mobile, roleType, dob, gender, facilityId }) => {
     if (user) {
@@ -204,7 +208,7 @@ const AddStaffForm: FC = () => {
                   <Grid item md={6} sm={12} xs={12}>
                     <Controller
                       name="facilityId"
-                      defaultValue={""}
+                      defaultValue={facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : ""}
                       control={control}
                       render={({ field }) => {
                         return (

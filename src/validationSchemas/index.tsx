@@ -8,8 +8,7 @@ import {
   FIRST_NAME, GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME, MAMMOGRAPHY_CERTIFICATION_NUMBER,
   MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX, PASSWORD, PASSWORDS_MUST_MATCH,
   PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE, PHONE_NUMBER, PRACTICE_TYPE,
-  REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, USER_NAME, BANK_ACCOUNT_VALIDATION_MESSAGE,
-  ValidMessage, ZIP_CODE, BANK_ACCOUNT_REGEX, BANK_ACCOUNT
+  REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, USER_NAME, ValidMessage, ZIP_CODE,
 } from "../constants";
 
 const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
@@ -58,18 +57,18 @@ export const updateStaffSchema = yup.object({
 
 export const facilitySchema = yup.object({
   ...emailSchema,
+  fax: yup.string().required(RequiredMessage(FAX)),
   name: yup.string().required(RequiredMessage(NAME)),
-  practiceType: yup.string().required(RequiredMessage(PRACTICE_TYPE)),
+  city: yup.string().required(RequiredMessage(CITY)),
   code: yup.string().required(RequiredMessage(CODE)),
   phone: yup.string().required(RequiredMessage(PHONE)),
-  fax: yup.string().required(RequiredMessage(FAX)),
+  state: yup.string().required(RequiredMessage(STATE)),
+  country: yup.string().required(RequiredMessage(COUNTRY)),
   zipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
   address: yup.string().required(RequiredMessage(ADDRESS)),
   address2: yup.string().required(RequiredMessage(ADDRESS_2)),
-  city: yup.string().required(RequiredMessage(CITY)),
-  state: yup.string().required(RequiredMessage(STATE)),
   billingState: yup.string().required(RequiredMessage(STATE)),
-  country: yup.string().required(RequiredMessage(COUNTRY)),
+  practiceType: yup.string().required(RequiredMessage(PRACTICE_TYPE)),
   cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER)),
   federalTaxId: yup.string().required(RequiredMessage(FEDERAL_TAX_ID)),
   revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE)),
@@ -81,10 +80,9 @@ export const facilitySchema = yup.object({
   billingEmail: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)),
   billingPhone: yup.string().required(RequiredMessage(PHONE)),
   billingFax: yup.string().required(RequiredMessage(FAX)),
-  billingZip: yup.string().required(RequiredMessage(ZIP_CODE)),
+  billingZipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
   billingAddress: yup.string().required(RequiredMessage(ADDRESS)),
   billingAddress2: yup.string().required(RequiredMessage(ADDRESS_2)),
   billingCity: yup.string().required(RequiredMessage(CITY)),
   billingCountry: yup.string().required(RequiredMessage(COUNTRY)),
-  bankAccount: yup.string().required(RequiredMessage(BANK_ACCOUNT)).matches(BANK_ACCOUNT_REGEX, BANK_ACCOUNT_VALIDATION_MESSAGE),
 })

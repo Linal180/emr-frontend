@@ -39,8 +39,7 @@ const UpdateStaffForm: FC = () => {
         const { status } = response
 
         if (staff && status && status === 200) {
-          const { firstName, lastName, username, email, phone, mobile, dob, gender, facility } = staff || {}
-          const { id: facilityId } = facility || {}
+          const { firstName, lastName, username, email, phone, mobile, dob, gender, roleType, facilityId } = staff || {}
 
           dob && setValue('dob', dob)
           email && setValue('email', email)
@@ -51,7 +50,7 @@ const UpdateStaffForm: FC = () => {
           username && setValue('username', username)
           firstName && setValue('firstName', firstName)
           facilityId && setValue('facilityId', facilityId)
-          setValue('roleType', UserRole.Staff)
+          setValue('roleType', )
         }
       }
     }
@@ -92,12 +91,12 @@ const UpdateStaffForm: FC = () => {
     }
   }, [getStaff, id])
 
-  const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, email, phone, mobile, dob, gender }) => {
+  const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, email, phone, mobile, dob, gender, facilityId }) => {
     if (id) {
       await updateStaff({
         variables: {
           updateStaffInput: {
-            id, firstName, lastName, username, email, phone, mobile, dob, gender
+            id, firstName, lastName, username, email, phone, mobile, dob, gender, facilityId
           }
         }
       })
@@ -242,6 +241,7 @@ const UpdateStaffForm: FC = () => {
                           controllerName="email"
                           control={control}
                           error={emailError}
+                          disabled
                           controllerLabel={EMAIL}
                         />
                       </Grid>

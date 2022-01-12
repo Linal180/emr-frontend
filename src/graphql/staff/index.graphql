@@ -72,14 +72,15 @@ query GetStaff($getStaff: GetStaff!){
 
     staff {
       id
-      firstName
-      lastName
-      email
-      username
       dob
+      email
       phone
       mobile
       gender
+      lastName
+      username
+      firstName
+      facilityId
       createdAt
       updatedAt
       
