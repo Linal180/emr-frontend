@@ -183,7 +183,6 @@ export const theme = createTheme({
 
     MuiFormHelperText: {
       contained: {
-        position: 'absolute',
         bottom: -20,
         marginLeft: 0,
         marginRight: 0,

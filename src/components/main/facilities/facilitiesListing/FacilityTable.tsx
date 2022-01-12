@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
@@ -14,9 +14,11 @@ import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useR
 import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_ACCOUNT_DESCRIPTION } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import { ListContext } from "../../../../context/listContext";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { fetchAllFacilityList } = useContext(ListContext)
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(0);
@@ -74,6 +76,7 @@ const FacilityTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           setOpenDelete(false)
           findAllFacility();
+          fetchAllFacilityList();
         }
       }
     }
