@@ -1,13 +1,11 @@
 // packages block
 import { FC, useState } from "react";
-import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow } from "@material-ui/core";
-// components block
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { TablesSearchIcon } from '../../../../assets/svgs'
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, LAST_APPOINTMENT, INSURANCE } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
+import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, LAST_APPOINTMENT, INSURANCE, dummyPatientsList } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -47,13 +45,33 @@ const PatientsTable: FC = (): JSX.Element => {
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
-          <TableBody>
 
+          <TableBody>
+            {dummyPatientsList?.map(({ id, firstName, lastName, email, phone, lastAppointment, insurance }) => {
+                return (
+                  <TableRow key={id}>
+                    <TableCell scope="row">{firstName}</TableCell>
+                    <TableCell scope="row">{lastName}</TableCell>
+                    <TableCell scope="row">{email}</TableCell>
+                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row">{lastAppointment}</TableCell>
+                    <TableCell scope="row">{insurance}</TableCell>
+                    <TableCell scope="row">
+                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                        <IconButton size="small">
+                          <EditIcon />
+                        </IconButton>
+
+                        <IconButton aria-label="delete" color="primary" size="small">
+                          <TrashIcon />
+                        </IconButton>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
           </TableBody>
         </Table>
-        <Box display="flex" justifyContent="center" alignItems="center" pb={12} pt={5}>
-          <NoDataFoundComponent />
-        </Box>
       </Box>
     </Box>
   );
