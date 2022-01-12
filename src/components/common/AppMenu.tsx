@@ -12,7 +12,7 @@ const AppMenu: FC = () => {
   return (
     <List component="nav" disablePadding>
       {APP_MENU_ITEMS.map((item, index) => (
-        <AppMenuItem {...item} key={index} activeCollpase={open} setActiveCollapse={(item: number) => {
+        <AppMenuItem {...item} key={index} activeCollapse={open} setActiveCollapse={(item: number) => {
           if (item === open) setOpen(0);
           else setOpen(item);
         }} />

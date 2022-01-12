@@ -109,6 +109,24 @@ export const theme = createTheme({
       }
     },
 
+    MuiDialogTitle: {
+      root: {
+        padding: "18px 30px",
+        borderBottom: `1px solid ${GRAY_SIX}`,
+
+        "& h2": {
+          fontSize: 20
+        }
+      }
+    },
+
+    MuiDialogActions: {
+      root: {
+        padding: "18px 30px",
+        borderTop: `1px solid ${GRAY_SIX}`,
+      }
+    },
+
     MuiDialogContent: {
       root: {
         display: 'flex',
@@ -183,7 +201,6 @@ export const theme = createTheme({
 
     MuiFormHelperText: {
       contained: {
-        position: 'absolute',
         bottom: -20,
         marginLeft: 0,
         marginRight: 0,

@@ -21,6 +21,13 @@ export type AccessUserPayload = {
   roles?: Maybe<Array<Role>>;
 };
 
+export type AllDoctorPayload = {
+  __typename?: 'AllDoctorPayload';
+  doctors?: Maybe<Array<Maybe<Doctor>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type AllStaffPayload = {
   __typename?: 'AllStaffPayload';
   allstaff?: Maybe<Array<Maybe<Staff>>>;
@@ -77,6 +84,7 @@ export type CreateBillingAddressInput = {
   address2?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
   email: Scalars['String'];
   facilityId?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -93,6 +101,7 @@ export type CreateContactInput = {
   address2?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
   email: Scalars['String'];
   facilityId?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -102,6 +111,57 @@ export type CreateContactInput = {
   state?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
+};
+
+export type CreateDoctorInput = {
+  createBillingAddressInput: CreateBillingAddressInput;
+  createContactInput: CreateContactInput;
+  createDoctorItemInput: CreateDoctorItemInput;
+};
+
+export type CreateDoctorItemInput = {
+  adminId?: Maybe<Scalars['String']>;
+  anesthesiaLicense?: Maybe<Scalars['String']>;
+  billingFacility?: Maybe<Scalars['String']>;
+  blueShildNumber?: Maybe<Scalars['String']>;
+  campusGrpNumber?: Maybe<Scalars['String']>;
+  deaActiveDate?: Maybe<Scalars['String']>;
+  deaNumber?: Maybe<Scalars['String']>;
+  deaTermDate?: Maybe<Scalars['String']>;
+  degreeCredentials?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  dpsCtpNumber?: Maybe<Scalars['String']>;
+  email: Scalars['String'];
+  emcProviderId?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  firstName: Scalars['String'];
+  languagesSpoken?: Maybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  licenseActiveDate?: Maybe<Scalars['String']>;
+  licenseTermDate?: Maybe<Scalars['String']>;
+  meammographyCertNumber?: Maybe<Scalars['String']>;
+  medicaidGrpNumber?: Maybe<Scalars['String']>;
+  medicareGrpNumber?: Maybe<Scalars['String']>;
+  middleName: Scalars['String'];
+  npi?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  prefix?: Maybe<Scalars['String']>;
+  prescriptiveAuthNumber?: Maybe<Scalars['String']>;
+  providerIntials?: Maybe<Scalars['String']>;
+  /** Send doctor Type from the ENUM - Sign-up */
+  roleType?: Maybe<UserRole>;
+  /** Doctor speciality */
+  speciality?: Maybe<Speciality>;
+  specialityLicense?: Maybe<Scalars['String']>;
+  ssn?: Maybe<Scalars['String']>;
+  /** Doctor ssn type */
+  ssnType?: Maybe<SsnType>;
+  stateLicense?: Maybe<Scalars['String']>;
+  suffix?: Maybe<Scalars['String']>;
+  taxId?: Maybe<Scalars['String']>;
+  taxIdStuff?: Maybe<Scalars['String']>;
+  taxonomyCode?: Maybe<Scalars['String']>;
+  upin?: Maybe<Scalars['String']>;
 };
 
 export type CreateFacilityInput = {
@@ -139,9 +199,14 @@ export type CreateStaffInput = {
   mobile?: Maybe<Scalars['String']>;
   password: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
+  primaryProvider?: Maybe<Scalars['String']>;
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<UserRole>;
   username: Scalars['String'];
+};
+
+export type DisableDoctor = {
+  id: Scalars['String'];
 };
 
 export type DisableStaff = {
@@ -150,48 +215,58 @@ export type DisableStaff = {
 
 export type Doctor = {
   __typename?: 'Doctor';
-  anesthesiaLicense: Scalars['String'];
+  anesthesiaLicense?: Maybe<Scalars['String']>;
   billingAddress?: Maybe<Array<BillingAddress>>;
-  billingFacility: Scalars['String'];
-  blueShildNumber: Scalars['String'];
-  campusGrpNumber: Scalars['String'];
+  billingFacility?: Maybe<Scalars['String']>;
+  blueShildNumber?: Maybe<Scalars['String']>;
+  campusGrpNumber?: Maybe<Scalars['String']>;
   contacts?: Maybe<Array<Contact>>;
   createdAt: Scalars['String'];
   deaActiveDate: Scalars['String'];
-  deaNumber: Scalars['String'];
+  deaNumber?: Maybe<Scalars['String']>;
   deaTermDate: Scalars['String'];
-  degreeCredentials: Scalars['String'];
-  dob: Scalars['String'];
-  dpsCtpNumber: Scalars['String'];
-  email: Scalars['String'];
-  emcProviderId: Scalars['String'];
+  degreeCredentials?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  dpsCtpNumber?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  emcProviderId?: Maybe<Scalars['String']>;
   facility?: Maybe<Facility>;
-  firstName: Scalars['String'];
+  firstName?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  languagesSpoken: Scalars['String'];
-  lastName: Scalars['String'];
-  licenseActiveDate: Scalars['String'];
-  licenseTermDate: Scalars['String'];
-  meammographyCertNumber: Scalars['String'];
-  medicaidGrpNumber: Scalars['String'];
-  medicareGrpNumber: Scalars['String'];
-  middleName: Scalars['String'];
-  npi: Scalars['String'];
-  prefix: Scalars['String'];
-  prescriptiveAuthNumber: Scalars['String'];
-  providerIntials: Scalars['String'];
-  speciality: Speciality;
-  specialityLicense: Scalars['String'];
-  ssn: Scalars['String'];
-  ssnType: SsnType;
-  stateLicense: Scalars['String'];
-  suffix: Scalars['String'];
-  taxId: Scalars['String'];
-  taxIdStuff: Scalars['String'];
-  taxonomyCode: Scalars['String'];
+  languagesSpoken?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  licenseActiveDate?: Maybe<Scalars['String']>;
+  licenseTermDate?: Maybe<Scalars['String']>;
+  meammographyCertNumber?: Maybe<Scalars['String']>;
+  medicaidGrpNumber?: Maybe<Scalars['String']>;
+  medicareGrpNumber?: Maybe<Scalars['String']>;
+  middleName?: Maybe<Scalars['String']>;
+  npi?: Maybe<Scalars['String']>;
+  prefix?: Maybe<Scalars['String']>;
+  prescriptiveAuthNumber?: Maybe<Scalars['String']>;
+  providerIntials?: Maybe<Scalars['String']>;
+  speciality?: Maybe<Speciality>;
+  specialityLicense?: Maybe<Scalars['String']>;
+  ssn?: Maybe<Scalars['String']>;
+  ssnType?: Maybe<SsnType>;
+  stateLicense?: Maybe<Scalars['String']>;
+  suffix?: Maybe<Scalars['String']>;
+  taxId?: Maybe<Scalars['String']>;
+  taxIdStuff?: Maybe<Scalars['String']>;
+  taxonomyCode?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
-  upin: Scalars['String'];
+  upin?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
+};
+
+export type DoctorInput = {
+  paginationOptions: PaginationInput;
+};
+
+export type DoctorPayload = {
+  __typename?: 'DoctorPayload';
+  doctor?: Maybe<Doctor>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type FacilitiesPayload = {
@@ -252,6 +327,10 @@ export enum Gender {
   Other = 'OTHER'
 }
 
+export type GetDoctor = {
+  id: Scalars['String'];
+};
+
 export type GetFacility = {
   id: Scalars['String'];
 };
@@ -272,18 +351,22 @@ export type LoginUserInput = {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
+  createDoctor: DoctorPayload;
   createFacility: FacilityPayload;
   createStaff: StaffPayload;
   deactivateUser: UserPayload;
+  disableDoctor: DoctorPayload;
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
   login: AccessUserPayload;
   registerUser: UserPayload;
+  removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removeStaff: StaffPayload;
   removeUser: UserPayload;
   resendVerificationEmail: UserPayload;
   resetPassword: UserPayload;
+  updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updatePassword: UserPayload;
   updateRole: UserPayload;
@@ -295,6 +378,11 @@ export type Mutation = {
 
 export type MutationActivateUserArgs = {
   user: UserIdInput;
+};
+
+
+export type MutationCreateDoctorArgs = {
+  createDoctorInput: CreateDoctorInput;
 };
 
 
@@ -310,6 +398,11 @@ export type MutationCreateStaffArgs = {
 
 export type MutationDeactivateUserArgs = {
   user: UserIdInput;
+};
+
+
+export type MutationDisableDoctorArgs = {
+  disableDoctor: DisableDoctor;
 };
 
 
@@ -330,6 +423,11 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterUserArgs = {
   user: RegisterUserInput;
+};
+
+
+export type MutationRemoveDoctorArgs = {
+  removeDoctor: RemoveDoctor;
 };
 
 
@@ -355,6 +453,11 @@ export type MutationResendVerificationEmailArgs = {
 
 export type MutationResetPasswordArgs = {
   resetPassword: ResetPasswordInput;
+};
+
+
+export type MutationUpdateDoctorArgs = {
+  updateDoctorInput: UpdateDoctorInput;
 };
 
 
@@ -412,8 +515,10 @@ export type Query = {
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
   fetchUser: UserPayload;
+  findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllStaff: AllStaffPayload;
+  getDoctor: DoctorPayload;
   getFacility: FacilityPayload;
   getStaff: StaffPayload;
   getUser: UserPayload;
@@ -427,6 +532,11 @@ export type QueryFetchAllUsersArgs = {
 };
 
 
+export type QueryFindAllDoctorArgs = {
+  doctorInput: DoctorInput;
+};
+
+
 export type QueryFindAllFacilityArgs = {
   facilityInput: FacilityInput;
 };
@@ -434,6 +544,11 @@ export type QueryFindAllFacilityArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
+};
+
+
+export type QueryGetDoctorArgs = {
+  getDoctor: GetDoctor;
 };
 
 
@@ -467,6 +582,10 @@ export type RegisterUserInput = {
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<UserRole>;
   zipCode: Scalars['String'];
+};
+
+export type RemoveDoctor = {
+  id: Scalars['String'];
 };
 
 export type RemoveFacility = {
@@ -556,12 +675,14 @@ export type Staff = {
   dob: Scalars['String'];
   email: Scalars['String'];
   facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
   firstName: Scalars['String'];
   gender: Gender;
   id: Scalars['String'];
   lastName: Scalars['String'];
   mobile?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  primaryProvider?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
   username: Scalars['String'];
@@ -582,6 +703,7 @@ export type UpdateBillingAddressInput = {
   address2?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -599,6 +721,7 @@ export type UpdateContactInput = {
   address2?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
   country?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
@@ -609,6 +732,58 @@ export type UpdateContactInput = {
   state?: Maybe<Scalars['String']>;
   userId?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
+};
+
+export type UpdateDoctorInput = {
+  updateBillingAddressInput: UpdateBillingAddressInput;
+  updateContactInput: UpdateContactInput;
+  updateDoctorItemInput: UpdateDoctorItemInput;
+};
+
+export type UpdateDoctorItemInput = {
+  adminId?: Maybe<Scalars['String']>;
+  anesthesiaLicense?: Maybe<Scalars['String']>;
+  billingFacility?: Maybe<Scalars['String']>;
+  blueShildNumber?: Maybe<Scalars['String']>;
+  campusGrpNumber?: Maybe<Scalars['String']>;
+  deaActiveDate?: Maybe<Scalars['String']>;
+  deaNumber?: Maybe<Scalars['String']>;
+  deaTermDate?: Maybe<Scalars['String']>;
+  degreeCredentials?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  dpsCtpNumber?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  emcProviderId?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  firstName?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  languagesSpoken?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  licenseActiveDate?: Maybe<Scalars['String']>;
+  licenseTermDate?: Maybe<Scalars['String']>;
+  meammographyCertNumber?: Maybe<Scalars['String']>;
+  medicaidGrpNumber?: Maybe<Scalars['String']>;
+  medicareGrpNumber?: Maybe<Scalars['String']>;
+  middleName?: Maybe<Scalars['String']>;
+  npi?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
+  prefix?: Maybe<Scalars['String']>;
+  prescriptiveAuthNumber?: Maybe<Scalars['String']>;
+  providerIntials?: Maybe<Scalars['String']>;
+  /** Send doctor Type from the ENUM - Sign-up */
+  roleType?: Maybe<UserRole>;
+  /** Doctor speciality */
+  speciality?: Maybe<Speciality>;
+  specialityLicense?: Maybe<Scalars['String']>;
+  ssn?: Maybe<Scalars['String']>;
+  /** Doctor ssn type */
+  ssnType?: Maybe<SsnType>;
+  stateLicense?: Maybe<Scalars['String']>;
+  suffix?: Maybe<Scalars['String']>;
+  taxId?: Maybe<Scalars['String']>;
+  taxIdStuff?: Maybe<Scalars['String']>;
+  taxonomyCode?: Maybe<Scalars['String']>;
+  upin?: Maybe<Scalars['String']>;
 };
 
 export type UpdateFacilityInput = {
@@ -659,6 +834,7 @@ export type UpdateStaffInput = {
   mobile?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  primaryProvider?: Maybe<Scalars['String']>;
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<UserRole>;
   username?: Maybe<Scalars['String']>;
@@ -833,7 +1009,7 @@ export type GetStaffQueryVariables = Exact<{
 }>;
 
 
-export type GetStaffQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, staff?: Maybe<{ __typename?: 'Staff', id: string, firstName: string, lastName: string, email: string, username: string, dob: string, phone?: Maybe<string>, mobile?: Maybe<string>, gender: Gender, createdAt: string, updatedAt: string, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt: string, updatedAt: string }> }> } };
+export type GetStaffQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, staff?: Maybe<{ __typename?: 'Staff', id: string, dob: string, email: string, phone?: Maybe<string>, mobile?: Maybe<string>, gender: Gender, lastName: string, username: string, firstName: string, facilityId?: Maybe<string>, createdAt: string, updatedAt: string, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string, roles?: Maybe<Array<Maybe<{ __typename?: 'Role', id: string, role: UserRole }>>> }>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt: string, updatedAt: string }> }> } };
 
 export type RemoveStaffMutationVariables = Exact<{
   removeStaff: RemoveStaff;
@@ -847,7 +1023,7 @@ export type UpdateStaffMutationVariables = Exact<{
 }>;
 
 
-export type UpdateStaffMutation = { __typename?: 'Mutation', updateStaff: { __typename?: 'StaffPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, staff?: Maybe<{ __typename?: 'Staff', id: string, firstName: string, lastName: string, email: string, username: string, dob: string, phone?: Maybe<string>, mobile?: Maybe<string>, gender: Gender, createdAt: string, updatedAt: string, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt: string, updatedAt: string }> }> } };
+export type UpdateStaffMutation = { __typename?: 'Mutation', updateStaff: { __typename?: 'StaffPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, staff?: Maybe<{ __typename?: 'Staff', id: string, firstName: string, lastName: string, email: string, username: string, dob: string, phone?: Maybe<string>, mobile?: Maybe<string>, gender: Gender, createdAt: string, updatedAt: string, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string, roles?: Maybe<Array<Maybe<{ __typename?: 'Role', id: string, role: UserRole }>>> }>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt: string, updatedAt: string }> }> } };
 
 export type CreateStaffMutationVariables = Exact<{
   createStaffInput: CreateStaffInput;
@@ -1989,14 +2165,15 @@ export const GetStaffDocument = gql`
     }
     staff {
       id
-      firstName
-      lastName
-      email
-      username
       dob
+      email
       phone
       mobile
       gender
+      lastName
+      username
+      firstName
+      facilityId
       createdAt
       updatedAt
       user {
@@ -2011,6 +2188,10 @@ export const GetStaffDocument = gql`
         inviteAcceptedAt
         createdAt
         updatedAt
+        roles {
+          id
+          role
+        }
       }
       facility {
         id
@@ -2131,6 +2312,10 @@ export const UpdateStaffDocument = gql`
         inviteAcceptedAt
         createdAt
         updatedAt
+        roles {
+          id
+          role
+        }
       }
       facility {
         id

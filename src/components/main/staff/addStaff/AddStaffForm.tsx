@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
@@ -14,7 +14,7 @@ import { ListContext } from '../../../../context/listContext';
 import { addStaffSchema } from '../../../../validationSchemas';
 import { MappedRoleInterface } from "../../../../interfacesTypes";
 import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
-import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, USERNAME, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION } from "../../../../constants";
+import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
@@ -23,12 +23,12 @@ const AddStaffForm: FC = () => {
     mode: "all",
     resolver: yupResolver(addStaffSchema)
   });
-  const { reset, handleSubmit, control, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue, control, formState: { errors } } = methods;
 
   const [createStaff, { loading }] = useCreateStaffMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
-        Alert.error("Email or username already exists!")
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
       } else
         Alert.error(message)
     },
@@ -48,13 +48,18 @@ const AddStaffForm: FC = () => {
     }
   });
 
+  useEffect(() => {
+    setValue("facilityId", facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : "")
+  }, [facilityList, setValue]);
+
   const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, password, email, phone, mobile, roleType, dob, gender, facilityId }) => {
     if (user) {
       const { id } = user
+
       await createStaff({
         variables: {
           createStaffInput: {
-            firstName, lastName, username, email, password, phone, mobile, roleType, dob, gender, facilityId, adminId: id
+            firstName, lastName, email, password, phone, mobile, roleType, dob, gender, facilityId, adminId: id, username
           }
         }
       })
@@ -70,6 +75,7 @@ const AddStaffForm: FC = () => {
     lastName: { message: lastNameError } = {},
     firstName: { message: firstNameError } = {},
     facilityId: { message: facilityError } = {},
+    roleType: { message: roleTypeError } = {},
   } = errors;
 
   return (
@@ -77,43 +83,24 @@ const AddStaffForm: FC = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box minHeight="calc(100vh - 300px)">
           <Grid container spacing={3}>
-            <Grid md={6} item>
+            <Grid item md={6}>
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="text"
-                      controllerName="firstName"
-                      control={control}
-                      error={firstNameError}
-                      controllerLabel={FIRST_NAME}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="text"
-                      controllerName="lastName"
-                      control={control}
-                      error={lastNameError}
-                      controllerLabel={LAST_NAME}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6}>
                     <Controller
                       name="roleType"
                       defaultValue={UserRole.Staff}
                       control={control}
                       render={({ field }) => {
                         return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-role" shrink>Role</InputLabel>
+                          <FormControl fullWidth margin='normal' error={Boolean(roleTypeError)}>
+                            <InputLabel id="role" shrink>Role</InputLabel>
                             <Select
-                              labelId="demo-customized-select-label-role"
-                              id="demo-customized-select"
+                              labelId="role"
+                              id="role-select"
                               variant="outlined"
+                              value={field.value}
+                              onChange={field.onChange}
                             >
                               {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
                                 const { label, value } = role;
@@ -121,90 +108,18 @@ const AddStaffForm: FC = () => {
                                 return <MenuItem key={index} value={value}>{label}</MenuItem>;
                               })}
                             </Select>
+
+                            <FormHelperText>{roleTypeError}</FormHelperText>
                           </FormControl>
                         )
                       }}
                     />
                   </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="gender"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER.map((gender) => {
-                                const { label, value } = gender || {};
 
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddStaffController
-                    fieldType="date"
-                    controllerName="dob"
-                    control={control}
-                    error={dobError}
-                    controllerLabel={DOB}
-                  />
-                </Grid>
-              </CardComponent>
-            </Grid>
-
-            <Grid md={6} item>
-
-              <CardComponent cardTitle={ACCOUNT_INFO}>
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="text"
-                      controllerName="username"
-                      control={control}
-                      error={usernameError}
-                      controllerLabel={USERNAME}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="email"
-                      controllerName="email"
-                      control={control}
-                      error={emailError}
-                      controllerLabel={EMAIL}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="password"
-                      controllerName="password"
-                      control={control}
-                      error={passwordError}
-                      controllerLabel={PASSWORD_LABEL}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={6}>
                     <Controller
                       name="facilityId"
-                      defaultValue={""}
+                      defaultValue={facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : ""}
                       control={control}
                       render={({ field }) => {
                         return (
@@ -227,6 +142,100 @@ const AddStaffForm: FC = () => {
                           </FormControl>
                         )
                       }}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddStaffController
+                      fieldType="text"
+                      controllerName="firstName"
+                      control={control}
+                      error={firstNameError}
+                      controllerLabel={FIRST_NAME}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddStaffController
+                      fieldType="text"
+                      controllerName="lastName"
+                      control={control}
+                      error={lastNameError}
+                      controllerLabel={LAST_NAME}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Controller
+                  name="gender"
+                  defaultValue={Gender.Male}
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <FormControl fullWidth margin='normal'>
+                        <InputLabel id="gender" shrink>{GENDER}</InputLabel>
+                        <Select
+                          labelId="gender"
+                          id="gender-select"
+                          variant="outlined"
+                          value={field.value}
+                          onChange={field.onChange}
+                        >
+                          {MAPPED_GENDER.map((gender) => {
+                            const { label, value } = gender || {};
+
+                            return <MenuItem key={value} value={value}>{label}</MenuItem>;
+                          })}
+                        </Select>
+                      </FormControl>
+                    )
+                  }}
+                />
+
+                <Grid item md={12} sm={12} xs={12}>
+                  <AddStaffController
+                    fieldType="date"
+                    controllerName="dob"
+                    control={control}
+                    error={dobError}
+                    controllerLabel={DOB}
+                  />
+                </Grid>
+              </CardComponent>
+            </Grid>
+
+            <Grid md={6} item>
+
+              <CardComponent cardTitle={ACCOUNT_INFO}>
+                <AddStaffController
+                  fieldType="email"
+                  controllerName="email"
+                  control={control}
+                  error={emailError}
+                  controllerLabel={EMAIL}
+                />
+
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddStaffController
+                      fieldType="text"
+                      controllerName="username"
+                      control={control}
+                      error={usernameError}
+                      controllerLabel={PROVIDER}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddStaffController
+                      fieldType="password"
+                      controllerName="password"
+                      control={control}
+                      error={passwordError}
+                      controllerLabel={PASSWORD_LABEL}
                     />
                   </Grid>
                 </Grid>

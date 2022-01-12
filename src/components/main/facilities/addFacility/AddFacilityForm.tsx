@@ -17,7 +17,7 @@ import {
   CITY, CLIA_ID_NUMBER, CODE, COUNTRY, FACILITY_IDS, CREATE_FACILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION,
   INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE,
-  FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, BANK_ACCOUNT, FEDERAL_TAX_ID,
+  FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, FEDERAL_TAX_ID,
   MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, MAPPED_SERVICE_CODES
 } from "../../../../constants";
 
@@ -88,29 +88,28 @@ const AddFacilityForm: FC = () => {
     zipCode: { message: zipCodeError } = {},
     address: { message: addressError } = {},
     address2: { message: address2Error } = {},
+    billingFax: { message: billingFaxError } = {},
+    billingCity: { message: billingCityError } = {},
     serviceCode: { message: serviceCodeError } = {},
     revenueCode: { message: revenueCodeError } = {},
     cliaIdNumber: { message: cliaIdNumberError } = {},
     federalTaxId: { message: federalTaxIdError } = {},
     practiceType: { message: practiceTypeError } = {},
-    tamxonomyCode: { message: tamxonomyCodeError } = {},
-    insurancePlanType: { message: insurancePlanTypeError } = {},
-    billingCity: { message: billingCityError } = {},
     billingPhone: { message: billingPhoneError } = {},
     billingEmail: { message: billingEmailError } = {},
     billingState: { message: billingStateError } = {},
+    tamxonomyCode: { message: tamxonomyCodeError } = {},
     billingAddress: { message: billingAddressError } = {},
     billingZipCode: { message: billingZipCodeError } = {},
     billingAddress2: { message: billingAddress2Error } = {},
-    billingFax: { message: billingFaxError } = {},
-
+    insurancePlanType: { message: insurancePlanTypeError } = {},
     mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
   } = errors;
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 240px)" className="overflowY-auto">
+        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
@@ -202,6 +201,7 @@ const AddFacilityForm: FC = () => {
                   controllerLabel={INSURANCE_PLAN_TYPE}
                   error={insurancePlanTypeError}
                 />
+
                 <Grid container spacing={3}>
                   <Grid item md={6}>
                     <AddFacilityController
@@ -211,6 +211,7 @@ const AddFacilityForm: FC = () => {
                       error={mammographyCertificationNumberError}
                     />
                   </Grid>
+
                   <Grid item md={6}>
                     <AddFacilityController
                       fieldType="text"
@@ -219,32 +220,32 @@ const AddFacilityForm: FC = () => {
                       error={npiError}
                     />
                   </Grid>
-                  <Grid item md={12} spacing={3}>
-                    <Controller
-                      name="serviceCode"
-                      defaultValue={ServiceCode.Ambulance_24}
-                      render={({ field }) => (
-                        <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
-                          <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
-                          <Select
-                            labelId="serviceCode"
-                            id="serviceCode-id"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_SERVICE_CODES.map((code, index: number) => {
-                              const { label, value } = code;
-
-                              return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                          <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
-                        </FormControl>
-                      )}
-                    />
-                  </Grid>
                 </Grid>
+
+                <Controller
+                  name="serviceCode"
+                  defaultValue={ServiceCode.Ambulance_24}
+                  render={({ field }) => (
+                    <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
+                      <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
+                      <Select
+                        labelId="serviceCode"
+                        id="serviceCode-id"
+                        variant="outlined"
+                        value={field.value}
+                        onChange={field.onChange}
+                      >
+                        {MAPPED_SERVICE_CODES.map((code, index: number) => {
+                          const { label, value } = code;
+
+                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
+                        })}
+                      </Select>
+
+                      <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
+                    </FormControl>
+                  )}
+                />
               </CardComponent>
             </Grid>
 
@@ -258,7 +259,7 @@ const AddFacilityForm: FC = () => {
                 />
 
                 <Grid container spacing={3}>
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="billingPhone"
@@ -267,7 +268,7 @@ const AddFacilityForm: FC = () => {
                     />
                   </Grid>
 
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="billingFax"
@@ -275,14 +276,16 @@ const AddFacilityForm: FC = () => {
                       error={billingFaxError}
                     />
                   </Grid>
-                </Grid>
 
-                <AddFacilityController
-                  fieldType="text"
-                  controllerName="billingZipCode"
-                  controllerLabel={ZIP}
-                  error={billingZipCodeError}
-                />
+                  <Grid item md={4}>
+                    <AddFacilityController
+                      fieldType="text"
+                      controllerName="billingZipCode"
+                      controllerLabel={ZIP}
+                      error={billingZipCodeError}
+                    />
+                  </Grid>
+                </Grid>
 
                 <AddFacilityController
                   fieldType="text"
@@ -326,13 +329,6 @@ const AddFacilityForm: FC = () => {
                       error={billingStateError}
                     />
                   </Grid>
-                  <Grid item md={12} spacing={3}>
-                  <AddFacilityController
-                    fieldType="text"
-                    controllerName="billingBankAccount"
-                    controllerLabel={BANK_ACCOUNT}
-                  />
-                  </Grid>
                 </Grid>
               </CardComponent>
 
@@ -347,7 +343,7 @@ const AddFacilityForm: FC = () => {
                 />
 
                 <Grid container spacing={3}>
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="phone"
@@ -356,7 +352,7 @@ const AddFacilityForm: FC = () => {
                     />
                   </Grid>
 
-                  <Grid item md={6}>
+                  <Grid item md={4}>
                     <AddFacilityController
                       fieldType="text"
                       controllerName="fax"
@@ -364,14 +360,16 @@ const AddFacilityForm: FC = () => {
                       error={faxError}
                     />
                   </Grid>
-                </Grid>
 
-                <AddFacilityController
-                  fieldType="text"
-                  controllerName="zipCode"
-                  controllerLabel={ZIP}
-                  error={zipCodeError}
-                />
+                  <Grid item md={4}>
+                    <AddFacilityController
+                      fieldType="text"
+                      controllerName="zipCode"
+                      controllerLabel={ZIP}
+                      error={zipCodeError}
+                    />
+                  </Grid>
+                </Grid>
 
                 <AddFacilityController
                   fieldType="text"
