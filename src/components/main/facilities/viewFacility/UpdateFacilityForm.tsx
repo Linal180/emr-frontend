@@ -10,11 +10,10 @@ import CardComponent from "../../../common/CardComponent";
 import UpdateFacilityController from './UpdateFacilityController';
 // utils, interfaces and graphql block
 import history from "../../../../history";
-import { getPracticeType } from "../../../../utils";
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomUpdateFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
 import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
-import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BANK_ACCOUNT, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, PRACTICE_TYPE, ZIP } from "../../../../constants";
+import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, PRACTICE_TYPE, ZIP } from "../../../../constants";
 import { ListContext } from '../../../../context/listContext';
 
 const UpdateFacilityForm: FC = () => {
