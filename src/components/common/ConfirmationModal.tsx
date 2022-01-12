@@ -1,10 +1,10 @@
 // packages block
 import { FC, useState, ChangeEvent } from "react";
-import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, Divider, FormControlLabel, Checkbox, Typography, Box } from "@material-ui/core";
+import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, FormControlLabel, Checkbox, Typography, Box } from "@material-ui/core";
 // interfaces/types block/theme/svgs/constants
-import { ConfirmationTypes } from "../../interfacesTypes";
 import { DeleteWarningIcon } from "../../assets/svgs";
-import { DELETE_RECORD_LEARN_MORE_TEXT, DELETE_RECORD_TEXT } from "../../constants";
+import { ConfirmationTypes } from "../../interfacesTypes";
+import { DELETE_RECORD, DELETE_RECORD_LEARN_MORE_TEXT, DELETE_RECORD_TEXT, CANCEL } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success }): JSX.Element => {
   const [checked, setChecked] = useState(false);
@@ -28,10 +28,8 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
-        <Typography component="h4" variant="h4"> {title}</Typography>
+        {title}
       </DialogTitle>
-
-      <Divider />
 
       <DialogContent>
         <Box display="flex">
@@ -57,16 +55,14 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
         />
       </Box>
 
-      <Divider />
-
       <DialogActions>
         <Button onClick={handleClose} color="default">
-          Cancel
+          {CANCEL}
         </Button>
 
         <Button onClick={onDelete} color="secondary" disabled={!checked || isLoading} variant="contained">
           {isLoading && <CircularProgress size={20} color={buttonColor} />}
-          {actionText ? actionText : "Delete"}
+          {actionText ? actionText : DELETE_RECORD}
         </Button>
       </DialogActions>
     </Dialog>

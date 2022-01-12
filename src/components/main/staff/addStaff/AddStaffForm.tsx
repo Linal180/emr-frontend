@@ -14,7 +14,7 @@ import { ListContext } from '../../../../context/listContext';
 import { addStaffSchema } from '../../../../validationSchemas';
 import { MappedRoleInterface } from "../../../../interfacesTypes";
 import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
-import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER } from "../../../../constants";
+import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
@@ -28,7 +28,7 @@ const AddStaffForm: FC = () => {
   const [createStaff, { loading }] = useCreateStaffMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
-        Alert.error("Email or username already exists!")
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
       } else
         Alert.error(message)
     },

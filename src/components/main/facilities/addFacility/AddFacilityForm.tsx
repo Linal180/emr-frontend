@@ -17,7 +17,7 @@ import {
   CITY, CLIA_ID_NUMBER, CODE, COUNTRY, FACILITY_IDS, CREATE_FACILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION,
   INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE,
-  FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, BANK_ACCOUNT, FEDERAL_TAX_ID,
+  FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, FEDERAL_TAX_ID,
   MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, MAPPED_SERVICE_CODES
 } from "../../../../constants";
 
@@ -109,7 +109,7 @@ const AddFacilityForm: FC = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 240px)" className="overflowY-auto">
+        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
@@ -330,12 +330,6 @@ const AddFacilityForm: FC = () => {
                     />
                   </Grid>
                 </Grid>
-
-                <AddFacilityController
-                  fieldType="text"
-                  controllerName="billingBankAccount"
-                  controllerLabel={BANK_ACCOUNT}
-                />
               </CardComponent>
 
               <Box pb={3} />

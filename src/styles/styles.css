@@ -199,3 +199,9 @@ input[type="email"] {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.MuiPopover-paper.user-setting-menu {
+  margin-top: -35px;
+  width: 240px;
+  left: 40px !important;
+}
