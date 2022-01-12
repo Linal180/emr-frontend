@@ -261,7 +261,7 @@ export interface AppMenuItemTypes {
   Icon?: ElementType;
   items?: SubMenuTypes[];
   index?: number;
-  activeCollpase?: number;
+  activeCollapse?: number;
   setActiveCollapse?: (item: number) => void;
 }
 

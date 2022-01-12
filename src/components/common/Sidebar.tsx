@@ -21,12 +21,15 @@ const Sidebar: FC = (): JSX.Element => {
 
   const renderMenu = (
     <Menu
+      classes={
+        { paper: "user-setting-menu" }
+      }
       getContentAnchorEl={null}
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       id={menuId}
       keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "center" }}
+      transformOrigin={{ vertical: "bottom", horizontal: "center" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >

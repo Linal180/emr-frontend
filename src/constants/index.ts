@@ -1,5 +1,5 @@
 // packages block
-import { LocalAtm, ReportSharp, Home, LocalMall, BookOutlined } from "@material-ui/icons";
+
 // graphql and interfaces block
 import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import { Gender, PracticeType, ServiceCode, UserRole } from "../generated/graphql";
@@ -119,6 +119,7 @@ export const LOCATION_ID = "Location ID";
 export const POS = "Place of Service Code (POS)";
 export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
+export const CANCEL = "Cancel";
 export const LAST_NAME = "Last name";
 export const ADDRESS_2 = "Address 2";
 export const BILLING_TEXT = "Billing";
@@ -145,6 +146,7 @@ export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const DELETE_STAFF = "Delete Staff";
+export const DELETE_RECORD = "Delete Record";
 export const DELETE_FACILITY = "Delete Facility";
 export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
@@ -297,7 +299,7 @@ export const STAFF_CREATED = "Staff created successfully!";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const FACILITY_UPDATED = "Facility updated successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
-export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email or username already exists!";
+export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -330,34 +332,6 @@ export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verif
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 
-
-export const LEFT_NAV_LIST_ITEMS = [
-  {
-    title: DASHBOARD_TEXT,
-    link: "/",
-    icon: Home,
-  },
-  {
-    title: APPOINTMENTS_TEXT,
-    link: "/",
-    icon: BookOutlined,
-  },
-  {
-    title: FACILITIES_TEXT,
-    link: "/",
-    icon: LocalMall,
-  },
-  {
-    title: REPORTS_TEXT,
-    link: "/",
-    icon: ReportSharp,
-  },
-  {
-    title: BILLING_TEXT,
-    link: "/",
-    icon: LocalAtm,
-  },
-];
 export const APP_MENU_ITEMS = [
 
   {
