@@ -306,7 +306,7 @@ const UpdateStaffForm: FC = () => {
           </Grid>
         </Box>
         <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="secondary" disabled={updateStaffLoading}>
+          <Button type="submit" variant="contained" color="primary" disabled={updateStaffLoading}>
             {UPDATE_STAFF}
             {updateStaffLoading && <CircularProgress size={20} color="inherit" />}
           </Button>
