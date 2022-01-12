@@ -266,7 +266,7 @@ const AddStaffForm: FC = () => {
         </Box>
 
         <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="secondary" disabled={loading}>
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {CREATE_STAFF}
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>

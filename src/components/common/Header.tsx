@@ -56,7 +56,7 @@ const Header: FC = (): JSX.Element => {
           </Box>
 
           <Box mr={1.25}>
-            <Badge color="secondary" variant="dot" anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
+            <Badge color="primary" variant="dot" anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
               <IconButton color="inherit" size="medium" className={classes.menuButton}>
                 <BellIcon />
               </IconButton>

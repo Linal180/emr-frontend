@@ -4,28 +4,31 @@ import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle,
 // interfaces/types block/theme/svgs/constants
 import { ConfirmationTypes } from "../../interfacesTypes";
 import { DeleteWarningIcon } from "../../assets/svgs";
-import { DELETE_RECORD_LEARN_MORE_TEXT } from "../../constants";
+import { DELETE_RECORD_LEARN_MORE_TEXT, DELETE_RECORD_TEXT } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success }): JSX.Element => {
-  const [state, setState] = useState({
-    confirmDelete: false,
-  })
-  const handleChange = (name: string) => (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setState({ ...state, [name]: event.target.checked });
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
   };
-  const handleClose = () => setOpen && setOpen(!isOpen)
+  const handleClose = () => {
+    setChecked(false)
+    setOpen && setOpen(!isOpen)
+  }
   const buttonColor: PropTypes.Color = success ? "primary" : "secondary"
 
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
-      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">
+        <Typography component="h4" variant="h4"> {title}</Typography>
+      </DialogTitle>
       <Divider />
       <DialogContent>
         <Box display="flex">
           <DeleteWarningIcon />
           <CardContent>
+            <Typography component="h4" variant="h5">{DELETE_RECORD_TEXT}</Typography>
             <Typography>
               {DELETE_RECORD_LEARN_MORE_TEXT}
             </Typography>
@@ -36,9 +39,9 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
       <Box display="flex" ml={4} pb={2}>
         <FormControlLabel
           control={
-            <Checkbox color="primary"
-              checked={state.confirmDelete}
-              onChange={handleChange("confirmDelete")}
+            <Checkbox color="secondary"
+              checked={checked}
+              onChange={handleChange}
             />
           }
           label={description}
@@ -49,7 +52,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
         <Button onClick={handleClose} color="default">
           Cancel
         </Button>
-        <Button onClick={handleDelete} color="primary" disabled={!state.confirmDelete} variant="contained">
+        <Button onClick={handleDelete} color="secondary" disabled={!checked} variant="contained">
           {isLoading ? (
             <CircularProgress size={20} color={buttonColor} />
           ) : <>
