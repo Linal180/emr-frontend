@@ -1,7 +1,5 @@
 // packages block
 import { createContext, FC, useEffect, useCallback, useReducer, Reducer } from "react";
-// components block
-import Alert from "../components/common/Alert";
 // graphql, interfaces/types, reducer and constants block
 import { LIST_PAGE_LIMIT, TOKEN } from "../constants";
 import { ListContextInterface } from "../interfacesTypes";
@@ -23,8 +21,8 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onError({ message }) {
-      Alert.error(message);
+    onError() {
+      return null;
     },
 
     onCompleted(data) {

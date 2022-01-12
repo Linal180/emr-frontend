@@ -21,7 +21,7 @@ const ForgetPasswordComponent = (): JSX.Element => {
   });
 
   const [forgotPassword, { loading }] = useForgetPasswordMutation({
-    onError(message) {
+    onError() {
       return null;
     },
 

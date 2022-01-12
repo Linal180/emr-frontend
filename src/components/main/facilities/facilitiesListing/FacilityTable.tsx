@@ -11,7 +11,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { renderTh } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_ACCOUNT_DESCRIPTION } from "../../../../constants";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import { ListContext } from "../../../../context/listContext";
@@ -26,7 +26,7 @@ const FacilityTable: FC = (): JSX.Element => {
   const [deleteFacilityId, setDeleteFacilityId] = useState<string>("");
   const [facilities, setFacilities] = useState<FacilitiesPayload['facility']>([]);
 
-  const [findAllFacility, { loading }] = useFindAllFacilitiesLazyQuery({
+  const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
     variables: {
       facilityInput: {
         paginationOptions: {
@@ -191,7 +191,7 @@ const FacilityTable: FC = (): JSX.Element => {
             </TableBody>
           </Table>
 
-          {((!loading && !facilities)) && (
+          {((!loading && !facilities) || error || !facilities?.length) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>
@@ -201,7 +201,7 @@ const FacilityTable: FC = (): JSX.Element => {
             title={DELETE_FACILITY}
             isOpen={openDelete}
             isLoading={deleteFacilityLoading}
-            description={DELETE_ACCOUNT_DESCRIPTION}
+            description={DELETE_FACILITY_DESCRIPTION}
             handleDelete={handleDeleteFacility}
             setOpen={(open: boolean) => setOpenDelete(open)}
           />
