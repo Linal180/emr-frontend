@@ -518,6 +518,7 @@ export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUT
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
+export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
 export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }

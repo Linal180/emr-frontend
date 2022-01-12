@@ -10,6 +10,7 @@ import AddStaff from "../pages/main/staff/addStaff";
 import Staff from "../pages/main/staff/staffListing";
 import ViewStaff from "../pages/main/staff/viewStaff";
 import Doctors from "../pages/main/doctors/doctorsListing"
+import AddDoctor from "../pages/main/doctors/addDoctor";
 import ResetPassword from "../pages/auth/resetPassword";
 import MainLayout from "../components/common/MainLayout";
 import EmailVerification from "../pages/auth/verifyEmail";
@@ -36,6 +37,7 @@ const Routes: FC = (): JSX.Element => {
         <Switch>
           <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
           <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
+          <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} />
           <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
           <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
