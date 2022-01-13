@@ -88,6 +88,35 @@ const AddStaffForm: FC = () => {
                 <Grid container spacing={3}>
                   <Grid item md={6}>
                     <Controller
+                      name="facilityId"
+                      defaultValue={facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : ""}
+                      control={control}
+                      render={({ field }) => {
+                        return (
+                          <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
+                            <InputLabel id="facility" shrink>{FACILITY}</InputLabel>
+                            <Select
+                              labelId="facility"
+                              id="select-facility"
+                              variant="outlined"
+                              value={field.value}
+                              onChange={field.onChange}
+                            >
+                              {facilityList?.map((facility) => {
+                                const { id, name } = facility || {};
+
+                                return <MenuItem key={id} value={id}>{name}</MenuItem>;
+                              })}
+                            </Select>
+                            <FormHelperText>{facilityError && facilityError}</FormHelperText>
+                          </FormControl>
+                        )
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item md={6}>
+                    <Controller
                       name="roleType"
                       defaultValue={UserRole.Staff}
                       control={control}
@@ -110,35 +139,6 @@ const AddStaffForm: FC = () => {
                             </Select>
 
                             <FormHelperText>{roleTypeError}</FormHelperText>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-
-                  <Grid item md={6}>
-                    <Controller
-                      name="facilityId"
-                      defaultValue={facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : ""}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
-                            <InputLabel id="facility" shrink>{FACILITY}</InputLabel>
-                            <Select
-                              labelId="facility"
-                              id="select-facility"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {facilityList?.map((facility) => {
-                                const { id, name } = facility || {};
-
-                                return <MenuItem key={id} value={id}>{name}</MenuItem>;
-                              })}
-                            </Select>
-                            <FormHelperText>{facilityError && facilityError}</FormHelperText>
                           </FormControl>
                         )
                       }}
@@ -168,46 +168,70 @@ const AddStaffForm: FC = () => {
                   </Grid>
                 </Grid>
 
-                <Controller
-                  name="gender"
-                  defaultValue={Gender.Male}
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <FormControl fullWidth margin='normal'>
-                        <InputLabel id="gender" shrink>{GENDER}</InputLabel>
-                        <Select
-                          labelId="gender"
-                          id="gender-select"
-                          variant="outlined"
-                          value={field.value}
-                          onChange={field.onChange}
-                        >
-                          {MAPPED_GENDER.map((gender) => {
-                            const { label, value } = gender || {};
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Controller
+                      name="gender"
+                      defaultValue={Gender.Male}
+                      control={control}
+                      render={({ field }) => {
+                        return (
+                          <FormControl fullWidth margin='normal'>
+                            <InputLabel id="gender" shrink>{GENDER}</InputLabel>
+                            <Select
+                              labelId="gender"
+                              id="gender-select"
+                              variant="outlined"
+                              value={field.value}
+                              onChange={field.onChange}
+                            >
+                              {MAPPED_GENDER.map((gender) => {
+                                const { label, value } = gender || {};
 
-                            return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                          })}
-                        </Select>
-                      </FormControl>
-                    )
-                  }}
-                />
+                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
+                              })}
+                            </Select>
+                          </FormControl>
+                        )
+                      }}
+                    />
+                  </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddStaffController
-                    fieldType="date"
-                    controllerName="dob"
-                    control={control}
-                    error={dobError}
-                    controllerLabel={DOB}
-                  />
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddStaffController
+                      fieldType="date"
+                      controllerName="dob"
+                      control={control}
+                      error={dobError}
+                      controllerLabel={DOB}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddStaffController
+                      fieldType="text"
+                      controllerName="phone"
+                      control={control}
+                      error={phoneError}
+                      controllerLabel={PHONE}
+                    />
+                  </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddStaffController
+                      fieldType="text"
+                      controllerName="mobile"
+                      control={control}
+                      error={mobileError}
+                      controllerLabel={MOBILE}
+                    />
+                  </Grid>
                 </Grid>
               </CardComponent>
             </Grid>
 
             <Grid md={6} item>
-
               <CardComponent cardTitle={ACCOUNT_INFO}>
                 <AddStaffController
                   fieldType="email"
@@ -232,31 +256,11 @@ const AddStaffForm: FC = () => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddStaffController
                       fieldType="password"
+                      isPassword
                       controllerName="password"
                       control={control}
                       error={passwordError}
                       controllerLabel={PASSWORD_LABEL}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="text"
-                      controllerName="phone"
-                      control={control}
-                      error={phoneError}
-                      controllerLabel={PHONE}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="text"
-                      controllerName="mobile"
-                      control={control}
-                      error={mobileError}
-                      controllerLabel={MOBILE}
                     />
                   </Grid>
                 </Grid>
