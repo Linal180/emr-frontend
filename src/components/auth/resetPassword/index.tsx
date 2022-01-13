@@ -91,7 +91,9 @@ const ResetPasswordComponent = (): JSX.Element => {
           {BACK_TO}
         </Typography>
 
-        <Typography component={Link} to={ROOT_ROUTE}>{SIGN_IN}</Typography>
+        <Box ml={0.5}>
+          <Typography component={Link} to={ROOT_ROUTE}>{SIGN_IN}</Typography>
+        </Box>
       </Box>
     </AuthLayout>
   );

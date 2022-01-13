@@ -72,14 +72,15 @@ query GetStaff($getStaff: GetStaff!){
 
     staff {
       id
-      firstName
-      lastName
-      email
-      username
       dob
+      email
       phone
       mobile
       gender
+      lastName
+      username
+      firstName
+      facilityId
       createdAt
       updatedAt
       
@@ -95,6 +96,11 @@ query GetStaff($getStaff: GetStaff!){
         inviteAcceptedAt
         createdAt
         updatedAt
+
+        roles {
+          id
+          role
+        }
       }
 
       facility {
@@ -162,6 +168,11 @@ mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
         inviteAcceptedAt
         createdAt
         updatedAt
+
+        roles {
+          id
+          role
+        }
       }
 
       facility {

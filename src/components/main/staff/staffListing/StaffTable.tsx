@@ -12,7 +12,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon, TablesSearchIcon } from '../../../../assets/svgs'
 import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF, DELETE_ACCOUNT_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
+import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 
 const StaffTable: FC = (): JSX.Element => {
@@ -23,6 +23,7 @@ const StaffTable: FC = (): JSX.Element => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
   const classes = useTableStyles()
+  
   const [findAllStaff, { loading, error }] = useFindAllStaffLazyQuery({
     variables: {
       staffInput: {
@@ -198,7 +199,7 @@ const StaffTable: FC = (): JSX.Element => {
           title={DELETE_STAFF}
           isOpen={openDelete}
           isLoading={deleteStaffLoading}
-          description={DELETE_ACCOUNT_DESCRIPTION}
+          description={DELETE_STAFF_DESCRIPTION}
           handleDelete={handleDeleteStaff}
           setOpen={(open: boolean) => setOpenDelete(open)}
         />

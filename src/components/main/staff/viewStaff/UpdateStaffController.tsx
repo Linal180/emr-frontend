@@ -5,7 +5,7 @@ import { Controller } from "react-hook-form";
 // styles, constants, utils and interfaces block
 import { UpdateStaffInputControlProps } from "../../../../interfacesTypes";
 
-const UpdateStaffController: FC<UpdateStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const UpdateStaffController: FC<UpdateStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, disabled }): JSX.Element => {
   return (
     <Controller
       name={controllerName}
@@ -21,6 +21,7 @@ const UpdateStaffController: FC<UpdateStaffInputControlProps> = ({ control, cont
             fullWidth
             error={invalid}
             type={fieldType}
+            disabled={disabled}
             variant="outlined"
             id={controllerName}
             helperText={error && error}
