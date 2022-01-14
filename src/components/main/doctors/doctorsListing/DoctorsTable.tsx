@@ -9,10 +9,10 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../utils";
+import { renderTh, upperToNormal } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation } from "../../../../generated/graphql";
+import { AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload } from "../../../../generated/graphql";
 import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_RECORD, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE, CANT_DELETE_DOCTOR } from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
@@ -87,8 +87,6 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
 
-  const handleSearch = () => { }
-
   const onDeleteClick = (id: string) => {
     if (id) {
       setDeleteDoctorId(id)
@@ -151,11 +149,11 @@ const DoctorsTable: FC = (): JSX.Element => {
                 </TableCell>
               </TableRow>
             ) : (
-              doctors?.map((doctor: any) => {
-                const { id, firstName, lastName, specialty, contacts, facility } = doctor;
+              doctors?.map((doctor: DoctorPayload['doctor']) => {
+                const { id, firstName, lastName, speciality: specialty, contacts } = doctor || {};
                 const doctorContact = contacts && contacts[0];
-                const { email, phone } = doctorContact;
-                const { name } = facility;
+                const { email, phone } = doctorContact || {};
+                // const { name } = facility;
 
                 return (
                   <TableRow key={id}>
@@ -163,8 +161,8 @@ const DoctorsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{lastName}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{phone}</TableCell>
-                    <TableCell scope="row">{specialty}</TableCell>
-                    <TableCell scope="row">{name}</TableCell>
+                    <TableCell scope="row">{upperToNormal(specialty as string)}</TableCell>
+                    <TableCell scope="row">Facility Name</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${DOCTORS_ROUTE}/${id}`}>

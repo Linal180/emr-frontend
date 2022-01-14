@@ -17,7 +17,7 @@ export const handleLogout = () => {
   client.clearStore();
 };
 
-export const firstLatterUppercase = (value: string) => {
+export const upperToNormal = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 

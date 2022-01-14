@@ -14,7 +14,7 @@ const SelectController: FC<CreateFacilityInputControlProps> = ({ controllerName 
       name={controllerName}
       control={control}
       render={() => (
-        <FormControl fullWidth margin="normal" >
+        <FormControl fullWidth margin="normal">
           <InputLabel id={`${controllerName}-label`} shrink>{controllerName}</InputLabel>
           <Select
             labelId={`${controllerName}-label`}

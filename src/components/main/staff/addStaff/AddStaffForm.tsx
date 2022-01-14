@@ -277,7 +277,7 @@ const AddStaffForm: FC = () => {
         </Box>
 
       </form>
-    </FormProvider >
+    </FormProvider>
   );
 };
 

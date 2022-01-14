@@ -9,7 +9,7 @@ import {
   MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX, PASSWORD, PASSWORDS_MUST_MATCH,
   PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE,
   PROVIDER, MIDDLE_NAME,
-  REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE, DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, BILLING_FACILITY, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, PRESCRIPTIVE_AUTH_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE,
+  REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE, DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, PRESCRIPTIVE_AUTH_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE,
 } from "../constants";
 
 const roleTypeSchema = { roleType: yup.string().required(RequiredMessage(ROLE)) }
@@ -108,6 +108,7 @@ export const basicDoctorSchema = {
   prefix: yup.string().required(RequiredMessage(PREFIX)),
   suffix: yup.string().required(RequiredMessage(SUFFIX)),
   ssnType: yup.string().required(RequiredMessage(SSN_TYPE)),
+  facilityId: yup.string().required(RequiredMessage(FACILITY)),
   deaNumber: yup.string().required(RequiredMessage(DEA_NUMBER)),
   speciality: yup.string().required(RequiredMessage(SPECIALTY)),
   dpsCtpNumber: yup.string().required(RequiredMessage(CTP_NUMBER)),
@@ -119,7 +120,7 @@ export const basicDoctorSchema = {
   emcProviderId: yup.string().required(RequiredMessage(EMC_PROVIDER_ID)),
   languageSpoken: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
   // billingFacility: yup.string().required(RequiredMessage(BILLING_FACILITY)),
-  // campusGrpNumber: yup.string().required(RequiredMessage(CAMPUS_GRP_NUMBER)),
+  campusGrpNumber: yup.string().required(RequiredMessage(CAMPUS_GRP_NUMBER)),
   blueShildNumber: yup.string().required(RequiredMessage(BLUE_SHIED_NUMBER)),
   licenseTermDate: yup.string().required(RequiredMessage(LICENSE_TERM_DATE)),
   providerIntials: yup.string().required(RequiredMessage(PROVIDER_INITIALS)),

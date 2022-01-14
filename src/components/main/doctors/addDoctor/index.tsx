@@ -4,13 +4,13 @@ import { FC } from 'react';
 import AddDoctorForm from "./AddDoctorForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
-import { CREATE_DOCTOR, DOCTORS_BREAD, DOCTOR_NEW_BREAD, USERS_BREAD } from '../../../../constants';
+import { ADD_DOCTOR, DOCTORS_BREAD, DOCTOR_NEW_BREAD, USERS_BREAD } from '../../../../constants';
 
 const AddDoctorComponent: FC = () => {
   return (
     <>
       <PageHeader
-        title={CREATE_DOCTOR}
+        title={ADD_DOCTOR}
         path={[USERS_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD]}
       />
 
