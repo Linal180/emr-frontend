@@ -215,6 +215,7 @@ export type CreateFacilityInput = {
 export type CreateFacilityItemInput = {
   cliaIdNumber?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   federalTaxId?: Maybe<Scalars['String']>;
   insurancePlanType?: Maybe<Scalars['String']>;
   mammographyCertificationNumber?: Maybe<Scalars['String']>;
@@ -397,6 +398,7 @@ export type Facility = {
   billingAddress?: Maybe<Array<BillingAddress>>;
   cliaIdNumber?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   contacts?: Maybe<Array<Contact>>;
   createdAt?: Maybe<Scalars['String']>;
   doctors?: Maybe<Array<Doctor>>;
@@ -531,6 +533,7 @@ export type Mutation = {
   updateFacility: FacilityPayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
+  updatePatientProvider: PatientPayload;
   updateRole: UserPayload;
   updateStaff: StaffPayload;
   updateUser: UserPayload;
@@ -648,6 +651,11 @@ export type MutationUpdatePatientArgs = {
 };
 
 
+export type MutationUpdatePatientProviderArgs = {
+  updatePatientProvider: UpdatePatientProvider;
+};
+
+
 export type MutationUpdateRoleArgs = {
   user: UpdateRoleInput;
 };
@@ -731,6 +739,7 @@ export type Patient = {
   suffix?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
+  usualProvider?: Maybe<Array<Doctor>>;
 };
 
 export type PatientInput = {
@@ -1147,6 +1156,7 @@ export type UpdateFacilityInput = {
 export type UpdateFacilityItemInput = {
   cliaIdNumber?: Maybe<Scalars['String']>;
   code?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   federalTaxId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   insurancePlanType?: Maybe<Scalars['String']>;
@@ -1218,6 +1228,11 @@ export type UpdatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
+};
+
+export type UpdatePatientProvider = {
+  patientId: Scalars['String'];
+  providerId: Scalars['String'];
 };
 
 export type UpdateRoleInput = {
@@ -1407,6 +1422,13 @@ export type FindAllPatientQueryVariables = Exact<{
 
 
 export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', facilityId?: Maybe<string>, pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patients?: Maybe<Array<Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: string, deseasedDate: string, privacyNotice: boolean, relaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>>> } };
+
+export type RemovePatientMutationVariables = Exact<{
+  removePatient: RemovePatient;
+}>;
+
+
+export type RemovePatientMutation = { __typename?: 'Mutation', removePatient: { __typename?: 'PatientPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
 
 export type FindAllStaffQueryVariables = Exact<{
   staffInput: StaffInput;
@@ -2626,6 +2648,43 @@ export function useFindAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FindAllPatientQueryHookResult = ReturnType<typeof useFindAllPatientQuery>;
 export type FindAllPatientLazyQueryHookResult = ReturnType<typeof useFindAllPatientLazyQuery>;
 export type FindAllPatientQueryResult = Apollo.QueryResult<FindAllPatientQuery, FindAllPatientQueryVariables>;
+export const RemovePatientDocument = gql`
+    mutation RemovePatient($removePatient: RemovePatient!) {
+  removePatient(removePatient: $removePatient) {
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemovePatientMutationFn = Apollo.MutationFunction<RemovePatientMutation, RemovePatientMutationVariables>;
+
+/**
+ * __useRemovePatientMutation__
+ *
+ * To run a mutation, you first call `useRemovePatientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePatientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePatientMutation, { data, loading, error }] = useRemovePatientMutation({
+ *   variables: {
+ *      removePatient: // value for 'removePatient'
+ *   },
+ * });
+ */
+export function useRemovePatientMutation(baseOptions?: Apollo.MutationHookOptions<RemovePatientMutation, RemovePatientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemovePatientMutation, RemovePatientMutationVariables>(RemovePatientDocument, options);
+      }
+export type RemovePatientMutationHookResult = ReturnType<typeof useRemovePatientMutation>;
+export type RemovePatientMutationResult = Apollo.MutationResult<RemovePatientMutation>;
+export type RemovePatientMutationOptions = Apollo.BaseMutationOptions<RemovePatientMutation, RemovePatientMutationVariables>;
 export const FindAllStaffDocument = gql`
     query FindAllStaff($staffInput: StaffInput!) {
   findAllStaff(staffInput: $staffInput) {
