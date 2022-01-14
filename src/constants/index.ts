@@ -1,7 +1,7 @@
 // packages block
 
 // graphql and interfaces block
-import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
+import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import { Gender, PracticeType, ServiceCode, UserRole } from "../generated/graphql";
 import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
