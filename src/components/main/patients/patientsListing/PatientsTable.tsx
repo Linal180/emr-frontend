@@ -5,17 +5,21 @@ import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, Tabl
 // components block
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import TableLoader from "../../../common/TableLoader";
+import Alert from "../../../common/Alert";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT } from "../../../../constants";
-import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload } from "../../../../generated/graphql";
+import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION } from "../../../../constants";
+import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
 
 const PatientsTable: FC = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [deletePatientId, setDeletePatientId] = useState<string>("");
   const [patients, setPatients] = useState<PatientsPayload['patients']>([]);
   const classes = useTableStyles()
 
@@ -53,6 +57,26 @@ const PatientsTable: FC = (): JSX.Element => {
     }
   });
 
+  const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
+    onError() {
+      Alert.error(CANT_DELETE_PATIENT)
+      setOpenDelete(false)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { removePatient: { response } } = data
+
+        if (response) {
+          const { message } = response
+          message && Alert.success(message);
+          setOpenDelete(false)
+          findAllPatient();
+        }
+      }
+    }
+  });
+
   useEffect(() => {
     if (!searchQuery) {
       findAllPatient()
@@ -60,6 +84,25 @@ const PatientsTable: FC = (): JSX.Element => {
   }, [page, findAllPatient, searchQuery]);
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
+
+  const onDeleteClick = (id: string) => {
+    if (id) {
+      setDeletePatientId(id)
+      setOpenDelete(true)
+    }
+  };
+
+  const handleDeletePatient = async () => {
+    if (deletePatientId) {
+      await removePatient({
+        variables: {
+          removePatient: {
+            id: deletePatientId
+          }
+        }
+      })
+    }
+  };
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -120,7 +163,7 @@ const PatientsTable: FC = (): JSX.Element => {
                           <EditIcon />
                         </IconButton>
 
-                        <IconButton aria-label="delete" color="primary" size="small">
+                        <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
                         </IconButton>
                       </Box>
@@ -149,6 +192,14 @@ const PatientsTable: FC = (): JSX.Element => {
           </Box>
         )}
 
+        <ConfirmationModal
+          title={DELETE_PATIENT}
+          isOpen={openDelete}
+          isLoading={deletePatientLoading}
+          description={DELETE_PATIENT_DESCRIPTION}
+          handleDelete={handleDeletePatient}
+          setOpen={(open: boolean) => setOpenDelete(open)}
+        />
       </Box>
     </Box>
   );

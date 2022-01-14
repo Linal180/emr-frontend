@@ -125,3 +125,13 @@ query FindAllPatient($patientInput: PatientInput!) {
     }
   }
 }
+
+mutation RemovePatient($removePatient: RemovePatient!){
+	removePatient(removePatient: $removePatient){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
