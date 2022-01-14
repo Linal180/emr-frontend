@@ -11,7 +11,7 @@ export const NUMBER_REGEX = /^[0-9]+$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const LONGITUDE_LATITUDE_REGEX = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}/;
-export const PASSWORD_REGEX =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
 export const ALL_STAFF = "Staff";
@@ -409,18 +409,11 @@ export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verifi
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 
 export const APP_MENU_ITEMS = [
-
-  {
-    name: DASHBOARD_TEXT,
-    link: DASHBOARD_ROUTE,
-    Icon: DashboardIcon,
-    items: [],
-    index: 1
-  },
   {
     name: MANAGEMENT_TEXT,
     items: [],
-    index: 2
+    index: 2,
+    sectionName: true
   },
   {
     name: USERS_TEXT,
@@ -459,6 +452,7 @@ export const APP_MENU_ITEMS = [
     name: CLINICAL_TEXT,
     items: [],
     index: 5,
+    sectionName: true
   },
   {
     name: FACILITIES_TEXT,

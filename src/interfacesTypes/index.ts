@@ -263,6 +263,7 @@ export interface AppMenuItemTypes {
   index?: number;
   activeCollapse?: number;
   setActiveCollapse?: (item: number) => void;
+  sectionName?: boolean
 }
 
 export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;
@@ -340,20 +341,20 @@ type FacilityControlTypes =
   | "serviceCode"
 
 
-  interface CustomBillingAddressInputs {
-    billingEmail: string;
-    billingPhone: string;
-    billingFax: string;
-    billingZipCode: string;
-    billingAddress: string;
-    billingAddress2: string;
-    billingCity: string;
-    billingState: string;
-    billingCountry: string;
-    billingBankAccount: string;
+interface CustomBillingAddressInputs {
+  billingEmail: string;
+  billingPhone: string;
+  billingFax: string;
+  billingZipCode: string;
+  billingAddress: string;
+  billingAddress2: string;
+  billingCity: string;
+  billingState: string;
+  billingCountry: string;
+  billingBankAccount: string;
 
-  }
-  export interface CreateFacilityInputControlProps extends IControlLabel {
+}
+export interface CreateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
@@ -361,4 +362,4 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type  CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput & CustomBillingAddressInputs
+export type CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput & CustomBillingAddressInputs
