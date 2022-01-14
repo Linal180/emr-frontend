@@ -60,7 +60,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   });
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
-    onError() {
+    onError({message}) {
       Alert.error(CANT_DELETE_DOCTOR)
       setOpenDelete(false)
     },
@@ -150,10 +150,10 @@ const DoctorsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               doctors?.map((doctor: DoctorPayload['doctor']) => {
-                const { id, firstName, lastName, speciality: specialty, contacts } = doctor || {};
+                const { id, firstName, lastName, speciality: specialty, contacts, facility } = doctor || {};
                 const doctorContact = contacts && contacts[0];
                 const { email, phone } = doctorContact || {};
-                // const { name } = facility;
+                const { name } = facility || {};
 
                 return (
                   <TableRow key={id}>
@@ -162,7 +162,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">{upperToNormal(specialty as string)}</TableCell>
-                    <TableCell scope="row">Facility Name</TableCell>
+                    <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${DOCTORS_ROUTE}/${id}`}>

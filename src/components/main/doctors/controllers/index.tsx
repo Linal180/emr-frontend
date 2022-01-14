@@ -3,7 +3,7 @@ import { FormControl, InputLabel, TextField } from "@material-ui/core";
 import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
-const AddDoctorController: FC<any> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const DoctorController: FC<any> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
   const { control } = useFormContext();
 
   return (
@@ -32,4 +32,4 @@ const AddDoctorController: FC<any> = ({ controllerName, controllerLabel, fieldTy
   );
 };
 
-export default AddDoctorController;
+export default DoctorController;

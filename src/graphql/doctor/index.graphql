@@ -1,4 +1,3 @@
-# ------------------------- DOCTORS  ---------------------------------------
 query FindAllDoctor($doctorInput: DoctorInput!) {
   findAllDoctor(doctorInput: $doctorInput) {
     doctors {
@@ -12,6 +11,7 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
       taxId
       prefix
       suffix
+      ssnType
       lastName
       firstName
       deaNumber
@@ -24,6 +24,7 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
       taxonomyCode
       emcProviderId
       providerIntials
+      languagesSpoken
       blueShildNumber
       billingFacility
       campusGrpNumber
@@ -46,6 +47,7 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
         id
         fax
         email
+        phone
         mobile
         address
         address2
@@ -141,3 +143,132 @@ mutation RemoveDoctor($removeDoctor: RemoveDoctor!){
   }
 }
 
+query GetDoctor($getDoctor: GetDoctor!) {
+  getDoctor(getDoctor: $getDoctor) {
+    doctor {
+      id
+      firstName
+      middleName
+      lastName
+      prefix
+      suffix
+      email
+      ssnType
+      providerIntials
+      degreeCredentials
+      speciality
+      dob
+      taxId
+      ssn
+      taxonomyCode
+      deaNumber
+      prescriptiveAuthNumber
+      licenseTermDate
+      stateLicense
+      languagesSpoken
+      dpsCtpNumber
+      anesthesiaLicense
+      specialityLicense
+      taxIdStuff
+      blueShildNumber
+      campusGrpNumber
+      medicareGrpNumber
+      billingFacility
+      emcProviderId
+      upin
+      npi
+      taxId
+      prescriptiveAuthNumber
+      licenseActiveDate
+      meammographyCertNumber
+      medicaidGrpNumber
+      deaActiveDate
+      deaTermDate
+      createdAt
+      updatedAt
+
+      billingAddress {
+        id
+        email
+        mobile
+        phone
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
+
+      contacts {
+        id
+        email
+        phone
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+      }
+
+      user {
+        id
+        email
+        token
+        status
+        userId
+        userType
+        inviteSentAt
+        emailVerified
+        inviteAcceptedAt
+        createdAt
+        updatedAt
+      }
+    }
+
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateDoctor($updateDoctorInput: UpdateDoctorInput!){
+  updateDoctor(updateDoctorInput: $updateDoctorInput){
+    response {
+      error
+      status
+			message
+    }
+  }
+}

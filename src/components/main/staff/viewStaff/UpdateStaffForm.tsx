@@ -1,6 +1,7 @@
 // packages block
 import { useEffect, FC, useContext } from 'react'
 import { useParams } from 'react-router';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
 // components block
@@ -10,10 +11,9 @@ import UpdateStaffController from "./UpdateStaffController";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { yupResolver } from '@hookform/resolvers/yup';
-import { MappedRoleInterface, ParamsType } from "../../../../interfacesTypes";
 import { ListContext } from '../../../../context/listContext';
 import { updateStaffSchema } from '../../../../validationSchemas';
+import { MappedRoleInterface, ParamsType } from "../../../../interfacesTypes";
 import { CreateStaffInput, UserRole, Gender, useGetStaffLazyQuery, useUpdateStaffMutation, UpdateStaffInput } from "../../../../generated/graphql";
 import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, MAPPED_GENDER, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, MAPPED_ROLES, PROVIDER } from "../../../../constants";
 

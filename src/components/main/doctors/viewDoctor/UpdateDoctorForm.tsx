@@ -1,5 +1,6 @@
 // packages block
 import { FC, useState, useContext, useEffect } from 'react';
+import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormControlLabel, Switch, FormGroup, FormHelperText } from "@material-ui/core";
@@ -11,31 +12,34 @@ import CardComponent from "../../../common/CardComponent";
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
-import { DoctorInputProps } from "../../../../interfacesTypes";
 import { useFormStyles } from '../../../../styles/formsStyles';
-import { Speciality, SsnType, useCreateDoctorMutation, UserRole } from "../../../../generated/graphql";
+import { DoctorInputProps, ParamsType } from "../../../../interfacesTypes";
+import { DoctorPayload, Speciality, SsnType, useGetDoctorLazyQuery, UserRole, useUpdateDoctorMutation } from "../../../../generated/graphql";
 import {
-  FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_SSN_TYPES, FACILITY,
-  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CREATE_DOCTOR, ADDITIONAL_INFO, BILLING_ADDRESS,
+  MAPPED_SSN_TYPES, FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, UPDATE_DOCTOR, 
   SCHEDULE_APPOINTMENTS_TEXT, CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME,
   PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER, TAXONOMY_CODE,
   DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS, ADDRESS_2,
   MOBILE, PAGER, TAX_ID, NPI, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
   MAMMOGRAPHY_CERT_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
-  PRESCRIPTIVE_AUTH_NUMBER, AVAILABILITY_STATUS, DOCTOR_CREATED, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
-  LANGUAGE_SPOKEN, SPECIALTY, SSN_TYPE,
+  PRESCRIPTIVE_AUTH_NUMBER, AVAILABILITY_STATUS, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
+  LANGUAGE_SPOKEN, SPECIALTY, SSN_TYPE, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS,
+  
 } from "../../../../constants";
 import { ListContext } from '../../../../context/listContext';
 
-const AddDoctorForm: FC = () => {
+const UpdateDoctorForm: FC = () => {
+  const classes = useFormStyles()
+  const { id } = useParams<ParamsType>();
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
-  const classes = useFormStyles()
+  const [doctor, setDoctor] = useState<DoctorPayload['doctor']>()
   const methods = useForm<DoctorInputProps>({
     mode: "all",
     resolver: yupResolver(doctorSchema)
   });
+
   const { reset, control, handleSubmit, setValue, formState: { errors } } = methods;
   const [values, setValues] = useState({
     sunday: false,
@@ -47,28 +51,130 @@ const AddDoctorForm: FC = () => {
     saturday: false,
   });
 
-  const [createDoctor, { loading }] = useCreateDoctorMutation({
+  const [getDoctor] = useGetDoctorLazyQuery({
     onError({ message }) {
-      if (message === FORBIDDEN_EXCEPTION) {
-        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
-      } else
-        Alert.error(message)
+      Alert.error(message)
     },
 
     onCompleted(data) {
-      const { createDoctor: { response } } = data;
+      const { getDoctor: { response, doctor } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (doctor && status && status === 200) {
+          const { dob, ssn, prefix, suffix, ssnType, lastName, firstName, speciality, middleName, providerIntials,
+            degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
+            upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
+            blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
+            dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber,
+          } = doctor
+
+          const { id: facilityId } = facility || {}
+
+          dob && setValue('dob', dob)
+          ssn && setValue('ssn', ssn)
+          prefix && setValue('prefix', prefix)
+          suffix && setValue('suffix', suffix)
+          ssnType && setValue('ssnType', ssnType)
+          lastName && setValue('lastName', lastName)
+          firstName && setValue('firstName', firstName)
+          speciality && setValue('speciality', speciality)
+          middleName && setValue('middleName', middleName)
+          providerIntials && setValue('providerIntials', providerIntials)
+          degreeCredentials && setValue('degreeCredentials', degreeCredentials)
+          languagesSpoken && setValue('languagesSpoken', languagesSpoken)
+          taxonomyCode && setValue('taxonomyCode', taxonomyCode)
+          deaNumber && setValue('deaNumber', deaNumber)
+          deaActiveDate && setValue('deaActiveDate', deaActiveDate)
+          deaTermDate && setValue('deaTermDate', deaTermDate)
+          taxId && setValue('taxId', taxId)
+          npi && setValue('npi', npi)
+          upin && setValue('upin', upin)
+          emcProviderId && setValue('emcProviderId', emcProviderId)
+          medicareGrpNumber && setValue('medicareGrpNumber', medicareGrpNumber)
+          medicaidGrpNumber && setValue('medicaidGrpNumber', medicaidGrpNumber)
+          meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
+          campusGrpNumber && setValue('campusGrpNumber', campusGrpNumber)
+          blueShildNumber && setValue('blueShildNumber', blueShildNumber)
+          taxIdStuff && setValue('taxIdStuff', taxIdStuff)
+          facilityId && setValue('facilityId', facilityId)
+          specialityLicense && setValue('specialityLicense', specialityLicense)
+          anesthesiaLicense && setValue('anesthesiaLicense', anesthesiaLicense)
+          dpsCtpNumber && setValue('dpsCtpNumber', dpsCtpNumber)
+          stateLicense && setValue('stateLicense', stateLicense)
+          licenseActiveDate && setValue('licenseActiveDate', licenseActiveDate)
+          licenseTermDate && setValue('licenseTermDate', licenseTermDate)
+          prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
+
+          setDoctor(doctor)
+
+          if (contacts) {
+            const { email, phone, zipCode, mobile, fax, address, address2, city, state, country } = contacts[0]
+
+            fax && setValue('fax', fax)
+            city && setValue('city', city)
+            email && setValue('email', email)
+            state && setValue('state', state)
+            phone && setValue('phone', phone)
+            mobile && setValue('mobile', mobile)
+            zipCode && setValue('zipCode', zipCode)
+            address && setValue('address', address)
+            country && setValue('country', country)
+            address2 && setValue('address2', address2)
+          }
+
+          if (billingAddress) {
+            const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+
+            fax && setValue('billingFax', fax)
+            city && setValue('billingCity', city)
+            email && setValue('billingEmail', email)
+            state && setValue('billingState', state)
+            phone && setValue('billingPhone', phone)
+            address && setValue('billingAddress', address)
+            country && setValue('billingCountry', country)
+            zipCode && setValue('billingZipCode', zipCode)
+            address2 && setValue('billingAddress2', address2)
+          }
+        }
+      }
+    }
+  });
+
+  const [updateDoctor, { loading }] = useUpdateDoctorMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updateDoctor: { response } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(DOCTOR_CREATED);
+          Alert.success(DOCTOR_UPDATED);
           reset()
           history.push(DOCTORS_ROUTE)
         }
       }
     }
   });
+
+  useEffect(() => {
+    if (id) {
+      getDoctor({
+        variables: {
+          getDoctor: {
+            id
+          }
+        }
+      })
+    } else {
+      Alert.error('Doctor not found!')
+    }
+  }, [getDoctor, id])
 
   const handleChange = (event: any) => {
     setValues({
@@ -79,7 +185,7 @@ const AddDoctorForm: FC = () => {
 
   const onSubmit: SubmitHandler<DoctorInputProps> = async (inputs) => {
     const { email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country,
-      billingEmail, billingPhone, billingFax, billingAddress, billingAddress2, billingZipCode, billingCity, billingState, billingCountry, billingUserId,
+      billingEmail, billingPhone, billingFax, billingAddress: billingAddress1, billingAddress2, billingZipCode, billingCity, billingState, billingCountry, billingUserId,
       dob, ssn, prefix, suffix, ssnType, lastName, firstName, speciality, middleName, providerIntials,
       degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi, upin,
       emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber, blueShildNumber,
@@ -87,14 +193,18 @@ const AddDoctorForm: FC = () => {
       licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, password
     } = inputs;
 
-    if (user) {
-      const { id: userId } = user
+    const { contacts, billingAddress } = doctor || {}
 
-      await createDoctor({
+    if (user && id && contacts && billingAddress) {
+      const { id: userId } = user
+      const { id: contactId } = contacts[0]
+      const { id: billingId } = billingAddress[0]
+
+      await updateDoctor({
         variables: {
-          createDoctorInput: {
-            createDoctorItemInput: {
-              firstName: firstName || "", middleName: middleName || "", lastName: lastName || "", prefix: prefix || "",
+          updateDoctorInput: {
+            updateDoctorItemInput: {
+              id, firstName: firstName || "", middleName: middleName || "", lastName: lastName || "", prefix: prefix || "",
               suffix: suffix || "", email: email || "", password: password || "", facilityId: facilityId || "",
               providerIntials: providerIntials || "", degreeCredentials: degreeCredentials || "",
               speciality: speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
@@ -109,13 +219,13 @@ const AddDoctorForm: FC = () => {
               prescriptiveAuthNumber: prescriptiveAuthNumber || "",
             },
 
-            createContactInput: { email: email || "", pager: pager || "", phone: phone || "", mobile: mobile || "", fax: fax || "", address: address || "", address2: address2 || "", zipCode: zipCode || "", city: city || "", state: state || "", country: country || "", facilityId: facilityId || "" },
-            createBillingAddressInput: { email: billingEmail || "", phone: billingPhone || "", fax: billingFax || "", address: billingAddress || "", address2: billingAddress2 || "", zipCode: billingZipCode || "", city: billingCity || "", state: billingState || "", country: billingCountry || "", userId: billingUserId || "", facilityId: facilityId || "" }
+            updateContactInput: { id: contactId, email: email || "", pager: pager || "", phone: phone || "", mobile: mobile || "", fax: fax || "", address: address || "", address2: address2 || "", zipCode: zipCode || "", city: city || "", state: state || "", country: country || "", facilityId: facilityId || "" },
+            updateBillingAddressInput: { id: billingId, email: billingEmail || "", phone: billingPhone || "", fax: billingFax || "", address: billingAddress1 || "", address2: billingAddress2 || "", zipCode: billingZipCode || "", city: billingCity || "", state: billingState || "", country: billingCountry || "", userId: billingUserId || "", facilityId: facilityId || "" }
           }
         }
       })
     } else {
-      Alert.error("Failed to create doctor!")
+      Alert.error("Failed to update doctor!")
     }
   };
 
@@ -153,7 +263,6 @@ const AddDoctorForm: FC = () => {
     blueShildNumber: { message: blueShieldNumberError } = {},
     taxIdStuff: { message: taxIdStuffError } = {},
     facilityId: { message: facilityError } = {},
-
     specialityLicense: { message: specialtyLicenseError } = {},
     anesthesiaLicense: { message: anesthesiaLicenseError } = {},
     dpsCtpNumber: { message: dpsCtpNumberError } = {},
@@ -529,7 +638,7 @@ const AddDoctorForm: FC = () => {
                           control={<Switch checked={values.sunday} onChange={handleChange} name="sunday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Monday"
                           labelPlacement="start"
@@ -537,7 +646,7 @@ const AddDoctorForm: FC = () => {
                           control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Wednesday"
                           labelPlacement="start"
@@ -545,7 +654,7 @@ const AddDoctorForm: FC = () => {
                           control={<Switch checked={values.wednesday} onChange={handleChange} name="wednesday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Thursday"
                           labelPlacement="start"
@@ -553,7 +662,7 @@ const AddDoctorForm: FC = () => {
                           control={<Switch checked={values.thursday} onChange={handleChange} name="thursday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Friday"
                           labelPlacement="start"
@@ -561,7 +670,7 @@ const AddDoctorForm: FC = () => {
                           control={<Switch checked={values.friday} onChange={handleChange} name="friday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Saturday"
                           labelPlacement="start"
@@ -862,7 +971,7 @@ const AddDoctorForm: FC = () => {
 
         <Box display="flex" justifyContent="flex-end" pt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {CREATE_DOCTOR}
+            {UPDATE_DOCTOR}
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
         </Box>
@@ -872,4 +981,4 @@ const AddDoctorForm: FC = () => {
   );
 };
 
-export default AddDoctorForm;
+export default UpdateDoctorForm;
