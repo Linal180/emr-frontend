@@ -4,6 +4,8 @@ import { WHITE, BLACK, BLUE_ONE } from "../theme";
 export const useAppMenuStyles = makeStyles(() =>
   createStyles({
     menuItem: {
+      padding: '8px 27px',
+
       "&.active": {
         background: BLACK,
 
