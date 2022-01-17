@@ -6,7 +6,7 @@ import UpdateFacilityForm from "./UpdateFacilityForm";
 // constant block
 import { FACILITIES_BREAD, STAFF_EDIT_BREAD, VIEW_FACILITY } from "../../../../constants";
 
-const ViewFacilityComponent: FC = () => {
+const ViewFacilityComponent: FC = (): JSX.Element => {
   return (
     <>
       <PageHeader

@@ -2,7 +2,7 @@
 
 // graphql and interfaces block
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Gender, PracticeType, ServiceCode, UserRole } from "../generated/graphql";
+import { Gender, PracticeType, ServiceCode, Speciality, SsnType, UserRole } from "../generated/graphql";
 import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
 
@@ -18,13 +18,16 @@ export const ALL_STAFF = "Staff";
 export const CREATE_STAFF = "Create Staff";
 export const CREATE_FACILITY = "Create facility";
 export const ADD_STAFF = "Add Staff";
+export const CREATE_DOCTOR = "Create Doctor";
 export const ADD_DOCTOR = "Add Doctor";
+export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
 export const ADD_RESULT = "Add Result";
 export const ADD_APPOINTMENT = "Add Appointment";
 export const VIEW_STAFF = "View Staff";
 export const UPDATE_STAFF = "Update Staff";
 export const UPDATE_FACILITY = "Update Facility";
+export const UPDATE_DOCTOR = "Update Doctor";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
 export const PROVIDER = "Provider";
@@ -37,13 +40,13 @@ export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
 export const ADDITIONAL_INFO = "Additional Info";
-export const AVAILIBITY_STATUS = "set your availability status";
+export const AVAILABILITY_STATUS = "set your availability status";
 export const TAX_ID_DETAILS = "Tax ID Details";
-export const MIDDLE_INITIAL = "Middle Initial";
+export const MIDDLE_NAME = "Middle initial";
 export const PREFIX = "Prefix";
 export const SUFFIX = "Suffix";
 export const PROVIDER_INITIALS = "Provider Initials";
-export const CREDENTIALS = "Degree/ Credentials";
+export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SPECIALTY = "Specialty";
 export const DOB = "Date of Birth";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
@@ -52,7 +55,7 @@ export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const TAXONOMY_CODE = "Taxonomy Code";
 export const DEA_NUMBER = "DEA Number";
 export const DEA_ACTIVE_DATE = "DEA Active date";
-export const DEA_ERM_DATE = "DEA Term Date";
+export const DEA_TERM_DATE = "DEA Term Date";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
 export const EMAIL = "Email";
@@ -78,14 +81,14 @@ export const BILLING_FACILITY = "Billing Facility";
 export const MEDICARE_GRP_NUMBER = "Medicare GRP Number";
 export const MEDICAID_GRP_NUMBER = "Medicaid GRP Number";
 export const MAMMOGRAPHY_CERT_NUMBER = "Mammography Cert Number";
-export const CHAMPUS_GRP_NUMBER = "Champus GRP Number";
+export const CAMPUS_GRP_NUMBER = "Campus GRP Number";
 export const BLUE_SHIED_NUMBER = "Blue Shied Number";
-export const TAX_ID_SUFF = "Tax ID Suff. / Provider Site ID";
-export const SPECIALITY_LICENSE = "Speciality License";
+export const TAX_ID_STUFF = "Tax ID Stuff / Provider Site ID";
+export const SPECIALTY_LICENSE = "Specialty License";
 export const ANESTHESIA_LICENSE = "Anesthesia License";
 export const CTP_NUMBER = "DPS / CTP Number";
 export const STATE_LICENSE = "State License";
-export const LISENCE_ACTIVE_DATE = "Lisence Active Date";
+export const LICENSE_ACTIVE_DATE = "License Active Date";
 export const LICENSE_TERM_DATE = "License Term Date";
 export const PRESCRIPTIVE_AUTH_NUMBER = "Prescriptive Auth number";
 export const FACILITY_IDS = "Facility IDs";
@@ -123,7 +126,8 @@ export const EMR_TEXT = "EMR";
 export const USER_NAME = "Username";
 export const STATUS = "Status";
 export const CLAIMED = "Claimed";
-export const SSN = "SSN / TIN";
+export const SSN = "SSN";
+export const SSN_TYPE = "Snn Type";
 export const TAGS_TEXT = "Tags";
 export const ACTION = "Actions";
 export const DRAWER_WIDTH = 300;
@@ -251,7 +255,6 @@ export const INSURANCE_POLICY_INFO = "Insurance Policy Info";
 export const GUARDIAN = "Guardian";
 export const POLICY_HOLDER = "Policy Holder";
 export const ELIGIBILITY = "Eligibility";
-export const MIDDLE_NAME = "Middle Name";
 export const FIRST_NAME_USED = "First Name Used";
 export const PREFERRED_NAME = "Preferred Name";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
@@ -304,6 +307,7 @@ export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
+export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
@@ -376,16 +380,19 @@ export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const STAFF_CREATED = "Staff created successfully!";
 export const FACILITY_CREATED = "Facility created successfully!";
+export const DOCTOR_CREATED = "Doctor created successfully!";
 export const FACILITY_UPDATED = "Facility updated successfully!";
+export const DOCTOR_UPDATED = "Doctor updated successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
-export const CANT_DELETE_STAFF = "This staff can't be deleted.";
-export const CANT_DELETE_PATIENT = "This patient can't be deleted.";
-export const CANT_DELETE_FACILITY = "This facility can't be deleted.";
+export const CANT_DELETE_STAFF = "Staff can't be deleted.";
+export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
+export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
+export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const USER_EXIST = "User already exists with this email.";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
@@ -558,7 +565,22 @@ export const MAPPED_SERVICE_CODES = [
   { value: ServiceCode.IndianHealthServiceProviderBasedFacility_06, label: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06 },
   { value: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, label: MAPPED_SERVICE_CODE.COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61 },
   { value: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, label: MAPPED_SERVICE_CODE.COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62 }
-]
+];
+
+export const MAPPED_SPECIALTIES = [
+  { value: Speciality.Neurology, label: "Neurology" },
+  { value: Speciality.Pharmacist, label: "Pharmacist" },
+  { value: Speciality.Gastroenterology, label: "Gastroenterology" },
+  { value: Speciality.PediatricDentist, label: "PediatricDentist" },
+  { value: Speciality.PhysicianAssistant, label: "PhysicianAssistant" },
+];
+
+export const MAPPED_SSN_TYPES = [
+  { value: SsnType.Tanf, label: "Tanf" },
+  { value: SsnType.Oasdi, label: "Oasdi" },
+  { value: SsnType.Medicare, label: "Medicare" },
+  { value: SsnType.Medicaid, label: "Medicaid" },
+];
 
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
@@ -568,6 +590,7 @@ export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }
 export const APPOINTMENT_NEW_BREAD = { text: ADD_APPOINTMENT, link: `${VIEW_APPOINTMENTS_ROUTE}/new` }
+export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: '' }
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }

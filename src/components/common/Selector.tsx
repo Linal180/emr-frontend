@@ -9,11 +9,6 @@ import { SelectorProps } from "../../interfacesTypes";
 const Selector: FC<SelectorProps> = ({ name, loading, label, error, options, value }): JSX.Element => {
   const { control, setValue } = useFormContext()
 
-  // useEffect(() => {
-  //   setValue(name, value)
-  // }, [name, setValue, value]);
-
-  console.log("value::",value)
   return (
     <Box>
       <Controller
@@ -22,7 +17,6 @@ const Selector: FC<SelectorProps> = ({ name, loading, label, error, options, val
         control={control}
         defaultValue={value}
         render={({ field, fieldState: { invalid } }) => {
-          console.log("field.value.value:::",field)
           return (
             <Autocomplete
               options={options}
@@ -46,7 +40,6 @@ const Selector: FC<SelectorProps> = ({ name, loading, label, error, options, val
                 </FormControl>
               )}
               onChange={(_, data) => {
-                console.log("data::",data)
                 field.onChange(data.value);
               }}
             />

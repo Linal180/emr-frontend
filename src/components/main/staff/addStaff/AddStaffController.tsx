@@ -1,11 +1,24 @@
 // packages block
-import { FormControl, InputLabel, TextField } from "@material-ui/core";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Controller } from "react-hook-form";
+import { FormControl, InputLabel, TextField } from "@material-ui/core";
+// components block
+import ShowPassword from "../../../common/ShowPassword";
 // styles, constants, utils and interfaces block
-import { AddStaffInputControlProps } from "../../../../interfacesTypes";
+import {PASSWORD, TEXT } from "../../../../constants";
+import { AddStaffInputControlProps, PasswordType } from "../../../../interfacesTypes";
 
-const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, isPassword }): JSX.Element => {
+  const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
+
+  const handleClickShowPassword = () => {
+    if (passwordType === PASSWORD) {
+      setPasswordType(TEXT);
+    } else {
+      setPasswordType(PASSWORD);
+    }
+  };
+
   return (
     <Controller
       name={controllerName}
@@ -20,11 +33,18 @@ const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controller
           <TextField
             fullWidth
             error={invalid}
-            type={fieldType}
             variant="outlined"
             id={controllerName}
+            type={fieldType === "password" ? passwordType : fieldType}
             helperText={error && error}
             {...field}
+            InputProps={isPassword ? {
+              endAdornment: <ShowPassword
+                isPassword={isPassword}
+                passwordType={passwordType}
+                handleShowPassword={handleClickShowPassword}
+              />,
+            } : undefined}
           />
         </FormControl>
       )}
