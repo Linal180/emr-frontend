@@ -389,7 +389,7 @@ const AddDoctorForm: FC = () => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
-                      fieldType="text"
+                      fieldType="date"
                       controllerName="deaActiveDate"
                       error={deaActiveDateError}
                       controllerLabel={DEA_ACTIVE_DATE}
@@ -397,7 +397,7 @@ const AddDoctorForm: FC = () => {
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
-                      fieldType="text"
+                      fieldType="date"
                       controllerName="deaTermDate"
                       error={deaTermDateError}
                       controllerLabel={DEA_TERM_DATE}
@@ -409,7 +409,7 @@ const AddDoctorForm: FC = () => {
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
-                      controllerName="languageSpoken"
+                      controllerName="languagesSpoken"
                       error={languagesSpokenError}
                       controllerLabel={LANGUAGE_SPOKEN}
                     />
@@ -830,7 +830,7 @@ const AddDoctorForm: FC = () => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
-                      fieldType="text"
+                      fieldType="date"
                       controllerName="licenseActiveDate"
                       error={licenseActiveDateError}
                       controllerLabel={LICENSE_ACTIVE_DATE}
@@ -839,7 +839,7 @@ const AddDoctorForm: FC = () => {
 
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
-                      fieldType="text"
+                      fieldType="date"
                       controllerName="licenseTermDate"
                       error={licenseTermDateError}
                       controllerLabel={LICENSE_TERM_DATE}

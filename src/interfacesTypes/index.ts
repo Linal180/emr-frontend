@@ -263,6 +263,7 @@ export interface AppMenuItemTypes {
   index?: number;
   activeCollapse?: number;
   setActiveCollapse?: (item: number) => void;
+  sectionName?: boolean
 }
 
 export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;

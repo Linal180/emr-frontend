@@ -60,7 +60,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   });
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
-    onError({message}) {
+    onError() {
       Alert.error(CANT_DELETE_DOCTOR)
       setOpenDelete(false)
     },

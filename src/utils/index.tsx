@@ -161,3 +161,11 @@ export const getPracticeType = (type: PracticeType): string => {
       return 'Hospital'
   }
 };
+
+export const getTimestamps = (date: string): string => {
+  return date ? moment(date).format().toString() : ""
+};
+
+export const getDate = (date: any) => {
+  return moment(date, "x").format("YYYY-MM-DD")
+};

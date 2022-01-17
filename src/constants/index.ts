@@ -1,7 +1,7 @@
 // packages block
 
 // graphql and interfaces block
-import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
+import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import { Gender, PracticeType, ServiceCode, Speciality, SsnType, UserRole } from "../generated/graphql";
 import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
@@ -307,6 +307,7 @@ export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
+export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
@@ -390,6 +391,7 @@ export const CANT_DELETE_USER = "This user can't be deleted.";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
+export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const USER_EXIST = "User already exists with this email.";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
@@ -417,18 +419,11 @@ export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verifi
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 
 export const APP_MENU_ITEMS = [
-
-  {
-    name: DASHBOARD_TEXT,
-    link: DASHBOARD_ROUTE,
-    Icon: DashboardIcon,
-    items: [],
-    index: 1
-  },
   {
     name: MANAGEMENT_TEXT,
     items: [],
-    index: 2
+    index: 2,
+    sectionName: true
   },
   {
     name: USERS_TEXT,
@@ -467,6 +462,7 @@ export const APP_MENU_ITEMS = [
     name: CLINICAL_TEXT,
     items: [],
     index: 5,
+    sectionName: true
   },
   {
     name: FACILITIES_TEXT,

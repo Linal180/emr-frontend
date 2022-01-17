@@ -10,13 +10,14 @@ import DoctorController from "../controllers";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
+import { getDate, getTimestamps } from "../../../../utils";
 import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
 import { useFormStyles } from '../../../../styles/formsStyles';
 import { DoctorInputProps, ParamsType } from "../../../../interfacesTypes";
 import { DoctorPayload, Speciality, SsnType, useGetDoctorLazyQuery, UserRole, useUpdateDoctorMutation } from "../../../../generated/graphql";
 import {
-  MAPPED_SSN_TYPES, FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, UPDATE_DOCTOR, 
+  MAPPED_SSN_TYPES, FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, UPDATE_DOCTOR,
   SCHEDULE_APPOINTMENTS_TEXT, CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME,
   PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER, TAXONOMY_CODE,
   DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS, ADDRESS_2,
@@ -25,7 +26,7 @@ import {
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
   PRESCRIPTIVE_AUTH_NUMBER, AVAILABILITY_STATUS, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
   LANGUAGE_SPOKEN, SPECIALTY, SSN_TYPE, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS,
-  
+
 } from "../../../../constants";
 import { ListContext } from '../../../../context/listContext';
 
@@ -86,8 +87,8 @@ const UpdateDoctorForm: FC = () => {
           languagesSpoken && setValue('languagesSpoken', languagesSpoken)
           taxonomyCode && setValue('taxonomyCode', taxonomyCode)
           deaNumber && setValue('deaNumber', deaNumber)
-          deaActiveDate && setValue('deaActiveDate', deaActiveDate)
-          deaTermDate && setValue('deaTermDate', deaTermDate)
+          deaActiveDate && setValue('deaActiveDate', getDate(deaActiveDate))
+          deaTermDate && setValue('deaTermDate', getDate(deaTermDate))
           taxId && setValue('taxId', taxId)
           npi && setValue('npi', npi)
           upin && setValue('upin', upin)
@@ -103,8 +104,8 @@ const UpdateDoctorForm: FC = () => {
           anesthesiaLicense && setValue('anesthesiaLicense', anesthesiaLicense)
           dpsCtpNumber && setValue('dpsCtpNumber', dpsCtpNumber)
           stateLicense && setValue('stateLicense', stateLicense)
-          licenseActiveDate && setValue('licenseActiveDate', licenseActiveDate)
-          licenseTermDate && setValue('licenseTermDate', licenseTermDate)
+          licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
+          licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
           prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
 
           setDoctor(doctor)
@@ -210,12 +211,12 @@ const UpdateDoctorForm: FC = () => {
               speciality: speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
               ssnType: ssnType || SsnType.Medicare, roleType: UserRole.Doctor, adminId: userId || "",
               languagesSpoken: languagesSpoken || "", taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
-              deaActiveDate: deaActiveDate || "", deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
+              deaActiveDate: getTimestamps(deaActiveDate || "") , deaTermDate: getTimestamps(deaTermDate || ""), taxId: taxId || "", npi: npi || "",
               upin: upin || "", emcProviderId: emcProviderId || "", medicareGrpNumber: medicareGrpNumber || "",
               medicaidGrpNumber: medicaidGrpNumber || "", meammographyCertNumber: meammographyCertNumber || "",
               campusGrpNumber: campusGrpNumber || "", blueShildNumber: blueShildNumber || "", taxIdStuff: taxIdStuff || "",
               specialityLicense: specialityLicense || "", anesthesiaLicense: anesthesiaLicense || "", dpsCtpNumber: dpsCtpNumber || "",
-              stateLicense: stateLicense || "", licenseActiveDate: licenseActiveDate || "", licenseTermDate: licenseTermDate || "",
+              stateLicense: stateLicense || "", licenseActiveDate: getTimestamps(licenseActiveDate || ""), licenseTermDate: getTimestamps(licenseTermDate || ""),
               prescriptiveAuthNumber: prescriptiveAuthNumber || "",
             },
 
@@ -498,7 +499,7 @@ const UpdateDoctorForm: FC = () => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
-                      fieldType="text"
+                      fieldType="date"
                       controllerName="deaActiveDate"
                       error={deaActiveDateError}
                       controllerLabel={DEA_ACTIVE_DATE}
@@ -506,7 +507,7 @@ const UpdateDoctorForm: FC = () => {
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
-                      fieldType="text"
+                      fieldType="date"
                       controllerName="deaTermDate"
                       error={deaTermDateError}
                       controllerLabel={DEA_TERM_DATE}
@@ -518,7 +519,7 @@ const UpdateDoctorForm: FC = () => {
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
-                      controllerName="languageSpoken"
+                      controllerName="languagesSpoken"
                       error={languagesSpokenError}
                       controllerLabel={LANGUAGE_SPOKEN}
                     />
@@ -939,7 +940,7 @@ const UpdateDoctorForm: FC = () => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
-                      fieldType="text"
+                      fieldType="date"
                       controllerName="licenseActiveDate"
                       error={licenseActiveDateError}
                       controllerLabel={LICENSE_ACTIVE_DATE}
@@ -948,7 +949,7 @@ const UpdateDoctorForm: FC = () => {
 
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
-                      fieldType="text"
+                      fieldType="date"
                       controllerName="licenseTermDate"
                       error={licenseTermDateError}
                       controllerLabel={LICENSE_TERM_DATE}

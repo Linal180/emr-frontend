@@ -41,9 +41,10 @@ const Sidebar: FC = (): JSX.Element => {
 
   return (
     <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }} open={true}>
-      <Box minHeight="calc(100vh - 300px)" pt={2}>
+      <Box height="calc(100vh - 300px)" pt={2} className={classes.appMenuContainer}>
         <AppMenu />
       </Box>
+
       <Box display="flex" flexDirection="column" alignItems="flex-start" pt={15} pb={1.5} width={'inherit'}>
         <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" width={'inherit'}>
           <Box display="flex" minWidth={200} alignItems="center">

@@ -118,7 +118,7 @@ export const basicDoctorSchema = {
   taxonomyCode: yup.string().required(RequiredMessage(TAMXONOMY_CODE)),
   deaActiveDate: yup.string().required(RequiredMessage(DEA_ACTIVE_DATE)),
   emcProviderId: yup.string().required(RequiredMessage(EMC_PROVIDER_ID)),
-  languageSpoken: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
+  languagesSpoken: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
   // billingFacility: yup.string().required(RequiredMessage(BILLING_FACILITY)),
   campusGrpNumber: yup.string().required(RequiredMessage(CAMPUS_GRP_NUMBER)),
   blueShildNumber: yup.string().required(RequiredMessage(BLUE_SHIED_NUMBER)),
