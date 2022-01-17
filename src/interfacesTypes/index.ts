@@ -384,8 +384,10 @@ type DoctorControlTypes =
   | "languagesSpoken"
   | "deaNumber"
   | "deaActiveDate"
+  | "deaTermDate"
   | "taxId"
   | "upin"
+  | "npi"
   | "taxonomyCode"
   | "emcProviderId"
   | "medicareGrpNumber"
@@ -403,8 +405,8 @@ type DoctorControlTypes =
   | "prescriptiveAuthNumber"
 
 
-export interface CreateDoctorInputControlProps extends IControlLabel {
-  controllerName: DoctorControlTypes &  BillingInputTypes & ContactInputTypes
+export interface DoctorInputControlProps extends IControlLabel {
+  controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes
 }
 
 export type DoctorInputProps = CreateDoctorInput & CreateDoctorItemInput & CreateContactInput & CustomBillingAddressInputs;

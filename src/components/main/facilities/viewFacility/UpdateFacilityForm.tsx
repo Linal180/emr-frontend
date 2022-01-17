@@ -16,7 +16,7 @@ import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, us
 import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, PRACTICE_TYPE, ZIP } from "../../../../constants";
 import { ListContext } from '../../../../context/listContext';
 
-const UpdateFacilityForm: FC = () => {
+const UpdateFacilityForm: FC = (): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext)
   const { id } = useParams<ParamsType>();
   const methods = useForm<CustomUpdateFacilityInputProps>({

@@ -18,7 +18,7 @@ import {
   STATEMENT_NOTE, ID_NUMBER, GROUP_NUMBER,
 } from "../../../../constants";
 
-const AddPatientForm: FC = () => {
+const AddPatientForm: FC = (): JSX.Element => {
   const [value, setValue] = useState("one");
   const [state, setState] = useState({
     one: false,

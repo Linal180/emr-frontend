@@ -30,7 +30,7 @@ import {
 } from "../../../../constants";
 import { ListContext } from '../../../../context/listContext';
 
-const UpdateDoctorForm: FC = () => {
+const UpdateDoctorForm: FC = (): JSX.Element => {
   const classes = useFormStyles()
   const { id } = useParams<ParamsType>();
   const { user } = useContext(AuthContext)

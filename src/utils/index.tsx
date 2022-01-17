@@ -166,6 +166,6 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : ""
 };
 
-export const getDate = (date: any) => {
+export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
 };

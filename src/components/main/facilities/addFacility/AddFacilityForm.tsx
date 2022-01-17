@@ -21,7 +21,7 @@ import {
   MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, MAPPED_SERVICE_CODES
 } from "../../../../constants";
 
-const AddFacilityForm: FC = () => {
+const AddFacilityForm: FC = (): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext)
   const methods = useForm<CustomUpdateFacilityInputProps>({
     mode: "all",
