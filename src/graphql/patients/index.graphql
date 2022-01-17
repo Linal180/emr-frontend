@@ -135,3 +135,13 @@ mutation RemovePatient($removePatient: RemovePatient!){
     }
   }
 }
+
+mutation CreatePatient($createPatientInput: CreatePatientInput!){
+  createPatient(createPatientInput: $createPatientInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
