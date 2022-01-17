@@ -296,6 +296,12 @@ export type ParamsType = {
   id: string
 }
 
+export interface DatePickerProps {
+  name: string;
+  label: string;
+  error: string;
+}
+
 type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phone" | "fax" | "zipCode" | "address"
   | "address2" | "city" | "state" | "country" | "billingEmail" | "billingPhone" | "billingFax" | "billingZipCode"
   | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"

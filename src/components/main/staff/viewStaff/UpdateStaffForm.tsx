@@ -6,11 +6,13 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import DatePicker from '../../../common/DatePicker';
 import CardComponent from "../../../common/CardComponent";
 import UpdateStaffController from "./UpdateStaffController";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
+import { formatDate } from "../../../../utils";
 import { ListContext } from '../../../../context/listContext';
 import { updateStaffSchema } from '../../../../validationSchemas';
 import { MappedRoleInterface, ParamsType } from "../../../../interfacesTypes";
@@ -43,16 +45,16 @@ const UpdateStaffForm: FC = () => {
           const { roles } = user || {}
           const { role } = (roles && roles[0]) || {}
 
-          dob && setValue('dob', dob)
           email && setValue('email', email)
           phone && setValue('phone', phone)
           mobile && setValue('mobile', mobile)
           gender && setValue('gender', gender)
+          dob && setValue('dob', formatDate(dob))
           lastName && setValue('lastName', lastName)
           username && setValue('username', username)
           firstName && setValue('firstName', firstName)
-          facilityId && setValue('facilityId', facilityId)
           role && setValue('roleType', role as UserRole)
+          facilityId && setValue('facilityId', facilityId)
         }
       }
     }
@@ -240,13 +242,7 @@ const UpdateStaffForm: FC = () => {
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <UpdateStaffController
-                          fieldType="date"
-                          controllerName="dob"
-                          control={control}
-                          error={dobError}
-                          controllerLabel={DOB}
-                        />
+                        <DatePicker name="dob" label={DOB} error={dobError || ''} />
                       </Grid>
                     </Grid>
 

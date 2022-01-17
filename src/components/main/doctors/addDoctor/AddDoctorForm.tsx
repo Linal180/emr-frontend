@@ -6,6 +6,7 @@ import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem,
 // components block
 import Alert from "../../../common/Alert";
 import DoctorController from "../controllers";
+import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
@@ -323,12 +324,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                   </Grid>
 
                   <Grid item md={6}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="dob"
-                      error={dobError}
-                      controllerLabel={DOB}
-                    />
+                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
                   </Grid>
                 </Grid>
               </CardComponent>
@@ -388,20 +384,11 @@ const AddDoctorForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="deaActiveDate"
-                      error={deaActiveDateError}
-                      controllerLabel={DEA_ACTIVE_DATE}
-                    />
+                    <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE} error={deaActiveDateError || ''} />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="deaTermDate"
-                      error={deaTermDateError}
-                      controllerLabel={DEA_TERM_DATE}
-                    />
+                    <DatePicker name="deaTermDate" label={DEA_TERM_DATE} error={deaTermDateError || ''} />
                   </Grid>
                 </Grid>
 
@@ -529,7 +516,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.sunday} onChange={handleChange} name="sunday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Monday"
                           labelPlacement="start"
@@ -537,7 +524,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Wednesday"
                           labelPlacement="start"
@@ -545,7 +532,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.wednesday} onChange={handleChange} name="wednesday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Thursday"
                           labelPlacement="start"
@@ -553,7 +540,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.thursday} onChange={handleChange} name="thursday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Friday"
                           labelPlacement="start"
@@ -561,7 +548,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.friday} onChange={handleChange} name="friday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Saturday"
                           labelPlacement="start"
@@ -829,21 +816,11 @@ const AddDoctorForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="licenseActiveDate"
-                      error={licenseActiveDateError}
-                      controllerLabel={LICENSE_ACTIVE_DATE}
-                    />
+                    <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE} error={licenseActiveDateError || ''} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="licenseTermDate"
-                      error={licenseTermDateError}
-                      controllerLabel={LICENSE_TERM_DATE}
-                    />
+                    <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE} error={licenseTermDateError || ''} />
                   </Grid>
                 </Grid>
 

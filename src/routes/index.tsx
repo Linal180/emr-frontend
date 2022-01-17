@@ -23,8 +23,8 @@ import LabResults from "../pages/main/reports/labResultsListing";
 import ViewFacility from "../pages/main/facilities/viewFacility";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 import AddAppointment from "../pages/main/appointments/addAppointment";
+import AddFacilityComponent from "../pages/main/facilities/addFacility";
 import Appointments from "../pages/main/appointments/appointmentsListing";
-import AddFacilityComponent from "../components/main/facilities/addFacility"
 import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 // constants
 import { AuthContext } from "../context";
