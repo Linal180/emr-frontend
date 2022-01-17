@@ -24,8 +24,9 @@ import LabResults from "../pages/main/reports/labResultsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import AddPatient from "../pages/main/patients/addPatient";
 import AddAppointment from "../pages/main/appointments/addAppointment";
+import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 // constants
-import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, ROOT_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE } from "../constants";
+import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, ROOT_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
   return (
@@ -43,6 +44,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
+          <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
           <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />
           <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
           <PrivateRoute exact path={CLAIMS_ROUTE} component={ClaimFeed} />

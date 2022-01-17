@@ -331,6 +331,7 @@ export const DOCTORS_ROUTE = "/doctors";
 export const PATIENTS_ROUTE = "/patients";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
+export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
@@ -448,6 +449,7 @@ export const APP_MENU_ITEMS = [
       },
       {
         name: SCHEDULE_APPOINTMENTS_TEXT,
+        link: SCHEDULE_APPOINTMENTS_ROUTE
       },
     ],
   },
@@ -578,6 +580,7 @@ export const REPORTS_BREAD = { text: REPORTS_TEXT, link: '' }
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE }
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
+export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
 
 // ---------------------- DUMMY DATA --------------------
 export const dummyDoctorsList = [
