@@ -201,7 +201,7 @@ input[type="email"] {
 }
 
 .MuiPopover-paper.user-setting-menu {
-  margin-top: -35px;
+  margin: -40px 0 0 18px;
   width: 240px;
   left: 40px !important;
 }

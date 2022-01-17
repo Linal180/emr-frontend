@@ -41,23 +41,20 @@ const Sidebar: FC = (): JSX.Element => {
 
   return (
     <Drawer variant="permanent" classes={{ paper: classes.drawerPaper }} open={true}>
-      <Box height="calc(100vh - 300px)" pt={2} className={classes.appMenuContainer}>
+      <Box pt={2} className={classes.appMenuContainer}>
         <AppMenu />
       </Box>
 
-      <Box display="flex" flexDirection="column" alignItems="flex-start" pt={15} pb={1.5} width={'inherit'}>
-        <Box display="flex" flexDirection="row" justifyContent="center" alignItems="center" width={'inherit'}>
-          <Box display="flex" minWidth={200} alignItems="center">
-            <AccountCircle />
-            <Box ml={1}>Administrator</Box>
-          </Box>
-          <Box display="flex">
-            <Button aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen}>
-              <SettingIcon />
-            </Button>
-          </Box>
-          {renderMenu}
+      <Box display="flex" alignItems="center" justifyContent='space-between' pb={1.5} pl={3.375} pr={1.5}>
+        <Box display="flex" alignItems="center">
+          <AccountCircle />
+          <Box ml={1}>Administrator</Box>
         </Box>
+
+        <Button aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen}>
+          <SettingIcon />
+        </Button>
+        {renderMenu}
       </Box>
     </Drawer>
   );

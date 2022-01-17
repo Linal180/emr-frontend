@@ -10,10 +10,16 @@ export const useSidebarStyles = makeStyles(() => ({
     borderRadius: 24,
     position: 'relative',
     maxHeight: 'calc(100vh - 120px)',
-    borderRight: 'none'
+    borderRight: 'none',
+    overflowY: 'hidden'
   },
 
   appMenuContainer: {
-    overflowY: 'auto',
+    height: "calc(100% - 50px)",
+
+    "& .MuiList-root": {
+      height: '100%',
+      overflowY: "auto",
+    }
   }
 }));
