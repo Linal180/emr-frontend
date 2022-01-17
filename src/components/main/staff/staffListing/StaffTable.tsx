@@ -16,13 +16,13 @@ import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, 
 import { useTableStyles } from "../../../../styles/tableStyles";
 
 const StaffTable: FC = (): JSX.Element => {
+  const classes = useTableStyles()
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [deleteStaffId, setDeleteStaffId] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
-  const classes = useTableStyles()
   
   const [findAllStaff, { loading, error }] = useFindAllStaffLazyQuery({
     variables: {
@@ -149,7 +149,7 @@ const StaffTable: FC = (): JSX.Element => {
                 </TableCell>
               </TableRow>
             ) : (
-              staff?.map((record: StaffPayload['staff'], index: number) => {
+              staff?.map((record: StaffPayload['staff']) => {
                 const { id, firstName, lastName, email, phone, username } = record || {};
 
                 return (
@@ -178,7 +178,7 @@ const StaffTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !staff) || error || !staff?.length) && (
+        {((!loading && staff?.length === 0) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

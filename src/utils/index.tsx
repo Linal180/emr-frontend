@@ -17,7 +17,7 @@ export const handleLogout = () => {
   client.clearStore();
 };
 
-export const firstLatterUppercase = (value: string) => {
+export const upperToNormal = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
@@ -160,4 +160,12 @@ export const getPracticeType = (type: PracticeType): string => {
     default:
       return 'Hospital'
   }
+};
+
+export const getTimestamps = (date: string): string => {
+  return date ? moment(date).format().toString() : ""
+};
+
+export const getDate = (date: string) => {
+  return moment(date, "x").format("YYYY-MM-DD")
 };

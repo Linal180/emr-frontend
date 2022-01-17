@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateDoctorInput, CreateContactInput, CreateDoctorItemInput } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -301,49 +301,17 @@ export type ParamsType = {
   id: string
 }
 
-type FacilityControlTypes =
-  | "name"
-  | "practiceType"
-  | "code"
-  | "email"
-  | "phone"
-  | "fax"
-  | "zipCode"
-  | "address"
-  | "address2"
-  | "city"
-  | "state"
-  | "country"
-  | "billingEmail"
-  | "billingPhone"
-  | "billingFax"
-  | "billingZipCode"
-  | "billingAddress"
-  | "billingAddress2"
-  | "billingCity"
-  | "billingState"
-  | "billingCountry"
-  | "billingBankAccount"
-  | "cliaIdNumber"
-  | "federalTaxId"
-  | "revenueCode"
-  | "tamxonomyCode"
-  | "insurancePlanType"
-  | "mammographyCertificationNumber"
-  | "npi"
-  | "merchantId"
-  | "billingType"
-  | "stateImmunizationId"
-  | "locationId"
-  | "serviceCode"
-  | "mobile"
-  | "pager"
-  | "serviceCode"
-
+type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phone" | "fax" | "zipCode" | "address"
+  | "address2" | "city" | "state" | "country" | "billingEmail" | "billingPhone" | "billingFax" | "billingZipCode"
+  | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"
+  | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType"
+  | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
+  | "serviceCode" | "mobile" | "pager" | "serviceCode";
 
 interface CustomBillingAddressInputs {
   billingEmail: string;
   billingPhone: string;
+  billingMobile: string;
   billingFax: string;
   billingZipCode: string;
   billingAddress: string;
@@ -351,9 +319,11 @@ interface CustomBillingAddressInputs {
   billingCity: string;
   billingState: string;
   billingCountry: string;
-  billingBankAccount: string;
-
+  billingPager: string;
+  billingUserId: string;
+  billingFacility: string;
 }
+
 export interface CreateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
@@ -362,4 +332,81 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput & CustomBillingAddressInputs
+export type CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput & CustomBillingAddressInputs;
+
+type ContactInputTypes =
+  | "fax"
+  | "city"
+  | "state"
+  | "email"
+  | "pager"
+  | "phone"
+  | "mobile"
+  | "userId"
+  | "address"
+  | "zipCode"
+  | "country"
+  | "address2"
+  | "facilityId"
+
+type BillingInputTypes =
+  | "billingFax"
+  | "billingCity"
+  | "billingState"
+  | "billingEmail"
+  | "billingPager"
+  | "billingPhone"
+  | "billingUserId"
+  | "billingMobile"
+  | "billingAddress"
+  | "billingZipCode"
+  | "billingCountry"
+  | "billingAddress2"
+  | "billingFacilityId"
+
+type DoctorControlTypes =
+  | "dob"
+  | "ssn"
+  | "email"
+  | "prefix"
+  | "suffix"
+  | "adminId"
+  | "ssnType"
+  | "lastName"
+  | "password"
+  | "roleType"
+  | "firstName"
+  | "speciality"
+  | "facilityId"
+  | "middleName"
+  | "providerIntials"
+  | "degreeCredentials"
+  | "languagesSpoken"
+  | "deaNumber"
+  | "deaActiveDate"
+  | "deaTermDate"
+  | "taxId"
+  | "upin"
+  | "npi"
+  | "taxonomyCode"
+  | "emcProviderId"
+  | "medicareGrpNumber"
+  | "medicaidGrpNumber"
+  | "meammographyCertNumber"
+  | "campusGrpNumber"
+  | "blueShildNumber"
+  | "taxIdStuff"
+  | "specialityLicense"
+  | "anesthesiaLicense"
+  | "dpsCtpNumber"
+  | "stateLicense"
+  | "licenseActiveDate"
+  | "licenseTermDate"
+  | "prescriptiveAuthNumber"
+
+
+export interface DoctorInputControlProps extends IControlLabel {
+  controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes
+}
+
+export type DoctorInputProps = CreateDoctorInput & CreateDoctorItemInput & CreateContactInput & CustomBillingAddressInputs;
