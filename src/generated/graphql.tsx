@@ -89,6 +89,17 @@ export type Contact = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type ContactInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type ContactPayload = {
+  __typename?: 'ContactPayload';
+  contact?: Maybe<Contact>;
+  response?: Maybe<ResponsePayload>;
+};
+
 /** The user's contact type assigned */
 export enum ContactType {
   ChildMotherInsurance = 'CHILD_MOTHER_INSURANCE',
@@ -98,6 +109,13 @@ export enum ContactType {
   NextOfKin = 'NEXT_OF_KIN',
   Self = 'SELF'
 }
+
+export type ContactsPayload = {
+  __typename?: 'ContactsPayload';
+  contacts?: Maybe<Array<Maybe<Contact>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
 
 export type CreateBillingAddressInput = {
   address?: Maybe<Scalars['String']>;
@@ -326,6 +344,7 @@ export type Doctor = {
   email?: Maybe<Scalars['String']>;
   emcProviderId?: Maybe<Scalars['String']>;
   facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   languagesSpoken?: Maybe<Scalars['String']>;
@@ -356,6 +375,7 @@ export type Doctor = {
 };
 
 export type DoctorInput = {
+  facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
 };
 
@@ -456,6 +476,10 @@ export enum Gender {
   Other = 'OTHER'
 }
 
+export type GetContact = {
+  id: Scalars['String'];
+};
+
 export type GetDoctor = {
   id: Scalars['String'];
 };
@@ -512,6 +536,7 @@ export enum Maritialstatus {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
+  createContact: ContactPayload;
   createDoctor: DoctorPayload;
   createFacility: FacilityPayload;
   createPatient: PatientPayload;
@@ -522,6 +547,7 @@ export type Mutation = {
   forgotPassword: ForgotPasswordPayload;
   login: AccessUserPayload;
   registerUser: UserPayload;
+  removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removePatient: PatientPayload;
@@ -529,6 +555,7 @@ export type Mutation = {
   removeUser: UserPayload;
   resendVerificationEmail: UserPayload;
   resetPassword: UserPayload;
+  updateContact: ContactPayload;
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updatePassword: UserPayload;
@@ -543,6 +570,11 @@ export type Mutation = {
 
 export type MutationActivateUserArgs = {
   user: UserIdInput;
+};
+
+
+export type MutationCreateContactArgs = {
+  createContactInput: CreateContactInput;
 };
 
 
@@ -596,6 +628,11 @@ export type MutationRegisterUserArgs = {
 };
 
 
+export type MutationRemoveContactArgs = {
+  removeContact: RemoveContact;
+};
+
+
 export type MutationRemoveDoctorArgs = {
   removeDoctor: RemoveDoctor;
 };
@@ -628,6 +665,11 @@ export type MutationResendVerificationEmailArgs = {
 
 export type MutationResetPasswordArgs = {
   resetPassword: ResetPasswordInput;
+};
+
+
+export type MutationUpdateContactArgs = {
+  updateContactInput: UpdateContactInput;
 };
 
 
@@ -705,6 +747,7 @@ export type Patient = {
   employer?: Maybe<Array<Employer>>;
   ethnicity?: Maybe<Ethnicity>;
   facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   firstNameUsed?: Maybe<Scalars['String']>;
   gender: Genderidentity;
@@ -780,10 +823,12 @@ export type Query = {
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
   fetchUser: UserPayload;
+  findAllContacts: ContactsPayload;
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllPatient: PatientsPayload;
   findAllStaff: AllStaffPayload;
+  getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getFacility: FacilityPayload;
   getPatient: PatientPayload;
@@ -796,6 +841,11 @@ export type Query = {
 
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
+};
+
+
+export type QueryFindAllContactsArgs = {
+  contactInput: ContactInput;
 };
 
 
@@ -816,6 +866,11 @@ export type QueryFindAllPatientArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
+};
+
+
+export type QueryGetContactArgs = {
+  getContact: GetContact;
 };
 
 
@@ -908,6 +963,10 @@ export enum RelationshipType {
   Unknown = 'UNKNOWN',
   Ward = 'WARD'
 }
+
+export type RemoveContact = {
+  id: Scalars['String'];
+};
 
 export type RemoveDoctor = {
   id: Scalars['String'];
@@ -1027,6 +1086,7 @@ export type Staff = {
 };
 
 export type StaffInput = {
+  facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
 };
 
@@ -1429,6 +1489,13 @@ export type RemovePatientMutationVariables = Exact<{
 
 
 export type RemovePatientMutation = { __typename?: 'Mutation', removePatient: { __typename?: 'PatientPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type CreatePatientMutationVariables = Exact<{
+  createPatientInput: CreatePatientInput;
+}>;
+
+
+export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: Maybe<{ __typename?: 'ResponsePayload', error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
 
 export type FindAllStaffQueryVariables = Exact<{
   staffInput: StaffInput;
@@ -2685,6 +2752,43 @@ export function useRemovePatientMutation(baseOptions?: Apollo.MutationHookOption
 export type RemovePatientMutationHookResult = ReturnType<typeof useRemovePatientMutation>;
 export type RemovePatientMutationResult = Apollo.MutationResult<RemovePatientMutation>;
 export type RemovePatientMutationOptions = Apollo.BaseMutationOptions<RemovePatientMutation, RemovePatientMutationVariables>;
+export const CreatePatientDocument = gql`
+    mutation CreatePatient($createPatientInput: CreatePatientInput!) {
+  createPatient(createPatientInput: $createPatientInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreatePatientMutationFn = Apollo.MutationFunction<CreatePatientMutation, CreatePatientMutationVariables>;
+
+/**
+ * __useCreatePatientMutation__
+ *
+ * To run a mutation, you first call `useCreatePatientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePatientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPatientMutation, { data, loading, error }] = useCreatePatientMutation({
+ *   variables: {
+ *      createPatientInput: // value for 'createPatientInput'
+ *   },
+ * });
+ */
+export function useCreatePatientMutation(baseOptions?: Apollo.MutationHookOptions<CreatePatientMutation, CreatePatientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePatientMutation, CreatePatientMutationVariables>(CreatePatientDocument, options);
+      }
+export type CreatePatientMutationHookResult = ReturnType<typeof useCreatePatientMutation>;
+export type CreatePatientMutationResult = Apollo.MutationResult<CreatePatientMutation>;
+export type CreatePatientMutationOptions = Apollo.BaseMutationOptions<CreatePatientMutation, CreatePatientMutationVariables>;
 export const FindAllStaffDocument = gql`
     query FindAllStaff($staffInput: StaffInput!) {
   findAllStaff(staffInput: $staffInput) {
