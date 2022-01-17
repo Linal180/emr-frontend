@@ -15,6 +15,7 @@ import { addStaffSchema } from '../../../../validationSchemas';
 import { MappedRoleInterface } from "../../../../interfacesTypes";
 import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
 import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS } from "../../../../constants";
+import Selector from '../../../common/Selector';
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
@@ -167,7 +168,14 @@ const AddStaffForm: FC = () => {
                     />
                   </Grid>
                 </Grid>
-
+                
+                <Selector 
+                  name="gender"
+                  options={MAPPED_GENDER}
+                  value={Gender.Male}
+                  label={GENDER}
+                  
+                />
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <Controller
@@ -178,6 +186,7 @@ const AddStaffForm: FC = () => {
                         return (
                           <FormControl fullWidth margin='normal'>
                             <InputLabel id="gender" shrink>{GENDER}</InputLabel>
+
                             <Select
                               labelId="gender"
                               id="gender-select"

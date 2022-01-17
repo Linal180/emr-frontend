@@ -1,13 +1,13 @@
 // packages block
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { Autocomplete } from "@material-ui/lab";
-import { Box, TextField, FormControl, InputLabel, FormHelperText } from "@material-ui/core";
 import { Controller, useFormContext } from "react-hook-form";
+import { Box, TextField, FormControl, InputLabel, FormHelperText } from "@material-ui/core";
 // utils and interfaces/types block
 import { SelectorProps } from "../../interfacesTypes";
 
 const Selector: FC<SelectorProps> = ({ name, loading, label, error, options, value }): JSX.Element => {
-  const { control, setValue } = useFormContext()
+  const { control} = useFormContext()
 
   return (
     <Box>
@@ -22,7 +22,7 @@ const Selector: FC<SelectorProps> = ({ name, loading, label, error, options, val
               options={options}
               disableClearable
               loading={loading}
-              value={field.value.value}
+              // value={field.value}
               getOptionLabel={(option) => option.label || ""}
               renderOption={(option) => option.label}
               getOptionSelected={(option) => option.value === value}
@@ -33,6 +33,7 @@ const Selector: FC<SelectorProps> = ({ name, loading, label, error, options, val
                   <TextField
                     {...params}
                     error={invalid}
+                    value={value}
                     variant="outlined"
                   />
 

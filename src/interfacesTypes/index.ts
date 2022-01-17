@@ -132,11 +132,6 @@ export interface IPageHeader {
   path?: Path[];
 }
 
-export interface IMaterialStepper {
-  activeStep: number;
-  steps: string[];
-}
-
 export interface IStepperButtons {
   customActiveStep: number;
   handleNext?: () => void;
