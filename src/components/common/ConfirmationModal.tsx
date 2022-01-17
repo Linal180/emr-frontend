@@ -55,9 +55,11 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
       </Box>
 
       <DialogActions>
-        <Button onClick={handleClose} color="default">
-          {CANCEL}
-        </Button>
+        <Box pr={1}>
+          <Button onClick={handleClose} color="default">
+            {CANCEL}
+          </Button>
+        </Box>
 
         <Button onClick={onDelete} color="secondary" disabled={!checked || isLoading} variant="contained">
           {isLoading && <CircularProgress size={20} color={buttonColor} />}

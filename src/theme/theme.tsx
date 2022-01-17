@@ -215,6 +215,12 @@ export const theme = createTheme({
       label: {
         fontSize: 14,
         fontWeight: 600,
+      },
+
+      text: {
+        "& .MuiButton-label": {
+          color: GRAY_TWO
+        }
       }
     },
 
