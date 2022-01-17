@@ -1,7 +1,10 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
-import { PINK, BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN } from ".";
+import {
+  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE,
+  GRAY_SEVEN, ORANGE_ONE,
+} from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
@@ -123,7 +126,8 @@ export const theme = createTheme({
         borderBottom: `1px solid ${GRAY_SIX}`,
 
         "& h2": {
-          fontSize: 20
+          fontSize: 20,
+          color: BLACK_ONE,
         }
       }
     },
@@ -137,21 +141,66 @@ export const theme = createTheme({
 
     MuiDialogContent: {
       root: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        background: ORANGE,
-        border: `1px dashed ${ORANGE}`,
-        borderRadius: 6,
-        minHeight: 83,
-        margin: 30,
-        padding: 16
+        padding: 30,
+
+        "& > div": {
+          background: ORANGE,
+          border: `1px dashed ${ORANGE_ONE}`,
+          borderRadius: 6,
+          padding: 20,
+        },
+
+        "& h4": {
+          fontWeight: 'bold',
+          marginBottom: 2,
+        },
+
+        "& p": {
+          color: BLACK_TWO,
+          lineHeight: '22px',
+          fontWeight: 500,
+          maxWidth: '80%'
+        }
       }
     },
 
     MuiCheckbox: {
       root: {
-        color: BLUE_TWO
+        color: WHITE_THREE,
+
+        "& .MuiIconButton-label": {
+          position: 'relative',
+          marginRight: 0,
+
+          "&:before": {
+            content: `""`,
+            height: 24,
+            width: 24,
+            position: "absolute",
+            background: WHITE_THREE,
+            zIndex: 9,
+            borderRadius: 6,
+          },
+        },
+
+
+        "& .MuiSvgIcon-root": {
+          height: 32,
+          width: 32,
+          borderRadius: 6,
+        },
+
+        "&[class*=PrivateSwitchBase-checked]": {
+          "& .MuiIconButton-label": {
+            "&:before": {
+              display: 'none',
+            }
+          },
+
+          "& .MuiSvgIcon-root": {
+            color: BLUE_THREE
+          }
+        }
       }
     },
 
@@ -268,7 +317,7 @@ export const theme = createTheme({
 
     MuiCardContent: {
       root: {
-        padding: "0 27px",
+        padding: "0px 0 0 15px",
 
         "&:last-child": {
           paddingBottom: 0
@@ -368,6 +417,13 @@ export const theme = createTheme({
             alignItems: 'center',
           }
         }
+      }
+    },
+
+    MuiFormControlLabel: {
+      label: {
+        fontWeight: 500,
+        color: BLACK_ONE
       }
     }
   },

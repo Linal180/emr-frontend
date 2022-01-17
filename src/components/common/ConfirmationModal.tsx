@@ -33,9 +33,13 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
 
       <DialogContent>
         <Box display="flex">
-          <DeleteWarningIcon />
+          <Box pt={0.75}>
+            <DeleteWarningIcon />
+          </Box>
+
           <CardContent>
             <Typography component="h4" variant="h5">{DELETE_RECORD_TEXT}</Typography>
+
             <Typography>
               {DELETE_RECORD_LEARN_MORE_TEXT}
             </Typography>
@@ -45,12 +49,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
 
       <Box display="flex" ml={4} pb={2}>
         <FormControlLabel
-          control={
-            <Checkbox color="secondary"
-              checked={checked}
-              onChange={handleChange}
-            />
-          }
+          control={<Checkbox color="primary" checked={checked} onChange={handleChange} />}
           label={description}
         />
       </Box>
