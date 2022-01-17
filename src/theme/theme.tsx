@@ -1,7 +1,7 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
-import { PINK, BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE } from ".";
+import { PINK, BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN } from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
@@ -54,7 +54,8 @@ export const theme = createTheme({
     },
 
     body2: {
-      fontSize: 12
+      fontSize: 12,
+      color: BLACK_THREE
     },
   },
 
@@ -64,9 +65,16 @@ export const theme = createTheme({
         html: {
           WebkitFontSmoothing: "auto",
 
+          "& body": {
+            "& strong": {
+              fontWeight: "700 !important"
+            },
+          },
+
           "& .MuiListItem-gutters": {
             transition: '.3s all ease-in'
           },
+
 
           "& .MuiPagination-ul": {
             "& li": {
@@ -264,6 +272,101 @@ export const theme = createTheme({
 
         "&:last-child": {
           paddingBottom: 0
+        }
+      }
+    },
+
+    MuiListItemText: {
+      root: {
+        marginTop: 0,
+        marginBottom: 0,
+
+        "&.child-item": {
+          display: 'flex',
+          alignItems: 'center',
+
+          "&:before": {
+            content: `""`,
+            display: "block",
+            height: 4,
+            width: 4,
+            backgroundColor: GRAY_SEVEN,
+            borderRadius: 4,
+            marginRight: 8,
+          },
+
+          "&.active-child": {
+            "&:before": {
+              backgroundColor: BLUE_ONE,
+            }
+          }
+        },
+
+        "&.active > span": {
+          fontWeight: 'bold'
+        },
+
+        "&.active-child > span": {
+          color: BLUE_ONE
+        }
+      },
+
+      primary: {
+        fontSize: 13,
+      }
+    },
+
+    MuiAccordion: {
+      root: {
+        background: 'transparent',
+
+        "&:before": {
+          display: 'none'
+        },
+
+        "&.Mui-expanded": {
+          margin: 0,
+        }
+      }
+    },
+
+    MuiAccordionSummary: {
+      root: {
+        minHeight: 0,
+        padding: 0,
+
+        "&.Mui-expanded": {
+          minHeight: 0,
+        }
+      },
+
+      content: {
+        margin: 0,
+
+        "&.Mui-expanded": {
+          margin: 0,
+
+          "& .MuiListItemIcon-root, & .MuiTypography-root": {
+            color: BLUE_ONE,
+            fontWeight: 'bold'
+          }
+        }
+      }
+    },
+
+    MuiAccordionDetails: {
+      root: {
+        padding: 0,
+        flex: 1,
+
+        "& .MuiList-root": {
+          width: "100%",
+
+          "& .MuiListItem-root": {
+            paddingLeft: 72,
+            display: 'flex',
+            alignItems: 'center',
+          }
         }
       }
     }

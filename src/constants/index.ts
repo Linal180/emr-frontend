@@ -1,7 +1,7 @@
 // packages block
 
 // graphql and interfaces block
-import { DashboardIcon, UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
+import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import { Gender, PracticeType, ServiceCode, UserRole } from "../generated/graphql";
 import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
@@ -11,7 +11,7 @@ export const NUMBER_REGEX = /^[0-9]+$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const LONGITUDE_LATITUDE_REGEX = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}/;
-export const PASSWORD_REGEX =/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
 export const ALL_STAFF = "Staff";
@@ -36,12 +36,63 @@ export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
+export const ADDITIONAL_INFO = "Additional Info";
+export const AVAILIBITY_STATUS = "set your availability status";
+export const TAX_ID_DETAILS = "Tax ID Details";
+export const MIDDLE_INITIAL = "Middle Initial";
+export const PREFIX = "Prefix";
+export const SUFFIX = "Suffix";
+export const PROVIDER_INITIALS = "Provider Initials";
+export const CREDENTIALS = "Degree/ Credentials";
+export const SPECIALTY = "Specialty";
+export const DOB = "Date of Birth";
+export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
+export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
+export const SOCIAL_SECURITY_TYPE = "Social Security Type";
+export const TAXONOMY_CODE = "Taxonomy Code";
+export const DEA_NUMBER = "DEA Number";
+export const DEA_ACTIVE_DATE = "DEA Active date";
+export const DEA_ERM_DATE = "DEA Term Date";
+export const LANGUAGE_SPOKEN = "Language Spoken";
+export const GENDER = "Gender";
+export const EMAIL = "Email";
+export const PHONE = "Phone";
+export const FAX = "Fax";
+export const ZIP_CODE = "Zip code";
+export const ADDRESS = "Address";
+export const ADDRESS_2 = "Address 2";
+export const CITY = "City";
+export const STATE = "State"
+export const COUNTRY = "Country";
+export const PRACTICE_TYPE = "Practice Type";
+export const FEDERAL_TAX_ID = "Federal Tax ID";
+export const CHECK_PAYABLE_TO = "Check Payable To";
+export const BANK_ACCOUNT = "Bank Account";
+export const PAGER = "Pager";
+export const TAX_ID = "Tax ID";
+export const NPI = "NPI";
+export const UPIN = "UPIN";
+export const EMC_PROVIDER_ID = "EMC Provider ID";
+export const Organization_Type = "Organization Type";
+export const BILLING_FACILITY = "Billing Facility";
+export const MEDICARE_GRP_NUMBER = "Medicare GRP Number";
+export const MEDICAID_GRP_NUMBER = "Medicaid GRP Number";
+export const MAMMOGRAPHY_CERT_NUMBER = "Mammography Cert Number";
+export const CHAMPUS_GRP_NUMBER = "Champus GRP Number";
+export const BLUE_SHIED_NUMBER = "Blue Shied Number";
+export const TAX_ID_SUFF = "Tax ID Suff. / Provider Site ID";
+export const SPECIALITY_LICENSE = "Speciality License";
+export const ANESTHESIA_LICENSE = "Anesthesia License";
+export const CTP_NUMBER = "DPS / CTP Number";
+export const STATE_LICENSE = "State License";
+export const LISENCE_ACTIVE_DATE = "Lisence Active Date";
+export const LICENSE_TERM_DATE = "License Term Date";
+export const PRESCRIPTIVE_AUTH_NUMBER = "Prescriptive Auth number";
 export const FACILITY_IDS = "Facility IDs";
 export const FACILITY_TYPE = "Facility Type";
 export const MERCHANT_ID = "Merchant ID";
 export const MOBILE = "Mobile";
 export const BILLING_TYPE = "Billing Type";
-export const BANK_ACCOUNT = "Bank Account";
 export const VISIT = "Visit";
 export const TEST = "Test";
 export const TEST_TAKEN = "Test Taken";
@@ -50,13 +101,9 @@ export const REPORTS = "Reports";
 export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
-export const DOB = "Date of Birth";
 export const EMR = "EMR";
 export const LOGOUT_TEXT = "Logout";
 export const CODE = "Code";
-export const CITY = "City";
-export const STATE = "State";
-export const FAX = "Fax";
 export const TRUE = "TRUE";
 export const TEXT = "text";
 export const PLAN = "Plan";
@@ -66,14 +113,10 @@ export const ROLE = "Role";
 export const ROLES = "Roles";
 export const ERROR = "error";
 export const UNITS = "Units";
-export const EMAIL = "Email";
-export const PHONE = "Phone";
 export const PAGE_LIMIT = 8;
-export const SPECIALTY = "Specialty";
 export const INSURANCE = "Insurance";
 export const LAST_APPOINTMENT = "Last Appointment";
 export const RESET = "Reset";
-export const GENDER = "Gender";
 export const REASON = "Reason";
 export const BILLED = "Billed";
 export const EMR_TEXT = "EMR";
@@ -99,19 +142,12 @@ export const COMMENTS = "Comments";
 export const PASSWORD = "password";
 export const ACTIVATE = "Activate";
 export const ZIP = "Zip";
-export const ZIP_CODE = "Zip code";
 export const VERIFIED = "Verified";
-export const ADDRESS = "Address";
 export const CLIA_ID_NUMBER = "CLIA ID Number";
-export const COUNTRY = "Country";
 export const FACILITY = "Facility";
 export const FACILITY_ID = "Facility ID";
-export const FEDERAL_TAX_ID = "Federal Tax ID";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
-export const NPI = "NPI";
-export const PAGER = "Pager";
-export const PRACTICE_TYPE = "Practice Type";
 export const REVENUE_CODE = "Revenue Code";
 export const SERVICE_CODE = "Service Code";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
@@ -121,7 +157,6 @@ export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
 export const CANCEL = "Cancel";
 export const LAST_NAME = "Last name";
-export const ADDRESS_2 = "Address 2";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
 export const DOCTORS_TEXT = "Doctors";
@@ -146,6 +181,7 @@ export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const DELETE_STAFF = "Delete Staff";
+export const DELETE_PATIENT = "Delete Staff";
 export const DELETE_RECORD = "Delete Record";
 export const DELETE_FACILITY = "Delete Facility";
 export const LOCATIONS_TEXT = "Locations";
@@ -204,6 +240,47 @@ export const CONFLICT_EXCEPTION = "Conflict Exception";
 export const FACILITIES_LISTING = "Facilities Listing";
 export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 export const CONTACT_INFORMATION = "Contact information";
+export const DEMOGRAPHICS = "Demographics";
+export const GUARANTOR = "Guarantor";
+export const REGISTRATION_DATES = "Provider/ Registration Dates";
+export const PRIVACY = "Privacy";
+export const EMERGENCY_CONTACT = "Emergency Contact";
+export const NEXT_OF_KIN = "Next Of Kin";
+export const EMPLOYMENT = "Employment";
+export const INSURANCE_POLICY_INFO = "Insurance Policy Info";
+export const GUARDIAN = "Guardian";
+export const POLICY_HOLDER = "Policy Holder";
+export const ELIGIBILITY = "Eligibility";
+export const MIDDLE_NAME = "Middle Name";
+export const FIRST_NAME_USED = "First Name Used";
+export const PREFERRED_NAME = "Preferred Name";
+export const PREVIOUS_FIRST_NAME = "Previous First Name";
+export const PREVIOUS_LAST_NAME = "Previous Last Name";
+export const MOTHERS_MAIDEN_NAME = "Mothers Maiden Name";
+export const LEGAL_SEX = "Legal Sex";
+export const ADDRESS_CTA = "Address (CTA)";
+export const EMPLOYER = "Employer";
+export const REGISTRATION_DATE = "Registration Date";
+export const DECREASED_DATE = "Deceased Date";
+export const NOTICE_ON_FILE = "Notices on file";
+export const CONSENT_TO_CALL = "Consent To call";
+export const MEDICATION_HISTORY_AUTHORITY = "Medication History Authority";
+export const PATIENT_NOTES = "Patient Notes";
+export const HOME_PHONE = "Home Phone";
+export const MOBILE_PHONE = "Mobile Phone";
+export const EMPLOYER_NAME = "Employer Name";
+export const EMPLOYER_PHONE = "Employer Phone";
+export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
+export const USUAL_INDUSTRY = "Usual Industry";
+export const STATEMENT_DELIVERED_ONLINE = "Statement delivered online only";
+export const STATEMENT_NOTE = "Statement note";
+export const ID_NUMBER = "ID Number";
+export const GROUP_NUMBER = "Policy / Group number";
+export const ISSUE_DATE = "Issue Date";
+export const EXPIRATION_DATE = "Expiration Date";
+export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
+export const NOTES = "Notes";
+export const POLICY_HOLDER_ID = "Policy holder ID";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
 export const FORBIDDEN_EXCEPTION = "Forbidden Exception";
 export const INDIVIDUAL_NAME = "Individual Name / Trust";
@@ -227,6 +304,7 @@ export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
+export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
@@ -305,6 +383,7 @@ export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const CANT_DELETE_STAFF = "This staff can't be deleted.";
+export const CANT_DELETE_PATIENT = "This patient can't be deleted.";
 export const CANT_DELETE_FACILITY = "This facility can't be deleted.";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const USER_EXIST = "User already exists with this email.";
@@ -333,18 +412,11 @@ export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verifi
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 
 export const APP_MENU_ITEMS = [
-
-  {
-    name: DASHBOARD_TEXT,
-    link: DASHBOARD_ROUTE,
-    Icon: DashboardIcon,
-    items: [],
-    index: 1
-  },
   {
     name: MANAGEMENT_TEXT,
     items: [],
-    index: 2
+    index: 2,
+    sectionName: true
   },
   {
     name: USERS_TEXT,
@@ -383,6 +455,7 @@ export const APP_MENU_ITEMS = [
     name: CLINICAL_TEXT,
     items: [],
     index: 5,
+    sectionName: true
   },
   {
     name: FACILITIES_TEXT,
@@ -491,7 +564,9 @@ export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUT
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
+export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
+export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
 export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }
