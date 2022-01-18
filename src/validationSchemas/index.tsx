@@ -12,7 +12,12 @@ import {
   REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE, DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, PRESCRIPTIVE_AUTH_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE,
 } from "../constants";
 
-const roleTypeSchema = { roleType: yup.string().required(RequiredMessage(ROLE)) }
+const roleTypeSchema = {
+  roleType: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(ROLE))
+}
 const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
 const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
 
@@ -61,7 +66,10 @@ export const billingAddressSchema = {
 const staffBasicSchema = {
   ...roleTypeSchema,
   dob: yup.string().required(RequiredMessage(DOB)),
-  gender: yup.string().required(RequiredMessage(GENDER)),
+  gender: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(GENDER)),
   username: yup.string().required(RequiredMessage(PROVIDER)),
   facilityId: yup.object().shape({
     name: yup.string().required(),

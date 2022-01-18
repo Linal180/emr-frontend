@@ -290,8 +290,8 @@ export interface DatePickerProps {
 type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
   | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
 
-export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId"> & { facilityId: SelectorOption };
-export type ExtendedUpdateStaffInputProps = Omit<UpdateStaffInput, "facilityId"> & { facilityId: SelectorOption };
+export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
+export type ExtendedUpdateStaffInputProps = Omit<UpdateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
 export interface AddStaffInputControlProps extends IControlLabel {
   control: Control<ExtendedStaffInputProps, object>;
@@ -324,7 +324,7 @@ type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phon
   | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"
   | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType"
   | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
-  | "serviceCode" | "mobile" | "pager" | "serviceCode";
+  | "serviceCode" | "mobile" | "pager";
 
 export interface CreateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
@@ -334,7 +334,7 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput & CustomBillingAddressInputs;
+export type CustomFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
 
 type ContactInputTypes =
   | "fax"
@@ -411,4 +411,4 @@ export interface DoctorInputControlProps extends IControlLabel {
   controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes
 }
 
-export type DoctorInputProps = CreateDoctorInput & CreateDoctorItemInput & CreateContactInput & CustomBillingAddressInputs;
+export type DoctorInputProps = CreateDoctorInput & Omit<CreateDoctorItemInput, "facilityId"> & CreateContactInput & CustomBillingAddressInputs;

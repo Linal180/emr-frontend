@@ -202,5 +202,9 @@ export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
     }
   }
 
-  return data
+  return data;
 }
+
+export const setRecord = (id: string, name: string): SelectorOption => {
+  return { id, name };
+};

@@ -23,7 +23,7 @@ const Selector: FC<SelectorProps> = ({ name, label, error, options, value }): JS
             value={field.value}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
-            getOptionSelected={(option, value) => option.id === value.id}
+            // getOptionSelected={(option, value) => option.id === value.id}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(error)}>
                 <InputLabel id={`${name}-autocomplete`} shrink>{label}</InputLabel>
