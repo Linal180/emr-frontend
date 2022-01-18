@@ -99,8 +99,14 @@ export const facilitySchema = yup.object({
   name: yup.string().required(RequiredMessage(NAME)),
   code: yup.string().required(RequiredMessage(CODE)),
   revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE)),
-  serviceCode: yup.string().required(RequiredMessage(SERVICE_CODE)),
-  practiceType: yup.string().required(RequiredMessage(PRACTICE_TYPE)),
+  serviceCode: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(SERVICE_CODE)),
+  practiceType: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(PRACTICE_TYPE)),
   cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER)),
   federalTaxId: yup.string().required(RequiredMessage(FEDERAL_TAX_ID)),
   tamxonomyCode: yup.string().required(RequiredMessage(TAMXONOMY_CODE)),
