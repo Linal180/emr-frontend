@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateDoctorInput, CreateContactInput, CreateDoctorItemInput } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -266,12 +266,6 @@ export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
   items?: AppMenuItemProps[];
 };
 
-
-export interface MappedRoleInterface {
-  value: UserRole;
-  label: string;
-}
-
 export interface MappedGenderInterface {
   value: Gender;
   label: string;
@@ -406,9 +400,8 @@ type DoctorControlTypes =
   | "licenseTermDate"
   | "prescriptiveAuthNumber"
 
-
 export interface DoctorInputControlProps extends IControlLabel {
   controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes
 }
 
-export type DoctorInputProps = CreateDoctorInput & Omit<CreateDoctorItemInput, "facilityId"> & CreateContactInput & CustomBillingAddressInputs;
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };

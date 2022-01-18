@@ -1,9 +1,7 @@
-// packages block
-
 // graphql and interfaces block
+import { MappedGenderInterface, SelectorOption } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import { Gender, PracticeType, ServiceCode, Speciality, SsnType, UserRole } from "../generated/graphql";
-import { MappedGenderInterface, MappedRoleInterface, SelectorOption } from '../interfacesTypes'
 
 
 // regex
@@ -505,32 +503,24 @@ export const APP_MENU_ITEMS = [
   },
 ];
 
-export const MAPPED_ROLES_1: SelectorOption[] = [
+export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Admin, name: 'Admin' },
   { id: UserRole.Nurse, name: "Nurse" },
   { id: UserRole.Staff, name: "Staff" },
   { id: UserRole.Billing, name: 'Billing' },
 ];
 
-export const MAPPED_ROLES: MappedRoleInterface[] = [
-  { value: UserRole.Admin, label: 'Admin' },
-  { value: UserRole.Nurse, label: "Nurse" },
-  { value: UserRole.Staff, label: "Staff" },
-  { value: UserRole.Billing, label: 'Billing' },
-];
-
-export const MAPPED_GENDER_1: SelectorOption[] = [
+export const MAPPED_GENDER: SelectorOption[] = [
   { id: Gender.Male, name: 'Male' },
   { id: Gender.Female, name: 'Female' },
   { id: Gender.Other, name: 'Other' },
 ]
 
-export const MAPPED_GENDER: MappedGenderInterface[] = [
+export const MAPPED_GENDER_1: MappedGenderInterface[] = [
   { value: Gender.Male, label: 'Male' },
   { value: Gender.Female, label: 'Female' },
   { value: Gender.Other, label: 'Other' },
 ]
-
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Hospital, name: 'Hospital' },
   { id: PracticeType.Clinic, name: 'Clinic' },
@@ -581,19 +571,19 @@ export const MAPPED_SERVICE_CODES: SelectorOption[] = [
   { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: MAPPED_SERVICE_CODE.COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62 }
 ];
 
-export const MAPPED_SPECIALTIES = [
-  { value: Speciality.Neurology, label: "Neurology" },
-  { value: Speciality.Pharmacist, label: "Pharmacist" },
-  { value: Speciality.Gastroenterology, label: "Gastroenterology" },
-  { value: Speciality.PediatricDentist, label: "PediatricDentist" },
-  { value: Speciality.PhysicianAssistant, label: "PhysicianAssistant" },
+export const MAPPED_SPECIALTIES: SelectorOption[] = [
+  { id: Speciality.Neurology, name: "Neurology" },
+  { id: Speciality.Pharmacist, name: "Pharmacist" },
+  { id: Speciality.Gastroenterology, name: "Gastroenterology" },
+  { id: Speciality.PediatricDentist, name: "PediatricDentist" },
+  { id: Speciality.PhysicianAssistant, name: "PhysicianAssistant" },
 ];
 
-export const MAPPED_SSN_TYPES = [
-  { value: SsnType.Tanf, label: "Tanf" },
-  { value: SsnType.Oasdi, label: "Oasdi" },
-  { value: SsnType.Medicare, label: "Medicare" },
-  { value: SsnType.Medicaid, label: "Medicaid" },
+export const MAPPED_SSN_TYPES: SelectorOption[] = [
+  { id: SsnType.Tanf, name: "Tanf" },
+  { id: SsnType.Oasdi, name: "Oasdi" },
+  { id: SsnType.Medicare, name: "Medicare" },
+  { id: SsnType.Medicaid, name: "Medicaid" },
 ];
 
 // Breadcrumb links

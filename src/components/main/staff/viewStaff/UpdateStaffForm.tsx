@@ -18,7 +18,7 @@ import { updateStaffSchema } from '../../../../validationSchemas';
 import { renderFacilities, formatDate, setRecord } from "../../../../utils";
 import { ParamsType, ExtendedUpdateStaffInputProps } from "../../../../interfacesTypes";
 import { Gender, useGetStaffLazyQuery, useUpdateStaffMutation } from "../../../../generated/graphql";
-import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES_1, MAPPED_GENDER_1 } from "../../../../constants";
+import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER } from "../../../../constants";
 
 const UpdateStaffForm: FC = () => {
   const { id } = useParams<ParamsType>();
@@ -153,12 +153,12 @@ const UpdateStaffForm: FC = () => {
                       </Grid>
 
                       <Grid item md={6}>
-                      <Selector
+                        <Selector
                           value={{ id: "", name: "" }}
                           label={ROLE}
                           name="roleType"
                           error={roleError}
-                          options={MAPPED_ROLES_1}
+                          options={MAPPED_ROLES}
                         />
                       </Grid>
                     </Grid>
@@ -187,12 +187,12 @@ const UpdateStaffForm: FC = () => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                      <Selector
+                        <Selector
                           value={{ id: "", name: "" }}
                           label={GENDER}
                           name="gender"
                           error={genderError}
-                          options={MAPPED_GENDER_1}
+                          options={MAPPED_GENDER}
                         />
                       </Grid>
 

@@ -170,7 +170,7 @@ export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
 };
 
-export const formatDate = (date: Date | string) => {
+export const formatDate = (date: Date | string): string => {
   var d = new Date(date),
     month = "" + (d.getMonth() + 1),
     day = "" + d.getDate(),

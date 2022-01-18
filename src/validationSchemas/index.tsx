@@ -118,10 +118,19 @@ export const basicDoctorSchema = {
   taxId: yup.string().required(RequiredMessage(TAX_ID)),
   prefix: yup.string().required(RequiredMessage(PREFIX)),
   suffix: yup.string().required(RequiredMessage(SUFFIX)),
-  ssnType: yup.string().required(RequiredMessage(SSN_TYPE)),
-  facilityId: yup.string().required(RequiredMessage(FACILITY)),
+  ssnType: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(SSN_TYPE)),
+  facilityId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(FACILITY)),
   deaNumber: yup.string().required(RequiredMessage(DEA_NUMBER)),
-  speciality: yup.string().required(RequiredMessage(SPECIALTY)),
+  speciality: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(SPECIALTY)),
   dpsCtpNumber: yup.string().required(RequiredMessage(CTP_NUMBER)),
   taxIdStuff: yup.string().required(RequiredMessage(TAX_ID_STUFF)),
   deaTermDate: yup.string().required(RequiredMessage(DEA_TERM_DATE)),
