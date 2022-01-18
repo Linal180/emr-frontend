@@ -195,7 +195,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
-                  <Grid item md={6}>
+                  <Grid item md={6} sm={12} xs={12}>
                     <Controller
                       name="facilityId"
                       defaultValue={facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : ""}

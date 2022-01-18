@@ -150,6 +150,10 @@ export const theme = createTheme({
           padding: 20,
         },
 
+        "& .MuiCardContent-root": {
+          padding: '0 0 0 15px'
+        },
+
         "& h4": {
           fontWeight: 'bold',
           marginBottom: 2,
@@ -323,7 +327,7 @@ export const theme = createTheme({
 
     MuiCardContent: {
       root: {
-        padding: "0px 0 0 15px",
+        padding: "0px 30px",
 
         "&:last-child": {
           paddingBottom: 0
