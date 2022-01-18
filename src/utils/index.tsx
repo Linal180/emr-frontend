@@ -7,8 +7,8 @@ import { Typography, Box, Chip, TableCell, Grid, colors } from "@material-ui/cor
 import client from "../apollo";
 import history from "../history";
 import { TOKEN, USER_EMAIL } from "../constants";
-import { TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType } from "../generated/graphql"
+import { SelectorOption, TableAlignType } from "../interfacesTypes";
+import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload } from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -177,7 +177,7 @@ export const formatDate = (date: Date | string) => {
     year = d.getFullYear();
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
-  
+
   return [year, month, day].join("-");
 }
 
@@ -187,4 +187,20 @@ export const deleteRecordTitle = (recordType: string) => {
 
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!facilities) {
+    for (let facility of facilities) {
+      if (facility) {
+        const { id, name } = facility;
+
+        data.push({ id, name })
+      }
+    }
+  }
+
+  return data
 }

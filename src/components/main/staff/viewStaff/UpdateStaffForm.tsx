@@ -6,23 +6,24 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
 import CardComponent from "../../../common/CardComponent";
 import UpdateStaffController from "./UpdateStaffController";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { formatDate } from "../../../../utils";
 import { ListContext } from '../../../../context/listContext';
+import { renderFacilities, formatDate } from "../../../../utils";
 import { updateStaffSchema } from '../../../../validationSchemas';
-import { MappedRoleInterface, ParamsType } from "../../../../interfacesTypes";
-import { CreateStaffInput, UserRole, Gender, useGetStaffLazyQuery, useUpdateStaffMutation, UpdateStaffInput } from "../../../../generated/graphql";
+import { MappedRoleInterface, ParamsType, ExtendedUpdateStaffInputProps } from "../../../../interfacesTypes";
+import { UserRole, Gender, useGetStaffLazyQuery, useUpdateStaffMutation } from "../../../../generated/graphql";
 import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, MAPPED_GENDER, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, MAPPED_ROLES, PROVIDER } from "../../../../constants";
 
 const UpdateStaffForm: FC = () => {
   const { id } = useParams<ParamsType>();
   const { facilityList } = useContext(ListContext)
-  const methods = useForm<UpdateStaffInput>({
+  const methods = useForm<ExtendedUpdateStaffInputProps>({
     mode: "all",
     resolver: yupResolver(updateStaffSchema)
   });
@@ -54,7 +55,15 @@ const UpdateStaffForm: FC = () => {
           username && setValue('username', username)
           firstName && setValue('firstName', firstName)
           role && setValue('roleType', role as UserRole)
-          facilityId && setValue('facilityId', facilityId)
+
+          if (facilityList && facilityList.length) {
+            const selectedFacility = facilityList?.find(facility => facility && (facility.id === facilityId))
+            const { name } = selectedFacility || {};
+
+            facilityId && setValue('facilityId', { id: facilityId, name: name || '' })
+          } else {
+            facilityId && setValue('facilityId', { id: facilityId, name: "" })
+          }
         }
       }
     }
@@ -95,12 +104,14 @@ const UpdateStaffForm: FC = () => {
     }
   }, [getStaff, id])
 
-  const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, email, phone, mobile, dob, gender, facilityId }) => {
+  const onSubmit: SubmitHandler<ExtendedUpdateStaffInputProps> = async ({ firstName, lastName, email, phone, mobile, dob, gender, facilityId }) => {
     if (id) {
+      const { id: facilityID } = facilityId
+
       await updateStaff({
         variables: {
           updateStaffInput: {
-            id, firstName, lastName, email, phone, mobile, dob, gender, facilityId
+            id, firstName, lastName, email, phone, mobile, dob, gender, facilityId: facilityID
           }
         }
       })
@@ -132,31 +143,12 @@ const UpdateStaffForm: FC = () => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6}>
-                        <Controller
+                        <Selector
+                          value={{ id: "", name: "" }}
+                          label={FACILITY}
                           name="facilityId"
-                          defaultValue={""}
-                          control={control}
-                          render={({ field }) => {
-                            return (
-                              <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
-                                <InputLabel id="facilityId" shrink>{FACILITY}</InputLabel>
-                                <Select
-                                  labelId="facilityId"
-                                  id="facility-id"
-                                  variant="outlined"
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                >
-                                  {facilityList?.map((facility) => {
-                                    const { id, name } = facility || {};
-
-                                    return <MenuItem key={id} value={id}>{name}</MenuItem>;
-                                  })}
-                                </Select>
-                                <FormHelperText>{facilityError && facilityError}</FormHelperText>
-                              </FormControl>
-                            )
-                          }}
+                          error={facilityError}
+                          options={renderFacilities(facilityList)}
                         />
                       </Grid>
 

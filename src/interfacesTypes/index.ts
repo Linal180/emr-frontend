@@ -197,18 +197,17 @@ export interface IDetailCellProps {
   description: string
 }
 
-interface SelectorOptionType {
-  value: string;
-  label: string
+export interface SelectorOption {
+  id: string
+  name: string
 }
 
 export interface SelectorProps {
   name: string
   label: string
-  loading?: boolean
-  options: SelectorOptionType[]
-  value?: any
-  error?: string | undefined
+  error?: string
+  value?: SelectorOption
+  options: SelectorOption[]
 }
 
 export type notificationType = { url: string, type: string, message: string, channelName: string }
@@ -267,20 +266,6 @@ export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
   items?: AppMenuItemProps[];
 };
 
-type AddStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
-  | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
-
-type UpdateStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "phone" | "mobile" | "dob" | "gender" | "facilityId";
-
-export interface AddStaffInputControlProps extends IControlLabel {
-  control: Control<CreateStaffInput, object>;
-  controllerName: AddStaffControlTypes;
-}
-
-export interface UpdateStaffInputControlProps extends IControlLabel {
-  control: Control<UpdateStaffInput, object>;
-  controllerName: UpdateStaffControlTypes;
-}
 
 export interface MappedRoleInterface {
   value: UserRole;
@@ -302,12 +287,21 @@ export interface DatePickerProps {
   error: string;
 }
 
-type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phone" | "fax" | "zipCode" | "address"
-  | "address2" | "city" | "state" | "country" | "billingEmail" | "billingPhone" | "billingFax" | "billingZipCode"
-  | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"
-  | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType"
-  | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
-  | "serviceCode" | "mobile" | "pager" | "serviceCode";
+type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
+  | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
+
+export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId"> & { facilityId: SelectorOption };
+export type ExtendedUpdateStaffInputProps = Omit<UpdateStaffInput, "facilityId"> & { facilityId: SelectorOption };
+
+export interface AddStaffInputControlProps extends IControlLabel {
+  control: Control<ExtendedStaffInputProps, object>;
+  controllerName: StaffControlTypes;
+}
+
+export interface UpdateStaffInputControlProps extends IControlLabel {
+  control: Control<ExtendedUpdateStaffInputProps, object>;
+  controllerName: StaffControlTypes;
+}
 
 interface CustomBillingAddressInputs {
   billingEmail: string;
@@ -324,6 +318,13 @@ interface CustomBillingAddressInputs {
   billingUserId: string;
   billingFacility: string;
 }
+
+type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phone" | "fax" | "zipCode" | "address"
+  | "address2" | "city" | "state" | "country" | "billingEmail" | "billingPhone" | "billingFax" | "billingZipCode"
+  | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"
+  | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType"
+  | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
+  | "serviceCode" | "mobile" | "pager" | "serviceCode";
 
 export interface CreateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;

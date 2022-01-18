@@ -5,22 +5,24 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
 import AddStaffController from "./AddStaffController";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
+import { renderFacilities } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { addStaffSchema } from '../../../../validationSchemas';
-import { MappedRoleInterface } from "../../../../interfacesTypes";
-import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
+import { MappedRoleInterface, ExtendedStaffInputProps } from "../../../../interfacesTypes";
+import { Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
 import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
-  const methods = useForm<CreateStaffInput>({
+  const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(addStaffSchema)
   });
@@ -50,16 +52,20 @@ const AddStaffForm: FC = () => {
   });
 
   useEffect(() => {
-    setValue("facilityId", facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : "")
+    if (facilityList && facilityList[0]) {
+      const { id, name } = facilityList[0];
+      setValue("facilityId", { id, name })
+    }
   }, [facilityList, setValue]);
 
-  const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, password, email, phone, mobile, roleType, dob, gender, facilityId }) => {
+  const onSubmit: SubmitHandler<ExtendedStaffInputProps> = async ({ firstName, lastName, username, password, email, phone, mobile, roleType, dob, gender, facilityId }) => {
     if (user) {
       const { id } = user
+      const { id: facilityID } = facilityId
       await createStaff({
         variables: {
           createStaffInput: {
-            firstName, lastName, email, password, phone, mobile, roleType, dob, gender, facilityId, adminId: id, username
+            firstName, lastName, email, password, phone, mobile, roleType, dob, gender, facilityId: facilityID, adminId: id, username
           }
         }
       })
@@ -87,7 +93,7 @@ const AddStaffForm: FC = () => {
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
                   <Grid item md={6}>
-                    <Controller
+                    {/* <Controller
                       name="facilityId"
                       defaultValue={facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : ""}
                       control={control}
@@ -112,6 +118,14 @@ const AddStaffForm: FC = () => {
                           </FormControl>
                         )
                       }}
+                    /> */}
+
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={FACILITY}
+                      name="facilityId"
+                      error={facilityError}
+                      options={renderFacilities(facilityList)}
                     />
                   </Grid>
 
