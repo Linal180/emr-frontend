@@ -2,8 +2,8 @@
 
 // graphql and interfaces block
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Gender, PracticeType, ServiceCode, Speciality, SsnType, UserRole } from "../generated/graphql";
-import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
+import { Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole } from "../generated/graphql";
+import { MappedEthnicityInterface, MappedGenderidentityInterface, MappedGenderInterface, MappedHomeboundInterface, MappedMaritialstatusInterface, MappedPrimaryDepartmentInterface, MappedPronounsInterface, MappedRaceInterface, MappedRegDepartmentInterface, MappedRelationshipTypeInterface, MappedRoleInterface, MappedSexualorientationInterface } from '../interfacesTypes'
 
 
 // regex
@@ -49,12 +49,15 @@ export const PROVIDER_INITIALS = "Provider Initials";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SPECIALTY = "Specialty";
 export const DOB = "Date of Birth";
+export const DESEASED_DATE = "deseased Date";
+export const DOCTOR_ID = "doctor id";
+export const PATIENT_ID = "patient id";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const TAXONOMY_CODE = "Taxonomy Code";
 export const DEA_NUMBER = "DEA Number";
-export const DEA_ACTIVE_DATE = "DEA Active date";
+export const DEA_ACTIVE_DATE = "DEA Active Date";
 export const DEA_TERM_DATE = "DEA Term Date";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
@@ -160,12 +163,12 @@ export const POS = "Place of Service Code (POS)";
 export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
 export const CANCEL = "Cancel";
-export const LAST_NAME = "Last name";
+export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
 export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
-export const FIRST_NAME = "First name";
+export const FIRST_NAME = "First Name";
 export const SEND_EMAIL = "Send Email";
 export const START_DATE = "Start date";
 export const REQUESTS_TEXT = "Requests";
@@ -272,6 +275,20 @@ export const PATIENT_NOTES = "Patient Notes";
 export const HOME_PHONE = "Home Phone";
 export const MOBILE_PHONE = "Mobile Phone";
 export const EMPLOYER_NAME = "Employer Name";
+export const ETHNICITY = "Ethnicity";
+export const GENDER_IDENTITY = "Gender Identity";
+export const HOLD_STATEMENT = "Hold Statement";
+export const HOMEBOUND = "HomeBound";
+export const LANGUAGE = "Language";
+export const REGISTRATION_DEPARTMENT = "Registration Department"
+export const PRIMARY_DEPARTMENT = "Primary Department"
+export const MARITIAL_STATUS = "Maritial Status"
+export const SEX_AT_BIRTH = "Sex At Birth"
+export const SEXUAL_ORIENTATION = "Sexual Orientation"
+export const USUAL_PROVIDER_ID = "Usual Provider"
+export const PRONOUS = "pronouns"
+export const RACE = "Race"
+export const RELATIONSHIP = "RelationShip"
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -381,6 +398,7 @@ export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const STAFF_CREATED = "Staff created successfully!";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const DOCTOR_CREATED = "Doctor created successfully!";
+export const PATIENT_CREATED = "Patient created successfully!";
 export const FACILITY_UPDATED = "Facility updated successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
@@ -515,6 +533,101 @@ export const MAPPED_GENDER: MappedGenderInterface[] = [
   { value: Gender.Male, label: 'Male' },
   { value: Gender.Female, label: 'Female' },
   { value: Gender.Other, label: 'Other' },
+]
+
+export const MAPPED_GENDER_IDENTITY: MappedGenderidentityInterface[] = [
+  { value: Genderidentity.Male, label: 'Male' },
+  { value: Genderidentity.Female, label: 'Female' },
+  { value: Genderidentity.None, label: 'None' },
+  { value: Genderidentity.NotExclusive, label: 'Not Exclusive' },
+  { value: Genderidentity.TransgenderFemale, label: 'Transgender Female' },
+  { value: Genderidentity.TransgenderMale, label: 'Transgender Male' },
+
+]
+
+export const MAPPED_MARITIAL_STATUS: MappedMaritialstatusInterface[] = [
+  { value: Maritialstatus.Divorced, label: 'Divorced' },
+  { value: Maritialstatus.Maried, label: 'Maried' },
+  { value: Maritialstatus.Separated, label: 'Separated' },
+  { value: Maritialstatus.Single, label: 'Single' },
+  { value: Maritialstatus.Widowed, label: 'Widowed' },
+]
+
+export const MAPPED_RACE: MappedRaceInterface[] = [
+  { value: Race.AmericanIndianAlaskaNative, label: 'American Indian Alaska Native' },
+  { value: Race.Asian, label: 'Asian' },
+  { value: Race.BlackAfricanAmerican, label: 'Black African American' },
+  { value: Race.NativeHawaiianPacificIslander, label: 'Native Hawaiian Pacific Islander' },
+  { value: Race.Other, label: 'Other' },
+  { value: Race.White, label: 'White' },
+
+]
+
+export const MAPPED_ETHNICITY: MappedEthnicityInterface[] = [
+  { value: Ethnicity.CenteralAmerican, label: 'Centeral American' },
+  { value: Ethnicity.CenteralAmericanIndian, label: 'Centeral American Indian' },
+  { value: Ethnicity.None, label: 'None' },
+]
+
+export const MAPPED_PRONOUS: MappedPronounsInterface[] = [
+  { value: Pronouns.He, label: 'He' },
+  { value: Pronouns.None, label: 'None' },
+  { value: Pronouns.She, label: 'She' },
+]
+
+export const MAPPED_SEXUALORIENTATION: MappedSexualorientationInterface[] = [
+  { value: Sexualorientation.Bisexual, label: 'Bisexual' },
+  { value: Sexualorientation.DontKnow, label: 'DontKnow' },
+  { value: Sexualorientation.Heterosexual, label: 'Heterosexual' },
+  { value: Sexualorientation.Homosexual, label: 'Homosexual' },
+  { value: Sexualorientation.None, label: 'None' },
+]
+
+export const MAPPED_HOMEBOUND: MappedHomeboundInterface[] = [
+  { value: Homebound.No, label: 'No' },
+  { value: Homebound.Yes, label: 'Yes' },
+]
+
+export const MAPPED_PRIMARY_DEPARTMENT: MappedPrimaryDepartmentInterface[] = [
+  { value: PrimaryDepartment.Clinic, label: 'Clinic' },
+  { value: PrimaryDepartment.Hospital, label: 'Hospital' },
+  { value: PrimaryDepartment.Lab, label: 'Lab' },
+]
+
+export const MAPPED_REG_DEPARTMENT: MappedRegDepartmentInterface[] = [
+  { value: RegDepartment.Clinic, label: 'Clinic' },
+  { value: RegDepartment.Hospital, label: 'Hospital' },
+  { value: RegDepartment.Lab, label: 'Lab' },
+]
+
+export const MAPPED_RELATIONSHIPTYPE: MappedRelationshipTypeInterface[] = [
+  { value: RelationshipType.Employee, label: 'Employee' },
+  { value: RelationshipType.CadaverDonor, label: 'Cadaver Donor' },
+  { value: RelationshipType.Child, label: 'Child' },
+  { value: RelationshipType.ChildFatherInsurance, label: 'Child Father Insurance' },
+  { value: RelationshipType.ChildMotherInsurance, label: 'Child Mother Insurance' },
+  { value: RelationshipType.DependentOfMinorDependent, label: 'Dependent Of Minor Dependent' },
+  { value: RelationshipType.EmancipatedMinor, label: 'Emancipated Minor' },
+  { value: RelationshipType.Father, label: 'Father' },
+  { value: RelationshipType.FostherChild, label: 'Fosther Child' },
+  { value: RelationshipType.Grandchild, label: 'Grandchild' },
+  { value: RelationshipType.Grandparent, label: 'Grandparent' },
+  { value: RelationshipType.HandicappedDependent, label: 'Handicapped Dependent' },
+  { value: RelationshipType.InjuredPlaintiiff, label: 'Injured Plaintiiff' },
+  { value: RelationshipType.LifePartner, label: 'Life Partner' },
+  { value: RelationshipType.Mother, label: 'Mother' },
+  { value: RelationshipType.NephewNiece, label: 'Nephew Niece' },
+  { value: RelationshipType.OrganDonor, label: 'Organ Donor' },
+  { value: RelationshipType.Other, label: 'Other' },
+  { value: RelationshipType.Self, label: 'Self' },
+  { value: RelationshipType.SignificantOther, label: 'Significant Other' },
+  { value: RelationshipType.SponsoredDependent, label: 'Sponsored Dependent' },
+  { value: RelationshipType.Spouse, label: 'Spouse' },
+  { value: RelationshipType.StepsonStepdaughter, label: 'Stepson Stepdaughter' },
+  { value: RelationshipType.StepsonStepdaughterStepfatherInsrtance, label: 'Stepson Stepdaughter Stepfather Insrtance' },
+  { value: RelationshipType.StepsonStepdaughterStepmotherInsrtance, label: 'Stepson Stepdaughter Stepmother Insrtance' },
+  { value: RelationshipType.Unknown, label: 'Unknown' },
+  { value: RelationshipType.Ward, label: 'Ward' },
 ]
 
 export const MAPPED_PRACTICE_TYPES = [

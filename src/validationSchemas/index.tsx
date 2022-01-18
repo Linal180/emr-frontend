@@ -9,7 +9,7 @@ import {
   MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX, PASSWORD, PASSWORDS_MUST_MATCH,
   PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE,
   PROVIDER, MIDDLE_NAME,
-  REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE, DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, PRESCRIPTIVE_AUTH_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE,
+  REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE, DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, PRESCRIPTIVE_AUTH_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, DESEASED_DATE, EMPLOYER_NAME, FIRST_NAME_USED, ETHNICITY, HOMEBOUND, LANGUAGE, MOTHERS_MAIDEN_NAME, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PRIMARY_DEPARTMENT, PRONOUS, RACE, REGISTRATION_DATES, REGISTRATION_DEPARTMENT, RELATIONSHIP, SEX_AT_BIRTH, SEXUAL_ORIENTATION, USUAL_PROVIDER_ID, MARITIAL_STATUS, USUAL_OCCUPATION, USUAL_INDUSTRY, PREVIOUS_LAST_NAME, DECREASED_DATE, REGISTRATION_DATE,
 } from "../constants";
 
 const roleTypeSchema = { roleType: yup.string().required(RequiredMessage(ROLE)) }
@@ -141,5 +141,85 @@ export const doctorSchema = yup.object({
   ...basicDoctorSchema,
   ...contactSchema,
   ...billingAddressSchema,
+})
 
+export const PatientSchema = {
+  patientFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
+  patientMiddleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
+  patientLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
+  patientPrefferedName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
+  patientPreviousFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(PREVIOUS_FIRST_NAME)).min(3, MinLength(PREVIOUS_FIRST_NAME, 3)).max(26, MaxLength(PREVIOUS_FIRST_NAME, 26)).required(RequiredMessage(PREVIOUS_FIRST_NAME)),
+  patientMotherMaidenName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MOTHERS_MAIDEN_NAME)).min(3, MinLength(MOTHERS_MAIDEN_NAME, 3)).max(26, MaxLength(MOTHERS_MAIDEN_NAME, 26)).required(RequiredMessage(MOTHERS_MAIDEN_NAME)),
+  patientPreviouslastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(PREVIOUS_LAST_NAME)).min(3, MinLength(PREVIOUS_LAST_NAME, 3)).max(26, MaxLength(PREVIOUS_LAST_NAME, 26)).required(RequiredMessage(PREVIOUS_LAST_NAME)),
+  patientDob: yup.string().required(RequiredMessage(DOB)),
+  patientLanguage: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
+  patientSexAtBirth: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
+  patientRegistrationDate: yup.string().required(RequiredMessage(REGISTRATION_DATE)),
+  patientDeseasedDate: yup.string().required(RequiredMessage(DECREASED_DATE)),
+  patientSuffix: yup.string().required(RequiredMessage(SUFFIX)),
+  patientSsn: yup.string().required(RequiredMessage(SSN)),
+};
+
+export const basicPatientSchema = {
+  basicPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+  basicMobile: yup.string().matches(NUMBER_REGEX, ValidMessage(MOBILE_NUMBER)).min(8, MinLength(MOBILE_NUMBER, 8)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
+  basicAddress: yup.string().required(RequiredMessage(ADDRESS)),
+  basicAddress2: yup.string().required(RequiredMessage(ADDRESS_2)),
+  basicZipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
+  basicCity: yup.string().required(RequiredMessage(CITY)),
+  basicCountry: yup.string().required(RequiredMessage(COUNTRY)),
+  basicState: yup.string().required(RequiredMessage(STATE)),
+};
+
+export const emergencyPatientSchema = {
+  employerUsualOccupation: yup.string().required(RequiredMessage(USUAL_OCCUPATION)),
+  employerIndustry: yup.string().required(RequiredMessage(USUAL_INDUSTRY)),
+  emergencyName: yup.string().required(RequiredMessage(NAME)),
+  emergencyPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+};
+
+export const kinPatientSchema = {
+  kinName: yup.string().required(RequiredMessage(NAME)),
+  kinPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+};
+
+export const guardianPatientSchema = {
+  guardianFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
+  guardianMiddleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
+  guardianLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
+  guardianSuffix: yup.string().required(RequiredMessage(SUFFIX)),
+};
+
+export const guarantorPatientSchema = {
+  guarantorFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
+  guarantorMiddleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
+  guarantorLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
+  guarantorEmail: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)),
+  guarantorRelationship: yup.string().required(RequiredMessage(RELATIONSHIP)),
+  guarantorPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+  guarantorSuffix: yup.string().required(RequiredMessage(SUFFIX)),
+  guarantorSsn: yup.string().required(RequiredMessage(SSN)),
+  guarantorAddress: yup.string().required(RequiredMessage(ADDRESS)),
+  guarantorAddress2: yup.string().required(RequiredMessage(ADDRESS_2)),
+  guarantorZipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
+  guarantorCity: yup.string().required(RequiredMessage(CITY)),
+  guarantorCountry: yup.string().required(RequiredMessage(COUNTRY)),
+  guarantorEmployerName: yup.string().required(RequiredMessage(EMPLOYER_NAME)),
+};
+
+export const employerPatientSchema = {
+  employerName: yup.string().required(RequiredMessage(NAME)),
+  employerPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+  employerIndustry: yup.string().required(RequiredMessage(USUAL_INDUSTRY)),
+  employerUsualOccupation: yup.string().required(RequiredMessage(USUAL_OCCUPATION)),
+};
+
+export const patientsSchema = yup.object({
+  ...PatientSchema,
+  ...basicPatientSchema,
+  ...employerPatientSchema,
+  ...guarantorPatientSchema,
+  ...guardianPatientSchema,
+  ...kinPatientSchema,
+  ...emergencyPatientSchema
 })

@@ -529,7 +529,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.sunday} onChange={handleChange} name="sunday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Monday"
                           labelPlacement="start"
@@ -537,7 +537,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Wednesday"
                           labelPlacement="start"
@@ -545,7 +545,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.wednesday} onChange={handleChange} name="wednesday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Thursday"
                           labelPlacement="start"
@@ -553,7 +553,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.thursday} onChange={handleChange} name="thursday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Friday"
                           labelPlacement="start"
@@ -561,7 +561,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                           control={<Switch checked={values.friday} onChange={handleChange} name="friday" color='primary' />}
                         />
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                        
+
                         <FormControlLabel
                           label="Saturday"
                           labelPlacement="start"
