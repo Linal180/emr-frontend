@@ -5,6 +5,7 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import DatePicker from '../../../common/DatePicker';
 import AddStaffController from "./AddStaffController";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
@@ -55,7 +56,6 @@ const AddStaffForm: FC = () => {
   const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, password, email, phone, mobile, roleType, dob, gender, facilityId }) => {
     if (user) {
       const { id } = user
-
       await createStaff({
         variables: {
           createStaffInput: {
@@ -178,6 +178,7 @@ const AddStaffForm: FC = () => {
                         return (
                           <FormControl fullWidth margin='normal'>
                             <InputLabel id="gender" shrink>{GENDER}</InputLabel>
+
                             <Select
                               labelId="gender"
                               id="gender-select"
@@ -197,14 +198,9 @@ const AddStaffForm: FC = () => {
                     />
                   </Grid>
 
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="date"
-                      controllerName="dob"
-                      control={control}
-                      error={dobError}
-                      controllerLabel={DOB}
-                    />
+                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
                   </Grid>
                 </Grid>
 

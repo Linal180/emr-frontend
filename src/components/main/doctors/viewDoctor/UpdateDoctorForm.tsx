@@ -7,10 +7,11 @@ import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem,
 // components block
 import Alert from "../../../common/Alert";
 import DoctorController from "../controllers";
+import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { getDate, getTimestamps } from "../../../../utils";
+import { formatDate, getDate, getTimestamps } from "../../../../utils";
 import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
 import { useFormStyles } from '../../../../styles/formsStyles';
@@ -73,7 +74,7 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
 
           const { id: facilityId } = facility || {}
 
-          dob && setValue('dob', dob)
+          dob && setValue('dob', formatDate(dob))
           ssn && setValue('ssn', ssn)
           prefix && setValue('prefix', prefix)
           suffix && setValue('suffix', suffix)
@@ -87,8 +88,8 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
           languagesSpoken && setValue('languagesSpoken', languagesSpoken)
           taxonomyCode && setValue('taxonomyCode', taxonomyCode)
           deaNumber && setValue('deaNumber', deaNumber)
-          deaActiveDate && setValue('deaActiveDate', getDate(deaActiveDate))
-          deaTermDate && setValue('deaTermDate', getDate(deaTermDate))
+          deaActiveDate && setValue('deaActiveDate', formatDate(getDate(deaActiveDate)))
+          deaTermDate && setValue('deaTermDate', formatDate(getDate(deaTermDate)))
           taxId && setValue('taxId', taxId)
           npi && setValue('npi', npi)
           upin && setValue('upin', upin)
@@ -104,8 +105,8 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
           anesthesiaLicense && setValue('anesthesiaLicense', anesthesiaLicense)
           dpsCtpNumber && setValue('dpsCtpNumber', dpsCtpNumber)
           stateLicense && setValue('stateLicense', stateLicense)
-          licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
-          licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
+          licenseActiveDate && setValue('licenseActiveDate', formatDate(getDate(licenseActiveDate)))
+          licenseTermDate && setValue('licenseTermDate', formatDate(getDate(licenseTermDate)))
           prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
 
           setDoctor(doctor)
@@ -211,7 +212,7 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
               speciality: speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
               ssnType: ssnType || SsnType.Medicare, roleType: UserRole.Doctor, adminId: userId || "",
               languagesSpoken: languagesSpoken || "", taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
-              deaActiveDate: getTimestamps(deaActiveDate || "") , deaTermDate: getTimestamps(deaTermDate || ""), taxId: taxId || "", npi: npi || "",
+              deaActiveDate: getTimestamps(deaActiveDate || ""), deaTermDate: getTimestamps(deaTermDate || ""), taxId: taxId || "", npi: npi || "",
               upin: upin || "", emcProviderId: emcProviderId || "", medicareGrpNumber: medicareGrpNumber || "",
               medicaidGrpNumber: medicaidGrpNumber || "", meammographyCertNumber: meammographyCertNumber || "",
               campusGrpNumber: campusGrpNumber || "", blueShildNumber: blueShildNumber || "", taxIdStuff: taxIdStuff || "",
@@ -433,12 +434,7 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
                   </Grid>
 
                   <Grid item md={6}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="dob"
-                      error={dobError}
-                      controllerLabel={DOB}
-                    />
+                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
                   </Grid>
                 </Grid>
               </CardComponent>
@@ -498,20 +494,11 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="deaActiveDate"
-                      error={deaActiveDateError}
-                      controllerLabel={DEA_ACTIVE_DATE}
-                    />
+                    <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE} error={deaActiveDateError || ''} />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="deaTermDate"
-                      error={deaTermDateError}
-                      controllerLabel={DEA_TERM_DATE}
-                    />
+                    <DatePicker name="deaTermDate" label={DEA_TERM_DATE} error={deaTermDateError || ''} />
                   </Grid>
                 </Grid>
 
@@ -939,21 +926,11 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="licenseActiveDate"
-                      error={licenseActiveDateError}
-                      controllerLabel={LICENSE_ACTIVE_DATE}
-                    />
+                    <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE} error={licenseActiveDateError || ''} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="date"
-                      controllerName="licenseTermDate"
-                      error={licenseTermDateError}
-                      controllerLabel={LICENSE_TERM_DATE}
-                    />
+                    <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE} error={licenseTermDateError || ''} />
                   </Grid>
                 </Grid>
 

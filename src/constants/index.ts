@@ -261,6 +261,7 @@ export const PREVIOUS_FIRST_NAME = "Previous First Name";
 export const PREVIOUS_LAST_NAME = "Previous Last Name";
 export const MOTHERS_MAIDEN_NAME = "Mothers Maiden Name";
 export const LEGAL_SEX = "Legal Sex";
+export const VALID_DATE_REQUIRED = "Valid date is required";
 export const ADDRESS_CTA = "Address (CTA)";
 export const EMPLOYER = "Employer";
 export const REGISTRATION_DATE = "Registration Date";

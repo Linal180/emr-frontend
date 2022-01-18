@@ -3,25 +3,25 @@ import { FC, ChangeEvent, useState, useEffect } from "react";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
-import TableLoader from "../../../common/TableLoader";
 import Alert from "../../../common/Alert";
+import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION } from "../../../../constants";
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
+import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const classes = useTableStyles()
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [deletePatientId, setDeletePatientId] = useState<string>("");
   const [patients, setPatients] = useState<PatientsPayload['patients']>([]);
-  const classes = useTableStyles()
 
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
     variables: {
@@ -175,7 +175,7 @@ const PatientsTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !patients) || error || !patients?.length) && (
+        {((!loading && !patients?.length) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>
