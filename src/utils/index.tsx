@@ -180,3 +180,11 @@ export const formatDate = (date: Date | string) => {
   
   return [year, month, day].join("-");
 }
+
+export const deleteRecordTitle = (recordType: string) => {
+  return `Delete ${recordType} Record`;
+}
+
+export const aboutToDelete = (recordType: string) => {
+  return `You are about to delete ${recordType.toLowerCase()} record`;
+}

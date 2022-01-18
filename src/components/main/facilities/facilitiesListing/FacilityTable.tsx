@@ -9,12 +9,12 @@ import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION } from "../../../../constants";
+import { ListContext } from "../../../../context/listContext";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import { ListContext } from "../../../../context/listContext";
+import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
+import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -199,7 +199,7 @@ const FacilityTable: FC = (): JSX.Element => {
           )}
 
           <ConfirmationModal
-            title={DELETE_FACILITY}
+            title={FACILITY}
             isOpen={openDelete}
             isLoading={deleteFacilityLoading}
             description={DELETE_FACILITY_DESCRIPTION}
