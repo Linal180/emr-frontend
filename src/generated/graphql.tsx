@@ -63,6 +63,7 @@ export type Contact = {
   address?: Maybe<Scalars['String']>;
   address2?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   contactType?: Maybe<ContactType>;
   country?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
@@ -70,6 +71,7 @@ export type Contact = {
   email?: Maybe<Scalars['String']>;
   employerName?: Maybe<Scalars['String']>;
   facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -140,6 +142,7 @@ export type CreateContactInput = {
   address?: Maybe<Scalars['String']>;
   address2?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   contactType?: Maybe<ContactType>;
   country?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
@@ -300,6 +303,14 @@ export type CreatePatientItemInput = {
   usualProviderId?: Maybe<Scalars['String']>;
 };
 
+export type CreateServiceInput = {
+  duration: Scalars['String'];
+  facilityId: Scalars['String'];
+  isActive?: Maybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  price: Scalars['String'];
+};
+
 export type CreateStaffInput = {
   adminId?: Maybe<Scalars['String']>;
   dob?: Maybe<Scalars['String']>;
@@ -433,6 +444,7 @@ export type Facility = {
   practiceType: PracticeType;
   revenueCode?: Maybe<Scalars['String']>;
   serviceCode: ServiceCode;
+  services?: Maybe<Array<Service>>;
   staff?: Maybe<Array<Staff>>;
   tamxonomyCode?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
@@ -492,6 +504,10 @@ export type GetPatient = {
   id: Scalars['String'];
 };
 
+export type GetService = {
+  id: Scalars['String'];
+};
+
 export type GetStaff = {
   id: Scalars['String'];
 };
@@ -540,6 +556,7 @@ export type Mutation = {
   createDoctor: DoctorPayload;
   createFacility: FacilityPayload;
   createPatient: PatientPayload;
+  createService: ServicePayload;
   createStaff: StaffPayload;
   deactivateUser: UserPayload;
   disableDoctor: DoctorPayload;
@@ -551,6 +568,7 @@ export type Mutation = {
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removePatient: PatientPayload;
+  removeService: ServicePayload;
   removeStaff: StaffPayload;
   removeUser: UserPayload;
   resendVerificationEmail: UserPayload;
@@ -562,6 +580,7 @@ export type Mutation = {
   updatePatient: PatientPayload;
   updatePatientProvider: PatientPayload;
   updateRole: UserPayload;
+  updateService: ServicePayload;
   updateStaff: StaffPayload;
   updateUser: UserPayload;
   verifyEmail: UserPayload;
@@ -590,6 +609,11 @@ export type MutationCreateFacilityArgs = {
 
 export type MutationCreatePatientArgs = {
   createPatientInput: CreatePatientInput;
+};
+
+
+export type MutationCreateServiceArgs = {
+  createServiceInput: CreateServiceInput;
 };
 
 
@@ -648,6 +672,11 @@ export type MutationRemovePatientArgs = {
 };
 
 
+export type MutationRemoveServiceArgs = {
+  removeService: RemoveService;
+};
+
+
 export type MutationRemoveStaffArgs = {
   removeStaff: RemoveStaff;
 };
@@ -700,6 +729,11 @@ export type MutationUpdatePatientProviderArgs = {
 
 export type MutationUpdateRoleArgs = {
   user: UpdateRoleInput;
+};
+
+
+export type MutationUpdateServiceArgs = {
+  updateServiceInput: UpdateServiceInput;
 };
 
 
@@ -827,11 +861,13 @@ export type Query = {
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllPatient: PatientsPayload;
+  findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getFacility: FacilityPayload;
   getPatient: PatientPayload;
+  getService: ServicePayload;
   getStaff: StaffPayload;
   getUser: UserPayload;
   me: UserPayload;
@@ -864,6 +900,11 @@ export type QueryFindAllPatientArgs = {
 };
 
 
+export type QueryFindAllServicesArgs = {
+  serviceInput: ServiceInput;
+};
+
+
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
 };
@@ -886,6 +927,11 @@ export type QueryGetFacilityArgs = {
 
 export type QueryGetPatientArgs = {
   getPatient: GetPatient;
+};
+
+
+export type QueryGetServiceArgs = {
+  getService: GetService;
 };
 
 
@@ -980,6 +1026,10 @@ export type RemovePatient = {
   id: Scalars['String'];
 };
 
+export type RemoveService = {
+  id: Scalars['String'];
+};
+
 export type RemoveStaff = {
   id: Scalars['String'];
 };
@@ -1024,6 +1074,19 @@ export enum Sexualorientation {
   None = 'NONE'
 }
 
+export type Service = {
+  __typename?: 'Service';
+  createdAt?: Maybe<Scalars['String']>;
+  duration: Scalars['String'];
+  facility?: Maybe<Facility>;
+  facilityId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isActive?: Maybe<Scalars['Boolean']>;
+  name: Scalars['String'];
+  price: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 /** The facility service code type assigned */
 export enum ServiceCode {
   Ambulance_24 = 'AMBULANCE_24',
@@ -1046,6 +1109,24 @@ export enum ServiceCode {
   IndianHealthServiceFreeStandingFacility_05 = 'INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05',
   IndianHealthServiceProviderBasedFacility_06 = 'INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06'
 }
+
+export type ServiceInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type ServicePayload = {
+  __typename?: 'ServicePayload';
+  response?: Maybe<ResponsePayload>;
+  service?: Maybe<Service>;
+};
+
+export type ServicesPayload = {
+  __typename?: 'ServicesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  services?: Maybe<Array<Maybe<Service>>>;
+};
 
 /** The doctor's speciality */
 export enum Speciality {
@@ -1120,6 +1201,7 @@ export type UpdateContactInput = {
   address?: Maybe<Scalars['String']>;
   address2?: Maybe<Scalars['String']>;
   city?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
   contactType?: Maybe<ContactType>;
   country?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
@@ -1298,6 +1380,15 @@ export type UpdatePatientProvider = {
 export type UpdateRoleInput = {
   id: Scalars['String'];
   roles: Array<UserRole>;
+};
+
+export type UpdateServiceInput = {
+  duration?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isActive?: Maybe<Scalars['Boolean']>;
+  name?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['String']>;
 };
 
 export type UpdateStaffInput = {

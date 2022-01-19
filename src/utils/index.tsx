@@ -7,8 +7,8 @@ import { Typography, Box, Chip, TableCell, Grid, colors } from "@material-ui/cor
 import client from "../apollo";
 import history from "../history";
 import { TOKEN, USER_EMAIL } from "../constants";
-import { TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType } from "../generated/graphql"
+import { SelectorOption, TableAlignType } from "../interfacesTypes";
+import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload } from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -168,4 +168,32 @@ export const getTimestamps = (date: string): string => {
 
 export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
+};
+
+export const deleteRecordTitle = (recordType: string) => {
+  return `Delete ${recordType} Record`;
+}
+
+export const aboutToDelete = (recordType: string) => {
+  return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!facilities) {
+    for (let facility of facilities) {
+      if (facility) {
+        const { id, name } = facility;
+
+        data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const setRecord = (id: string, name: string): SelectorOption => {
+  return { id, name };
 };

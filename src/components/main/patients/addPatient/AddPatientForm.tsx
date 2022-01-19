@@ -1223,7 +1223,6 @@ const AddPatientForm: FC = (): JSX.Element => {
               </CardComponent>
             </Grid>
           </Grid>
-
         </Box>
 
         <Box display="flex" justifyContent="flex-end" pt={2}>

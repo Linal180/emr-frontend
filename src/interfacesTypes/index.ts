@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, UserRole, CreateStaffInput, Gender, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateDoctorInput, CreateContactInput, CreateDoctorItemInput, CreatePatientInput, CreatePatientItemInput, Race, Ethnicity, Sexualorientation, Pronouns, Homebound, RelationshipType, RegDepartment, PrimaryDepartment, Maritialstatus, CreateEmployerInput, RegisterUserInput, Genderidentity } from "../generated/graphql";
+import { UserRole, UpdateContactInput, FacilitiesPayload, CreateDoctorInput, CreateContactInput, CreateDoctorItemInput, CreatePatientInput, CreatePatientItemInput, Race, Ethnicity, Sexualorientation, Pronouns, Homebound, RelationshipType, RegDepartment, PrimaryDepartment, Maritialstatus, CreateEmployerInput, RegisterUserInput, Genderidentity, LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateFacilityItemInput, Gender } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -132,11 +132,6 @@ export interface IPageHeader {
   path?: Path[];
 }
 
-export interface IMaterialStepper {
-  activeStep: number;
-  steps: string[];
-}
-
 export interface IStepperButtons {
   customActiveStep: number;
   handleNext?: () => void;
@@ -202,18 +197,17 @@ export interface IDetailCellProps {
   description: string
 }
 
-interface SelectorOptionType {
-  value: string;
-  label: string
+export interface SelectorOption {
+  id: string
+  name: string
 }
 
 export interface SelectorProps {
   name: string
   label: string
-  loading?: boolean
-  options: SelectorOptionType[]
-  value?: any
-  error?: string | undefined
+  error?: string
+  value?: SelectorOption
+  options: SelectorOption[]
 }
 
 export type notificationType = { url: string, type: string, message: string, channelName: string }
@@ -272,30 +266,19 @@ export type AppMenuItemProps = AppMenuItemPropsWithoutItems & {
   items?: AppMenuItemProps[];
 };
 
-type AddStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
-  | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
-
-type UpdateStaffControlTypes = "firstName" | "lastName" | "email" | "username" | "phone" | "mobile" | "dob" | "gender" | "facilityId";
-
-export interface AddStaffInputControlProps extends IControlLabel {
-  control: Control<CreateStaffInput, object>;
-  controllerName: AddStaffControlTypes;
-}
-
-export interface UpdateStaffInputControlProps extends IControlLabel {
-  control: Control<UpdateStaffInput, object>;
-  controllerName: UpdateStaffControlTypes;
-}
-
-export interface MappedRoleInterface {
-  value: UserRole;
-  label: string;
-}
-
 export interface MappedGenderInterface {
   value: Gender;
   label: string;
 }
+
+export interface DatePickerProps {
+  name: string;
+  label: string;
+  error: string;
+}
+
+type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
+  | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
 
 export interface MappedGenderidentityInterface {
   value: Genderidentity;
@@ -350,12 +333,18 @@ export type ParamsType = {
   id: string
 }
 
-type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phone" | "fax" | "zipCode" | "address"
-  | "address2" | "city" | "state" | "country" | "billingEmail" | "billingPhone" | "billingFax" | "billingZipCode"
-  | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"
-  | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType"
-  | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
-  | "serviceCode" | "mobile" | "pager" | "serviceCode";
+export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
+export type ExtendedUpdateStaffInputProps = Omit<UpdateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
+
+export interface AddStaffInputControlProps extends IControlLabel {
+  control: Control<ExtendedStaffInputProps, object>;
+  controllerName: StaffControlTypes;
+}
+
+export interface UpdateStaffInputControlProps extends IControlLabel {
+  control: Control<ExtendedUpdateStaffInputProps, object>;
+  controllerName: StaffControlTypes;
+}
 
 interface CustomBillingAddressInputs {
   billingEmail: string;
@@ -373,6 +362,13 @@ interface CustomBillingAddressInputs {
   billingFacility: string;
 }
 
+type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phone" | "fax" | "zipCode" | "address"
+  | "address2" | "city" | "state" | "country" | "billingEmail" | "billingPhone" | "billingFax" | "billingZipCode"
+  | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"
+  | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType"
+  | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
+  | "serviceCode" | "mobile" | "pager";
+
 export interface CreateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
@@ -381,7 +377,7 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type CustomUpdateFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & UpdateFacilityItemInput & CustomBillingAddressInputs;
+export type CustomFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
 
 type ContactInputTypes =
   | "fax"
@@ -452,8 +448,6 @@ type DoctorControlTypes =
   | "licenseActiveDate"
   | "licenseTermDate"
   | "prescriptiveAuthNumber"
-
-
 
 export interface DoctorInputControlProps extends IControlLabel {
   controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes

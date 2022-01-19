@@ -1,29 +1,30 @@
 // packages block
 import { FC, useContext } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Selector from '../../../common/Selector';
 import CardComponent from "../../../common/CardComponent";
 import AddFacilityController from "./AddFacilityController";
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { facilitySchema } from '../../../../validationSchemas';
 import { ListContext } from '../../../../context/listContext';
-import { CustomUpdateFacilityInputProps } from '../../../../interfacesTypes';
+import { CustomFacilityInputProps } from '../../../../interfacesTypes';
 import { PracticeType, ServiceCode, useCreateFacilityMutation } from "../../../../generated/graphql";
 import {
   CITY, CLIA_ID_NUMBER, CODE, COUNTRY, FACILITY_IDS, CREATE_FACILITY, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION,
   INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE,
   FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, FEDERAL_TAX_ID,
-  MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, MAPPED_SERVICE_CODES
+  MAMMOGRAPHY_CERTIFICATION_NUMBER, MAPPED_SERVICE_CODES
 } from "../../../../constants";
 
 const AddFacilityForm: FC = (): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext)
-  const methods = useForm<CustomUpdateFacilityInputProps>({
+  const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
     resolver: yupResolver(facilitySchema)
   });
@@ -54,22 +55,37 @@ const AddFacilityForm: FC = (): JSX.Element => {
     }
   });
 
-  const onSubmit: SubmitHandler<CustomUpdateFacilityInputProps> = async (inputs) => {
+  const onSubmit: SubmitHandler<CustomFacilityInputProps> = async (inputs) => {
     const {
       name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
       revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode, address, address2,
       zipCode,
     } = inputs;
 
+    const { id: selectedPracticeType } = practiceType;
+    const { id: selectedServiceCode } = serviceCode;
+
     await createFacility({
       variables: {
         createFacilityInput: {
           createFacilityItemInput: {
-            name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '', practiceType: practiceType || PracticeType.Hospital, serviceCode: serviceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
+            name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
+            insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
+            tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '',
+            practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital, serviceCode:
+              selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
           },
 
-          createContactInput: { phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || '' },
-          createBillingAddressInput: { phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || '' },
+          createContactInput: {
+            phone: phone || '', email: email || '', fax: fax || '', city: city || '',
+            state: state || '', country: country || '', zipCode: zipCode || '', address: address || '',
+            address2: address2 || ''
+          },
+          createBillingAddressInput: {
+            phone: phone || '', email: email || '', fax: fax || '', city: city || '',
+            state: state || '', country: country || '', zipCode: zipCode || '', address: address || '',
+            address2: address2 || ''
+          },
         }
       }
     })
@@ -120,28 +136,12 @@ const AddFacilityForm: FC = (): JSX.Element => {
                   error={nameError}
                 />
 
-                <Controller
+                <Selector
+                  value={{ id: "", name: "" }}
+                  label={PRACTICE_TYPE}
                   name="practiceType"
-                  defaultValue={PracticeType.Hospital}
-                  render={({ field }) => (
-                    <FormControl fullWidth margin='normal' error={Boolean(practiceTypeError)}>
-                      <InputLabel id="practiceType" shrink>{PRACTICE_TYPE}</InputLabel>
-                      <Select
-                        labelId="practiceType"
-                        id="practiceType-id"
-                        variant="outlined"
-                        value={field.value}
-                        onChange={field.onChange}
-                      >
-                        {MAPPED_PRACTICE_TYPES.map((type, index: number) => {
-                          const { label, value } = type;
-
-                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                        })}
-                      </Select>
-                      <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
-                    </FormControl>
-                  )}
+                  error={practiceTypeError}
+                  options={MAPPED_PRACTICE_TYPES}
                 />
 
                 <AddFacilityController
@@ -222,29 +222,12 @@ const AddFacilityForm: FC = (): JSX.Element => {
                   </Grid>
                 </Grid>
 
-                <Controller
+                <Selector
+                  value={{ id: "", name: "" }}
+                  label={PRACTICE_TYPE}
                   name="serviceCode"
-                  defaultValue={ServiceCode.Ambulance_24}
-                  render={({ field }) => (
-                    <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
-                      <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
-                      <Select
-                        labelId="serviceCode"
-                        id="serviceCode-id"
-                        variant="outlined"
-                        value={field.value}
-                        onChange={field.onChange}
-                      >
-                        {MAPPED_SERVICE_CODES.map((code, index: number) => {
-                          const { label, value } = code;
-
-                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                        })}
-                      </Select>
-
-                      <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
-                    </FormControl>
-                  )}
+                  error={serviceCodeError}
+                  options={MAPPED_SERVICE_CODES}
                 />
               </CardComponent>
             </Grid>

@@ -13,7 +13,7 @@ import { renderTh, upperToNormal } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_RECORD, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE, CANT_DELETE_DOCTOR } from "../../../../constants";
+import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE, CANT_DELETE_DOCTOR, DOCTOR } from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -201,7 +201,7 @@ const DoctorsTable: FC = (): JSX.Element => {
         )}
 
         <ConfirmationModal
-          title={DELETE_RECORD}
+          title={DOCTOR}
           isOpen={openDelete}
           isLoading={deleteDoctorLoading}
           description={DELETE_DOCTOR_DESCRIPTION}

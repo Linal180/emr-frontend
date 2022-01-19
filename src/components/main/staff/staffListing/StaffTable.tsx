@@ -12,7 +12,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon, TablesSearchIcon } from '../../../../assets/svgs'
 import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
+import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF, STAFF_TEXT } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 
 const StaffTable: FC = (): JSX.Element => {
@@ -196,7 +196,7 @@ const StaffTable: FC = (): JSX.Element => {
         )}
 
         <ConfirmationModal
-          title={DELETE_STAFF}
+          title={STAFF_TEXT}
           isOpen={openDelete}
           isLoading={deleteStaffLoading}
           description={DELETE_STAFF_DESCRIPTION}

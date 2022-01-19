@@ -9,7 +9,7 @@ export const useSidebarStyles = makeStyles(() => ({
     width: DRAWER_WIDTH,
     borderRadius: 24,
     position: 'relative',
-    maxHeight: 'calc(100vh - 120px)',
+    height: 'calc(100vh - 120px)',
     borderRight: 'none',
     overflowY: 'hidden'
   },
