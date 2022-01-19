@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { UserRole, UpdateContactInput, FacilitiesPayload, CreateDoctorInput, CreateContactInput, CreateDoctorItemInput, CreatePatientInput, CreatePatientItemInput, Race, Ethnicity, Sexualorientation, Pronouns, Homebound, RelationshipType, RegDepartment, PrimaryDepartment, Maritialstatus, CreateEmployerInput, RegisterUserInput, Genderidentity, LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateFacilityItemInput, Gender } from "../generated/graphql";
+import { UserRole, UpdateContactInput, FacilitiesPayload, CreateDoctorInput, CreateContactInput, CreateDoctorItemInput, CreatePatientInput, CreatePatientItemInput, Race, Ethnicity, Sexualorientation, Pronouns, Homebound, RelationshipType, RegDepartment, PrimaryDepartment, Maritialstatus, CreateEmployerInput, RegisterUserInput, Genderidentity, LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateFacilityItemInput, Gender, AllDoctorPayload } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -34,6 +34,9 @@ export interface ListContextInterface {
   facilityList: FacilitiesPayload['facility'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
+  doctorList: AllDoctorPayload['doctors'];
+  setDoctorList: Function;
+  fetchAllDoctorList: Function;
 }
 
 export interface Children {
@@ -453,9 +456,9 @@ export interface DoctorInputControlProps extends IControlLabel {
   controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes
 }
 
-export type DoctorInputProps = CreateDoctorInput & CreateDoctorItemInput & CreateContactInput & CustomBillingAddressInputs;
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
 
-type PatientControlTypes =
+  type PatientControlTypes =
   | "patientSuffix"
   | "patientFirstName"
   | "patientMiddleName"
@@ -472,9 +475,9 @@ type PatientControlTypes =
   | "patientRegistrationDepartment"
   | "patientPrimaryDepartment"
   | "patientRegistrationDate"
-  | "patientDeseasedDate"
+  | "patientdeceasedDate"
   | "patientPrivacyNotice"
-  | "patientRelaseOfInfoBill"
+  | "patientReleaseOfInfoBill"
   | "patientCallToConsent"
   | "patientMedicationHistoryAuthority"
   | "patientPatientNote"
@@ -664,9 +667,9 @@ type PatientControlTypes =
     patientRegistrationDepartment: string;
     patientPrimaryDepartment: string;
     patientRegistrationDate: string;
-    patientDeseasedDate: string;
+    patientdeceasedDate: string;
     patientPrivacyNotice: boolean;
-    patientRelaseOfInfoBill: string;
+    patientReleaseOfInfoBill: string;
     patientCallToConsent: string;
     patientMedicationHistoryAuthority: string;
     patientPatientNote: string;
@@ -837,4 +840,4 @@ type PatientControlTypes =
     controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes | GuardianContactControlTypes | EmergencyContactControlTypes
   }
   
-  export type PatientInputProps = RegisterUserInput & BasicContactControlInputs & EmergencyContactControlInputs & KinContactControlInputs & GuardianContactControlInputs & GuarantorContactControlInputs & EmployerControlInputs & PatientControlInputs;
+  export type PatientInputProps = RegisterUserInput & BasicContactControlInputs & EmergencyContactControlInputs & KinContactControlInputs & GuardianContactControlInputs & GuarantorContactControlInputs & EmployerControlInputs & Omit<PatientControlInputs, "patientUsualProviderId"> & {patientUsualProviderId:  SelectorOption};

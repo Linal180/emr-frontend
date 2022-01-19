@@ -107,7 +107,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
               speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
               ssnType: selectedSsnType as SsnType || SsnType.Medicare, roleType: UserRole.Doctor, adminId: userId || "",
               languagesSpoken: languagesSpoken || "", taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
-              deaActiveDate: deaActiveDate || "" , deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
+              deaActiveDate: deaActiveDate || "", deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
               upin: upin || "", emcProviderId: emcProviderId || "", medicareGrpNumber: medicareGrpNumber || "",
               medicaidGrpNumber: medicaidGrpNumber || "", meammographyCertNumber: meammographyCertNumber || "",
               campusGrpNumber: campusGrpNumber || "", blueShildNumber: blueShildNumber || "", taxIdStuff: taxIdStuff || "",
