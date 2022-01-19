@@ -7,6 +7,8 @@ import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../pages/main/dashboard";
 import AddStaff from "../pages/main/staff/addStaff";
+import AddBill from "../pages/main/billing/addBill";
+import AddResult from "../pages/main/reports/addResult";
 import Staff from "../pages/main/staff/staffListing";
 import ViewStaff from "../pages/main/staff/viewStaff";
 import AddDoctor from "../pages/main/doctors/addDoctor";
@@ -17,6 +19,7 @@ import ForgetPassword from "../pages/auth/forgetPassword";
 import EmailVerification from "../pages/auth/verifyEmail";
 import AddPatient from "../pages/main/patients/addPatient";
 import Doctors from "../pages/main/doctors/doctorsListing";
+import Invoices from "../pages/main/billing/invoicesListing";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import LabResults from "../pages/main/reports/labResultsListing";
@@ -28,7 +31,7 @@ import Appointments from "../pages/main/appointments/appointmentsListing";
 import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 // constants
 import { AuthContext } from "../context";
-import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE } from "../constants";
+import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -55,7 +58,10 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
           <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />
           <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
+          <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
           <PrivateRoute exact path={CLAIMS_ROUTE} component={ClaimFeed} />
+          <PrivateRoute exact path={`${CLAIMS_ROUTE}/new`} component={AddBill} />
+          <PrivateRoute exact path={INVOICES_ROUTE} component={Invoices} />
           <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
           <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
           <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />

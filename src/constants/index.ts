@@ -105,6 +105,7 @@ export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
 export const EMR = "EMR";
+export const ADD_BILL = "Add Bill";
 export const LOGOUT_TEXT = "Logout";
 export const CODE = "Code";
 export const TRUE = "TRUE";
@@ -339,6 +340,7 @@ export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
@@ -496,6 +498,7 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: INVOICES_TEXT,
+        link: INVOICES_ROUTE,
       },
       {
         name: INSURANCE_CLAIMS_TEXT,
@@ -591,6 +594,8 @@ export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }
 export const APPOINTMENT_NEW_BREAD = { text: ADD_APPOINTMENT, link: `${VIEW_APPOINTMENTS_ROUTE}/new` }
+export const RESULT_NEW_BREAD = { text: ADD_RESULT, link: `${LAB_RESULTS_ROUTE}/new` }
+export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE }
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: '' }
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
@@ -603,165 +608,6 @@ export const BILLING_BREAD = { text: BILLING_TEXT, link: '' }
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: '' }
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE }
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
+export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
 export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
-
-// ---------------------- DUMMY DATA --------------------
-export const dummyDoctorsList = [
-  {
-    id: 1,
-    firstName: "Smith",
-    lastName: "John",
-    email: "john60@alxtel.com",
-    phone: +14842634724,
-    specialty: "Physician Assistant",
-    code: 45025,
-  },
-  {
-    id: 2,
-    firstName: "Helmet",
-    lastName: "Smith",
-    email: "smith0@alxtel.com",
-    phone: +16102458096,
-    specialty: "Pharmacist",
-    code: 65065,
-  },
-  {
-    id: 3,
-    firstName: "Ala",
-    lastName: "Dude",
-    email: "dude34@alxtel.com",
-    phone: +14844493827,
-    specialty: "Periodontics",
-    code: 25525,
-  },
-  {
-    id: 4,
-    firstName: "Harry",
-    lastName: "Steve",
-    email: "harry45@alxtel.com",
-    phone: +14845219734,
-    specialty: "Pediatric Dentist",
-    code: 88025,
-  },
-  {
-    id: 5,
-    firstName: "Chris",
-    lastName: "Handle",
-    email: "dakeve00@alxtel.com",
-    phone: +18143519562,
-    specialty: "Pediatric Dermatology",
-    code: 12025,
-  },
-  {
-    id: 6,
-    firstName: "Bolt",
-    lastName: "Tick",
-    email: "bolt@alxtel.com",
-    phone: +14845219734,
-    specialty: "Neurology",
-    code: 67025,
-  },
-  {
-    id: 7,
-    firstName: "Lara",
-    lastName: "Bell",
-    email: "lara@alxtel.com",
-    phone: +14842989327,
-    specialty: "Gastroenterology",
-    code: 33325,
-  },
-  {
-    id: 8,
-    firstName: "Hymen",
-    lastName: "Stoke",
-    email: "stoke@alxtel.com",
-    phone: +16102458766,
-    specialty: "Neurology",
-    code: 19825,
-  },
-  {
-    id: 9,
-    firstName: "Black",
-    lastName: "Pointer",
-    email: "pointer@alxtel.com",
-    phone: +15854380126,
-    specialty: "Physician Assistant",
-    code: 45025,
-  },
-  {
-    id: 10,
-    firstName: "Mira",
-    lastName: "Khan",
-    email: "khan39@alxtel.com",
-    phone: +16102458766,
-    specialty: "Pediatric Dentist",
-    code: 89025,
-  },
-]
-
-export const dummyPatientsList = [
-  {
-    id: 1,
-    firstName: "Bolt",
-    lastName: "Tick",
-    email: "bolt@alxtel.com",
-    phone: +14845219734,
-    lastAppointment: '03-01-2021',
-    insurance: "Approved",
-  },
-  {
-    id: 2,
-    firstName: "Helmet",
-    lastName: "Smith",
-    email: "smith0@alxtel.com",
-    phone: +16102458096,
-    lastAppointment: '22-03-2021',
-    insurance: "In Review",
-  },
-  {
-    id: 3,
-    firstName: "Alaa",
-    lastName: "Dude",
-    email: "dude34@alxtel.com",
-    phone: +14844493827,
-    lastAppointment: '12-01-2021',
-    insurance: "Submit",
-  },
-  {
-    id: 4,
-    firstName: "Harry",
-    lastName: "Steve",
-    email: "harry45@alxtel.com",
-    phone: +14845219734,
-    lastAppointment: '03-01-2021',
-    insurance: "Approved",
-  },
-  {
-    id: 5,
-    firstName: "Cris",
-    lastName: "Handle",
-    email: "dakeve00@alxtel.com",
-    phone: +18143519562,
-    lastAppointment: '03-05-2021',
-    insurance: "Submit",
-  },
-  {
-    id: 6,
-    firstName: "Lara",
-    lastName: "Bell",
-    email: "lara@alxtel.com",
-    phone: +14842989327,
-    lastAppointment: '23-12-2021',
-    insurance: "In Review",
-  },
-  {
-    id: 7,
-    firstName: "Smith",
-    lastName: "John",
-    email: "john60@alxtel.com",
-    phone: +14842634724,
-    lastAppointment: '03-01-2021',
-    insurance: "Approved",
-  },
-];
