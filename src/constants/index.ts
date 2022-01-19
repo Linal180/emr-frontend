@@ -314,6 +314,9 @@ export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this 
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const LOOKS_LIKE_EMPTY = "Looks like an empty space. You can go back to homepage by clicking the button below";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
+export const VISIT_REASON = "Reason for visit"
+export const SELECT_SERVICES = "Select Services"
+export const PATIENT_DETAILS = "Patient Details"
 
 // Roles
 export const STAFF = "STAFF";
@@ -342,6 +345,7 @@ export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
+export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];

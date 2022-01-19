@@ -31,9 +31,9 @@ query FindAllPatient($patientInput: PatientInput!) {
       registrationDepartment
       primaryDepartment
       registrationDate
-      deseasedDate
+      deceasedDate
       privacyNotice
-      relaseOfInfoBill
+      releaseOfInfoBill
       callToConsent
       medicationHistoryAuthority
       patientNote

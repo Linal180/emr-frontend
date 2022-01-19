@@ -12,6 +12,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: any;
 };
 
 export type AccessUserPayload = {
@@ -249,6 +251,7 @@ export type CreateFacilityItemInput = {
   serviceCode?: Maybe<ServiceCode>;
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
 };
 
 export type CreatePatientInput = {
@@ -265,14 +268,14 @@ export type CreatePatientInput = {
 export type CreatePatientItemInput = {
   adminId?: Maybe<Scalars['String']>;
   callToConsent?: Maybe<Scalars['Boolean']>;
-  deseasedDate?: Maybe<Scalars['String']>;
+  deceasedDate?: Maybe<Scalars['DateTime']>;
   dob?: Maybe<Scalars['String']>;
   ethnicity?: Maybe<Ethnicity>;
   facilityId: Scalars['String'];
   firstName?: Maybe<Scalars['String']>;
   firstNameUsed?: Maybe<Scalars['String']>;
   gender?: Maybe<Genderidentity>;
-  genderIdentity?: Maybe<Scalars['String']>;
+  genderIdentity?: Maybe<Genderidentity>;
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
   language?: Maybe<Scalars['String']>;
@@ -289,10 +292,10 @@ export type CreatePatientItemInput = {
   privacyNotice?: Maybe<Scalars['Boolean']>;
   pronouns?: Maybe<Pronouns>;
   race?: Maybe<Race>;
-  registrationDate?: Maybe<Scalars['String']>;
+  registrationDate?: Maybe<Scalars['DateTime']>;
   registrationDepartment?: Maybe<RegDepartment>;
-  relaseOfInfoBill?: Maybe<Scalars['Boolean']>;
-  sexAtBirth?: Maybe<Scalars['String']>;
+  releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
+  sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
@@ -301,6 +304,13 @@ export type CreatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
+};
+
+export type CreateScheduleInput = {
+  doctorId: Scalars['String'];
+  endAt: Scalars['DateTime'];
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  startAt: Scalars['DateTime'];
 };
 
 export type CreateServiceInput = {
@@ -371,6 +381,7 @@ export type Doctor = {
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
+  schedule?: Maybe<Array<Schedule>>;
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
   ssn?: Maybe<Scalars['String']>;
@@ -447,6 +458,7 @@ export type Facility = {
   services?: Maybe<Array<Service>>;
   staff?: Maybe<Array<Staff>>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   user?: Maybe<Array<User>>;
 };
@@ -496,11 +508,19 @@ export type GetDoctor = {
   id: Scalars['String'];
 };
 
+export type GetDoctorSchedule = {
+  id: Scalars['String'];
+};
+
 export type GetFacility = {
   id: Scalars['String'];
 };
 
 export type GetPatient = {
+  id: Scalars['String'];
+};
+
+export type GetSchedule = {
   id: Scalars['String'];
 };
 
@@ -556,6 +576,7 @@ export type Mutation = {
   createDoctor: DoctorPayload;
   createFacility: FacilityPayload;
   createPatient: PatientPayload;
+  createSchedule: SchedulePayload;
   createService: ServicePayload;
   createStaff: StaffPayload;
   deactivateUser: UserPayload;
@@ -568,6 +589,7 @@ export type Mutation = {
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removePatient: PatientPayload;
+  removeSchedule: SchedulePayload;
   removeService: ServicePayload;
   removeStaff: StaffPayload;
   removeUser: UserPayload;
@@ -580,6 +602,7 @@ export type Mutation = {
   updatePatient: PatientPayload;
   updatePatientProvider: PatientPayload;
   updateRole: UserPayload;
+  updateSchedule: SchedulePayload;
   updateService: ServicePayload;
   updateStaff: StaffPayload;
   updateUser: UserPayload;
@@ -609,6 +632,11 @@ export type MutationCreateFacilityArgs = {
 
 export type MutationCreatePatientArgs = {
   createPatientInput: CreatePatientInput;
+};
+
+
+export type MutationCreateScheduleArgs = {
+  createScheduleInput: CreateScheduleInput;
 };
 
 
@@ -672,6 +700,11 @@ export type MutationRemovePatientArgs = {
 };
 
 
+export type MutationRemoveScheduleArgs = {
+  removeSchedule: RemoveSchedule;
+};
+
+
 export type MutationRemoveServiceArgs = {
   removeService: RemoveService;
 };
@@ -732,6 +765,11 @@ export type MutationUpdateRoleArgs = {
 };
 
 
+export type MutationUpdateScheduleArgs = {
+  updateScheduleInput: UpdateScheduleInput;
+};
+
+
 export type MutationUpdateServiceArgs = {
   updateServiceInput: UpdateServiceInput;
 };
@@ -776,7 +814,7 @@ export type Patient = {
   callToConsent: Scalars['Boolean'];
   contacts?: Maybe<Array<Contact>>;
   createdAt: Scalars['String'];
-  deseasedDate: Scalars['String'];
+  deceasedDate: Scalars['DateTime'];
   dob?: Maybe<Scalars['String']>;
   employer?: Maybe<Array<Employer>>;
   ethnicity?: Maybe<Ethnicity>;
@@ -803,9 +841,9 @@ export type Patient = {
   privacyNotice: Scalars['Boolean'];
   pronouns?: Maybe<Pronouns>;
   race?: Maybe<Race>;
-  registrationDate: Scalars['String'];
+  registrationDate: Scalars['DateTime'];
   registrationDepartment: RegDepartment;
-  relaseOfInfoBill: Scalars['Boolean'];
+  releaseOfInfoBill: Scalars['Boolean'];
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
   ssn?: Maybe<Scalars['String']>;
@@ -861,12 +899,15 @@ export type Query = {
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllPatient: PatientsPayload;
+  findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
+  getDoctorSchedules: SchedulesPayload;
   getFacility: FacilityPayload;
   getPatient: PatientPayload;
+  getSchedule: SchedulePayload;
   getService: ServicePayload;
   getStaff: StaffPayload;
   getUser: UserPayload;
@@ -900,6 +941,11 @@ export type QueryFindAllPatientArgs = {
 };
 
 
+export type QueryFindAllSchedulesArgs = {
+  scheduleInput: ScheduleInput;
+};
+
+
 export type QueryFindAllServicesArgs = {
   serviceInput: ServiceInput;
 };
@@ -920,6 +966,11 @@ export type QueryGetDoctorArgs = {
 };
 
 
+export type QueryGetDoctorSchedulesArgs = {
+  getDoctorSchedule: GetDoctorSchedule;
+};
+
+
 export type QueryGetFacilityArgs = {
   getFacility: GetFacility;
 };
@@ -927,6 +978,11 @@ export type QueryGetFacilityArgs = {
 
 export type QueryGetPatientArgs = {
   getPatient: GetPatient;
+};
+
+
+export type QueryGetScheduleArgs = {
+  getSchedule: GetSchedule;
 };
 
 
@@ -1026,6 +1082,10 @@ export type RemovePatient = {
   id: Scalars['String'];
 };
 
+export type RemoveSchedule = {
+  id: Scalars['String'];
+};
+
 export type RemoveService = {
   id: Scalars['String'];
 };
@@ -1073,6 +1133,35 @@ export enum Sexualorientation {
   Homosexual = 'HOMOSEXUAL',
   None = 'NONE'
 }
+
+export type Schedule = {
+  __typename?: 'Schedule';
+  createdAt: Scalars['String'];
+  doctor?: Maybe<Doctor>;
+  endAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  startAt: Scalars['DateTime'];
+  updatedAt: Scalars['String'];
+};
+
+export type ScheduleInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type SchedulePayload = {
+  __typename?: 'SchedulePayload';
+  response?: Maybe<ResponsePayload>;
+  schedule?: Maybe<Schedule>;
+};
+
+export type SchedulesPayload = {
+  __typename?: 'SchedulesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  schedules?: Maybe<Array<Maybe<Schedule>>>;
+};
 
 export type Service = {
   __typename?: 'Service';
@@ -1312,6 +1401,7 @@ export type UpdateFacilityItemInput = {
   serviceCode?: Maybe<ServiceCode>;
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
 };
 
 export type UpdatePasswordInput = {
@@ -1333,14 +1423,14 @@ export type UpdatePatientInput = {
 export type UpdatePatientItemInput = {
   adminId?: Maybe<Scalars['String']>;
   callToConsent?: Maybe<Scalars['Boolean']>;
-  deseasedDate?: Maybe<Scalars['String']>;
+  deceasedDate?: Maybe<Scalars['DateTime']>;
   dob?: Maybe<Scalars['String']>;
   ethnicity?: Maybe<Ethnicity>;
   facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   firstNameUsed?: Maybe<Scalars['String']>;
   gender?: Maybe<Genderidentity>;
-  genderIdentity?: Maybe<Scalars['String']>;
+  genderIdentity?: Maybe<Genderidentity>;
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
@@ -1358,10 +1448,10 @@ export type UpdatePatientItemInput = {
   privacyNotice?: Maybe<Scalars['Boolean']>;
   pronouns?: Maybe<Pronouns>;
   race?: Maybe<Race>;
-  registrationDate?: Maybe<Scalars['String']>;
+  registrationDate?: Maybe<Scalars['DateTime']>;
   registrationDepartment?: Maybe<RegDepartment>;
-  relaseOfInfoBill?: Maybe<Scalars['Boolean']>;
-  sexAtBirth?: Maybe<Scalars['String']>;
+  releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
+  sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
@@ -1380,6 +1470,14 @@ export type UpdatePatientProvider = {
 export type UpdateRoleInput = {
   id: Scalars['String'];
   roles: Array<UserRole>;
+};
+
+export type UpdateScheduleInput = {
+  doctorId?: Maybe<Scalars['String']>;
+  endAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['String'];
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  startAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type UpdateServiceInput = {
@@ -1607,7 +1705,7 @@ export type FindAllPatientQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', facilityId?: Maybe<string>, pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patients?: Maybe<Array<Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: string, deseasedDate: string, privacyNotice: boolean, relaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>>> } };
+export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', facilityId?: Maybe<string>, pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patients?: Maybe<Array<Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>>> } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -3126,9 +3224,9 @@ export const FindAllPatientDocument = gql`
       registrationDepartment
       primaryDepartment
       registrationDate
-      deseasedDate
+      deceasedDate
       privacyNotice
-      relaseOfInfoBill
+      releaseOfInfoBill
       callToConsent
       medicationHistoryAuthority
       patientNote
