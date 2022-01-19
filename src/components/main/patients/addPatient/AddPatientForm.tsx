@@ -10,7 +10,7 @@ import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import { Gender } from "../../../../generated/graphql";
 import {
-  FIRST_NAME, LAST_NAME, MAPPED_GENDER, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, ADD_PATIENT, DEMOGRAPHICS,
+  FIRST_NAME, LAST_NAME, MAPPED_GENDER_1, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, ADD_PATIENT, DEMOGRAPHICS,
   GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT, INSURANCE_POLICY_INFO, GUARDIAN, BILLING_TEXT, POLICY_HOLDER, ELIGIBILITY, SUFFIX,
   MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME, MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, ADDRESS_CTA,
   REGISTRATION_DATE, NOTICE_ON_FILE, CONSENT_TO_CALL, MEDICATION_HISTORY_AUTHORITY, PATIENT_NOTES, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, USUAL_OCCUPATION,
@@ -163,7 +163,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -290,7 +290,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -317,7 +317,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -347,7 +347,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -374,7 +374,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -404,7 +404,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -431,7 +431,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -461,7 +461,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -488,7 +488,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -517,7 +517,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -549,7 +549,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -718,7 +718,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -746,7 +746,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -774,7 +774,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -922,7 +922,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -981,7 +981,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1102,7 +1102,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1173,7 +1173,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1254,7 +1254,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1311,7 +1311,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1358,7 +1358,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1385,7 +1385,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1414,7 +1414,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1455,7 +1455,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1592,7 +1592,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER.map((gender) => {
+                              {MAPPED_GENDER_1.map((gender) => {
                                 const { label, value } = gender || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1630,7 +1630,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER.map((gender) => {
+                            {MAPPED_GENDER_1.map((gender) => {
                               const { label, value } = gender || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
@@ -1654,7 +1654,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       value={value}
                       onChange={handleChange}
                     >
-                      {MAPPED_GENDER.map((gender) => {
+                      {MAPPED_GENDER_1.map((gender) => {
                         const { label, value } = gender || {};
                         return <FormControlLabel key={value} value={value} control={<Radio />} label={label} />;
                       })}

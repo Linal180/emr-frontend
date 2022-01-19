@@ -2,24 +2,26 @@
 import { FC, useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, FormHelperText, Grid, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Selector from '../../../common/Selector';
 import CardComponent from "../../../common/CardComponent";
 import UpdateFacilityController from './UpdateFacilityController';
 // utils, interfaces and graphql block
 import history from "../../../../history";
-import { facilitySchema } from '../../../../validationSchemas';
-import { CustomUpdateFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
-import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
-import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, POS, PRACTICE_TYPE, ZIP } from "../../../../constants";
+import { setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
+import { facilitySchema } from '../../../../validationSchemas';
+import { CustomFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
+import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
+import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP } from "../../../../constants";
 
 const UpdateFacilityForm: FC = (): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext)
   const { id } = useParams<ParamsType>();
-  const methods = useForm<CustomUpdateFacilityInputProps>({
+  const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
     resolver: yupResolver(facilitySchema)
   });
@@ -53,9 +55,9 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
           cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
           federalTaxId && setValue('federalTaxId', federalTaxId)
           tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
-          serviceCode && setValue('serviceCode', serviceCode as ServiceCode)
           insurancePlanType && setValue('insurancePlanType', insurancePlanType)
-          practiceType && setValue('practiceType', practiceType as PracticeType)
+          serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
+          practiceType && setValue('practiceType', setRecord(practiceType, serviceCode))
           mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
           if (contacts) {
@@ -126,7 +128,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
     }
   }, [getFacility, id])
 
-  const onSubmit: SubmitHandler<CustomUpdateFacilityInputProps> = async (inputs) => {
+  const onSubmit: SubmitHandler<CustomFacilityInputProps> = async (inputs) => {
     if (facility) {
       const {
         name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
@@ -138,16 +140,31 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
       if (id && contacts && billingAddress) {
         const { id: contactId } = contacts[0]
         const { id: billingId } = billingAddress[0]
+        const { id: selectedPracticeType } = practiceType;
+        const { id: selectedServiceCode } = serviceCode;
 
         await updateFacility({
           variables: {
             updateFacilityInput: {
               updateFacilityItemInput: {
-                id, name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '', practiceType: practiceType || PracticeType.Hospital, serviceCode: serviceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
+                id, name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
+                insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
+                tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '',
+                practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
+                serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24,
+                mammographyCertificationNumber: mammographyCertificationNumber || ''
               },
-              updateContactInput: { id: contactId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || '' },
+
+              updateContactInput: {
+                id: contactId, phone: phone || '', email: email || '', fax: fax || '',
+                city: city || '', state: state || '', country: country || '', zipCode: zipCode || '',
+                address: address || '', address2: address2 || ''
+              },
+
               updateBillingAddressInput: {
-                id: billingId, phone: phone || '', email: email || '', fax: fax || '', city: city || '', state: state || '', country: country || '', zipCode: zipCode || '', address: address || '', address2: address2 || ''
+                id: billingId, phone: phone || '', email: email || '', fax: fax || '', city: city || '',
+                state: state || '', country: country || '', zipCode: zipCode || '', address: address || '',
+                address2: address2 || ''
               },
             }
           }
@@ -201,30 +218,12 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   error={nameError}
                 />
 
-                <Controller
+                <Selector
+                  value={{ id: "", name: "" }}
+                  label={PRACTICE_TYPE}
                   name="practiceType"
-                  defaultValue={PracticeType.Hospital}
-                  render={({ field }) => (
-                    <FormControl fullWidth margin='normal' error={Boolean(practiceTypeError)}>
-                      <InputLabel id="practiceType" shrink>{PRACTICE_TYPE}</InputLabel>
-                      <Select
-                        labelId="practiceType"
-                        id="practiceType-id"
-                        variant="outlined"
-                        value={field.value}
-                        onChange={field.onChange}
-                        
-                      >
-                        {MAPPED_PRACTICE_TYPES.map((type, index: number) => {
-                          const { label, value } = type;
-
-                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                        })}
-                      </Select>
-
-                      <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
-                    </FormControl>
-                  )}
+                  error={practiceTypeError}
+                  options={MAPPED_PRACTICE_TYPES}
                 />
 
                 <UpdateFacilityController
@@ -305,28 +304,12 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   </Grid>
                 </Grid>
 
-                <Controller
+                <Selector
+                  value={{ id: "", name: "" }}
+                  label={PRACTICE_TYPE}
                   name="serviceCode"
-                  defaultValue={ServiceCode.Ambulance_24}
-                  render={({ field }) => (
-                    <FormControl fullWidth margin='normal' error={Boolean(serviceCodeError)}>
-                      <InputLabel id="serviceCode" shrink>{POS}</InputLabel>
-                      <Select
-                        labelId="serviceCode"
-                        id="serviceCode-id"
-                        variant="outlined"
-                        value={field.value}
-                        onChange={field.onChange}
-                      >
-                        {MAPPED_SERVICE_CODES.map((code, index: number) => {
-                          const { label, value } = code;
-
-                          return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                        })}
-                      </Select>
-                      <FormHelperText>{practiceTypeError && practiceTypeError}</FormHelperText>
-                    </FormControl>
-                  )}
+                  error={serviceCodeError}
+                  options={MAPPED_SERVICE_CODES}
                 />
               </CardComponent>
             </Grid>

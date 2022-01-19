@@ -1,9 +1,7 @@
-// packages block
-
 // graphql and interfaces block
+import { MappedGenderInterface, SelectorOption } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import { Gender, PracticeType, ServiceCode, Speciality, SsnType, UserRole } from "../generated/graphql";
-import { MappedGenderInterface, MappedRoleInterface } from '../interfacesTypes'
 
 
 // regex
@@ -505,23 +503,28 @@ export const APP_MENU_ITEMS = [
   },
 ];
 
-export const MAPPED_ROLES: MappedRoleInterface[] = [
-  { value: UserRole.Admin, label: 'Admin' },
-  { value: UserRole.Nurse, label: "Nurse" },
-  { value: UserRole.Staff, label: "Staff" },
-  { value: UserRole.Billing, label: 'Billing' },
+export const MAPPED_ROLES: SelectorOption[] = [
+  { id: UserRole.Admin, name: 'Admin' },
+  { id: UserRole.Nurse, name: "Nurse" },
+  { id: UserRole.Staff, name: "Staff" },
+  { id: UserRole.Billing, name: 'Billing' },
 ];
 
-export const MAPPED_GENDER: MappedGenderInterface[] = [
+export const MAPPED_GENDER: SelectorOption[] = [
+  { id: Gender.Male, name: 'Male' },
+  { id: Gender.Female, name: 'Female' },
+  { id: Gender.Other, name: 'Other' },
+]
+
+export const MAPPED_GENDER_1: MappedGenderInterface[] = [
   { value: Gender.Male, label: 'Male' },
   { value: Gender.Female, label: 'Female' },
   { value: Gender.Other, label: 'Other' },
 ]
-
-export const MAPPED_PRACTICE_TYPES = [
-  { value: PracticeType.Hospital, label: 'Hospital' },
-  { value: PracticeType.Clinic, label: 'Clinic' },
-  { value: PracticeType.Lab, label: 'Lab' },
+export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
+  { id: PracticeType.Hospital, name: 'Hospital' },
+  { id: PracticeType.Clinic, name: 'Clinic' },
+  { id: PracticeType.Lab, name: 'Lab' },
 ]
 
 const MAPPED_SERVICE_CODE = {
@@ -546,41 +549,41 @@ const MAPPED_SERVICE_CODE = {
   INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06: "IHSPBF 06",
 }
 
-export const MAPPED_SERVICE_CODES = [
-  { value: ServiceCode.Hospice_34, label: MAPPED_SERVICE_CODE.HOSPICE_34 },
-  { value: ServiceCode.Ambulance_41, label: MAPPED_SERVICE_CODE.AMBULANCE_41 },
-  { value: ServiceCode.Ambulance_42, label: MAPPED_SERVICE_CODE.AMBULANCE_42 },
-  { value: ServiceCode.Ambulance_24, label: MAPPED_SERVICE_CODE.AMBULANCE_24 },
-  { value: ServiceCode.GroupHome_14, label: MAPPED_SERVICE_CODE.GROUP_HOME_14 },
-  { value: ServiceCode.EmergencyRoom_23, label: MAPPED_SERVICE_CODE.EMERGENCY_ROOM_23 },
-  { value: ServiceCode.AssistedLiving_13, label: MAPPED_SERVICE_CODE.ASSISTED_LIVING_13 },
-  { value: ServiceCode.BirthingCenter_25, label: MAPPED_SERVICE_CODE.BIRTHING_CENTER_25 },
-  { value: ServiceCode.HomelessShelter_04, label: MAPPED_SERVICE_CODE.HOMELESS_SHELTER_04 },
-  { value: ServiceCode.IndependentClinic_49, label: MAPPED_SERVICE_CODE.INDEPENDENT_CLINIC_49 },
-  { value: ServiceCode.IndependentLaboratory_81, label: MAPPED_SERVICE_CODE.INDEPENDENT_LABORATORY_81 },
-  { value: ServiceCode.CustodialCareFacility_33, label: MAPPED_SERVICE_CODE.CUSTODIAL_CARE_FACILITY_33 },
-  { value: ServiceCode.CommunityMentalHealthCenter_53, label: MAPPED_SERVICE_CODE.COMMUNITY_MENTAL_HEALTH_CENTER_53 },
-  { value: ServiceCode.FederallyQualifiedHealthCenter_50, label: MAPPED_SERVICE_CODE.FEDERALLY_QUALIFIED_HEALTH_CENTER_50 },
-  { value: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, label: MAPPED_SERVICE_CODE.END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65 },
-  { value: ServiceCode.IndianHealthServiceFreeStandingFacility_05, label: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05 },
-  { value: ServiceCode.IndianHealthServiceProviderBasedFacility_06, label: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06 },
-  { value: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, label: MAPPED_SERVICE_CODE.COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61 },
-  { value: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, label: MAPPED_SERVICE_CODE.COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62 }
+export const MAPPED_SERVICE_CODES: SelectorOption[] = [
+  { id: ServiceCode.Hospice_34, name: MAPPED_SERVICE_CODE.HOSPICE_34 },
+  { id: ServiceCode.Ambulance_41, name: MAPPED_SERVICE_CODE.AMBULANCE_41 },
+  { id: ServiceCode.Ambulance_42, name: MAPPED_SERVICE_CODE.AMBULANCE_42 },
+  { id: ServiceCode.Ambulance_24, name: MAPPED_SERVICE_CODE.AMBULANCE_24 },
+  { id: ServiceCode.GroupHome_14, name: MAPPED_SERVICE_CODE.GROUP_HOME_14 },
+  { id: ServiceCode.EmergencyRoom_23, name: MAPPED_SERVICE_CODE.EMERGENCY_ROOM_23 },
+  { id: ServiceCode.AssistedLiving_13, name: MAPPED_SERVICE_CODE.ASSISTED_LIVING_13 },
+  { id: ServiceCode.BirthingCenter_25, name: MAPPED_SERVICE_CODE.BIRTHING_CENTER_25 },
+  { id: ServiceCode.HomelessShelter_04, name: MAPPED_SERVICE_CODE.HOMELESS_SHELTER_04 },
+  { id: ServiceCode.IndependentClinic_49, name: MAPPED_SERVICE_CODE.INDEPENDENT_CLINIC_49 },
+  { id: ServiceCode.IndependentLaboratory_81, name: MAPPED_SERVICE_CODE.INDEPENDENT_LABORATORY_81 },
+  { id: ServiceCode.CustodialCareFacility_33, name: MAPPED_SERVICE_CODE.CUSTODIAL_CARE_FACILITY_33 },
+  { id: ServiceCode.CommunityMentalHealthCenter_53, name: MAPPED_SERVICE_CODE.COMMUNITY_MENTAL_HEALTH_CENTER_53 },
+  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: MAPPED_SERVICE_CODE.FEDERALLY_QUALIFIED_HEALTH_CENTER_50 },
+  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: MAPPED_SERVICE_CODE.END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65 },
+  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05 },
+  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06 },
+  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: MAPPED_SERVICE_CODE.COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61 },
+  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: MAPPED_SERVICE_CODE.COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62 }
 ];
 
-export const MAPPED_SPECIALTIES = [
-  { value: Speciality.Neurology, label: "Neurology" },
-  { value: Speciality.Pharmacist, label: "Pharmacist" },
-  { value: Speciality.Gastroenterology, label: "Gastroenterology" },
-  { value: Speciality.PediatricDentist, label: "PediatricDentist" },
-  { value: Speciality.PhysicianAssistant, label: "PhysicianAssistant" },
+export const MAPPED_SPECIALTIES: SelectorOption[] = [
+  { id: Speciality.Neurology, name: "Neurology" },
+  { id: Speciality.Pharmacist, name: "Pharmacist" },
+  { id: Speciality.Gastroenterology, name: "Gastroenterology" },
+  { id: Speciality.PediatricDentist, name: "PediatricDentist" },
+  { id: Speciality.PhysicianAssistant, name: "PhysicianAssistant" },
 ];
 
-export const MAPPED_SSN_TYPES = [
-  { value: SsnType.Tanf, label: "Tanf" },
-  { value: SsnType.Oasdi, label: "Oasdi" },
-  { value: SsnType.Medicare, label: "Medicare" },
-  { value: SsnType.Medicaid, label: "Medicaid" },
+export const MAPPED_SSN_TYPES: SelectorOption[] = [
+  { id: SsnType.Tanf, name: "Tanf" },
+  { id: SsnType.Oasdi, name: "Oasdi" },
+  { id: SsnType.Medicare, name: "Medicare" },
+  { id: SsnType.Medicaid, name: "Medicaid" },
 ];
 
 // Breadcrumb links
@@ -605,163 +608,3 @@ export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROU
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
 export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
-
-// ---------------------- DUMMY DATA --------------------
-export const dummyDoctorsList = [
-  {
-    id: 1,
-    firstName: "Smith",
-    lastName: "John",
-    email: "john60@alxtel.com",
-    phone: +14842634724,
-    specialty: "Physician Assistant",
-    code: 45025,
-  },
-  {
-    id: 2,
-    firstName: "Helmet",
-    lastName: "Smith",
-    email: "smith0@alxtel.com",
-    phone: +16102458096,
-    specialty: "Pharmacist",
-    code: 65065,
-  },
-  {
-    id: 3,
-    firstName: "Ala",
-    lastName: "Dude",
-    email: "dude34@alxtel.com",
-    phone: +14844493827,
-    specialty: "Periodontics",
-    code: 25525,
-  },
-  {
-    id: 4,
-    firstName: "Harry",
-    lastName: "Steve",
-    email: "harry45@alxtel.com",
-    phone: +14845219734,
-    specialty: "Pediatric Dentist",
-    code: 88025,
-  },
-  {
-    id: 5,
-    firstName: "Chris",
-    lastName: "Handle",
-    email: "dakeve00@alxtel.com",
-    phone: +18143519562,
-    specialty: "Pediatric Dermatology",
-    code: 12025,
-  },
-  {
-    id: 6,
-    firstName: "Bolt",
-    lastName: "Tick",
-    email: "bolt@alxtel.com",
-    phone: +14845219734,
-    specialty: "Neurology",
-    code: 67025,
-  },
-  {
-    id: 7,
-    firstName: "Lara",
-    lastName: "Bell",
-    email: "lara@alxtel.com",
-    phone: +14842989327,
-    specialty: "Gastroenterology",
-    code: 33325,
-  },
-  {
-    id: 8,
-    firstName: "Hymen",
-    lastName: "Stoke",
-    email: "stoke@alxtel.com",
-    phone: +16102458766,
-    specialty: "Neurology",
-    code: 19825,
-  },
-  {
-    id: 9,
-    firstName: "Black",
-    lastName: "Pointer",
-    email: "pointer@alxtel.com",
-    phone: +15854380126,
-    specialty: "Physician Assistant",
-    code: 45025,
-  },
-  {
-    id: 10,
-    firstName: "Mira",
-    lastName: "Khan",
-    email: "khan39@alxtel.com",
-    phone: +16102458766,
-    specialty: "Pediatric Dentist",
-    code: 89025,
-  },
-]
-
-export const dummyPatientsList = [
-  {
-    id: 1,
-    firstName: "Bolt",
-    lastName: "Tick",
-    email: "bolt@alxtel.com",
-    phone: +14845219734,
-    lastAppointment: '03-01-2021',
-    insurance: "Approved",
-  },
-  {
-    id: 2,
-    firstName: "Helmet",
-    lastName: "Smith",
-    email: "smith0@alxtel.com",
-    phone: +16102458096,
-    lastAppointment: '22-03-2021',
-    insurance: "In Review",
-  },
-  {
-    id: 3,
-    firstName: "Alaa",
-    lastName: "Dude",
-    email: "dude34@alxtel.com",
-    phone: +14844493827,
-    lastAppointment: '12-01-2021',
-    insurance: "Submit",
-  },
-  {
-    id: 4,
-    firstName: "Harry",
-    lastName: "Steve",
-    email: "harry45@alxtel.com",
-    phone: +14845219734,
-    lastAppointment: '03-01-2021',
-    insurance: "Approved",
-  },
-  {
-    id: 5,
-    firstName: "Cris",
-    lastName: "Handle",
-    email: "dakeve00@alxtel.com",
-    phone: +18143519562,
-    lastAppointment: '03-05-2021',
-    insurance: "Submit",
-  },
-  {
-    id: 6,
-    firstName: "Lara",
-    lastName: "Bell",
-    email: "lara@alxtel.com",
-    phone: +14842989327,
-    lastAppointment: '23-12-2021',
-    insurance: "In Review",
-  },
-  {
-    id: 7,
-    firstName: "Smith",
-    lastName: "John",
-    email: "john60@alxtel.com",
-    phone: +14842634724,
-    lastAppointment: '03-01-2021',
-    insurance: "Approved",
-  },
-];

@@ -1,19 +1,22 @@
 // packages block
-import { FC, useState, useContext, useEffect } from 'react';
+import { FC, useState, useContext } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormControlLabel, Switch, FormGroup, FormHelperText } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, CircularProgress, FormControl, Grid, FormControlLabel, Switch, FormGroup, FormHelperText } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import DoctorController from "../controllers";
+import Selector from '../../../common/Selector';
 import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
+import { renderFacilities } from '../../../../utils';
 import { doctorSchema } from '../../../../validationSchemas';
 import { DoctorInputProps } from "../../../../interfacesTypes";
 import { useFormStyles } from '../../../../styles/formsStyles';
+import { ListContext } from '../../../../context/listContext';
 import { Speciality, SsnType, useCreateDoctorMutation, UserRole } from "../../../../generated/graphql";
 import {
   FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_SSN_TYPES, FACILITY,
@@ -27,7 +30,6 @@ import {
   PRESCRIPTIVE_AUTH_NUMBER, AVAILABILITY_STATUS, DOCTOR_CREATED, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
   LANGUAGE_SPOKEN, SPECIALTY, SSN_TYPE,
 } from "../../../../constants";
-import { ListContext } from '../../../../context/listContext';
 
 const AddDoctorForm: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -37,7 +39,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
     mode: "all",
     resolver: yupResolver(doctorSchema)
   });
-  const { reset, control, handleSubmit, setValue, formState: { errors } } = methods;
+  const { reset, handleSubmit, formState: { errors } } = methods;
   const [values, setValues] = useState({
     sunday: false,
     monday: false,
@@ -88,6 +90,10 @@ const AddDoctorForm: FC = (): JSX.Element => {
       licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, password
     } = inputs;
 
+    const { id: selectedSsnType } = ssnType;
+    const { id: selectedSpecialty } = speciality;
+    const { id: selectedFacility } = facilityId;
+
     if (user) {
       const { id: userId } = user
 
@@ -96,12 +102,12 @@ const AddDoctorForm: FC = (): JSX.Element => {
           createDoctorInput: {
             createDoctorItemInput: {
               firstName: firstName || "", middleName: middleName || "", lastName: lastName || "", prefix: prefix || "",
-              suffix: suffix || "", email: email || "", password: password || "", facilityId: facilityId || "",
+              suffix: suffix || "", email: email || "", password: password || "", facilityId: selectedFacility || "",
               providerIntials: providerIntials || "", degreeCredentials: degreeCredentials || "",
-              speciality: speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
-              ssnType: ssnType || SsnType.Medicare, roleType: UserRole.Doctor, adminId: userId || "",
+              speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
+              ssnType: selectedSsnType as SsnType || SsnType.Medicare, roleType: UserRole.Doctor, adminId: userId || "",
               languagesSpoken: languagesSpoken || "", taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
-              deaActiveDate: deaActiveDate || "", deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
+              deaActiveDate: deaActiveDate || "" , deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
               upin: upin || "", emcProviderId: emcProviderId || "", medicareGrpNumber: medicareGrpNumber || "",
               medicaidGrpNumber: medicaidGrpNumber || "", meammographyCertNumber: meammographyCertNumber || "",
               campusGrpNumber: campusGrpNumber || "", blueShildNumber: blueShildNumber || "", taxIdStuff: taxIdStuff || "",
@@ -110,8 +116,18 @@ const AddDoctorForm: FC = (): JSX.Element => {
               prescriptiveAuthNumber: prescriptiveAuthNumber || "",
             },
 
-            createContactInput: { email: email || "", pager: pager || "", phone: phone || "", mobile: mobile || "", fax: fax || "", address: address || "", address2: address2 || "", zipCode: zipCode || "", city: city || "", state: state || "", country: country || "", facilityId: facilityId || "" },
-            createBillingAddressInput: { email: billingEmail || "", phone: billingPhone || "", fax: billingFax || "", address: billingAddress || "", address2: billingAddress2 || "", zipCode: billingZipCode || "", city: billingCity || "", state: billingState || "", country: billingCountry || "", userId: billingUserId || "", facilityId: facilityId || "" }
+            createContactInput: {
+              email: email || "", pager: pager || "", phone: phone || "", mobile: mobile || "",
+              fax: fax || "", address: address || "", address2: address2 || "", zipCode: zipCode || "", city: city || "",
+              state: state || "", country: country || "", facilityId: selectedFacility || ""
+            },
+
+            createBillingAddressInput: {
+              email: billingEmail || "", phone: billingPhone || "", fax: billingFax || "",
+              address: billingAddress || "", address2: billingAddress2 || "", zipCode: billingZipCode || "",
+              city: billingCity || "", state: billingState || "", country: billingCountry || "",
+              userId: billingUserId || "", facilityId: selectedFacility || ""
+            }
           }
         }
       })
@@ -120,10 +136,6 @@ const AddDoctorForm: FC = (): JSX.Element => {
     }
   };
 
-  useEffect(() => {
-    setValue("facilityId", facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : "")
-  }, [facilityList, setValue]);
-
   const {
     dob: { message: dobError } = {},
     ssn: { message: ssnError } = {},
@@ -131,8 +143,6 @@ const AddDoctorForm: FC = (): JSX.Element => {
     suffix: { message: suffixError } = {},
     ssnType: { message: ssnTypeError } = {},
     lastName: { message: lastNameError } = {},
-    // password: { message: passwordError } = {},
-    // roleType: { message: roleTypeError } = {},
     firstName: { message: firstNameError } = {},
     speciality: { message: specialtyError } = {},
     middleName: { message: middleNameError } = {},
@@ -196,59 +206,22 @@ const AddDoctorForm: FC = (): JSX.Element => {
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <Controller
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={FACILITY}
                       name="facilityId"
-                      defaultValue={facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : ""}
-                      control={control}
-                      render={({ field }) => (
-                        <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
-                          <InputLabel id="facility" shrink>{FACILITY}</InputLabel>
-                          <Select
-                            labelId="facility"
-                            id="select-facility"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {facilityList?.map((facility) => {
-                              const { id, name } = facility || {};
-
-                              return <MenuItem key={id} value={id}>{name}</MenuItem>;
-                            })}
-                          </Select>
-                          <FormHelperText>{facilityError && facilityError}</FormHelperText>
-                        </FormControl>
-                      )}
+                      error={facilityError}
+                      options={renderFacilities(facilityList)}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <Controller
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={SPECIALTY}
                       name="speciality"
-                      control={control}
-                      defaultValue={Speciality.Gastroenterology}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="specialty" shrink>{SPECIALTY}</InputLabel>
-                            <Select
-                              labelId="specialty"
-                              id="specialty-select"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_SPECIALTIES.map((specialty) => {
-                                const { label, value } = specialty || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-
-                            <FormHelperText>{specialtyError && specialtyError}</FormHelperText>
-                          </FormControl>
-                        )
-                      }}
+                      error={specialtyError}
+                      options={MAPPED_SPECIALTIES}
                     />
                   </Grid>
                 </Grid>
@@ -343,32 +316,12 @@ const AddDoctorForm: FC = (): JSX.Element => {
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <Controller
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={SSN_TYPE}
                       name="ssnType"
-                      control={control}
-                      defaultValue={SsnType.Medicare}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="ssn-type" shrink>{SSN_TYPE}</InputLabel>
-                            <Select
-                              labelId="ssn3-type"
-                              id="select-ssn-type"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_SSN_TYPES.map((ssnType) => {
-                                const { label, value } = ssnType || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-
-                            <FormHelperText>{ssnTypeError && ssnTypeError}</FormHelperText>
-                          </FormControl>
-                        )
-                      }}
+                      error={ssnTypeError}
+                      options={MAPPED_SSN_TYPES}
                     />
                   </Grid>
                 </Grid>
