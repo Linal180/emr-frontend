@@ -107,7 +107,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
               speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
               ssnType: selectedSsnType as SsnType || SsnType.Medicare, roleType: UserRole.Doctor, adminId: userId || "",
               languagesSpoken: languagesSpoken || "", taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
-              deaActiveDate: deaActiveDate || "" , deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
+              deaActiveDate: deaActiveDate || "", deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
               upin: upin || "", emcProviderId: emcProviderId || "", medicareGrpNumber: medicareGrpNumber || "",
               medicaidGrpNumber: medicaidGrpNumber || "", meammographyCertNumber: meammographyCertNumber || "",
               campusGrpNumber: campusGrpNumber || "", blueShildNumber: blueShildNumber || "", taxIdStuff: taxIdStuff || "",
@@ -472,6 +472,14 @@ const AddDoctorForm: FC = (): JSX.Element => {
 
                         <FormControlLabel
                           label="Monday"
+                          labelPlacement="start"
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
+                          label="Tuesday"
                           labelPlacement="start"
                           className={classes.controlLabel}
                           control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}

@@ -30,7 +30,7 @@ const FacilityTable: FC = (): JSX.Element => {
     variables: {
       facilityInput: {
         paginationOptions: {
-          page: 1,
+          page,
           limit: PAGE_LIMIT
         }
       }
