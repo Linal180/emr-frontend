@@ -263,6 +263,13 @@ export const theme = createTheme({
       marginNormal: {
         position: 'relative',
         paddingBottom: customTheme.spacing(3)
+      },
+
+      root: {
+        "& .MuiAutocomplete-input": {
+          height: 'auto',
+          padding: '3.7px 0px 0 4px !important'
+        }
       }
     },
 
@@ -435,6 +442,16 @@ export const theme = createTheme({
         fontWeight: 500,
         color: BLACK_ONE
       }
-    }
+    },
+
+    MuiSelect: {
+      select: {
+        paddingTop: 13,
+      },
+
+      selectMenu: {
+        minHeight: 42,
+      }
+    },
   },
 });

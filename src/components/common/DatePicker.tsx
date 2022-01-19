@@ -25,9 +25,10 @@ const DatePicker: FC<DatePickerProps> = ({ name, label, error }): JSX.Element =>
 
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
+              {...field}
               id={`${name}-dialog`}
               variant="inline"
-              format="dd/MM/yyyy"
+              format="MM/dd/yyyy"
               inputVariant="outlined"
               KeyboardButtonProps={{ 'aria-label': 'change date', }}
               open={openPicker}

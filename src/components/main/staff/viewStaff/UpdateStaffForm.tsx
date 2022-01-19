@@ -2,27 +2,28 @@
 import { useEffect, FC, useContext } from 'react'
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
 import CardComponent from "../../../common/CardComponent";
 import UpdateStaffController from "./UpdateStaffController";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { formatDate } from "../../../../utils";
 import { ListContext } from '../../../../context/listContext';
+import { renderFacilities, setRecord } from "../../../../utils";
 import { updateStaffSchema } from '../../../../validationSchemas';
-import { MappedRoleInterface, ParamsType } from "../../../../interfacesTypes";
-import { CreateStaffInput, UserRole, Gender, useGetStaffLazyQuery, useUpdateStaffMutation, UpdateStaffInput } from "../../../../generated/graphql";
-import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, MAPPED_GENDER, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, MAPPED_ROLES, PROVIDER } from "../../../../constants";
+import { ParamsType, ExtendedUpdateStaffInputProps } from "../../../../interfacesTypes";
+import { Gender, useGetStaffLazyQuery, useUpdateStaffMutation } from "../../../../generated/graphql";
+import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER } from "../../../../constants";
 
 const UpdateStaffForm: FC = () => {
   const { id } = useParams<ParamsType>();
   const { facilityList } = useContext(ListContext)
-  const methods = useForm<UpdateStaffInput>({
+  const methods = useForm<ExtendedUpdateStaffInputProps>({
     mode: "all",
     resolver: yupResolver(updateStaffSchema)
   });
@@ -30,6 +31,10 @@ const UpdateStaffForm: FC = () => {
   const { reset, setValue, handleSubmit, control, formState: { errors } } = methods;
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       Alert.error(message)
     },
@@ -41,26 +46,29 @@ const UpdateStaffForm: FC = () => {
         const { status } = response
 
         if (staff && status && status === 200) {
-          const { firstName, lastName, username, email, phone, mobile, dob, gender, facilityId, user } = staff || {}
+          const { firstName, lastName, username, email, phone, mobile, dob, gender, facilityId, user, facility } = staff || {}
           const { roles } = user || {}
           const { role } = (roles && roles[0]) || {}
+          const { name } = facility || {}
 
           email && setValue('email', email)
           phone && setValue('phone', phone)
           mobile && setValue('mobile', mobile)
-          gender && setValue('gender', gender)
-          dob && setValue('dob', formatDate(dob))
+          dob && setValue('dob', dob)
           lastName && setValue('lastName', lastName)
           username && setValue('username', username)
           firstName && setValue('firstName', firstName)
-          role && setValue('roleType', role as UserRole)
-          facilityId && setValue('facilityId', facilityId)
+          role && setValue('roleType', setRecord(role, role))
+          gender && setValue('gender', setRecord(gender, gender))
+          facilityId && setValue('facilityId', setRecord(facilityId, name || ''))
         }
       }
     }
   });
 
   const [updateStaff, { loading: updateStaffLoading }] = useUpdateStaffMutation({
+    fetchPolicy: "network-only",
+
     onError({ message }) {
       Alert.error(message)
     },
@@ -95,12 +103,15 @@ const UpdateStaffForm: FC = () => {
     }
   }, [getStaff, id])
 
-  const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, email, phone, mobile, dob, gender, facilityId }) => {
+  const onSubmit: SubmitHandler<ExtendedUpdateStaffInputProps> = async ({ firstName, lastName, email, phone, mobile, dob, gender, facilityId }) => {
     if (id) {
+      const { id: facilityID } = facilityId
+      const { id: genderId } = gender
+
       await updateStaff({
         variables: {
           updateStaffInput: {
-            id, firstName, lastName, email, phone, mobile, dob, gender, facilityId
+            id, firstName, lastName, email, phone, mobile, dob, gender: genderId as Gender, facilityId: facilityID
           }
         }
       })
@@ -132,59 +143,22 @@ const UpdateStaffForm: FC = () => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6}>
-                        <Controller
+                        <Selector
+                          value={{ id: "", name: "" }}
+                          label={FACILITY}
                           name="facilityId"
-                          defaultValue={""}
-                          control={control}
-                          render={({ field }) => {
-                            return (
-                              <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
-                                <InputLabel id="facilityId" shrink>{FACILITY}</InputLabel>
-                                <Select
-                                  labelId="facilityId"
-                                  id="facility-id"
-                                  variant="outlined"
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                >
-                                  {facilityList?.map((facility) => {
-                                    const { id, name } = facility || {};
-
-                                    return <MenuItem key={id} value={id}>{name}</MenuItem>;
-                                  })}
-                                </Select>
-                                <FormHelperText>{facilityError && facilityError}</FormHelperText>
-                              </FormControl>
-                            )
-                          }}
+                          error={facilityError}
+                          options={renderFacilities(facilityList)}
                         />
                       </Grid>
 
                       <Grid item md={6}>
-                        <Controller
+                        <Selector
+                          value={{ id: "", name: "" }}
+                          label={ROLE}
                           name="roleType"
-                          defaultValue={UserRole.Staff}
-                          control={control}
-                          render={({ field }) => (
-                            <FormControl fullWidth margin='normal' error={Boolean(roleError)}>
-                              <InputLabel id="roleType" shrink>{ROLE}</InputLabel>
-                              <Select
-                                labelId="roleType"
-                                id="select-role"
-                                variant="outlined"
-                                value={field.value}
-                                disabled
-                                onChange={field.onChange}
-                              >
-                                {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
-                                  const { label, value } = role;
-
-                                  return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                                })}
-                              </Select>
-                              <FormHelperText>{roleError && roleError}</FormHelperText>
-                            </FormControl>
-                          )}
+                          error={roleError}
+                          options={MAPPED_ROLES}
                         />
                       </Grid>
                     </Grid>
@@ -213,31 +187,12 @@ const UpdateStaffForm: FC = () => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <Controller
+                        <Selector
+                          value={{ id: "", name: "" }}
+                          label={GENDER}
                           name="gender"
-                          defaultValue={Gender.Male}
-                          control={control}
-                          render={({ field }) => {
-                            return (
-                              <FormControl fullWidth error={Boolean(genderError)} margin='normal'>
-                                <InputLabel id="gender" shrink>{GENDER}</InputLabel>
-                                <Select
-                                  labelId="gender"
-                                  id="gender-id"
-                                  variant="outlined"
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                >
-                                  {MAPPED_GENDER.map((gender) => {
-                                    const { label, value } = gender || {};
-
-                                    return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                                  })}
-                                </Select>
-                                <FormHelperText>{genderError && genderError}</FormHelperText>
-                              </FormControl>
-                            )
-                          }}
+                          error={genderError}
+                          options={MAPPED_GENDER}
                         />
                       </Grid>
 
