@@ -81,7 +81,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
 
           if (billingAddress) {
             const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
-            console.log(billingAddress, ";;;;;;;;;;;;;;;")
             fax && setValue('billingFax', fax)
             city && setValue('billingCity', city)
             email && setValue('billingEmail', email)
