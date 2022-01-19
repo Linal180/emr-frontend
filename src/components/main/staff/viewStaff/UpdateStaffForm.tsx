@@ -14,8 +14,8 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { ListContext } from '../../../../context/listContext';
+import { renderFacilities, setRecord } from "../../../../utils";
 import { updateStaffSchema } from '../../../../validationSchemas';
-import { renderFacilities, formatDate, setRecord } from "../../../../utils";
 import { ParamsType, ExtendedUpdateStaffInputProps } from "../../../../interfacesTypes";
 import { Gender, useGetStaffLazyQuery, useUpdateStaffMutation } from "../../../../generated/graphql";
 import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER } from "../../../../constants";
@@ -54,7 +54,7 @@ const UpdateStaffForm: FC = () => {
           email && setValue('email', email)
           phone && setValue('phone', phone)
           mobile && setValue('mobile', mobile)
-          dob && setValue('dob', formatDate(dob))
+          dob && setValue('dob', dob)
           lastName && setValue('lastName', lastName)
           username && setValue('username', username)
           firstName && setValue('firstName', firstName)

@@ -65,7 +65,7 @@ export const billingAddressSchema = {
 
 const staffBasicSchema = {
   ...roleTypeSchema,
-  dob: yup.string().required(RequiredMessage(DOB)),
+  dob: yup.date().required(RequiredMessage(DOB)),
   gender: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -116,9 +116,8 @@ export const facilitySchema = yup.object({
 })
 
 export const basicDoctorSchema = {
-  // ...roleTypeSchema,
   npi: yup.string().required(RequiredMessage(NPI)),
-  dob: yup.string().required(RequiredMessage(DOB)),
+  dob: yup.date().required(RequiredMessage(DOB)),
   ssn: yup.string().required(RequiredMessage(SSN)),
   upin: yup.string().required(RequiredMessage(UPIN)),
   taxId: yup.string().required(RequiredMessage(TAX_ID)),
@@ -139,21 +138,20 @@ export const basicDoctorSchema = {
   }).required(RequiredMessage(SPECIALTY)),
   dpsCtpNumber: yup.string().required(RequiredMessage(CTP_NUMBER)),
   taxIdStuff: yup.string().required(RequiredMessage(TAX_ID_STUFF)),
-  deaTermDate: yup.string().required(RequiredMessage(DEA_TERM_DATE)),
+  deaTermDate: yup.date().required(RequiredMessage(DEA_TERM_DATE)),
   stateLicense: yup.string().required(RequiredMessage(STATE_LICENSE)),
   taxonomyCode: yup.string().required(RequiredMessage(TAMXONOMY_CODE)),
-  deaActiveDate: yup.string().required(RequiredMessage(DEA_ACTIVE_DATE)),
+  deaActiveDate: yup.date().required(RequiredMessage(DEA_ACTIVE_DATE)),
   emcProviderId: yup.string().required(RequiredMessage(EMC_PROVIDER_ID)),
   languagesSpoken: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
-  // billingFacility: yup.string().required(RequiredMessage(BILLING_FACILITY)),
   campusGrpNumber: yup.string().required(RequiredMessage(CAMPUS_GRP_NUMBER)),
   blueShildNumber: yup.string().required(RequiredMessage(BLUE_SHIED_NUMBER)),
-  licenseTermDate: yup.string().required(RequiredMessage(LICENSE_TERM_DATE)),
+  licenseTermDate: yup.date().required(RequiredMessage(LICENSE_TERM_DATE)),
   providerIntials: yup.string().required(RequiredMessage(PROVIDER_INITIALS)),
   specialityLicense: yup.string().required(RequiredMessage(SPECIALTY_LICENSE)),
   degreeCredentials: yup.string().required(RequiredMessage(DEGREE_CREDENTIALS)),
   anesthesiaLicense: yup.string().required(RequiredMessage(ANESTHESIA_LICENSE)),
-  licenseActiveDate: yup.string().required(RequiredMessage(LICENSE_ACTIVE_DATE)),
+  licenseActiveDate: yup.date().required(RequiredMessage(LICENSE_ACTIVE_DATE)),
   medicareGrpNumber: yup.string().required(RequiredMessage(MEDICARE_GRP_NUMBER)),
   medicaidGrpNumber: yup.string().required(RequiredMessage(MEDICAID_GRP_NUMBER)),
   prescriptiveAuthNumber: yup.string().required(RequiredMessage(PRESCRIPTIVE_AUTH_NUMBER)),

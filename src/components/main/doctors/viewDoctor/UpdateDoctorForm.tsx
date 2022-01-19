@@ -12,7 +12,7 @@ import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { formatDate, getDate, getTimestamps, renderFacilities, setRecord } from "../../../../utils";
+import { getDate, getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import { AuthContext } from '../../../../context';
 import { doctorSchema } from '../../../../validationSchemas';
 import { ListContext } from '../../../../context/listContext';
@@ -75,13 +75,13 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
 
           const { id: facilityId, name } = facility || {}
 
+          dob && setValue('dob', dob)
           npi && setValue('npi', npi)
           ssn && setValue('ssn', ssn)
           upin && setValue('upin', upin)
           taxId && setValue('taxId', taxId)
           prefix && setValue('prefix', prefix)
           suffix && setValue('suffix', suffix)
-          dob && setValue('dob', formatDate(dob))
           lastName && setValue('lastName', lastName)
           deaNumber && setValue('deaNumber', deaNumber)
           firstName && setValue('firstName', firstName)
@@ -92,23 +92,23 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
           stateLicense && setValue('stateLicense', stateLicense)
           emcProviderId && setValue('emcProviderId', emcProviderId)
           ssnType && setValue('ssnType', setRecord(ssnType, ssnType))
+          deaTermDate && setValue('deaTermDate', getDate(deaTermDate))
           blueShildNumber && setValue('blueShildNumber', blueShildNumber)
           campusGrpNumber && setValue('campusGrpNumber', campusGrpNumber)
           providerIntials && setValue('providerIntials', providerIntials)
           languagesSpoken && setValue('languagesSpoken', languagesSpoken)
+          deaActiveDate && setValue('deaActiveDate', getDate(deaActiveDate))
           specialityLicense && setValue('specialityLicense', specialityLicense)
           anesthesiaLicense && setValue('anesthesiaLicense', anesthesiaLicense)
           medicareGrpNumber && setValue('medicareGrpNumber', medicareGrpNumber)
           medicaidGrpNumber && setValue('medicaidGrpNumber', medicaidGrpNumber)
           degreeCredentials && setValue('degreeCredentials', degreeCredentials)
           speciality && setValue('speciality', setRecord(speciality, speciality))
-          deaTermDate && setValue('deaTermDate', formatDate(getDate(deaTermDate)))
+          licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
           facilityId && setValue('facilityId', setRecord(facilityId || '', name || ''))
-          deaActiveDate && setValue('deaActiveDate', formatDate(getDate(deaActiveDate)))
-          licenseTermDate && setValue('licenseTermDate', formatDate(getDate(licenseTermDate)))
+          licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
           meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
           prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
-          licenseActiveDate && setValue('licenseActiveDate', formatDate(getDate(licenseActiveDate)))
 
           setDoctor(doctor)
 
@@ -246,10 +246,6 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
     }
   };
 
-  // useEffect(() => {
-  //   setValue("facilityId", facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : "")
-  // }, [facilityList, setValue]);
-
   const {
     dob: { message: dobError } = {},
     ssn: { message: ssnError } = {},
@@ -257,8 +253,6 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
     suffix: { message: suffixError } = {},
     ssnType: { message: ssnTypeError } = {},
     lastName: { message: lastNameError } = {},
-    // password: { message: passwordError } = {},
-    // roleType: { message: roleTypeError } = {},
     firstName: { message: firstNameError } = {},
     speciality: { message: specialtyError } = {},
     middleName: { message: middleNameError } = {},

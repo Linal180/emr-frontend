@@ -12,7 +12,7 @@ import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
-import { formatDate, renderFacilities } from '../../../../utils';
+import { renderFacilities } from '../../../../utils';
 import { doctorSchema } from '../../../../validationSchemas';
 import { DoctorInputProps } from "../../../../interfacesTypes";
 import { useFormStyles } from '../../../../styles/formsStyles';
@@ -107,12 +107,12 @@ const AddDoctorForm: FC = (): JSX.Element => {
               speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
               ssnType: selectedSsnType as SsnType || SsnType.Medicare, roleType: UserRole.Doctor, adminId: userId || "",
               languagesSpoken: languagesSpoken || "", taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
-              deaActiveDate: formatDate(deaActiveDate || "") , deaTermDate: formatDate(deaTermDate || ""), taxId: taxId || "", npi: npi || "",
+              deaActiveDate: deaActiveDate || "" , deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
               upin: upin || "", emcProviderId: emcProviderId || "", medicareGrpNumber: medicareGrpNumber || "",
               medicaidGrpNumber: medicaidGrpNumber || "", meammographyCertNumber: meammographyCertNumber || "",
               campusGrpNumber: campusGrpNumber || "", blueShildNumber: blueShildNumber || "", taxIdStuff: taxIdStuff || "",
               specialityLicense: specialityLicense || "", anesthesiaLicense: anesthesiaLicense || "", dpsCtpNumber: dpsCtpNumber || "",
-              stateLicense: stateLicense || "", licenseActiveDate: formatDate(licenseActiveDate || ""), licenseTermDate: formatDate(licenseTermDate || ""),
+              stateLicense: stateLicense || "", licenseActiveDate: licenseActiveDate || "", licenseTermDate: licenseTermDate || "",
               prescriptiveAuthNumber: prescriptiveAuthNumber || "",
             },
 
