@@ -103,6 +103,7 @@ export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
 export const EMR = "EMR";
+export const ADD_BILL = "Add Bill";
 export const LOGOUT_TEXT = "Logout";
 export const CODE = "Code";
 export const TRUE = "TRUE";
@@ -337,6 +338,7 @@ export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
@@ -494,6 +496,7 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: INVOICES_TEXT,
+        link: INVOICES_ROUTE,
       },
       {
         name: INSURANCE_CLAIMS_TEXT,
@@ -594,6 +597,8 @@ export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }
 export const APPOINTMENT_NEW_BREAD = { text: ADD_APPOINTMENT, link: `${VIEW_APPOINTMENTS_ROUTE}/new` }
+export const RESULT_NEW_BREAD = { text: ADD_RESULT, link: `${LAB_RESULTS_ROUTE}/new` }
+export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE }
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: '' }
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
@@ -606,5 +611,6 @@ export const BILLING_BREAD = { text: BILLING_TEXT, link: '' }
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: '' }
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE }
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
+export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
 export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
