@@ -58,8 +58,10 @@ const AddFacilityForm: FC = (): JSX.Element => {
   const onSubmit: SubmitHandler<CustomFacilityInputProps> = async (inputs) => {
     const {
       name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
-      revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode, address, address2,
-      zipCode,
+      revenueCode, practiceType, serviceCode,
+      phone, email, fax, city, state, country, address, address2, zipCode,
+      billingPhone, billingEmail, billingFax, billingCity, billingState, billingCountry, billingAddress2,
+      billingAddress, billingZipCode
     } = inputs;
 
     const { id: selectedPracticeType } = practiceType;
@@ -82,9 +84,9 @@ const AddFacilityForm: FC = (): JSX.Element => {
             address2: address2 || ''
           },
           createBillingAddressInput: {
-            phone: phone || '', email: email || '', fax: fax || '', city: city || '',
-            state: state || '', country: country || '', zipCode: zipCode || '', address: address || '',
-            address2: address2 || ''
+            phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', city: billingCity || '',
+            state: billingState || '', country: billingCountry || '', zipCode: billingZipCode || '', address: billingAddress || '',
+            address2: billingAddress2 || ''
           },
         }
       }
