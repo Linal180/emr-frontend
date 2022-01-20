@@ -1,35 +1,35 @@
 // packages block
-import { ChangeEvent, FC, useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom";
-import { Home } from "@material-ui/icons";
+import { ChangeEvent, FC, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
-import Alert from "../../../common/Alert";
-import TableLoader from "../../../common/TableLoader";
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import Alert from "../../../../common/Alert";
+import TableLoader from "../../../../common/TableLoader";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../utils";
-import { ListContext } from "../../../../context/listContext";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, FACILITY_LOCATIONS_ROUTE } from "../../../../constants";
+import { renderTh } from "../../../../../utils";
+import { ParamsType } from "../../../../../interfacesTypes";
+import { useTableStyles } from "../../../../../styles/tableStyles";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
+import { ContactPayload, ContactsPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
+import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY } from "../../../../../constants";
 
-const FacilityTable: FC = (): JSX.Element => {
+const LocationTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const { fetchAllFacilityList } = useContext(ListContext)
+  const { id: facilityId } = useParams<ParamsType>();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [totalPage, setTotalPage] = useState<number>(0);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [deleteFacilityId, setDeleteFacilityId] = useState<string>("");
-  const [facilities, setFacilities] = useState<FacilitiesPayload['facility']>([]);
+  const [deleteLocationId, setDeleteLocationId] = useState<string>("");
+  const [locations, setLocations] = useState<ContactsPayload['contacts']>([]);
 
-  const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
+  const [findAllContacts, { loading, error }] = useFindAllContactsLazyQuery({
     variables: {
-      facilityInput: {
+      contactInput: {
+        facilityId,
         paginationOptions: {
           page,
           limit: PAGE_LIMIT
@@ -41,14 +41,14 @@ const FacilityTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      setFacilities([])
+      setLocations([])
     },
 
     onCompleted(data) {
-      const { findAllFacility } = data || {};
+      const { findAllContacts } = data || {};
 
-      if (findAllFacility) {
-        const { facility, pagination } = findAllFacility
+      if (findAllContacts) {
+        const { contacts, pagination } = findAllContacts
 
         if (!searchQuery) {
           if (pagination) {
@@ -56,38 +56,36 @@ const FacilityTable: FC = (): JSX.Element => {
             totalPages && setTotalPage(totalPages)
           }
 
-          facility && setFacilities(facility)
+          contacts && setLocations(contacts)
         }
       }
     }
   });
 
-  const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
+  const [removeContact, { loading: deleteLocationLoading }] = useRemoveContactMutation({
     onError() {
-      Alert.error(CANT_DELETE_FACILITY)
+      Alert.error(CANT_DELETE_LOCATION)
       setOpenDelete(false)
     },
 
     onCompleted(data) {
       if (data) {
-        const { removeFacility: { response } } = data
+        const { removeContact: { response } } = data
 
         if (response) {
-          const { message } = response
-          message && Alert.success(message);
+          Alert.success(LOCATION_DELETED_SUCCESSFULLY);
           setOpenDelete(false)
-          findAllFacility();
-          fetchAllFacilityList();
+          findAllContacts();
         }
       }
     }
   });
 
   useEffect(() => {
-    if (!searchQuery) {
-      findAllFacility()
+    if (!searchQuery && facilityId) {
+      findAllContacts()
     }
-  }, [page, findAllFacility, searchQuery]);
+  }, [page, findAllContacts, searchQuery, facilityId]);
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
 
@@ -95,17 +93,17 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setDeleteFacilityId(id)
+      setDeleteLocationId(id)
       setOpenDelete(true)
     }
   };
 
-  const handleDeleteFacility = async () => {
-    if (deleteFacilityId) {
-      await removeFacility({
+  const handleDeleteLocation = async () => {
+    if (deleteLocationId) {
+      await removeContact({
         variables: {
-          removeFacility: {
-            id: deleteFacilityId
+          removeContact: {
+            id: deleteLocationId
           }
         }
       })
@@ -139,7 +137,6 @@ const FacilityTable: FC = (): JSX.Element => {
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}
-                {renderTh(CODE)}
                 {renderTh(CITY)}
                 {renderTh(STATE)}
                 {renderTh(ZIP)}
@@ -158,15 +155,12 @@ const FacilityTable: FC = (): JSX.Element => {
                   </TableCell>
                 </TableRow>
               ) : (
-                facilities?.map((facility: FacilityPayload['facility'], index: number) => {
-                  const { id, name, code, contacts } = facility || {};
-                  const facilityContact = contacts && contacts[0]
-                  const { email, phone, fax, zipCode, city, state } = facilityContact || {}
+                locations?.map((location: ContactPayload['contact']) => {
+                  const { id, name, city, state, zipCode, fax, phone, email } = location || {};
 
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{name}</TableCell>
-                      <TableCell scope="row">{code}</TableCell>
                       <TableCell scope="row">{city}</TableCell>
                       <TableCell scope="row">{state}</TableCell>
                       <TableCell scope="row">{zipCode}</TableCell>
@@ -175,17 +169,9 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Link to={`${FACILITIES_ROUTE}/${id}/${FACILITY_LOCATIONS_ROUTE}`}>
-                            <IconButton size="small">
-                              <Home color="primary" />
-                            </IconButton>
-                          </Link>
-
-                          <Link to={`${FACILITIES_ROUTE}/${id}`}>
-                            <IconButton size="small">
-                              <EditIcon />
-                            </IconButton>
-                          </Link>
+                          <IconButton size="small">
+                            <EditIcon />
+                          </IconButton>
 
                           <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
@@ -199,18 +185,18 @@ const FacilityTable: FC = (): JSX.Element => {
             </TableBody>
           </Table>
 
-          {((!loading && facilities?.length === 0) || error) && (
+          {((!loading && locations?.length === 0) || error) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>
           )}
 
           <ConfirmationModal
-            title={FACILITY}
+            title={LOCATION}
             isOpen={openDelete}
-            isLoading={deleteFacilityLoading}
-            description={DELETE_FACILITY_DESCRIPTION}
-            handleDelete={handleDeleteFacility}
+            isLoading={deleteLocationLoading}
+            description={DELETE_LOCATION_DESCRIPTION}
+            handleDelete={handleDeleteLocation}
             setOpen={(open: boolean) => setOpenDelete(open)}
           />
         </Box>
@@ -230,4 +216,4 @@ const FacilityTable: FC = (): JSX.Element => {
   );
 };
 
-export default FacilityTable;
+export default LocationTable;

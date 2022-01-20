@@ -1,18 +1,17 @@
 query FindAllPatient($patientInput: PatientInput!) {
 	findAllPatient(patientInput: $patientInput) {
+    facilityId
+    
     pagination {
       page
       totalCount
       totalPages
     }
-
-    facilityId
-
+    
     response {
-      name
       error
       status
-	  message
+	    message
     }
 
     patients {
@@ -31,9 +30,9 @@ query FindAllPatient($patientInput: PatientInput!) {
       registrationDepartment
       primaryDepartment
       registrationDate
-      deseasedDate
+      deceasedDate
       privacyNotice
-      relaseOfInfoBill
+      releaseOfInfoBill
       callToConsent
       medicationHistoryAuthority
       patientNote
@@ -53,41 +52,41 @@ query FindAllPatient($patientInput: PatientInput!) {
       statementNoteDateTo
       createdAt
       updatedAt
-
+      
       contacts {
-          id
-          email
-          name
-          suffix
-          firstName
-          middleName
-          lastName
-          phone
-          mobile
-          pager
-          fax
-          address
-          address2
-          zipCode
-          city
-          state
-          country
-          ssn
-          employerName
-          relationship
-          contactType
+        id
+        email
+        name
+        suffix
+        firstName
+        middleName
+        lastName
+        phone
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        ssn
+        employerName
+        relationship
+        contactType
       }
 
       employer {
-          id
-          name
-          email
-          phone
-          mobile
-          industry
-          usualOccupation
-          createdAt
-          updatedAt
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
       }
 
       facility {
@@ -107,7 +106,7 @@ query FindAllPatient($patientInput: PatientInput!) {
         createdAt
         updatedAt
       }
-
+      
       user {
         id
         email
@@ -121,7 +120,6 @@ query FindAllPatient($patientInput: PatientInput!) {
         createdAt
         updatedAt
       }
-      
     }
   }
 }

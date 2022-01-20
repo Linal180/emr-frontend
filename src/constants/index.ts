@@ -191,6 +191,9 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
+export const ADD_LOCATION = "Add Facility Location";
+export const UPDATE_LOCATION = "Update Facility Location";
+export const LOCATION = "Location";
 export const VIEW_FACILITY = "View Facility";
 export const PHONE_NUMBER = "Phone number";
 export const MOBILE_NUMBER = "Mobile number";
@@ -202,6 +205,7 @@ export const UNAUTHORIZED = "Unauthorized";
 export const MANAGEMENT_TEXT = "Management";
 export const PROPERTIES_TEXT = "Properties";
 export const FACILITIES_TEXT = "Facilities";
+export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const TOKEN_INVALID = "Token Invalid";
 export const RESET_FILTERS = "Reset Filters";
 export const NO_DATA_FOUND = "No data found";
@@ -306,6 +310,7 @@ export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
+export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
@@ -342,6 +347,7 @@ export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
+export const FACILITY_LOCATIONS_ROUTE = `${FACILITIES_ROUTE}/locations`;
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -391,9 +397,11 @@ export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
+export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
 export const USER_EXIST = "User already exists with this email.";
 export const FACILITY_UPDATED = "Facility updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
+export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
@@ -591,6 +599,7 @@ export const MAPPED_SSN_TYPES: SelectorOption[] = [
 
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
+export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
