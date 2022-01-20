@@ -81,6 +81,15 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
+export interface ServiceConfirmationTypes extends DialogTypes {
+  isLoading?: boolean;
+  title?: string;
+  success?: boolean;
+  actionText?: string;
+  description?: string;
+  handleService: () => void;
+}
+
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
 }
@@ -130,6 +139,7 @@ export interface IPageHeader {
   buttonText?: string;
   noAdd?: boolean;
   path?: Path[];
+  openModel?: boolean;
 }
 
 export interface IStepperButtons {
