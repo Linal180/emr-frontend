@@ -10,6 +10,7 @@ import client from './apollo'
 import { theme } from "./theme/theme";
 import { AuthContextProvider, AppContextProvider } from './context'
 import { ListContextProvider } from "./context/listContext";
+import 'rc-time-picker/assets/index.css';
 import './styles/styles.css'
 
 const App = () => {
