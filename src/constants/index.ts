@@ -2,6 +2,7 @@
 import { MappedGenderInterface, SelectorOption } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import { Gender, PracticeType, ServiceCode, Speciality, SsnType, UserRole } from "../generated/graphql";
+import { formatValue } from '../utils';
 
 
 // regex
@@ -15,6 +16,8 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 export const ALL_STAFF = "Staff";
 export const CREATE_STAFF = "Create Staff";
 export const CREATE_FACILITY = "Create facility";
+export const CREATE_LOCATION = "Create location";
+export const UPDATE_LOCATION_TEXT = "Update location";
 export const ADD_STAFF = "Add Staff";
 export const CREATE_DOCTOR = "Create Doctor";
 export const ADD_DOCTOR = "Add Doctor";
@@ -29,9 +32,12 @@ export const UPDATE_DOCTOR = "Update Doctor";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
 export const PROVIDER = "Provider";
+export const CONTACT = "Contact";
 export const STAFF_BASIC_INFO = "Staff Basic Info";
+export const LOCATION_INFO = "Location Info";
 export const FACILITY_INFO = "Facility Information";
 export const FACILITY_CONTACT = "Contact";
+export const ASSOCIATED_FACILITY = "Associated Facility";
 export const BILLING_ADDRESS = "Billing Address";
 export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
@@ -102,6 +108,7 @@ export const REPORTS = "Reports";
 export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
+export const TYPE = "Type";
 export const EMR = "EMR";
 export const ADD_BILL = "Add Bill";
 export const LOGOUT_TEXT = "Logout";
@@ -384,6 +391,8 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
+export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const TRY_AGAIN = "Something went wrong. Try again!";
 export const INVALID_EMAIL = "Invalid email address";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
@@ -515,86 +524,65 @@ export const APP_MENU_ITEMS = [
 ];
 
 export const MAPPED_ROLES: SelectorOption[] = [
-  { id: UserRole.Admin, name: 'Admin' },
-  { id: UserRole.Nurse, name: "Nurse" },
-  { id: UserRole.Staff, name: "Staff" },
-  { id: UserRole.Billing, name: 'Billing' },
+  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
+  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
+  { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
+  { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
 ];
 
 export const MAPPED_GENDER: SelectorOption[] = [
-  { id: Gender.Male, name: 'Male' },
-  { id: Gender.Female, name: 'Female' },
-  { id: Gender.Other, name: 'Other' },
+  { id: Gender.Male, name: formatValue(Gender.Male) },
+  { id: Gender.Female, name: formatValue(Gender.Female) },
+  { id: Gender.Other, name: formatValue(Gender.Other) },
 ]
 
 export const MAPPED_GENDER_1: MappedGenderInterface[] = [
   { value: Gender.Male, label: 'Male' },
-  { value: Gender.Female, label: 'Female' },
   { value: Gender.Other, label: 'Other' },
-]
-export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
-  { id: PracticeType.Hospital, name: 'Hospital' },
-  { id: PracticeType.Clinic, name: 'Clinic' },
-  { id: PracticeType.Lab, name: 'Lab' },
+  { value: Gender.Female, label: 'Female' },
 ]
 
-const MAPPED_SERVICE_CODE = {
-  AMBULANCE_41: "Ambulance 41",
-  AMBULANCE_42: "Ambulance 42",
-  AMBULANCE_24: "Ambulance 24",
-  ASSISTED_LIVING_13: "Assisted Living 13",
-  BIRTHING_CENTER_25: "Birthing Center 25",
-  COMMUNITY_MENTAL_HEALTH_CENTER_53: "CMHC 53",
-  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61: "CIRF 61",
-  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62: "CORF 62",
-  CUSTODIAL_CARE_FACILITY_33: "CAF 33",
-  EMERGENCY_ROOM_23: "Emergency Room 23",
-  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65: "ESRDTF 65",
-  FEDERALLY_QUALIFIED_HEALTH_CENTER_50: "FQHC 50",
-  GROUP_HOME_14: "Group Home 14",
-  HOMELESS_SHELTER_04: "Homeless Shelter 04",
-  HOSPICE_34: "HOSPICE 34",
-  INDEPENDENT_CLINIC_49: "Independent Clinic 49",
-  INDEPENDENT_LABORATORY_81: "Independent Lab 81",
-  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05: "IHSFSF 05",
-  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06: "IHSPBF 06",
-}
+export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
+  { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
+  { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
+  { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
+]
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
-  { id: ServiceCode.Hospice_34, name: MAPPED_SERVICE_CODE.HOSPICE_34 },
-  { id: ServiceCode.Ambulance_41, name: MAPPED_SERVICE_CODE.AMBULANCE_41 },
-  { id: ServiceCode.Ambulance_42, name: MAPPED_SERVICE_CODE.AMBULANCE_42 },
-  { id: ServiceCode.Ambulance_24, name: MAPPED_SERVICE_CODE.AMBULANCE_24 },
-  { id: ServiceCode.GroupHome_14, name: MAPPED_SERVICE_CODE.GROUP_HOME_14 },
-  { id: ServiceCode.EmergencyRoom_23, name: MAPPED_SERVICE_CODE.EMERGENCY_ROOM_23 },
-  { id: ServiceCode.AssistedLiving_13, name: MAPPED_SERVICE_CODE.ASSISTED_LIVING_13 },
-  { id: ServiceCode.BirthingCenter_25, name: MAPPED_SERVICE_CODE.BIRTHING_CENTER_25 },
-  { id: ServiceCode.HomelessShelter_04, name: MAPPED_SERVICE_CODE.HOMELESS_SHELTER_04 },
-  { id: ServiceCode.IndependentClinic_49, name: MAPPED_SERVICE_CODE.INDEPENDENT_CLINIC_49 },
-  { id: ServiceCode.IndependentLaboratory_81, name: MAPPED_SERVICE_CODE.INDEPENDENT_LABORATORY_81 },
-  { id: ServiceCode.CustodialCareFacility_33, name: MAPPED_SERVICE_CODE.CUSTODIAL_CARE_FACILITY_33 },
-  { id: ServiceCode.CommunityMentalHealthCenter_53, name: MAPPED_SERVICE_CODE.COMMUNITY_MENTAL_HEALTH_CENTER_53 },
-  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: MAPPED_SERVICE_CODE.FEDERALLY_QUALIFIED_HEALTH_CENTER_50 },
-  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: MAPPED_SERVICE_CODE.END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65 },
-  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05 },
-  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06 },
-  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: MAPPED_SERVICE_CODE.COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61 },
-  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: MAPPED_SERVICE_CODE.COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62 }
+  { id: ServiceCode.Hospice_34, name: formatValue(ServiceCode.Hospice_34) },
+  { id: ServiceCode.Ambulance_41, name: formatValue(ServiceCode.Ambulance_41) },
+  { id: ServiceCode.Ambulance_42, name: formatValue(ServiceCode.Ambulance_42) },
+  { id: ServiceCode.Ambulance_24, name: formatValue(ServiceCode.Ambulance_24) },
+  { id: ServiceCode.GroupHome_14, name: formatValue(ServiceCode.GroupHome_14) },
+  { id: ServiceCode.EmergencyRoom_23, name: formatValue(ServiceCode.EmergencyRoom_23) },
+  { id: ServiceCode.AssistedLiving_13, name: formatValue(ServiceCode.AssistedLiving_13) },
+  { id: ServiceCode.BirthingCenter_25, name: formatValue(ServiceCode.BirthingCenter_25) },
+  { id: ServiceCode.HomelessShelter_04, name: formatValue(ServiceCode.HomelessShelter_04) },
+  { id: ServiceCode.IndependentClinic_49, name: formatValue(ServiceCode.IndependentClinic_49) },
+  { id: ServiceCode.IndependentLaboratory_81, name: formatValue(ServiceCode.IndependentLaboratory_81) },
+  { id: ServiceCode.CustodialCareFacility_33, name: formatValue(ServiceCode.CustodialCareFacility_33) },
+  { id: ServiceCode.CommunityMentalHealthCenter_53, name: formatValue(ServiceCode.CommunityMentalHealthCenter_53) },
+  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: formatValue(ServiceCode.FederallyQualifiedHealthCenter_50) },
+  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: formatValue(ServiceCode.EndStageRenalDiseaseTreatmentFacility_65) },
+  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: formatValue(ServiceCode.IndianHealthServiceFreeStandingFacility_05) },
+  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: formatValue(ServiceCode.IndianHealthServiceProviderBasedFacility_06) },
+  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: formatValue(ServiceCode.ComprehensiveInpatientRehabilitationFacility_61) },
+  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: formatValue(ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62) },
 ];
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [
-  { id: Speciality.Neurology, name: "Neurology" },
-  { id: Speciality.Pharmacist, name: "Pharmacist" },
-  { id: Speciality.Gastroenterology, name: "Gastroenterology" },
-  { id: Speciality.PediatricDentist, name: "PediatricDentist" },
-  { id: Speciality.PhysicianAssistant, name: "PhysicianAssistant" },
+  { id: Speciality.Neurology, name: formatValue(Speciality.Neurology) },
+  { id: Speciality.Pharmacist, name: formatValue(Speciality.Pharmacist) },
+  { id: Speciality.Gastroenterology, name: formatValue(Speciality.Gastroenterology) },
+  { id: Speciality.PediatricDentist, name: formatValue(Speciality.PediatricDentist) },
+  { id: Speciality.PhysicianAssistant, name: formatValue(Speciality.PhysicianAssistant) },
 ];
 
 export const MAPPED_SSN_TYPES: SelectorOption[] = [
-  { id: SsnType.Tanf, name: "Tanf" },
-  { id: SsnType.Oasdi, name: "Oasdi" },
-  { id: SsnType.Medicare, name: "Medicare" },
-  { id: SsnType.Medicaid, name: "Medicaid" },
+  { id: SsnType.Tanf, name: formatValue(SsnType.Tanf) },
+  { id: SsnType.Oasdi, name: formatValue(SsnType.Oasdi) },
+  { id: SsnType.Medicare, name: formatValue(SsnType.Medicare) },
+  { id: SsnType.Medicaid, name: formatValue(SsnType.Medicaid) },
 ];
 
 // Breadcrumb links

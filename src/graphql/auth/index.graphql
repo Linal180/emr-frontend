@@ -73,6 +73,7 @@ query GetLoggedInUser {
           state
           country
           userId
+          serviceCode
           createdAt
           updatedAt
         }

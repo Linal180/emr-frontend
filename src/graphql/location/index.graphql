@@ -47,6 +47,7 @@ query FindAllContacts($contactInput: ContactInput!){
       fax
       address
       address2
+      serviceCode
       zipCode
       city
       state
@@ -80,6 +81,42 @@ mutation RemoveContact($removeContact: RemoveContact!){
       error
       status
       message
+    }
+  }
+}
+
+query FindContact($getContact: GetContact!){
+  getContact(getContact: $getContact){
+    response {
+      error
+      status
+      message
+    }
+    
+    contact {
+      id
+      email
+      name
+      fax
+      address
+      address2
+      phone
+      zipCode
+      city
+      state
+      country
+      facilityId
+      primaryContact
+      serviceCode
+      createdAt
+      updatedAt
+      
+      facility {
+        id
+        name
+        createdAt
+        updatedAt
+      }
     }
   }
 }

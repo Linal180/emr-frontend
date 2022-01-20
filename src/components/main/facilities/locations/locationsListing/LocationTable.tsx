@@ -1,30 +1,28 @@
 // packages block
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, Reducer, useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
+import AddLocationModal from "../locationModal";
 import TableLoader from "../../../../common/TableLoader";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../../utils";
-import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
+import { LocationTableProps, ParamsType } from "../../../../../interfacesTypes";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
-import { ContactPayload, ContactsPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
-import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY } from "../../../../../constants";
+import { locationReducer, Action, initialState, State, ActionType } from '../../../../../reducers/locationReducer';
+import { ContactPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
+import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY, TRY_AGAIN } from "../../../../../constants";
 
-const LocationTable: FC = (): JSX.Element => {
+const LocationTable: FC<LocationTableProps> = ({ locationDispatch }): JSX.Element => {
   const classes = useTableStyles()
   const { id: facilityId } = useParams<ParamsType>();
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [page, setPage] = useState<number>(1);
-  const [totalPage, setTotalPage] = useState<number>(0);
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [deleteLocationId, setDeleteLocationId] = useState<string>("");
-  const [locations, setLocations] = useState<ContactsPayload['contacts']>([]);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(locationReducer, initialState)
+  const { page, totalPages, isEdit, openDelete, openModal, locationId, deleteLocationId, searchQuery, locations } = state;
 
   const [findAllContacts, { loading, error }] = useFindAllContactsLazyQuery({
     variables: {
@@ -37,11 +35,12 @@ const LocationTable: FC = (): JSX.Element => {
       }
     },
 
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() {
-      setLocations([])
+      dispatch({ type: ActionType.SET_LOCATIONS, locations: [] });
     },
 
     onCompleted(data) {
@@ -50,13 +49,10 @@ const LocationTable: FC = (): JSX.Element => {
       if (findAllContacts) {
         const { contacts, pagination } = findAllContacts
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && setTotalPage(totalPages)
-          }
-
-          contacts && setLocations(contacts)
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
+          dispatch({ type: ActionType.SET_LOCATIONS, locations: contacts || [] });
         }
       }
     }
@@ -65,7 +61,7 @@ const LocationTable: FC = (): JSX.Element => {
   const [removeContact, { loading: deleteLocationLoading }] = useRemoveContactMutation({
     onError() {
       Alert.error(CANT_DELETE_LOCATION)
-      setOpenDelete(false)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
     onCompleted(data) {
@@ -74,7 +70,7 @@ const LocationTable: FC = (): JSX.Element => {
 
         if (response) {
           Alert.success(LOCATION_DELETED_SUCCESSFULLY);
-          setOpenDelete(false)
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           findAllContacts();
         }
       }
@@ -87,14 +83,18 @@ const LocationTable: FC = (): JSX.Element => {
     }
   }, [page, findAllContacts, searchQuery, facilityId]);
 
-  const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
+
+  const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
 
   const handleSearch = () => { }
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setDeleteLocationId(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_DELETE_LOCATION_ID, deleteLocationId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+    } else {
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+      Alert.error(TRY_AGAIN)
     }
   };
 
@@ -110,6 +110,18 @@ const LocationTable: FC = (): JSX.Element => {
     }
   };
 
+
+  const handleEdit = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_LOCATION_ID, locationId: id })
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
+    }
+  };
+
+  const handleReload = () => {
+    findAllContacts();
+  }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -117,7 +129,7 @@ const LocationTable: FC = (): JSX.Element => {
           <TextField
             value={searchQuery}
             className={classes.tablesSearchIcon}
-            onChange={({ target: { value } }) => setSearchQuery(value)}
+            onChange={({ target: { value } }) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: value })}
             onKeyPress={({ key }) => key === "Enter" && handleSearch()}
             name="searchQuery"
             variant="outlined"
@@ -168,7 +180,7 @@ const LocationTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{phone}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center" onClick={() => handleEdit(id || '')}>
                           <IconButton size="small">
                             <EditIcon />
                           </IconButton>
@@ -197,17 +209,25 @@ const LocationTable: FC = (): JSX.Element => {
             isLoading={deleteLocationLoading}
             description={DELETE_LOCATION_DESCRIPTION}
             handleDelete={handleDeleteLocation}
-            setOpen={(open: boolean) => setOpenDelete(open)}
+            setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+          />
+
+          <AddLocationModal
+            isEdit={isEdit}
+            isOpen={openModal}
+            reload={handleReload}
+            locationId={locationId}
+            setOpen={(open: boolean) => locationDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: open })}
           />
         </Box>
       </Box>
 
-      {totalPage > 1 && (
+      {totalPages > 1 && (
         <Box display="flex" justifyContent="flex-end" pt={2.25}>
           <Pagination
-            count={totalPage}
-            shape="rounded"
             page={page}
+            shape="rounded"
+            count={totalPages}
             onChange={handleChange}
           />
         </Box>

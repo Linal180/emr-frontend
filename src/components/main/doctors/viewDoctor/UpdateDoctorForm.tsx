@@ -28,7 +28,7 @@ import {
   MAMMOGRAPHY_CERT_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
   PRESCRIPTIVE_AUTH_NUMBER, AVAILABILITY_STATUS, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
-  LANGUAGE_SPOKEN, SPECIALTY, SSN_TYPE, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS,
+  LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE,
 
 } from "../../../../constants";
 
@@ -318,7 +318,7 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
-                  <Grid item md={6}>
+                  <Grid item md={6} sm={12} xs={12}>
                     <Selector
                       value={{ id: "", name: "" }}
                       label={FACILITY}
@@ -338,8 +338,17 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
-
                 <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={TYPE}
+                      name="ssnType"
+                      error={ssnTypeError}
+                      options={MAPPED_SSN_TYPES}
+                    />
+                  </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
@@ -348,7 +357,9 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
                       controllerLabel={FIRST_NAME}
                     />
                   </Grid>
+                </Grid>
 
+                <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
@@ -356,6 +367,10 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
                       error={lastNameError}
                       controllerLabel={LAST_NAME}
                     />
+                  </Grid>
+
+                  <Grid item md={6}>
+                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
                   </Grid>
                 </Grid>
 
@@ -408,10 +423,6 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
                       controllerLabel={DEGREE_CREDENTIALS}
                     />
                   </Grid>
-
-                  <Grid item md={6}>
-                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
-                  </Grid>
                 </Grid>
               </CardComponent>
 
@@ -429,23 +440,13 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      value={{ id: "", name: "" }}
-                      label={SSN_TYPE}
-                      name="ssnType"
-                      error={ssnTypeError}
-                      options={MAPPED_SSN_TYPES}
+                    <DoctorController
+                      fieldType="text"
+                      controllerName="deaNumber"
+                      error={deaNumberError}
+                      controllerLabel={DEA_NUMBER}
                     />
                   </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <DoctorController
-                    fieldType="text"
-                    controllerName="taxonomyCode"
-                    error={taxonomyCodeError}
-                    controllerLabel={TAXONOMY_CODE}
-                  />
                 </Grid>
 
                 <Grid container spacing={3}>
@@ -462,18 +463,18 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
-                      controllerName="languagesSpoken"
-                      error={languagesSpokenError}
-                      controllerLabel={LANGUAGE_SPOKEN}
+                      controllerName="taxonomyCode"
+                      error={taxonomyCodeError}
+                      controllerLabel={TAXONOMY_CODE}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
-                      controllerName="deaNumber"
-                      error={deaNumberError}
-                      controllerLabel={DEA_NUMBER}
+                      controllerName="languagesSpoken"
+                      error={languagesSpokenError}
+                      controllerLabel={LANGUAGE_SPOKEN}
                     />
                   </Grid>
                 </Grid>

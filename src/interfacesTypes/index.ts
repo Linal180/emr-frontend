@@ -4,7 +4,8 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender } from "../generated/graphql";
+import { Action } from "../reducers/locationReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -130,6 +131,7 @@ export interface IPageHeader {
   buttonText?: string;
   noAdd?: boolean;
   path?: Path[];
+  openModal?: () => void
 }
 
 export interface IStepperButtons {
@@ -328,9 +330,10 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type CustomFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
+export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode"> & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
 
 type ContactInputTypes =
+  | "name"
   | "fax"
   | "city"
   | "state"
@@ -405,3 +408,18 @@ export interface DoctorInputControlProps extends IControlLabel {
 }
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
+
+export interface ContactInputControlProps extends IControlLabel {
+  controllerName: ContactInputTypes
+}
+
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
+
+export interface LocationTableProps {
+  locationDispatch: Dispatch<Action>
+}
+
+export interface LocationModalProps extends DialogTypes {
+  locationId?: string;
+  reload: () => void;
+}

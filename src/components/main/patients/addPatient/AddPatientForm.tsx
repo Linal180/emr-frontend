@@ -1673,7 +1673,7 @@ const AddPatientForm: FC = (): JSX.Element => {
         </Box>
 
       </form>
-    </FormProvider >
+    </FormProvider>
   );
 };
 
