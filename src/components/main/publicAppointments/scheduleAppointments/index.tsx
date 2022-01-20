@@ -2,12 +2,9 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@material-ui/core";
+import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import { AddBoxTwoTone } from '@material-ui/icons/';
 import DateFnsUtils from '@date-io/date-fns';
-import moment from 'moment';
-import TimePicker from 'rc-time-picker';
 // components block
 import CardComponent from "../../../common/CardComponent";
 // constants block
@@ -18,13 +15,7 @@ import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment
 const ScheduleAppointmentsPublic = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
-  const { control, handleSubmit, formState: { errors } } = useForm({});
-  const timeFormat = 'h:mm a';
-  const timeNow = moment().hour(0).minute(0);
-
-  const onTimeChange = (value: any) => {
-    console.log(value && value.format(timeFormat));
-  }
+  const { control } = useForm({});
 
   const renderInputField = (name: string, label: string) => (
     <Controller
