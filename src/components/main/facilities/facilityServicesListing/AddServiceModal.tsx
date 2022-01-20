@@ -90,7 +90,6 @@ const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title,
         </form >
       </FormProvider>
     </Dialog >
-
   );
 };
 

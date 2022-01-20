@@ -34,13 +34,10 @@ const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPa
         }
       </>}
 
-      {openModel && <>
-        {hasComponent &&
-          <Button color="primary" variant="contained" onClick={() => onButtonClick()}>
-            {buttonText || ""}
-          </Button>
-        }
-      </>}
+      {openModel &&
+        <Button color="primary" variant="contained" onClick={() => onButtonClick()}>
+          {buttonText || ""}
+        </Button>}
 
       {openModel && <AddServiceModal
         title={ADD_FACILITY_SERVICE}

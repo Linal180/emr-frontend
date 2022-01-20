@@ -15,7 +15,6 @@ const FacilityServicesComponent: FC = (): JSX.Element => (
       buttonText={ADD_SERVICE}
       openModel
     />
-
     <FacilityServicesTable />
   </>
 )
