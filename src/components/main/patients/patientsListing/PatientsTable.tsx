@@ -26,6 +26,7 @@ const PatientsTable: FC = (): JSX.Element => {
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
     variables: {
       patientInput: {
+        facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2",
         paginationOptions: {
           page: 1,
           limit: PAGE_LIMIT

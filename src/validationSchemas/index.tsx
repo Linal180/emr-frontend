@@ -182,8 +182,8 @@ export const PatientSchema = {
   patientdeceasedDate: yup.date().required(RequiredMessage(DECREASED_DATE)),
   patientSuffix: yup.string().required(RequiredMessage(SUFFIX)),
   patientSsn: yup.string().required(RequiredMessage(SSN)),
-  patientStatementNoteDateTo: yup.string().required(RequiredMessage(ISSUE_DATE)),
-  patientStatementNoteDateFrom: yup.string().required(RequiredMessage(EXPIRATION_DATE)),
+  patientStatementNoteDateTo: yup.date().required(RequiredMessage(ISSUE_DATE)),
+  patientStatementNoteDateFrom: yup.date().required(RequiredMessage(EXPIRATION_DATE)),
 };
 
 export const basicPatientSchema = {

@@ -3,7 +3,7 @@ import { FC, useState, useContext, ChangeEvent } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, FormControlLabel, FormLabel, FormGroup, Checkbox,
+  CircularProgress, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, FormControlLabel, FormLabel, FormGroup, Checkbox, Radio, RadioGroup
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -37,6 +37,15 @@ const AddPatientForm: FC = (): JSX.Element => {
     four: false,
     five: false
   })
+  const [selection, setSelection] = useState({
+    value: "1",
+  });
+
+  const updateSelection = (event: ChangeEvent<HTMLInputElement>, value: string) => {
+    event.persist();
+    const name = event.target.name;
+    setSelection({ ...selection, [name]: value });
+  };
   const methods = useForm<PatientInputProps>({
     mode: "all",
     resolver: yupResolver(patientsSchema)
@@ -220,7 +229,6 @@ const AddPatientForm: FC = (): JSX.Element => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
-          {JSON.stringify(errors)}
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
@@ -672,25 +680,25 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <Controller
                     name="patientHomeBound"
-                    defaultValue={Homebound.No}
                     control={control}
-                    render={({ field }) => {
+                    render={() => {
                       return (
                         <FormControl fullWidth margin='normal'>
                           <InputLabel id="demo-customized-select-label-gender" shrink>{HOMEBOUND}</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
+                          <RadioGroup
+                            name="value"
+                            value={selection.value}
+                            onChange={updateSelection}
                           >
-                            {MAPPED_HOMEBOUND.map((homeBound) => {
-                              const { label, value } = homeBound || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
+                            {MAPPED_HOMEBOUND.map(homeBound => (
+                              <FormControlLabel
+                                label={homeBound.label}
+                                key={homeBound.value}
+                                value={homeBound.value}
+                                control={<Radio color="primary" />}
+                              />
+                            ))}
+                          </RadioGroup>
                         </FormControl>
                       )
                     }}
@@ -874,7 +882,6 @@ const AddPatientForm: FC = (): JSX.Element => {
             </Grid>
             <Grid md={6} item>
               <CardComponent cardTitle={REGISTRATION_DATES}>
-                {JSON.stringify(renderDoctors(doctorList))}
                 <Grid item md={12} sm={12} xs={12}>
                   <Selector
                     value={{ id: "", name: "" }}
