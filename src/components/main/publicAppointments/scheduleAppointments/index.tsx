@@ -1,16 +1,19 @@
 // packages block
 import { useState } from "react";
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@material-ui/core";
 import { Controller, useForm } from "react-hook-form";
-import { MuiPickersUtilsProvider, KeyboardDatePicker, DatePicker } from "@material-ui/pickers";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@material-ui/core";
+import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
+import { AddBoxTwoTone } from '@material-ui/icons/';
 import DateFnsUtils from '@date-io/date-fns';
 // components block
 import CardComponent from "../../../common/CardComponent";
 // constants block
 import { PATIENT_DETAILS, SELECT_SERVICES, VISIT_REASON } from "../../../../constants";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
 
 const ScheduleAppointmentsPublic = (): JSX.Element => {
+  const classes = usePublicAppointmentStyles()
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const { control, handleSubmit, formState: { errors } } = useForm({});
 
@@ -137,7 +140,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
           </CardComponent>
         </Grid>
 
-        <Grid item lg={3} md={4} sm={6} xs={12}>
+        <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
           <CardComponent cardTitle="Availlable Slots">
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DatePicker
@@ -151,7 +154,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
               />
             </MuiPickersUtilsProvider>
 
-            <ul>
+            <ul className={classes.timeSlots}>
               <li>
                 <div>
                   <input type="radio" name="timeSlots" id="timeSlotOne" />
@@ -177,6 +180,12 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
                 </div>
               </li>
             </ul>
+
+            <Box pb={3}>
+              <Button color="primary" variant="outlined" fullWidth endIcon={<AddBoxTwoTone />} className="blue-button">
+                SELECT CUSTOM
+              </Button>
+            </Box>
           </CardComponent>
         </Grid>
       </Grid>

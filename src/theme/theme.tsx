@@ -19,6 +19,11 @@ export const theme = createTheme({
       contrastText: WHITE,
     },
 
+    info: {
+      main: BLUE_ONE,
+      contrastText: WHITE,
+    },
+
     text: {
       secondary: BLACK,
     },
@@ -101,7 +106,7 @@ export const theme = createTheme({
                 backgroundColor: WHITE,
               }
             }
-          }
+          },
         },
       },
     },
@@ -213,7 +218,33 @@ export const theme = createTheme({
         borderRadius: 6,
         maxHeight: 42,
         padding: '9px 20px',
-        boxShadow: 'none'
+        boxShadow: 'none',
+
+        "&.blue-button": {
+          backgroundColor: BLUE_ONE,
+
+          "&:hover": {
+            backgroundColor: BLUE_THREE,
+          }
+        }
+      },
+
+      outlined: {
+        borderRadius: 6,
+        maxHeight: 42,
+        padding: '9px 20px',
+        boxShadow: 'none',
+
+        "&.blue-button": {
+          borderColor: BLUE_ONE,
+          color: BLUE_ONE,
+          borderStyle: 'dashed',
+
+          "&:hover": {
+            borderColor: BLUE_THREE,
+            color: BLUE_THREE,
+          }
+        }
       },
 
       label: {

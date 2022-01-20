@@ -11,6 +11,8 @@ export const BLACK = "#000000";
 export const BLACK_ONE = "#3F4254";
 export const BLACK_TWO = "#7E8299";
 export const BLACK_THREE = "#4A4B68";
+export const BLACK_FOUR = "#181C32";
+export const BLACK_FIVE = "#333333";
 
 export const WHITE = "#FFFFFF";
 export const WHITE_ONE = "#F2F3F5";
