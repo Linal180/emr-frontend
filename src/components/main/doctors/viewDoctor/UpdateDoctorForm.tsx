@@ -55,6 +55,10 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
   });
 
   const [getDoctor] = useGetDoctorLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       Alert.error(message)
     },
@@ -581,6 +585,14 @@ const UpdateDoctorForm: FC = (): JSX.Element => {
 
                         <FormControlLabel
                           label="Monday"
+                          labelPlacement="start"
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
+                          label="Tuesday"
                           labelPlacement="start"
                           className={classes.controlLabel}
                           control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}

@@ -479,6 +479,14 @@ const AddDoctorForm: FC = (): JSX.Element => {
                         <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
 
                         <FormControlLabel
+                          label="Tuesday"
+                          labelPlacement="start"
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
                           label="Wednesday"
                           labelPlacement="start"
                           className={classes.controlLabel}

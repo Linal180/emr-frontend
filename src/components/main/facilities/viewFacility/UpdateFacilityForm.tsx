@@ -29,6 +29,10 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
   const [facility, setFacility] = useState<FacilityPayload['facility']>()
 
   const [getFacility] = useGetFacilityLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       Alert.error(message)
     },
@@ -77,7 +81,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
 
           if (billingAddress) {
             const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
-
             fax && setValue('billingFax', fax)
             city && setValue('billingCity', city)
             email && setValue('billingEmail', email)
@@ -132,14 +135,17 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
     if (facility) {
       const {
         name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
-        revenueCode, practiceType, phone, email, fax, city, state, country, serviceCode, address2, address, zipCode,
+        revenueCode, practiceType, serviceCode,
+        phone, email, fax, city, state, country, address2, address, zipCode,
+        billingPhone, billingEmail, billingFax, billingCity, billingState, billingCountry, billingAddress2,
+        billingAddress, billingZipCode
       } = inputs;
 
-      const { contacts, billingAddress } = facility;
+      const { contacts, billingAddress: billing } = facility;
 
-      if (id && contacts && billingAddress) {
+      if (id && contacts && billing) {
         const { id: contactId } = contacts[0]
-        const { id: billingId } = billingAddress[0]
+        const { id: billingId } = billing[0]
         const { id: selectedPracticeType } = practiceType;
         const { id: selectedServiceCode } = serviceCode;
 
@@ -162,9 +168,9 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
               },
 
               updateBillingAddressInput: {
-                id: billingId, phone: phone || '', email: email || '', fax: fax || '', city: city || '',
-                state: state || '', country: country || '', zipCode: zipCode || '', address: address || '',
-                address2: address2 || ''
+                id: billingId, phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', city: billingCity || '',
+                state: billingState || '', country: billingCountry || '', zipCode: billingZipCode || '', address: billingAddress || '',
+                address2: billingAddress2 || ''
               },
             }
           }

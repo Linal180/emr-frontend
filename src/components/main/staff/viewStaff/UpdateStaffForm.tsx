@@ -103,7 +103,7 @@ const UpdateStaffForm: FC = () => {
     }
   }, [getStaff, id])
 
-  const onSubmit: SubmitHandler<ExtendedUpdateStaffInputProps> = async ({ firstName, lastName, email, phone, mobile, dob, gender, facilityId }) => {
+  const onSubmit: SubmitHandler<ExtendedUpdateStaffInputProps> = async ({ firstName, lastName, email, username, phone, mobile, dob, gender, facilityId }) => {
     if (id) {
       const { id: facilityID } = facilityId
       const { id: genderId } = gender
@@ -111,7 +111,7 @@ const UpdateStaffForm: FC = () => {
       await updateStaff({
         variables: {
           updateStaffInput: {
-            id, firstName, lastName, email, phone, mobile, dob, gender: genderId as Gender, facilityId: facilityID
+            id, firstName, lastName, email, phone, mobile, dob, gender: genderId as Gender, facilityId: facilityID, username
           }
         }
       })
