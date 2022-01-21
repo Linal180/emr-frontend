@@ -7,14 +7,18 @@ import {
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Selector from '../../../common/Selector';
+import DatePicker from "../../../common/DatePicker";
 import AddPatientController from "./AddPatientController";
 import CardComponent from "../../../common/CardComponent";
-import DatePicker from "../../../common/DatePicker";
-import Selector from '../../../common/Selector';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
+import { renderDoctors } from '../../../../utils';
 import { AuthContext } from '../../../../context';
-import { ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, UserRole } from "../../../../generated/graphql";
+import { ListContext } from '../../../../context/listContext';
+import { patientsSchema } from '../../../../validationSchemas';
+import { PatientInputProps } from '../../../../interfacesTypes';
+import { ContactType, Ethnicity, Gender, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, UserRole } from "../../../../generated/graphql";
 import {
   FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, PHONE, ADD_PATIENT, DEMOGRAPHICS,
   GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT, GUARDIAN, SUFFIX,
@@ -22,10 +26,6 @@ import {
   REGISTRATION_DATE, NOTICE_ON_FILE, CONSENT_TO_CALL, MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME,
   EMPLOYER, DECREASED_DATE, EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, PATIENTS_ROUTE, LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUALORIENTATION, MAPPED_PRONOUS, MAPPED_HOMEBOUND, MAPPED_RELATIONSHIPTYPE, MAPPED_REG_DEPARTMENT, MAPPED_PRIMARY_DEPARTMENT, MAPPED_MARITIAL_STATUS, ETHNICITY, SEXUAL_ORIENTATION, PRONOUS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT, PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY, SEX_AT_BIRTH, ISSUE_DATE, EXPIRATION_DATE,
 } from "../../../../constants";
-import { PatientInputProps } from '../../../../interfacesTypes';
-import { patientsSchema } from '../../../../validationSchemas';
-import { renderDoctors } from '../../../../utils';
-import { ListContext } from '../../../../context/listContext';
 
 const AddPatientForm: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -37,19 +37,8 @@ const AddPatientForm: FC = (): JSX.Element => {
     four: false,
     five: false
   })
-  const [selection, setSelection] = useState({
-    value: "1",
-  });
-
-  const updateSelection = (event: ChangeEvent<HTMLInputElement>, value: string) => {
-    event.persist();
-    const name = event.target.name;
-    setSelection({ ...selection, [name]: value });
-  };
-  const methods = useForm<PatientInputProps>({
-    mode: "all",
-    resolver: yupResolver(patientsSchema)
-  });
+  const [selection, setSelection] = useState({ value: "1", });
+  const methods = useForm<PatientInputProps>({ mode: "all", resolver: yupResolver(patientsSchema) });
   const { reset, handleSubmit, control, formState: { errors } } = methods;
 
   const [createPatient, { loading }] = useCreatePatientMutation({
@@ -76,6 +65,12 @@ const AddPatientForm: FC = (): JSX.Element => {
   });
 
 
+  const updateSelection = (event: ChangeEvent<HTMLInputElement>, value: string) => {
+    event.persist();
+    const name = event.target.name;
+    setSelection({ ...selection, [name]: value });
+  };
+
   const handleChangeForCheckBox = (name: string) => (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -84,40 +79,84 @@ const AddPatientForm: FC = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
     const {
-      basicAddress, basicAddress2, basicCity, basicContactType, basicCountry, basicDoctorId, basicEmail, basicEmployerName, basicFacilityId, basicFax, basicFirstName, basicLastName, basicSuffix,
-      basicMiddleName, basicMobile, basicName, basicPager, basicPhone, basicRelationship, basicSsn, basicState, basicZipCode,
-      emergencyAddress2, emergencyCity, emergencyContactType, emergencyCountry, emergencyDoctorId, emergencyEmail, emergencyEmployerName, emergencyFacilityId, emergencyFax, emergencyFirstName, emergencySuffix,
-      emergencyLastName, emergencyMiddleName, emergencyMobile, emergencyName, emergencyPager, emergencyPhone, emergencyRelationship, emergencySsn, emergencyState,
-      emergencyZipCode, employerEmail, employerIndustry, employerMobile, employerName, employerPhone, employerUsualOccupation, guarantorAddress, guarantorAddress2,
-      guarantorCity, guarantorContactType, guarantorCountry, guarantorDoctorId, guarantorEmail, guarantorEmployerName, guarantorFacilityId, guarantorFax, guarantorFirstName, guarantorLastName, guarantorSuffix,
-      guarantorMiddleName, guarantorMobile, guarantorName, guarantorPager, guarantorPhone, guarantorRelationship, guarantorSsn, guarantorState, guarantorZipCode,
-      guardianAddress, guardianAddress2, guardianCity, guardianContactType, guardianCountry, guardianDoctorId, guardianEmail, guardianEmployerName, guardianFacilityId, guardianFax, guardianFirstName, guardianSuffix,
-      guardianLastName, guardianMiddleName, guardianMobile, guardianName, guardianPager, guardianPhone, guardianRelationship, guardianSsn, guardianState,
-      guardianZipCode, kinAddress, kinAddress2, kinCity, kinContactType, kinCountry, kinDoctorId, kinEmail, kinEmployerName, kinFacilityId, kinFax, kinFirstName, kinLastName, kinMiddleName, kinSuffix,
-      kinMobile, kinName, kinPager, kinPhone, kinRelationship, kinSsn, kinState, kinZipCode, facilityId, firstName, lastName, phone, zipCode,
-      patientdeceasedDate, patientDob, patientEthnicity, patientFacilityId, patientFirstName, patientFirstNameUsed, patientGender, patientGenderIdentity, patientHoldStatement, patientHomeBound,
-      patientLanguage, patientLastName, patientMiddleName, patientMotherMaidenName, patientUsualProviderId,
-      patientPrefferedName, patientPreviousFirstName, patientPreviouslastName, patientPrimaryDepartment, patientPrivacyNotice, patientPronouns, patientRace, patientRegistrationDate, patientRegistrationDepartment,
-      patientSexAtBirth, patientSexualOrientation, patientSsn, patientStatementDelivereOnline, patientStatementNote, patientStatementNoteDateFrom, patientStatementNoteDateTo, patientSuffix, patientMaritialStatus
+      suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName, usualProviderId,
+      previouslastName, motherMaidenName, ssn, dob, gender, registrationDepartment, primaryDepartment,
+      registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority,
+      patientNote, language, race, ethnicity, maritialStatus, sexualOrientation, genderIdentity, sexAtBirth,
+      pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
+      statementNoteDateTo, adminId, facilityId,
+
+      employerName, employerEmail, employerPhone, employerMobile, employerIndustry, employerUsualOccupation,
+
+      basicName, basicFirstName, basicMiddleName, basicLastName, basicEmail, basicRelationship,
+      basicPager, basicPhone, basicMobile, basicFax, basicSsn, basicSuffix, basicAddress, basicAddress2,
+      basicZipCode, basicCity, basicState, basicCountry, basicEmployerName,
+
+      emergencyName, emergencyFirstName, emergencyMiddleName, emergencyLastName, emergencyEmail, emergencyPager,
+      emergencyPhone, emergencyMobile, emergencyFax, emergencySsn, emergencySuffix, emergencyAddress,
+      emergencyAddress2, emergencyZipCode, emergencyCity, emergencyState, emergencyCountry, emergencyDoctorId,
+      emergencyRelationship, emergencyEmployerName,
+
+      kinName, kinFirstName, kinMiddleName, kinLastName, kinEmail, kinRelationship, kinPager, kinPhone,
+      kinMobile, kinFax, kinSsn, kinSuffix, kinAddress, kinAddress2, kinZipCode, kinCity,
+      kinState, kinCountry, kinEmployerName,
+
+      guardianName, guardianFirstName, guardianMiddleName, guardianLastName, guardianEmail, guardianRelationship,
+      guardianPager, guardianPhone, guardianMobile, guardianFax, guardianSsn, guardianSuffix, guardianAddress,
+      guardianAddress2, guardianZipCode, guardianCity, guardianState, guardianCountry, guardianEmployerName,
+
+      guarantorName, guarantorFirstName, guarantorMiddleName, guarantorLastName, guarantorEmail, guarantorRelationship,
+      guarantorPager, guarantorPhone, guarantorMobile, guarantorFax, guarantorSsn, guarantorSuffix, guarantorAddress,
+      guarantorAddress2, guarantorZipCode, guarantorCity, guarantorState, guarantorCountry, guarantorEmployerName,
+
+      employerName, employerEmail, employerPhone, employerMobile, employerIndustry, employerUsualOccupation,
     } = inputs;
 
-    const { id: selectedPatientUsualProviderId } = patientUsualProviderId;
-    console.log(patientUsualProviderId)
-    if (user && selectedPatientUsualProviderId) {
+    const { id: selectedFacility } = facilityId
+    const { id: selectedUsualProvider } = usualProviderId
+    const { id: selectedRegistrationDepartment } = registrationDepartment
+    const { id: selectedPrimaryDepartment } = primaryDepartment
+    const { id: selectedSexualOrientation } = sexualOrientation
+    const { id: selectedPronouns } = pronouns
+    const { id: selectedRace } = race
+    const { id: selectedEthnicity } = ethnicity
+    const { id: selectedMaritialStatus } = maritialStatus
+    const { id: selectedGenderIdentity } = genderIdentity
+    const { id: selectedGender } = gender
+    const { id: selectedSexAtBirth } = sexAtBirth
+
+    if (user) {
       const { id: userId } = user
 
       await createPatient({
         variables: {
           createPatientInput: {
             createPatientItemInput: {
-              suffix: patientSuffix || "", firstName: patientFirstName || "", middleName: patientMiddleName || "", lastName: patientLastName || "", firstNameUsed: patientFirstNameUsed || "", prefferedName: patientPrefferedName || "",
-              previousFirstName: patientPreviousFirstName || "", usualProviderId: selectedPatientUsualProviderId || "", previouslastName: patientPreviouslastName || "", motherMaidenName: patientMotherMaidenName || "",
-              ssn: patientSsn || "", dob: patientDob || "", gender: patientGender as Genderidentity || Genderidentity.Female, registrationDepartment: patientRegistrationDepartment as RegDepartment || RegDepartment.Clinic, primaryDepartment: patientPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Clinic,
-              registrationDate: patientRegistrationDate || "", deceasedDate: patientdeceasedDate || "", privacyNotice: patientPrivacyNotice || false, language: patientLanguage || "", race: patientRace as Race || Race.AmericanIndianAlaskaNative,
-              ethnicity: patientEthnicity as Ethnicity || Ethnicity.CenteralAmerican, sexualOrientation: patientSexualOrientation as Sexualorientation || Sexualorientation.Bisexual, genderIdentity: patientGenderIdentity as Genderidentity, sexAtBirth: patientSexAtBirth as Genderidentity, pronouns: patientPronouns as Pronouns || Pronouns.He,
-              homeBound: patientHomeBound as Homebound || Homebound.No, holdStatement: patientHoldStatement as Holdstatement || Holdstatement.AccountTooLong, statementDelivereOnline: patientStatementDelivereOnline || false, statementNote: patientStatementNote || "",
-              statementNoteDateFrom: patientStatementNoteDateFrom || "", statementNoteDateTo: patientStatementNoteDateTo || "", facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2", maritialStatus: patientMaritialStatus as Maritialstatus || Maritialstatus.Divorced,
+              suffix: suffix || "", firstName: firstName || "", middleName: middleName || "", lastName: lastName || "",
+              firstNameUsed: firstNameUsed || "", prefferedName: prefferedName || "", previousFirstName: previousFirstName || "",
+              previouslastName: previouslastName || "", motherMaidenName: motherMaidenName || "", ssn: ssn || "",
+              dob: dob || "", registrationDate: registrationDate || "", deceasedDate: deceasedDate || "",
+              privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false, adminId: userId || '',
+              callToConsent: callToConsent || false, medicationHistoryAuthority: medicationHistoryAuthority || false,
+              patientNote: patientNote || "", language: language || "", statementNoteDateTo: statementNoteDateTo || "",
+              homeBound: homeBound || Homebound.No, holdStatement: holdStatement || Holdstatement.None,
+              facilityId: selectedFacility || "",
+              race: selectedRace as Race || Race.White, 
+              usualProviderId: selectedUsualProvider || "",
+              statementNoteDateFrom: statementNoteDateFrom || "",
+              pronouns: selectedPronouns as Pronouns|| Pronouns.None,
+              ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
+              gender: selectedGender as Genderidentity || Genderidentity.None,
+              sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
+              genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
+              maritialStatus: selectedMaritialStatus as Maritialstatus || Maritialstatus.Single,
+              sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
+              statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || "",
+              primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,
+              registrationDepartment: selectedRegistrationDepartment as RegDepartment || RegDepartment.Hospital,
             },
+
+
             createContactInput: {
               name: basicName || "", firstName: basicFirstName || "", middleName: basicMiddleName || "", lastName: basicLastName || "", email: basicEmail || "", contactType: basicContactType as ContactType || ContactType.Self,
               relationship: basicRelationship as RelationshipType || RelationshipType.CadaverDonor, pager: basicPager || "", phone: basicPhone || "", suffix: basicSuffix || "", mobile: basicMobile || "", fax: basicFax || "",
@@ -164,22 +203,22 @@ const AddPatientForm: FC = (): JSX.Element => {
   };
 
   const {
-    patientSuffix: { message: patientSuffixError } = {},
-    patientFirstName: { message: patientFirstNameError } = {},
-    patientMiddleName: { message: patientMiddleNameError } = {},
-    patientLastName: { message: patientLastNameError } = {},
-    patientFirstNameUsed: { message: patientFirstNameUsedError } = {},
-    patientPrefferedName: { message: patientPrefferedNameError } = {},
-    patientPreviousFirstName: { message: patientPreviousFirstNameError } = {},
-    patientPreviouslastName: { message: patientPreviouslastNameError } = {},
-    patientMotherMaidenName: { message: patientMotherMaidenNameError } = {},
-    patientSsn: { message: patientSsnError } = {},
-    patientDob: { message: patientDobError } = {},
-    patientLanguage: { message: patientLanguageError } = {},
-    patientRegistrationDate: { message: patientRegistrationDateError } = {},
-    patientdeceasedDate: { message: patientdeceasedDateError } = {},
-    patientStatementNoteDateFrom: { message: patientStatementNoteDateFromError } = {},
-    patientStatementNoteDateTo: { message: patientStatementNoteDateToError } = {},
+    suffix: { message: suffixError } = {},
+    firstName: { message: firstNameError } = {},
+    middleName: { message: middleNameError } = {},
+    lastName: { message: lastNameError } = {},
+    firstNameUsed: { message: firstNameUsedError } = {},
+    prefferedName: { message: prefferedNameError } = {},
+    previousFirstName: { message: previousFirstNameError } = {},
+    previouslastName: { message: previouslastNameError } = {},
+    motherMaidenName: { message: motherMaidenNameError } = {},
+    ssn: { message: ssnError } = {},
+    dob: { message: dobError } = {},
+    language: { message: languageError } = {},
+    registrationDate: { message: registrationDateError } = {},
+    deceasedDate: { message: deceasedDateError } = {},
+    statementNoteDateFrom: { message: statementNoteDateFromError } = {},
+    statementNoteDateTo: { message: statementNoteDateToError } = {},
 
     basicZipCode: { message: basicZipCodeError } = {},
     basicAddress: { message: basicAddressError } = {},
@@ -236,19 +275,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientSuffix"
+                      controllerName="suffix"
                       control={control}
                       controllerLabel={SUFFIX}
-                      error={patientSuffixError}
+                      error={suffixError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientFirstName"
+                      controllerName="firstName"
                       control={control}
                       controllerLabel={FIRST_NAME}
-                      error={patientFirstNameError}
+                      error={firstNameError}
                     />
                   </Grid>
                 </Grid>
@@ -257,19 +296,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientMiddleName"
+                      controllerName="middleName"
                       control={control}
                       controllerLabel={MIDDLE_NAME}
-                      error={patientMiddleNameError}
+                      error={middleNameError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientLastName"
+                      controllerName="lastName"
                       control={control}
                       controllerLabel={LAST_NAME}
-                      error={patientLastNameError}
+                      error={lastNameError}
                     />
                   </Grid>
                 </Grid>
@@ -278,19 +317,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientFirstNameUsed"
+                      controllerName="firstNameUsed"
                       control={control}
                       controllerLabel={FIRST_NAME_USED}
-                      error={patientFirstNameUsedError}
+                      error={firstNameUsedError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientPrefferedName"
+                      controllerName="prefferedName"
                       control={control}
                       controllerLabel={PREFERRED_NAME}
-                      error={patientPrefferedNameError}
+                      error={prefferedNameError}
                     />
                   </Grid>
                 </Grid>
@@ -299,19 +338,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientPreviousFirstName"
+                      controllerName="previousFirstName"
                       control={control}
                       controllerLabel={PREVIOUS_FIRST_NAME}
-                      error={patientPreviousFirstNameError}
+                      error={previousFirstNameError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientPreviouslastName"
+                      controllerName="previouslastName"
                       control={control}
                       controllerLabel={PREVIOUS_LAST_NAME}
-                      error={patientPreviouslastNameError}
+                      error={previouslastNameError}
                     />
                   </Grid>
                 </Grid>
@@ -320,19 +359,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientMotherMaidenName"
+                      controllerName="motherMaidenName"
                       control={control}
                       controllerLabel={MOTHERS_MAIDEN_NAME}
-                      error={patientMotherMaidenNameError}
+                      error={motherMaidenNameError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="patientSsn"
+                      controllerName="ssn"
                       control={control}
                       controllerLabel={SSN}
-                      error={patientSsnError}
+                      error={ssnError}
                     />
                   </Grid>
                 </Grid>
