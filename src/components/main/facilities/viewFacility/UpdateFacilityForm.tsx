@@ -60,7 +60,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
           federalTaxId && setValue('federalTaxId', federalTaxId)
           tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
           insurancePlanType && setValue('insurancePlanType', insurancePlanType)
-          serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
+          // serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
           practiceType && setValue('practiceType', setRecord(practiceType, serviceCode))
           mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 

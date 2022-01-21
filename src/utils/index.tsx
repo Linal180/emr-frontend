@@ -8,7 +8,7 @@ import client from "../apollo";
 import history from "../history";
 import { TOKEN, USER_EMAIL } from "../constants";
 import { SelectorOption, TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload } from "../generated/graphql"
+import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload } from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -187,6 +187,20 @@ export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
         const { id, name } = facility;
 
         data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
+  const data: SelectorOption[] = [];
+  if (!!doctors) {
+    for (let doctor of doctors) {
+      if (doctor) {
+        const { id, firstName, lastName } = doctor;
+        data.push({ id, name: `${firstName} ${lastName}` })
       }
     }
   }

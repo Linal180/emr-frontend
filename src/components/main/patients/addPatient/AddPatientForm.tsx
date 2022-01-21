@@ -1,25 +1,35 @@
 // packages block
-import { FC, useState, ChangeEvent } from 'react';
-import { Controller, FormProvider, useForm } from "react-hook-form";
+import { FC, useState, useContext, ChangeEvent } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller, FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
-  Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, Typography, FormControlLabel, Radio, RadioGroup, FormLabel, FormGroup, Checkbox, TextField, TextareaAutosize
+  CircularProgress, Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, FormControlLabel, FormLabel, FormGroup, Checkbox, Radio, RadioGroup
 } from "@material-ui/core";
 // components block
+import Alert from "../../../common/Alert";
 import AddPatientController from "./AddPatientController";
 import CardComponent from "../../../common/CardComponent";
+import DatePicker from "../../../common/DatePicker";
+import Selector from '../../../common/Selector';
 // interfaces, graphql, constants block /styles
-import { Gender } from "../../../../generated/graphql";
+import history from '../../../../history';
+import { AuthContext } from '../../../../context';
+import { ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, UserRole } from "../../../../generated/graphql";
 import {
-  FIRST_NAME, LAST_NAME, MAPPED_GENDER_1, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, ADD_PATIENT, DEMOGRAPHICS,
-  GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT, INSURANCE_POLICY_INFO, GUARDIAN, BILLING_TEXT, POLICY_HOLDER, ELIGIBILITY, SUFFIX,
-  MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME, MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, ADDRESS_CTA,
-  REGISTRATION_DATE, NOTICE_ON_FILE, CONSENT_TO_CALL, MEDICATION_HISTORY_AUTHORITY, PATIENT_NOTES, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, USUAL_OCCUPATION,
-  USUAL_INDUSTRY, STATEMENT_DELIVERED_ONLINE, ISSUE_DATE, EXPIRATION_DATE, COINSURANCE_PERCENTAGE, NOTES, POLICY_HOLDER_ID, EMPLOYER, DECREASED_DATE, EMPLOYER_PHONE,
-  STATEMENT_NOTE, ID_NUMBER, GROUP_NUMBER,
+  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, PHONE, ADD_PATIENT, DEMOGRAPHICS,
+  GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT, GUARDIAN, SUFFIX,
+  MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME, MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2,
+  REGISTRATION_DATE, NOTICE_ON_FILE, CONSENT_TO_CALL, MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME,
+  EMPLOYER, DECREASED_DATE, EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, PATIENTS_ROUTE, LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUALORIENTATION, MAPPED_PRONOUS, MAPPED_HOMEBOUND, MAPPED_RELATIONSHIPTYPE, MAPPED_REG_DEPARTMENT, MAPPED_PRIMARY_DEPARTMENT, MAPPED_MARITIAL_STATUS, ETHNICITY, SEXUAL_ORIENTATION, PRONOUS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT, PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY, SEX_AT_BIRTH, ISSUE_DATE, EXPIRATION_DATE,
 } from "../../../../constants";
+import { PatientInputProps } from '../../../../interfacesTypes';
+import { patientsSchema } from '../../../../validationSchemas';
+import { renderDoctors } from '../../../../utils';
+import { ListContext } from '../../../../context/listContext';
 
 const AddPatientForm: FC = (): JSX.Element => {
-  const [value, setValue] = useState("one");
+  const { user } = useContext(AuthContext)
+  const { doctorList } = useContext(ListContext)
   const [state, setState] = useState({
     one: false,
     two: false,
@@ -27,23 +37,193 @@ const AddPatientForm: FC = (): JSX.Element => {
     four: false,
     five: false
   })
-  const methods = useForm<any>({
-    mode: "all"
+  const [selection, setSelection] = useState({
+    value: "1",
   });
-  const { handleSubmit, control } = methods;
+
+  const updateSelection = (event: ChangeEvent<HTMLInputElement>, value: string) => {
+    event.persist();
+    const name = event.target.name;
+    setSelection({ ...selection, [name]: value });
+  };
+  const methods = useForm<PatientInputProps>({
+    mode: "all",
+    resolver: yupResolver(patientsSchema)
+  });
+  const { reset, handleSubmit, control, formState: { errors } } = methods;
+
+  const [createPatient, { loading }] = useCreatePatientMutation({
+    onError({ message }) {
+      if (message === FORBIDDEN_EXCEPTION) {
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+      } else
+        Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { createPatient: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(PATIENT_CREATED);
+          reset()
+          history.push(PATIENTS_ROUTE)
+        }
+      }
+    }
+  });
+
 
   const handleChangeForCheckBox = (name: string) => (
     event: ChangeEvent<HTMLInputElement>
   ) => {
     setState({ ...state, [name]: event.target.checked });
   };
-  const handleChange = (event: any) => {
-    setValue(event.target.value);
+
+  const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
+    const {
+      basicAddress, basicAddress2, basicCity, basicContactType, basicCountry, basicDoctorId, basicEmail, basicEmployerName, basicFacilityId, basicFax, basicFirstName, basicLastName, basicSuffix,
+      basicMiddleName, basicMobile, basicName, basicPager, basicPhone, basicRelationship, basicSsn, basicState, basicZipCode,
+      emergencyAddress2, emergencyCity, emergencyContactType, emergencyCountry, emergencyDoctorId, emergencyEmail, emergencyEmployerName, emergencyFacilityId, emergencyFax, emergencyFirstName, emergencySuffix,
+      emergencyLastName, emergencyMiddleName, emergencyMobile, emergencyName, emergencyPager, emergencyPhone, emergencyRelationship, emergencySsn, emergencyState,
+      emergencyZipCode, employerEmail, employerIndustry, employerMobile, employerName, employerPhone, employerUsualOccupation, guarantorAddress, guarantorAddress2,
+      guarantorCity, guarantorContactType, guarantorCountry, guarantorDoctorId, guarantorEmail, guarantorEmployerName, guarantorFacilityId, guarantorFax, guarantorFirstName, guarantorLastName, guarantorSuffix,
+      guarantorMiddleName, guarantorMobile, guarantorName, guarantorPager, guarantorPhone, guarantorRelationship, guarantorSsn, guarantorState, guarantorZipCode,
+      guardianAddress, guardianAddress2, guardianCity, guardianContactType, guardianCountry, guardianDoctorId, guardianEmail, guardianEmployerName, guardianFacilityId, guardianFax, guardianFirstName, guardianSuffix,
+      guardianLastName, guardianMiddleName, guardianMobile, guardianName, guardianPager, guardianPhone, guardianRelationship, guardianSsn, guardianState,
+      guardianZipCode, kinAddress, kinAddress2, kinCity, kinContactType, kinCountry, kinDoctorId, kinEmail, kinEmployerName, kinFacilityId, kinFax, kinFirstName, kinLastName, kinMiddleName, kinSuffix,
+      kinMobile, kinName, kinPager, kinPhone, kinRelationship, kinSsn, kinState, kinZipCode, facilityId, firstName, lastName, phone, zipCode,
+      patientdeceasedDate, patientDob, patientEthnicity, patientFacilityId, patientFirstName, patientFirstNameUsed, patientGender, patientGenderIdentity, patientHoldStatement, patientHomeBound,
+      patientLanguage, patientLastName, patientMiddleName, patientMotherMaidenName, patientUsualProviderId,
+      patientPrefferedName, patientPreviousFirstName, patientPreviouslastName, patientPrimaryDepartment, patientPrivacyNotice, patientPronouns, patientRace, patientRegistrationDate, patientRegistrationDepartment,
+      patientSexAtBirth, patientSexualOrientation, patientSsn, patientStatementDelivereOnline, patientStatementNote, patientStatementNoteDateFrom, patientStatementNoteDateTo, patientSuffix, patientMaritialStatus
+    } = inputs;
+
+    const { id: selectedPatientUsualProviderId } = patientUsualProviderId;
+    console.log(patientUsualProviderId)
+    if (user && selectedPatientUsualProviderId) {
+      const { id: userId } = user
+
+      await createPatient({
+        variables: {
+          createPatientInput: {
+            createPatientItemInput: {
+              suffix: patientSuffix || "", firstName: patientFirstName || "", middleName: patientMiddleName || "", lastName: patientLastName || "", firstNameUsed: patientFirstNameUsed || "", prefferedName: patientPrefferedName || "",
+              previousFirstName: patientPreviousFirstName || "", usualProviderId: selectedPatientUsualProviderId || "", previouslastName: patientPreviouslastName || "", motherMaidenName: patientMotherMaidenName || "",
+              ssn: patientSsn || "", dob: patientDob || "", gender: patientGender as Genderidentity || Genderidentity.Female, registrationDepartment: patientRegistrationDepartment as RegDepartment || RegDepartment.Clinic, primaryDepartment: patientPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Clinic,
+              registrationDate: patientRegistrationDate || "", deceasedDate: patientdeceasedDate || "", privacyNotice: patientPrivacyNotice || false, language: patientLanguage || "", race: patientRace as Race || Race.AmericanIndianAlaskaNative,
+              ethnicity: patientEthnicity as Ethnicity || Ethnicity.CenteralAmerican, sexualOrientation: patientSexualOrientation as Sexualorientation || Sexualorientation.Bisexual, genderIdentity: patientGenderIdentity as Genderidentity, sexAtBirth: patientSexAtBirth as Genderidentity, pronouns: patientPronouns as Pronouns || Pronouns.He,
+              homeBound: patientHomeBound as Homebound || Homebound.No, holdStatement: patientHoldStatement as Holdstatement || Holdstatement.AccountTooLong, statementDelivereOnline: patientStatementDelivereOnline || false, statementNote: patientStatementNote || "",
+              statementNoteDateFrom: patientStatementNoteDateFrom || "", statementNoteDateTo: patientStatementNoteDateTo || "", facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2", maritialStatus: patientMaritialStatus as Maritialstatus || Maritialstatus.Divorced,
+            },
+            createContactInput: {
+              name: basicName || "", firstName: basicFirstName || "", middleName: basicMiddleName || "", lastName: basicLastName || "", email: basicEmail || "", contactType: basicContactType as ContactType || ContactType.Self,
+              relationship: basicRelationship as RelationshipType || RelationshipType.CadaverDonor, pager: basicPager || "", phone: basicPhone || "", suffix: basicSuffix || "", mobile: basicMobile || "", fax: basicFax || "",
+              ssn: basicSsn || "", address2: basicAddress2 || "", address: basicAddress || "", zipCode: basicZipCode || "", city: basicCity || "", state: basicState || "",
+              country: basicCountry || "", userId: userId || "", doctorId: basicDoctorId || "", facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2", employerName: basicEmployerName || ""
+            },
+            createEmergencyContactInput: {
+              name: emergencyName || "", firstName: emergencyFirstName || "", middleName: emergencyMiddleName || "", lastName: emergencyLastName || "", email: emergencyEmail || "", contactType: emergencyContactType as ContactType || ContactType.Emergency,
+              relationship: emergencyRelationship as RelationshipType || RelationshipType.CadaverDonor, pager: emergencyPager || "", phone: emergencyPhone || "", suffix: emergencySuffix || "", mobile: emergencyMobile || "", fax: emergencyFax || "",
+              ssn: emergencySsn || "", address2: emergencyAddress2 || "", address: emergencyAddress2 || "", zipCode: emergencyZipCode || "", city: emergencyCity || "", state: emergencyState || "",
+              country: emergencyCountry || "", userId: userId || "", doctorId: emergencyDoctorId || "", facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2", employerName: emergencyEmployerName || ""
+            },
+            createGuarantorContactInput: {
+              name: guarantorName || "", firstName: guarantorFirstName || "", middleName: guarantorMiddleName || "", lastName: guarantorLastName || "", email: guarantorEmail || "", contactType: guarantorContactType as ContactType || ContactType.Guarandor,
+              relationship: guarantorRelationship as RelationshipType || RelationshipType.Employee, pager: guarantorPager || "", phone: guarantorPhone || "", suffix: guarantorSuffix || "", mobile: guarantorMobile || "", fax: guarantorFax || "",
+              ssn: guarantorSsn || "", address2: guarantorAddress2 || "", address: guarantorAddress || "", zipCode: guarantorZipCode || "", city: guarantorCity || "", state: guarantorState || "",
+              country: guarantorCountry || "", userId: userId || "", doctorId: guarantorDoctorId || "", facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2", employerName: guarantorEmployerName || ""
+            },
+            createGuardianContactInput: {
+              name: guardianName || "", firstName: guardianFirstName || "", middleName: guardianMiddleName || "", lastName: guardianLastName || "", email: guardianEmail || "", contactType: guardianContactType as ContactType || ContactType.Guardian,
+              relationship: guardianRelationship as RelationshipType || RelationshipType.Grandparent, pager: guardianPager || "", phone: guardianPhone || "", suffix: guardianSuffix || "", mobile: guardianMobile || "", fax: guardianFax || "",
+              ssn: guardianSsn || "", address2: guardianAddress2 || "", address: guardianAddress || "", zipCode: guardianZipCode || "", city: guardianCity || "", state: guardianState || "",
+              country: guardianCountry || "", userId: userId || "", doctorId: guardianDoctorId || "", facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2", employerName: guardianEmployerName || ""
+            },
+            createNextOfKinContactInput: {
+              name: kinName || "", firstName: kinFirstName || "", middleName: kinMiddleName || "", lastName: kinLastName || "", email: kinEmail || "", contactType: kinContactType as ContactType || ContactType.NextOfKin,
+              relationship: kinRelationship as RelationshipType || RelationshipType.NephewNiece, pager: kinPager || "", phone: kinPhone || "", suffix: kinSuffix || "", mobile: kinMobile || "", fax: kinFax || "",
+              ssn: kinSsn || "", address2: kinAddress2 || "", address: kinAddress || "", zipCode: kinZipCode || "", city: kinCity || "", state: kinState || "",
+              country: kinCountry || "", userId: userId || "", doctorId: kinDoctorId || "", facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2", employerName: kinEmployerName || ""
+            },
+            createEmployerInput: {
+              name: employerName || "", email: employerEmail || "", phone: employerPhone || "", mobile: employerMobile || "", usualOccupation: employerUsualOccupation || "", industry: employerIndustry || "",
+            },
+            registerUserInput: {
+              firstName: firstName || "", lastName: lastName || "", email: basicEmail || "", facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2", phone: phone || "", zipCode: zipCode || "", password: "user123" || "", adminId: userId || "", roleType: UserRole.Patient
+            }
+          }
+        }
+      })
+    } else {
+      Alert.error("Failed to create patient!")
+    }
+
   };
 
-  const onSubmit: any = () => {
+  const {
+    patientSuffix: { message: patientSuffixError } = {},
+    patientFirstName: { message: patientFirstNameError } = {},
+    patientMiddleName: { message: patientMiddleNameError } = {},
+    patientLastName: { message: patientLastNameError } = {},
+    patientFirstNameUsed: { message: patientFirstNameUsedError } = {},
+    patientPrefferedName: { message: patientPrefferedNameError } = {},
+    patientPreviousFirstName: { message: patientPreviousFirstNameError } = {},
+    patientPreviouslastName: { message: patientPreviouslastNameError } = {},
+    patientMotherMaidenName: { message: patientMotherMaidenNameError } = {},
+    patientSsn: { message: patientSsnError } = {},
+    patientDob: { message: patientDobError } = {},
+    patientLanguage: { message: patientLanguageError } = {},
+    patientRegistrationDate: { message: patientRegistrationDateError } = {},
+    patientdeceasedDate: { message: patientdeceasedDateError } = {},
+    patientStatementNoteDateFrom: { message: patientStatementNoteDateFromError } = {},
+    patientStatementNoteDateTo: { message: patientStatementNoteDateToError } = {},
 
-  };
+    basicZipCode: { message: basicZipCodeError } = {},
+    basicAddress: { message: basicAddressError } = {},
+    basicAddress2: { message: basicAddress2Error } = {},
+    basicCity: { message: basicCityError } = {},
+    basicState: { message: basicStateError } = {},
+    basicCountry: { message: basicCountryError } = {},
+    basicEmail: { message: basicEmailError } = {},
+    basicPhone: { message: basicPhoneError } = {},
+    basicMobile: { message: basicMobileError } = {},
+
+    guarantorSuffix: { message: guarantorSuffixError } = {},
+    guarantorFirstName: { message: guarantorFirstNameError } = {},
+    guarantorMiddleName: { message: guarantorMiddleNameError } = {},
+    guarantorLastName: { message: guarantorLastNameError } = {},
+    guarantorZipCode: { message: guarantorZipCodeError } = {},
+    guarantorAddress: { message: guarantorAddressError } = {},
+    guarantorAddress2: { message: guarantorAddress2Error } = {},
+    guarantorCity: { message: guarantorCityError } = {},
+    guarantorState: { message: guarantorStateError } = {},
+    guarantorCountry: { message: guarantorCountryError } = {},
+    guarantorSsn: { message: guarantorSsnError } = {},
+    guarantorPhone: { message: guarantorPhoneError } = {},
+    guarantorEmail: { message: guarantorEmailError } = {},
+    guarantorEmployerName: { message: guarantorEmployerNameError } = {},
+
+    emergencyName: { message: emergencyNameError } = {},
+    emergencyPhone: { message: emergencyPhoneError } = {},
+    emergencyMobile: { message: emergencyMobileError } = {},
+
+    kinName: { message: kinNameError } = {},
+    kinPhone: { message: kinPhoneError } = {},
+
+    employerName: { message: employerNameError } = {},
+    employerPhone: { message: employerPhoneError } = {},
+    employerUsualOccupation: { message: employerUsualOccupationError } = {},
+    employerIndustry: { message: employerIndustryError } = {},
+
+    guardianFirstName: { message: guardianFirstNameError } = {},
+    guardianMiddleName: { message: guardianMiddleNameError } = {},
+    guardianLastName: { message: guardianLastNameError } = {},
+    guardianSuffix: { message: guardianSuffixError } = {},
+
+  } = errors;
 
   return (
     <FormProvider {...methods}>
@@ -56,17 +236,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="Suffix"
+                      controllerName="patientSuffix"
                       control={control}
                       controllerLabel={SUFFIX}
+                      error={patientSuffixError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="firstName"
+                      controllerName="patientFirstName"
                       control={control}
                       controllerLabel={FIRST_NAME}
+                      error={patientFirstNameError}
                     />
                   </Grid>
                 </Grid>
@@ -75,17 +257,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="middleName"
+                      controllerName="patientMiddleName"
                       control={control}
                       controllerLabel={MIDDLE_NAME}
+                      error={patientMiddleNameError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="lastName"
+                      controllerName="patientLastName"
                       control={control}
                       controllerLabel={LAST_NAME}
+                      error={patientLastNameError}
                     />
                   </Grid>
                 </Grid>
@@ -94,17 +278,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="firstName"
+                      controllerName="patientFirstNameUsed"
                       control={control}
                       controllerLabel={FIRST_NAME_USED}
+                      error={patientFirstNameUsedError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="preferredName"
+                      controllerName="patientPrefferedName"
                       control={control}
                       controllerLabel={PREFERRED_NAME}
+                      error={patientPrefferedNameError}
                     />
                   </Grid>
                 </Grid>
@@ -113,17 +299,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="previousFirstName"
+                      controllerName="patientPreviousFirstName"
                       control={control}
                       controllerLabel={PREVIOUS_FIRST_NAME}
+                      error={patientPreviousFirstNameError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="previousLastName"
+                      controllerName="patientPreviouslastName"
                       control={control}
                       controllerLabel={PREVIOUS_LAST_NAME}
+                      error={patientPreviouslastNameError}
                     />
                   </Grid>
                 </Grid>
@@ -132,30 +320,32 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="mothersMaidenName"
+                      controllerName="patientMotherMaidenName"
                       control={control}
                       controllerLabel={MOTHERS_MAIDEN_NAME}
+                      error={patientMotherMaidenNameError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="ssn"
+                      controllerName="patientSsn"
                       control={control}
                       controllerLabel={SSN}
+                      error={patientSsnError}
                     />
                   </Grid>
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <Controller
-                    name="legalSex"
-                    defaultValue={Gender.Male}
+                    name="patientGender"
+                    defaultValue={Genderidentity.Male}
                     control={control}
                     render={({ field }) => {
                       return (
                         <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                          <InputLabel id="demo-customized-select-label-gender" shrink>{GENDER_IDENTITY}</InputLabel>
                           <Select
                             labelId="demo-customized-select-label-gender"
                             id="demo-customized-select-1"
@@ -163,8 +353,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
+                            {MAPPED_GENDER_IDENTITY.map((genderidentity) => {
+                              const { label, value } = genderidentity || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
                             })}
@@ -176,12 +366,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={12}>
-                  <AddPatientController
-                    fieldType="date"
-                    controllerName="dob"
-                    control={control}
-                    controllerLabel={DOB}
-                  />
+                  <DatePicker name="patientDob" label={DOB} error={patientDobError || ''} />
                 </Grid>
               </CardComponent>
 
@@ -191,27 +376,30 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="zipCode"
+                    controllerName="basicZipCode"
                     control={control}
                     controllerLabel={ZIP_CODE}
+                    error={basicZipCodeError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="address"
+                    controllerName="basicAddress"
                     control={control}
                     controllerLabel={ADDRESS}
+                    error={basicAddressError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="address2"
+                    controllerName="basicAddress2"
                     control={control}
                     controllerLabel={ADDRESS_2}
+                    error={basicAddress2Error}
                   />
                 </Grid>
 
@@ -219,24 +407,27 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={4}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="city"
+                      controllerName="basicCity"
                       controllerLabel={CITY}
+                      error={basicCityError}
                     />
                   </Grid>
 
                   <Grid item md={4}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="state"
+                      controllerName="basicState"
                       controllerLabel={STATE}
+                      error={basicStateError}
                     />
                   </Grid>
 
                   <Grid item md={4}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="country"
+                      controllerName="basicCountry"
                       controllerLabel={COUNTRY}
+                      error={basicCountryError}
                     />
                   </Grid>
                 </Grid>
@@ -244,27 +435,30 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="email"
+                    controllerName="basicEmail"
                     control={control}
                     controllerLabel={EMAIL}
+                    error={basicEmailError}
                   />
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
-                      fieldType="homePhone"
-                      controllerName="DEAActiveDate"
+                      fieldType="text"
+                      controllerName="basicPhone"
                       control={control}
-                      controllerLabel={DEA_ACTIVE_DATE}
+                      controllerLabel={HOME_PHONE}
+                      error={basicPhoneError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
-                      fieldType="mobilePhone"
-                      controllerName="DEATermDate"
+                      fieldType="text"
+                      controllerName="basicMobile"
                       control={control}
-                      controllerLabel={DEA_TERM_DATE}
+                      controllerLabel={MOBILE_PHONE}
+                      error={basicMobileError}
                     />
                   </Grid>
                 </Grid>
@@ -275,41 +469,23 @@ const AddPatientForm: FC = (): JSX.Element => {
               <CardComponent cardTitle={DEMOGRAPHICS}>
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="languageSpoken"
-                      defaultValue={Gender.Male}
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="patientLanguage"
                       control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
+                      controllerLabel={LANGUAGE_SPOKEN}
+                      error={patientLanguageError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <Controller
-                      name="Race"
-                      defaultValue={Gender.Male}
+                      name="patientRace"
+                      defaultValue={Race.AmericanIndianAlaskaNative}
                       control={control}
                       render={({ field }) => {
                         return (
                           <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                            <InputLabel id="demo-customized-select-label-gender" shrink>Race</InputLabel>
                             <Select
                               labelId="demo-customized-select-label-gender"
                               id="demo-customized-select-1"
@@ -317,8 +493,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
+                              {MAPPED_RACE.map((race) => {
+                                const { label, value } = race || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
                               })}
@@ -333,13 +509,13 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <Controller
-                      name="ethnicity"
-                      defaultValue={Gender.Male}
+                      name="patientEthnicity"
+                      defaultValue={Ethnicity.CenteralAmerican}
                       control={control}
                       render={({ field }) => {
                         return (
                           <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                            <InputLabel id="demo-customized-select-label-gender" shrink>{ETHNICITY}</InputLabel>
                             <Select
                               labelId="demo-customized-select-label-gender"
                               id="demo-customized-select-1"
@@ -347,8 +523,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
+                              {MAPPED_ETHNICITY.map((ethnicity) => {
+                                const { label, value } = ethnicity || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
                               })}
@@ -360,13 +536,13 @@ const AddPatientForm: FC = (): JSX.Element => {
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <Controller
-                      name="maritialStatus"
-                      defaultValue={Gender.Male}
+                      name="patientMaritialStatus"
+                      defaultValue={Maritialstatus.Divorced}
                       control={control}
                       render={({ field }) => {
                         return (
                           <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                            <InputLabel id="demo-customized-select-label-gender" shrink>Maritial Status</InputLabel>
                             <Select
                               labelId="demo-customized-select-label-gender"
                               id="demo-customized-select-1"
@@ -374,65 +550,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="sexualOrientation"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="gender"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
+                              {MAPPED_MARITIAL_STATUS.map((maritialStatus) => {
+                                const { label, value } = maritialStatus || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
                               })}
@@ -447,13 +566,13 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <Controller
-                      name="assignedSexAtBirth"
-                      defaultValue={Gender.Male}
+                      name="patientSexualOrientation"
+                      defaultValue={Sexualorientation.Bisexual}
                       control={control}
                       render={({ field }) => {
                         return (
                           <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                            <InputLabel id="demo-customized-select-label-gender" shrink>{SEXUAL_ORIENTATION}</InputLabel>
                             <Select
                               labelId="demo-customized-select-label-gender"
                               id="demo-customized-select-1"
@@ -461,8 +580,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
+                              {MAPPED_SEXUALORIENTATION.map((sexualOrientation) => {
+                                const { label, value } = sexualOrientation || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
                               })}
@@ -474,13 +593,13 @@ const AddPatientForm: FC = (): JSX.Element => {
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <Controller
-                      name="pronouns"
-                      defaultValue={Gender.Male}
+                      name="patientGenderIdentity"
+                      defaultValue={Genderidentity.Female}
                       control={control}
                       render={({ field }) => {
                         return (
                           <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                            <InputLabel id="demo-customized-select-label-gender" shrink>{GENDER_IDENTITY}</InputLabel>
                             <Select
                               labelId="demo-customized-select-label-gender"
                               id="demo-customized-select-1"
@@ -488,8 +607,65 @@ const AddPatientForm: FC = (): JSX.Element => {
                               value={field.value}
                               onChange={field.onChange}
                             >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
+                              {MAPPED_GENDER_IDENTITY.map((genderidentity) => {
+                                const { label, value } = genderidentity || {};
+
+                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
+                              })}
+                            </Select>
+                          </FormControl>
+                        )
+                      }}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Controller
+                      name="patientSexAtBirth"
+                      defaultValue={Genderidentity.Female}
+                      control={control}
+                      render={({ field }) => {
+                        return (
+                          <FormControl fullWidth margin='normal'>
+                            <InputLabel id="demo-customized-select-label-gender" shrink>{SEX_AT_BIRTH}</InputLabel>
+                            <Select
+                              labelId="demo-customized-select-label-gender"
+                              id="demo-customized-select-1"
+                              variant="outlined"
+                              value={field.value}
+                              onChange={field.onChange}
+                            >
+                              {MAPPED_GENDER_IDENTITY.map((patientSexAtBirth) => {
+                                const { label, value } = patientSexAtBirth || {};
+
+                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
+                              })}
+                            </Select>
+                          </FormControl>
+                        )
+                      }}
+                    />
+                  </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Controller
+                      name="patientPronouns"
+                      defaultValue={Pronouns.He}
+                      control={control}
+                      render={({ field }) => {
+                        return (
+                          <FormControl fullWidth margin='normal'>
+                            <InputLabel id="demo-customized-select-label-gender" shrink>{PRONOUS}</InputLabel>
+                            <Select
+                              labelId="demo-customized-select-label-gender"
+                              id="demo-customized-select-1"
+                              variant="outlined"
+                              value={field.value}
+                              onChange={field.onChange}
+                            >
+                              {MAPPED_PRONOUS.map((pronouns) => {
+                                const { label, value } = pronouns || {};
 
                                 return <MenuItem key={value} value={value}>{label}</MenuItem>;
                               })}
@@ -503,26 +679,26 @@ const AddPatientForm: FC = (): JSX.Element => {
 
                 <Grid item md={12} sm={12} xs={12}>
                   <Controller
-                    name="homebound"
-                    defaultValue={Gender.Male}
+                    name="patientHomeBound"
                     control={control}
-                    render={({ field }) => {
+                    render={() => {
                       return (
                         <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
+                          <InputLabel id="demo-customized-select-label-gender" shrink>{HOMEBOUND}</InputLabel>
+                          <RadioGroup
+                            name="value"
+                            value={selection.value}
+                            onChange={updateSelection}
                           >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
+                            {MAPPED_HOMEBOUND.map(homeBound => (
+                              <FormControlLabel
+                                label={homeBound.label}
+                                key={homeBound.value}
+                                value={homeBound.value}
+                                control={<Radio color="primary" />}
+                              />
+                            ))}
+                          </RadioGroup>
                         </FormControl>
                       )
                     }}
@@ -535,13 +711,13 @@ const AddPatientForm: FC = (): JSX.Element => {
               <CardComponent cardTitle={GUARANTOR}>
                 <Grid item md={12} sm={12} xs={12}>
                   <Controller
-                    name="patientsRelationshipWithGuarantor*"
-                    defaultValue={Gender.Male}
+                    name="guarantorRelationship"
+                    defaultValue={RelationshipType.Employee}
                     control={control}
                     render={({ field }) => {
                       return (
                         <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                          <InputLabel id="demo-customized-select-label-gender" shrink>{RELATIONSHIP}</InputLabel>
                           <Select
                             labelId="demo-customized-select-label-gender"
                             id="demo-customized-select-1"
@@ -549,8 +725,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
+                            {MAPPED_RELATIONSHIPTYPE.map((relationship) => {
+                              const { label, value } = relationship || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
                             })}
@@ -565,17 +741,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="suffix"
+                      controllerName="guarantorSuffix"
                       control={control}
                       controllerLabel={SUFFIX}
+                      error={guarantorSuffixError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="fristName"
+                      controllerName="guarantorFirstName"
                       control={control}
                       controllerLabel={FIRST_NAME}
+                      error={guarantorFirstNameError}
                     />
                   </Grid>
                 </Grid>
@@ -584,54 +762,50 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="middleName"
+                      controllerName="guarantorMiddleName"
                       control={control}
                       controllerLabel={MIDDLE_NAME}
+                      error={guarantorMiddleNameError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="lastName"
+                      controllerName="guarantorLastName"
                       control={control}
                       controllerLabel={LAST_NAME}
+                      error={guarantorLastNameError}
                     />
                   </Grid>
-                </Grid>
-
-                <Grid item md={12}>
-                  <AddPatientController
-                    fieldType="date"
-                    controllerName="dob"
-                    control={control}
-                    controllerLabel={DOB}
-                  />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="zipCode"
+                    controllerName="guarantorZipCode"
                     control={control}
                     controllerLabel={ZIP_CODE}
+                    error={guarantorZipCodeError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="address"
+                    controllerName="guarantorAddress"
                     control={control}
                     controllerLabel={ADDRESS}
+                    error={guarantorAddressError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="addressCTA"
+                    controllerName="guarantorAddress2"
                     control={control}
-                    controllerLabel={ADDRESS_CTA}
+                    controllerLabel={ADDRESS_2}
+                    error={guarantorAddress2Error}
                   />
                 </Grid>
 
@@ -639,24 +813,27 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={4}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="city"
+                      controllerName="guarantorCity"
                       controllerLabel={CITY}
+                      error={guarantorCityError}
                     />
                   </Grid>
 
                   <Grid item md={4}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="state"
+                      controllerName="guarantorState"
                       controllerLabel={STATE}
+                      error={guarantorStateError}
                     />
                   </Grid>
 
                   <Grid item md={4}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="country"
+                      controllerName="guarantorCountry"
                       controllerLabel={COUNTRY}
+                      error={guarantorCountryError}
                     />
                   </Grid>
                 </Grid>
@@ -665,17 +842,19 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="ssn"
+                      controllerName="guarantorSsn"
                       control={control}
                       controllerLabel={SSN}
+                      error={guarantorSsnError}
                     />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
-                      controllerName="phone"
+                      controllerName="guarantorPhone"
                       control={control}
                       controllerLabel={PHONE}
+                      error={guarantorPhoneError}
                     />
                   </Grid>
                 </Grid>
@@ -683,34 +862,44 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="email"
+                    controllerName="guarantorEmail"
                     control={control}
                     controllerLabel={EMAIL}
+                    error={guarantorEmailError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="employer"
+                    controllerName="guarantorEmployerName"
                     control={control}
                     controllerLabel={EMPLOYER}
+                    error={guarantorEmployerNameError}
                   />
                 </Grid>
               </CardComponent>
             </Grid>
-
             <Grid md={6} item>
               <CardComponent cardTitle={REGISTRATION_DATES}>
                 <Grid item md={12} sm={12} xs={12}>
+                  <Selector
+                    value={{ id: "", name: "" }}
+                    label={USUAL_PROVIDER_ID}
+                    name="patientUsualProviderId"
+                    options={renderDoctors(doctorList)}
+                  />
+                </Grid>
+
+                <Grid item md={12} sm={12} xs={12}>
                   <Controller
-                    name="usualProvider"
-                    defaultValue={Gender.Male}
+                    name="patientRegistrationDepartment"
+                    defaultValue={RegDepartment.Clinic}
                     control={control}
                     render={({ field }) => {
                       return (
                         <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                          <InputLabel id="demo-customized-select-label-gender" shrink>{REGISTRATION_DEPARTMENT}</InputLabel>
                           <Select
                             labelId="demo-customized-select-label-gender"
                             id="demo-customized-select-1"
@@ -718,8 +907,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
+                            {MAPPED_REG_DEPARTMENT.map((registrationDepartment) => {
+                              const { label, value } = registrationDepartment || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
                             })}
@@ -732,13 +921,13 @@ const AddPatientForm: FC = (): JSX.Element => {
 
                 <Grid item md={12} sm={12} xs={12}>
                   <Controller
-                    name="registerationDepartment"
-                    defaultValue={Gender.Male}
+                    name="patientPrimaryDepartment"
+                    defaultValue={PrimaryDepartment.Clinic}
                     control={control}
                     render={({ field }) => {
                       return (
                         <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                          <InputLabel id="demo-customized-select-label-gender" shrink>{PRIMARY_DEPARTMENT}</InputLabel>
                           <Select
                             labelId="demo-customized-select-label-gender"
                             id="demo-customized-select-1"
@@ -746,36 +935,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="primaryDepartment"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
+                            {MAPPED_PRIMARY_DEPARTMENT.map((primaryDepartment) => {
+                              const { label, value } = primaryDepartment || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
                             })}
@@ -788,20 +949,19 @@ const AddPatientForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="registrationDate"
-                      control={control}
-                      controllerLabel={REGISTRATION_DATE}
-                    />
+                    <DatePicker name="patientRegistrationDate" label={REGISTRATION_DATE} error={patientRegistrationDateError || ''} />
                   </Grid>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="decreasedDate"
-                      control={control}
-                      controllerLabel={DECREASED_DATE}
-                    />
+                    <DatePicker name="patientdeceasedDate" label={DECREASED_DATE} error={patientdeceasedDateError || ''} />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DatePicker name="patientStatementNoteDateFrom" label={ISSUE_DATE} error={patientStatementNoteDateFromError || ''} />
+                  </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DatePicker name="patientStatementNoteDateTo" label={EXPIRATION_DATE} error={patientStatementNoteDateToError || ''} />
                   </Grid>
                 </Grid>
               </CardComponent>
@@ -820,13 +980,13 @@ const AddPatientForm: FC = (): JSX.Element => {
                             onChange={handleChangeForCheckBox("one")}
                           />
                         }
-                        label="One"
+                        label="Privacy Notice"
                       />
                       <FormControlLabel
                         control={
                           <Checkbox checked={state.two} onChange={handleChangeForCheckBox("two")} />
                         }
-                        label="Two"
+                        label="Release of Billing Information and Assignment of Benefits"
                       />
                     </FormGroup>
                   </FormControl>
@@ -839,7 +999,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                             control={
                               <Checkbox checked={state.three} onChange={handleChangeForCheckBox("three")} />
                             }
-                            label="Three"
+                            label="Granted"
                           />
                         </Box>
                       </FormGroup>
@@ -855,42 +1015,12 @@ const AddPatientForm: FC = (): JSX.Element => {
                                 onChange={handleChangeForCheckBox("four")}
                               />
                             }
-                            label="Four"
+                            label="Granted"
                           />
                         </Box>
                       </FormGroup>
                     </FormControl>
                   </Box>
-
-
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="patientNotes"
-                    control={control}
-                    defaultValue=""
-                    render={({ field }) => (
-                      <FormControl fullWidth margin="normal">
-                        <InputLabel shrink htmlFor={"taxonomyCode"}>
-                          {PATIENT_NOTES}
-                        </InputLabel>
-
-                        <TextField
-                          fullWidth
-                          multiline
-                          type="text"
-                          variant="outlined"
-                          id="taxonomyCode"
-                          InputProps={{
-                            inputComponent: TextareaAutosize,
-                            rows: 3
-                          }}
-                          {...field}
-                        />
-                      </FormControl>
-                    )}
-                  />
                 </Grid>
               </CardComponent>
 
@@ -900,21 +1030,22 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="name"
+                    controllerName="emergencyName"
                     control={control}
                     controllerLabel={NAME}
+                    error={emergencyNameError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <Controller
-                    name="relationship"
-                    defaultValue={Gender.Male}
+                    name="emergencyRelationship"
+                    defaultValue={RelationshipType.CadaverDonor}
                     control={control}
                     render={({ field }) => {
                       return (
                         <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                          <InputLabel id="demo-customized-select-label-gender" shrink>{RELATIONSHIP}</InputLabel>
                           <Select
                             labelId="demo-customized-select-label-gender"
                             id="demo-customized-select-1"
@@ -922,8 +1053,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
+                            {MAPPED_RELATIONSHIPTYPE.map((relationship) => {
+                              const { label, value } = relationship || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
                             })}
@@ -937,18 +1068,20 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="homePhone"
+                    controllerName="emergencyPhone"
                     control={control}
                     controllerLabel={HOME_PHONE}
+                    error={emergencyPhoneError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="mobilePhone"
+                    controllerName="emergencyMobile"
                     control={control}
                     controllerLabel={MOBILE_PHONE}
+                    error={emergencyMobileError}
                   />
                 </Grid>
               </CardComponent>
@@ -959,21 +1092,22 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="name"
+                    controllerName="kinName"
                     control={control}
                     controllerLabel={NAME}
+                    error={kinNameError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <Controller
-                    name="relationship"
-                    defaultValue={Gender.Male}
+                    name="kinRelationship"
+                    defaultValue={RelationshipType.NephewNiece}
                     control={control}
                     render={({ field }) => {
                       return (
                         <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
+                          <InputLabel id="demo-customized-select-label-gender" shrink>{RELATIONSHIP}</InputLabel>
                           <Select
                             labelId="demo-customized-select-label-gender"
                             id="demo-customized-select-1"
@@ -981,8 +1115,8 @@ const AddPatientForm: FC = (): JSX.Element => {
                             value={field.value}
                             onChange={field.onChange}
                           >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
+                            {MAPPED_RELATIONSHIPTYPE.map((relationship) => {
+                              const { label, value } = relationship || {};
 
                               return <MenuItem key={value} value={value}>{label}</MenuItem>;
                             })}
@@ -996,9 +1130,10 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="homePhone"
+                    controllerName="kinPhone"
                     control={control}
                     controllerLabel={HOME_PHONE}
+                    error={kinPhoneError}
                   />
                 </Grid>
               </CardComponent>
@@ -1012,6 +1147,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                     controllerName="employerName"
                     control={control}
                     controllerLabel={EMPLOYER_NAME}
+                    error={employerNameError}
                   />
                 </Grid>
 
@@ -1021,24 +1157,27 @@ const AddPatientForm: FC = (): JSX.Element => {
                     controllerName="employerPhone"
                     control={control}
                     controllerLabel={EMPLOYER_PHONE}
+                    error={employerPhoneError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="usualOccupation"
+                    controllerName="employerUsualOccupation"
                     control={control}
                     controllerLabel={USUAL_OCCUPATION}
+                    error={employerUsualOccupationError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="usualIndustry"
+                    controllerName="employerIndustry"
                     control={control}
                     controllerLabel={USUAL_INDUSTRY}
+                    error={employerIndustryError}
                   />
                 </Grid>
               </CardComponent>
@@ -1049,617 +1188,41 @@ const AddPatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="firstName"
+                    controllerName="guardianFirstName"
                     control={control}
                     controllerLabel={FIRST_NAME}
+                    error={guardianFirstNameError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="middleName"
+                    controllerName="guardianMiddleName"
                     control={control}
                     controllerLabel={MIDDLE_NAME}
+                    error={guardianMiddleNameError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="lastName"
+                    controllerName="guardianLastName"
                     control={control}
                     controllerLabel={LAST_NAME}
+                    error={guardianLastNameError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="suffix"
+                    controllerName="guardianSuffix"
                     control={control}
                     controllerLabel={SUFFIX}
+                    error={guardianSuffixError}
                   />
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={BILLING_TEXT}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="holdStatement"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-
-                <Grid item md={12}>
-                  <FormControl component="fieldset">
-                    <FormLabel component="legend">{STATEMENT_DELIVERED_ONLINE}</FormLabel>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={state.five}
-                            onChange={handleChangeForCheckBox("five")}
-                          />
-                        }
-                        label="Five"
-                      />
-                    </FormGroup>
-                  </FormControl>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="statementNote"
-                    control={control}
-                    controllerLabel={STATEMENT_NOTE}
-                  />
-                </Grid>
-
-                <Grid item md={12}>
-                  <AddPatientController
-                    fieldType="date"
-                    controllerName="dob"
-                    control={control}
-                    controllerLabel={DOB}
-                  />
-                </Grid>
-              </CardComponent>
-            </Grid>
-          </Grid>
-          <Box mt={3} ml={3} mb={3}>
-            <Typography component="h4" variant="h4">Add Insurance</Typography>
-          </Box>
-          <Grid container spacing={3}>
-            <Grid md={6} item>
-              <CardComponent cardTitle={INSURANCE_POLICY_INFO}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="insuranceCompany"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="zipCode"
-                    control={control}
-                    controllerLabel={ZIP_CODE}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="address"
-                    control={control}
-                    controllerLabel={ADDRESS}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="city"
-                      controllerLabel={CITY}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="state"
-                      controllerLabel={STATE}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="country"
-                      controllerLabel={COUNTRY}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="idNumber"
-                    control={control}
-                    controllerLabel={ID_NUMBER}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="patientRelationshipToPolicyHolder"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="groupNumber"
-                    control={control}
-                    controllerLabel={GROUP_NUMBER}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="issueDate"
-                      control={control}
-                      controllerLabel={ISSUE_DATE}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="expirationDate"
-                      control={control}
-                      controllerLabel={EXPIRATION_DATE}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="copayAmounts"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName=""
-                      control={control}
-                      controllerLabel=""
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="coinsurancePercentage"
-                    control={control}
-                    controllerLabel={COINSURANCE_PERCENTAGE}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="referringProvider"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="primaryCareProvider"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="pricingProductType"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="notes"
-                    control={control}
-                    controllerLabel={NOTES}
-                  />
-                </Grid>
-              </CardComponent>
-            </Grid>
-
-            <Grid md={6} item>
-              <CardComponent cardTitle={POLICY_HOLDER}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="entityType"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="policyHolderID"
-                    control={control}
-                    controllerLabel={POLICY_HOLDER_ID}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="suffix"
-                      control={control}
-                      controllerLabel={SUFFIX}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="firstName"
-                      control={control}
-                      controllerLabel={FIRST_NAME}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="middleName"
-                      control={control}
-                      controllerLabel={MIDDLE_NAME}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="lastName"
-                      control={control}
-                      controllerLabel={LAST_NAME}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="zipCode"
-                    control={control}
-                    controllerLabel={ZIP_CODE}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="address"
-                    control={control}
-                    controllerLabel={ADDRESS}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="addressCTA"
-                    control={control}
-                    controllerLabel={ADDRESS_CTA}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="city"
-                      controllerLabel={CITY}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="state"
-                      controllerLabel={STATE}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="country"
-                      controllerLabel={COUNTRY}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="ssn"
-                      control={control}
-                      controllerLabel={SSN}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="gender"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER_1.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12}>
-                  <AddPatientController
-                    fieldType="date"
-                    controllerName="dob"
-                    control={control}
-                    controllerLabel={DOB}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="employer"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER_1.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={ELIGIBILITY}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <FormControl component="fieldset">
-                    <RadioGroup
-                      aria-label="gender"
-                      name="gender1"
-                      value={value}
-                      onChange={handleChange}
-                    >
-                      {MAPPED_GENDER_1.map((gender) => {
-                        const { label, value } = gender || {};
-                        return <FormControlLabel key={value} value={value} control={<Radio />} label={label} />;
-                      })}
-                    </RadioGroup>
-                  </FormControl>
                 </Grid>
               </CardComponent>
             </Grid>
@@ -1667,8 +1230,9 @@ const AddPatientForm: FC = (): JSX.Element => {
         </Box>
 
         <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary">
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {ADD_PATIENT}
+            {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
         </Box>
 

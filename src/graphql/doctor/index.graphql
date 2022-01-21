@@ -74,6 +74,7 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
         state
         country
         userId
+        serviceCode
         createdAt
         updatedAt
       }
@@ -218,6 +219,7 @@ query GetDoctor($getDoctor: GetDoctor!) {
         state
         country
         userId
+        serviceCode
         createdAt
         updatedAt
       }

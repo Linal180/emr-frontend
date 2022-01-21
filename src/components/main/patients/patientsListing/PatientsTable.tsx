@@ -44,18 +44,16 @@ const PatientsTable: FC = (): JSX.Element => {
       const { findAllPatient } = data || {};
 
       if (findAllPatient) {
-        const { pagination, } = findAllPatient
+        const { pagination, patients } = findAllPatient
+        patients && setPatients(patients as PatientsPayload['patients'])
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && setTotalPages(totalPages)
-          }
-
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && setTotalPages(totalPages)
         }
       }
     }
-  });
+    });
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     onError() {
