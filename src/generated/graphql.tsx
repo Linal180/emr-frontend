@@ -4,7 +4,7 @@ export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-const defaultOptions = {}
+const defaultOptions =  {}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -12,6 +12,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
+  DateTime: any;
 };
 
 export type AccessUserPayload = {
@@ -82,6 +84,7 @@ export type Contact = {
   pager?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   phone?: Maybe<Scalars['String']>;
+  primaryContact?: Maybe<Scalars['Boolean']>;
   relationship?: Maybe<RelationshipType>;
   ssn?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
@@ -158,6 +161,7 @@ export type CreateContactInput = {
   pager?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  primaryContact?: Maybe<Scalars['Boolean']>;
   relationship?: Maybe<RelationshipType>;
   ssn?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
@@ -249,6 +253,7 @@ export type CreateFacilityItemInput = {
   serviceCode?: Maybe<ServiceCode>;
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
 };
 
 export type CreatePatientInput = {
@@ -265,14 +270,14 @@ export type CreatePatientInput = {
 export type CreatePatientItemInput = {
   adminId?: Maybe<Scalars['String']>;
   callToConsent?: Maybe<Scalars['Boolean']>;
-  deseasedDate?: Maybe<Scalars['String']>;
+  deceasedDate?: Maybe<Scalars['String']>;
   dob?: Maybe<Scalars['String']>;
   ethnicity?: Maybe<Ethnicity>;
   facilityId: Scalars['String'];
   firstName?: Maybe<Scalars['String']>;
   firstNameUsed?: Maybe<Scalars['String']>;
   gender?: Maybe<Genderidentity>;
-  genderIdentity?: Maybe<Scalars['String']>;
+  genderIdentity?: Maybe<Genderidentity>;
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
   language?: Maybe<Scalars['String']>;
@@ -291,8 +296,8 @@ export type CreatePatientItemInput = {
   race?: Maybe<Race>;
   registrationDate?: Maybe<Scalars['String']>;
   registrationDepartment?: Maybe<RegDepartment>;
-  relaseOfInfoBill?: Maybe<Scalars['Boolean']>;
-  sexAtBirth?: Maybe<Scalars['String']>;
+  releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
+  sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
@@ -301,6 +306,13 @@ export type CreatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
+};
+
+export type CreateScheduleInput = {
+  doctorId: Scalars['String'];
+  endAt: Scalars['DateTime'];
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  startAt: Scalars['DateTime'];
 };
 
 export type CreateServiceInput = {
@@ -371,6 +383,7 @@ export type Doctor = {
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
+  schedule?: Maybe<Array<Schedule>>;
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
   ssn?: Maybe<Scalars['String']>;
@@ -447,6 +460,7 @@ export type Facility = {
   services?: Maybe<Array<Service>>;
   staff?: Maybe<Array<Staff>>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
   user?: Maybe<Array<User>>;
 };
@@ -496,11 +510,19 @@ export type GetDoctor = {
   id: Scalars['String'];
 };
 
+export type GetDoctorSchedule = {
+  id: Scalars['String'];
+};
+
 export type GetFacility = {
   id: Scalars['String'];
 };
 
 export type GetPatient = {
+  id: Scalars['String'];
+};
+
+export type GetSchedule = {
   id: Scalars['String'];
 };
 
@@ -556,6 +578,7 @@ export type Mutation = {
   createDoctor: DoctorPayload;
   createFacility: FacilityPayload;
   createPatient: PatientPayload;
+  createSchedule: SchedulePayload;
   createService: ServicePayload;
   createStaff: StaffPayload;
   deactivateUser: UserPayload;
@@ -568,6 +591,7 @@ export type Mutation = {
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removePatient: PatientPayload;
+  removeSchedule: SchedulePayload;
   removeService: ServicePayload;
   removeStaff: StaffPayload;
   removeUser: UserPayload;
@@ -580,6 +604,7 @@ export type Mutation = {
   updatePatient: PatientPayload;
   updatePatientProvider: PatientPayload;
   updateRole: UserPayload;
+  updateSchedule: SchedulePayload;
   updateService: ServicePayload;
   updateStaff: StaffPayload;
   updateUser: UserPayload;
@@ -609,6 +634,11 @@ export type MutationCreateFacilityArgs = {
 
 export type MutationCreatePatientArgs = {
   createPatientInput: CreatePatientInput;
+};
+
+
+export type MutationCreateScheduleArgs = {
+  createScheduleInput: CreateScheduleInput;
 };
 
 
@@ -672,6 +702,11 @@ export type MutationRemovePatientArgs = {
 };
 
 
+export type MutationRemoveScheduleArgs = {
+  removeSchedule: RemoveSchedule;
+};
+
+
 export type MutationRemoveServiceArgs = {
   removeService: RemoveService;
 };
@@ -732,6 +767,11 @@ export type MutationUpdateRoleArgs = {
 };
 
 
+export type MutationUpdateScheduleArgs = {
+  updateScheduleInput: UpdateScheduleInput;
+};
+
+
 export type MutationUpdateServiceArgs = {
   updateServiceInput: UpdateServiceInput;
 };
@@ -776,7 +816,7 @@ export type Patient = {
   callToConsent: Scalars['Boolean'];
   contacts?: Maybe<Array<Contact>>;
   createdAt: Scalars['String'];
-  deseasedDate: Scalars['String'];
+  deceasedDate: Scalars['DateTime'];
   dob?: Maybe<Scalars['String']>;
   employer?: Maybe<Array<Employer>>;
   ethnicity?: Maybe<Ethnicity>;
@@ -803,9 +843,9 @@ export type Patient = {
   privacyNotice: Scalars['Boolean'];
   pronouns?: Maybe<Pronouns>;
   race?: Maybe<Race>;
-  registrationDate: Scalars['String'];
+  registrationDate: Scalars['DateTime'];
   registrationDepartment: RegDepartment;
-  relaseOfInfoBill: Scalars['Boolean'];
+  releaseOfInfoBill: Scalars['Boolean'];
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
   ssn?: Maybe<Scalars['String']>;
@@ -861,12 +901,15 @@ export type Query = {
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllPatient: PatientsPayload;
+  findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
+  getDoctorSchedules: SchedulesPayload;
   getFacility: FacilityPayload;
   getPatient: PatientPayload;
+  getSchedule: SchedulePayload;
   getService: ServicePayload;
   getStaff: StaffPayload;
   getUser: UserPayload;
@@ -900,6 +943,11 @@ export type QueryFindAllPatientArgs = {
 };
 
 
+export type QueryFindAllSchedulesArgs = {
+  scheduleInput: ScheduleInput;
+};
+
+
 export type QueryFindAllServicesArgs = {
   serviceInput: ServiceInput;
 };
@@ -920,6 +968,11 @@ export type QueryGetDoctorArgs = {
 };
 
 
+export type QueryGetDoctorSchedulesArgs = {
+  getDoctorSchedule: GetDoctorSchedule;
+};
+
+
 export type QueryGetFacilityArgs = {
   getFacility: GetFacility;
 };
@@ -927,6 +980,11 @@ export type QueryGetFacilityArgs = {
 
 export type QueryGetPatientArgs = {
   getPatient: GetPatient;
+};
+
+
+export type QueryGetScheduleArgs = {
+  getSchedule: GetSchedule;
 };
 
 
@@ -1026,6 +1084,10 @@ export type RemovePatient = {
   id: Scalars['String'];
 };
 
+export type RemoveSchedule = {
+  id: Scalars['String'];
+};
+
 export type RemoveService = {
   id: Scalars['String'];
 };
@@ -1073,6 +1135,35 @@ export enum Sexualorientation {
   Homosexual = 'HOMOSEXUAL',
   None = 'NONE'
 }
+
+export type Schedule = {
+  __typename?: 'Schedule';
+  createdAt: Scalars['String'];
+  doctor?: Maybe<Doctor>;
+  endAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  startAt: Scalars['DateTime'];
+  updatedAt: Scalars['String'];
+};
+
+export type ScheduleInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type SchedulePayload = {
+  __typename?: 'SchedulePayload';
+  response?: Maybe<ResponsePayload>;
+  schedule?: Maybe<Schedule>;
+};
+
+export type SchedulesPayload = {
+  __typename?: 'SchedulesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  schedules?: Maybe<Array<Maybe<Schedule>>>;
+};
 
 export type Service = {
   __typename?: 'Service';
@@ -1218,6 +1309,7 @@ export type UpdateContactInput = {
   pager?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  primaryContact?: Maybe<Scalars['Boolean']>;
   relationship?: Maybe<RelationshipType>;
   ssn?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
@@ -1312,6 +1404,7 @@ export type UpdateFacilityItemInput = {
   serviceCode?: Maybe<ServiceCode>;
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
 };
 
 export type UpdatePasswordInput = {
@@ -1333,14 +1426,14 @@ export type UpdatePatientInput = {
 export type UpdatePatientItemInput = {
   adminId?: Maybe<Scalars['String']>;
   callToConsent?: Maybe<Scalars['Boolean']>;
-  deseasedDate?: Maybe<Scalars['String']>;
+  deceasedDate?: Maybe<Scalars['String']>;
   dob?: Maybe<Scalars['String']>;
   ethnicity?: Maybe<Ethnicity>;
   facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   firstNameUsed?: Maybe<Scalars['String']>;
   gender?: Maybe<Genderidentity>;
-  genderIdentity?: Maybe<Scalars['String']>;
+  genderIdentity?: Maybe<Genderidentity>;
   holdStatement?: Maybe<Holdstatement>;
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
@@ -1360,8 +1453,8 @@ export type UpdatePatientItemInput = {
   race?: Maybe<Race>;
   registrationDate?: Maybe<Scalars['String']>;
   registrationDepartment?: Maybe<RegDepartment>;
-  relaseOfInfoBill?: Maybe<Scalars['Boolean']>;
-  sexAtBirth?: Maybe<Scalars['String']>;
+  releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
+  sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
@@ -1380,6 +1473,14 @@ export type UpdatePatientProvider = {
 export type UpdateRoleInput = {
   id: Scalars['String'];
   roles: Array<UserRole>;
+};
+
+export type UpdateScheduleInput = {
+  doctorId?: Maybe<Scalars['String']>;
+  endAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['String'];
+  recurringEndDate?: Maybe<Scalars['DateTime']>;
+  startAt?: Maybe<Scalars['DateTime']>;
 };
 
 export type UpdateServiceInput = {
@@ -1602,12 +1703,33 @@ export type CreateFacilityMutationVariables = Exact<{
 
 export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt?: Maybe<string>, updatedAt?: Maybe<string>, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, mobile?: Maybe<string>, phone?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, userId?: Maybe<string>, createdAt: string, updatedAt: string }>>, staff?: Maybe<Array<{ __typename?: 'Staff', id: string, firstName: string, lastName: string, email: string, username: string, dob: string, phone?: Maybe<string>, mobile?: Maybe<string>, gender: Gender, createdAt: string, updatedAt: string, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
 
+export type FindAllServicesQueryVariables = Exact<{
+  serviceInput: ServiceInput;
+}>;
+
+
+export type FindAllServicesQuery = { __typename?: 'Query', findAllServices: { __typename?: 'ServicesPayload', pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, services?: Maybe<Array<Maybe<{ __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: Maybe<boolean>, facilityId?: Maybe<string>, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>>> } };
+
+export type RemoveServiceMutationVariables = Exact<{
+  removeService: RemoveService;
+}>;
+
+
+export type RemoveServiceMutation = { __typename?: 'Mutation', removeService: { __typename?: 'ServicePayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type CreateServiceMutationVariables = Exact<{
+  createServiceInput: CreateServiceInput;
+}>;
+
+
+export type CreateServiceMutation = { __typename?: 'Mutation', createService: { __typename?: 'ServicePayload', service?: Maybe<{ __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: Maybe<boolean>, facilityId?: Maybe<string>, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
 export type FindAllPatientQueryVariables = Exact<{
   patientInput: PatientInput;
 }>;
 
 
-export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', facilityId?: Maybe<string>, pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patients?: Maybe<Array<Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: string, deseasedDate: string, privacyNotice: boolean, relaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>>> } };
+export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', facilityId?: Maybe<string>, pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patients?: Maybe<Array<Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>>> } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -1696,9 +1818,9 @@ export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutati
  * });
  */
 export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
@@ -1795,13 +1917,13 @@ export const GetLoggedInUserDocument = gql`
  * });
  */
 export function useGetLoggedInUserQuery(baseOptions?: Apollo.QueryHookOptions<GetLoggedInUserQuery, GetLoggedInUserQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetLoggedInUserQuery, GetLoggedInUserQueryVariables>(GetLoggedInUserDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetLoggedInUserQuery, GetLoggedInUserQueryVariables>(GetLoggedInUserDocument, options);
+      }
 export function useGetLoggedInUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetLoggedInUserQuery, GetLoggedInUserQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetLoggedInUserQuery, GetLoggedInUserQueryVariables>(GetLoggedInUserDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetLoggedInUserQuery, GetLoggedInUserQueryVariables>(GetLoggedInUserDocument, options);
+        }
 export type GetLoggedInUserQueryHookResult = ReturnType<typeof useGetLoggedInUserQuery>;
 export type GetLoggedInUserLazyQueryHookResult = ReturnType<typeof useGetLoggedInUserLazyQuery>;
 export type GetLoggedInUserQueryResult = Apollo.QueryResult<GetLoggedInUserQuery, GetLoggedInUserQueryVariables>;
@@ -1836,9 +1958,9 @@ export type ForgetPasswordMutationFn = Apollo.MutationFunction<ForgetPasswordMut
  * });
  */
 export function useForgetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<ForgetPasswordMutation, ForgetPasswordMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<ForgetPasswordMutation, ForgetPasswordMutationVariables>(ForgetPasswordDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ForgetPasswordMutation, ForgetPasswordMutationVariables>(ForgetPasswordDocument, options);
+      }
 export type ForgetPasswordMutationHookResult = ReturnType<typeof useForgetPasswordMutation>;
 export type ForgetPasswordMutationResult = Apollo.MutationResult<ForgetPasswordMutation>;
 export type ForgetPasswordMutationOptions = Apollo.BaseMutationOptions<ForgetPasswordMutation, ForgetPasswordMutationVariables>;
@@ -1938,9 +2060,9 @@ export type ResetPasswordMutationFn = Apollo.MutationFunction<ResetPasswordMutat
  * });
  */
 export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<ResetPasswordMutation, ResetPasswordMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<ResetPasswordMutation, ResetPasswordMutationVariables>(ResetPasswordDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResetPasswordMutation, ResetPasswordMutationVariables>(ResetPasswordDocument, options);
+      }
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
@@ -2040,9 +2162,9 @@ export type RegisterUserMutationFn = Apollo.MutationFunction<RegisterUserMutatio
  * });
  */
 export function useRegisterUserMutation(baseOptions?: Apollo.MutationHookOptions<RegisterUserMutation, RegisterUserMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<RegisterUserMutation, RegisterUserMutationVariables>(RegisterUserDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RegisterUserMutation, RegisterUserMutationVariables>(RegisterUserDocument, options);
+      }
 export type RegisterUserMutationHookResult = ReturnType<typeof useRegisterUserMutation>;
 export type RegisterUserMutationResult = Apollo.MutationResult<RegisterUserMutation>;
 export type RegisterUserMutationOptions = Apollo.BaseMutationOptions<RegisterUserMutation, RegisterUserMutationVariables>;
@@ -2142,9 +2264,9 @@ export type EmailVerificationMutationFn = Apollo.MutationFunction<EmailVerificat
  * });
  */
 export function useEmailVerificationMutation(baseOptions?: Apollo.MutationHookOptions<EmailVerificationMutation, EmailVerificationMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<EmailVerificationMutation, EmailVerificationMutationVariables>(EmailVerificationDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<EmailVerificationMutation, EmailVerificationMutationVariables>(EmailVerificationDocument, options);
+      }
 export type EmailVerificationMutationHookResult = ReturnType<typeof useEmailVerificationMutation>;
 export type EmailVerificationMutationResult = Apollo.MutationResult<EmailVerificationMutation>;
 export type EmailVerificationMutationOptions = Apollo.BaseMutationOptions<EmailVerificationMutation, EmailVerificationMutationVariables>;
@@ -2244,9 +2366,9 @@ export type ResendVerificationEmailMutationFn = Apollo.MutationFunction<ResendVe
  * });
  */
 export function useResendVerificationEmailMutation(baseOptions?: Apollo.MutationHookOptions<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>(ResendVerificationEmailDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>(ResendVerificationEmailDocument, options);
+      }
 export type ResendVerificationEmailMutationHookResult = ReturnType<typeof useResendVerificationEmailMutation>;
 export type ResendVerificationEmailMutationResult = Apollo.MutationResult<ResendVerificationEmailMutation>;
 export type ResendVerificationEmailMutationOptions = Apollo.BaseMutationOptions<ResendVerificationEmailMutation, ResendVerificationEmailMutationVariables>;
@@ -2388,13 +2510,13 @@ export const FindAllDoctorDocument = gql`
  * });
  */
 export function useFindAllDoctorQuery(baseOptions: Apollo.QueryHookOptions<FindAllDoctorQuery, FindAllDoctorQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<FindAllDoctorQuery, FindAllDoctorQueryVariables>(FindAllDoctorDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllDoctorQuery, FindAllDoctorQueryVariables>(FindAllDoctorDocument, options);
+      }
 export function useFindAllDoctorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllDoctorQuery, FindAllDoctorQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<FindAllDoctorQuery, FindAllDoctorQueryVariables>(FindAllDoctorDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllDoctorQuery, FindAllDoctorQueryVariables>(FindAllDoctorDocument, options);
+        }
 export type FindAllDoctorQueryHookResult = ReturnType<typeof useFindAllDoctorQuery>;
 export type FindAllDoctorLazyQueryHookResult = ReturnType<typeof useFindAllDoctorLazyQuery>;
 export type FindAllDoctorQueryResult = Apollo.QueryResult<FindAllDoctorQuery, FindAllDoctorQueryVariables>;
@@ -2429,9 +2551,9 @@ export type CreateDoctorMutationFn = Apollo.MutationFunction<CreateDoctorMutatio
  * });
  */
 export function useCreateDoctorMutation(baseOptions?: Apollo.MutationHookOptions<CreateDoctorMutation, CreateDoctorMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<CreateDoctorMutation, CreateDoctorMutationVariables>(CreateDoctorDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDoctorMutation, CreateDoctorMutationVariables>(CreateDoctorDocument, options);
+      }
 export type CreateDoctorMutationHookResult = ReturnType<typeof useCreateDoctorMutation>;
 export type CreateDoctorMutationResult = Apollo.MutationResult<CreateDoctorMutation>;
 export type CreateDoctorMutationOptions = Apollo.BaseMutationOptions<CreateDoctorMutation, CreateDoctorMutationVariables>;
@@ -2466,9 +2588,9 @@ export type RemoveDoctorMutationFn = Apollo.MutationFunction<RemoveDoctorMutatio
  * });
  */
 export function useRemoveDoctorMutation(baseOptions?: Apollo.MutationHookOptions<RemoveDoctorMutation, RemoveDoctorMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<RemoveDoctorMutation, RemoveDoctorMutationVariables>(RemoveDoctorDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveDoctorMutation, RemoveDoctorMutationVariables>(RemoveDoctorDocument, options);
+      }
 export type RemoveDoctorMutationHookResult = ReturnType<typeof useRemoveDoctorMutation>;
 export type RemoveDoctorMutationResult = Apollo.MutationResult<RemoveDoctorMutation>;
 export type RemoveDoctorMutationOptions = Apollo.BaseMutationOptions<RemoveDoctorMutation, RemoveDoctorMutationVariables>;
@@ -2606,13 +2728,13 @@ export const GetDoctorDocument = gql`
  * });
  */
 export function useGetDoctorQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorQuery, GetDoctorQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetDoctorQuery, GetDoctorQueryVariables>(GetDoctorDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDoctorQuery, GetDoctorQueryVariables>(GetDoctorDocument, options);
+      }
 export function useGetDoctorLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDoctorQuery, GetDoctorQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetDoctorQuery, GetDoctorQueryVariables>(GetDoctorDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDoctorQuery, GetDoctorQueryVariables>(GetDoctorDocument, options);
+        }
 export type GetDoctorQueryHookResult = ReturnType<typeof useGetDoctorQuery>;
 export type GetDoctorLazyQueryHookResult = ReturnType<typeof useGetDoctorLazyQuery>;
 export type GetDoctorQueryResult = Apollo.QueryResult<GetDoctorQuery, GetDoctorQueryVariables>;
@@ -2647,9 +2769,9 @@ export type UpdateDoctorMutationFn = Apollo.MutationFunction<UpdateDoctorMutatio
  * });
  */
 export function useUpdateDoctorMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDoctorMutation, UpdateDoctorMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<UpdateDoctorMutation, UpdateDoctorMutationVariables>(UpdateDoctorDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDoctorMutation, UpdateDoctorMutationVariables>(UpdateDoctorDocument, options);
+      }
 export type UpdateDoctorMutationHookResult = ReturnType<typeof useUpdateDoctorMutation>;
 export type UpdateDoctorMutationResult = Apollo.MutationResult<UpdateDoctorMutation>;
 export type UpdateDoctorMutationOptions = Apollo.BaseMutationOptions<UpdateDoctorMutation, UpdateDoctorMutationVariables>;
@@ -2748,13 +2870,13 @@ export const FindAllFacilitiesDocument = gql`
  * });
  */
 export function useFindAllFacilitiesQuery(baseOptions: Apollo.QueryHookOptions<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>(FindAllFacilitiesDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>(FindAllFacilitiesDocument, options);
+      }
 export function useFindAllFacilitiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>(FindAllFacilitiesDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>(FindAllFacilitiesDocument, options);
+        }
 export type FindAllFacilitiesQueryHookResult = ReturnType<typeof useFindAllFacilitiesQuery>;
 export type FindAllFacilitiesLazyQueryHookResult = ReturnType<typeof useFindAllFacilitiesLazyQuery>;
 export type FindAllFacilitiesQueryResult = Apollo.QueryResult<FindAllFacilitiesQuery, FindAllFacilitiesQueryVariables>;
@@ -2862,13 +2984,13 @@ export const GetFacilityDocument = gql`
  * });
  */
 export function useGetFacilityQuery(baseOptions: Apollo.QueryHookOptions<GetFacilityQuery, GetFacilityQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetFacilityQuery, GetFacilityQueryVariables>(GetFacilityDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFacilityQuery, GetFacilityQueryVariables>(GetFacilityDocument, options);
+      }
 export function useGetFacilityLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFacilityQuery, GetFacilityQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetFacilityQuery, GetFacilityQueryVariables>(GetFacilityDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFacilityQuery, GetFacilityQueryVariables>(GetFacilityDocument, options);
+        }
 export type GetFacilityQueryHookResult = ReturnType<typeof useGetFacilityQuery>;
 export type GetFacilityLazyQueryHookResult = ReturnType<typeof useGetFacilityLazyQuery>;
 export type GetFacilityQueryResult = Apollo.QueryResult<GetFacilityQuery, GetFacilityQueryVariables>;
@@ -2903,9 +3025,9 @@ export type RemoveFacilityMutationFn = Apollo.MutationFunction<RemoveFacilityMut
  * });
  */
 export function useRemoveFacilityMutation(baseOptions?: Apollo.MutationHookOptions<RemoveFacilityMutation, RemoveFacilityMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<RemoveFacilityMutation, RemoveFacilityMutationVariables>(RemoveFacilityDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveFacilityMutation, RemoveFacilityMutationVariables>(RemoveFacilityDocument, options);
+      }
 export type RemoveFacilityMutationHookResult = ReturnType<typeof useRemoveFacilityMutation>;
 export type RemoveFacilityMutationResult = Apollo.MutationResult<RemoveFacilityMutation>;
 export type RemoveFacilityMutationOptions = Apollo.BaseMutationOptions<RemoveFacilityMutation, RemoveFacilityMutationVariables>;
@@ -2992,9 +3114,9 @@ export type UpdateFacilityMutationFn = Apollo.MutationFunction<UpdateFacilityMut
  * });
  */
 export function useUpdateFacilityMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFacilityMutation, UpdateFacilityMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<UpdateFacilityMutation, UpdateFacilityMutationVariables>(UpdateFacilityDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateFacilityMutation, UpdateFacilityMutationVariables>(UpdateFacilityDocument, options);
+      }
 export type UpdateFacilityMutationHookResult = ReturnType<typeof useUpdateFacilityMutation>;
 export type UpdateFacilityMutationResult = Apollo.MutationResult<UpdateFacilityMutation>;
 export type UpdateFacilityMutationOptions = Apollo.BaseMutationOptions<UpdateFacilityMutation, UpdateFacilityMutationVariables>;
@@ -3089,12 +3211,151 @@ export type CreateFacilityMutationFn = Apollo.MutationFunction<CreateFacilityMut
  * });
  */
 export function useCreateFacilityMutation(baseOptions?: Apollo.MutationHookOptions<CreateFacilityMutation, CreateFacilityMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<CreateFacilityMutation, CreateFacilityMutationVariables>(CreateFacilityDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFacilityMutation, CreateFacilityMutationVariables>(CreateFacilityDocument, options);
+      }
 export type CreateFacilityMutationHookResult = ReturnType<typeof useCreateFacilityMutation>;
 export type CreateFacilityMutationResult = Apollo.MutationResult<CreateFacilityMutation>;
 export type CreateFacilityMutationOptions = Apollo.BaseMutationOptions<CreateFacilityMutation, CreateFacilityMutationVariables>;
+export const FindAllServicesDocument = gql`
+    query findAllServices($serviceInput: ServiceInput!) {
+  findAllServices(serviceInput: $serviceInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    response {
+      name
+      error
+      status
+      message
+    }
+    services {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllServicesQuery__
+ *
+ * To run a query within a React component, call `useFindAllServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllServicesQuery({
+ *   variables: {
+ *      serviceInput: // value for 'serviceInput'
+ *   },
+ * });
+ */
+export function useFindAllServicesQuery(baseOptions: Apollo.QueryHookOptions<FindAllServicesQuery, FindAllServicesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllServicesQuery, FindAllServicesQueryVariables>(FindAllServicesDocument, options);
+      }
+export function useFindAllServicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllServicesQuery, FindAllServicesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllServicesQuery, FindAllServicesQueryVariables>(FindAllServicesDocument, options);
+        }
+export type FindAllServicesQueryHookResult = ReturnType<typeof useFindAllServicesQuery>;
+export type FindAllServicesLazyQueryHookResult = ReturnType<typeof useFindAllServicesLazyQuery>;
+export type FindAllServicesQueryResult = Apollo.QueryResult<FindAllServicesQuery, FindAllServicesQueryVariables>;
+export const RemoveServiceDocument = gql`
+    mutation RemoveService($removeService: RemoveService!) {
+  removeService(removeService: $removeService) {
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveServiceMutationFn = Apollo.MutationFunction<RemoveServiceMutation, RemoveServiceMutationVariables>;
+
+/**
+ * __useRemoveServiceMutation__
+ *
+ * To run a mutation, you first call `useRemoveServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeServiceMutation, { data, loading, error }] = useRemoveServiceMutation({
+ *   variables: {
+ *      removeService: // value for 'removeService'
+ *   },
+ * });
+ */
+export function useRemoveServiceMutation(baseOptions?: Apollo.MutationHookOptions<RemoveServiceMutation, RemoveServiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveServiceMutation, RemoveServiceMutationVariables>(RemoveServiceDocument, options);
+      }
+export type RemoveServiceMutationHookResult = ReturnType<typeof useRemoveServiceMutation>;
+export type RemoveServiceMutationResult = Apollo.MutationResult<RemoveServiceMutation>;
+export type RemoveServiceMutationOptions = Apollo.BaseMutationOptions<RemoveServiceMutation, RemoveServiceMutationVariables>;
+export const CreateServiceDocument = gql`
+    mutation CreateService($createServiceInput: CreateServiceInput!) {
+  createService(createServiceInput: $createServiceInput) {
+    service {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+    }
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateServiceMutationFn = Apollo.MutationFunction<CreateServiceMutation, CreateServiceMutationVariables>;
+
+/**
+ * __useCreateServiceMutation__
+ *
+ * To run a mutation, you first call `useCreateServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createServiceMutation, { data, loading, error }] = useCreateServiceMutation({
+ *   variables: {
+ *      createServiceInput: // value for 'createServiceInput'
+ *   },
+ * });
+ */
+export function useCreateServiceMutation(baseOptions?: Apollo.MutationHookOptions<CreateServiceMutation, CreateServiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateServiceMutation, CreateServiceMutationVariables>(CreateServiceDocument, options);
+      }
+export type CreateServiceMutationHookResult = ReturnType<typeof useCreateServiceMutation>;
+export type CreateServiceMutationResult = Apollo.MutationResult<CreateServiceMutation>;
+export type CreateServiceMutationOptions = Apollo.BaseMutationOptions<CreateServiceMutation, CreateServiceMutationVariables>;
 export const FindAllPatientDocument = gql`
     query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
@@ -3126,9 +3387,9 @@ export const FindAllPatientDocument = gql`
       registrationDepartment
       primaryDepartment
       registrationDate
-      deseasedDate
+      deceasedDate
       privacyNotice
-      relaseOfInfoBill
+      releaseOfInfoBill
       callToConsent
       medicationHistoryAuthority
       patientNote
@@ -3234,13 +3495,13 @@ export const FindAllPatientDocument = gql`
  * });
  */
 export function useFindAllPatientQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientQuery, FindAllPatientQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<FindAllPatientQuery, FindAllPatientQueryVariables>(FindAllPatientDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientQuery, FindAllPatientQueryVariables>(FindAllPatientDocument, options);
+      }
 export function useFindAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientQuery, FindAllPatientQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<FindAllPatientQuery, FindAllPatientQueryVariables>(FindAllPatientDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientQuery, FindAllPatientQueryVariables>(FindAllPatientDocument, options);
+        }
 export type FindAllPatientQueryHookResult = ReturnType<typeof useFindAllPatientQuery>;
 export type FindAllPatientLazyQueryHookResult = ReturnType<typeof useFindAllPatientLazyQuery>;
 export type FindAllPatientQueryResult = Apollo.QueryResult<FindAllPatientQuery, FindAllPatientQueryVariables>;
@@ -3275,9 +3536,9 @@ export type RemovePatientMutationFn = Apollo.MutationFunction<RemovePatientMutat
  * });
  */
 export function useRemovePatientMutation(baseOptions?: Apollo.MutationHookOptions<RemovePatientMutation, RemovePatientMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<RemovePatientMutation, RemovePatientMutationVariables>(RemovePatientDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemovePatientMutation, RemovePatientMutationVariables>(RemovePatientDocument, options);
+      }
 export type RemovePatientMutationHookResult = ReturnType<typeof useRemovePatientMutation>;
 export type RemovePatientMutationResult = Apollo.MutationResult<RemovePatientMutation>;
 export type RemovePatientMutationOptions = Apollo.BaseMutationOptions<RemovePatientMutation, RemovePatientMutationVariables>;
@@ -3312,9 +3573,9 @@ export type CreatePatientMutationFn = Apollo.MutationFunction<CreatePatientMutat
  * });
  */
 export function useCreatePatientMutation(baseOptions?: Apollo.MutationHookOptions<CreatePatientMutation, CreatePatientMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<CreatePatientMutation, CreatePatientMutationVariables>(CreatePatientDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePatientMutation, CreatePatientMutationVariables>(CreatePatientDocument, options);
+      }
 export type CreatePatientMutationHookResult = ReturnType<typeof useCreatePatientMutation>;
 export type CreatePatientMutationResult = Apollo.MutationResult<CreatePatientMutation>;
 export type CreatePatientMutationOptions = Apollo.BaseMutationOptions<CreatePatientMutation, CreatePatientMutationVariables>;
@@ -3396,13 +3657,13 @@ export const FindAllStaffDocument = gql`
  * });
  */
 export function useFindAllStaffQuery(baseOptions: Apollo.QueryHookOptions<FindAllStaffQuery, FindAllStaffQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<FindAllStaffQuery, FindAllStaffQueryVariables>(FindAllStaffDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllStaffQuery, FindAllStaffQueryVariables>(FindAllStaffDocument, options);
+      }
 export function useFindAllStaffLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllStaffQuery, FindAllStaffQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<FindAllStaffQuery, FindAllStaffQueryVariables>(FindAllStaffDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllStaffQuery, FindAllStaffQueryVariables>(FindAllStaffDocument, options);
+        }
 export type FindAllStaffQueryHookResult = ReturnType<typeof useFindAllStaffQuery>;
 export type FindAllStaffLazyQueryHookResult = ReturnType<typeof useFindAllStaffLazyQuery>;
 export type FindAllStaffQueryResult = Apollo.QueryResult<FindAllStaffQuery, FindAllStaffQueryVariables>;
@@ -3484,13 +3745,13 @@ export const GetStaffDocument = gql`
  * });
  */
 export function useGetStaffQuery(baseOptions: Apollo.QueryHookOptions<GetStaffQuery, GetStaffQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useQuery<GetStaffQuery, GetStaffQueryVariables>(GetStaffDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStaffQuery, GetStaffQueryVariables>(GetStaffDocument, options);
+      }
 export function useGetStaffLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStaffQuery, GetStaffQueryVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useLazyQuery<GetStaffQuery, GetStaffQueryVariables>(GetStaffDocument, options);
-}
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStaffQuery, GetStaffQueryVariables>(GetStaffDocument, options);
+        }
 export type GetStaffQueryHookResult = ReturnType<typeof useGetStaffQuery>;
 export type GetStaffLazyQueryHookResult = ReturnType<typeof useGetStaffLazyQuery>;
 export type GetStaffQueryResult = Apollo.QueryResult<GetStaffQuery, GetStaffQueryVariables>;
@@ -3525,9 +3786,9 @@ export type RemoveStaffMutationFn = Apollo.MutationFunction<RemoveStaffMutation,
  * });
  */
 export function useRemoveStaffMutation(baseOptions?: Apollo.MutationHookOptions<RemoveStaffMutation, RemoveStaffMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<RemoveStaffMutation, RemoveStaffMutationVariables>(RemoveStaffDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveStaffMutation, RemoveStaffMutationVariables>(RemoveStaffDocument, options);
+      }
 export type RemoveStaffMutationHookResult = ReturnType<typeof useRemoveStaffMutation>;
 export type RemoveStaffMutationResult = Apollo.MutationResult<RemoveStaffMutation>;
 export type RemoveStaffMutationOptions = Apollo.BaseMutationOptions<RemoveStaffMutation, RemoveStaffMutationVariables>;
@@ -3610,9 +3871,9 @@ export type UpdateStaffMutationFn = Apollo.MutationFunction<UpdateStaffMutation,
  * });
  */
 export function useUpdateStaffMutation(baseOptions?: Apollo.MutationHookOptions<UpdateStaffMutation, UpdateStaffMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<UpdateStaffMutation, UpdateStaffMutationVariables>(UpdateStaffDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateStaffMutation, UpdateStaffMutationVariables>(UpdateStaffDocument, options);
+      }
 export type UpdateStaffMutationHookResult = ReturnType<typeof useUpdateStaffMutation>;
 export type UpdateStaffMutationResult = Apollo.MutationResult<UpdateStaffMutation>;
 export type UpdateStaffMutationOptions = Apollo.BaseMutationOptions<UpdateStaffMutation, UpdateStaffMutationVariables>;
@@ -3691,9 +3952,9 @@ export type CreateStaffMutationFn = Apollo.MutationFunction<CreateStaffMutation,
  * });
  */
 export function useCreateStaffMutation(baseOptions?: Apollo.MutationHookOptions<CreateStaffMutation, CreateStaffMutationVariables>) {
-  const options = { ...defaultOptions, ...baseOptions }
-  return Apollo.useMutation<CreateStaffMutation, CreateStaffMutationVariables>(CreateStaffDocument, options);
-}
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateStaffMutation, CreateStaffMutationVariables>(CreateStaffDocument, options);
+      }
 export type CreateStaffMutationHookResult = ReturnType<typeof useCreateStaffMutation>;
 export type CreateStaffMutationResult = Apollo.MutationResult<CreateStaffMutation>;
 export type CreateStaffMutationOptions = Apollo.BaseMutationOptions<CreateStaffMutation, CreateStaffMutationVariables>;

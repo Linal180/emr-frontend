@@ -3,19 +3,22 @@ import { createContext, FC, useEffect, useCallback, useReducer, Reducer } from "
 // graphql, interfaces/types, reducer and constants block
 import { LIST_PAGE_LIMIT, TOKEN } from "../constants";
 import { ListContextInterface } from "../interfacesTypes";
-import { FacilitiesPayload, useFindAllFacilitiesLazyQuery } from "../generated/graphql";
+import { FacilitiesPayload, ServicesPayload, useFindAllFacilitiesLazyQuery, useFindAllServicesLazyQuery } from "../generated/graphql";
 import { Action, ActionType, initialState, listContextReducer, State as LocalState } from '../reducers/listContextReducer';
 
 export const ListContext = createContext<ListContextInterface>({
   facilityList: [],
   setFacilityList: () => { },
   fetchAllFacilityList: () => { },
+  serviceList: [],
+  setServiceList: () => { },
+  fetchAllServiceList: () => { },
 });
 
 export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(listContextReducer, initialState)
-  const { facilityPages, facilityList } = state;
+  const { facilityPages, facilityList, serviceList, servicePages } = state;
 
   const [findAllFacility] = useFindAllFacilitiesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -41,6 +44,45 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     }
   })
 
+  const [findAllServices] = useFindAllServicesLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      return null;
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { findAllServices: { services, pagination } } = data
+
+        if (pagination) {
+          const { totalPages } = pagination;
+          if (totalPages ? servicePages !== totalPages : false) {
+            setServicePages(servicePages + 1)
+          }
+        }
+
+        !!services && !!serviceList && setServiceList([...serviceList, ...services])
+      }
+    }
+  })
+
+  const fetchAllServiceList = useCallback((page = 1) => {
+    dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [] })
+
+    findAllServices({
+      variables: {
+        serviceInput: {
+          paginationOptions: {
+            page,
+            limit: LIST_PAGE_LIMIT
+          }
+        }
+      },
+    });
+  }, [findAllServices])
+
   const fetchAllFacilityList = useCallback((page = 1) => {
     dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [] })
 
@@ -57,11 +99,14 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   }, [findAllFacility])
 
 
+  useEffect(() => { hasToken && fetchAllServiceList(servicePages) }, [fetchAllServiceList, hasToken, servicePages])
 
   useEffect(() => { hasToken && fetchAllFacilityList(facilityPages) }, [fetchAllFacilityList, hasToken, facilityPages])
 
   const setFacilityList = (facilities: FacilitiesPayload['facility']) => dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: facilities });
   const setFacilityPages = (pageNumber: number) => dispatch({ type: ActionType.SET_FACILITY_PAGES, facilityPages: pageNumber });
+  const setServiceList = (services: ServicesPayload['services']) => dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: services });
+  const setServicePages = (pageNumber: number) => dispatch({ type: ActionType.SET_SERVICE_PAGES, servicePages: pageNumber });
 
   return (
     <ListContext.Provider
@@ -69,6 +114,9 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
         facilityList,
         setFacilityList,
         fetchAllFacilityList,
+        serviceList,
+        setServiceList,
+        fetchAllServiceList,
       }}
     >
       {children}

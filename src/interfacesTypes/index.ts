@@ -4,7 +4,8 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, ServicesPayload, CreateServiceInput } from "../generated/graphql";
+import { type } from "os";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -34,6 +35,9 @@ export interface ListContextInterface {
   facilityList: FacilitiesPayload['facility'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
+  serviceList: ServicesPayload['services'];
+  setServiceList: Function;
+  fetchAllServiceList: Function;
 }
 
 export interface Children {
@@ -415,3 +419,6 @@ export interface DoctorInputControlProps extends IControlLabel {
 }
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
+
+export type ServiceInputProps = Omit<CreateServiceInput, "facilityId">  & { facilityId: SelectorOption } ;
+
