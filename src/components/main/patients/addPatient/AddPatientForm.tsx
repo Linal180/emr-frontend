@@ -13,7 +13,7 @@ import AddPatientController from "./AddPatientController";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { renderDoctors } from '../../../../utils';
+import { renderDoctors, renderFacilities } from '../../../../utils';
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { patientsSchema } from '../../../../validationSchemas';
@@ -30,15 +30,16 @@ import {
   MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE,
   EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, PATIENTS_ROUTE,
   LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS, MAPPED_HOMEBOUND,
-  MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_PRIMARY_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
+  MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
   SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY, SEX_AT_BIRTH,
-  ISSUE_DATE, EXPIRATION_DATE, FAILED_TO_CREATE_PATIENT, RACE, MARITAL_STATUS, MAPPED_GENDER, GENDER,
+  ISSUE_DATE, EXPIRATION_DATE, FAILED_TO_CREATE_PATIENT, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX, 
+  GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY,
 } from "../../../../constants";
 
 const AddPatientForm: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { doctorList } = useContext(ListContext)
+  const { doctorList, facilityList } = useContext(ListContext)
   const [state, setState] = useState({
     one: false,
     two: false,
@@ -95,28 +96,19 @@ const AddPatientForm: FC = (): JSX.Element => {
       pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
       statementNoteDateTo, facilityId,
 
-      basicName, basicFirstName, basicMiddleName, basicLastName, basicEmail, basicRelationship,
-      basicPager, basicPhone, basicMobile, basicFax, basicSsn, basicSuffix, basicAddress, basicAddress2,
-      basicZipCode, basicCity, basicState, basicCountry, basicEmployerName,
+      basicEmail, basicPhone, basicMobile, basicAddress, basicAddress2, basicZipCode, basicCity, basicState, basicCountry,
 
-      emergencyName, emergencyFirstName, emergencyMiddleName, emergencyLastName, emergencyEmail, emergencyPager,
-      emergencyPhone, emergencyMobile, emergencyFax, emergencySsn, emergencySuffix, emergencyAddress,
-      emergencyAddress2, emergencyZipCode, emergencyCity, emergencyState, emergencyCountry, emergencyDoctorId,
-      emergencyRelationship, emergencyEmployerName,
+      emergencyName, emergencyRelationship, emergencyPhone, emergencyMobile,
 
-      kinName, kinFirstName, kinMiddleName, kinLastName, kinEmail, kinRelationship, kinPager, kinPhone,
-      kinMobile, kinFax, kinSsn, kinSuffix, kinAddress, kinAddress2, kinZipCode, kinCity,
-      kinState, kinCountry, kinEmployerName,
+      kinName, kinRelationship, kinMobile, kinPhone,
 
-      guardianName, guardianFirstName, guardianMiddleName, guardianLastName, guardianEmail, guardianRelationship,
-      guardianPager, guardianPhone, guardianMobile, guardianFax, guardianSsn, guardianSuffix, guardianAddress,
-      guardianAddress2, guardianZipCode, guardianCity, guardianState, guardianCountry, guardianEmployerName,
+      guardianFirstName, guardianMiddleName, guardianLastName, guardianSuffix,
 
-      guarantorName, guarantorFirstName, guarantorMiddleName, guarantorLastName, guarantorEmail, guarantorRelationship,
-      guarantorPager, guarantorPhone, guarantorMobile, guarantorFax, guarantorSsn, guarantorSuffix, guarantorAddress,
-      guarantorAddress2, guarantorZipCode, guarantorCity, guarantorState, guarantorCountry, guarantorEmployerName,
+      guarantorFirstName, guarantorMiddleName, guarantorLastName, guarantorEmail, guarantorRelationship,
+      guarantorPhone, guarantorSuffix, guarantorAddress, guarantorAddress2, guarantorZipCode, guarantorCity,
+      guarantorState, guarantorCountry, guarantorEmployerName,
 
-      employerName, employerEmail, employerPhone, employerMobile, employerIndustry, employerUsualOccupation,
+      employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
 
       userFirstName, userLastName, userPassword, userEmail, userPhone, userZipCode,
     } = inputs;
@@ -133,6 +125,9 @@ const AddPatientForm: FC = (): JSX.Element => {
     const { id: selectedGenderIdentity } = genderIdentity
     const { id: selectedGender } = gender
     const { id: selectedSexAtBirth } = sexAtBirth
+    const { id: selectedGuarantorRelationship } = guarantorRelationship
+    const { id: selectedEmergencyRelationship } = emergencyRelationship
+    const { id: selectedKinRelationship } = kinRelationship
 
     if (user) {
       const { id: userId } = user
@@ -141,94 +136,66 @@ const AddPatientForm: FC = (): JSX.Element => {
         variables: {
           createPatientInput: {
             createPatientItemInput: {
-              suffix: suffix || "", firstName: firstName || "", middleName: middleName || "", lastName: lastName || "",
-              firstNameUsed: firstNameUsed || "", prefferedName: prefferedName || "", previousFirstName: previousFirstName || "",
-              previouslastName: previouslastName || "", motherMaidenName: motherMaidenName || "", ssn: ssn || "",
-              dob: dob || "", registrationDate: registrationDate || "", deceasedDate: deceasedDate || "",
+              suffix: suffix || '', firstName: firstName || '', middleName: middleName || '', lastName: lastName || '',
+              firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '', previousFirstName: previousFirstName || '',
+              previouslastName: previouslastName || '', motherMaidenName: motherMaidenName || '', ssn: ssn || '',
+              dob: dob || '', registrationDate: registrationDate || '', deceasedDate: deceasedDate || '',
               privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false, adminId: userId || '',
               callToConsent: callToConsent || false, medicationHistoryAuthority: medicationHistoryAuthority || false,
-              patientNote: patientNote || "", language: language || "", statementNoteDateTo: statementNoteDateTo || "",
+              patientNote: patientNote || '', language: language || '', statementNoteDateTo: statementNoteDateTo || '',
               homeBound: homeBound || Homebound.No, holdStatement: holdStatement || Holdstatement.None,
-              facilityId: selectedFacility || "",
-              race: selectedRace as Race || Race.White,
-              usualProviderId: selectedUsualProvider || "",
-              statementNoteDateFrom: statementNoteDateFrom || "",
-              pronouns: selectedPronouns as Pronouns || Pronouns.None,
-              ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
-              gender: selectedGender as Genderidentity || Genderidentity.None,
+              statementNoteDateFrom: statementNoteDateFrom || '', pronouns: selectedPronouns as Pronouns || Pronouns.None,
+              ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, facilityId: selectedFacility || '',
+              gender: selectedGender as Genderidentity || Genderidentity.None, usualProviderId: selectedUsualProvider || '',
               sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
               genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
               maritialStatus: selectedMaritialStatus as Maritialstatus || Maritialstatus.Single,
               sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
-              statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || "",
+              statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
               primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,
               registrationDepartment: selectedRegistrationDepartment as RegDepartment || RegDepartment.Hospital,
+              race: selectedRace as Race || Race.White,
             },
 
             createContactInput: {
-              name: basicName || "", firstName: basicFirstName || "", middleName: basicMiddleName || "",
-              lastName: basicLastName || "", email: basicEmail || "", fax: basicFax || "",
-              contactType: ContactType.Self, country: basicCountry || "", userId: userId || "",
-              relationship: basicRelationship as RelationshipType || RelationshipType.CadaverDonor,
-              pager: basicPager || "", phone: basicPhone || "", suffix: basicSuffix || "", mobile: basicMobile || "",
-              ssn: basicSsn || "", address2: basicAddress2 || "", address: basicAddress || "",
-              zipCode: basicZipCode || "", city: basicCity || "", state: basicState || "",
-              facilityId: selectedFacility || "", employerName: basicEmployerName || ""
+              contactType: ContactType.Self, country: basicCountry || '', email: basicEmail || '', state: basicState || '',
+              facilityId: selectedFacility || '', phone: basicPhone || '', mobile: basicMobile || '',
+              address2: basicAddress2 || '', address: basicAddress || '', zipCode: basicZipCode || '', city: basicCity || '',
             },
 
             createEmergencyContactInput: {
-              name: emergencyName || "", firstName: emergencyFirstName || "", middleName: emergencyMiddleName || "",
-              lastName: emergencyLastName || "", email: emergencyEmail || "", contactType: ContactType.Emergency,
-              relationship: emergencyRelationship as RelationshipType || RelationshipType.Other,
-              pager: emergencyPager || "", phone: emergencyPhone || "", suffix: emergencySuffix || "",
-              mobile: emergencyMobile || "", fax: emergencyFax || "", employerName: emergencyEmployerName || "",
-              ssn: emergencySsn || "", address2: emergencyAddress2 || "", address: emergencyAddress || "",
-              zipCode: emergencyZipCode || "", city: emergencyCity || "", state: emergencyState || "",
-              country: emergencyCountry || "", userId: userId || "", doctorId: emergencyDoctorId || "",
+              contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '', mobile: emergencyMobile || '',
+              relationship: selectedEmergencyRelationship as RelationshipType || RelationshipType.Other,
             },
 
             createGuarantorContactInput: {
-              name: guarantorName || "", firstName: guarantorFirstName || "", middleName: guarantorMiddleName || "",
-              lastName: guarantorLastName || "", email: guarantorEmail || "", contactType: ContactType.Guarandor,
-              relationship: guarantorRelationship as RelationshipType || RelationshipType.Other,
-              pager: guarantorPager || "", phone: guarantorPhone || "", suffix: guarantorSuffix || "",
-              mobile: guarantorMobile || "", fax: guarantorFax || "", employerName: guarantorEmployerName || "",
-              ssn: guarantorSsn || "", address2: guarantorAddress2 || "", address: guarantorAddress || "",
-              zipCode: guarantorZipCode || "", city: guarantorCity || "", state: guarantorState || "",
-              country: guarantorCountry || "", userId: userId || "",
+              firstName: guarantorFirstName || '', middleName: guarantorMiddleName || '',
+              lastName: guarantorLastName || '', email: guarantorEmail || '', contactType: ContactType.Guarandor,
+              relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
+              employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '', address: guarantorAddress || '',
+              zipCode: guarantorZipCode || '', city: guarantorCity || '', state: guarantorState || '',
+              phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '', userId: userId || '',
             },
 
             createGuardianContactInput: {
-              name: guardianName || "", firstName: guardianFirstName || "", middleName: guardianMiddleName || "",
-              lastName: guardianLastName || "", email: guardianEmail || "", contactType: ContactType.Guardian,
-              relationship: guardianRelationship as RelationshipType || RelationshipType.Grandparent,
-              pager: guardianPager || "", phone: guardianPhone || "", suffix: guardianSuffix || "",
-              mobile: guardianMobile || "", fax: guardianFax || "", employerName: guardianEmployerName || "",
-              ssn: guardianSsn || "", address2: guardianAddress2 || "", address: guardianAddress || "",
-              zipCode: guardianZipCode || "", city: guardianCity || "", state: guardianState || "",
-              country: guardianCountry || "", userId: userId || "",
+              firstName: guardianFirstName || '', middleName: guardianMiddleName || '', lastName: guardianLastName || '',
+              contactType: ContactType.Guardian, suffix: guardianSuffix || '', userId: userId || '',
             },
 
             createNextOfKinContactInput: {
-              name: kinName || "", firstName: kinFirstName || "", middleName: kinMiddleName || "",
-              lastName: kinLastName || "", email: kinEmail || "", employerName: kinEmployerName || "",
-              pager: kinPager || "", phone: kinPhone || "", suffix: kinSuffix || "", mobile: kinMobile || "",
-              relationship: kinRelationship as RelationshipType || RelationshipType.Other, userId: userId || "",
-              fax: kinFax || "", city: kinCity || "", state: kinState || "", contactType: ContactType.NextOfKin,
-              ssn: kinSsn || "", address2: kinAddress2 || "", address: kinAddress || "", zipCode: kinZipCode || "",
-              country: kinCountry || ""
+              contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '', mobile: kinMobile || '',
+              relationship: selectedKinRelationship as RelationshipType || RelationshipType.Other,
             },
 
             createEmployerInput: {
-              name: employerName || "", email: employerEmail || "", phone: employerPhone || "",
-              mobile: employerMobile || "", usualOccupation: employerUsualOccupation || "",
-              industry: employerIndustry || "",
+              name: employerName || '', email: employerEmail || '', phone: employerPhone || '',
+              usualOccupation: employerUsualOccupation || '', industry: employerIndustry || '',
             },
 
             registerUserInput: {
-              firstName: userFirstName || "", lastName: userLastName || "", email: userEmail || "",
-              facilityId: selectedFacility, phone: userPhone || "", zipCode: userZipCode || "",
-              password: userPassword || "", adminId: userId || "", roleType: UserRole.Patient
+              firstName: userFirstName || '', lastName: userLastName || '', email: userEmail || '',
+              facilityId: selectedFacility, phone: userPhone || '', zipCode: userZipCode || '',
+              password: userPassword || '', adminId: userId || '', roleType: UserRole.Patient
             }
           }
         }
@@ -240,61 +207,58 @@ const AddPatientForm: FC = (): JSX.Element => {
   };
 
   const {
-    suffix: { message: suffixError } = {},
-    firstName: { message: firstNameError } = {},
-    middleName: { message: middleNameError } = {},
-    lastName: { message: lastNameError } = {},
-    firstNameUsed: { message: firstNameUsedError } = {},
-    prefferedName: { message: prefferedNameError } = {},
-    previousFirstName: { message: previousFirstNameError } = {},
-    previouslastName: { message: previouslastNameError } = {},
-    motherMaidenName: { message: motherMaidenNameError } = {},
     ssn: { message: ssnError } = {},
     dob: { message: dobError } = {},
+    race: { message: raceError } = {},
+    suffix: { message: suffixError } = {},
     gender: { message: genderError } = {},
+    pronouns: { message: pronounsError } = {},
+    language: { message: languageError } = {},
+    lastName: { message: lastNameError } = {},
+    facilityId: { message: facilityError } = {},
+    ethnicity: { message: ethnicityError } = {},
+    firstName: { message: firstNameError } = {},
+    sexAtBirth: { message: sexAtBirthError } = {},
+    middleName: { message: middleNameError } = {},
+    deceasedDate: { message: deceasedDateError } = {},
+    firstNameUsed: { message: firstNameUsedError } = {},
+    prefferedName: { message: preferredNameError } = {},
     maritialStatus: { message: maritalStatusError } = {},
     genderIdentity: { message: genderIdentityError } = {},
-    sexAtBirth: { message: sexAtBirthError } = {},
-    pronouns: { message: pronounsError } = {},
-    guarantorRelationship: { message: guarantorRelationshipError } = {},
-
-    registrationDepartment: { message: registrationDepartmentError } = {},
+    previouslastName: { message: previousLastNameError } = {},
+    motherMaidenName: { message: motherMaidenNameError } = {},
     primaryDepartment: { message: primaryDepartmentError } = {},
-
-
-    ethnicity: { message: ethnicityError } = {},
+    previousFirstName: { message: previousFirstNameError } = {},
     sexualOrientation: { message: sexualOrientationError } = {},
-
-    race: { message: raceError } = {},
-    language: { message: languageError } = {},
     registrationDate: { message: registrationDateError } = {},
-    deceasedDate: { message: deceasedDateError } = {},
-    statementNoteDateFrom: { message: statementNoteDateFromError } = {},
     statementNoteDateTo: { message: statementNoteDateToError } = {},
+    guarantorRelationship: { message: guarantorRelationshipError } = {},
+    statementNoteDateFrom: { message: statementNoteDateFromError } = {},
+    registrationDepartment: { message: registrationDepartmentError } = {},
 
-    basicZipCode: { message: basicZipCodeError } = {},
-    basicAddress: { message: basicAddressError } = {},
-    basicAddress2: { message: basicAddress2Error } = {},
     basicCity: { message: basicCityError } = {},
     basicState: { message: basicStateError } = {},
-    basicCountry: { message: basicCountryError } = {},
     basicEmail: { message: basicEmailError } = {},
     basicPhone: { message: basicPhoneError } = {},
     basicMobile: { message: basicMobileError } = {},
+    basicZipCode: { message: basicZipCodeError } = {},
+    basicCountry: { message: basicCountryError } = {},
+    basicAddress: { message: basicAddressError } = {},
+    basicAddress2: { message: basicAddress2Error } = {},
 
-    guarantorSuffix: { message: guarantorSuffixError } = {},
-    guarantorFirstName: { message: guarantorFirstNameError } = {},
-    guarantorMiddleName: { message: guarantorMiddleNameError } = {},
-    guarantorLastName: { message: guarantorLastNameError } = {},
-    guarantorZipCode: { message: guarantorZipCodeError } = {},
-    guarantorAddress: { message: guarantorAddressError } = {},
-    guarantorAddress2: { message: guarantorAddress2Error } = {},
+    guarantorSsn: { message: guarantorSsnError } = {},
     guarantorCity: { message: guarantorCityError } = {},
     guarantorState: { message: guarantorStateError } = {},
-    guarantorCountry: { message: guarantorCountryError } = {},
-    guarantorSsn: { message: guarantorSsnError } = {},
     guarantorPhone: { message: guarantorPhoneError } = {},
     guarantorEmail: { message: guarantorEmailError } = {},
+    guarantorSuffix: { message: guarantorSuffixError } = {},
+    guarantorZipCode: { message: guarantorZipCodeError } = {},
+    guarantorAddress: { message: guarantorAddressError } = {},
+    guarantorCountry: { message: guarantorCountryError } = {},
+    guarantorLastName: { message: guarantorLastNameError } = {},
+    guarantorAddress2: { message: guarantorAddress2Error } = {},
+    guarantorFirstName: { message: guarantorFirstNameError } = {},
+    guarantorMiddleName: { message: guarantorMiddleNameError } = {},
     guarantorEmployerName: { message: guarantorEmployerNameError } = {},
 
     emergencyName: { message: emergencyNameError } = {},
@@ -304,23 +268,25 @@ const AddPatientForm: FC = (): JSX.Element => {
 
     kinName: { message: kinNameError } = {},
     kinPhone: { message: kinPhoneError } = {},
+    kinMobile: { message: kinMobileError } = {},
     kinRelationship: { message: kinRelationshipError } = {},
-    
+
 
     employerName: { message: employerNameError } = {},
     employerPhone: { message: employerPhoneError } = {},
-    employerUsualOccupation: { message: employerUsualOccupationError } = {},
     employerIndustry: { message: employerIndustryError } = {},
+    employerUsualOccupation: { message: employerUsualOccupationError } = {},
 
+    guardianSuffix: { message: guardianSuffixError } = {},
+    guardianLastName: { message: guardianLastNameError } = {},
     guardianFirstName: { message: guardianFirstNameError } = {},
     guardianMiddleName: { message: guardianMiddleNameError } = {},
-    guardianLastName: { message: guardianLastNameError } = {},
-    guardianSuffix: { message: guardianSuffixError } = {},
 
   } = errors;
 
   return (
     <FormProvider {...methods}>
+      {JSON.stringify(errors)}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
@@ -335,6 +301,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       error={suffixError}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
@@ -354,6 +321,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       error={middleNameError}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
@@ -373,12 +341,13 @@ const AddPatientForm: FC = (): JSX.Element => {
                       error={firstNameUsedError}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
                       controllerName="prefferedName"
                       controllerLabel={PREFERRED_NAME}
-                      error={prefferedNameError}
+                      error={preferredNameError}
                     />
                   </Grid>
                 </Grid>
@@ -392,12 +361,13 @@ const AddPatientForm: FC = (): JSX.Element => {
                       error={previousFirstNameError}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
                       controllerName="previouslastName"
                       controllerLabel={PREVIOUS_LAST_NAME}
-                      error={previouslastNameError}
+                      error={previousLastNameError}
                     />
                   </Grid>
                 </Grid>
@@ -411,6 +381,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       error={motherMaidenNameError}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
@@ -421,18 +392,20 @@ const AddPatientForm: FC = (): JSX.Element => {
                   </Grid>
                 </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="gender"
-                    error={genderError}
-                    label={GENDER}
-                    value={{ id: "", name: "" }}
-                    options={MAPPED_GENDER}
-                  />
-                </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      name="gender"
+                      error={genderError}
+                      label={LEGAL_SEX}
+                      value={{ id: '', name: '' }}
+                      options={MAPPED_GENDER}
+                    />
+                  </Grid>
 
-                <Grid item md={12}>
-                  <DatePicker name="dob" label={DOB} error={dobError || ''} />
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
+                  </Grid>
                 </Grid>
               </CardComponent>
 
@@ -513,12 +486,156 @@ const AddPatientForm: FC = (): JSX.Element => {
                       error={basicPhoneError}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <AddPatientController
                       fieldType="text"
                       controllerName="basicMobile"
                       controllerLabel={MOBILE_PHONE}
                       error={basicMobileError}
+                    />
+                  </Grid>
+                </Grid>
+              </CardComponent>
+
+              <Box pb={3} />
+
+              <CardComponent cardTitle={EMERGENCY_CONTACT}>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="emergencyName"
+                      control={control}
+                      controllerLabel={NAME}
+                      error={emergencyNameError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      name="emergencyRelationship"
+                      label={RELATIONSHIP}
+                      error={emergencyRelationshipError}
+                      value={{ id: '', name: '' }}
+                      options={MAPPED_RELATIONSHIP_TYPE}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="emergencyPhone"
+                      control={control}
+                      controllerLabel={HOME_PHONE}
+                      error={emergencyPhoneError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="emergencyMobile"
+                      control={control}
+                      controllerLabel={MOBILE_PHONE}
+                      error={emergencyMobileError}
+                    />
+                  </Grid>
+                </Grid>
+              </CardComponent>
+
+              <Box pb={3} />
+
+              <CardComponent cardTitle={NEXT_OF_KIN}>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="kinName"
+                      control={control}
+                      controllerLabel={NAME}
+                      error={kinNameError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      name="kinRelationship"
+                      label={RELATIONSHIP}
+                      error={kinRelationshipError}
+                      value={{ id: '', name: '' }}
+                      options={MAPPED_RELATIONSHIP_TYPE}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="kinPhone"
+                      controllerLabel={HOME_PHONE}
+                      error={kinPhoneError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="kinMobile"
+                      controllerLabel={MOBILE_PHONE}
+                      error={kinMobileError}
+                    />
+                  </Grid>
+                </Grid>
+
+              </CardComponent>
+
+              <Box pb={3} />
+
+              <CardComponent cardTitle={GUARDIAN}>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guardianFirstName"
+                      control={control}
+                      controllerLabel={FIRST_NAME}
+                      error={guardianFirstNameError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guardianMiddleName"
+                      control={control}
+                      controllerLabel={MIDDLE_NAME}
+                      error={guardianMiddleNameError}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guardianLastName"
+                      control={control}
+                      controllerLabel={LAST_NAME}
+                      error={guardianLastNameError}
+                    />
+                  </Grid>
+
+                  <Grid item md={12} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guardianSuffix"
+                      control={control}
+                      controllerLabel={SUFFIX}
+                      error={guardianSuffixError}
                     />
                   </Grid>
                 </Grid>
@@ -541,7 +658,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       name="race"
                       label={RACE}
                       error={raceError}
-                      value={{ id: "", name: "" }}
+                      value={{ id: '', name: '' }}
                       options={MAPPED_RACE}
                     />
                   </Grid>
@@ -553,7 +670,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       name="ethnicity"
                       label={ETHNICITY}
                       error={ethnicityError}
-                      value={{ id: "", name: "" }}
+                      value={{ id: '', name: '' }}
                       options={MAPPED_ETHNICITY}
                     />
                   </Grid>
@@ -563,7 +680,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       name="maritialStatus"
                       label={MARITAL_STATUS}
                       error={maritalStatusError}
-                      value={{ id: "", name: "" }}
+                      value={{ id: '', name: '' }}
                       options={MAPPED_MARITAL_STATUS}
                     />
                   </Grid>
@@ -575,7 +692,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       name="sexualOrientation"
                       label={SEXUAL_ORIENTATION}
                       error={sexualOrientationError}
-                      value={{ id: "", name: "" }}
+                      value={{ id: '', name: '' }}
                       options={MAPPED_SEXUAL_ORIENTATION}
                     />
                   </Grid>
@@ -585,7 +702,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       name="genderIdentity"
                       label={GENDER_IDENTITY}
                       error={genderIdentityError}
-                      value={{ id: "", name: "" }}
+                      value={{ id: '', name: '' }}
                       options={MAPPED_GENDER_IDENTITY}
                     />
                   </Grid>
@@ -597,7 +714,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       name="sexAtBirth"
                       label={SEX_AT_BIRTH}
                       error={sexAtBirthError}
-                      value={{ id: "", name: "" }}
+                      value={{ id: '', name: '' }}
                       options={MAPPED_GENDER_IDENTITY}
                     />
                   </Grid>
@@ -607,7 +724,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       name="pronouns"
                       label={PRONOUNS}
                       error={pronounsError}
-                      value={{ id: "", name: "" }}
+                      value={{ id: '', name: '' }}
                       options={MAPPED_PRONOUNS}
                     />
                   </Grid>
@@ -641,192 +758,52 @@ const AddPatientForm: FC = (): JSX.Element => {
                   />
                 </Grid>
               </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={GUARANTOR}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="guarantorRelationship"
-                    label={RELATIONSHIP}
-                    error={guarantorRelationshipError}
-                    value={{ id: "", name: "" }}
-                    options={MAPPED_RELATIONSHIP_TYPE}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorSuffix"
-                      control={control}
-                      controllerLabel={SUFFIX}
-                      error={guarantorSuffixError}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorFirstName"
-                      control={control}
-                      controllerLabel={FIRST_NAME}
-                      error={guarantorFirstNameError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorMiddleName"
-                      control={control}
-                      controllerLabel={MIDDLE_NAME}
-                      error={guarantorMiddleNameError}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorLastName"
-                      control={control}
-                      controllerLabel={LAST_NAME}
-                      error={guarantorLastNameError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="guarantorZipCode"
-                    control={control}
-                    controllerLabel={ZIP_CODE}
-                    error={guarantorZipCodeError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="guarantorAddress"
-                    control={control}
-                    controllerLabel={ADDRESS}
-                    error={guarantorAddressError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="guarantorAddress2"
-                    control={control}
-                    controllerLabel={ADDRESS_2}
-                    error={guarantorAddress2Error}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorCity"
-                      controllerLabel={CITY}
-                      error={guarantorCityError}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorState"
-                      controllerLabel={STATE}
-                      error={guarantorStateError}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorCountry"
-                      controllerLabel={COUNTRY}
-                      error={guarantorCountryError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorSsn"
-                      control={control}
-                      controllerLabel={SSN}
-                      error={guarantorSsnError}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddPatientController
-                      fieldType="text"
-                      controllerName="guarantorPhone"
-                      control={control}
-                      controllerLabel={PHONE}
-                      error={guarantorPhoneError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="guarantorEmail"
-                    control={control}
-                    controllerLabel={EMAIL}
-                    error={guarantorEmailError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="guarantorEmployerName"
-                    control={control}
-                    controllerLabel={EMPLOYER}
-                    error={guarantorEmployerNameError}
-                  />
-                </Grid>
-              </CardComponent>
             </Grid>
+
             <Grid md={6} item>
               <CardComponent cardTitle={REGISTRATION_DATES}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    value={{ id: "", name: "" }}
-                    label={USUAL_PROVIDER_ID}
-                    name="usualProviderId"
-                    options={renderDoctors(doctorList)}
-                  />
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      value={{ id: '', name: '' }}
+                      label={FACILITY}
+                      name="facilityId"
+                      error={facilityError}
+                      options={renderFacilities(facilityList)}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      value={{ id: '', name: '' }}
+                      label={USUAL_PROVIDER_ID}
+                      name="usualProviderId"
+                      options={renderDoctors(doctorList)}
+                    />
+                  </Grid>
                 </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="registrationDepartment"
-                    value={{ id: "", name: "" }}
-                    label={REGISTRATION_DEPARTMENT}
-                    error={registrationDepartmentError}
-                    options={MAPPED_REG_DEPARTMENT}
-                  />
-                </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      name="registrationDepartment"
+                      value={{ id: '', name: '' }}
+                      label={REGISTRATION_DEPARTMENT}
+                      error={registrationDepartmentError}
+                      options={MAPPED_REG_DEPARTMENT}
+                    />
+                  </Grid>
 
-                <Selector
-                  name="primaryDepartment"
-                  value={{ id: "", name: "" }}
-                  label={PRIMARY_DEPARTMENT}
-                  error={primaryDepartmentError}
-                  options={MAPPED_PRIMARY_DEPARTMENT}
-                />
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      name="primaryDepartment"
+                      value={{ id: '', name: '' }}
+                      label={PRIMARY_DEPARTMENT}
+                      error={primaryDepartmentError}
+                      options={MAPPED_REG_DEPARTMENT}
+                    />
+                  </Grid>
+                </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
@@ -912,84 +889,6 @@ const AddPatientForm: FC = (): JSX.Element => {
 
               <Box pb={3} />
 
-              <CardComponent cardTitle={EMERGENCY_CONTACT}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="emergencyName"
-                    control={control}
-                    controllerLabel={NAME}
-                    error={emergencyNameError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="emergencyRelationship"
-                    label={RELATIONSHIP}
-                    error={emergencyRelationshipError}
-                    value={{ id: "", name: "" }}
-                    options={MAPPED_RELATIONSHIP_TYPE}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="emergencyPhone"
-                    control={control}
-                    controllerLabel={HOME_PHONE}
-                    error={emergencyPhoneError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="emergencyMobile"
-                    control={control}
-                    controllerLabel={MOBILE_PHONE}
-                    error={emergencyMobileError}
-                  />
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={NEXT_OF_KIN}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="kinName"
-                    control={control}
-                    controllerLabel={NAME}
-                    error={kinNameError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="kinRelationship"
-                    label={RELATIONSHIP}
-                    error={kinRelationshipError}
-                    value={{ id: "", name: "" }}
-                    options={MAPPED_RELATIONSHIP_TYPE}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddPatientController
-                    fieldType="text"
-                    controllerName="kinPhone"
-                    control={control}
-                    controllerLabel={HOME_PHONE}
-                    error={kinPhoneError}
-                  />
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
               <CardComponent cardTitle={EMPLOYMENT}>
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
@@ -1025,7 +924,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <AddPatientController
                     fieldType="text"
                     controllerName="employerIndustry"
-                    control={control}
                     controllerLabel={USUAL_INDUSTRY}
                     error={employerIndustryError}
                   />
@@ -1034,44 +932,150 @@ const AddPatientForm: FC = (): JSX.Element => {
 
               <Box pb={3} />
 
-              <CardComponent cardTitle={GUARDIAN}>
+              <CardComponent cardTitle={GUARANTOR}>
+                <Grid item md={12} sm={12} xs={12}>
+                  <Selector
+                    name="guarantorRelationship"
+                    label={GUARANTOR_RELATION}
+                    error={guarantorRelationshipError}
+                    value={{ id: '', name: '' }}
+                    options={MAPPED_RELATIONSHIP_TYPE}
+                  />
+                </Grid>
+
+                <Box pb={2}>
+                  <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
+                </Box>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorSuffix"
+                      controllerLabel={SUFFIX}
+                      error={guarantorSuffixError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorFirstName"
+                      controllerLabel={FIRST_NAME}
+                      error={guarantorFirstNameError}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorMiddleName"
+                      controllerLabel={MIDDLE_NAME}
+                      error={guarantorMiddleNameError}
+                    />
+                  </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorLastName"
+                      controllerLabel={LAST_NAME}
+                      error={guarantorLastNameError}
+                    />
+                  </Grid>
+                </Grid>
+
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="guardianFirstName"
-                    control={control}
-                    controllerLabel={FIRST_NAME}
-                    error={guardianFirstNameError}
+                    controllerName="guarantorZipCode"
+                    controllerLabel={ZIP_CODE}
+                    error={guarantorZipCodeError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="guardianMiddleName"
-                    control={control}
-                    controllerLabel={MIDDLE_NAME}
-                    error={guardianMiddleNameError}
+                    controllerName="guarantorAddress"
+                    controllerLabel={ADDRESS}
+                    error={guarantorAddressError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="guardianLastName"
-                    control={control}
-                    controllerLabel={LAST_NAME}
-                    error={guardianLastNameError}
+                    controllerName="guarantorAddress2"
+                    controllerLabel={ADDRESS_2}
+                    error={guarantorAddress2Error}
+                  />
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={4}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorCity"
+                      controllerLabel={CITY}
+                      error={guarantorCityError}
+                    />
+                  </Grid>
+
+                  <Grid item md={4}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorState"
+                      controllerLabel={STATE}
+                      error={guarantorStateError}
+                    />
+                  </Grid>
+
+                  <Grid item md={4}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorCountry"
+                      controllerLabel={COUNTRY}
+                      error={guarantorCountryError}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorSsn"
+                      controllerLabel={SSN}
+                      error={guarantorSsnError}
+                    />
+                  </Grid>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <AddPatientController
+                      fieldType="text"
+                      controllerName="guarantorPhone"
+                      controllerLabel={PHONE}
+                      error={guarantorPhoneError}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid item md={12} sm={12} xs={12}>
+                  <AddPatientController
+                    fieldType="text"
+                    controllerName="guarantorEmail"
+                    controllerLabel={EMAIL}
+                    error={guarantorEmailError}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
                   <AddPatientController
                     fieldType="text"
-                    controllerName="guardianSuffix"
-                    control={control}
-                    controllerLabel={SUFFIX}
-                    error={guardianSuffixError}
+                    controllerName="guarantorEmployerName"
+                    controllerLabel={EMPLOYER}
+                    error={guarantorEmployerNameError}
                   />
                 </Grid>
               </CardComponent>

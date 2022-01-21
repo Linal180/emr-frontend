@@ -186,25 +186,28 @@ export const doctorSchema = yup.object({
 })
 
 export const PatientSchema = {
-  patientFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
-  patientMiddleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
-  patientLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  patientPrefferedName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  patientPreviousFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(PREVIOUS_FIRST_NAME)).min(3, MinLength(PREVIOUS_FIRST_NAME, 3)).max(26, MaxLength(PREVIOUS_FIRST_NAME, 26)).required(RequiredMessage(PREVIOUS_FIRST_NAME)),
-  patientMotherMaidenName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MOTHERS_MAIDEN_NAME)).min(3, MinLength(MOTHERS_MAIDEN_NAME, 3)).max(26, MaxLength(MOTHERS_MAIDEN_NAME, 26)).required(RequiredMessage(MOTHERS_MAIDEN_NAME)),
-  patientPreviouslastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(PREVIOUS_LAST_NAME)).min(3, MinLength(PREVIOUS_LAST_NAME, 3)).max(26, MaxLength(PREVIOUS_LAST_NAME, 26)).required(RequiredMessage(PREVIOUS_LAST_NAME)),
-  patientDob: yup.date().required(RequiredMessage(DOB)),
-  patientLanguage: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
-  patientSexAtBirth: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
-  patientRegistrationDate: yup.date().required(RequiredMessage(REGISTRATION_DATE)),
-  patientdeceasedDate: yup.date().required(RequiredMessage(DECREASED_DATE)),
-  patientSuffix: yup.string().required(RequiredMessage(SUFFIX)),
-  patientSsn: yup.string().required(RequiredMessage(SSN)),
-  patientStatementNoteDateTo: yup.date().required(RequiredMessage(ISSUE_DATE)),
-  patientStatementNoteDateFrom: yup.date().required(RequiredMessage(EXPIRATION_DATE)),
+  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
+  middleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
+  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
+  prefferedName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
+  previousFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(PREVIOUS_FIRST_NAME)).min(3, MinLength(PREVIOUS_FIRST_NAME, 3)).max(26, MaxLength(PREVIOUS_FIRST_NAME, 26)).required(RequiredMessage(PREVIOUS_FIRST_NAME)),
+  motherMaidenName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MOTHERS_MAIDEN_NAME)).min(3, MinLength(MOTHERS_MAIDEN_NAME, 3)).max(26, MaxLength(MOTHERS_MAIDEN_NAME, 26)).required(RequiredMessage(MOTHERS_MAIDEN_NAME)),
+  previouslastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(PREVIOUS_LAST_NAME)).min(3, MinLength(PREVIOUS_LAST_NAME, 3)).max(26, MaxLength(PREVIOUS_LAST_NAME, 26)).required(RequiredMessage(PREVIOUS_LAST_NAME)),
+  dob: yup.date().required(RequiredMessage(DOB)),
+  language: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
+  sexAtBirth: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(LANGUAGE_SPOKEN)),
+  registrationDate: yup.date().required(RequiredMessage(REGISTRATION_DATE)),
+  deceasedDate: yup.date().required(RequiredMessage(DECREASED_DATE)),
+  suffix: yup.string().required(RequiredMessage(SUFFIX)),
+  ssn: yup.string().required(RequiredMessage(SSN)),
+  statementNoteDateTo: yup.date().required(RequiredMessage(ISSUE_DATE)),
+  statementNoteDateFrom: yup.date().required(RequiredMessage(EXPIRATION_DATE)),
 };
 
-export const basicPatientSchema = {
+export const basicContactSchema = {
   basicPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
   basicMobile: yup.string().matches(NUMBER_REGEX, ValidMessage(MOBILE_NUMBER)).min(8, MinLength(MOBILE_NUMBER, 8)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
   basicAddress: yup.string().required(RequiredMessage(ADDRESS)),
@@ -224,6 +227,11 @@ export const emergencyPatientSchema = {
 
 export const kinPatientSchema = {
   kinName: yup.string().required(RequiredMessage(NAME)),
+  kinMobile: yup.string().matches(NUMBER_REGEX, ValidMessage(MOBILE_NUMBER)).min(8, MinLength(MOBILE_NUMBER, 8)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
+  kinRelationship: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(RELATIONSHIP)),
   kinPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
 };
 
@@ -239,7 +247,10 @@ export const guarantorPatientSchema = {
   guarantorMiddleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
   guarantorLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
   guarantorEmail: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)),
-  guarantorRelationship: yup.string().required(RequiredMessage(RELATIONSHIP)),
+  guarantorRelationship: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(RELATIONSHIP)),
   guarantorPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
   guarantorSuffix: yup.string().required(RequiredMessage(SUFFIX)),
   guarantorSsn: yup.string().required(RequiredMessage(SSN)),
@@ -260,7 +271,7 @@ export const employerPatientSchema = {
 
 export const patientsSchema = yup.object({
   ...PatientSchema,
-  ...basicPatientSchema,
+  ...basicContactSchema,
   ...employerPatientSchema,
   ...guarantorPatientSchema,
   ...guardianPatientSchema,

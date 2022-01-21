@@ -288,7 +288,7 @@ export const EMPLOYER_NAME = "Employer Name";
 export const ETHNICITY = "Ethnicity";
 export const GENDER_IDENTITY = "Gender Identity";
 export const HOLD_STATEMENT = "Hold Statement";
-export const HOMEBOUND = "HomeBound";
+export const HOMEBOUND = "Home Bound";
 export const LANGUAGE = "Language";
 export const REGISTRATION_DEPARTMENT = "Registration Department"
 export const PRIMARY_DEPARTMENT = "Primary Department"
@@ -299,6 +299,8 @@ export const USUAL_PROVIDER_ID = "Usual Provider"
 export const PRONOUNS = "pronouns"
 export const RACE = "Race"
 export const RELATIONSHIP = "RelationShip"
+export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor"
+export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -588,15 +590,6 @@ export const MAPPED_SPECIALTIES: SelectorOption[] = [
   { id: Speciality.Gastroenterology, name: formatValue(Speciality.Gastroenterology) },
   { id: Speciality.PediatricDentist, name: formatValue(Speciality.PediatricDentist) },
   { id: Speciality.PhysicianAssistant, name: formatValue(Speciality.PhysicianAssistant) },
-];
-
-export const MAPPED_PRIMARY_DEPARTMENT: SelectorOption[] = [
-  { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
-  { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
-  { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
-  { id: Genderidentity.NotExclusive, name: formatValue(Genderidentity.NotExclusive) },
-  { id: Genderidentity.TransgenderMale, name: formatValue(Genderidentity.TransgenderMale) },
-  { id: Genderidentity.TransgenderFemale, name: formatValue(Genderidentity.TransgenderFemale) },
 ];
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [

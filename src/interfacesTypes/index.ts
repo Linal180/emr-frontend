@@ -8,8 +8,9 @@ import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, AllDoctorPayload,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RegisterUserInput, RelationshipType, Sexualorientation
+  RegDepartment, RelationshipType, Sexualorientation
 } from "../generated/graphql";
+import { Action } from "../reducers/locationReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -465,299 +466,67 @@ export interface DoctorInputControlProps extends IControlLabel {
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
 
-type PatientControlTypes =
-  | "suffix"
-  | "firstName"
-  | "middleName"
-  | "lastName"
-  | "firstNameUsed"
-  | "prefferedName"
-  | "previousFirstName"
-  | "previouslastName"
-  | "motherMaidenName"
-  | "ssn"
-  | "dob"
-  | "issueDate"
-  | "expirationDate"
-  | "registrationDepartment"
-  | "primaryDepartment"
-  | "registrationDate"
-  | "deceasedDate"
-  | "privacyNotice"
-  | "releaseOfInfoBill"
-  | "callToConsent"
-  | "medicationHistoryAuthority"
-  | "note"
-  | "language"
-  | "ethnicity"
-  | "sexualOrientation"
-  | "sexAtBirth"
-  | "pronouns"
-  | "homeBound"
-  | "holdStatement"
-  | "statementDelivereOnline"
-  | "statementNote"
-  | "statementNoteDateFrom"
-  | "statementNoteDateTo"
-  | "adminId"
+type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed" | "prefferedName" | "previousFirstName"
+  | "previouslastName" | "motherMaidenName" | "ssn" | "dob" | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
+  | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent" | "medicationHistoryAuthority" | "note" | "language"
+  | "ethnicity" | "sexualOrientation" | "sexAtBirth" | "pronouns" | "homeBound" | "holdStatement" | "statementDelivereOnline"
+  | "statementNote" | "statementNoteDateFrom" | "statementNoteDateTo" | "adminId" | "gender" | "race" | "genderIdentity" | "maritialStatus"
+  | "facilityId" | "usualProviderId"
 
-  | "gender"
-  | "race"
-  | "genderIdentity"
-  | "maritialStatus"
-  | "facilityId"
-  | "usualProviderId"
-
-type RegisterUserControlTypes =
-  | "userFirstName"
-  | "userLastName"
-  | "userPassword"
-  | "userEmail"
-  | "adminId"
-  | "userPhone"
-  | "userZipCode"
-
-type BasicContactControlTypes =
-  | "basicName"
-  | "basicFirstName"
-  | "basicMiddleName"
-  | "basicLastName"
-  | "basicEmail"
-  | "basicContactType"
-  | "basicRelationship"
-  | "basicPager"
-  | "basicPhone"
-  | "basicSuffix"
-  | "basicMobile"
-  | "basicFax"
-  | "basicSsn"
-  | "basicAddress"
-  | "basicAddress2"
-  | "basicZipCode"
-  | "basicCity"
-  | "basicState"
-  | "basicCountry"
-  | "basicUserId"
-  | "basicDoctorId"
-  | "basicFacilityId"
-  | "basicPatientId"
-  | "basicEmployerName"
-
-type EmergencyContactControlTypes =
-  | "emergencyName"
-  | "emergencyFirstName"
-  | "emergencyMiddleName"
-  | "emergencyLastName"
-  | "emergencyEmail"
-  | "emergencyContactType"
-  | "emergencyRelationship"
-  | "emergencyPager"
-  | "emergencyPhone"
-  | "emergencySuffix"
-  | "emergencyMobile"
-  | "emergencyFax"
-  | "emergencySsn"
-  | "emergencyAddress"
-  | "emergencyAddress2"
-  | "emergencyZipCode"
-  | "emergencyCity"
-  | "emergencyState"
-  | "emergencyCountry"
-  | "emergencyUserId"
-  | "emergencyDoctorId"
-  | "emergencyFacilityId"
-  | "emergencyPatientId"
-  | "emergencyEmployerName"
-
-type KinContactControlTypes =
-  | "kinName"
-  | "kinFirstName"
-  | "kinMiddleName"
-  | "kinLastName"
-  | "kinEmail"
-  | "kinContactType"
-  | "kinRelationship"
-  | "kinPager"
-  | "kinPhone"
-  | "kinSuffix"
-  | "kinMobile"
-  | "kinFax"
-  | "kinSsn"
-  | "kinAddress"
-  | "kinAddress2"
-  | "kinZipCode"
-  | "kinCity"
-  | "kinState"
-  | "kinCountry"
-  | "kinUserId"
-  | "kinDoctorId"
-  | "kinFacilityId"
-  | "kinPatientId"
-  | "kinEmployerName"
-
-type GuardianContactControlTypes =
-  | "guardianName"
-  | "guardianFirstName"
-  | "guardianMiddleName"
-  | "guardianLastName"
-  | "guardianEmail"
-  | "guardianContactType"
-  | "guardianRelationship"
-  | "guardianPager"
-  | "guardianPhone"
-  | "guardianSuffix"
-  | "guardianMobile"
-  | "guardianFax"
-  | "guardianSsn"
-  | "guardianAddress"
-  | "guardianAddress2"
-  | "guardianZipCode"
-  | "guardianCity"
-  | "guardianState"
-  | "guardianCountry"
-  | "guardianUserId"
-  | "guardianDoctorId"
-  | "guardianFacilityId"
-  | "guardianPatientId"
-  | "guardianEmployerName"
-
-type GuarantorContactControlTypes =
-  | "guarantorName"
-  | "guarantorFirstName"
-  | "guarantorMiddleName"
-  | "guarantorLastName"
-  | "guarantorEmail"
-  | "guarantorContactType"
-  | "guarantorRelationship"
-  | "guarantorPager"
-  | "guarantorPhone"
-  | "guarantorSuffix"
-  | "guarantorMobile"
-  | "guarantorFax"
-  | "guarantorSsn"
-  | "guarantorAddress"
-  | "guarantorAddress2"
-  | "guarantorZipCode"
-  | "guarantorCity"
-  | "guarantorState"
-  | "guarantorCountry"
-  | "guarantorUserId"
-  | "guarantorDoctorId"
-  | "guarantorFacilityId"
-  | "guarantorPatientId"
-  | "guarantorEmployerName"
-
-
-type EmployerControlTypes =
-  | "employerName"
-  | "employerEmail"
-  | "employerPhone"
-  | "employerMobile"
-  | "employerIndustry"
-  | "employerUsualOccupation"
-  | "employerPatientId"
-
+type BasicContactControlTypes = | "basicEmail" | "basicPhone" | "basicMobile" | "basicAddress" | "basicAddress2" | "basicZipCode" | "basicCity"
+  | "basicState" | "basicCountry"
 
 interface BasicContactControlInputs {
-  basicName: string;
-  basicFirstName: string;
-  basicMiddleName: string;
-  basicLastName: string;
   basicEmail: string;
-  basicRelationship: string;
-  basicPager: string;
   basicPhone: string;
   basicMobile: string;
-  basicFax: string;
-  basicSsn: string;
-  basicSuffix: string,
   basicAddress: string;
   basicAddress2: string;
   basicZipCode: string;
   basicCity: string;
   basicState: string;
   basicCountry: string;
-  basicEmployerName: string;
 }
+
+type EmergencyContactControlTypes = | "emergencyName" | "emergencyRelationship" | "emergencyPhone" | "emergencyMobile"
 
 interface EmergencyContactControlInputs {
   emergencyName: string;
-  emergencyFirstName: string;
-  emergencyMiddleName: string;
-  emergencyLastName: string;
-  emergencyEmail: string;
-  emergencyPager: string;
   emergencyPhone: string;
   emergencyMobile: string;
-  emergencyFax: string;
-  emergencySsn: string;
-  emergencySuffix: string;
-  emergencyAddress: string;
-  emergencyAddress2: string;
-  emergencyZipCode: string;
-  emergencyCity: string;
-  emergencyState: string;
-  emergencyCountry: string;
-  emergencyDoctorId: string;
-  emergencyRelationship: string;
-  emergencyEmployerName: string;
+  emergencyRelationship: SelectorOption;
 }
+
+type KinContactControlTypes = | "kinName" | "kinRelationship" | "kinPhone" | "kinMobile"
 
 interface KinContactControlInputs {
   kinName: string;
-  kinFirstName: string;
-  kinMiddleName: string;
-  kinLastName: string;
-  kinEmail: string;
-  kinRelationship: string;
-  kinPager: string;
+  kinRelationship: SelectorOption;
   kinPhone: string;
   kinMobile: string;
-  kinFax: string;
-  kinSsn: string;
-  kinSuffix: string;
-  kinAddress: string;
-  kinAddress2: string;
-  kinZipCode: string;
-  kinCity: string;
-  kinState: string;
-  kinCountry: string;
-  kinEmployerName: string;
 }
 
+type GuardianContactControlTypes = | "guardianFirstName" | "guardianMiddleName" | "guardianLastName" | "guardianEmail" | "guardianSuffix"
+
 interface GuardianContactControlInputs {
-  guardianName: string;
   guardianFirstName: string;
   guardianMiddleName: string;
   guardianLastName: string;
-  guardianEmail: string;
-  guardianRelationship: string;
-  guardianPager: string;
-  guardianPhone: string;
-  guardianMobile: string;
-  guardianFax: string;
-  guardianSsn: string;
   guardianSuffix: string;
-  guardianAddress: string;
-  guardianAddress2: string;
-  guardianZipCode: string;
-  guardianCity: string;
-  guardianState: string;
-  guardianCountry: string;
-  guardianEmployerName: string;
 }
 
+type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName" | "guarantorLastName" | "guarantorEmail" | "guarantorRelationship"
+  | "guarantorDob" | "guarantorPhone" | "guarantorSuffix" | "guarantorSsn" | "guarantorAddress" | "guarantorAddress2" | "guarantorZipCode"
+  | "guarantorCity" | "guarantorState" | "guarantorCountry" | "guarantorEmployerName"
+
 interface GuarantorContactControlInputs {
-  guarantorName: string;
   guarantorFirstName: string;
   guarantorMiddleName: string;
   guarantorLastName: string;
+  guarantorDob: string;
   guarantorEmail: string;
-  guarantorRelationship: string;
-  guarantorPager: string;
+  guarantorRelationship: SelectorOption;
   guarantorPhone: string;
-  guarantorMobile: string;
-  guarantorFax: string;
   guarantorSsn: string;
   guarantorSuffix: string;
   guarantorAddress: string;
@@ -769,14 +538,17 @@ interface GuarantorContactControlInputs {
   guarantorEmployerName: string;
 }
 
+type EmployerControlTypes = | "employerName" | "employerEmail" | "employerPhone" | "employerIndustry" | "employerUsualOccupation"
+
 interface EmployerControlInputs {
   employerName: string;
   employerEmail: string;
   employerPhone: string;
-  employerMobile: string;
   employerIndustry: string;
   employerUsualOccupation: string;
 }
+
+type RegisterUserControlTypes = | "userFirstName" | "userLastName" | "userPassword" | "userEmail" | "userPhone" | "userZipCode"
 
 interface RegisterUserInputs {
   userFirstName: string
@@ -786,6 +558,7 @@ interface RegisterUserInputs {
   userPhone: string
   userZipCode: string
 }
+
 export interface PatientInputControlProps extends IControlLabel {
   controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes | GuardianContactControlTypes | EmergencyContactControlTypes
 }
@@ -799,7 +572,22 @@ export type PatientInputProps =
   & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
   & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption } & { facilityId: SelectorOption }
   & { registrationDepartment: SelectorOption }
-  & Omit<RegisterUserInput, "facilityId" | "roleType"> & Omit<BasicContactControlInputs, "facilityId">
-  & Omit<EmergencyContactControlInputs, "facilityId"> & Omit<KinContactControlInputs, "FacilityId">
-  & Omit<GuardianContactControlInputs, "facilityId"> & Omit<GuarantorContactControlInputs, "facilityId">
-  & EmployerControlInputs & RegisterUserInputs; 
+  & BasicContactControlInputs
+  & EmergencyContactControlInputs & KinContactControlInputs
+  & GuardianContactControlInputs & GuarantorContactControlInputs
+  & EmployerControlInputs & RegisterUserInputs;
+
+export interface ContactInputControlProps extends IControlLabel {
+  controllerName: ContactInputTypes
+}
+
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
+
+export interface LocationTableProps {
+  locationDispatch: Dispatch<Action>
+}
+
+export interface LocationModalProps extends DialogTypes {
+  locationId?: string;
+  reload: () => void;
+}
