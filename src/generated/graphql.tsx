@@ -297,7 +297,7 @@ export type CreatePatientItemInput = {
   privacyNotice?: Maybe<Scalars['Boolean']>;
   pronouns?: Maybe<Pronouns>;
   race?: Maybe<Race>;
-  registrationDate?: Maybe<Scalars['DateTime']>;
+  registrationDate?: Maybe<Scalars['String']>;
   registrationDepartment?: Maybe<RegDepartment>;
   releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
@@ -1478,7 +1478,7 @@ export type UpdatePatientItemInput = {
   privacyNotice?: Maybe<Scalars['Boolean']>;
   pronouns?: Maybe<Pronouns>;
   race?: Maybe<Race>;
-  registrationDate?: Maybe<Scalars['DateTime']>;
+  registrationDate?: Maybe<Scalars['String']>;
   registrationDepartment?: Maybe<RegDepartment>;
   releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
@@ -1736,6 +1736,13 @@ export type FindAllPatientQueryVariables = Exact<{
 
 
 export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', facilityId?: Maybe<string>, pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patients?: Maybe<Array<Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, serviceCode: ServiceCodes, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>>> } };
+
+export type GetPatientQueryVariables = Exact<{
+  getPatient: GetPatient;
+}>;
+
+
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patient?: Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, serviceCode: ServiceCodes, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }> } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -3380,6 +3387,149 @@ export function useFindAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FindAllPatientQueryHookResult = ReturnType<typeof useFindAllPatientQuery>;
 export type FindAllPatientLazyQueryHookResult = ReturnType<typeof useFindAllPatientLazyQuery>;
 export type FindAllPatientQueryResult = Apollo.QueryResult<FindAllPatientQuery, FindAllPatientQueryVariables>;
+export const GetPatientDocument = gql`
+    query GetPatient($getPatient: GetPatient!) {
+  getPatient(getPatient: $getPatient) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patient {
+      id
+      firstName
+      middleName
+      lastName
+      firstNameUsed
+      prefferedName
+      previousFirstName
+      previouslastName
+      motherMaidenName
+      ssn
+      gender
+      dob
+      registrationDepartment
+      primaryDepartment
+      registrationDate
+      deceasedDate
+      privacyNotice
+      releaseOfInfoBill
+      callToConsent
+      medicationHistoryAuthority
+      patientNote
+      language
+      race
+      ethnicity
+      maritialStatus
+      sexualOrientation
+      genderIdentity
+      sexAtBirth
+      pronouns
+      homeBound
+      holdStatement
+      statementDelivereOnline
+      statementNote
+      statementNoteDateFrom
+      statementNoteDateTo
+      createdAt
+      updatedAt
+      contacts {
+        id
+        email
+        name
+        suffix
+        firstName
+        middleName
+        lastName
+        phone
+        serviceCode
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        ssn
+        employerName
+        relationship
+        contactType
+      }
+      employer {
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
+      }
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        updatedAt
+      }
+      user {
+        id
+        email
+        token
+        status
+        userId
+        userType
+        inviteSentAt
+        emailVerified
+        inviteAcceptedAt
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientQuery__
+ *
+ * To run a query within a React component, call `useGetPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientQuery({
+ *   variables: {
+ *      getPatient: // value for 'getPatient'
+ *   },
+ * });
+ */
+export function useGetPatientQuery(baseOptions: Apollo.QueryHookOptions<GetPatientQuery, GetPatientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientQuery, GetPatientQueryVariables>(GetPatientDocument, options);
+      }
+export function useGetPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientQuery, GetPatientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientQuery, GetPatientQueryVariables>(GetPatientDocument, options);
+        }
+export type GetPatientQueryHookResult = ReturnType<typeof useGetPatientQuery>;
+export type GetPatientLazyQueryHookResult = ReturnType<typeof useGetPatientLazyQuery>;
+export type GetPatientQueryResult = Apollo.QueryResult<GetPatientQuery, GetPatientQueryVariables>;
 export const RemovePatientDocument = gql`
     mutation RemovePatient($removePatient: RemovePatient!) {
   removePatient(removePatient: $removePatient) {

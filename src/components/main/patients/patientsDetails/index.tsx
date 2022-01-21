@@ -1,21 +1,61 @@
 // packages block
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Avatar, Box, Button, Grid, Tab, Typography } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-// constants block
+// components block
+import CardComponent from "../../../common/CardComponent";
+// constants, history, styling block
 import { PROFILE_TOP_TABS } from "../../../../constants";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon, StarProfileIcon } from "../../../../assets/svgs";
-import CardComponent from "../../../common/CardComponent";
 import { BLACK_TWO } from "../../../../theme";
+import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
+import history from "../../../../history";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const [value, setValue] = useState('1');
+  const [patientData, setPatientData] = useState<Patient | null>();
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+  const { location: { pathname } } = history
+  const getPatientIdArray = pathname.split("/")
+  const getPatientId = getPatientIdArray[getPatientIdArray.length - 1]
+
+  const handleChange = (event: ChangeEvent<{}>, newValue: string) => {
     setValue(newValue);
   };
+
+  const { loading } = useGetPatientQuery({
+    nextFetchPolicy: "network-only",
+
+    variables: {
+      getPatient: {
+        id: getPatientId
+      }
+    },
+
+    onError() {
+      setPatientData(null);
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { getPatient: { patient } } = data
+
+        if (patient && !loading) {
+          setPatientData(patient as Patient)
+        }
+      }
+    },
+  });
+
+  if (!patientData && loading) {
+    return (
+      <Box>Loading...</Box>
+    )
+  }
+
+  console.log("patientData", patientData)
 
   const age = 24
   const phoneNumber = +182735728362
