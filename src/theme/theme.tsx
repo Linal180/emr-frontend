@@ -3,7 +3,7 @@ import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
 import {
   PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE,
-  GRAY_SEVEN, ORANGE_ONE,
+  GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, BLUE_FOUR,
 } from ".";
 
 const customTheme = createTheme()
@@ -482,6 +482,34 @@ export const theme = createTheme({
 
       selectMenu: {
         minHeight: 42,
+      }
+    },
+
+    MuiTabs: {
+      indicator: {
+        display: 'none'
+      },
+    },
+
+    MuiTab: {
+      root: {
+        minWidth: '0 !important',
+        lineHeight: '19px',
+        padding: '8px 15px',
+        fontSize: 13,
+        fontWeight: 500,
+        minHeight: 0,
+        borderRadius: 4,
+
+        "&.Mui-selected": {
+          background: `rgba(0, 158, 247, 0.1)`,
+          color: BLUE_FOUR,
+        }
+      },
+
+      textColorInherit: {
+        color: BLACK_SIX,
+        opacity: 1,
       }
     },
   },

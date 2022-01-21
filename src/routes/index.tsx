@@ -30,6 +30,7 @@ import AddFacilityComponent from "../pages/main/facilities/addFacility";
 import Appointments from "../pages/main/appointments/appointmentsListing";
 import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 import AppointmentPublic from "../pages/main/appointments/appointmentPublic";
+import PatientDetails from "../pages/main/patients/patientDetails";
 // constants
 import { AuthContext } from "../context";
 import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, PUBLIC_APPOINTMENT_ROUTE } from "../constants";
@@ -56,6 +57,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
           <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
+          <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={PatientDetails} />
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
           <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
           <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />

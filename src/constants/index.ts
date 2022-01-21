@@ -1,6 +1,6 @@
 // graphql and interfaces block
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole  } from "../generated/graphql";
+import { Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole } from "../generated/graphql";
 import { MappedEthnicityInterface, MappedGenderidentityInterface, MappedGenderInterface, MappedHomeboundInterface, MappedMaritialstatusInterface, MappedPrimaryDepartmentInterface, MappedPronounsInterface, MappedRaceInterface, MappedRegDepartmentInterface, MappedRelationshipTypeInterface, SelectorOption, MappedSexualorientationInterface } from '../interfacesTypes'
 
 
@@ -732,3 +732,35 @@ export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
 export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
+
+// profile top tabs
+export const PROFILE_TOP_TABS = [
+  {
+    title: 'General Info',
+    value: "1"
+  },
+  {
+    title: 'Insurance',
+    value: "2"
+  },
+  {
+    title: 'Registration',
+    value: "3"
+  },
+  {
+    title: 'Messaging',
+    value: "4"
+  },
+  {
+    title: 'Billing',
+    value: "5"
+  },
+  {
+    title: 'Clinical',
+    value: "6"
+  },
+  {
+    title: 'Communicator',
+    value: "7"
+  },
+]

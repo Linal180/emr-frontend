@@ -102,7 +102,7 @@ const AddPatientForm: FC = (): JSX.Element => {
     } = inputs;
 
     const { id: selectedPatientUsualProviderId } = patientUsualProviderId;
-    console.log(patientUsualProviderId)
+
     if (user && selectedPatientUsualProviderId) {
       const { id: userId } = user
 
