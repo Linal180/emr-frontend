@@ -13,16 +13,15 @@ const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPa
         <Typography component="h4" variant="h4">{title}</Typography>
         {path && <Breadcrumb path={path} />}
       </Box>
-
       {!noAdd && <>
         {hasComponent ?
           <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
             {buttonText || ""}
           </Button>
           :
-          <Button color="primary" variant="contained" onClick={openModal}>
-            {buttonText || ""}
-          </Button>
+          (buttonText && <Button color="primary" variant="contained" onClick={openModal}>
+            {buttonText}
+          </Button>)
         }
       </>}
     </Box>
