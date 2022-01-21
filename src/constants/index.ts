@@ -2,7 +2,7 @@
 import { formatValue } from '../utils';
 import { SelectorOption } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Gender, PracticeType, ServiceCode, Speciality, SsnType, UserRole } from "../generated/graphql";
+import { Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole } from "../generated/graphql";
 
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;
@@ -292,11 +292,11 @@ export const HOMEBOUND = "HomeBound";
 export const LANGUAGE = "Language";
 export const REGISTRATION_DEPARTMENT = "Registration Department"
 export const PRIMARY_DEPARTMENT = "Primary Department"
-export const MARITIAL_STATUS = "Maritial Status"
+export const MARITAL_STATUS = "Marital Status"
 export const SEX_AT_BIRTH = "Sex At Birth"
 export const SEXUAL_ORIENTATION = "Sexual Orientation"
 export const USUAL_PROVIDER_ID = "Usual Provider"
-export const PRONOUS = "pronouns"
+export const PRONOUNS = "pronouns"
 export const RACE = "Race"
 export const RELATIONSHIP = "RelationShip"
 export const EMPLOYER_PHONE = "Employer Phone";
@@ -408,6 +408,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
 export const TRY_AGAIN = "Something went wrong. Try again!";
 export const INVALID_EMAIL = "Invalid email address";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
@@ -589,11 +590,108 @@ export const MAPPED_SPECIALTIES: SelectorOption[] = [
   { id: Speciality.PhysicianAssistant, name: formatValue(Speciality.PhysicianAssistant) },
 ];
 
+export const MAPPED_PRIMARY_DEPARTMENT: SelectorOption[] = [
+  { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
+  { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
+  { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
+  { id: Genderidentity.NotExclusive, name: formatValue(Genderidentity.NotExclusive) },
+  { id: Genderidentity.TransgenderMale, name: formatValue(Genderidentity.TransgenderMale) },
+  { id: Genderidentity.TransgenderFemale, name: formatValue(Genderidentity.TransgenderFemale) },
+];
+
+export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
+  { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
+  { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
+  { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
+  { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
+];
+
 export const MAPPED_SSN_TYPES: SelectorOption[] = [
   { id: SsnType.Tanf, name: formatValue(SsnType.Tanf) },
   { id: SsnType.Oasdi, name: formatValue(SsnType.Oasdi) },
   { id: SsnType.Medicare, name: formatValue(SsnType.Medicare) },
   { id: SsnType.Medicaid, name: formatValue(SsnType.Medicaid) },
+];
+
+export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
+  { id: RegDepartment.Lab, name: formatValue(RegDepartment.Lab) },
+  { id: RegDepartment.Clinic, name: formatValue(RegDepartment.Clinic) },
+  { id: RegDepartment.Hospital, name: formatValue(RegDepartment.Hospital) },
+];
+
+export const MAPPED_HOMEBOUND: SelectorOption[] = [
+  { id: Homebound.No, name: formatValue(Homebound.No) },
+  { id: Homebound.Yes, name: formatValue(Homebound.Yes) },
+];
+
+export const MAPPED_PRONOUNS: SelectorOption[] = [
+  { id: Pronouns.He, name: formatValue(Pronouns.He) },
+  { id: Pronouns.She, name: formatValue(Pronouns.She) },
+  { id: Pronouns.None, name: formatValue(Pronouns.None) },
+
+];
+
+export const MAPPED_RACE: SelectorOption[] = [
+  { id: Race.Other, name: formatValue(Race.Other) },
+  { id: Race.Asian, name: formatValue(Race.Asian) },
+  { id: Race.White, name: formatValue(Race.White) },
+  { id: Race.BlackAfricanAmerican, name: formatValue(Race.BlackAfricanAmerican) },
+  { id: Race.BlackAfricanAmerican, name: formatValue(Race.BlackAfricanAmerican) },
+  { id: Race.AmericanIndianAlaskaNative, name: formatValue(Race.AmericanIndianAlaskaNative) },
+  { id: Race.NativeHawaiianPacificIslander, name: formatValue(Race.NativeHawaiianPacificIslander) },
+];
+
+export const MAPPED_ETHNICITY: SelectorOption[] = [
+  { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
+  { id: Ethnicity.CenteralAmerican, name: formatValue(Ethnicity.CenteralAmerican) },
+  { id: Ethnicity.CenteralAmericanIndian, name: formatValue(Ethnicity.CenteralAmericanIndian) },
+];
+
+export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
+  { id: Sexualorientation.None, name: formatValue(Sexualorientation.None) },
+  { id: Sexualorientation.DontKnow, name: formatValue(Sexualorientation.DontKnow) },
+  { id: Sexualorientation.Bisexual, name: formatValue(Sexualorientation.Bisexual) },
+  { id: Sexualorientation.Homosexual, name: formatValue(Sexualorientation.Homosexual) },
+  { id: Sexualorientation.Heterosexual, name: formatValue(Sexualorientation.Heterosexual) },
+];
+
+export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
+  { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
+  { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
+  { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
+  { id: Genderidentity.NotExclusive, name: formatValue(Genderidentity.NotExclusive) },
+  { id: Genderidentity.TransgenderMale, name: formatValue(Genderidentity.TransgenderMale) },
+  { id: Genderidentity.TransgenderFemale, name: formatValue(Genderidentity.TransgenderFemale) },
+];
+
+export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
+  { id: RelationshipType.Ward, name: formatValue(RelationshipType.Ward) },
+  { id: RelationshipType.Self, name: formatValue(RelationshipType.Self) },
+  { id: RelationshipType.Child, name: formatValue(RelationshipType.Child) },
+  { id: RelationshipType.Other, name: formatValue(RelationshipType.Other) },
+  { id: RelationshipType.Mother, name: formatValue(RelationshipType.Mother) },
+  { id: RelationshipType.Spouse, name: formatValue(RelationshipType.Spouse) },
+  { id: RelationshipType.Father, name: formatValue(RelationshipType.Father) },
+  { id: RelationshipType.Unknown, name: formatValue(RelationshipType.Unknown) },
+  { id: RelationshipType.Employee, name: formatValue(RelationshipType.Employee) },
+  { id: RelationshipType.OrganDonor, name: formatValue(RelationshipType.OrganDonor) },
+  { id: RelationshipType.Grandchild, name: formatValue(RelationshipType.Grandchild) },
+  { id: RelationshipType.LifePartner, name: formatValue(RelationshipType.LifePartner) },
+  { id: RelationshipType.Grandparent, name: formatValue(RelationshipType.Grandparent) },
+  { id: RelationshipType.NephewNiece, name: formatValue(RelationshipType.NephewNiece) },
+  { id: RelationshipType.FostherChild, name: formatValue(RelationshipType.FostherChild) },
+  { id: RelationshipType.CadaverDonor, name: formatValue(RelationshipType.CadaverDonor) },
+  { id: RelationshipType.SignificantOther, name: formatValue(RelationshipType.SignificantOther) },
+  { id: RelationshipType.EmancipatedMinor, name: formatValue(RelationshipType.EmancipatedMinor) },
+  { id: RelationshipType.InjuredPlaintiiff, name: formatValue(RelationshipType.InjuredPlaintiiff) },
+  { id: RelationshipType.SponsoredDependent, name: formatValue(RelationshipType.SponsoredDependent) },
+  { id: RelationshipType.StepsonStepdaughter, name: formatValue(RelationshipType.StepsonStepdaughter) },
+  { id: RelationshipType.ChildMotherInsurance, name: formatValue(RelationshipType.ChildMotherInsurance) },
+  { id: RelationshipType.HandicappedDependent, name: formatValue(RelationshipType.HandicappedDependent) },
+  { id: RelationshipType.ChildFatherInsurance, name: formatValue(RelationshipType.ChildFatherInsurance) },
+  { id: RelationshipType.DependentOfMinorDependent, name: formatValue(RelationshipType.DependentOfMinorDependent) },
+  { id: RelationshipType.StepsonStepdaughterStepmotherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepmotherInsrtance) },
+  { id: RelationshipType.StepsonStepdaughterStepfatherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsrtance) },
 ];
 
 // Breadcrumb links

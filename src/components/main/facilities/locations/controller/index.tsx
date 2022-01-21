@@ -2,8 +2,8 @@
 import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, InputLabel, FormControl } from "@material-ui/core";
+// styles, constants, utils and interfaces 
 import { ContactInputControlProps } from "../../../../../interfacesTypes";
-// styles, constants, utils and interfaces block
 
 const LocationController: FC<ContactInputControlProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
   const { control } = useFormContext();

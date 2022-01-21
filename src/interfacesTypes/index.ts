@@ -778,6 +778,14 @@ interface EmployerControlInputs {
   employerUsualOccupation: string;
 }
 
+interface RegisterUserInputs {
+  userFirstName: string
+  userLastName: string
+  userPassword: string
+  userEmail: string
+  userPhone: string
+  userZipCode: string
+}
 export interface PatientInputControlProps extends IControlLabel {
   controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes | GuardianContactControlTypes | EmergencyContactControlTypes
 }
@@ -791,4 +799,7 @@ export type PatientInputProps =
   & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
   & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption } & { facilityId: SelectorOption }
   & { registrationDepartment: SelectorOption }
-  & Omit<RegisterUserInput, "facilityId" | "roleType"> & Omit<BasicContactControlInputs, "facilityId"> & Omit<EmergencyContactControlInputs, "facilityId"> & Omit<KinContactControlInputs, "FacilityId"> & Omit<GuardianContactControlInputs, "facilityId"> & Omit<GuarantorContactControlInputs, "facilityId"> & EmployerControlInputs;
+  & Omit<RegisterUserInput, "facilityId" | "roleType"> & Omit<BasicContactControlInputs, "facilityId">
+  & Omit<EmergencyContactControlInputs, "facilityId"> & Omit<KinContactControlInputs, "FacilityId">
+  & Omit<GuardianContactControlInputs, "facilityId"> & Omit<GuarantorContactControlInputs, "facilityId">
+  & EmployerControlInputs & RegisterUserInputs; 
