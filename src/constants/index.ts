@@ -2,7 +2,10 @@
 import { formatValue } from '../utils';
 import { SelectorOption } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole } from "../generated/graphql";
+import {
+  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, RegDepartment, RelationshipType,
+  ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
+} from "../generated/graphql";
 
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;
@@ -344,6 +347,9 @@ export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this 
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const LOOKS_LIKE_EMPTY = "Looks like an empty space. You can go back to homepage by clicking the button below";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
+export const VISIT_REASON = "Reason for visit"
+export const SELECT_SERVICES = "Select Services"
+export const PATIENT_DETAILS = "Patient Details"
 
 // Roles
 export const STAFF = "STAFF";
@@ -373,6 +379,7 @@ export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const FACILITY_LOCATIONS_ROUTE = `${FACILITIES_ROUTE}/locations`;
+export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -713,3 +720,35 @@ export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
 export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
+
+// profile top tabs
+export const PROFILE_TOP_TABS = [
+  {
+    title: 'General Info',
+    value: "1"
+  },
+  {
+    title: 'Insurance',
+    value: "2"
+  },
+  {
+    title: 'Registration',
+    value: "3"
+  },
+  {
+    title: 'Messaging',
+    value: "4"
+  },
+  {
+    title: 'Billing',
+    value: "5"
+  },
+  {
+    title: 'Clinical',
+    value: "6"
+  },
+  {
+    title: 'Communicator',
+    value: "7"
+  },
+]

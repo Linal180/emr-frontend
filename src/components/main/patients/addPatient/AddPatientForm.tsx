@@ -121,7 +121,7 @@ const AddPatientForm: FC = (): JSX.Element => {
     const { id: selectedPronouns } = pronouns
     const { id: selectedRace } = race
     const { id: selectedEthnicity } = ethnicity
-    const { id: selectedMaritialStatus } = maritialStatus
+    const { id: selectedMaritalStatus } = maritialStatus
     const { id: selectedGenderIdentity } = genderIdentity
     const { id: selectedGender } = gender
     const { id: selectedSexAtBirth } = sexAtBirth
@@ -149,7 +149,7 @@ const AddPatientForm: FC = (): JSX.Element => {
               gender: selectedGender as Genderidentity || Genderidentity.None, usualProviderId: selectedUsualProvider || '',
               sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
               genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
-              maritialStatus: selectedMaritialStatus as Maritialstatus || Maritialstatus.Single,
+              maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
               sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
               statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
               primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,

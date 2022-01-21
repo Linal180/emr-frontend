@@ -8,9 +8,9 @@ import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../pages/main/dashboard";
 import AddStaff from "../pages/main/staff/addStaff";
 import AddBill from "../pages/main/billing/addBill";
-import AddResult from "../pages/main/reports/addResult";
 import Staff from "../pages/main/staff/staffListing";
 import ViewStaff from "../pages/main/staff/viewStaff";
+import AddResult from "../pages/main/reports/addResult";
 import AddDoctor from "../pages/main/doctors/addDoctor";
 import ResetPassword from "../pages/auth/resetPassword";
 import MainLayout from "../components/common/MainLayout";
@@ -24,15 +24,21 @@ import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import LabResults from "../pages/main/reports/labResultsListing";
 import ViewFacility from "../pages/main/facilities/viewFacility";
+import PatientDetails from "../pages/main/patients/patientDetails";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 import AddAppointment from "../pages/main/appointments/addAppointment";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
 import Appointments from "../pages/main/appointments/appointmentsListing";
+import Locations from "../pages/main/facilities/locations/locationListing";
+import AppointmentPublic from "../pages/main/appointments/appointmentPublic";
 import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 // constants
 import { AuthContext } from "../context";
-import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, FACILITY_LOCATIONS_ROUTE } from "../constants";
-import Locations from "../pages/main/facilities/locations/locationListing";
+import {
+  DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE,
+  VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE,
+  SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, FACILITY_LOCATIONS_ROUTE, PUBLIC_APPOINTMENT_ROUTE
+} from "../constants";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -43,6 +49,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
       <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
       <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
+      <PublicRoute path={PUBLIC_APPOINTMENT_ROUTE} component={AppointmentPublic} exact />
       <Route exact path="/">
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>
@@ -55,6 +62,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
           <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
+          <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={PatientDetails} />
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
           <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
           <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />

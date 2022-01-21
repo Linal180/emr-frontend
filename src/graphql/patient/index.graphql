@@ -122,6 +122,125 @@ query FindAllPatient($patientInput: PatientInput!) {
   }
 }
 
+query GetPatient($getPatient: GetPatient!) {
+  getPatient(getPatient: $getPatient) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    patient {
+      id
+      firstName
+      middleName
+      lastName
+      firstNameUsed
+      prefferedName
+      previousFirstName
+      previouslastName
+      motherMaidenName
+      ssn
+      gender
+      dob
+      registrationDepartment
+      primaryDepartment
+      registrationDate
+      deceasedDate
+      privacyNotice
+      releaseOfInfoBill
+      callToConsent
+      medicationHistoryAuthority
+      patientNote
+      language
+      race
+      ethnicity
+      maritialStatus
+      sexualOrientation
+      genderIdentity
+      sexAtBirth
+      pronouns
+      homeBound
+      holdStatement
+      statementDelivereOnline
+      statementNote
+      statementNoteDateFrom
+      statementNoteDateTo
+      createdAt
+      updatedAt
+
+      contacts {
+        id
+        email
+        name
+        suffix
+        firstName
+        middleName
+        lastName
+        phone
+        serviceCode
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        ssn
+        employerName
+        relationship
+        contactType
+      }
+
+      employer {
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        updatedAt
+      }
+
+      user {
+        id
+        email
+        token
+        status
+        userId
+        userType
+        inviteSentAt
+        emailVerified
+        inviteAcceptedAt
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
 mutation RemovePatient($removePatient: RemovePatient!){
 	removePatient(removePatient: $removePatient){
     response{
@@ -141,3 +260,4 @@ mutation CreatePatient($createPatientInput: CreatePatientInput!){
     }
   }
 }
+
