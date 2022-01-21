@@ -3,17 +3,14 @@ import { FC, useState } from "react";
 import { Link } from "react-router-dom";
 import { Box, Typography, Button } from "@material-ui/core";
 // components block
-import AddServiceModal from "../main/facilities/facilityServicesListing/AddServiceModal";
+import AddServiceModal from "../main/facilities/addFacilityServices/AddServiceModal";
 // interfaces/types block
-import { IPageHeader } from "../../interfacesTypes";
+import { PageHeaderProps } from "../../interfacesTypes";
 import Breadcrumb from "./Breadcrumb";
 import { ACTIVE_TEXT, ADD_FACILITY_SERVICE } from "../../constants";
 
-const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModel }): JSX.Element => {
+const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModel, tableData, setTableData }): JSX.Element => {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
-
-  const handleService = async () => {
-  };
 
   const onButtonClick = () => {
     setOpenPopup(true)
@@ -43,7 +40,8 @@ const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPa
         title={ADD_FACILITY_SERVICE}
         isOpen={openPopup}
         description={ACTIVE_TEXT}
-        handleService={handleService}
+        tableData={tableData}
+        setTableData={setTableData}
         setOpen={(open: boolean) => setOpenPopup(open)}
       />}
     </Box>

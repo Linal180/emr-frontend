@@ -91,7 +91,8 @@ export interface ServiceConfirmationTypes extends DialogTypes {
   success?: boolean;
   actionText?: string;
   description?: string;
-  handleService: () => void;
+  setTableData:Function | undefined;
+  tableData: ServicesPayload['services'];
 }
 
 interface ControlLabel {
@@ -134,7 +135,7 @@ export interface CardComponentType extends Children {
   requestLink?: string
 }
 
-export interface IPageHeader {
+export interface PageHeaderProps {
   isOpen?: boolean;
   setOpen?: Function;
   hasComponent?: boolean;
@@ -144,6 +145,13 @@ export interface IPageHeader {
   noAdd?: boolean;
   path?: Path[];
   openModel?: boolean;
+  setTableData?:Function;
+  tableData?: ServicesPayload['services'];
+}
+
+export interface FacilityServicesProps {
+  setTableData?:Function;
+  tableData?: ServicesPayload['services'];
 }
 
 export interface IStepperButtons {
