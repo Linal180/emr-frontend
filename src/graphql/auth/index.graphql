@@ -74,6 +74,7 @@ query GetLoggedInUser {
           serviceCode
           country
           userId
+          serviceCode
           createdAt
           updatedAt
         }

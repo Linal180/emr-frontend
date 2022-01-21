@@ -4,7 +4,12 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { UserRole, UpdateContactInput, FacilitiesPayload, CreateDoctorInput, CreateContactInput, CreateDoctorItemInput, CreatePatientInput, CreatePatientItemInput, Race, Ethnicity, Sexualorientation, Pronouns, Homebound, RelationshipType, RegDepartment, PrimaryDepartment, Maritialstatus, CreateEmployerInput, RegisterUserInput, Genderidentity, LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateFacilityItemInput, Gender, AllDoctorPayload } from "../generated/graphql";
+import {
+  LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput,
+  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, AllDoctorPayload,
+  CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
+  RegDepartment, RegisterUserInput, RelationshipType, Sexualorientation
+} from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -133,6 +138,7 @@ export interface IPageHeader {
   buttonText?: string;
   noAdd?: boolean;
   path?: Path[];
+  openModal?: () => void
 }
 
 export interface IStepperButtons {
@@ -380,9 +386,10 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type CustomFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
+export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode"> & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
 
 type ContactInputTypes =
+  | "name"
   | "fax"
   | "city"
   | "state"

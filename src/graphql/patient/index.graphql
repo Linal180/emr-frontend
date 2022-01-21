@@ -5,11 +5,8 @@ query FindAllPatient($patientInput: PatientInput!) {
       totalCount
       totalPages
     }
-
-    facilityId
-
+    
     response {
-      name
       error
       status
       message
@@ -53,7 +50,7 @@ query FindAllPatient($patientInput: PatientInput!) {
       statementNoteDateTo
       createdAt
       updatedAt
-
+      
       contacts {
         id
         email
@@ -107,7 +104,7 @@ query FindAllPatient($patientInput: PatientInput!) {
         serviceCode
         updatedAt
       }
-
+      
       user {
         id
         email

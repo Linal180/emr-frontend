@@ -21,6 +21,33 @@ const roleTypeSchema = {
 const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
 const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
 
+const serviceCodeSchema = {
+  serviceCode: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(SERVICE_CODE))
+}
+
+const practiceTypeSchema = {
+  practiceType: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(PRACTICE_TYPE))
+}
+
+const genderSchema = {
+  gender: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(GENDER))
+}
+
+const facilityIdSchema = {
+  facilityId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(FACILITY))
+}
 const passwordAndRepeatPasswordSchema = {
   password: yup.string().required(RequiredMessage(PASSWORD)).matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
   repeatPassword: yup.string().oneOf([yup.ref("password"), null], PASSWORDS_MUST_MATCH).required(CONFIRM_YOUR_PASSWORD),
@@ -63,18 +90,18 @@ export const billingAddressSchema = {
   billingPhone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
 }
 
+export const extendedContactSchema = yup.object({
+  ...contactSchema,
+  ...facilityIdSchema,
+  ...serviceCodeSchema
+})
+
 const staffBasicSchema = {
   ...roleTypeSchema,
+  ...genderSchema,
+  ...facilityIdSchema,
   dob: yup.date().required(RequiredMessage(DOB)),
-  gender: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(RequiredMessage(GENDER)),
   username: yup.string().required(RequiredMessage(PROVIDER)),
-  facilityId: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(RequiredMessage(FACILITY)),
   lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
   firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
   phone: yup.string().matches(NUMBER_REGEX, ValidMessage(PHONE_NUMBER)).min(8, MinLength(PHONE_NUMBER, 8)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
@@ -95,18 +122,12 @@ export const updateStaffSchema = yup.object({
 export const facilitySchema = yup.object({
   ...contactSchema,
   ...billingAddressSchema,
+  ...serviceCodeSchema,
+  ...practiceTypeSchema,
   npi: yup.string().required(RequiredMessage(NPI)),
   name: yup.string().required(RequiredMessage(NAME)),
   code: yup.string().required(RequiredMessage(CODE)),
   revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE)),
-  serviceCode: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(RequiredMessage(SERVICE_CODE)),
-  practiceType: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(RequiredMessage(PRACTICE_TYPE)),
   cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER)),
   federalTaxId: yup.string().required(RequiredMessage(FEDERAL_TAX_ID)),
   tamxonomyCode: yup.string().required(RequiredMessage(TAMXONOMY_CODE)),
@@ -116,6 +137,7 @@ export const facilitySchema = yup.object({
 })
 
 export const basicDoctorSchema = {
+  ...facilityIdSchema,
   npi: yup.string().required(RequiredMessage(NPI)),
   dob: yup.date().required(RequiredMessage(DOB)),
   ssn: yup.string().required(RequiredMessage(SSN)),
@@ -127,10 +149,6 @@ export const basicDoctorSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).required(RequiredMessage(SSN_TYPE)),
-  facilityId: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(RequiredMessage(FACILITY)),
   deaNumber: yup.string().required(RequiredMessage(DEA_NUMBER)),
   speciality: yup.object().shape({
     name: yup.string().required(),
