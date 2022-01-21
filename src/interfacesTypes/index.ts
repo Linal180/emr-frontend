@@ -428,5 +428,16 @@ export interface DoctorInputControlProps extends IControlLabel {
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
 
+type CreateServiceInputTypes =
+  | "duration"
+  | "facilityId"
+  | "isActive"
+  | "name"
+  | "price"
+
+export interface ServiceInputControlsProps extends IControlLabel {
+  controllerName: CreateServiceInputTypes
+}
+
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId">  & { facilityId: SelectorOption } ;
 

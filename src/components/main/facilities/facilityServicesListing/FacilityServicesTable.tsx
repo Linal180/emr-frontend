@@ -13,7 +13,7 @@ import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload }
 import { renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION } from "../../../../constants";
+import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../constants";
 import { FacilityServicesProps } from "../../../../interfacesTypes";
 
 const FacilityServicesTable: FC<FacilityServicesProps> = ({ setTableData, tableData }): JSX.Element => {
@@ -150,13 +150,18 @@ const FacilityServicesTable: FC<FacilityServicesProps> = ({ setTableData, tableD
               ) : (
                 tableData?.map((service: ServicePayload['service'], index: number) => {
                   const { id, name, duration, price, isActive } = service || {};
+                  const ActiveStatus = isActive === true ? `${ACTIVE}` : `${INACTIVE}`
+                  console.log(ActiveStatus);
+                  console.log(isActive === true);
+console.log(isActive);
+
 
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">{duration}</TableCell>
                       <TableCell scope="row">{price}</TableCell>
-                      <TableCell scope="row">{`${isActive}`}</TableCell>
+                      <TableCell className={classes.status} scope="row">{ActiveStatus}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <IconButton size="small">

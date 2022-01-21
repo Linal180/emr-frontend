@@ -81,6 +81,7 @@ const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title,
     price: { message: priceError } = {},
     duration: { message: durationError } = {},
   } = errors;
+
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
@@ -129,7 +130,7 @@ const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title,
                     render={() => {
                       return (
                         <FormControl>
-                          <FormControlLabel label={description} id={"isActive"} control={<Checkbox color="primary" checked={checked} onChange={handleChange} />} />
+                          <FormControlLabel label={description} id={"isActive"} control={<Checkbox color="primary" value={checked} checked={checked} onChange={handleChange} />} />
                         </FormControl>
                       )
                     }}

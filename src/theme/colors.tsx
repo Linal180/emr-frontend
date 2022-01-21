@@ -23,6 +23,8 @@ export const BLUE = "#596ed5"
 export const BLUE_ONE = "#009EF6";
 export const BLUE_TWO = "#0056B1";
 export const BLUE_THREE = "#00A3FF";
+export const BLUE_FOUR = "#1BC5BD"
+export const BLUE_FIVE = "#C9F7F5"
 
 export const ORANGE = "#FFF9F4";
 export const ORANGE_ONE = "#F89C47";
