@@ -26,7 +26,6 @@ const PatientsTable: FC = (): JSX.Element => {
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
     variables: {
       patientInput: {
-        facilityId: "f13d1f1d-8d79-4db2-b415-0aae3b9a98a2",
         paginationOptions: {
           page: 1,
           limit: PAGE_LIMIT
@@ -45,18 +44,16 @@ const PatientsTable: FC = (): JSX.Element => {
       const { findAllPatient } = data || {};
 
       if (findAllPatient) {
-        const { pagination, } = findAllPatient
+        const { pagination, patients } = findAllPatient
+        patients && setPatients(patients as PatientsPayload['patients'])
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && setTotalPages(totalPages)
-          }
-
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && setTotalPages(totalPages)
         }
       }
     }
-  });
+    });
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     onError() {

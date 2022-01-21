@@ -29,6 +29,7 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
         zipCode
         city
         state
+        serviceCode
         country
         userId
         createdAt
@@ -109,6 +110,7 @@ query GetFacility($getFacility: GetFacility!){
         zipCode
         city
         state
+        serviceCode
         country
         userId
         createdAt
@@ -207,6 +209,7 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
         address2
         zipCode
         city
+        serviceCode
         state
         country
         userId
@@ -273,6 +276,7 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
         fax
         address
         address2
+        serviceCode
         zipCode
         city
         state

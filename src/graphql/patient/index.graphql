@@ -1,5 +1,5 @@
 query FindAllPatient($patientInput: PatientInput!) {
-	findAllPatient(patientInput: $patientInput) {
+  findAllPatient(patientInput: $patientInput) {
     pagination {
       page
       totalCount
@@ -12,7 +12,7 @@ query FindAllPatient($patientInput: PatientInput!) {
       name
       error
       status
-	  message
+      message
     }
 
     patients {
@@ -55,39 +55,40 @@ query FindAllPatient($patientInput: PatientInput!) {
       updatedAt
 
       contacts {
-          id
-          email
-          name
-          suffix
-          firstName
-          middleName
-          lastName
-          phone
-          mobile
-          pager
-          fax
-          address
-          address2
-          zipCode
-          city
-          state
-          country
-          ssn
-          employerName
-          relationship
-          contactType
+        id
+        email
+        name
+        suffix
+        firstName
+        middleName
+        lastName
+        phone
+        serviceCode
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        ssn
+        employerName
+        relationship
+        contactType
       }
 
       employer {
-          id
-          name
-          email
-          phone
-          mobile
-          industry
-          usualOccupation
-          createdAt
-          updatedAt
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
       }
 
       facility {
@@ -104,7 +105,6 @@ query FindAllPatient($patientInput: PatientInput!) {
         mammographyCertificationNumber
         npi
         serviceCode
-        createdAt
         updatedAt
       }
 
@@ -121,7 +121,6 @@ query FindAllPatient($patientInput: PatientInput!) {
         createdAt
         updatedAt
       }
-      
     }
   }
 }
