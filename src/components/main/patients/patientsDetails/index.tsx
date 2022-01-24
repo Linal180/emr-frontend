@@ -2,15 +2,16 @@
 import { ChangeEvent, useState } from "react";
 import { Avatar, Box, Button, Grid, Tab, Typography } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import moment from "moment";
 // components block
 import CardComponent from "../../../common/CardComponent";
+import history from "../../../../history";
 // constants, history, styling block
 import { PROFILE_TOP_TABS } from "../../../../constants";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon, StarProfileIcon } from "../../../../assets/svgs";
 import { BLACK_TWO } from "../../../../theme";
 import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
-import history from "../../../../history";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -19,7 +20,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const { location: { pathname } } = history
   const getPatientIdArray = pathname.split("/")
-  const getPatientId = getPatientIdArray[getPatientIdArray.length - 1]
+  const getPatientId = getPatientIdArray[getPatientIdArray.length - 2]
 
   const handleChange = (event: ChangeEvent<{}>, newValue: string) => {
     setValue(newValue);
@@ -57,38 +58,58 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   console.log("patientData", patientData)
 
-  const age = 24
-  const phoneNumber = +182735728362
-  const email = "nicholas@emr.com"
-  const location = "Westwood, NJ"
+  const { firstName, lastName, dob, contacts, usualProvider, createdAt } = patientData || {}
+  const selfContact = contacts?.filter(item => item.primaryContact)
+
+  const PATIENT_AGE = moment().diff(dob, 'years');
+  let selfPhoneNumber = "";
+  let selfEmail = ""
+  let selfCurrentLocation = ""
+
+  if (selfContact && selfContact[0]) {
+    const { phone, email, country, state } = selfContact[0]
+    selfPhoneNumber = phone || "--"
+    selfEmail = email || "--"
+    selfCurrentLocation = `${country} ${state}` || "--"
+  }
 
   const ProfileDetails = [
     {
       icon: ProfileUserIcon(),
-      description: `${age} Yrs Old`
+      description: `${PATIENT_AGE} Yrs Old`
     },
     {
       icon: HashIcon(),
-      description: phoneNumber
+      description: selfPhoneNumber
     },
     {
       icon: AtIcon(),
-      description: email
+      description: selfEmail
     },
     {
       icon: LocationIcon(),
-      description: location
+      description: selfCurrentLocation
     },
   ]
+
+  let providerName = ""
+  let providerDateAdded = createdAt ? moment.unix(parseInt(createdAt)).format("MMM. DD, YYYY") : '--'
+  let providerLastSchedule = ""
+  let providerNextAppointment = ""
+
+  if (usualProvider && usualProvider[0]) {
+    const { firstName, lastName, schedule } = usualProvider[0]
+    providerName = `${firstName} ${lastName}` || "--"
+  }
 
   const ProfileAdditionalDetails = [
     {
       title: "Primary Provider",
-      description: "John Doe"
+      description: providerName
     },
     {
       title: "Date Added",
-      description: "Nov. 17, 2021"
+      description: providerDateAdded
     },
     {
       title: "Last Scheduled Appointment",
@@ -142,8 +163,7 @@ const PatientDetailsComponent = (): JSX.Element => {
               <Box display="flex">
                 <Box flex={1}>
                   <Box display="flex" alignItems="center" className={classes.userName}>
-                    Brad Dennis
-                    {StarProfileIcon()}
+                    {`${firstName} ${lastName}`}
                   </Box>
 
                   <Box display="flex" width="100%" maxWidth={650} pt={1} flexWrap="wrap">

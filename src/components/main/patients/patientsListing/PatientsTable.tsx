@@ -1,7 +1,8 @@
 // packages block
 import { FC, ChangeEvent, useState, useEffect } from "react";
-import Pagination from "@material-ui/lab/Pagination";
+import { Link } from "react-router-dom";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
+import Pagination from "@material-ui/lab/Pagination";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
@@ -13,7 +14,7 @@ import history from "../../../../history";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE } from "../../../../constants";
+import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -54,7 +55,7 @@ const PatientsTable: FC = (): JSX.Element => {
         }
       }
     }
-    });
+  });
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     onError() {
@@ -128,8 +129,7 @@ const PatientsTable: FC = (): JSX.Element => {
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              {renderTh(FIRST_NAME)}
-              {renderTh(LAST_NAME)}
+              {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(ACTION, "center")}
@@ -152,8 +152,11 @@ const PatientsTable: FC = (): JSX.Element => {
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">{firstName}</TableCell>
-                    <TableCell scope="row">{lastName}</TableCell>
+                    <TableCell scope="row">
+                      <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
+                        {`${firstName} ${lastName}`}
+                      </Link>
+                    </TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">
