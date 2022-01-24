@@ -1,6 +1,5 @@
 // packages block
 import { FC, useState, ChangeEvent, useContext, useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Button, Dialog, DialogActions, DialogTitle, CircularProgress, FormControlLabel, Checkbox, Box, Grid, FormControl } from "@material-ui/core";
@@ -12,13 +11,12 @@ import Selector from '../../../common/Selector';
 import { renderFacilities, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { serviceSchema } from '../../../../validationSchemas';
-import { extendedServiceInput, ServiceModalProps, ParamsType } from "../../../../interfacesTypes";
+import { extendedServiceInput, ServiceModalProps } from "../../../../interfacesTypes";
 import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED, UPDATE_SERVICE, ACTIVE_TEXT, ADD_FACILITY_SERVICE, UPDATE_FACILITY_SERVICE } from "../../../../constants";
 import { useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation } from "../../../../generated/graphql";
 
 const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceId, reload }): JSX.Element => {
   const [checked, setChecked] = useState(false);
-  const { id } = useParams<ParamsType>();
   const { facilityList } = useContext(ListContext)
   const methods = useForm<extendedServiceInput>({
     mode: "all",
