@@ -13,7 +13,7 @@ import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { renderDoctors, renderFacilities, setRecord } from '../../../../utils';
+import { getDate, renderDoctors, renderFacilities, setRecord } from '../../../../utils';
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { patientsSchema } from '../../../../validationSchemas';
@@ -115,8 +115,8 @@ const UpdatePatientForm: FC = (): JSX.Element => {
           deceasedDate && setValue("deceasedDate", deceasedDate)
           registrationDate && setValue("registrationDate", registrationDate)
           releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
-          statementNoteDateTo && setValue("statementNoteDateTo", statementNoteDateTo)
-          statementNoteDateFrom && setValue("statementNoteDateFrom", statementNoteDateFrom)
+          statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
+          statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
 
           race && setValue("race", setRecord(race || '', race || ''))
           gender && setValue("gender", setRecord(gender || '', gender || ''))
