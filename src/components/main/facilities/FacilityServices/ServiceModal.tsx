@@ -1,6 +1,7 @@
 // packages block
 import { FC, useState, ChangeEvent, useContext, useCallback, useEffect } from "react";
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useParams } from 'react-router';
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Button, Dialog, DialogActions, DialogTitle, CircularProgress, FormControlLabel, Checkbox, Box, Grid, FormControl } from "@material-ui/core";
 // components block
@@ -11,14 +12,15 @@ import Selector from '../../../common/Selector';
 import { renderFacilities, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { serviceSchema } from '../../../../validationSchemas';
-import { ServiceInputProps, ServiceModalProps } from "../../../../interfacesTypes";
+import { extendedServiceInput, ServiceModalProps, ParamsType } from "../../../../interfacesTypes";
 import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED } from "../../../../constants";
 import { useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation } from "../../../../generated/graphql";
 
 const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, description, isEdit, serviceId, reload }): JSX.Element => {
   const [checked, setChecked] = useState(false);
   const { facilityList } = useContext(ListContext)
-  const methods = useForm<ServiceInputProps>({
+  const { id } = useParams<ParamsType>();
+  const methods = useForm<extendedServiceInput>({
     mode: "all",
     resolver: yupResolver(serviceSchema)
   });
@@ -42,7 +44,6 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
         if (service && status && status === 200) {
           const { name, isActive, price, duration, facility, id, facilityId } = service || {}
           const { id: facId, name: facilityName } = facility || {};
-          id && setValue('facilityId', setRecord(id || '', facilityName || ""))
           facilityId && setValue('facilityId', setRecord(facId || '', facilityName || ""))
           name && setValue('name', name)
           price && setValue('price', price)
@@ -108,9 +109,9 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
     setOpen && setOpen(!isOpen)
   }, [isOpen, reset, setOpen])
 
-  const onSubmit: SubmitHandler<ServiceInputProps> = async (inputs) => {
+  const onSubmit: SubmitHandler<extendedServiceInput> = async (inputs) => {
     const {
-      duration, facilityId, name, price, isActive,
+      duration, facilityId, name, price, isActive
     } = inputs;
     const { id: selectedFacility } = facilityId
     if (isEdit) {
