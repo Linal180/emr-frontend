@@ -18,7 +18,7 @@ const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, link
         {path && <Breadcrumb path={path} />}
       </Box>
 
-      {!noAdd && !openModal && <>
+      {!noAdd && <>
         {hasComponent ?
           <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
             {buttonText || ""}

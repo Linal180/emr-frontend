@@ -28,7 +28,7 @@ import {
   MAMMOGRAPHY_CERT_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
   PRESCRIPTIVE_AUTH_NUMBER, AVAILABILITY_STATUS, DOCTOR_CREATED, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
-  LANGUAGE_SPOKEN, SPECIALTY, SSN_TYPE,
+  LANGUAGE_SPOKEN, SPECIALTY, TYPE,
 } from "../../../../constants";
 
 const AddDoctorForm: FC = (): JSX.Element => {
@@ -225,8 +225,17 @@ const AddDoctorForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
-
                 <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={TYPE}
+                      name="ssnType"
+                      error={ssnTypeError}
+                      options={MAPPED_SSN_TYPES}
+                    />
+                  </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
@@ -235,7 +244,9 @@ const AddDoctorForm: FC = (): JSX.Element => {
                       controllerLabel={FIRST_NAME}
                     />
                   </Grid>
+                </Grid>
 
+                <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
@@ -243,6 +254,10 @@ const AddDoctorForm: FC = (): JSX.Element => {
                       error={lastNameError}
                       controllerLabel={LAST_NAME}
                     />
+                  </Grid>
+
+                  <Grid item md={6}>
+                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
                   </Grid>
                 </Grid>
 
@@ -295,10 +310,6 @@ const AddDoctorForm: FC = (): JSX.Element => {
                       controllerLabel={DEGREE_CREDENTIALS}
                     />
                   </Grid>
-
-                  <Grid item md={6}>
-                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
-                  </Grid>
                 </Grid>
               </CardComponent>
 
@@ -316,23 +327,13 @@ const AddDoctorForm: FC = (): JSX.Element => {
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      value={{ id: "", name: "" }}
-                      label={SSN_TYPE}
-                      name="ssnType"
-                      error={ssnTypeError}
-                      options={MAPPED_SSN_TYPES}
+                    <DoctorController
+                      fieldType="text"
+                      controllerName="deaNumber"
+                      error={deaNumberError}
+                      controllerLabel={DEA_NUMBER}
                     />
                   </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <DoctorController
-                    fieldType="text"
-                    controllerName="taxonomyCode"
-                    error={taxonomyCodeError}
-                    controllerLabel={TAXONOMY_CODE}
-                  />
                 </Grid>
 
                 <Grid container spacing={3}>
@@ -349,18 +350,18 @@ const AddDoctorForm: FC = (): JSX.Element => {
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
-                      controllerName="languagesSpoken"
-                      error={languagesSpokenError}
-                      controllerLabel={LANGUAGE_SPOKEN}
+                      controllerName="taxonomyCode"
+                      error={taxonomyCodeError}
+                      controllerLabel={TAXONOMY_CODE}
                     />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
                     <DoctorController
                       fieldType="text"
-                      controllerName="deaNumber"
-                      error={deaNumberError}
-                      controllerLabel={DEA_NUMBER}
+                      controllerName="languagesSpoken"
+                      error={languagesSpokenError}
+                      controllerLabel={LANGUAGE_SPOKEN}
                     />
                   </Grid>
                 </Grid>

@@ -1,31 +1,35 @@
-import { FacilitiesPayload, ServicesPayload } from "../generated/graphql"
+import { AllDoctorPayload, FacilitiesPayload } from "../generated/graphql"
 
 export interface State {
   facilityPages: number;
   facilityList: FacilitiesPayload['facility'];
-  servicePages: number;
-  serviceList: ServicesPayload['services']
+  doctorPages: number;
+  doctorList: AllDoctorPayload['doctors'];
 }
 
 export const initialState: State = {
   facilityPages: 1,
   facilityList: [],
-  servicePages: 1,
-  serviceList: [],
+  doctorPages: 1,
+  doctorList: [],
 }
 
 export enum ActionType {
   SET_FACILITY_PAGES = "setFacilityPages",
   SET_FACILITY_LIST = "setFacilityList",
-  SET_SERVICE_PAGES = "setServicePages",
-  SET_SERVICE_LIST = "setServiceList",
+  SET_DOCTOR_PAGES = "setDoctorPages",
+  SET_DOCTOR_LIST = "setDoctorList",
+}
+
+export enum ActionTypeForDoctor {
+  
 }
 
 export type Action =
   | { type: ActionType.SET_FACILITY_PAGES; facilityPages: number }
   | { type: ActionType.SET_FACILITY_LIST; facilityList: FacilitiesPayload['facility'] }
-  | { type: ActionType.SET_SERVICE_PAGES; servicePages: number }
-  | { type: ActionType.SET_SERVICE_LIST; serviceList: ServicesPayload['services'] }
+  | { type: ActionType.SET_DOCTOR_PAGES; doctorPages: number }
+  | { type: ActionType.SET_DOCTOR_LIST; doctorList: AllDoctorPayload['doctors'] }
 
 export const listContextReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -39,15 +43,15 @@ export const listContextReducer = (state: State, action: Action): State => {
         ...state,
         facilityList: action.facilityList
       }
-      case ActionType.SET_SERVICE_PAGES:
+      case ActionType.SET_DOCTOR_PAGES:
       return {
         ...state,
-        servicePages: action.servicePages
+        doctorPages: action.doctorPages
       }
-    case ActionType.SET_SERVICE_LIST:
+    case ActionType.SET_DOCTOR_LIST:
       return {
         ...state,
-        serviceList: action.serviceList
+        doctorList: action.doctorList
       }
   }
 };
