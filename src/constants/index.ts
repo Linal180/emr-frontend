@@ -354,7 +354,7 @@ export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
-export const FACILITY_LOCATIONS_ROUTE = `${FACILITIES_ROUTE}/locations`;
+export const FACILITY_LOCATIONS_ROUTE = `/locations`;
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];

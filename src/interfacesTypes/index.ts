@@ -416,7 +416,8 @@ export interface ContactInputControlProps extends IControlLabel {
 export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
 
 export interface LocationTableProps {
-  locationDispatch: Dispatch<Action>
+  openModal: boolean;
+  locationDispatch: Dispatch<Action>;
 }
 
 export interface LocationModalProps extends DialogTypes {

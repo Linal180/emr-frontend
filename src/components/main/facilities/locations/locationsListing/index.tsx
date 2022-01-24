@@ -8,7 +8,7 @@ import { locationReducer, Action, initialState, State, ActionType } from '../../
 import { ADD_LOCATION, FACILITIES_BREAD, FACILITY_LOCATIONS_BREAD, FACILITY_LOCATIONS_TEXT } from '../../../../../constants';
 
 const LocationComponent: FC = (): JSX.Element => {
-  const [, dispatch] = useReducer<Reducer<State, Action>>(locationReducer, initialState)
+  const [{ openModal }, dispatch] = useReducer<Reducer<State, Action>>(locationReducer, initialState)
 
   return (
     <>
@@ -19,7 +19,7 @@ const LocationComponent: FC = (): JSX.Element => {
         openModal={() => dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })}
       />
 
-      <LocationTable locationDispatch={dispatch} />
+      <LocationTable locationDispatch={dispatch} openModal={openModal} />
     </>
   )
 }

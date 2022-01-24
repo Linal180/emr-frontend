@@ -26,10 +26,10 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
   const methods = useForm<extendedContactInput>({ mode: "all", resolver: yupResolver(extendedContactSchema) });
   const { reset, handleSubmit, setValue, formState: { errors } } = methods;
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     reset();
     setOpen && setOpen(!isOpen)
-  }, [isOpen, reset, setOpen])
+  }
 
 
   const [getContact, { loading: getContactLoading }] = useFindContactLazyQuery({
@@ -101,9 +101,9 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
         const { status, message } = response;
 
         if (status && message && status === 200) {
+          Alert.success(message)
           reset();
           handleClose();
-          Alert.success(message)
           reload();
         }
       }
@@ -154,7 +154,7 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
     if (isEdit && locationId) {
       fetchContact();
     }
-  }, [fetchContact, handleClose, isEdit, locationId])
+  }, [fetchContact, isEdit, locationId])
 
   const { email: { message: emailError } = {},
     fax: { message: faxError } = {},
