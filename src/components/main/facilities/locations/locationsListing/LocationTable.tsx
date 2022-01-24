@@ -5,7 +5,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
-import AddLocationModal from "../locationModal";
+import LocationModal from "../locationModal";
 import TableLoader from "../../../../common/TableLoader";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -18,11 +18,11 @@ import { locationReducer, Action, initialState, State, ActionType } from '../../
 import { ContactPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
 import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY, TRY_AGAIN } from "../../../../../constants";
 
-const LocationTable: FC<LocationTableProps> = ({ locationDispatch }): JSX.Element => {
+const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }): JSX.Element => {
   const classes = useTableStyles()
   const { id: facilityId } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(locationReducer, initialState)
-  const { page, totalPages, isEdit, openDelete, openModal, locationId, deleteLocationId, searchQuery, locations } = state;
+  const { page, totalPages, isEdit, openDelete, locationId, deleteLocationId, searchQuery, locations } = state;
 
   const [findAllContacts, { loading, error }] = useFindAllContactsLazyQuery({
     variables: {
@@ -110,11 +110,11 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch }): JSX.Elemen
     }
   };
 
-
   const handleEdit = (id: string) => {
     if (id) {
-      dispatch({ type: ActionType.SET_LOCATION_ID, locationId: id })
       dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
+      dispatch({ type: ActionType.SET_LOCATION_ID, locationId: id })
+      locationDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
     }
   };
 
@@ -212,7 +212,7 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch }): JSX.Elemen
             setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
           />
 
-          <AddLocationModal
+          <LocationModal
             isEdit={isEdit}
             isOpen={openModal}
             reload={handleReload}
