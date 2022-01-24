@@ -148,6 +148,7 @@ export interface IPageHeader {
   buttonText?: string;
   noAdd?: boolean;
   path?: Path[];
+  openModel?: boolean;
   openModal?: () => void
 }
 
