@@ -1,6 +1,5 @@
 // packages block
 import { FC, useEffect, ChangeEvent, Reducer, useReducer, useContext } from "react";
-import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
@@ -15,7 +14,7 @@ import { renderTh } from "../../../../utils";
 import { ListContext } from "../../../../context/listContext";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE, ADD_FACILITY_SERVICE, ACTIVE_TEXT, FACILITY_SERVICES_ROUTE } from "../../../../constants";
+import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE, ADD_FACILITY_SERVICE, ACTIVE_TEXT } from "../../../../constants";
 import { ServiceTableProps, ParamsType } from "../../../../interfacesTypes";
 import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../reducers/serviceReducer';
 import ServiceModal from "../FacilityServices/ServiceModal";
@@ -38,8 +37,9 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
       }
     },
 
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() {
       dispatch({ type: ActionType.SET_SERVICES, services: [] });
@@ -47,16 +47,15 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
 
     onCompleted(data) {
       const { findAllServices } = data || {};
+console.log(data);
 
       if (findAllServices) {
         const { services, pagination } = findAllServices
-        // services && setTableData && setTableData(services)
         dispatch({ type: ActionType.SET_SERVICES, services: services || [] });
 
         if (!searchQuery && pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-          // totalPages && setTotalPage(totalPages)
         }
       }
     }
@@ -65,7 +64,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
   const [removeService, { loading: deleteServiceLoading }] = useRemoveServiceMutation({
     onError() {
       Alert.error(CANT_DELETE_SERVICE)
-      // setOpenDelete(false)
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
@@ -76,7 +74,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          // setOpenDelete(false)
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           findAllServices();
         }
@@ -92,8 +89,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      // setDeleteServiceId(id)
-      // setOpenDelete(true)
       dispatch({ type: ActionType.SET_DELETE_SERVICE_ID, deleteServiceId: id })
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
@@ -179,11 +174,9 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
                       <TableCell className={classes.status} scope="row">{ActiveStatus}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center" onClick={() => handleEdit(id || '')}>
-                          <Link to={`${FACILITY_SERVICES_ROUTE}/${id}`}>
                             <IconButton size="small">
                               <EditIcon />
                             </IconButton>
-                          </Link>
                           <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
                           </IconButton>

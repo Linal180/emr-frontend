@@ -193,7 +193,7 @@ export const facilityServicesSchema = {
     id: yup.string().required()
   }).required(RequiredMessage(FACILITY)),
   name: yup.string().required(RequiredMessage(NAME)),
-  price: yup.string().required(RequiredMessage(PRICE)),
+  price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(1, MinLength(PRICE, 1)).max(15, MaxLength(PRICE, 15)).required(RequiredMessage(PRICE)),
 };
 
 export const serviceSchema = yup.object({

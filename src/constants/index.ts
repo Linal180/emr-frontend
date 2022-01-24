@@ -432,6 +432,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const SERVICE_NOT_FOUND = 'Service not found!';
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
 export const TRY_AGAIN = "Something went wrong. Try again!";
 export const INVALID_EMAIL = "Invalid email address";
@@ -537,10 +538,6 @@ export const APP_MENU_ITEMS = [
       {
         name: LIST_FACILITIES_TEXT,
         link: FACILITIES_ROUTE,
-      },
-      {
-        name: LIST_FACILITY_SERVICES_TEXT,
-        link: FACILITY_SERVICES_ROUTE,
       },
     ],
   },

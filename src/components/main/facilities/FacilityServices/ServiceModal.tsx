@@ -13,7 +13,7 @@ import { renderFacilities, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { serviceSchema } from '../../../../validationSchemas';
 import { extendedServiceInput, ServiceModalProps, ParamsType } from "../../../../interfacesTypes";
-import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED } from "../../../../constants";
+import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED, SERVICE_NOT_FOUND } from "../../../../constants";
 import { useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation } from "../../../../generated/graphql";
 
 const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, description, isEdit, serviceId, reload }): JSX.Element => {
@@ -42,7 +42,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
         const { status } = response
 
         if (service && status && status === 200) {
-          const { name, isActive, price, duration, facility, id, facilityId } = service || {}
+          const { name, isActive, price, duration, facility, facilityId } = service || {}
           const { id: facId, name: facilityName } = facility || {};
           facilityId && setValue('facilityId', setRecord(facId || '', facilityName || ""))
           name && setValue('name', name)
@@ -109,6 +109,18 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
     setOpen && setOpen(!isOpen)
   }, [isOpen, reset, setOpen])
 
+  useEffect(() => {
+    if (id) {
+      getService({
+        variables: {
+          getService: { id }
+        }
+      })
+    } else {
+      Alert.error(SERVICE_NOT_FOUND)
+    }
+  }, [getService, id])
+
   const onSubmit: SubmitHandler<extendedServiceInput> = async (inputs) => {
     const {
       duration, facilityId, name, price, isActive
@@ -145,6 +157,8 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
       }
     })
   }, [getService, serviceId])
+
+
 
   useEffect(() => {
     if (isEdit && serviceId) {
