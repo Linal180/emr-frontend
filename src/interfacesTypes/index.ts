@@ -2,7 +2,7 @@
 import { ComponentType, Dispatch, ReactNode, ElementType } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule } from "react-hook-form";
+import { Control, ValidationRule, FieldValues } from "react-hook-form";
 // graphql block
 import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput,
@@ -477,6 +477,25 @@ export interface DoctorInputControlProps extends IControlLabel {
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
 
+export interface RenderInputFieldProps {
+  name: string
+  label: string
+  control?: Control<FieldValues, object> | undefined
+}
+
+export interface StepLabelType {
+  title: string
+  subTitle: string
+}
+
+export interface FormVerification {
+  imageSide: string;
+}
+
+export interface StepperComponentProps {
+  activeStep: number
+}
+
 type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed" | "prefferedName" | "previousFirstName"
   | "previouslastName" | "motherMaidenName" | "ssn" | "dob" | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
   | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent" | "medicationHistoryAuthority" | "note" | "language"
@@ -578,11 +597,11 @@ export type PatientInputProps =
   Omit<CreatePatientItemInput, "gender" | "race" | "genderIdentity" | "maritialStatus" | "sexAtBirth"
     | "primaryDepartment" | "registrationDepartment" | "pronouns" | "ethnicity" | "sexualOrientation"
     | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity">
-  & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption } 
+  & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption }
   & { sexualOrientation: SelectorOption } & { sexualOrientation: SelectorOption }
   & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { facilityId: SelectorOption }
   & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
-  & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption } 
+  & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
   & { registrationDepartment: SelectorOption }
   & BasicContactControlInputs
   & EmergencyContactControlInputs & KinContactControlInputs

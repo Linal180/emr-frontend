@@ -1,6 +1,6 @@
 // graphql and interfaces block
 import { formatValue } from '../utils';
-import { SelectorOption } from '../interfacesTypes'
+import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
   Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, RegDepartment, RelationshipType,
@@ -361,6 +361,12 @@ export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this recor
 export const VISIT_REASON = "Reason for visit"
 export const SELECT_SERVICES = "Select Services"
 export const PATIENT_DETAILS = "Patient Details"
+export const AGREEMENT_HEADING = "User data privacy & TOS agreement."
+export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
+export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
+export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
+
 
 // Roles
 export const STAFF = "STAFF";
@@ -392,6 +398,9 @@ export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const FACILITY_LOCATIONS_ROUTE = `${FACILITIES_ROUTE}/locations`;
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
+export const PATIENT_INFORMATION = "/patient-information";
+export const PATIENT_APPOINTMENT_SUCCESS = "/patient-information/success";
+export const SLOT_CONFIRMATION = "/public-appointment/available-slot";
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -712,6 +721,31 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
   { id: RelationshipType.StepsonStepdaughterStepmotherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepmotherInsrtance) },
   { id: RelationshipType.StepsonStepdaughterStepfatherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsrtance) },
 ];
+
+export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
+
+export const getSteps = (): StepLabelType[] => {
+  return [
+    { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
+    { title: 'Document Verification', subTitle: 'Verification information requested' },
+    { title: 'Consent Agreement', subTitle: 'Provide basic Patient Information' },
+  ];
+};
+
+export const agreementPoints = [
+  "Proin id ligula dictum, convallis enim ut, facilisis massa.Mauris a nisi ut sapien blandit imperdiet sed id lacus.Mauris auctor interdum dignissim.",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa.",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus ma",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed, posuere luctus enim. Ut sollicitudin neque at enim gravida, ut dictum est finibus. Praesent sit",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa.rtor pretium vehicula quis et ante. Aenean purus sem, pharetra et ante vel, tincidunt cursus ante.",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa.rtor pretium vehicula quis et ante. Aenean purus sem, pharetra et ante vel, tincidunt cursus ante.",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
+  "Pro in id ligula dictum, convallis enim ut, facilisis massa.Maris a nisi ut sapien blandit imperdiet sed id lacus.Mauis auctor interdum dignissim.Crasat lacus ma",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis",
+]
+
 
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
