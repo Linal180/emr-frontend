@@ -1770,14 +1770,14 @@ export type FindAllPatientQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patients?: Maybe<Array<Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, serviceCode: ServiceCodes, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>>> } };
+export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patients?: Maybe<Array<Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, zipCode?: Maybe<string>, country?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, serviceCode: ServiceCodes, pager?: Maybe<string>, fax?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType>, createdAt: string, updatedAt: string }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>>> } };
 
 export type GetPatientQueryVariables = Exact<{
   getPatient: GetPatient;
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patient?: Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, serviceCode: ServiceCodes, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, updatedAt?: Maybe<string> }>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }> } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, patient?: Maybe<{ __typename?: 'Patient', id: string, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, suffix?: Maybe<string>, firstNameUsed?: Maybe<string>, prefferedName?: Maybe<string>, previousFirstName?: Maybe<string>, previouslastName?: Maybe<string>, motherMaidenName?: Maybe<string>, ssn?: Maybe<string>, gender: Genderidentity, dob?: Maybe<string>, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: Maybe<string>, language?: Maybe<string>, race?: Maybe<Race>, ethnicity?: Maybe<Ethnicity>, maritialStatus?: Maybe<Maritialstatus>, sexualOrientation?: Maybe<Sexualorientation>, genderIdentity?: Maybe<Genderidentity>, sexAtBirth?: Maybe<Genderidentity>, pronouns?: Maybe<Pronouns>, homeBound?: Maybe<Homebound>, holdStatement?: Maybe<Holdstatement>, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, name?: Maybe<string>, suffix?: Maybe<string>, firstName?: Maybe<string>, middleName?: Maybe<string>, lastName?: Maybe<string>, phone?: Maybe<string>, serviceCode: ServiceCodes, mobile?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, ssn?: Maybe<string>, employerName?: Maybe<string>, relationship?: Maybe<RelationshipType>, contactType?: Maybe<ContactType> }>>, employer?: Maybe<Array<{ __typename?: 'Employer', id: string, name?: Maybe<string>, email?: Maybe<string>, phone?: Maybe<string>, mobile?: Maybe<string>, industry?: Maybe<string>, usualOccupation?: Maybe<string>, createdAt: string, updatedAt: string }>>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, updatedAt?: Maybe<string> }>, usualProvider?: Maybe<Array<{ __typename?: 'Doctor', id: string, firstName?: Maybe<string>, lastName?: Maybe<string>, createdAt: string, updatedAt: string }>>, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }> } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -1792,6 +1792,13 @@ export type CreatePatientMutationVariables = Exact<{
 
 
 export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: Maybe<{ __typename?: 'ResponsePayload', error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type UpdatePatientMutationVariables = Exact<{
+  updatePatientInput: UpdatePatientInput;
+}>;
+
+
+export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientPayload', response?: Maybe<{ __typename?: 'ResponsePayload', error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
 
 export type FindAllStaffQueryVariables = Exact<{
   staffInput: StaffInput;
@@ -3590,26 +3597,28 @@ export const FindAllPatientDocument = gql`
       contacts {
         id
         email
+        phone
+        mobile
+        address
+        address2
+        city
+        state
+        zipCode
+        country
         name
         suffix
         firstName
         middleName
         lastName
-        phone
         serviceCode
-        mobile
         pager
         fax
-        address
-        address2
-        zipCode
-        city
-        state
-        country
         ssn
         employerName
         relationship
         contactType
+        createdAt
+        updatedAt
       }
       employer {
         id
@@ -3636,6 +3645,7 @@ export const FindAllPatientDocument = gql`
         mammographyCertificationNumber
         npi
         serviceCode
+        createdAt
         updatedAt
       }
       user {
@@ -3697,6 +3707,7 @@ export const GetPatientDocument = gql`
       firstName
       middleName
       lastName
+      suffix
       firstNameUsed
       prefferedName
       previousFirstName
@@ -3779,6 +3790,13 @@ export const GetPatientDocument = gql`
         mammographyCertificationNumber
         npi
         serviceCode
+        updatedAt
+      }
+      usualProvider {
+        id
+        firstName
+        lastName
+        createdAt
         updatedAt
       }
       user {
@@ -3900,6 +3918,43 @@ export function useCreatePatientMutation(baseOptions?: Apollo.MutationHookOption
 export type CreatePatientMutationHookResult = ReturnType<typeof useCreatePatientMutation>;
 export type CreatePatientMutationResult = Apollo.MutationResult<CreatePatientMutation>;
 export type CreatePatientMutationOptions = Apollo.BaseMutationOptions<CreatePatientMutation, CreatePatientMutationVariables>;
+export const UpdatePatientDocument = gql`
+    mutation UpdatePatient($updatePatientInput: UpdatePatientInput!) {
+  updatePatient(updatePatientInput: $updatePatientInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientMutationFn = Apollo.MutationFunction<UpdatePatientMutation, UpdatePatientMutationVariables>;
+
+/**
+ * __useUpdatePatientMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientMutation, { data, loading, error }] = useUpdatePatientMutation({
+ *   variables: {
+ *      updatePatientInput: // value for 'updatePatientInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientMutation, UpdatePatientMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientMutation, UpdatePatientMutationVariables>(UpdatePatientDocument, options);
+      }
+export type UpdatePatientMutationHookResult = ReturnType<typeof useUpdatePatientMutation>;
+export type UpdatePatientMutationResult = Apollo.MutationResult<UpdatePatientMutation>;
+export type UpdatePatientMutationOptions = Apollo.BaseMutationOptions<UpdatePatientMutation, UpdatePatientMutationVariables>;
 export const FindAllStaffDocument = gql`
     query FindAllStaff($staffInput: StaffInput!) {
   findAllStaff(staffInput: $staffInput) {

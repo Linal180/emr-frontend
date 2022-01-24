@@ -54,26 +54,28 @@ query FindAllPatient($patientInput: PatientInput!) {
       contacts {
         id
         email
+        phone
+        mobile
+        address
+        address2
+        city
+        state
+        zipCode
+        country
         name
         suffix
         firstName
         middleName
         lastName
-        phone
         serviceCode
-        mobile
         pager
         fax
-        address
-        address2
-        zipCode
-        city
-        state
-        country
         ssn
         employerName
         relationship
         contactType
+        createdAt
+        updatedAt
       }
 
       employer {
@@ -102,6 +104,7 @@ query FindAllPatient($patientInput: PatientInput!) {
         mammographyCertificationNumber
         npi
         serviceCode
+        createdAt
         updatedAt
       }
       
@@ -136,6 +139,7 @@ query GetPatient($getPatient: GetPatient!) {
       firstName
       middleName
       lastName
+      suffix
       firstNameUsed
       prefferedName
       previousFirstName
@@ -169,7 +173,7 @@ query GetPatient($getPatient: GetPatient!) {
       statementNoteDateTo
       createdAt
       updatedAt
-
+      
       contacts {
         id
         email
@@ -223,6 +227,14 @@ query GetPatient($getPatient: GetPatient!) {
         serviceCode
         updatedAt
       }
+      
+      usualProvider {
+        id
+        firstName
+        lastName
+        createdAt
+        updatedAt
+      }
 
       user {
         id
@@ -261,3 +273,12 @@ mutation CreatePatient($createPatientInput: CreatePatientInput!){
   }
 }
 
+mutation UpdatePatient($updatePatientInput: UpdatePatientInput!){
+  updatePatient(updatePatientInput: $updatePatientInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

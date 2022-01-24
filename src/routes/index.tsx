@@ -39,6 +39,7 @@ import {
   VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE,
   SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, FACILITY_LOCATIONS_ROUTE, PUBLIC_APPOINTMENT_ROUTE
 } from "../constants";
+import ViewPatient from "../pages/main/patients/viewPatinet";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -62,7 +63,8 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
           <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
-          <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={PatientDetails} />
+          <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />
+          <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details`} component={PatientDetails} />
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
           <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
           <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />

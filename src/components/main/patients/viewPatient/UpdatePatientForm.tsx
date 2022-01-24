@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, useContext, ChangeEvent } from 'react';
+import { FC, useState, useContext, ChangeEvent, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
@@ -13,14 +13,14 @@ import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { renderDoctors, renderFacilities } from '../../../../utils';
+import { renderDoctors, renderFacilities, setRecord } from '../../../../utils';
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { patientsSchema } from '../../../../validationSchemas';
-import { PatientInputProps } from '../../../../interfacesTypes';
+import { ParamsType, PatientInputProps } from '../../../../interfacesTypes';
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
-  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, UserRole
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Patient, PatientPayload, PrimaryDepartment,
+  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, UserRole, useUpdatePatientMutation
 } from "../../../../generated/graphql";
 import {
   FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, PHONE,
@@ -33,11 +33,13 @@ import {
   MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
   SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY, SEX_AT_BIRTH,
-  ISSUE_DATE, EXPIRATION_DATE, FAILED_TO_CREATE_PATIENT, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX, 
-  GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY,
+  ISSUE_DATE, EXPIRATION_DATE, FAILED_TO_CREATE_PATIENT, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX,
+  GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT, PATIENT_NOT_FOUND,
 } from "../../../../constants";
+import { useParams } from 'react-router-dom';
 
-const AddPatientForm: FC = (): JSX.Element => {
+const UpdatePatientForm: FC = (): JSX.Element => {
+  const { id } = useParams<ParamsType>();
   const { user } = useContext(AuthContext)
   const { doctorList, facilityList } = useContext(ListContext)
   const [state, setState] = useState({
@@ -49,9 +51,178 @@ const AddPatientForm: FC = (): JSX.Element => {
   })
   const [selection, setSelection] = useState({ value: "1", });
   const methods = useForm<PatientInputProps>({ mode: "all", resolver: yupResolver(patientsSchema) });
-  const { reset, handleSubmit, control, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue, control, formState: { errors } } = methods;
+  const [patient, setPatient] = useState<PatientPayload['patient']>()
+  const [basicContactId, setBasicContactId] = useState<string>('')
+  const [emergencyContactId, setEmergencyContactId] = useState<string>('')
+  const [kinContactId, setKinContactId] = useState<string>('')
+  const [guardianContactId, setGuardianContactId] = useState<string>('')
+  const [guarantorContactId, setGuarantorContactId] = useState<string>('')
+  const [employerId, setEmployerId] = useState<string>('')
 
-  const [createPatient, { loading }] = useCreatePatientMutation({
+  const handlePreview = () => {
+    if (patient) {
+
+    }
+  };
+
+  const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { getPatient: { patient } } = data
+
+        if (patient) {
+          setPatient(patient as Patient)
+
+          const { suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
+            previouslastName, motherMaidenName, ssn, dob, gender, registrationDepartment, primaryDepartment,
+            registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority,
+            patientNote, language, race, ethnicity, maritialStatus, sexualOrientation, genderIdentity, sexAtBirth,
+            pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
+            statementNoteDateTo, usualProvider, facility, contacts, employer
+          } = patient;
+
+          if (usualProvider) {
+            const { id: usualProviderId, firstName, lastName } = usualProvider[0];
+            usualProviderId && setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}` || ''))
+          }
+
+          if (facility) {
+            const { id: facilityId, name } = facility;
+            facilityId && setValue("facilityId", setRecord(facilityId, name || ''))
+          }
+
+          dob && setValue("dob", dob)
+          ssn && setValue("ssn", ssn)
+          suffix && setValue("suffix", suffix)
+          lastName && setValue("lastName", lastName)
+          language && setValue("language", language)
+          homeBound && setValue("homeBound", homeBound)
+          firstName && setValue("firstName", firstName)
+          middleName && setValue("middleName", middleName)
+          patientNote && setValue("patientNote", patientNote)
+          firstNameUsed && setValue("firstNameUsed", firstNameUsed)
+          privacyNotice && setValue("privacyNotice", privacyNotice)
+          callToConsent && setValue("callToConsent", callToConsent)
+          prefferedName && setValue("prefferedName", prefferedName)
+          holdStatement && setValue("holdStatement", holdStatement)
+          statementNote && setValue("statementNote", statementNote)
+          motherMaidenName && setValue("motherMaidenName", motherMaidenName)
+          previouslastName && setValue("previouslastName", previouslastName)
+          previousFirstName && setValue("previousFirstName", previousFirstName)
+          statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
+          medicationHistoryAuthority && setValue("medicationHistoryAuthority", medicationHistoryAuthority)
+
+          deceasedDate && setValue("deceasedDate", deceasedDate)
+          registrationDate && setValue("registrationDate", registrationDate)
+          releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
+          statementNoteDateTo && setValue("statementNoteDateTo", statementNoteDateTo)
+          statementNoteDateFrom && setValue("statementNoteDateFrom", statementNoteDateFrom)
+
+          race && setValue("race", setRecord(race || '', race || ''))
+          gender && setValue("gender", setRecord(gender || '', gender || ''))
+          pronouns && setValue("pronouns", setRecord(pronouns || '', pronouns || ''))
+          ethnicity && setValue("ethnicity", setRecord(ethnicity || '', ethnicity || ''))
+          sexAtBirth && setValue("sexAtBirth", setRecord(sexAtBirth || '', sexAtBirth || ''))
+          maritialStatus && setValue("maritialStatus", setRecord(maritialStatus || '', maritialStatus || ''))
+          genderIdentity && setValue("genderIdentity", setRecord(genderIdentity || '', genderIdentity || ''))
+          sexualOrientation && setValue("sexualOrientation", setRecord(sexualOrientation || '', sexualOrientation || ''))
+          primaryDepartment && setValue("primaryDepartment", setRecord(primaryDepartment || '', primaryDepartment || ''))
+          registrationDepartment && setValue("registrationDepartment", setRecord(registrationDepartment || '', registrationDepartment || ''))
+
+          if (contacts) {
+            const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
+
+            if (emergencyContact) {
+              const { id, name, relationship, phone, mobile } = emergencyContact;
+
+              setEmergencyContactId(id);
+              name && setValue("emergencyName", name)
+              phone && setValue("emergencyPhone", phone)
+              mobile && setValue("emergencyMobile", mobile)
+              relationship && setValue("emergencyRelationship", setRecord(relationship || '', relationship || ''))
+            }
+
+            const basicContact = contacts.filter(contact => contact.contactType === ContactType.Self)[0]
+
+            if (basicContact) {
+              const { email, address, address2, zipCode, city, state, country, phone, mobile } = basicContact;
+
+              setBasicContactId(id);
+              city && setValue("basicCity", city)
+              state && setValue("basicState", state)
+              email && setValue("basicEmail", email)
+              phone && setValue("basicPhone", phone)
+              mobile && setValue("basicMobile", mobile)
+              address && setValue("basicAddress", address)
+              zipCode && setValue("basicZipCode", zipCode)
+              country && setValue("basicCountry", country)
+              address2 && setValue("basicAddress2", address2)
+            }
+
+            const kinContact = contacts.filter(contact => contact.contactType === ContactType.NextOfKin)[0]
+
+            if (kinContact) {
+              const { id, name, relationship, phone, mobile } = kinContact;
+
+              setKinContactId(id);
+              name && setValue("kinName", name)
+              phone && setValue("kinPhone", phone)
+              mobile && setValue("kinMobile", mobile)
+              relationship && setValue("kinRelationship", setRecord(relationship || '', relationship || ''))
+            }
+
+            const guarantorContact = contacts.filter(contact => contact.contactType === ContactType.Guarandor)[0]
+
+            if (guarantorContact) {
+              const { id, suffix, firstName, lastName, middleName } = guarantorContact;
+
+              setGuarantorContactId(id);
+              suffix && setValue("guarantorSuffix", suffix)
+              lastName && setValue("guarantorFirstName", lastName)
+              firstName && setValue("guarantorLastName", firstName)
+              middleName && setValue("guarantorMiddleName", middleName)
+
+            }
+
+            const guardianContact = contacts.filter(contact => contact.contactType === ContactType.Guardian)[0]
+
+            if (guardianContact) {
+              const { id, suffix, firstName, lastName, middleName } = guardianContact;
+
+              setGuardianContactId(id);
+              suffix && setValue("guardianSuffix", suffix)
+              lastName && setValue("guardianLastName", lastName)
+              firstName && setValue("guardianFirstName", firstName)
+              middleName && setValue("guardianMiddleName", middleName)
+
+            }
+          }
+
+          if (employer) {
+            const { id, name, email, phone, industry, usualOccupation } = employer[0];
+
+            setEmployerId(id)
+            name && setValue('employerName', name)
+            email && setValue('employerEmail', email)
+            phone && setValue('employerPhone', phone)
+            industry && setValue('employerIndustry', industry)
+            usualOccupation && setValue('employerUsualOccupation', usualOccupation)
+          }
+        }
+      }
+    },
+  });
+
+  const [updatePatient, { loading }] = useUpdatePatientMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
@@ -60,13 +231,13 @@ const AddPatientForm: FC = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { createPatient: { response } } = data;
+      const { updatePatient: { response } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(PATIENT_CREATED);
+          Alert.success(PATIENT_UPDATED);
           reset()
           history.push(PATIENTS_ROUTE)
         }
@@ -109,8 +280,6 @@ const AddPatientForm: FC = (): JSX.Element => {
       guarantorState, guarantorCountry, guarantorEmployerName,
 
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
-
-      userFirstName, userLastName, userPassword, userEmail, userPhone, userZipCode,
     } = inputs;
 
     const { id: selectedFacility } = facilityId
@@ -132,11 +301,11 @@ const AddPatientForm: FC = (): JSX.Element => {
     if (user) {
       const { id: userId } = user
 
-      await createPatient({
+      await updatePatient({
         variables: {
-          createPatientInput: {
-            createPatientItemInput: {
-              suffix: suffix || '', firstName: firstName || '', middleName: middleName || '', lastName: lastName || '',
+          updatePatientInput: {
+            updatePatientItemInput: {
+              id, suffix: suffix || '', firstName: firstName || '', middleName: middleName || '', lastName: lastName || '',
               firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '', previousFirstName: previousFirstName || '',
               previouslastName: previouslastName || '', motherMaidenName: motherMaidenName || '', ssn: ssn || '',
               dob: dob || '', registrationDate: registrationDate || '', deceasedDate: deceasedDate || '',
@@ -157,19 +326,19 @@ const AddPatientForm: FC = (): JSX.Element => {
               race: selectedRace as Race || Race.White,
             },
 
-            createContactInput: {
-              contactType: ContactType.Self, country: basicCountry || '', email: basicEmail || '', state: basicState || '',
+            updateContactInput: {
+              id: basicContactId, contactType: ContactType.Self, country: basicCountry || '', email: basicEmail || '', state: basicState || '',
               facilityId: selectedFacility || '', phone: basicPhone || '', mobile: basicMobile || '',
               address2: basicAddress2 || '', address: basicAddress || '', zipCode: basicZipCode || '', city: basicCity || '',
             },
 
-            createEmergencyContactInput: {
-              contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '', mobile: emergencyMobile || '',
+            updateEmergencyContactInput: {
+              id: emergencyContactId, contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '', mobile: emergencyMobile || '',
               relationship: selectedEmergencyRelationship as RelationshipType || RelationshipType.Other,
             },
 
-            createGuarantorContactInput: {
-              firstName: guarantorFirstName || '', middleName: guarantorMiddleName || '',
+            updateGuarantorContactInput: {
+              id: guarantorContactId, firstName: guarantorFirstName || '', middleName: guarantorMiddleName || '',
               lastName: guarantorLastName || '', email: guarantorEmail || '', contactType: ContactType.Guarandor,
               relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
               employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '', address: guarantorAddress || '',
@@ -177,34 +346,39 @@ const AddPatientForm: FC = (): JSX.Element => {
               phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '', userId: userId || '',
             },
 
-            createGuardianContactInput: {
-              firstName: guardianFirstName || '', middleName: guardianMiddleName || '', lastName: guardianLastName || '',
+            updateGuardianContactInput: {
+              id: guardianContactId, firstName: guardianFirstName || '', middleName: guardianMiddleName || '', lastName: guardianLastName || '',
               contactType: ContactType.Guardian, suffix: guardianSuffix || '', userId: userId || '',
             },
 
-            createNextOfKinContactInput: {
-              contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '', mobile: kinMobile || '',
+            updateNextOfKinContactInput: {
+              id: kinContactId, contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '', mobile: kinMobile || '',
               relationship: selectedKinRelationship as RelationshipType || RelationshipType.Other,
             },
 
-            createEmployerInput: {
-              name: employerName || '', email: employerEmail || '', phone: employerPhone || '',
+            updateEmployerInput: {
+              id: employerId, name: employerName || '', email: employerEmail || '', phone: employerPhone || '',
               usualOccupation: employerUsualOccupation || '', industry: employerIndustry || '',
             },
-
-            registerUserInput: {
-              firstName: userFirstName || '', lastName: userLastName || '', email: userEmail || '',
-              facilityId: selectedFacility, phone: userPhone || '', zipCode: userZipCode || '',
-              password: userPassword || '', adminId: userId || '', roleType: UserRole.Patient
-            }
           }
         }
       })
     } else {
-      Alert.error(FAILED_TO_CREATE_PATIENT)
+      Alert.error(FAILED_TO_UPDATE_PATIENT)
     }
-
   };
+
+  useEffect(() => {
+    if (id) {
+      getPatient({
+        variables: {
+          getPatient: {
+            id
+          }
+        },
+      })
+    } else Alert.error(PATIENT_NOT_FOUND)
+  }, [getPatient, id])
 
   const {
     ssn: { message: ssnError } = {},
@@ -285,8 +459,8 @@ const AddPatientForm: FC = (): JSX.Element => {
   } = errors;
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <FormProvider {...methods} >
+      {!getPatientLoading && <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
             <Grid md={6} item>
@@ -628,7 +802,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={12} sm={12} xs={12}>
+                  <Grid item md={6} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
                       controllerName="guardianSuffix"
@@ -1084,14 +1258,16 @@ const AddPatientForm: FC = (): JSX.Element => {
 
         <Box display="flex" justifyContent="flex-end" pt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {ADD_PATIENT}
+            {UPDATE_PATIENT}
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
         </Box>
 
       </form>
+      }
     </FormProvider>
+
   );
 };
 
-export default AddPatientForm;
+export default UpdatePatientForm;

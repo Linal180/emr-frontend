@@ -20,9 +20,9 @@ const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPa
             {buttonText || ""}
           </Button>
           :
-          <Button color="primary" variant="contained" onClick={openModal}>
-            {buttonText || ""}
-          </Button>
+          (buttonText && <Button color="primary" variant="contained" onClick={openModal}>
+            {buttonText}
+          </Button>)
         }
       </>}
     </Box>
