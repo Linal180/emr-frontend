@@ -17,7 +17,7 @@ import { ListContext } from '../../../../context/listContext';
 import { addStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps } from "../../../../interfacesTypes";
 import { Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
-import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_ROLES, MAPPED_GENDER } from "../../../../constants";
+import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_ROLES, MAPPED_GENDER, ROLE } from "../../../../constants";
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
@@ -102,7 +102,7 @@ const AddStaffForm: FC = () => {
                   <Grid item md={6}>
                     <Selector
                       value={{ id: "", name: "" }}
-                      label={FACILITY}
+                      label={ROLE}
                       name="roleType"
                       error={roleTypeError}
                       options={MAPPED_ROLES}

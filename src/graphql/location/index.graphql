@@ -1,0 +1,122 @@
+
+mutation CreateContact($createContactInput: CreateContactInput!){
+  createContact(createContactInput: $createContactInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateContact($updateContactInput: UpdateContactInput!){
+  updateContact(updateContactInput: $updateContactInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query FindAllContacts($contactInput: ContactInput!){
+  findAllContacts(contactInput: $contactInput){
+    response {
+      error
+      status
+      message
+    }
+    
+    pagination {
+    	page
+      limit
+      totalPages
+    }
+
+    contacts {
+      id
+      email
+      name
+      firstName
+      lastName
+      middleName
+      suffix
+      phone
+      mobile
+      pager
+      fax
+      address
+      address2
+      serviceCode
+      zipCode
+      city
+      state
+      country
+      createdAt
+      updatedAt
+      
+      facility {
+        id
+        name
+        practiceType
+        cliaIdNumber
+        federalTaxId
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        timeZone
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+mutation RemoveContact($removeContact: RemoveContact!){
+  removeContact(removeContact: $removeContact){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query FindContact($getContact: GetContact!){
+  getContact(getContact: $getContact){
+    response {
+      error
+      status
+      message
+    }
+    
+    contact {
+      id
+      email
+      name
+      fax
+      address
+      address2
+      phone
+      zipCode
+      city
+      state
+      country
+      facilityId
+      primaryContact
+      serviceCode
+      createdAt
+      updatedAt
+      
+      facility {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
