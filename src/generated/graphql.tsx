@@ -86,6 +86,7 @@ export type Contact = {
   phone?: Maybe<Scalars['String']>;
   primaryContact?: Maybe<Scalars['Boolean']>;
   relationship?: Maybe<RelationshipType>;
+  serviceCode: ServiceCodes;
   ssn?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
@@ -97,6 +98,7 @@ export type Contact = {
 export type ContactInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  primaryContact?: Maybe<Scalars['Boolean']>;
 };
 
 export type ContactPayload = {
@@ -163,6 +165,7 @@ export type CreateContactInput = {
   phone?: Maybe<Scalars['String']>;
   primaryContact?: Maybe<Scalars['Boolean']>;
   relationship?: Maybe<RelationshipType>;
+  serviceCode?: Maybe<ServiceCodes>;
   ssn?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
@@ -1201,6 +1204,29 @@ export enum ServiceCode {
   IndianHealthServiceProviderBasedFacility_06 = 'INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06'
 }
 
+/** The facility service code type assigned */
+export enum ServiceCodes {
+  Ambulance_24 = 'AMBULANCE_24',
+  Ambulance_41 = 'AMBULANCE_41',
+  Ambulance_42 = 'AMBULANCE_42',
+  AssistedLiving_13 = 'ASSISTED_LIVING_13',
+  BirthingCenter_25 = 'BIRTHING_CENTER_25',
+  CommunityMentalHealthCenter_53 = 'COMMUNITY_MENTAL_HEALTH_CENTER_53',
+  ComprehensiveInpatientRehabilitationFacility_61 = 'COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61',
+  ComprehensiveOutpatientRehabilitationFacility_62 = 'COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62',
+  CustodialCareFacility_33 = 'CUSTODIAL_CARE_FACILITY_33',
+  EmergencyRoom_23 = 'EMERGENCY_ROOM_23',
+  EndStageRenalDiseaseTreatmentFacility_65 = 'END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65',
+  FederallyQualifiedHealthCenter_50 = 'FEDERALLY_QUALIFIED_HEALTH_CENTER_50',
+  GroupHome_14 = 'GROUP_HOME_14',
+  HomelessShelter_04 = 'HOMELESS_SHELTER_04',
+  Hospice_34 = 'HOSPICE_34',
+  IndependentClinic_49 = 'INDEPENDENT_CLINIC_49',
+  IndependentLaboratory_81 = 'INDEPENDENT_LABORATORY_81',
+  IndianHealthServiceFreeStandingFacility_05 = 'INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05',
+  IndianHealthServiceProviderBasedFacility_06 = 'INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06'
+}
+
 export type ServiceInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
@@ -1311,6 +1337,7 @@ export type UpdateContactInput = {
   phone?: Maybe<Scalars['String']>;
   primaryContact?: Maybe<Scalars['Boolean']>;
   relationship?: Maybe<RelationshipType>;
+  serviceCode?: Maybe<ServiceCodes>;
   ssn?: Maybe<Scalars['String']>;
   state?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;

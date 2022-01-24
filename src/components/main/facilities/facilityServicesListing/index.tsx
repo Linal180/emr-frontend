@@ -1,14 +1,14 @@
 // packages block
-import { FC, useState } from 'react';
+import { FC, useReducer, Reducer } from 'react';
 // components block
 import FacilityServicesTable from "./FacilityServicesTable";
 import PageHeader from "../../../common/PageHeader";
 // constants block / generated
 import { ADD_SERVICE, FACILITY_SERVICES_BREAD, FACILITY_SERVICES_TEXT } from "../../../../constants";
-import { ServicesPayload } from '../../../../generated/graphql';
+import { serviceReducer, Action, initialState, State, ActionType } from '../../../../reducers/serviceReducer';
 
 const FacilityServicesComponent: FC = (): JSX.Element => {
-  const [facilityServices, setFacilityServices] = useState<ServicesPayload['services']>([]);
+  const [, dispatch] = useReducer<Reducer<State, Action>>(serviceReducer, initialState)
   return (
     <>
       <PageHeader
@@ -16,13 +16,10 @@ const FacilityServicesComponent: FC = (): JSX.Element => {
         path={[FACILITY_SERVICES_BREAD]}
         hasComponent
         buttonText={ADD_SERVICE}
-        openModel
-        tableData={facilityServices}
-        setTableData={setFacilityServices}
+        openModal={() => dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })}
       />
-      <FacilityServicesTable 
-      tableData={facilityServices}
-      setTableData={setFacilityServices}
+      <FacilityServicesTable
+        servicesDispatch={dispatch}
       />
     </>
   )

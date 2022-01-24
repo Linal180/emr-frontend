@@ -144,9 +144,7 @@ export interface PageHeaderProps {
   buttonText?: string;
   noAdd?: boolean;
   path?: Path[];
-  openModel?: boolean;
-  setTableData?:Function;
-  tableData?: ServicesPayload['services'];
+  openModal?: () => void
 }
 
 export interface FacilityServicesProps {
