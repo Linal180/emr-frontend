@@ -160,6 +160,7 @@ export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
 export const REVENUE_CODE = "Revenue Code";
 export const SERVICE_CODE = "Service Code";
+export const FACILITY_NOT_FOUND = "Facility not found"
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const LOCATION_ID = "Location ID";
 export const POS = "Place of Service Code (POS)";

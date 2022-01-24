@@ -111,6 +111,13 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
     }
   };
 
+  const handleEdit = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: id })
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
+    }
+  };
+
   const handleReload = () => {
     fetchAllServiceList();
   }
@@ -202,10 +209,12 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
             isLoading={deleteServiceLoading}
             description={DELETE_SERVICE_DESCRIPTION}
             handleDelete={handleDeleteService}
-            setOpen={{(open: boolean) => dispatch({type: ActionType.SET_OPEN_DELETE, openDelete: open })}
-        />
+            setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+          />
 
           <AddServiceModal
+            title={ADD_FACILITY_SERVICE}
+            description={ACTIVE_TEXT}
             isEdit={isEdit}
             isOpen={openModal}
             reload={handleReload}

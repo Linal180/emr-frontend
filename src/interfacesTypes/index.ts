@@ -4,7 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, ServicesPayload, CreateServiceInput } from "../generated/graphql";
+import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, ServicesPayload, CreateServiceInput, CreatePatientItemInput } from "../generated/graphql";
 import { Action } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -421,6 +421,101 @@ export interface DoctorInputControlProps extends IControlLabel {
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
 
+type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed" | "prefferedName" | "previousFirstName"
+  | "previouslastName" | "motherMaidenName" | "ssn" | "dob" | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
+  | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent" | "medicationHistoryAuthority" | "note" | "language"
+  | "ethnicity" | "sexualOrientation" | "sexAtBirth" | "pronouns" | "homeBound" | "holdStatement" | "statementDelivereOnline"
+  | "statementNote" | "statementNoteDateFrom" | "statementNoteDateTo" | "adminId" | "gender" | "race" | "genderIdentity" | "maritialStatus"
+  | "facilityId" | "usualProviderId"
+type BasicContactControlTypes = | "basicEmail" | "basicPhone" | "basicMobile" | "basicAddress" | "basicAddress2" | "basicZipCode" | "basicCity"
+  | "basicState" | "basicCountry"
+interface BasicContactControlInputs {
+  basicEmail: string;
+  basicPhone: string;
+  basicMobile: string;
+  basicAddress: string;
+  basicAddress2: string;
+  basicZipCode: string;
+  basicCity: string;
+  basicState: string;
+  basicCountry: string;
+}
+type EmergencyContactControlTypes = | "emergencyName" | "emergencyRelationship" | "emergencyPhone" | "emergencyMobile"
+interface EmergencyContactControlInputs {
+  emergencyName: string;
+  emergencyPhone: string;
+  emergencyMobile: string;
+  emergencyRelationship: SelectorOption;
+}
+type KinContactControlTypes = | "kinName" | "kinRelationship" | "kinPhone" | "kinMobile"
+interface KinContactControlInputs {
+  kinName: string;
+  kinRelationship: SelectorOption;
+  kinPhone: string;
+  kinMobile: string;
+}
+type GuardianContactControlTypes = | "guardianFirstName" | "guardianMiddleName" | "guardianLastName" | "guardianEmail" | "guardianSuffix"
+interface GuardianContactControlInputs {
+  guardianFirstName: string;
+  guardianMiddleName: string;
+  guardianLastName: string;
+  guardianSuffix: string;
+}
+type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName" | "guarantorLastName" | "guarantorEmail" | "guarantorRelationship"
+  | "guarantorDob" | "guarantorPhone" | "guarantorSuffix" | "guarantorSsn" | "guarantorAddress" | "guarantorAddress2" | "guarantorZipCode"
+  | "guarantorCity" | "guarantorState" | "guarantorCountry" | "guarantorEmployerName"
+interface GuarantorContactControlInputs {
+  guarantorFirstName: string;
+  guarantorMiddleName: string;
+  guarantorLastName: string;
+  guarantorDob: string;
+  guarantorEmail: string;
+  guarantorRelationship: SelectorOption;
+  guarantorPhone: string;
+  guarantorSsn: string;
+  guarantorSuffix: string;
+  guarantorAddress: string;
+  guarantorAddress2: string;
+  guarantorZipCode: string;
+  guarantorCity: string;
+  guarantorState: string;
+  guarantorCountry: string;
+  guarantorEmployerName: string;
+}
+type EmployerControlTypes = | "employerName" | "employerEmail" | "employerPhone" | "employerIndustry" | "employerUsualOccupation"
+interface EmployerControlInputs {
+  employerName: string;
+  employerEmail: string;
+  employerPhone: string;
+  employerIndustry: string;
+  employerUsualOccupation: string;
+}
+type RegisterUserControlTypes = | "userFirstName" | "userLastName" | "userPassword" | "userEmail" | "userPhone" | "userZipCode"
+interface RegisterUserInputs {
+  userFirstName: string
+  userLastName: string
+  userPassword: string
+  userEmail: string
+  userPhone: string
+  userZipCode: string
+}
+export interface PatientInputControlProps extends IControlLabel {
+  controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes | GuardianContactControlTypes | EmergencyContactControlTypes
+}
+export type PatientInputProps =
+  Omit<CreatePatientItemInput, "gender" | "race" | "genderIdentity" | "maritialStatus" | "sexAtBirth"
+    | "primaryDepartment" | "registrationDepartment"
+    | "facilityId" | "usualProviderId" | "sexualOrientation" | "pronouns" | "ethnicity" | "sexualOrientation" | "genderIdentity">
+  & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption } & { sexualOrientation: SelectorOption }
+  & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { sexualOrientation: SelectorOption }
+  & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
+  & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption } & { facilityId: SelectorOption }
+  & { registrationDepartment: SelectorOption }
+  & BasicContactControlInputs
+  & EmergencyContactControlInputs & KinContactControlInputs
+  & GuardianContactControlInputs & GuarantorContactControlInputs
+  & EmployerControlInputs & RegisterUserInputs;
+
 type CreateServiceInputTypes =
   | "duration"
   | "facilityId"
@@ -441,4 +536,6 @@ export interface ServiceTableProps {
 export interface ServiceModalProps extends DialogTypes {
   serviceId?: string;
   reload: () => void;
+  title: string;
+  description: string;
 }

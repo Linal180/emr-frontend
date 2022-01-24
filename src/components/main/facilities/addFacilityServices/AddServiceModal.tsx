@@ -15,7 +15,7 @@ import { ServiceInputProps, ServiceModalProps } from "../../../../interfacesType
 import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY } from "../../../../constants";
 import { useCreateServiceMutation } from "../../../../generated/graphql";
 
-const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, locationId, reload }): JSX.Element => {
+const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, description, isEdit, serviceId, reload }): JSX.Element => {
   const [checked, setChecked] = useState(false);
   const { facilityList } = useContext(ListContext)
   const methods = useForm<ServiceInputProps>({
@@ -39,9 +39,9 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, locat
         const { status } = response
         if (status && status === 200) {
           reset()
-          setTableData && tableData && setTableData([service, ...tableData])
           Alert.success(SERVICE_CREATED);
-          setOpen && setOpen(!isOpen)
+          handleClose();
+          reload();
         }
       }
     }
