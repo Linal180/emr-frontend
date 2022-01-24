@@ -5,7 +5,7 @@ import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule } from "react-hook-form";
 // graphql block
 import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, ServicesPayload, CreateServiceInput } from "../generated/graphql";
-import { type } from "os";
+import { Action } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -145,11 +145,6 @@ export interface PageHeaderProps {
   noAdd?: boolean;
   path?: Path[];
   openModal?: () => void
-}
-
-export interface FacilityServicesProps {
-  setTableData?:Function;
-  tableData?: ServicesPayload['services'];
 }
 
 export interface IStepperButtons {
@@ -439,3 +434,11 @@ export interface ServiceInputControlsProps extends IControlLabel {
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId">  & { facilityId: SelectorOption } ;
 
+export interface ServiceTableProps {
+  serviceDispatch: Dispatch<Action>
+}
+
+export interface ServiceModalProps extends DialogTypes {
+  serviceId?: string;
+  reload: () => void;
+}

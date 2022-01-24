@@ -11,11 +11,11 @@ import Selector from '../../../common/Selector';
 import { renderFacilities } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { serviceSchema } from '../../../../validationSchemas';
-import { ServiceConfirmationTypes, ServiceInputProps } from "../../../../interfacesTypes";
+import { ServiceInputProps, ServiceModalProps } from "../../../../interfacesTypes";
 import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY } from "../../../../constants";
 import { useCreateServiceMutation } from "../../../../generated/graphql";
 
-const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title, description, tableData, setTableData }): JSX.Element => {
+const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, locationId, reload }): JSX.Element => {
   const [checked, setChecked] = useState(false);
   const { facilityList } = useContext(ListContext)
   const methods = useForm<ServiceInputProps>({

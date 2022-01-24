@@ -19,7 +19,7 @@ const FacilityServicesComponent: FC = (): JSX.Element => {
         openModal={() => dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })}
       />
       <FacilityServicesTable
-        servicesDispatch={dispatch}
+        serviceDispatch={dispatch}
       />
     </>
   )
