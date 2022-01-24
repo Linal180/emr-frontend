@@ -71,6 +71,7 @@ query GetLoggedInUser {
           zipCode
           city
           state
+          serviceCode
           country
           userId
           serviceCode
@@ -158,6 +159,7 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
           city
           state
           country
+          serviceCode
           userId
           createdAt
           updatedAt

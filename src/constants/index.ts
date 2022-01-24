@@ -1,15 +1,17 @@
 // graphql and interfaces block
-import { MappedGenderInterface, SelectorOption } from '../interfacesTypes'
-import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Gender, PracticeType, ServiceCode, Speciality, SsnType, UserRole } from "../generated/graphql";
 import { formatValue } from '../utils';
-
+import { SelectorOption } from '../interfacesTypes'
+import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
+import {
+  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, RegDepartment, RelationshipType,
+  ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
+} from "../generated/graphql";
 
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;
-export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const LONGITUDE_LATITUDE_REGEX = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}/;
+export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
@@ -23,6 +25,8 @@ export const CREATE_DOCTOR = "Create Doctor";
 export const ADD_DOCTOR = "Add Doctor";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
+export const UPDATE_PATIENT = "Update Patient";
+export const EDIT_PATIENT = "Edit Patient";
 export const ADD_RESULT = "Add Result";
 export const ADD_APPOINTMENT = "Add Appointment";
 export const VIEW_STAFF = "View Staff";
@@ -53,12 +57,15 @@ export const PROVIDER_INITIALS = "Provider Initials";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SPECIALTY = "Specialty";
 export const DOB = "Date of Birth";
+export const DESEASED_DATE = "deseased Date";
+export const DOCTOR_ID = "doctor id";
+export const PATIENT_ID = "patient id";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
 export const SOCIAL_SECURITY_NUMBER = "Social Security Number";
 export const SOCIAL_SECURITY_TYPE = "Social Security Type";
 export const TAXONOMY_CODE = "Taxonomy Code";
 export const DEA_NUMBER = "DEA Number";
-export const DEA_ACTIVE_DATE = "DEA Active date";
+export const DEA_ACTIVE_DATE = "DEA Active Date";
 export const DEA_TERM_DATE = "DEA Term Date";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
@@ -166,12 +173,12 @@ export const POS = "Place of Service Code (POS)";
 export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
 export const CANCEL = "Cancel";
-export const LAST_NAME = "Last name";
+export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
 export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
-export const FIRST_NAME = "First name";
+export const FIRST_NAME = "First Name";
 export const SEND_EMAIL = "Send Email";
 export const START_DATE = "Start date";
 export const REQUESTS_TEXT = "Requests";
@@ -283,6 +290,22 @@ export const PATIENT_NOTES = "Patient Notes";
 export const HOME_PHONE = "Home Phone";
 export const MOBILE_PHONE = "Mobile Phone";
 export const EMPLOYER_NAME = "Employer Name";
+export const ETHNICITY = "Ethnicity";
+export const GENDER_IDENTITY = "Gender Identity";
+export const HOLD_STATEMENT = "Hold Statement";
+export const HOMEBOUND = "Home Bound";
+export const LANGUAGE = "Language";
+export const REGISTRATION_DEPARTMENT = "Registration Department"
+export const PRIMARY_DEPARTMENT = "Primary Department"
+export const MARITAL_STATUS = "Marital Status"
+export const SEX_AT_BIRTH = "Sex At Birth"
+export const SEXUAL_ORIENTATION = "Sexual Orientation"
+export const USUAL_PROVIDER_ID = "Usual Provider"
+export const PRONOUNS = "pronouns"
+export const RACE = "Race"
+export const RELATIONSHIP = "RelationShip"
+export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor"
+export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -326,6 +349,9 @@ export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this 
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const LOOKS_LIKE_EMPTY = "Looks like an empty space. You can go back to homepage by clicking the button below";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
+export const VISIT_REASON = "Reason for visit"
+export const SELECT_SERVICES = "Select Services"
+export const PATIENT_DETAILS = "Patient Details"
 
 // Roles
 export const STAFF = "STAFF";
@@ -392,11 +418,15 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const PATIENT_NOT_FOUND = 'Patient not found!';
+export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
+export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!"
 export const TRY_AGAIN = "Something went wrong. Try again!";
 export const INVALID_EMAIL = "Invalid email address";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const STAFF_CREATED = "Staff created successfully!";
+export const PATIENT_CREATED = "Patient created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
@@ -409,6 +439,7 @@ export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
 export const USER_EXIST = "User already exists with this email.";
 export const FACILITY_UPDATED = "Facility updated successfully!";
+export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
@@ -536,16 +567,10 @@ export const MAPPED_GENDER: SelectorOption[] = [
   { id: Gender.Other, name: formatValue(Gender.Other) },
 ]
 
-export const MAPPED_GENDER_1: MappedGenderInterface[] = [
-  { value: Gender.Male, label: 'Male' },
-  { value: Gender.Other, label: 'Other' },
-  { value: Gender.Female, label: 'Female' },
-]
-
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
-  { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
-  { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
+  { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
+  { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
 ]
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
@@ -578,11 +603,99 @@ export const MAPPED_SPECIALTIES: SelectorOption[] = [
   { id: Speciality.PhysicianAssistant, name: formatValue(Speciality.PhysicianAssistant) },
 ];
 
+export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
+  { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
+  { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
+  { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
+  { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
+];
+
 export const MAPPED_SSN_TYPES: SelectorOption[] = [
   { id: SsnType.Tanf, name: formatValue(SsnType.Tanf) },
   { id: SsnType.Oasdi, name: formatValue(SsnType.Oasdi) },
   { id: SsnType.Medicare, name: formatValue(SsnType.Medicare) },
   { id: SsnType.Medicaid, name: formatValue(SsnType.Medicaid) },
+];
+
+export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
+  { id: RegDepartment.Lab, name: formatValue(RegDepartment.Lab) },
+  { id: RegDepartment.Clinic, name: formatValue(RegDepartment.Clinic) },
+  { id: RegDepartment.Hospital, name: formatValue(RegDepartment.Hospital) },
+];
+
+export const MAPPED_HOMEBOUND: SelectorOption[] = [
+  { id: Homebound.No, name: formatValue(Homebound.No) },
+  { id: Homebound.Yes, name: formatValue(Homebound.Yes) },
+];
+
+export const MAPPED_PRONOUNS: SelectorOption[] = [
+  { id: Pronouns.He, name: formatValue(Pronouns.He) },
+  { id: Pronouns.She, name: formatValue(Pronouns.She) },
+  { id: Pronouns.None, name: formatValue(Pronouns.None) },
+
+];
+
+export const MAPPED_RACE: SelectorOption[] = [
+  { id: Race.Other, name: formatValue(Race.Other) },
+  { id: Race.Asian, name: formatValue(Race.Asian) },
+  { id: Race.White, name: formatValue(Race.White) },
+  { id: Race.BlackAfricanAmerican, name: formatValue(Race.BlackAfricanAmerican) },
+  { id: Race.BlackAfricanAmerican, name: formatValue(Race.BlackAfricanAmerican) },
+  { id: Race.AmericanIndianAlaskaNative, name: formatValue(Race.AmericanIndianAlaskaNative) },
+  { id: Race.NativeHawaiianPacificIslander, name: formatValue(Race.NativeHawaiianPacificIslander) },
+];
+
+export const MAPPED_ETHNICITY: SelectorOption[] = [
+  { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
+  { id: Ethnicity.CenteralAmerican, name: formatValue(Ethnicity.CenteralAmerican) },
+  { id: Ethnicity.CenteralAmericanIndian, name: formatValue(Ethnicity.CenteralAmericanIndian) },
+];
+
+export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
+  { id: Sexualorientation.None, name: formatValue(Sexualorientation.None) },
+  { id: Sexualorientation.DontKnow, name: formatValue(Sexualorientation.DontKnow) },
+  { id: Sexualorientation.Bisexual, name: formatValue(Sexualorientation.Bisexual) },
+  { id: Sexualorientation.Homosexual, name: formatValue(Sexualorientation.Homosexual) },
+  { id: Sexualorientation.Heterosexual, name: formatValue(Sexualorientation.Heterosexual) },
+];
+
+export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
+  { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
+  { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
+  { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
+  { id: Genderidentity.NotExclusive, name: formatValue(Genderidentity.NotExclusive) },
+  { id: Genderidentity.TransgenderMale, name: formatValue(Genderidentity.TransgenderMale) },
+  { id: Genderidentity.TransgenderFemale, name: formatValue(Genderidentity.TransgenderFemale) },
+];
+
+export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
+  { id: RelationshipType.Ward, name: formatValue(RelationshipType.Ward) },
+  { id: RelationshipType.Self, name: formatValue(RelationshipType.Self) },
+  { id: RelationshipType.Child, name: formatValue(RelationshipType.Child) },
+  { id: RelationshipType.Other, name: formatValue(RelationshipType.Other) },
+  { id: RelationshipType.Mother, name: formatValue(RelationshipType.Mother) },
+  { id: RelationshipType.Spouse, name: formatValue(RelationshipType.Spouse) },
+  { id: RelationshipType.Father, name: formatValue(RelationshipType.Father) },
+  { id: RelationshipType.Unknown, name: formatValue(RelationshipType.Unknown) },
+  { id: RelationshipType.Employee, name: formatValue(RelationshipType.Employee) },
+  { id: RelationshipType.OrganDonor, name: formatValue(RelationshipType.OrganDonor) },
+  { id: RelationshipType.Grandchild, name: formatValue(RelationshipType.Grandchild) },
+  { id: RelationshipType.LifePartner, name: formatValue(RelationshipType.LifePartner) },
+  { id: RelationshipType.Grandparent, name: formatValue(RelationshipType.Grandparent) },
+  { id: RelationshipType.NephewNiece, name: formatValue(RelationshipType.NephewNiece) },
+  { id: RelationshipType.FostherChild, name: formatValue(RelationshipType.FostherChild) },
+  { id: RelationshipType.CadaverDonor, name: formatValue(RelationshipType.CadaverDonor) },
+  { id: RelationshipType.SignificantOther, name: formatValue(RelationshipType.SignificantOther) },
+  { id: RelationshipType.EmancipatedMinor, name: formatValue(RelationshipType.EmancipatedMinor) },
+  { id: RelationshipType.InjuredPlaintiiff, name: formatValue(RelationshipType.InjuredPlaintiiff) },
+  { id: RelationshipType.SponsoredDependent, name: formatValue(RelationshipType.SponsoredDependent) },
+  { id: RelationshipType.StepsonStepdaughter, name: formatValue(RelationshipType.StepsonStepdaughter) },
+  { id: RelationshipType.ChildMotherInsurance, name: formatValue(RelationshipType.ChildMotherInsurance) },
+  { id: RelationshipType.HandicappedDependent, name: formatValue(RelationshipType.HandicappedDependent) },
+  { id: RelationshipType.ChildFatherInsurance, name: formatValue(RelationshipType.ChildFatherInsurance) },
+  { id: RelationshipType.DependentOfMinorDependent, name: formatValue(RelationshipType.DependentOfMinorDependent) },
+  { id: RelationshipType.StepsonStepdaughterStepmotherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepmotherInsrtance) },
+  { id: RelationshipType.StepsonStepdaughterStepfatherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsrtance) },
 ];
 
 // Breadcrumb links
@@ -599,6 +712,7 @@ export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE }
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: '' }
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
+export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: '' }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
 export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }
@@ -611,3 +725,35 @@ export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
 export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
+
+// profile top tabs
+export const PROFILE_TOP_TABS = [
+  {
+    title: 'General Info',
+    value: "1"
+  },
+  {
+    title: 'Insurance',
+    value: "2"
+  },
+  {
+    title: 'Registration',
+    value: "3"
+  },
+  {
+    title: 'Messaging',
+    value: "4"
+  },
+  {
+    title: 'Billing',
+    value: "5"
+  },
+  {
+    title: 'Clinical',
+    value: "6"
+  },
+  {
+    title: 'Communicator',
+    value: "7"
+  },
+]

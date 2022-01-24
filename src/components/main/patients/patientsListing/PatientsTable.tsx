@@ -9,10 +9,11 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
+import history from "../../../../history";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION } from "../../../../constants";
+import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -44,18 +45,16 @@ const PatientsTable: FC = (): JSX.Element => {
       const { findAllPatient } = data || {};
 
       if (findAllPatient) {
-        const { pagination, } = findAllPatient
+        const { pagination, patients } = findAllPatient
+        patients && setPatients(patients as PatientsPayload['patients'])
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && setTotalPages(totalPages)
-          }
-
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && setTotalPages(totalPages)
         }
       }
     }
-  });
+    });
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     onError() {
@@ -159,7 +158,7 @@ const PatientsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <IconButton size="small">
+                        <IconButton size="small" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
                           <EditIcon />
                         </IconButton>
 

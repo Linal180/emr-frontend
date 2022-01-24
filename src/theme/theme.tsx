@@ -3,7 +3,7 @@ import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
 import {
   PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE,
-  GRAY_SEVEN, ORANGE_ONE,
+  GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, BLUE_FOUR,
 } from ".";
 
 const customTheme = createTheme()
@@ -16,6 +16,11 @@ export const theme = createTheme({
 
     secondary: {
       main: PINK,
+      contrastText: WHITE,
+    },
+
+    info: {
+      main: BLUE_ONE,
       contrastText: WHITE,
     },
 
@@ -101,7 +106,7 @@ export const theme = createTheme({
                 backgroundColor: WHITE,
               }
             }
-          }
+          },
         },
       },
     },
@@ -219,7 +224,33 @@ export const theme = createTheme({
         borderRadius: 6,
         maxHeight: 42,
         padding: '9px 20px',
-        boxShadow: 'none'
+        boxShadow: 'none',
+
+        "&.blue-button": {
+          backgroundColor: BLUE_ONE,
+
+          "&:hover": {
+            backgroundColor: BLUE_THREE,
+          }
+        }
+      },
+
+      outlined: {
+        borderRadius: 6,
+        maxHeight: 42,
+        padding: '9px 20px',
+        boxShadow: 'none',
+
+        "&.blue-button": {
+          borderColor: BLUE_ONE,
+          color: BLUE_ONE,
+          borderStyle: 'dashed',
+
+          "&:hover": {
+            borderColor: BLUE_THREE,
+            color: BLUE_THREE,
+          }
+        }
       },
 
       label: {
@@ -457,6 +488,34 @@ export const theme = createTheme({
 
       selectMenu: {
         minHeight: 42,
+      }
+    },
+
+    MuiTabs: {
+      indicator: {
+        display: 'none'
+      },
+    },
+
+    MuiTab: {
+      root: {
+        minWidth: '0 !important',
+        lineHeight: '19px',
+        padding: '8px 15px',
+        fontSize: 13,
+        fontWeight: 500,
+        minHeight: 0,
+        borderRadius: 4,
+
+        "&.Mui-selected": {
+          background: `rgba(0, 158, 247, 0.1)`,
+          color: BLUE_FOUR,
+        }
+      },
+
+      textColorInherit: {
+        color: BLACK_SIX,
+        opacity: 1,
       }
     },
   },
