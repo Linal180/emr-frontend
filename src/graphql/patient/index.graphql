@@ -236,6 +236,14 @@ query GetPatient($getPatient: GetPatient!) {
         lastName
         createdAt
         updatedAt
+        schedule {
+          id
+          startAt
+          endAt
+          recurringEndDate
+          createdAt
+          updatedAt
+        }
       }
 
       user {

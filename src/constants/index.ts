@@ -100,6 +100,10 @@ export const ANESTHESIA_LICENSE = "Anesthesia License";
 export const CTP_NUMBER = "DPS / CTP Number";
 export const STATE_LICENSE = "State License";
 export const LICENSE_ACTIVE_DATE = "License Active Date";
+export const ACTIVE_TEXT = "Active";
+export const SERVICE_NAME_TEXT = "Service Name";
+export const DURATION_TEXT = "Duration (In Minutes)";
+export const PRICE_TEXT = "Price (In USD)";
 export const LICENSE_TERM_DATE = "License Term Date";
 export const PRESCRIPTIVE_AUTH_NUMBER = "Prescriptive Auth number";
 export const FACILITY_IDS = "Facility IDs";
@@ -205,6 +209,8 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
+export const ADD_SERVICE = "Add Service";
+export const ADD_FACILITY_SERVICE = "Add Facility Service";
 export const ADD_LOCATION = "Add Facility Location";
 export const UPDATE_LOCATION = "Update Facility Location";
 export const LOCATION = "Location";
@@ -257,6 +263,8 @@ export const USER_STATUS_PLACEHOLDER = "User Status";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const LIST_FACILITIES_TEXT = "List Facilities";
+export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
+export const FACILITY_SERVICES_TEXT = "Facility Services";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
 export const FACILITIES_LISTING = "Facilities Listing";
 export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
@@ -265,6 +273,7 @@ export const DEMOGRAPHICS = "Demographics";
 export const GUARANTOR = "Guarantor";
 export const REGISTRATION_DATES = "Provider/ Registration Dates";
 export const PRIVACY = "Privacy";
+export const PRICE = "Price";
 export const EMERGENCY_CONTACT = "Emergency Contact";
 export const NEXT_OF_KIN = "Next Of Kin";
 export const EMPLOYMENT = "Employment";
@@ -368,6 +377,7 @@ export const LOGIN_ROUTE = "/login";
 export const REQUESTS = "/requests";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const FACILITIES_ROUTE = "/list-facilities";
+export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const STAFF_ROUTE = "/staff";
 export const DOCTORS_ROUTE = "/doctors";
 export const PATIENTS_ROUTE = "/patients";
@@ -524,6 +534,10 @@ export const APP_MENU_ITEMS = [
       {
         name: LIST_FACILITIES_TEXT,
         link: FACILITIES_ROUTE,
+      },
+      {
+        name: LIST_FACILITY_SERVICES_TEXT,
+        link: FACILITY_SERVICES_ROUTE,
       },
     ],
   },
@@ -701,6 +715,7 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
 
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
+export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
 export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
