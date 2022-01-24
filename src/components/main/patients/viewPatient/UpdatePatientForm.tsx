@@ -19,21 +19,21 @@ import { ListContext } from '../../../../context/listContext';
 import { patientsSchema } from '../../../../validationSchemas';
 import { ParamsType, PatientInputProps } from '../../../../interfacesTypes';
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Patient, PatientPayload, PrimaryDepartment,
-  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, useGetPatientLazyQuery, UserRole, useUpdatePatientMutation
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
+  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useGetPatientLazyQuery, useUpdatePatientMutation
 } from "../../../../generated/graphql";
 import {
   FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, PHONE,
-  ADD_PATIENT, DEMOGRAPHICS, GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT,
+  DEMOGRAPHICS, GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT,
   GUARDIAN, SUFFIX, MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME,
   MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, REGISTRATION_DATE, NOTICE_ON_FILE, CONSENT_TO_CALL,
   MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE,
-  EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, PATIENTS_ROUTE,
+  EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
   LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS, MAPPED_HOMEBOUND,
   MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
   SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY, SEX_AT_BIRTH,
-  ISSUE_DATE, EXPIRATION_DATE, FAILED_TO_CREATE_PATIENT, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX,
+  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT, PATIENT_NOT_FOUND,
 } from "../../../../constants";
 import { useParams } from 'react-router-dom';
@@ -52,19 +52,12 @@ const UpdatePatientForm: FC = (): JSX.Element => {
   const [selection, setSelection] = useState({ value: "1", });
   const methods = useForm<PatientInputProps>({ mode: "all", resolver: yupResolver(patientsSchema) });
   const { reset, handleSubmit, setValue, control, formState: { errors } } = methods;
-  const [patient, setPatient] = useState<PatientPayload['patient']>()
   const [basicContactId, setBasicContactId] = useState<string>('')
   const [emergencyContactId, setEmergencyContactId] = useState<string>('')
   const [kinContactId, setKinContactId] = useState<string>('')
   const [guardianContactId, setGuardianContactId] = useState<string>('')
   const [guarantorContactId, setGuarantorContactId] = useState<string>('')
   const [employerId, setEmployerId] = useState<string>('')
-
-  const handlePreview = () => {
-    if (patient) {
-
-    }
-  };
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -80,8 +73,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
         const { getPatient: { patient } } = data
 
         if (patient) {
-          setPatient(patient as Patient)
-
           const { suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
             previouslastName, motherMaidenName, ssn, dob, gender, registrationDepartment, primaryDepartment,
             registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent, medicationHistoryAuthority,
