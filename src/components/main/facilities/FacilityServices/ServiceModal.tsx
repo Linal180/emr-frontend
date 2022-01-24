@@ -1,30 +1,80 @@
 // packages block
-import { FC, useState, ChangeEvent, useContext } from "react";
+import { FC, useState, ChangeEvent, useContext, useCallback, useEffect } from "react";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Button, Dialog, DialogActions, DialogTitle, CircularProgress, FormControlLabel, Checkbox, Box, Grid, FormControl } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import AddServiceController from "./AddServiceController";
+import ServiceController from "./ServiceController";
 import Selector from '../../../common/Selector';
 // interfaces/types block/theme/svgs/constants
-import { renderFacilities } from '../../../../utils';
+import { renderFacilities, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { serviceSchema } from '../../../../validationSchemas';
 import { ServiceInputProps, ServiceModalProps } from "../../../../interfacesTypes";
-import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY } from "../../../../constants";
-import { useCreateServiceMutation } from "../../../../generated/graphql";
+import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED } from "../../../../constants";
+import { useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation } from "../../../../generated/graphql";
 
-const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, description, isEdit, serviceId, reload }): JSX.Element => {
+const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, description, isEdit, serviceId, reload }): JSX.Element => {
   const [checked, setChecked] = useState(false);
   const { facilityList } = useContext(ListContext)
   const methods = useForm<ServiceInputProps>({
     mode: "all",
     resolver: yupResolver(serviceSchema)
   });
-  const { reset, handleSubmit, control, formState: { errors } } = methods;
+  const { reset, setValue, handleSubmit, control, formState: { errors } } = methods;
 
-  const [createService, { loading }] = useCreateServiceMutation({
+  const [getService, { loading: getServiceLoading }] = useGetServiceLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { getService: { response, service } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (service && status && status === 200) {
+          const { name, isActive, price, duration, facility, id, facilityId } = service || {}
+          const { id: facId, name: facilityName } = facility || {};
+          id && setValue('facilityId', setRecord(id || '', facilityName || ""))
+          facilityId && setValue('facilityId', setRecord(facId || '', facilityName || ""))
+          name && setValue('name', name)
+          price && setValue('price', price)
+          duration && setValue('duration', duration)
+          isActive && setValue('isActive', isActive)
+        }
+      }
+    }
+  });
+
+  const [updateService, { loading: updateServiceLoading }] = useUpdateServiceMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updateService: { response } } = data;
+
+      if (response) {
+        const { status, message } = response
+
+        if (status && message && status === 200) {
+          Alert.success(SERVICE_UPDATED);
+          reset();
+          handleClose();
+          reload();
+        }
+      }
+    }
+  });
+
+  const [createService, { loading: createServiceLoading }] = useCreateServiceMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
@@ -51,32 +101,57 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descri
     setChecked(event.target.checked);
   };
 
-  const handleClose = () => {
+
+  const handleClose = useCallback(() => {
     setChecked(false)
+    reset();
     setOpen && setOpen(!isOpen)
-  }
+  }, [isOpen, reset, setOpen])
 
   const onSubmit: SubmitHandler<ServiceInputProps> = async (inputs) => {
     const {
       duration, facilityId, name, price, isActive,
     } = inputs;
+    const { id: selectedFacility } = facilityId
     if (isEdit) {
-      console.log(serviceId);
-      console.log('=========')
-    }
-    const { id: selectedFacilityId } = facilityId;
-    await createService({
-      variables: {
-        createServiceInput: {
-          name: name || "",
-          duration: duration || "",
-          facilityId: selectedFacilityId || "",
-          price: price || "",
-          isActive: isActive || false
+      await updateService({
+        variables: {
+          updateServiceInput: {
+            id: selectedFacility || '', name: name || '', duration: duration || "", isActive: isActive || false, price: price || "",
+          }
         }
+      })
+    } else {
+      const { id: selectedFacilityId } = facilityId;
+      await createService({
+        variables: {
+          createServiceInput: {
+            name: name || "",
+            duration: duration || "",
+            facilityId: selectedFacilityId || "",
+            price: price || "",
+            isActive: isActive || false
+          }
+        }
+      })
+    }
+  };
+
+  const fetchServices = useCallback(() => {
+    getService({
+      variables: {
+        getService: { id: serviceId || '' }
       }
     })
-  };
+  }, [getService, serviceId])
+
+  useEffect(() => {
+    if (isEdit && serviceId) {
+      fetchServices();
+    }
+  }, [fetchServices, handleClose, isEdit, serviceId])
+
+  const disableSubmit = createServiceLoading || updateServiceLoading || getServiceLoading
 
   const {
     name: { message: nameError } = {},
@@ -103,7 +178,7 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descri
                   error={facilityIdError}
                 />
                 <Grid item md={12}>
-                  <AddServiceController
+                  <ServiceController
                     fieldType="text"
                     controllerName="name"
                     controllerLabel={SERVICE_NAME_TEXT}
@@ -111,7 +186,7 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descri
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <AddServiceController
+                  <ServiceController
                     fieldType="text"
                     controllerName="duration"
                     controllerLabel={DURATION_TEXT}
@@ -119,7 +194,7 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descri
                   />
                 </Grid>
                 <Grid item md={12}>
-                  <AddServiceController
+                  <ServiceController
                     fieldType="text"
                     controllerName="price"
                     controllerLabel={PRICE_TEXT}
@@ -147,8 +222,8 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descri
                     </Button>
                   </Box>
 
-                  <Button color="primary" type="submit" disabled={loading} variant="contained">
-                    {loading && <CircularProgress size={20} color="inherit" />}
+                  <Button color="primary" type="submit" disabled={disableSubmit} variant="contained">
+                    {disableSubmit && <CircularProgress size={20} color="inherit" />}
                     {ADD_SERVICE}
                   </Button>
 
@@ -162,4 +237,4 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descri
   );
 };
 
-export default AddServiceModal;
+export default ServiceModal;

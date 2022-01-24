@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, ChangeEvent, Reducer, useReducer } from "react";
+import { FC, useEffect, ChangeEvent, Reducer, useReducer, useContext } from "react";
 import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
@@ -11,15 +11,17 @@ import TableLoader from "../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload } from "../../../../generated/graphql";
 import { renderTh } from "../../../../utils";
+import { ListContext } from "../../../../context/listContext";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE, ADD_FACILITY_SERVICE, ACTIVE_TEXT } from "../../../../constants";
 import { ServiceTableProps, ParamsType } from "../../../../interfacesTypes";
 import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../reducers/serviceReducer';
-import AddServiceModal from "../addFacilityServices/AddServiceModal";
+import ServiceModal from "../FacilityServices/ServiceModal";
 
 const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.Element => {
   const classes = useTableStyles()
+  const { fetchAllFacilityList } = useContext(ListContext);
   const { id: facilityId } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, totalPages, isEdit, openDelete, openModal, serviceId, deleteServiceId, searchQuery, services } = state;
@@ -116,6 +118,7 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
   };
 
   const handleReload = () => {
+    fetchAllFacilityList()
   }
 
   const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
@@ -208,14 +211,14 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
             setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
           />
 
-          <AddServiceModal
+          <ServiceModal
             title={ADD_FACILITY_SERVICE}
             description={ACTIVE_TEXT}
             isEdit={isEdit}
             isOpen={openModal}
             reload={handleReload}
             serviceId={serviceId}
-            setOpen={(open: boolean) => serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: open })}
+            setOpen={(open: boolean) => serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })}
           />
         </Box>
       </Box>

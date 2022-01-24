@@ -444,6 +444,7 @@ export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
 export const SERVICE_CREATED = "Service created successfully!";
+export const SERVICE_UPDATED = "Service updated successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const TOKEN_EXPIRED = "Verification token is expired.";

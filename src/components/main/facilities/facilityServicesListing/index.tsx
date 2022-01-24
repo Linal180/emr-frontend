@@ -14,7 +14,6 @@ const FacilityServicesComponent: FC = (): JSX.Element => {
       <PageHeader
         title={FACILITY_SERVICES_TEXT}
         path={[FACILITY_SERVICES_BREAD]}
-        hasComponent
         buttonText={ADD_SERVICE}
         openModal={() => dispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })}
       />
