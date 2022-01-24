@@ -2,7 +2,7 @@
 import { ComponentType, Dispatch, ReactNode, ElementType } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule } from "react-hook-form";
+import { Control, ValidationRule, FieldValues } from "react-hook-form";
 // graphql block
 import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender } from "../generated/graphql";
 
@@ -405,3 +405,22 @@ export interface DoctorInputControlProps extends IControlLabel {
 }
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
+
+export interface RenderInputFieldProps {
+  name: string
+  label: string
+  control?: Control<FieldValues, object> | undefined
+}
+
+export interface StepLabelType {
+  title: string
+  subTitle: string
+}
+
+export interface FormVerification {
+  imageSide: string;
+}
+
+export interface StepperComponentProps {
+  activeStep: number
+}

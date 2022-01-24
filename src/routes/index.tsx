@@ -30,9 +30,12 @@ import AddFacilityComponent from "../pages/main/facilities/addFacility";
 import Appointments from "../pages/main/appointments/appointmentsListing";
 import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 import AppointmentPublic from "../pages/main/appointments/appointmentPublic";
+import PatientInformation from "../pages/main/appointments/appointmentPublic/patientInformation";
+import SlotConfirmation from "../pages/main/appointments/appointmentPublic/slotConfirmation";
+import AppointmentSuccess from "../pages/main/appointments/appointmentPublic/appointmentSuccess ";
 // constants
 import { AuthContext } from "../context";
-import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, PUBLIC_APPOINTMENT_ROUTE } from "../constants";
+import { DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, PUBLIC_APPOINTMENT_ROUTE, SLOT_CONFIRMATION, PATIENT_INFORMATION, PATIENT_APPOINTMENT_SUCCESS } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -44,6 +47,9 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
       <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
       <PublicRoute path={PUBLIC_APPOINTMENT_ROUTE} component={AppointmentPublic} exact />
+      <PublicRoute path={PATIENT_INFORMATION} component={PatientInformation} exact />
+      <PublicRoute path={SLOT_CONFIRMATION} component={SlotConfirmation} exact />
+      <PublicRoute path={PATIENT_APPOINTMENT_SUCCESS} component={AppointmentSuccess} exact />
       <Route exact path="/">
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>

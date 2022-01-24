@@ -219,9 +219,11 @@ export const theme = createTheme({
         maxHeight: 42,
         padding: '9px 20px',
         boxShadow: 'none',
+        color: BLACK_TWO,
 
         "&.blue-button": {
           backgroundColor: BLUE_ONE,
+          color: WHITE,
 
           "&:hover": {
             backgroundColor: BLUE_THREE,
