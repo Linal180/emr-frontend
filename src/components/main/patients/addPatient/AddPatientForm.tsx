@@ -163,8 +163,9 @@ const AddPatientForm: FC = (): JSX.Element => {
             },
 
             createEmergencyContactInput: {
-              contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '', mobile: emergencyMobile || '',
+              contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '',
               relationship: selectedEmergencyRelationship as RelationshipType || RelationshipType.Other,
+              mobile: emergencyMobile || '', primaryContact: false,
             },
 
             createGuarantorContactInput: {
@@ -174,17 +175,18 @@ const AddPatientForm: FC = (): JSX.Element => {
               employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '', address: guarantorAddress || '',
               zipCode: guarantorZipCode || '', city: guarantorCity || '', state: guarantorState || '',
               phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '',
-              ssn: guarantorSsn || '',
+              ssn: guarantorSsn || '', primaryContact: false,
             },
 
             createGuardianContactInput: {
               firstName: guardianFirstName || '', middleName: guardianMiddleName || '', lastName: guardianLastName || '',
-              contactType: ContactType.Guardian, suffix: guardianSuffix || ''
+              contactType: ContactType.Guardian, suffix: guardianSuffix || '', primaryContact: false,
             },
 
             createNextOfKinContactInput: {
-              contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '', mobile: kinMobile || '',
+              contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '',
               relationship: selectedKinRelationship as RelationshipType || RelationshipType.Other,
+              mobile: kinMobile || '', primaryContact: false,
             },
 
             createEmployerInput: {

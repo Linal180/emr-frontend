@@ -330,13 +330,16 @@ const UpdatePatientForm: FC = (): JSX.Element => {
             },
 
             updateContactInput: {
-              id: basicContactId, contactType: ContactType.Self, country: basicCountry || '', email: basicEmail || '', state: basicState || '',
-              facilityId: selectedFacility || '', phone: basicPhone || '', mobile: basicMobile || '',
-              address2: basicAddress2 || '', address: basicAddress || '', zipCode: basicZipCode || '', city: basicCity || '',
+              id: basicContactId, contactType: ContactType.Self, country: basicCountry || '', email: basicEmail || '',
+              state: basicState || '', facilityId: selectedFacility || '', phone: basicPhone || '',
+              mobile: basicMobile || '', address2: basicAddress2 || '', address: basicAddress || '',
+              zipCode: basicZipCode || '', city: basicCity || ''
+
             },
 
             updateEmergencyContactInput: {
-              id: emergencyContactId, contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '', mobile: emergencyMobile || '',
+              id: emergencyContactId, contactType: ContactType.Emergency, name: emergencyName || '',
+              phone: emergencyPhone || '', mobile: emergencyMobile || '', primaryContact: false,
               relationship: selectedEmergencyRelationship as RelationshipType || RelationshipType.Other,
             },
 
@@ -347,16 +350,18 @@ const UpdatePatientForm: FC = (): JSX.Element => {
               employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '', address: guarantorAddress || '',
               zipCode: guarantorZipCode || '', city: guarantorCity || '', state: guarantorState || '',
               phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '',
-              userId: userId || '', ssn: guarantorSsn || '',
+              userId: userId || '', ssn: guarantorSsn || '', primaryContact: false,
             },
 
             updateGuardianContactInput: {
-              id: guardianContactId, firstName: guardianFirstName || '', middleName: guardianMiddleName || '', lastName: guardianLastName || '',
-              contactType: ContactType.Guardian, suffix: guardianSuffix || '', userId: userId || '',
+              id: guardianContactId, firstName: guardianFirstName || '', middleName: guardianMiddleName || '',
+              lastName: guardianLastName || '', contactType: ContactType.Guardian, suffix: guardianSuffix || '',
+              userId: userId || '', primaryContact: false,
             },
 
             updateNextOfKinContactInput: {
-              id: kinContactId, contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '', mobile: kinMobile || '',
+              id: kinContactId, contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '',
+              mobile: kinMobile || '', primaryContact: false,
               relationship: selectedKinRelationship as RelationshipType || RelationshipType.Other,
             },
 
