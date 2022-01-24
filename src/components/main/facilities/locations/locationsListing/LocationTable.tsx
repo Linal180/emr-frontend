@@ -81,7 +81,7 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
     if (!searchQuery && facilityId) {
       findAllContacts()
     }
-  }, [page, findAllContacts, searchQuery, facilityId]);
+  }, [page, findAllContacts, searchQuery, facilityId, locations]);
 
 
   const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
@@ -119,8 +119,15 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
   };
 
   const handleReload = () => {
+    dispatch({ type: ActionType.SET_LOCATIONS, locations: []});
     findAllContacts();
   }
+
+  useEffect(() => {
+    if (!openModal) {
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    }
+  }, [openModal])
 
   return (
     <>

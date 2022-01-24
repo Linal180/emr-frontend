@@ -206,6 +206,7 @@ export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
 export const ADD_LOCATION = "Add Facility Location";
+export const EDIT_LOCATION = "Edit Facility Location";
 export const UPDATE_LOCATION = "Update Facility Location";
 export const LOCATION = "Location";
 export const VIEW_FACILITY = "View Facility";
@@ -380,7 +381,8 @@ export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
-export const FACILITY_LOCATIONS_ROUTE = `/locations`;
+export const FACILITY_LOCATIONS_ROUTE = "/locations";
+export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointments";
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
