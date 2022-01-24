@@ -111,6 +111,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
 
   useEffect(() => {
     if (id) {
+      console.log(id);
       getService({
         variables: {
           getService: { id }

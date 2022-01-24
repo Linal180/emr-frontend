@@ -27,16 +27,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.
   const { page, totalPages, isEdit, openDelete, openModal, serviceId, deleteServiceId, searchQuery, services } = state;
 
   const [findAllServices, { loading, error }] = useFindAllServicesLazyQuery({
-    variables: {
-      serviceInput: {
-        facilityId,
-        paginationOptions: {
-          page,
-          limit: PAGE_LIMIT
-        }
-      }
-    },
-
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -83,7 +73,17 @@ console.log(data);
 
   useEffect(() => {
     if (!searchQuery && facilityId) {
-      findAllServices()
+      findAllServices({
+        variables: {
+          serviceInput: {
+            facilityId,
+            paginationOptions: {
+              page,
+              limit: PAGE_LIMIT
+            }
+          }
+        }
+      })
     }
   }, [page, findAllServices, searchQuery, facilityId]);
 

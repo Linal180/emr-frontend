@@ -175,7 +175,7 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Link to={`${FACILITIES_ROUTE}/${id}/${FACILITY_SERVICES_ROUTE}`}>
+                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
                             <IconButton size="small">
                               <ServiceIcon />
                             </IconButton>
