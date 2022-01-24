@@ -8,7 +8,7 @@ import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, UpdateServiceInput,
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload,
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -603,13 +603,12 @@ export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">  & { f
 
 export interface ServiceTableProps {
   serviceDispatch: Dispatch<serviceAction>
+  openModal: boolean;
 }
 
 export interface ServiceModalProps extends DialogTypes {
   serviceId?: string;
   reload: () => void;
-  title: string;
-  description: string;
 }
 export interface ContactInputControlProps extends IControlLabel {
   controllerName: ContactInputTypes

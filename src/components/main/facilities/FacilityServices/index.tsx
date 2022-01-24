@@ -1,7 +1,7 @@
 // packages block
 import { FC, useState, ChangeEvent, useContext, useCallback, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useParams } from 'react-router';
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Button, Dialog, DialogActions, DialogTitle, CircularProgress, FormControlLabel, Checkbox, Box, Grid, FormControl } from "@material-ui/core";
 // components block
@@ -13,18 +13,28 @@ import { renderFacilities, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { serviceSchema } from '../../../../validationSchemas';
 import { extendedServiceInput, ServiceModalProps, ParamsType } from "../../../../interfacesTypes";
-import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED, SERVICE_NOT_FOUND } from "../../../../constants";
+import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED, UPDATE_SERVICE, ACTIVE_TEXT, ADD_FACILITY_SERVICE, UPDATE_FACILITY_SERVICE } from "../../../../constants";
 import { useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation } from "../../../../generated/graphql";
 
-const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, description, isEdit, serviceId, reload }): JSX.Element => {
+const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceId, reload }): JSX.Element => {
   const [checked, setChecked] = useState(false);
-  const { facilityList } = useContext(ListContext)
   const { id } = useParams<ParamsType>();
+  const { facilityList } = useContext(ListContext)
   const methods = useForm<extendedServiceInput>({
     mode: "all",
     resolver: yupResolver(serviceSchema)
   });
   const { reset, setValue, handleSubmit, control, formState: { errors } } = methods;
+
+  const handleClose = () => {
+    setChecked(false)
+    reset();
+    setOpen && setOpen(!isOpen)
+  }
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setChecked(event.target.checked);
+  };
 
   const [getService, { loading: getServiceLoading }] = useGetServiceLazyQuery({
     fetchPolicy: "network-only",
@@ -42,9 +52,11 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
         const { status } = response
 
         if (service && status && status === 200) {
-          const { name, isActive, price, duration, facility, facilityId } = service || {}
-          const { id: facId, name: facilityName } = facility || {};
-          facilityId && setValue('facilityId', setRecord(facId || '', facilityName || ""))
+          const { name, isActive, price, duration, facility } = service || {}
+          const { id: facilityId, name: facilityName } = facility || {};
+          console.log(facility, "===")
+          facilityId && setValue('facilityId', setRecord(facilityId, facilityName || ""))
+          console.log(facilityName, "=============")
           name && setValue('name', name)
           price && setValue('price', price)
           duration && setValue('duration', duration)
@@ -98,45 +110,20 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
     }
   });
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
+  const onSubmit: SubmitHandler<extendedServiceInput> = async ({
+    duration, facilityId, name, price, isActive,
+  }) => {
+    const { id: selectedFacilityId } = facilityId
 
-
-  const handleClose = useCallback(() => {
-    setChecked(false)
-    reset();
-    setOpen && setOpen(!isOpen)
-  }, [isOpen, reset, setOpen])
-
-  useEffect(() => {
-    if (id) {
-      console.log(id);
-      getService({
-        variables: {
-          getService: { id }
-        }
-      })
-    } else {
-      Alert.error(SERVICE_NOT_FOUND)
-    }
-  }, [getService, id])
-
-  const onSubmit: SubmitHandler<extendedServiceInput> = async (inputs) => {
-    const {
-      duration, facilityId, name, price, isActive
-    } = inputs;
-    const { id: selectedFacility } = facilityId
     if (isEdit) {
       await updateService({
         variables: {
           updateServiceInput: {
-            id: selectedFacility || '', name: name || '', duration: duration || "", isActive: isActive || false, price: price || "",
+            id: serviceId || '', name: name || '', duration: duration || "", isActive: checked, price: price || "", facilityId: selectedFacilityId || ""
           }
         }
       })
     } else {
-      const { id: selectedFacilityId } = facilityId;
       await createService({
         variables: {
           createServiceInput: {
@@ -144,7 +131,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
             duration: duration || "",
             facilityId: selectedFacilityId || "",
             price: price || "",
-            isActive: isActive || false
+            isActive: checked
           }
         }
       })
@@ -163,9 +150,10 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
 
   useEffect(() => {
     if (isEdit && serviceId) {
-      fetchServices();
+      console.log(serviceId);
+      fetchServices()
     }
-  }, [fetchServices, handleClose, isEdit, serviceId])
+  }, [fetchServices, isEdit, serviceId])
 
   const disableSubmit = createServiceLoading || updateServiceLoading || getServiceLoading
 
@@ -179,7 +167,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
-        {title}
+        {isEdit ? UPDATE_FACILITY_SERVICE : ADD_FACILITY_SERVICE}
       </DialogTitle>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -224,7 +212,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
                     render={() => {
                       return (
                         <FormControl>
-                          <FormControlLabel label={description} id={"isActive"} control={<Checkbox color="primary" value={checked} checked={checked} onChange={handleChange} />} />
+                          <FormControlLabel label={ACTIVE_TEXT} id={"isActive"} control={<Checkbox color="primary" value={checked} checked={checked} onChange={handleChange} />} />
                         </FormControl>
                       )
                     }}
@@ -240,7 +228,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descripti
 
                   <Button color="primary" type="submit" disabled={disableSubmit} variant="contained">
                     {disableSubmit && <CircularProgress size={20} color="inherit" />}
-                    {ADD_SERVICE}
+                    {isEdit ? UPDATE_SERVICE : ADD_SERVICE}
                   </Button>
 
                 </DialogActions>

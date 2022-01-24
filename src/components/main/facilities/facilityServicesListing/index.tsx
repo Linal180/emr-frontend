@@ -8,7 +8,7 @@ import { ADD_SERVICE, FACILITY_SERVICES_BREAD, FACILITY_SERVICES_TEXT } from "..
 import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../reducers/serviceReducer';
 
 const FacilityServicesComponent: FC = (): JSX.Element => {
-  const [, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
+  const [{ openModal }, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   return (
     <>
       <PageHeader
@@ -19,6 +19,7 @@ const FacilityServicesComponent: FC = (): JSX.Element => {
       />
       <FacilityServicesTable
         serviceDispatch={dispatch}
+        openModal={openModal}
       />
     </>
   )

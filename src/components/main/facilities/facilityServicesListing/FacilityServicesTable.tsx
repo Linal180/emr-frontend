@@ -14,30 +14,41 @@ import { renderTh } from "../../../../utils";
 import { ListContext } from "../../../../context/listContext";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE, ADD_FACILITY_SERVICE, ACTIVE_TEXT } from "../../../../constants";
+import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../constants";
 import { ServiceTableProps, ParamsType } from "../../../../interfacesTypes";
 import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../reducers/serviceReducer';
-import ServiceModal from "../FacilityServices/ServiceModal";
+import ServiceModal from "../FacilityServices";
 
-const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch }): JSX.Element => {
+const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openModal }): JSX.Element => {
   const classes = useTableStyles()
   const { fetchAllFacilityList } = useContext(ListContext);
   const { id: facilityId } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
-  const { page, totalPages, isEdit, openDelete, openModal, serviceId, deleteServiceId, searchQuery, services } = state;
+  const { page, totalPages, isEdit, openDelete, serviceId, deleteServiceId, searchQuery, services } = state;
 
   const [findAllServices, { loading, error }] = useFindAllServicesLazyQuery({
+    variables: {
+      serviceInput: {
+        facilityId,
+        paginationOptions: {
+          page,
+          limit: PAGE_LIMIT
+        }
+      }
+    },
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
     onError() {
-      dispatch({ type: ActionType.SET_SERVICES, services: [] });
+      dispatch({
+        type: ActionType.SET_SERVICES, services: []
+      });
     },
 
     onCompleted(data) {
       const { findAllServices } = data || {};
-console.log(data);
+      console.log(data);
 
       if (findAllServices) {
         const { services, pagination } = findAllServices
@@ -73,17 +84,7 @@ console.log(data);
 
   useEffect(() => {
     if (!searchQuery && facilityId) {
-      findAllServices({
-        variables: {
-          serviceInput: {
-            facilityId,
-            paginationOptions: {
-              page,
-              limit: PAGE_LIMIT
-            }
-          }
-        }
-      })
+      findAllServices()
     }
   }, [page, findAllServices, searchQuery, facilityId]);
 
@@ -110,6 +111,7 @@ console.log(data);
     if (id) {
       dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: id })
       dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
+      serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
     }
   };
 
@@ -174,9 +176,9 @@ console.log(data);
                       <TableCell className={classes.status} scope="row">{ActiveStatus}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center" onClick={() => handleEdit(id || '')}>
-                            <IconButton size="small">
-                              <EditIcon />
-                            </IconButton>
+                          <IconButton size="small">
+                            <EditIcon />
+                          </IconButton>
                           <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
                           </IconButton>
@@ -204,13 +206,11 @@ console.log(data);
           />
 
           <ServiceModal
-            title={ADD_FACILITY_SERVICE}
-            description={ACTIVE_TEXT}
             isEdit={isEdit}
             isOpen={openModal}
             reload={handleReload}
             serviceId={serviceId}
-            setOpen={(open: boolean) => serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })}
+            setOpen={(open: boolean) => serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: open })}
           />
         </Box>
       </Box>

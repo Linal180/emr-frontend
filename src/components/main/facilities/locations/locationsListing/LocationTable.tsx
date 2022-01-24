@@ -92,10 +92,7 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_LOCATION_ID, deleteLocationId: id })
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
-    } else {
-      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-      Alert.error(TRY_AGAIN)
-    }
+    } 
   };
 
   const handleDeleteLocation = async () => {

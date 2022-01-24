@@ -187,11 +187,8 @@ export const doctorSchema = yup.object({
 
 
 export const facilityServicesSchema = {
+  ...facilityIdSchema,
   duration: yup.string().required(RequiredMessage(DURATION)),
-  facilityId: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(RequiredMessage(FACILITY)),
   name: yup.string().required(RequiredMessage(NAME)),
   price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(1, MinLength(PRICE, 1)).max(15, MaxLength(PRICE, 15)).required(RequiredMessage(PRICE)),
 };
