@@ -7,13 +7,12 @@ import { CustomFacilityInputProps, ServiceConfirmationTypes } from "../../../../
 import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT } from "../../../../constants";
 import AddServiceController from "./AddServiceController";
 
-const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title, description, handleService, isLoading, actionText, success }): JSX.Element => {
+const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title, description, handleService, isLoading, success }): JSX.Element => {
   const [checked, setChecked] = useState(false);
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
   });
   const { handleSubmit } = methods;
-
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -29,9 +28,7 @@ const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title,
     handleService()
   }
 
-  const onSubmit = () => {
-
-  };
+  const onSubmit = () => { };
 
   const buttonColor: PropTypes.Color = success ? "primary" : "secondary"
 
@@ -40,6 +37,7 @@ const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title,
       <DialogTitle id="alert-dialog-title">
         {title}
       </DialogTitle>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Box ml={3} mr={3} pt={3}>
@@ -87,9 +85,9 @@ const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title,
 
             </DialogActions>
           </Box>
-        </form >
+        </form>
       </FormProvider>
-    </Dialog >
+    </Dialog>
   );
 };
 
