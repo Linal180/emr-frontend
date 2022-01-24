@@ -11,6 +11,7 @@ import {
   RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload,
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
+import { serviceAction } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -40,9 +41,6 @@ export interface ListContextInterface {
   facilityList: FacilitiesPayload['facility'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
-  serviceList: ServicesPayload['services'];
-  setServiceList: Function;
-  fetchAllServiceList: Function;
   doctorList: AllDoctorPayload['doctors'];
   setDoctorList: Function;
   fetchAllDoctorList: Function;
@@ -604,7 +602,7 @@ export interface ServiceInputControlsProps extends IControlLabel {
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId">  & { facilityId: SelectorOption } ;
 
 export interface ServiceTableProps {
-  serviceDispatch: Dispatch<Action>
+  serviceDispatch: Dispatch<serviceAction>
 }
 
 export interface ServiceModalProps extends DialogTypes {

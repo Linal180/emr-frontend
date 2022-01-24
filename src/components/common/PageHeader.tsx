@@ -1,13 +1,10 @@
 // packages block
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Box, Typography, Button } from "@material-ui/core";
-// components block
-import AddServiceModal from "../main/facilities/addFacilityServices/AddServiceModal";
 // interfaces/types block
 import { PageHeaderProps } from "../../interfacesTypes";
 import Breadcrumb from "./Breadcrumb";
-import { ACTIVE_TEXT, ADD_FACILITY_SERVICE } from "../../constants";
 
 const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModal }): JSX.Element => {
 

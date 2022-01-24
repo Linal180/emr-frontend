@@ -99,7 +99,6 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   }, [findAllDoctor])
 
 
-  useEffect(() => { hasToken && fetchAllServiceList(servicePages) }, [fetchAllServiceList, hasToken, servicePages])
 
   useEffect(() => { hasToken && fetchAllFacilityList(facilityPages) }, [fetchAllFacilityList, hasToken, facilityPages])
   useEffect(() => { hasToken && fetchAllDoctorList(doctorPages) }, [fetchAllDoctorList, hasToken, doctorPages])

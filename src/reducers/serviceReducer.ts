@@ -36,7 +36,7 @@ SET_SEARCH_QUERY = 'setSearchQuery',
 SET_DELETE_SERVICE_ID = 'setDeleteServiceId',
 }
 
-export type Action =
+export type serviceAction =
 | { type: ActionType.SET_PAGE; page: number }
 | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
 | { type: ActionType.SET_OPEN_MODAL; openModal: boolean }
@@ -47,7 +47,7 @@ export type Action =
 | { type: ActionType.SET_DELETE_SERVICE_ID; deleteServiceId: string }
 | { type: ActionType.SET_SERVICES; services: ServicesPayload['services'] }
 
-export const serviceReducer = (state: State, action: Action): State => {
+export const serviceReducer = (state: State, action: serviceAction): State => {
 switch (action.type) {
 case ActionType.SET_PAGE:
 return {

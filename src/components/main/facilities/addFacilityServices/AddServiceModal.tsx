@@ -33,7 +33,7 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descri
     },
 
     onCompleted(data) {
-      const { createService: { response, service } } = data;
+      const { createService: { response } } = data;
 
       if (response) {
         const { status } = response
@@ -60,7 +60,10 @@ const AddServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, title, descri
     const {
       duration, facilityId, name, price, isActive,
     } = inputs;
-
+    if (isEdit) {
+      console.log(serviceId);
+      console.log('=========')
+    }
     const { id: selectedFacilityId } = facilityId;
     await createService({
       variables: {
