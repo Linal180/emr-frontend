@@ -505,7 +505,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="emergencyName"
-                      control={control}
                       controllerLabel={NAME}
                       error={emergencyNameError}
                     />
@@ -527,7 +526,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="emergencyPhone"
-                      control={control}
                       controllerLabel={HOME_PHONE}
                       error={emergencyPhoneError}
                     />
@@ -537,7 +535,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="emergencyMobile"
-                      control={control}
                       controllerLabel={MOBILE_PHONE}
                       error={emergencyMobileError}
                     />
@@ -553,7 +550,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="kinName"
-                      control={control}
                       controllerLabel={NAME}
                       error={kinNameError}
                     />
@@ -600,7 +596,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="guardianFirstName"
-                      control={control}
                       controllerLabel={FIRST_NAME}
                       error={guardianFirstNameError}
                     />
@@ -610,7 +605,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="guardianMiddleName"
-                      control={control}
                       controllerLabel={MIDDLE_NAME}
                       error={guardianMiddleNameError}
                     />
@@ -622,7 +616,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="guardianLastName"
-                      control={control}
                       controllerLabel={LAST_NAME}
                       error={guardianLastNameError}
                     />
@@ -632,7 +625,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="guardianSuffix"
-                      control={control}
                       controllerLabel={SUFFIX}
                       error={guardianSuffixError}
                     />
@@ -893,7 +885,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <PatientController
                     fieldType="text"
                     controllerName="employerName"
-                    control={control}
                     controllerLabel={EMPLOYER_NAME}
                     error={employerNameError}
                   />
@@ -903,7 +894,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <PatientController
                     fieldType="text"
                     controllerName="employerPhone"
-                    control={control}
                     controllerLabel={EMPLOYER_PHONE}
                     error={employerPhoneError}
                   />
@@ -913,7 +903,6 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <PatientController
                     fieldType="text"
                     controllerName="employerUsualOccupation"
-                    control={control}
                     controllerLabel={USUAL_OCCUPATION}
                     error={employerUsualOccupationError}
                   />

@@ -2,8 +2,10 @@
 import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { FormControl, InputLabel, TextField } from "@material-ui/core";
+// interfaces block
+import { PatientInputControlProps } from "../../../../interfacesTypes";
 
-const PatientController: FC<any> = ({ controllerName, controllerLabel, fieldType, error, disabled }): JSX.Element => {
+const PatientController: FC<PatientInputControlProps> = ({ controllerName, controllerLabel, fieldType, error, disabled }): JSX.Element => {
   const { control } = useFormContext()
 
   return (
