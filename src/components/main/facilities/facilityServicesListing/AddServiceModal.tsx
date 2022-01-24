@@ -82,7 +82,6 @@ const AddServiceModal: FC<ServiceConfirmationTypes> = ({ setOpen, isOpen, title,
                 {isLoading && <CircularProgress size={20} color={buttonColor} />}
                 {ADD_SERVICE}
               </Button>
-
             </DialogActions>
           </Box>
         </form>
