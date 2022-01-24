@@ -16,7 +16,7 @@ import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
 import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
-import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP } from "../../../../constants";
+import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND } from "../../../../constants";
 
 const UpdateFacilityForm: FC = (): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext)
@@ -60,8 +60,8 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
           federalTaxId && setValue('federalTaxId', federalTaxId)
           tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
           insurancePlanType && setValue('insurancePlanType', insurancePlanType)
-          // serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
-          practiceType && setValue('practiceType', setRecord(practiceType, serviceCode))
+          serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
+          practiceType && setValue('practiceType', setRecord(practiceType, practiceType))
           mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
           if (contacts) {
@@ -121,13 +121,11 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
     if (id) {
       getFacility({
         variables: {
-          getFacility: {
-            id
-          }
+          getFacility: { id }
         }
       })
     } else {
-      Alert.error('Facility not found!')
+      Alert.error(FACILITY_NOT_FOUND)
     }
   }, [getFacility, id])
 
@@ -312,7 +310,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
 
                 <Selector
                   value={{ id: "", name: "" }}
-                  label={PRACTICE_TYPE}
+                  label={SERVICE_CODE}
                   name="serviceCode"
                   error={serviceCodeError}
                   options={MAPPED_SERVICE_CODES}

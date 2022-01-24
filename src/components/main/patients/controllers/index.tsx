@@ -1,9 +1,11 @@
 // packages block
-import { FormControl, InputLabel, TextField } from "@material-ui/core";
 import { FC } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
+import { FormControl, InputLabel, TextField } from "@material-ui/core";
 
-const AddPatientController: FC<any> = ({ control, controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const PatientController: FC<any> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+  const { control } = useFormContext()
+
   return (
     <Controller
       name={controllerName}
@@ -30,4 +32,4 @@ const AddPatientController: FC<any> = ({ control, controllerName, controllerLabe
   );
 };
 
-export default AddPatientController;
+export default PatientController;

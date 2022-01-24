@@ -9,11 +9,10 @@ import { IPageHeader } from "../../interfacesTypes";
 import Breadcrumb from "./Breadcrumb";
 import { ACTIVE_TEXT, ADD_FACILITY_SERVICE } from "../../constants";
 
-const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModel }): JSX.Element => {
+const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModel, openModal }): JSX.Element => {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
 
-  const handleService = async () => {
-  };
+  const handleService = () => { };
 
   const onButtonClick = () => {
     setOpenPopup(true)
@@ -26,26 +25,35 @@ const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPa
         {path && <Breadcrumb path={path} />}
       </Box>
 
-      {!noAdd && !openModel && <>
-        {hasComponent &&
-          <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
-            {buttonText || ""}
-          </Button>
-        }
-      </>}
+      {!noAdd &&
+        <>
+          {hasComponent ?
+            <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
+              {buttonText || ""}
+            </Button>
+            :
+            (buttonText && <Button color="primary" variant="contained" onClick={openModal}>
+              {buttonText}
+            </Button>)
+          }
+        </>
+      }
 
       {openModel &&
         <Button color="primary" variant="contained" onClick={() => onButtonClick()}>
           {buttonText || ""}
-        </Button>}
+        </Button>
+      }
 
-      {openModel && <AddServiceModal
-        title={ADD_FACILITY_SERVICE}
-        isOpen={openPopup}
-        description={ACTIVE_TEXT}
-        handleService={handleService}
-        setOpen={(open: boolean) => setOpenPopup(open)}
-      />}
+      {openModel &&
+        <AddServiceModal
+          title={ADD_FACILITY_SERVICE}
+          isOpen={openPopup}
+          description={ACTIVE_TEXT}
+          handleService={handleService}
+          setOpen={(open: boolean) => setOpenPopup(open)}
+        />
+      }
     </Box>
   );
 };

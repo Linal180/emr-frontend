@@ -122,6 +122,12 @@ export const theme = createTheme({
         borderRadius: 10,
         maxWidth: 810,
         minHeight: 265
+      },
+
+      paperWidthMd: {
+        borderRadius: 10,
+        maxWidth: 910,
+        minHeight: 265
       }
     },
 

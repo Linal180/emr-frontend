@@ -1,25 +1,32 @@
 // graphql and interfaces block
+import { formatValue } from '../utils';
+import { SelectorOption } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
-import { Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole } from "../generated/graphql";
-import { MappedEthnicityInterface, MappedGenderidentityInterface, MappedGenderInterface, MappedHomeboundInterface, MappedMaritialstatusInterface, MappedPrimaryDepartmentInterface, MappedPronounsInterface, MappedRaceInterface, MappedRegDepartmentInterface, MappedRelationshipTypeInterface, SelectorOption, MappedSexualorientationInterface } from '../interfacesTypes'
-
+import {
+  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, RegDepartment, RelationshipType,
+  ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
+} from "../generated/graphql";
 
 // regex
 export const NUMBER_REGEX = /^[0-9]+$/;
-export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const LONGITUDE_LATITUDE_REGEX = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}/;
+export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
 export const ALL_STAFF = "Staff";
 export const CREATE_STAFF = "Create Staff";
 export const CREATE_FACILITY = "Create facility";
+export const CREATE_LOCATION = "Create location";
+export const UPDATE_LOCATION_TEXT = "Update location";
 export const ADD_STAFF = "Add Staff";
 export const CREATE_DOCTOR = "Create Doctor";
 export const ADD_DOCTOR = "Add Doctor";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
+export const UPDATE_PATIENT = "Update Patient";
+export const EDIT_PATIENT = "Edit Patient";
 export const ADD_RESULT = "Add Result";
 export const ADD_APPOINTMENT = "Add Appointment";
 export const VIEW_STAFF = "View Staff";
@@ -29,9 +36,12 @@ export const UPDATE_DOCTOR = "Update Doctor";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
 export const PROVIDER = "Provider";
+export const CONTACT = "Contact";
 export const STAFF_BASIC_INFO = "Staff Basic Info";
+export const LOCATION_INFO = "Location Info";
 export const FACILITY_INFO = "Facility Information";
 export const FACILITY_CONTACT = "Contact";
+export const ASSOCIATED_FACILITY = "Associated Facility";
 export const BILLING_ADDRESS = "Billing Address";
 export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
@@ -109,6 +119,7 @@ export const REPORTS = "Reports";
 export const USERNAME = "Username";
 export const HASH = "#";
 export const N_A = "N/A";
+export const TYPE = "Type";
 export const EMR = "EMR";
 export const ADD_BILL = "Add Bill";
 export const LOGOUT_TEXT = "Logout";
@@ -200,6 +211,9 @@ export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
 export const ADD_SERVICE = "Add Service";
 export const ADD_FACILITY_SERVICE = "Add Facility Service";
+export const ADD_LOCATION = "Add Facility Location";
+export const UPDATE_LOCATION = "Update Facility Location";
+export const LOCATION = "Location";
 export const VIEW_FACILITY = "View Facility";
 export const PHONE_NUMBER = "Phone number";
 export const MOBILE_NUMBER = "Mobile number";
@@ -211,6 +225,7 @@ export const UNAUTHORIZED = "Unauthorized";
 export const MANAGEMENT_TEXT = "Management";
 export const PROPERTIES_TEXT = "Properties";
 export const FACILITIES_TEXT = "Facilities";
+export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const TOKEN_INVALID = "Token Invalid";
 export const RESET_FILTERS = "Reset Filters";
 export const NO_DATA_FOUND = "No data found";
@@ -287,17 +302,19 @@ export const EMPLOYER_NAME = "Employer Name";
 export const ETHNICITY = "Ethnicity";
 export const GENDER_IDENTITY = "Gender Identity";
 export const HOLD_STATEMENT = "Hold Statement";
-export const HOMEBOUND = "HomeBound";
+export const HOMEBOUND = "Home Bound";
 export const LANGUAGE = "Language";
 export const REGISTRATION_DEPARTMENT = "Registration Department"
 export const PRIMARY_DEPARTMENT = "Primary Department"
-export const MARITIAL_STATUS = "Maritial Status"
+export const MARITAL_STATUS = "Marital Status"
 export const SEX_AT_BIRTH = "Sex At Birth"
 export const SEXUAL_ORIENTATION = "Sexual Orientation"
 export const USUAL_PROVIDER_ID = "Usual Provider"
-export const PRONOUS = "pronouns"
+export const PRONOUNS = "pronouns"
 export const RACE = "Race"
 export const RELATIONSHIP = "RelationShip"
+export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor"
+export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -332,6 +349,7 @@ export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
+export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
@@ -372,6 +390,7 @@ export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
+export const FACILITY_LOCATIONS_ROUTE = `${FACILITIES_ROUTE}/locations`;
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 
 // stepper arrays
@@ -409,6 +428,11 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
+export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const PATIENT_NOT_FOUND = 'Patient not found!';
+export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
+export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!"
+export const TRY_AGAIN = "Something went wrong. Try again!";
 export const INVALID_EMAIL = "Invalid email address";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
@@ -423,9 +447,12 @@ export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
+export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
 export const USER_EXIST = "User already exists with this email.";
 export const FACILITY_UPDATED = "Facility updated successfully!";
+export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
+export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
@@ -543,187 +570,153 @@ export const APP_MENU_ITEMS = [
 ];
 
 export const MAPPED_ROLES: SelectorOption[] = [
-  { id: UserRole.Admin, name: 'Admin' },
-  { id: UserRole.Nurse, name: "Nurse" },
-  { id: UserRole.Staff, name: "Staff" },
-  { id: UserRole.Billing, name: 'Billing' },
+  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
+  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
+  { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
+  { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
 ];
 
 export const MAPPED_GENDER: SelectorOption[] = [
-  { id: Gender.Male, name: 'Male' },
-  { id: Gender.Female, name: 'Female' },
-  { id: Gender.Other, name: 'Other' },
-]
-
-export const MAPPED_GENDER_1: MappedGenderInterface[] = [
-  { value: Gender.Male, label: 'Male' },
-  { value: Gender.Female, label: 'Female' },
-  { value: Gender.Other, label: 'Other' },
-]
-
-export const MAPPED_GENDER_IDENTITY: MappedGenderidentityInterface[] = [
-  { value: Genderidentity.Male, label: 'Male' },
-  { value: Genderidentity.Female, label: 'Female' },
-  { value: Genderidentity.None, label: 'None' },
-  { value: Genderidentity.NotExclusive, label: 'Not Exclusive' },
-  { value: Genderidentity.TransgenderFemale, label: 'Transgender Female' },
-  { value: Genderidentity.TransgenderMale, label: 'Transgender Male' },
-
-]
-
-export const MAPPED_MARITIAL_STATUS: MappedMaritialstatusInterface[] = [
-  { value: Maritialstatus.Divorced, label: 'Divorced' },
-  { value: Maritialstatus.Maried, label: 'Maried' },
-  { value: Maritialstatus.Separated, label: 'Separated' },
-  { value: Maritialstatus.Single, label: 'Single' },
-  { value: Maritialstatus.Widowed, label: 'Widowed' },
-]
-
-export const MAPPED_RACE: MappedRaceInterface[] = [
-  { value: Race.AmericanIndianAlaskaNative, label: 'American Indian Alaska Native' },
-  { value: Race.Asian, label: 'Asian' },
-  { value: Race.BlackAfricanAmerican, label: 'Black African American' },
-  { value: Race.NativeHawaiianPacificIslander, label: 'Native Hawaiian Pacific Islander' },
-  { value: Race.Other, label: 'Other' },
-  { value: Race.White, label: 'White' },
-
-]
-
-export const MAPPED_ETHNICITY: MappedEthnicityInterface[] = [
-  { value: Ethnicity.CenteralAmerican, label: 'Centeral American' },
-  { value: Ethnicity.CenteralAmericanIndian, label: 'Centeral American Indian' },
-  { value: Ethnicity.None, label: 'None' },
-]
-
-export const MAPPED_PRONOUS: MappedPronounsInterface[] = [
-  { value: Pronouns.He, label: 'He' },
-  { value: Pronouns.None, label: 'None' },
-  { value: Pronouns.She, label: 'She' },
-]
-
-export const MAPPED_SEXUALORIENTATION: MappedSexualorientationInterface[] = [
-  { value: Sexualorientation.Bisexual, label: 'Bisexual' },
-  { value: Sexualorientation.DontKnow, label: 'DontKnow' },
-  { value: Sexualorientation.Heterosexual, label: 'Heterosexual' },
-  { value: Sexualorientation.Homosexual, label: 'Homosexual' },
-  { value: Sexualorientation.None, label: 'None' },
-]
-
-export const MAPPED_HOMEBOUND: MappedHomeboundInterface[] = [
-  { value: Homebound.No, label: 'No' },
-  { value: Homebound.Yes, label: 'Yes' },
-]
-
-export const MAPPED_PRIMARY_DEPARTMENT: MappedPrimaryDepartmentInterface[] = [
-  { value: PrimaryDepartment.Clinic, label: 'Clinic' },
-  { value: PrimaryDepartment.Hospital, label: 'Hospital' },
-  { value: PrimaryDepartment.Lab, label: 'Lab' },
-]
-
-export const MAPPED_REG_DEPARTMENT: MappedRegDepartmentInterface[] = [
-  { value: RegDepartment.Clinic, label: 'Clinic' },
-  { value: RegDepartment.Hospital, label: 'Hospital' },
-  { value: RegDepartment.Lab, label: 'Lab' },
-]
-
-export const MAPPED_RELATIONSHIPTYPE: MappedRelationshipTypeInterface[] = [
-  { value: RelationshipType.Employee, label: 'Employee' },
-  { value: RelationshipType.CadaverDonor, label: 'Cadaver Donor' },
-  { value: RelationshipType.Child, label: 'Child' },
-  { value: RelationshipType.ChildFatherInsurance, label: 'Child Father Insurance' },
-  { value: RelationshipType.ChildMotherInsurance, label: 'Child Mother Insurance' },
-  { value: RelationshipType.DependentOfMinorDependent, label: 'Dependent Of Minor Dependent' },
-  { value: RelationshipType.EmancipatedMinor, label: 'Emancipated Minor' },
-  { value: RelationshipType.Father, label: 'Father' },
-  { value: RelationshipType.FostherChild, label: 'Fosther Child' },
-  { value: RelationshipType.Grandchild, label: 'Grandchild' },
-  { value: RelationshipType.Grandparent, label: 'Grandparent' },
-  { value: RelationshipType.HandicappedDependent, label: 'Handicapped Dependent' },
-  { value: RelationshipType.InjuredPlaintiiff, label: 'Injured Plaintiiff' },
-  { value: RelationshipType.LifePartner, label: 'Life Partner' },
-  { value: RelationshipType.Mother, label: 'Mother' },
-  { value: RelationshipType.NephewNiece, label: 'Nephew Niece' },
-  { value: RelationshipType.OrganDonor, label: 'Organ Donor' },
-  { value: RelationshipType.Other, label: 'Other' },
-  { value: RelationshipType.Self, label: 'Self' },
-  { value: RelationshipType.SignificantOther, label: 'Significant Other' },
-  { value: RelationshipType.SponsoredDependent, label: 'Sponsored Dependent' },
-  { value: RelationshipType.Spouse, label: 'Spouse' },
-  { value: RelationshipType.StepsonStepdaughter, label: 'Stepson Stepdaughter' },
-  { value: RelationshipType.StepsonStepdaughterStepfatherInsrtance, label: 'Stepson Stepdaughter Stepfather Insrtance' },
-  { value: RelationshipType.StepsonStepdaughterStepmotherInsrtance, label: 'Stepson Stepdaughter Stepmother Insrtance' },
-  { value: RelationshipType.Unknown, label: 'Unknown' },
-  { value: RelationshipType.Ward, label: 'Ward' },
+  { id: Gender.Male, name: formatValue(Gender.Male) },
+  { id: Gender.Female, name: formatValue(Gender.Female) },
+  { id: Gender.Other, name: formatValue(Gender.Other) },
 ]
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
-  { id: PracticeType.Hospital, name: 'Hospital' },
-  { id: PracticeType.Clinic, name: 'Clinic' },
-  { id: PracticeType.Lab, name: 'Lab' },
+  { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
+  { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
+  { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
 ]
 
-const MAPPED_SERVICE_CODE = {
-  AMBULANCE_41: "Ambulance 41",
-  AMBULANCE_42: "Ambulance 42",
-  AMBULANCE_24: "Ambulance 24",
-  ASSISTED_LIVING_13: "Assisted Living 13",
-  BIRTHING_CENTER_25: "Birthing Center 25",
-  COMMUNITY_MENTAL_HEALTH_CENTER_53: "CMHC 53",
-  COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61: "CIRF 61",
-  COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62: "CORF 62",
-  CUSTODIAL_CARE_FACILITY_33: "CAF 33",
-  EMERGENCY_ROOM_23: "Emergency Room 23",
-  END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65: "ESRDTF 65",
-  FEDERALLY_QUALIFIED_HEALTH_CENTER_50: "FQHC 50",
-  GROUP_HOME_14: "Group Home 14",
-  HOMELESS_SHELTER_04: "Homeless Shelter 04",
-  HOSPICE_34: "HOSPICE 34",
-  INDEPENDENT_CLINIC_49: "Independent Clinic 49",
-  INDEPENDENT_LABORATORY_81: "Independent Lab 81",
-  INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05: "IHSFSF 05",
-  INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06: "IHSPBF 06",
-}
-
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
-  { id: ServiceCode.Hospice_34, name: MAPPED_SERVICE_CODE.HOSPICE_34 },
-  { id: ServiceCode.Ambulance_41, name: MAPPED_SERVICE_CODE.AMBULANCE_41 },
-  { id: ServiceCode.Ambulance_42, name: MAPPED_SERVICE_CODE.AMBULANCE_42 },
-  { id: ServiceCode.Ambulance_24, name: MAPPED_SERVICE_CODE.AMBULANCE_24 },
-  { id: ServiceCode.GroupHome_14, name: MAPPED_SERVICE_CODE.GROUP_HOME_14 },
-  { id: ServiceCode.EmergencyRoom_23, name: MAPPED_SERVICE_CODE.EMERGENCY_ROOM_23 },
-  { id: ServiceCode.AssistedLiving_13, name: MAPPED_SERVICE_CODE.ASSISTED_LIVING_13 },
-  { id: ServiceCode.BirthingCenter_25, name: MAPPED_SERVICE_CODE.BIRTHING_CENTER_25 },
-  { id: ServiceCode.HomelessShelter_04, name: MAPPED_SERVICE_CODE.HOMELESS_SHELTER_04 },
-  { id: ServiceCode.IndependentClinic_49, name: MAPPED_SERVICE_CODE.INDEPENDENT_CLINIC_49 },
-  { id: ServiceCode.IndependentLaboratory_81, name: MAPPED_SERVICE_CODE.INDEPENDENT_LABORATORY_81 },
-  { id: ServiceCode.CustodialCareFacility_33, name: MAPPED_SERVICE_CODE.CUSTODIAL_CARE_FACILITY_33 },
-  { id: ServiceCode.CommunityMentalHealthCenter_53, name: MAPPED_SERVICE_CODE.COMMUNITY_MENTAL_HEALTH_CENTER_53 },
-  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: MAPPED_SERVICE_CODE.FEDERALLY_QUALIFIED_HEALTH_CENTER_50 },
-  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: MAPPED_SERVICE_CODE.END_STAGE_RENAL_DISEASE_TREATMENT_FACILITY_65 },
-  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05 },
-  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: MAPPED_SERVICE_CODE.INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06 },
-  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: MAPPED_SERVICE_CODE.COMPREHENSIVE_INPATIENT_REHABILITATION_FACILITY_61 },
-  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: MAPPED_SERVICE_CODE.COMPREHENSIVE_OUTPATIENT_REHABILITATION_FACILITY_62 }
+  { id: ServiceCode.Hospice_34, name: formatValue(ServiceCode.Hospice_34) },
+  { id: ServiceCode.Ambulance_41, name: formatValue(ServiceCode.Ambulance_41) },
+  { id: ServiceCode.Ambulance_42, name: formatValue(ServiceCode.Ambulance_42) },
+  { id: ServiceCode.Ambulance_24, name: formatValue(ServiceCode.Ambulance_24) },
+  { id: ServiceCode.GroupHome_14, name: formatValue(ServiceCode.GroupHome_14) },
+  { id: ServiceCode.EmergencyRoom_23, name: formatValue(ServiceCode.EmergencyRoom_23) },
+  { id: ServiceCode.AssistedLiving_13, name: formatValue(ServiceCode.AssistedLiving_13) },
+  { id: ServiceCode.BirthingCenter_25, name: formatValue(ServiceCode.BirthingCenter_25) },
+  { id: ServiceCode.HomelessShelter_04, name: formatValue(ServiceCode.HomelessShelter_04) },
+  { id: ServiceCode.IndependentClinic_49, name: formatValue(ServiceCode.IndependentClinic_49) },
+  { id: ServiceCode.IndependentLaboratory_81, name: formatValue(ServiceCode.IndependentLaboratory_81) },
+  { id: ServiceCode.CustodialCareFacility_33, name: formatValue(ServiceCode.CustodialCareFacility_33) },
+  { id: ServiceCode.CommunityMentalHealthCenter_53, name: formatValue(ServiceCode.CommunityMentalHealthCenter_53) },
+  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: formatValue(ServiceCode.FederallyQualifiedHealthCenter_50) },
+  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: formatValue(ServiceCode.EndStageRenalDiseaseTreatmentFacility_65) },
+  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: formatValue(ServiceCode.IndianHealthServiceFreeStandingFacility_05) },
+  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: formatValue(ServiceCode.IndianHealthServiceProviderBasedFacility_06) },
+  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: formatValue(ServiceCode.ComprehensiveInpatientRehabilitationFacility_61) },
+  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: formatValue(ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62) },
 ];
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [
-  { id: Speciality.Neurology, name: "Neurology" },
-  { id: Speciality.Pharmacist, name: "Pharmacist" },
-  { id: Speciality.Gastroenterology, name: "Gastroenterology" },
-  { id: Speciality.PediatricDentist, name: "PediatricDentist" },
-  { id: Speciality.PhysicianAssistant, name: "PhysicianAssistant" },
+  { id: Speciality.Neurology, name: formatValue(Speciality.Neurology) },
+  { id: Speciality.Pharmacist, name: formatValue(Speciality.Pharmacist) },
+  { id: Speciality.Gastroenterology, name: formatValue(Speciality.Gastroenterology) },
+  { id: Speciality.PediatricDentist, name: formatValue(Speciality.PediatricDentist) },
+  { id: Speciality.PhysicianAssistant, name: formatValue(Speciality.PhysicianAssistant) },
+];
+
+export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
+  { id: Maritialstatus.Single, name: formatValue(Maritialstatus.Single) },
+  { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
+  { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
+  { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
 ];
 
 export const MAPPED_SSN_TYPES: SelectorOption[] = [
-  { id: SsnType.Tanf, name: "Tanf" },
-  { id: SsnType.Oasdi, name: "Oasdi" },
-  { id: SsnType.Medicare, name: "Medicare" },
-  { id: SsnType.Medicaid, name: "Medicaid" },
+  { id: SsnType.Tanf, name: formatValue(SsnType.Tanf) },
+  { id: SsnType.Oasdi, name: formatValue(SsnType.Oasdi) },
+  { id: SsnType.Medicare, name: formatValue(SsnType.Medicare) },
+  { id: SsnType.Medicaid, name: formatValue(SsnType.Medicaid) },
+];
+
+export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
+  { id: RegDepartment.Lab, name: formatValue(RegDepartment.Lab) },
+  { id: RegDepartment.Clinic, name: formatValue(RegDepartment.Clinic) },
+  { id: RegDepartment.Hospital, name: formatValue(RegDepartment.Hospital) },
+];
+
+export const MAPPED_HOMEBOUND: SelectorOption[] = [
+  { id: Homebound.No, name: formatValue(Homebound.No) },
+  { id: Homebound.Yes, name: formatValue(Homebound.Yes) },
+];
+
+export const MAPPED_PRONOUNS: SelectorOption[] = [
+  { id: Pronouns.He, name: formatValue(Pronouns.He) },
+  { id: Pronouns.She, name: formatValue(Pronouns.She) },
+  { id: Pronouns.None, name: formatValue(Pronouns.None) },
+
+];
+
+export const MAPPED_RACE: SelectorOption[] = [
+  { id: Race.Other, name: formatValue(Race.Other) },
+  { id: Race.Asian, name: formatValue(Race.Asian) },
+  { id: Race.White, name: formatValue(Race.White) },
+  { id: Race.BlackAfricanAmerican, name: formatValue(Race.BlackAfricanAmerican) },
+  { id: Race.BlackAfricanAmerican, name: formatValue(Race.BlackAfricanAmerican) },
+  { id: Race.AmericanIndianAlaskaNative, name: formatValue(Race.AmericanIndianAlaskaNative) },
+  { id: Race.NativeHawaiianPacificIslander, name: formatValue(Race.NativeHawaiianPacificIslander) },
+];
+
+export const MAPPED_ETHNICITY: SelectorOption[] = [
+  { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
+  { id: Ethnicity.CenteralAmerican, name: formatValue(Ethnicity.CenteralAmerican) },
+  { id: Ethnicity.CenteralAmericanIndian, name: formatValue(Ethnicity.CenteralAmericanIndian) },
+];
+
+export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
+  { id: Sexualorientation.None, name: formatValue(Sexualorientation.None) },
+  { id: Sexualorientation.DontKnow, name: formatValue(Sexualorientation.DontKnow) },
+  { id: Sexualorientation.Bisexual, name: formatValue(Sexualorientation.Bisexual) },
+  { id: Sexualorientation.Homosexual, name: formatValue(Sexualorientation.Homosexual) },
+  { id: Sexualorientation.Heterosexual, name: formatValue(Sexualorientation.Heterosexual) },
+];
+
+export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
+  { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
+  { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
+  { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
+  { id: Genderidentity.NotExclusive, name: formatValue(Genderidentity.NotExclusive) },
+  { id: Genderidentity.TransgenderMale, name: formatValue(Genderidentity.TransgenderMale) },
+  { id: Genderidentity.TransgenderFemale, name: formatValue(Genderidentity.TransgenderFemale) },
+];
+
+export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
+  { id: RelationshipType.Ward, name: formatValue(RelationshipType.Ward) },
+  { id: RelationshipType.Self, name: formatValue(RelationshipType.Self) },
+  { id: RelationshipType.Child, name: formatValue(RelationshipType.Child) },
+  { id: RelationshipType.Other, name: formatValue(RelationshipType.Other) },
+  { id: RelationshipType.Mother, name: formatValue(RelationshipType.Mother) },
+  { id: RelationshipType.Spouse, name: formatValue(RelationshipType.Spouse) },
+  { id: RelationshipType.Father, name: formatValue(RelationshipType.Father) },
+  { id: RelationshipType.Unknown, name: formatValue(RelationshipType.Unknown) },
+  { id: RelationshipType.Employee, name: formatValue(RelationshipType.Employee) },
+  { id: RelationshipType.OrganDonor, name: formatValue(RelationshipType.OrganDonor) },
+  { id: RelationshipType.Grandchild, name: formatValue(RelationshipType.Grandchild) },
+  { id: RelationshipType.LifePartner, name: formatValue(RelationshipType.LifePartner) },
+  { id: RelationshipType.Grandparent, name: formatValue(RelationshipType.Grandparent) },
+  { id: RelationshipType.NephewNiece, name: formatValue(RelationshipType.NephewNiece) },
+  { id: RelationshipType.FostherChild, name: formatValue(RelationshipType.FostherChild) },
+  { id: RelationshipType.CadaverDonor, name: formatValue(RelationshipType.CadaverDonor) },
+  { id: RelationshipType.SignificantOther, name: formatValue(RelationshipType.SignificantOther) },
+  { id: RelationshipType.EmancipatedMinor, name: formatValue(RelationshipType.EmancipatedMinor) },
+  { id: RelationshipType.InjuredPlaintiiff, name: formatValue(RelationshipType.InjuredPlaintiiff) },
+  { id: RelationshipType.SponsoredDependent, name: formatValue(RelationshipType.SponsoredDependent) },
+  { id: RelationshipType.StepsonStepdaughter, name: formatValue(RelationshipType.StepsonStepdaughter) },
+  { id: RelationshipType.ChildMotherInsurance, name: formatValue(RelationshipType.ChildMotherInsurance) },
+  { id: RelationshipType.HandicappedDependent, name: formatValue(RelationshipType.HandicappedDependent) },
+  { id: RelationshipType.ChildFatherInsurance, name: formatValue(RelationshipType.ChildFatherInsurance) },
+  { id: RelationshipType.DependentOfMinorDependent, name: formatValue(RelationshipType.DependentOfMinorDependent) },
+  { id: RelationshipType.StepsonStepdaughterStepmotherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepmotherInsrtance) },
+  { id: RelationshipType.StepsonStepdaughterStepfatherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsrtance) },
 ];
 
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
 export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
+export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
@@ -735,6 +728,7 @@ export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE }
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: '' }
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
+export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: '' }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
 export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }

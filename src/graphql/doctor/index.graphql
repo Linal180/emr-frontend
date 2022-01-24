@@ -70,6 +70,7 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
         address
         address2
         zipCode
+        serviceCode
         city
         state
         country
@@ -214,6 +215,7 @@ query GetDoctor($getDoctor: GetDoctor!) {
         fax
         address
         address2
+        serviceCode
         zipCode
         city
         state

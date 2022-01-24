@@ -5,11 +5,8 @@ query FindAllPatient($patientInput: PatientInput!) {
       totalCount
       totalPages
     }
-
-    facilityId
-
+    
     response {
-      name
       error
       status
       message
@@ -53,30 +50,32 @@ query FindAllPatient($patientInput: PatientInput!) {
       statementNoteDateTo
       createdAt
       updatedAt
-
+      
       contacts {
         id
         email
+        phone
+        mobile
+        address
+        address2
+        city
+        state
+        zipCode
+        country
         name
         suffix
         firstName
         middleName
         lastName
-        phone
         serviceCode
-        mobile
         pager
         fax
-        address
-        address2
-        zipCode
-        city
-        state
-        country
         ssn
         employerName
         relationship
         contactType
+        createdAt
+        updatedAt
       }
 
       employer {
@@ -105,9 +104,10 @@ query FindAllPatient($patientInput: PatientInput!) {
         mammographyCertificationNumber
         npi
         serviceCode
+        createdAt
         updatedAt
       }
-
+      
       user {
         id
         email
@@ -139,6 +139,7 @@ query GetPatient($getPatient: GetPatient!) {
       firstName
       middleName
       lastName
+      suffix
       firstNameUsed
       prefferedName
       previousFirstName
@@ -172,7 +173,7 @@ query GetPatient($getPatient: GetPatient!) {
       statementNoteDateTo
       createdAt
       updatedAt
-
+      
       contacts {
         id
         email
@@ -224,6 +225,14 @@ query GetPatient($getPatient: GetPatient!) {
         mammographyCertificationNumber
         npi
         serviceCode
+        updatedAt
+      }
+      
+      usualProvider {
+        id
+        firstName
+        lastName
+        createdAt
         updatedAt
       }
 
@@ -264,3 +273,12 @@ mutation CreatePatient($createPatientInput: CreatePatientInput!){
   }
 }
 
+mutation UpdatePatient($updatePatientInput: UpdatePatientInput!){
+  updatePatient(updatePatientInput: $updatePatientInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
