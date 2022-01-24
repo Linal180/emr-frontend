@@ -18,7 +18,8 @@ import {
 } from "../../../../../generated/graphql";
 import {
   CANCEL, ADD_LOCATION, CREATE_LOCATION, ASSOCIATED_FACILITY, LOCATION_INFO, NAME, PHONE, CONTACT, EMAIL,
-  UPDATE_LOCATION_TEXT, POS, MAPPED_SERVICE_CODES, FAX, ZIP_CODE, ADDRESS_2, ADDRESS, STATE, COUNTRY, CITY
+  UPDATE_LOCATION_TEXT, POS, MAPPED_SERVICE_CODES, FAX, ZIP_CODE, ADDRESS_2, ADDRESS, STATE, COUNTRY, CITY,
+  EDIT_LOCATION
 } from "../../../../../constants";
 
 const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locationId, reload }): JSX.Element => {
@@ -26,11 +27,10 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
   const methods = useForm<extendedContactInput>({ mode: "all", resolver: yupResolver(extendedContactSchema) });
   const { reset, handleSubmit, setValue, formState: { errors } } = methods;
 
-  const handleClose = useCallback(() => {
+  const handleClose = () => {
     reset();
     setOpen && setOpen(!isOpen)
-  }, [isOpen, reset, setOpen])
-
+  }
 
   const [getContact, { loading: getContactLoading }] = useFindContactLazyQuery({
     fetchPolicy: "network-only",
@@ -101,9 +101,9 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
         const { status, message } = response;
 
         if (status && message && status === 200) {
+          Alert.success(message)
           reset();
           handleClose();
-          Alert.success(message)
           reload();
         }
       }
@@ -154,7 +154,7 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
     if (isEdit && locationId) {
       fetchContact();
     }
-  }, [fetchContact, handleClose, isEdit, locationId])
+  }, [fetchContact, isEdit, locationId])
 
   const { email: { message: emailError } = {},
     fax: { message: faxError } = {},
@@ -173,12 +173,12 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
   const disableSubmit = createContactLoading || updateContactLoading || getContactLoading
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
+    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog"
       aria-describedby="alert-dialog-description" maxWidth="md" fullWidth>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogTitle id="alert-dialog-title">
-            {ADD_LOCATION}
+          <DialogTitle id="alert-dialog">
+            {isEdit ? EDIT_LOCATION : ADD_LOCATION}
           </DialogTitle>
 
           <Box display="flex">

@@ -88,7 +88,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={FACILITY_SERVICES_ROUTE} component={FacilityServices} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
-          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id/${FACILITY_LOCATIONS_ROUTE}`} component={Locations} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_LOCATIONS_ROUTE}`} component={Locations} />
         </Switch>
       </MainLayout>
 
