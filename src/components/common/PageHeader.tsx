@@ -3,11 +3,10 @@ import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Box, Typography, Button } from "@material-ui/core";
 // interfaces/types block
-import { PageHeaderProps } from "../../interfacesTypes";
+import { IPageHeader } from "../../interfacesTypes";
 import Breadcrumb from "./Breadcrumb";
 
-const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModal }): JSX.Element => {
-
+const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModal }): JSX.Element => {
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
       <Box>
@@ -26,10 +25,8 @@ const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, link
           </Button>
         }
       </>}
-
     </Box>
   );
 };
 
 export default PageHeader;
-
