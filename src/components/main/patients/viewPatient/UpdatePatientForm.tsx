@@ -174,13 +174,24 @@ const UpdatePatientForm: FC = (): JSX.Element => {
             const guarantorContact = contacts.filter(contact => contact.contactType === ContactType.Guarandor)[0]
 
             if (guarantorContact) {
-              const { id, suffix, firstName, lastName, middleName } = guarantorContact;
+              const { id, suffix, firstName, lastName, middleName, zipCode, address, address2, city, state, country,
+                ssn, email, employerName
+              } = guarantorContact;
 
               setGuarantorContactId(id);
+              ssn && setValue("guarantorSsn", ssn)
+              city && setValue("guarantorCity", city)
+              state && setValue("guarantorState", state)
+              email && setValue("guarantorEmail", email)
               suffix && setValue("guarantorSuffix", suffix)
+              zipCode && setValue("guarantorZipCode", zipCode)
+              address && setValue("guarantorAddress", address)
+              address2 && setValue("guarantorAddress2", address2)
+              country && setValue("guarantorCountry", country)
               lastName && setValue("guarantorFirstName", lastName)
               firstName && setValue("guarantorLastName", firstName)
               middleName && setValue("guarantorMiddleName", middleName)
+              employerName && setValue("guarantorEmployerName", employerName)
 
             }
 
