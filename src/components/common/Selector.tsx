@@ -6,7 +6,7 @@ import { TextField, FormControl, FormHelperText, InputLabel } from "@material-ui
 // utils and interfaces/types block
 import { SelectorProps } from "../../interfacesTypes";
 
-const Selector: FC<SelectorProps> = ({ name, label, error, options, value }): JSX.Element => {
+const Selector: FC<SelectorProps> = ({ name, label, error, options, value, disabled }): JSX.Element => {
   const { control } = useFormContext()
 
   return (
@@ -21,6 +21,7 @@ const Selector: FC<SelectorProps> = ({ name, label, error, options, value }): JS
             options={options.length ? options : []}
             disableClearable
             value={field.value}
+            disabled={disabled}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (

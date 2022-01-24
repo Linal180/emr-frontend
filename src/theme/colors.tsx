@@ -13,6 +13,7 @@ export const BLACK_TWO = "#7E8299";
 export const BLACK_THREE = "#4A4B68";
 export const BLACK_FOUR = "#181C32";
 export const BLACK_FIVE = "#333333";
+export const BLACK_SIX = "#6C7293";
 
 export const WHITE = "#FFFFFF";
 export const WHITE_ONE = "#F2F3F5";
@@ -20,6 +21,7 @@ export const WHITE_TWO = "#E5E5E5";
 export const WHITE_THREE = "#F3F6F9";
 export const WHITE_FOUR = "#E4E6EF;";
 export const WHITE_FIVE = "#A1A5B7;";
+export const WHITE_SIX = "#F1FAFF";
 
 export const GREEN = "#1DC894";
 
@@ -29,6 +31,7 @@ export const BLUE_TWO = "#0056B1";
 export const BLUE_THREE = "#00A3FF";
 export const BLUE_FOUR = "#F1FAFF";
 export const BLUE_FIVE = "#009EF7";
+export const BLUE_SIX = "#3699FF";
 
 export const ORANGE = "#FFF9F4";
 export const ORANGE_ONE = "#F89C47";
