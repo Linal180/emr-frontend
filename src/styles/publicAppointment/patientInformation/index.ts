@@ -41,6 +41,7 @@ export const useColorLibStepIconStyles = makeStyles({
     alignItems: 'center',
     marginRight: 12,
     fontWeight: 600,
+    fontFamily: "Poppins, sans-serif",
   },
   active: {
     backgroundColor: BLUE_THREE,
