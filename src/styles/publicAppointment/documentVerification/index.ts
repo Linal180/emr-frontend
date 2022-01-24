@@ -29,18 +29,11 @@ export const documentVerificationForm = makeStyles({
 
     "& .MuiDropzoneArea-root": {
       position: "absolute",
-      top: 0,
-      right: 0,
-      left: 0,
-      bottom: 0,
+      inset: 0,
       minHeight: 0,
       opacity: 0
     }
   },
-
-
-
-
 });
 
 
