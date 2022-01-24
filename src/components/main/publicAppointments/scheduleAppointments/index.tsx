@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@material-ui/core";
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@material-ui/core";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
 import DateFnsUtils from '@date-io/date-fns';
 // components block
@@ -181,6 +181,17 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
               </li>
             </ul>
           </CardComponent>
+        </Grid>
+
+        <Grid item md={12}>
+          <Box pt={4} className={classes.buttonContainer}>
+            <Button type="submit" variant="contained">
+              Cancel Booking
+            </Button>
+            <Button type="submit" variant="contained" className='blue-button'>
+              Select
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </form>

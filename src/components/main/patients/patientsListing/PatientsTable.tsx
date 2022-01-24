@@ -13,7 +13,7 @@ import { renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE } from "../../../../constants";
+import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -128,8 +128,7 @@ const PatientsTable: FC = (): JSX.Element => {
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              {renderTh(FIRST_NAME)}
-              {renderTh(LAST_NAME)}
+              {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(ACTION, "center")}
@@ -152,8 +151,11 @@ const PatientsTable: FC = (): JSX.Element => {
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">{firstName}</TableCell>
-                    <TableCell scope="row">{lastName}</TableCell>
+                    <TableCell scope="row">
+                      <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
+                        {`${firstName} ${lastName}`}
+                      </Link>
+                    </TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">

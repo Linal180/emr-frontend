@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_FOUR, BLUE_ONE, GRAY_ONE, POPPINS, WHITE } from "../theme";
+import { BLACK_FOUR, BLUE_ONE, GRAY_ONE, POPPINS, WHITE } from "../../theme";
 
 export const usePublicAppointmentStyles = makeStyles(() =>
   createStyles({
@@ -39,6 +39,12 @@ export const usePublicAppointmentStyles = makeStyles(() =>
           color: WHITE
         }
       }
+    },
+
+    buttonContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      gap: 24,
     }
   })
 );

@@ -1,6 +1,6 @@
 // graphql and interfaces block
 import { formatValue } from '../utils';
-import { SelectorOption } from '../interfacesTypes'
+import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
   Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, RegDepartment, RelationshipType,
@@ -100,6 +100,10 @@ export const ANESTHESIA_LICENSE = "Anesthesia License";
 export const CTP_NUMBER = "DPS / CTP Number";
 export const STATE_LICENSE = "State License";
 export const LICENSE_ACTIVE_DATE = "License Active Date";
+export const ACTIVE_TEXT = "Active";
+export const SERVICE_NAME_TEXT = "Service Name";
+export const DURATION_TEXT = "Duration (In Minutes)";
+export const PRICE_TEXT = "Price (In USD)";
 export const LICENSE_TERM_DATE = "License Term Date";
 export const PRESCRIPTIVE_AUTH_NUMBER = "Prescriptive Auth number";
 export const FACILITY_IDS = "Facility IDs";
@@ -205,6 +209,8 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
+export const ADD_SERVICE = "Add Service";
+export const ADD_FACILITY_SERVICE = "Add Facility Service";
 export const ADD_LOCATION = "Add Facility Location";
 export const EDIT_LOCATION = "Edit Facility Location";
 export const UPDATE_LOCATION = "Update Facility Location";
@@ -258,6 +264,8 @@ export const USER_STATUS_PLACEHOLDER = "User Status";
 export const VIEW_SIGNED_DOCUMENT = "Signed document";
 export const MEMBERSHIP_PLAN_EVENT = "MembershipPlan";
 export const LIST_FACILITIES_TEXT = "List Facilities";
+export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
+export const FACILITY_SERVICES_TEXT = "Facility Services";
 export const CONFLICT_EXCEPTION = "Conflict Exception";
 export const FACILITIES_LISTING = "Facilities Listing";
 export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
@@ -266,6 +274,7 @@ export const DEMOGRAPHICS = "Demographics";
 export const GUARANTOR = "Guarantor";
 export const REGISTRATION_DATES = "Provider/ Registration Dates";
 export const PRIVACY = "Privacy";
+export const PRICE = "Price";
 export const EMERGENCY_CONTACT = "Emergency Contact";
 export const NEXT_OF_KIN = "Next Of Kin";
 export const EMPLOYMENT = "Employment";
@@ -353,6 +362,12 @@ export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this recor
 export const VISIT_REASON = "Reason for visit"
 export const SELECT_SERVICES = "Select Services"
 export const PATIENT_DETAILS = "Patient Details"
+export const AGREEMENT_HEADING = "User data privacy & TOS agreement."
+export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
+export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
+export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
+
 
 // Roles
 export const STAFF = "STAFF";
@@ -369,6 +384,7 @@ export const LOGIN_ROUTE = "/login";
 export const REQUESTS = "/requests";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const FACILITIES_ROUTE = "/list-facilities";
+export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const STAFF_ROUTE = "/staff";
 export const DOCTORS_ROUTE = "/doctors";
 export const PATIENTS_ROUTE = "/patients";
@@ -382,7 +398,10 @@ export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
-export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointments";
+export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
+export const PATIENT_INFORMATION = "/patient-information";
+export const PATIENT_APPOINTMENT_SUCCESS = "/patient-information/success";
+export const SLOT_CONFIRMATION = "/public-appointment/available-slot";
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -525,6 +544,10 @@ export const APP_MENU_ITEMS = [
       {
         name: LIST_FACILITIES_TEXT,
         link: FACILITIES_ROUTE,
+      },
+      {
+        name: LIST_FACILITY_SERVICES_TEXT,
+        link: FACILITY_SERVICES_ROUTE,
       },
     ],
   },
@@ -700,8 +723,34 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
   { id: RelationshipType.StepsonStepdaughterStepfatherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsrtance) },
 ];
 
+export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
+
+export const getSteps = (): StepLabelType[] => {
+  return [
+    { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
+    { title: 'Document Verification', subTitle: 'Verification information requested' },
+    { title: 'Consent Agreement', subTitle: 'Provide basic Patient Information' },
+  ];
+};
+
+export const agreementPoints = [
+  "Proin id ligula dictum, convallis enim ut, facilisis massa.Mauris a nisi ut sapien blandit imperdiet sed id lacus.Mauris auctor interdum dignissim.",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa.",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus ma",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed, posuere luctus enim. Ut sollicitudin neque at enim gravida, ut dictum est finibus. Praesent sit",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa.rtor pretium vehicula quis et ante. Aenean purus sem, pharetra et ante vel, tincidunt cursus ante.",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa.rtor pretium vehicula quis et ante. Aenean purus sem, pharetra et ante vel, tincidunt cursus ante.",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
+  "Pro in id ligula dictum, convallis enim ut, facilisis massa.Maris a nisi ut sapien blandit imperdiet sed id lacus.Mauis auctor interdum dignissim.Crasat lacus ma",
+  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis",
+]
+
+
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
+export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
 export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
