@@ -31,7 +31,7 @@ export const documentVerificationForm = makeStyles({
       position: "absolute",
       inset: 0,
       minHeight: 0,
-      opacity: 0
+      opacity: 0,
     }
   },
 });
