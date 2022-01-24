@@ -216,6 +216,7 @@ export interface SelectorProps {
   name: string
   label: string
   error?: string
+  disabled?: boolean
   value?: SelectorOption
   options: SelectorOption[]
 }
@@ -565,12 +566,13 @@ export interface PatientInputControlProps extends IControlLabel {
 
 export type PatientInputProps =
   Omit<CreatePatientItemInput, "gender" | "race" | "genderIdentity" | "maritialStatus" | "sexAtBirth"
-    | "primaryDepartment" | "registrationDepartment"
-    | "facilityId" | "usualProviderId" | "sexualOrientation" | "pronouns" | "ethnicity" | "sexualOrientation" | "genderIdentity">
-  & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption } & { sexualOrientation: SelectorOption }
-  & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { sexualOrientation: SelectorOption }
+    | "primaryDepartment" | "registrationDepartment" | "pronouns" | "ethnicity" | "sexualOrientation"
+    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity">
+  & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption } 
+  & { sexualOrientation: SelectorOption } & { sexualOrientation: SelectorOption }
+  & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { facilityId: SelectorOption }
   & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
-  & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption } & { facilityId: SelectorOption }
+  & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption } 
   & { registrationDepartment: SelectorOption }
   & BasicContactControlInputs
   & EmergencyContactControlInputs & KinContactControlInputs

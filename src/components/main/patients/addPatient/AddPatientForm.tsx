@@ -33,7 +33,7 @@ import {
   MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
   SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY, SEX_AT_BIRTH,
-  ISSUE_DATE, EXPIRATION_DATE, FAILED_TO_CREATE_PATIENT, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX, 
+  ISSUE_DATE, EXPIRATION_DATE, FAILED_TO_CREATE_PATIENT, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY,
 } from "../../../../constants";
 
@@ -74,7 +74,6 @@ const AddPatientForm: FC = (): JSX.Element => {
     }
   });
 
-
   const updateSelection = (event: ChangeEvent<HTMLInputElement>, value: string) => {
     event.persist();
     const name = event.target.name;
@@ -106,11 +105,11 @@ const AddPatientForm: FC = (): JSX.Element => {
 
       guarantorFirstName, guarantorMiddleName, guarantorLastName, guarantorEmail, guarantorRelationship,
       guarantorPhone, guarantorSuffix, guarantorAddress, guarantorAddress2, guarantorZipCode, guarantorCity,
-      guarantorState, guarantorCountry, guarantorEmployerName,
+      guarantorState, guarantorCountry, guarantorEmployerName, guarantorSsn,
 
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
 
-      userFirstName, userLastName, userPassword, userEmail, userPhone, userZipCode,
+      userFirstName, userLastName, userPassword, userPhone, userZipCode,
     } = inputs;
 
     const { id: selectedFacility } = facilityId
@@ -174,12 +173,13 @@ const AddPatientForm: FC = (): JSX.Element => {
               relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
               employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '', address: guarantorAddress || '',
               zipCode: guarantorZipCode || '', city: guarantorCity || '', state: guarantorState || '',
-              phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '', userId: userId || '',
+              phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '',
+              ssn: guarantorSsn || '',
             },
 
             createGuardianContactInput: {
               firstName: guardianFirstName || '', middleName: guardianMiddleName || '', lastName: guardianLastName || '',
-              contactType: ContactType.Guardian, suffix: guardianSuffix || '', userId: userId || '',
+              contactType: ContactType.Guardian, suffix: guardianSuffix || ''
             },
 
             createNextOfKinContactInput: {
@@ -188,12 +188,12 @@ const AddPatientForm: FC = (): JSX.Element => {
             },
 
             createEmployerInput: {
-              name: employerName || '', email: employerEmail || '', phone: employerPhone || '',
+              name: employerName || '', email: employerEmail || 'test@gmail.com', phone: employerPhone || '',
               usualOccupation: employerUsualOccupation || '', industry: employerIndustry || '',
             },
 
             registerUserInput: {
-              firstName: userFirstName || '', lastName: userLastName || '', email: userEmail || '',
+              firstName: userFirstName || '', lastName: userLastName || '', email: basicEmail || '',
               facilityId: selectedFacility, phone: userPhone || '', zipCode: userZipCode || '',
               password: userPassword || '', adminId: userId || '', roleType: UserRole.Patient
             }
@@ -1062,7 +1062,7 @@ const AddPatientForm: FC = (): JSX.Element => {
 
                 <Grid item md={12} sm={12} xs={12}>
                   <PatientController
-                    fieldType="text"
+                    fieldType="email"
                     controllerName="guarantorEmail"
                     controllerLabel={EMAIL}
                     error={guarantorEmailError}
