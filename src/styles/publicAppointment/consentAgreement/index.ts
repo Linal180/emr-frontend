@@ -12,14 +12,11 @@ export const consentAgreement = makeStyles({
       color: GRAY_TWO,
     },
 
-
     "& .MuiCheckbox-root .MuiSvgIcon-root": {
       width: 24,
       height: 24,
     }
   },
-
-
 });
 
 

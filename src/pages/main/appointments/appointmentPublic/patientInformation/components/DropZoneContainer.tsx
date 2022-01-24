@@ -4,6 +4,7 @@ import { FormVerification } from '../../../../../../interfacesTypes';
 import { documentVerificationForm } from '../../../../../../styles/publicAppointment/documentVerification';
 import { BLUE_ONE } from '../../../../../../theme';
 import { DropzoneArea } from 'material-ui-dropzone';
+import { FileIcon } from '../../../../../../assets/svgs';
 
 const DropZoneContainer: FC<FormVerification> = ({ imageSide }) => {
   const classes = documentVerificationForm()
@@ -11,7 +12,7 @@ const DropZoneContainer: FC<FormVerification> = ({ imageSide }) => {
   return (
     <Box display="flex" className={classes.dropZoneContainer}>
       <Box >
-        <img src="/images/file-image.jpg" alt='file icon' />
+        <FileIcon />
         <Typography component="p" variant="body2">{imageSide}</Typography>
       </Box>
 
