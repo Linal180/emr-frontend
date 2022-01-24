@@ -65,6 +65,7 @@ query FindAllPatient($patientInput: PatientInput!) {
         name
         suffix
         firstName
+        primaryContact
         middleName
         lastName
         serviceCode
@@ -184,6 +185,7 @@ query GetPatient($getPatient: GetPatient!) {
         lastName
         phone
         serviceCode
+        primaryContact
         mobile
         pager
         fax

@@ -330,13 +330,16 @@ const UpdatePatientForm: FC = (): JSX.Element => {
             },
 
             updateContactInput: {
-              id: basicContactId, contactType: ContactType.Self, country: basicCountry || '', email: basicEmail || '', state: basicState || '',
-              facilityId: selectedFacility || '', phone: basicPhone || '', mobile: basicMobile || '',
-              address2: basicAddress2 || '', address: basicAddress || '', zipCode: basicZipCode || '', city: basicCity || '',
+              id: basicContactId, contactType: ContactType.Self, country: basicCountry || '', email: basicEmail || '',
+              state: basicState || '', facilityId: selectedFacility || '', phone: basicPhone || '',
+              mobile: basicMobile || '', address2: basicAddress2 || '', address: basicAddress || '',
+              zipCode: basicZipCode || '', city: basicCity || ''
+
             },
 
             updateEmergencyContactInput: {
-              id: emergencyContactId, contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '', mobile: emergencyMobile || '',
+              id: emergencyContactId, contactType: ContactType.Emergency, name: emergencyName || '',
+              phone: emergencyPhone || '', mobile: emergencyMobile || '', primaryContact: false,
               relationship: selectedEmergencyRelationship as RelationshipType || RelationshipType.Other,
             },
 
@@ -347,16 +350,18 @@ const UpdatePatientForm: FC = (): JSX.Element => {
               employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '', address: guarantorAddress || '',
               zipCode: guarantorZipCode || '', city: guarantorCity || '', state: guarantorState || '',
               phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '',
-              userId: userId || '', ssn: guarantorSsn || '',
+              userId: userId || '', ssn: guarantorSsn || '', primaryContact: false,
             },
 
             updateGuardianContactInput: {
-              id: guardianContactId, firstName: guardianFirstName || '', middleName: guardianMiddleName || '', lastName: guardianLastName || '',
-              contactType: ContactType.Guardian, suffix: guardianSuffix || '', userId: userId || '',
+              id: guardianContactId, firstName: guardianFirstName || '', middleName: guardianMiddleName || '',
+              lastName: guardianLastName || '', contactType: ContactType.Guardian, suffix: guardianSuffix || '',
+              userId: userId || '', primaryContact: false,
             },
 
             updateNextOfKinContactInput: {
-              id: kinContactId, contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '', mobile: kinMobile || '',
+              id: kinContactId, contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '',
+              mobile: kinMobile || '', primaryContact: false,
               relationship: selectedKinRelationship as RelationshipType || RelationshipType.Other,
             },
 
@@ -684,7 +689,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="emergencyName"
-                      control={control}
                       controllerLabel={NAME}
                       error={emergencyNameError}
                     />
@@ -706,7 +710,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="emergencyPhone"
-                      control={control}
                       controllerLabel={HOME_PHONE}
                       error={emergencyPhoneError}
                     />
@@ -716,7 +719,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="emergencyMobile"
-                      control={control}
                       controllerLabel={MOBILE_PHONE}
                       error={emergencyMobileError}
                     />
@@ -732,7 +734,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="kinName"
-                      control={control}
                       controllerLabel={NAME}
                       error={kinNameError}
                     />
@@ -779,7 +780,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="guardianFirstName"
-                      control={control}
                       controllerLabel={FIRST_NAME}
                       error={guardianFirstNameError}
                     />
@@ -789,7 +789,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="guardianMiddleName"
-                      control={control}
                       controllerLabel={MIDDLE_NAME}
                       error={guardianMiddleNameError}
                     />
@@ -801,7 +800,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="guardianLastName"
-                      control={control}
                       controllerLabel={LAST_NAME}
                       error={guardianLastNameError}
                     />
@@ -811,7 +809,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <PatientController
                       fieldType="text"
                       controllerName="guardianSuffix"
-                      control={control}
                       controllerLabel={SUFFIX}
                       error={guardianSuffixError}
                     />
@@ -1073,7 +1070,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                   <PatientController
                     fieldType="text"
                     controllerName="employerName"
-                    control={control}
                     controllerLabel={EMPLOYER_NAME}
                     error={employerNameError}
                   />
@@ -1083,7 +1079,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                   <PatientController
                     fieldType="text"
                     controllerName="employerPhone"
-                    control={control}
                     controllerLabel={EMPLOYER_PHONE}
                     error={employerPhoneError}
                   />
@@ -1093,7 +1088,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                   <PatientController
                     fieldType="text"
                     controllerName="employerUsualOccupation"
-                    control={control}
                     controllerLabel={USUAL_OCCUPATION}
                     error={employerUsualOccupationError}
                   />
