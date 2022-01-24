@@ -1,5 +1,6 @@
 // packages block
 import { FC, ChangeEvent, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
@@ -9,7 +10,6 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import history from "../../../../history";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
@@ -54,7 +54,7 @@ const PatientsTable: FC = (): JSX.Element => {
         }
       }
     }
-    });
+  });
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     onError() {
@@ -158,9 +158,11 @@ const PatientsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <IconButton size="small" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-                          <EditIcon />
-                        </IconButton>
+                        <Link to={`${PATIENTS_ROUTE}/${id}`}>
+                          <IconButton size="small">
+                            <EditIcon />
+                          </IconButton>
+                        </Link>
 
                         <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
