@@ -76,6 +76,10 @@ export const usePatientInformation = makeStyles({
 
   mainGrid: {
     flex: 1,
+
+    '@media (max-width:960px)': {
+      flex: "auto",
+    },
   },
 
   mainGridContainer: {

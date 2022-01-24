@@ -1,5 +1,5 @@
-import { Box, Checkbox, FormControl, FormControlLabel, Grid, Typography } from '@material-ui/core';
-import React from 'react';
+import { Box, Checkbox, FormControlLabel, Grid, Typography } from '@material-ui/core';
+
 import CardComponent from '../../../../../../../components/common/CardComponent';
 import { agreementPoints, AGREEMENT_HEADING } from '../../../../../../../constants';
 import { consentAgreement } from '../../../../../../../styles/publicAppointment/consentAgreement';
