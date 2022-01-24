@@ -141,7 +141,7 @@ export interface CardComponentType extends Children {
   requestLink?: string
 }
 
-export interface PageHeaderProps {
+export interface IPageHeader {
   isOpen?: boolean;
   setOpen?: Function;
   hasComponent?: boolean;
