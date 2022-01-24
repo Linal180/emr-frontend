@@ -174,7 +174,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
             const guarantorContact = contacts.filter(contact => contact.contactType === ContactType.Guarandor)[0]
 
             if (guarantorContact) {
-              const { id, suffix, firstName, lastName, middleName, zipCode, address, address2, city, state, country,
+              const { id, suffix, firstName, lastName, middleName, phone, zipCode, address, address2, city, state, country,
                 ssn, email, employerName
               } = guarantorContact;
 
@@ -182,6 +182,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
               ssn && setValue("guarantorSsn", ssn)
               city && setValue("guarantorCity", city)
               state && setValue("guarantorState", state)
+              phone && setValue("guarantorPhone", phone)
               email && setValue("guarantorEmail", email)
               suffix && setValue("guarantorSuffix", suffix)
               zipCode && setValue("guarantorZipCode", zipCode)
@@ -279,7 +280,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
 
       guarantorFirstName, guarantorMiddleName, guarantorLastName, guarantorEmail, guarantorRelationship,
       guarantorPhone, guarantorSuffix, guarantorAddress, guarantorAddress2, guarantorZipCode, guarantorCity,
-      guarantorState, guarantorCountry, guarantorEmployerName,
+      guarantorState, guarantorCountry, guarantorEmployerName, guarantorSsn,
 
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
     } = inputs;
@@ -345,7 +346,8 @@ const UpdatePatientForm: FC = (): JSX.Element => {
               relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
               employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '', address: guarantorAddress || '',
               zipCode: guarantorZipCode || '', city: guarantorCity || '', state: guarantorState || '',
-              phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '', userId: userId || '',
+              phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '',
+              userId: userId || '', ssn: guarantorSsn || '',
             },
 
             updateGuardianContactInput: {
@@ -461,7 +463,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
   } = errors;
 
   return (
-    <FormProvider {...methods} >
+    <FormProvider {...methods}>
       {!getPatientLoading && <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
@@ -645,6 +647,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
 
                 <Grid item md={12} sm={12} xs={12}>
                   <PatientController
+                    disabled
                     fieldType="text"
                     controllerName="basicEmail"
                     controllerLabel={EMAIL}
@@ -950,6 +953,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
 
                   <Grid item md={6} sm={12} xs={12}>
                     <Selector
+                      disabled
                       value={{ id: '', name: '' }}
                       label={USUAL_PROVIDER_ID}
                       name="usualProviderId"
@@ -1239,6 +1243,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                 <Grid item md={12} sm={12} xs={12}>
                   <PatientController
                     fieldType="text"
+                    // disabled
                     controllerName="guarantorEmail"
                     controllerLabel={EMAIL}
                     error={guarantorEmailError}

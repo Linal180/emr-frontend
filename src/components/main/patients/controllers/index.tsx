@@ -3,7 +3,7 @@ import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { FormControl, InputLabel, TextField } from "@material-ui/core";
 
-const PatientController: FC<any> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const PatientController: FC<any> = ({ controllerName, controllerLabel, fieldType, error, disabled }): JSX.Element => {
   const { control } = useFormContext()
 
   return (
@@ -20,6 +20,7 @@ const PatientController: FC<any> = ({ controllerName, controllerLabel, fieldType
           <TextField
             fullWidth
             error={invalid}
+            disabled={disabled}
             type={fieldType}
             variant="outlined"
             id={controllerName}
