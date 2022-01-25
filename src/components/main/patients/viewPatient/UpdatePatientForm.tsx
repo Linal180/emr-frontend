@@ -394,32 +394,32 @@ const UpdatePatientForm: FC = (): JSX.Element => {
   const {
     ssn: { message: ssnError } = {},
     dob: { message: dobError } = {},
-    race: { message: raceError } = {},
+    race: { id: raceError } = {},
     suffix: { message: suffixError } = {},
-    gender: { message: genderError } = {},
-    pronouns: { message: pronounsError } = {},
+    gender: { id: genderError } = {},
+    pronouns: { id: pronounsError } = {},
     language: { message: languageError } = {},
     lastName: { message: lastNameError } = {},
-    facilityId: { message: facilityError } = {},
-    ethnicity: { message: ethnicityError } = {},
+    facilityId: { id: facilityError } = {},
+    ethnicity: { id: ethnicityError } = {},
     firstName: { message: firstNameError } = {},
-    sexAtBirth: { message: sexAtBirthError } = {},
+    sexAtBirth: { id: sexAtBirthError } = {},
     middleName: { message: middleNameError } = {},
     deceasedDate: { message: deceasedDateError } = {},
     firstNameUsed: { message: firstNameUsedError } = {},
     prefferedName: { message: preferredNameError } = {},
-    maritialStatus: { message: maritalStatusError } = {},
-    genderIdentity: { message: genderIdentityError } = {},
+    maritialStatus: { id: maritalStatusError } = {},
+    genderIdentity: { id: genderIdentityError } = {},
     previouslastName: { message: previousLastNameError } = {},
     motherMaidenName: { message: motherMaidenNameError } = {},
-    primaryDepartment: { message: primaryDepartmentError } = {},
+    primaryDepartment: { id: primaryDepartmentError } = {},
     previousFirstName: { message: previousFirstNameError } = {},
-    sexualOrientation: { message: sexualOrientationError } = {},
+    sexualOrientation: { id: sexualOrientationError } = {},
     registrationDate: { message: registrationDateError } = {},
     statementNoteDateTo: { message: statementNoteDateToError } = {},
-    guarantorRelationship: { message: guarantorRelationshipError } = {},
+    guarantorRelationship: { id: guarantorRelationshipError } = {},
     statementNoteDateFrom: { message: statementNoteDateFromError } = {},
-    registrationDepartment: { message: registrationDepartmentError } = {},
+    registrationDepartment: { id: registrationDepartmentError } = {},
 
     basicCity: { message: basicCityError } = {},
     basicState: { message: basicStateError } = {},
@@ -449,12 +449,12 @@ const UpdatePatientForm: FC = (): JSX.Element => {
     emergencyName: { message: emergencyNameError } = {},
     emergencyPhone: { message: emergencyPhoneError } = {},
     emergencyMobile: { message: emergencyMobileError } = {},
-    emergencyRelationship: { message: emergencyRelationshipError } = {},
+    emergencyRelationship: { id: emergencyRelationshipError } = {},
 
     kinName: { message: kinNameError } = {},
     kinPhone: { message: kinPhoneError } = {},
     kinMobile: { message: kinMobileError } = {},
-    kinRelationship: { message: kinRelationshipError } = {},
+    kinRelationship: { id: kinRelationshipError } = {},
 
 
     employerName: { message: employerNameError } = {},
@@ -581,7 +581,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <Grid item md={6} sm={12} xs={12}>
                       <Selector
                         name="gender"
-                        error={genderError}
+                        error={genderError?.message || ""}
                         label={LEGAL_SEX}
                         value={{ id: '', name: '' }}
                         options={MAPPED_GENDER}
@@ -690,7 +690,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="emergencyRelationship"
                         label={RELATIONSHIP}
-                        error={emergencyRelationshipError}
+                        error={emergencyRelationshipError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_RELATIONSHIP_TYPE}
                       />
@@ -725,7 +725,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="kinRelationship"
                         label={RELATIONSHIP}
-                        error={kinRelationshipError}
+                        error={kinRelationshipError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_RELATIONSHIP_TYPE}
                       />
@@ -804,7 +804,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="race"
                         label={RACE}
-                        error={raceError}
+                        error={raceError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_RACE}
                       />
@@ -816,7 +816,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="ethnicity"
                         label={ETHNICITY}
-                        error={ethnicityError}
+                        error={ethnicityError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_ETHNICITY}
                       />
@@ -826,7 +826,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="maritialStatus"
                         label={MARITAL_STATUS}
-                        error={maritalStatusError}
+                        error={maritalStatusError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_MARITAL_STATUS}
                       />
@@ -838,7 +838,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="sexualOrientation"
                         label={SEXUAL_ORIENTATION}
-                        error={sexualOrientationError}
+                        error={sexualOrientationError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_SEXUAL_ORIENTATION}
                       />
@@ -848,7 +848,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="genderIdentity"
                         label={GENDER_IDENTITY}
-                        error={genderIdentityError}
+                        error={genderIdentityError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_GENDER_IDENTITY}
                       />
@@ -860,7 +860,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="sexAtBirth"
                         label={SEX_AT_BIRTH}
-                        error={sexAtBirthError}
+                        error={sexAtBirthError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_GENDER_IDENTITY}
                       />
@@ -870,7 +870,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       <Selector
                         name="pronouns"
                         label={PRONOUNS}
-                        error={pronounsError}
+                        error={pronounsError?.message || ""}
                         value={{ id: '', name: '' }}
                         options={MAPPED_PRONOUNS}
                       />
@@ -915,7 +915,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                         value={{ id: '', name: '' }}
                         label={FACILITY}
                         name="facilityId"
-                        error={facilityError}
+                        error={facilityError?.message || ""}
                         options={renderFacilities(facilityList)}
                       />
                     </Grid>
@@ -936,7 +936,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                         name="registrationDepartment"
                         value={{ id: '', name: '' }}
                         label={REGISTRATION_DEPARTMENT}
-                        error={registrationDepartmentError}
+                        error={registrationDepartmentError?.message || ""}
                         options={MAPPED_REG_DEPARTMENT}
                       />
                     </Grid>
@@ -946,7 +946,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                         name="primaryDepartment"
                         value={{ id: '', name: '' }}
                         label={PRIMARY_DEPARTMENT}
-                        error={primaryDepartmentError}
+                        error={primaryDepartmentError?.message || ""}
                         options={MAPPED_REG_DEPARTMENT}
                       />
                     </Grid>
@@ -1081,7 +1081,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <Selector
                       name="guarantorRelationship"
                       label={GUARANTOR_RELATION}
-                      error={guarantorRelationshipError}
+                      error={guarantorRelationshipError?.message || ""}
                       value={{ id: '', name: '' }}
                       options={MAPPED_RELATIONSHIP_TYPE}
                     />
