@@ -183,8 +183,8 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
                       <TableCell scope="row">{phone}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center" onClick={() => handleEdit(id || '')}>
-                          <IconButton size="small">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <IconButton size="small" onClick={() => handleEdit(id || '')}>
                             <EditIcon />
                           </IconButton>
 
