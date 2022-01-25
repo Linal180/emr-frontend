@@ -1,5 +1,5 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { BLUE_FIVE, BLUE_FOUR, GRAY_FIVE, WHITE, WHITE_THREE } from "../theme";
+import { GRAY_FIVE, WHITE, WHITE_THREE } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -33,11 +33,9 @@ export const useTableStyles = makeStyles(() => ({
   status: {
     fontWeight: 'bold',
     fontSize: '0.75rem',
-    color: BLUE_FOUR,
-    backgroundColor: BLUE_FIVE,
     borderRadius: 8,
-    padding: '10px 15px',
+    padding: '8px 15px',
     display: 'inline-block',
-    marginTop: '1rem'
   }
+  
 }))

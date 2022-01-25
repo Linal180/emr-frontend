@@ -6,6 +6,7 @@ import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
+import PhoneField from '../../../common/PhoneInput';
 import CardComponent from "../../../common/CardComponent";
 import AddFacilityController from "./AddFacilityController";
 // utils, interfaces and graphql block
@@ -139,20 +140,26 @@ const AddFacilityForm: FC = (): JSX.Element => {
                   error={nameError}
                 />
 
-                <Selector
-                  value={{ id: "", name: "" }}
-                  label={PRACTICE_TYPE}
-                  name="practiceType"
-                  error={practiceTypeError}
-                  options={MAPPED_PRACTICE_TYPES}
-                />
+                <Grid container spacing={3}>
+                  <Grid item md={6}>
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={PRACTICE_TYPE}
+                      name="practiceType"
+                      error={practiceTypeError}
+                      options={MAPPED_PRACTICE_TYPES}
+                    />
+                  </Grid>
 
-                <AddFacilityController
-                  fieldType="text"
-                  controllerName="code"
-                  controllerLabel={CODE}
-                  error={codeError}
-                />
+                  <Grid item md={6}>
+                    <AddFacilityController
+                      fieldType="text"
+                      controllerName="code"
+                      controllerLabel={CODE}
+                      error={codeError}
+                    />
+                  </Grid>
+                </Grid>
               </CardComponent>
 
               <Box pb={3} />
@@ -238,29 +245,13 @@ const AddFacilityForm: FC = (): JSX.Element => {
 
             <Grid item md={6}>
               <CardComponent cardTitle={BILLING_ADDRESS} isEdit={true}>
-                <AddFacilityController
-                  fieldType="text"
-                  controllerName="billingEmail"
-                  controllerLabel={EMAIL}
-                  error={billingEmailError}
-                />
-
                 <Grid container spacing={3}>
-                  <Grid item md={4}>
+                  <Grid item md={8}>
                     <AddFacilityController
                       fieldType="text"
-                      controllerName="billingPhone"
-                      controllerLabel={PHONE}
-                      error={billingPhoneError}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <AddFacilityController
-                      fieldType="text"
-                      controllerName="billingFax"
-                      controllerLabel={FAX}
-                      error={billingFaxError}
+                      controllerName="billingEmail"
+                      controllerLabel={EMAIL}
+                      error={billingEmailError}
                     />
                   </Grid>
 
@@ -271,6 +262,16 @@ const AddFacilityForm: FC = (): JSX.Element => {
                       controllerLabel={ZIP}
                       error={billingZipCodeError}
                     />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="billingPhone" error={billingPhoneError} label={PHONE} />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="billingFax" error={billingFaxError} label={FAX} />
                   </Grid>
                 </Grid>
 
@@ -322,29 +323,13 @@ const AddFacilityForm: FC = (): JSX.Element => {
               <Box pb={3} />
 
               <CardComponent cardTitle={FACILITY_CONTACT} isEdit={true}>
-                <AddFacilityController
-                  fieldType="text"
-                  controllerName="email"
-                  controllerLabel={EMAIL}
-                  error={emailError}
-                />
-
                 <Grid container spacing={3}>
-                  <Grid item md={4}>
+                  <Grid item md={8}>
                     <AddFacilityController
                       fieldType="text"
-                      controllerName="phone"
-                      controllerLabel={PHONE}
-                      error={phoneError}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <AddFacilityController
-                      fieldType="text"
-                      controllerName="fax"
-                      controllerLabel={FAX}
-                      error={faxError}
+                      controllerName="email"
+                      controllerLabel={EMAIL}
+                      error={emailError}
                     />
                   </Grid>
 
@@ -355,6 +340,16 @@ const AddFacilityForm: FC = (): JSX.Element => {
                       controllerLabel={ZIP}
                       error={zipCodeError}
                     />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="phone" error={phoneError} label={PHONE} />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="fax" error={faxError} label={FAX} />
                   </Grid>
                 </Grid>
 

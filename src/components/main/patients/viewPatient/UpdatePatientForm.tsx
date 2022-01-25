@@ -9,6 +9,7 @@ import {
 import Alert from "../../../common/Alert";
 import PatientController from "../controllers";
 import Selector from '../../../common/Selector';
+import PhoneField from '../../../common/PhoneInput';
 import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
@@ -37,6 +38,7 @@ import {
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT, PATIENT_NOT_FOUND,
 } from "../../../../constants";
 import { useParams } from 'react-router-dom';
+import BackdropLoader from '../../../common/Backdrop';
 
 const UpdatePatientForm: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -82,7 +84,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
           } = patient;
 
           if (usualProvider) {
-            const { id: usualProviderId, firstName, lastName } = usualProvider[0];
+            const { id: usualProviderId, firstName, lastName } = usualProvider[0] || {};
             usualProviderId && setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}` || ''))
           }
 
@@ -469,802 +471,767 @@ const UpdatePatientForm: FC = (): JSX.Element => {
 
   return (
     <FormProvider {...methods}>
-      {!getPatientLoading && <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
-          <Grid container spacing={3}>
-            <Grid md={6} item>
-              <CardComponent cardTitle={IDENTIFICATION}>
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+      {getPatientLoading ? <BackdropLoader loading={getPatientLoading} /> :
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+            <Grid container spacing={3}>
+              <Grid md={6} item>
+                <CardComponent cardTitle={IDENTIFICATION}>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="suffix"
+                        controllerLabel={SUFFIX}
+                        error={suffixError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="firstName"
+                        controllerLabel={FIRST_NAME}
+                        error={firstNameError}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="middleName"
+                        controllerLabel={MIDDLE_NAME}
+                        error={middleNameError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="lastName"
+                        controllerLabel={LAST_NAME}
+                        error={lastNameError}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="firstNameUsed"
+                        controllerLabel={FIRST_NAME_USED}
+                        error={firstNameUsedError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="prefferedName"
+                        controllerLabel={PREFERRED_NAME}
+                        error={preferredNameError}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="previousFirstName"
+                        controllerLabel={PREVIOUS_FIRST_NAME}
+                        error={previousFirstNameError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="previouslastName"
+                        controllerLabel={PREVIOUS_LAST_NAME}
+                        error={previousLastNameError}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="motherMaidenName"
+                        controllerLabel={MOTHERS_MAIDEN_NAME}
+                        error={motherMaidenNameError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="ssn"
+                        controllerLabel={SSN}
+                        error={ssnError}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="gender"
+                        error={genderError}
+                        label={LEGAL_SEX}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_GENDER}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <DatePicker name="dob" label={DOB} error={dobError || ''} />
+                    </Grid>
+                  </Grid>
+                </CardComponent>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={CONTACT_INFORMATION}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
-                      controllerName="suffix"
-                      controllerLabel={SUFFIX}
-                      error={suffixError}
+                      controllerName="basicZipCode"
+                      controllerLabel={ZIP_CODE}
+                      error={basicZipCodeError}
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
-                      controllerName="firstName"
-                      controllerLabel={FIRST_NAME}
-                      error={firstNameError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="middleName"
-                      controllerLabel={MIDDLE_NAME}
-                      error={middleNameError}
+                      controllerName="basicAddress"
+                      controllerLabel={ADDRESS}
+                      error={basicAddressError}
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
-                      controllerName="lastName"
-                      controllerLabel={LAST_NAME}
-                      error={lastNameError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="firstNameUsed"
-                      controllerLabel={FIRST_NAME_USED}
-                      error={firstNameUsedError}
+                      controllerName="basicAddress2"
+                      controllerLabel={ADDRESS_2}
+                      error={basicAddress2Error}
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="prefferedName"
-                      controllerLabel={PREFERRED_NAME}
-                      error={preferredNameError}
-                    />
-                  </Grid>
-                </Grid>
+                  <Grid container spacing={3}>
+                    <Grid item md={4}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="basicCity"
+                        controllerLabel={CITY}
+                        error={basicCityError}
+                      />
+                    </Grid>
 
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="previousFirstName"
-                      controllerLabel={PREVIOUS_FIRST_NAME}
-                      error={previousFirstNameError}
-                    />
+                    <Grid item md={4}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="basicState"
+                        controllerLabel={STATE}
+                        error={basicStateError}
+                      />
+                    </Grid>
+
+                    <Grid item md={4}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="basicCountry"
+                        controllerLabel={COUNTRY}
+                        error={basicCountryError}
+                      />
+                    </Grid>
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
-                      controllerName="previouslastName"
-                      controllerLabel={PREVIOUS_LAST_NAME}
-                      error={previousLastNameError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="motherMaidenName"
-                      controllerLabel={MOTHERS_MAIDEN_NAME}
-                      error={motherMaidenNameError}
+                      controllerName="basicEmail"
+                      controllerLabel={EMAIL}
+                      error={basicEmailError}
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="ssn"
-                      controllerLabel={SSN}
-                      error={ssnError}
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PhoneField name="basicPhone" error={basicPhoneError} label={HOME_PHONE} />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PhoneField name="basicMobile" error={basicMobileError} label={MOBILE_PHONE} />
+                    </Grid>
+                  </Grid>
+                </CardComponent>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={EMERGENCY_CONTACT}>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="emergencyName"
+                        controllerLabel={NAME}
+                        error={emergencyNameError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="emergencyRelationship"
+                        label={RELATIONSHIP}
+                        error={emergencyRelationshipError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_RELATIONSHIP_TYPE}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PhoneField name="emergencyPhone" error={emergencyPhoneError} label={HOME_PHONE} />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PhoneField name="emergencyMobile" error={emergencyMobileError} label={MOBILE_PHONE} />
+                    </Grid>
+                  </Grid>
+                </CardComponent>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={NEXT_OF_KIN}>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="kinName"
+                        controllerLabel={NAME}
+                        error={kinNameError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="kinRelationship"
+                        label={RELATIONSHIP}
+                        error={kinRelationshipError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_RELATIONSHIP_TYPE}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PhoneField name="kinPhone" error={kinPhoneError} label={HOME_PHONE} />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PhoneField name="kinMobile" error={kinMobileError} label={MOBILE_PHONE} />
+                    </Grid>
+                  </Grid>
+                </CardComponent>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={GUARDIAN}>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guardianFirstName"
+                        controllerLabel={FIRST_NAME}
+                        error={guardianFirstNameError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guardianMiddleName"
+                        controllerLabel={MIDDLE_NAME}
+                        error={guardianMiddleNameError}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guardianLastName"
+                        controllerLabel={LAST_NAME}
+                        error={guardianLastNameError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guardianSuffix"
+                        controllerLabel={SUFFIX}
+                        error={guardianSuffixError}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardComponent>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={DEMOGRAPHICS}>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="language"
+                        controllerLabel={LANGUAGE_SPOKEN}
+                        error={languageError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="race"
+                        label={RACE}
+                        error={raceError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_RACE}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="ethnicity"
+                        label={ETHNICITY}
+                        error={ethnicityError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_ETHNICITY}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="maritialStatus"
+                        label={MARITAL_STATUS}
+                        error={maritalStatusError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_MARITAL_STATUS}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="sexualOrientation"
+                        label={SEXUAL_ORIENTATION}
+                        error={sexualOrientationError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_SEXUAL_ORIENTATION}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="genderIdentity"
+                        label={GENDER_IDENTITY}
+                        error={genderIdentityError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_GENDER_IDENTITY}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="sexAtBirth"
+                        label={SEX_AT_BIRTH}
+                        error={sexAtBirthError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_GENDER_IDENTITY}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="pronouns"
+                        label={PRONOUNS}
+                        error={pronounsError}
+                        value={{ id: '', name: '' }}
+                        options={MAPPED_PRONOUNS}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid item md={12} sm={12} xs={12}>
+                    <Controller
+                      name="homeBound"
+                      control={control}
+                      render={() => {
+                        return (
+                          <FormControl fullWidth margin='normal'>
+                            <InputLabel id="demo-customized-select-label-gender" shrink>{HOMEBOUND}</InputLabel>
+                            <RadioGroup
+                              name="value"
+                              value={selection.value}
+                              onChange={updateSelection}
+                            >
+                              {MAPPED_HOMEBOUND.map(homeBound => (
+                                <FormControlLabel
+                                  label={homeBound.name}
+                                  key={homeBound.id}
+                                  value={homeBound.name}
+                                  control={<Radio color="primary" />}
+                                />
+                              ))}
+                            </RadioGroup>
+                          </FormControl>
+                        )
+                      }}
                     />
                   </Grid>
-                </Grid>
+                </CardComponent>
+              </Grid>
 
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+              <Grid md={6} item>
+                <CardComponent cardTitle={REGISTRATION_DATES}>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        value={{ id: '', name: '' }}
+                        label={FACILITY}
+                        name="facilityId"
+                        error={facilityError}
+                        options={renderFacilities(facilityList)}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        value={{ id: '', name: '' }}
+                        label={USUAL_PROVIDER_ID}
+                        name="usualProviderId"
+                        options={renderDoctors(doctorList)}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="registrationDepartment"
+                        value={{ id: '', name: '' }}
+                        label={REGISTRATION_DEPARTMENT}
+                        error={registrationDepartmentError}
+                        options={MAPPED_REG_DEPARTMENT}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        name="primaryDepartment"
+                        value={{ id: '', name: '' }}
+                        label={PRIMARY_DEPARTMENT}
+                        error={primaryDepartmentError}
+                        options={MAPPED_REG_DEPARTMENT}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <DatePicker name="registrationDate" label={REGISTRATION_DATE} error={registrationDateError || ''} />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <DatePicker name="deceasedDate" label={DECREASED_DATE} error={deceasedDateError || ''} />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <DatePicker name="statementNoteDateFrom" label={ISSUE_DATE} error={statementNoteDateFromError || ''} />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <DatePicker name="statementNoteDateTo" label={EXPIRATION_DATE} error={statementNoteDateToError || ''} />
+                    </Grid>
+                  </Grid>
+                </CardComponent>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={PRIVACY}>
+                  <Grid item md={12} sm={12} xs={12}>
+                    <FormControl component="fieldset">
+                      <FormLabel component="legend">{NOTICE_ON_FILE}</FormLabel>
+                      <FormGroup>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={state.one}
+                              onChange={handleChangeForCheckBox("one")}
+                            />
+                          }
+                          label="Privacy Notice"
+                        />
+
+                        <FormControlLabel
+                          control={
+                            <Checkbox checked={state.two} onChange={handleChangeForCheckBox("two")} />
+                          }
+                          label="Release of Billing Information and Assignment of Benefits"
+                        />
+                      </FormGroup>
+                    </FormControl>
+
+                    <Box display="flex" flexDirection="row">
+                      <FormControl component="fieldset">
+                        <FormGroup>
+                          <Box mr={3} mb={2} mt={2}>
+                            <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
+                            <FormControlLabel
+                              control={
+                                <Checkbox checked={state.three} onChange={handleChangeForCheckBox("three")} />
+                              }
+                              label="Granted"
+                            />
+                          </Box>
+                        </FormGroup>
+                      </FormControl>
+
+                      <FormControl component="fieldset">
+                        <FormGroup>
+                          <Box ml={3} mt={2} mb={2}>
+                            <FormLabel component="legend">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={state.four}
+                                  onChange={handleChangeForCheckBox("four")}
+                                />
+                              }
+                              label="Granted"
+                            />
+                          </Box>
+                        </FormGroup>
+                      </FormControl>
+                    </Box>
+                  </Grid>
+                </CardComponent>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={EMPLOYMENT}>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="employerName"
+                        controllerLabel={EMPLOYER_NAME}
+                        error={employerNameError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PhoneField name="employerPhone" error={employerPhoneError} label={EMPLOYER_PHONE} />
+                    </Grid>
+                  </Grid>
+
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="employerUsualOccupation"
+                        controllerLabel={USUAL_OCCUPATION}
+                        error={employerUsualOccupationError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="employerIndustry"
+                        controllerLabel={USUAL_INDUSTRY}
+                        error={employerIndustryError}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardComponent>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={GUARANTOR}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <Selector
-                      name="gender"
-                      error={genderError}
-                      label={LEGAL_SEX}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_GENDER}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
-                  </Grid>
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={CONTACT_INFORMATION}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="basicZipCode"
-                    controllerLabel={ZIP_CODE}
-                    error={basicZipCodeError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="basicAddress"
-                    controllerLabel={ADDRESS}
-                    error={basicAddressError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="basicAddress2"
-                    controllerLabel={ADDRESS_2}
-                    error={basicAddress2Error}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={4}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="basicCity"
-                      controllerLabel={CITY}
-                      error={basicCityError}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="basicState"
-                      controllerLabel={STATE}
-                      error={basicStateError}
-                    />
-                  </Grid>
-
-                  <Grid item md={4}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="basicCountry"
-                      controllerLabel={COUNTRY}
-                      error={basicCountryError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    disabled
-                    fieldType="text"
-                    controllerName="basicEmail"
-                    controllerLabel={EMAIL}
-                    error={basicEmailError}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="basicPhone"
-                      controllerLabel={HOME_PHONE}
-                      error={basicPhoneError}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="basicMobile"
-                      controllerLabel={MOBILE_PHONE}
-                      error={basicMobileError}
-                    />
-                  </Grid>
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={EMERGENCY_CONTACT}>
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="emergencyName"
-                      controllerLabel={NAME}
-                      error={emergencyNameError}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="emergencyRelationship"
-                      label={RELATIONSHIP}
-                      error={emergencyRelationshipError}
+                      name="guarantorRelationship"
+                      label={GUARANTOR_RELATION}
+                      error={guarantorRelationshipError}
                       value={{ id: '', name: '' }}
                       options={MAPPED_RELATIONSHIP_TYPE}
                     />
                   </Grid>
-                </Grid>
 
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="emergencyPhone"
-                      controllerLabel={HOME_PHONE}
-                      error={emergencyPhoneError}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="emergencyMobile"
-                      controllerLabel={MOBILE_PHONE}
-                      error={emergencyMobileError}
-                    />
-                  </Grid>
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={NEXT_OF_KIN}>
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="kinName"
-                      controllerLabel={NAME}
-                      error={kinNameError}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="kinRelationship"
-                      label={RELATIONSHIP}
-                      error={kinRelationshipError}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_RELATIONSHIP_TYPE}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="kinPhone"
-                      controllerLabel={HOME_PHONE}
-                      error={kinPhoneError}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="kinMobile"
-                      controllerLabel={MOBILE_PHONE}
-                      error={kinMobileError}
-                    />
-                  </Grid>
-                </Grid>
-
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={GUARDIAN}>
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guardianFirstName"
-                      controllerLabel={FIRST_NAME}
-                      error={guardianFirstNameError}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guardianMiddleName"
-                      controllerLabel={MIDDLE_NAME}
-                      error={guardianMiddleNameError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guardianLastName"
-                      controllerLabel={LAST_NAME}
-                      error={guardianLastNameError}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guardianSuffix"
-                      controllerLabel={SUFFIX}
-                      error={guardianSuffixError}
-                    />
-                  </Grid>
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={DEMOGRAPHICS}>
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="language"
-                      controllerLabel={LANGUAGE_SPOKEN}
-                      error={languageError}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="race"
-                      label={RACE}
-                      error={raceError}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_RACE}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="ethnicity"
-                      label={ETHNICITY}
-                      error={ethnicityError}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_ETHNICITY}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="maritialStatus"
-                      label={MARITAL_STATUS}
-                      error={maritalStatusError}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_MARITAL_STATUS}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="sexualOrientation"
-                      label={SEXUAL_ORIENTATION}
-                      error={sexualOrientationError}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_SEXUAL_ORIENTATION}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="genderIdentity"
-                      label={GENDER_IDENTITY}
-                      error={genderIdentityError}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_GENDER_IDENTITY}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="sexAtBirth"
-                      label={SEX_AT_BIRTH}
-                      error={sexAtBirthError}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_GENDER_IDENTITY}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="pronouns"
-                      label={PRONOUNS}
-                      error={pronounsError}
-                      value={{ id: '', name: '' }}
-                      options={MAPPED_PRONOUNS}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="homeBound"
-                    control={control}
-                    render={() => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>{HOMEBOUND}</InputLabel>
-                          <RadioGroup
-                            name="value"
-                            value={selection.value}
-                            onChange={updateSelection}
-                          >
-                            {MAPPED_HOMEBOUND.map(homeBound => (
-                              <FormControlLabel
-                                label={homeBound.name}
-                                key={homeBound.id}
-                                value={homeBound.name}
-                                control={<Radio color="primary" />}
-                              />
-                            ))}
-                          </RadioGroup>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-              </CardComponent>
-            </Grid>
-
-            <Grid md={6} item>
-              <CardComponent cardTitle={REGISTRATION_DATES}>
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      value={{ id: '', name: '' }}
-                      label={FACILITY}
-                      name="facilityId"
-                      error={facilityError}
-                      options={renderFacilities(facilityList)}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      disabled
-                      value={{ id: '', name: '' }}
-                      label={USUAL_PROVIDER_ID}
-                      name="usualProviderId"
-                      options={renderDoctors(doctorList)}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="registrationDepartment"
-                      value={{ id: '', name: '' }}
-                      label={REGISTRATION_DEPARTMENT}
-                      error={registrationDepartmentError}
-                      options={MAPPED_REG_DEPARTMENT}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Selector
-                      name="primaryDepartment"
-                      value={{ id: '', name: '' }}
-                      label={PRIMARY_DEPARTMENT}
-                      error={primaryDepartmentError}
-                      options={MAPPED_REG_DEPARTMENT}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="registrationDate" label={REGISTRATION_DATE} error={registrationDateError || ''} />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="deceasedDate" label={DECREASED_DATE} error={deceasedDateError || ''} />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="statementNoteDateFrom" label={ISSUE_DATE} error={statementNoteDateFromError || ''} />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="statementNoteDateTo" label={EXPIRATION_DATE} error={statementNoteDateToError || ''} />
-                  </Grid>
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={PRIVACY}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <FormControl component="fieldset">
-                    <FormLabel component="legend">{NOTICE_ON_FILE}</FormLabel>
-                    <FormGroup>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={state.one}
-                            onChange={handleChangeForCheckBox("one")}
-                          />
-                        }
-                        label="Privacy Notice"
-                      />
-
-                      <FormControlLabel
-                        control={
-                          <Checkbox checked={state.two} onChange={handleChangeForCheckBox("two")} />
-                        }
-                        label="Release of Billing Information and Assignment of Benefits"
-                      />
-                    </FormGroup>
-                  </FormControl>
-
-                  <Box display="flex" flexDirection="row">
-                    <FormControl component="fieldset">
-                      <FormGroup>
-                        <Box mr={3} mb={2} mt={2}>
-                          <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
-                          <FormControlLabel
-                            control={
-                              <Checkbox checked={state.three} onChange={handleChangeForCheckBox("three")} />
-                            }
-                            label="Granted"
-                          />
-                        </Box>
-                      </FormGroup>
-                    </FormControl>
-
-                    <FormControl component="fieldset">
-                      <FormGroup>
-                        <Box ml={3} mt={2} mb={2}>
-                          <FormLabel component="legend">{MEDICATION_HISTORY_AUTHORITY}</FormLabel>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={state.four}
-                                onChange={handleChangeForCheckBox("four")}
-                              />
-                            }
-                            label="Granted"
-                          />
-                        </Box>
-                      </FormGroup>
-                    </FormControl>
+                  <Box pb={2}>
+                    <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
                   </Box>
-                </Grid>
-              </CardComponent>
 
-              <Box pb={3} />
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guarantorSuffix"
+                        controllerLabel={SUFFIX}
+                        error={guarantorSuffixError}
+                      />
+                    </Grid>
 
-              <CardComponent cardTitle={EMPLOYMENT}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="employerName"
-                    controllerLabel={EMPLOYER_NAME}
-                    error={employerNameError}
-                  />
-                </Grid>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guarantorFirstName"
+                        controllerLabel={FIRST_NAME}
+                        error={guarantorFirstNameError}
+                      />
+                    </Grid>
+                  </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="employerPhone"
-                    controllerLabel={EMPLOYER_PHONE}
-                    error={employerPhoneError}
-                  />
-                </Grid>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guarantorMiddleName"
+                        controllerLabel={MIDDLE_NAME}
+                        error={guarantorMiddleNameError}
+                      />
+                    </Grid>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guarantorLastName"
+                        controllerLabel={LAST_NAME}
+                        error={guarantorLastNameError}
+                      />
+                    </Grid>
+                  </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="employerUsualOccupation"
-                    controllerLabel={USUAL_OCCUPATION}
-                    error={employerUsualOccupationError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="employerIndustry"
-                    controllerLabel={USUAL_INDUSTRY}
-                    error={employerIndustryError}
-                  />
-                </Grid>
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={GUARANTOR}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="guarantorRelationship"
-                    label={GUARANTOR_RELATION}
-                    error={guarantorRelationshipError}
-                    value={{ id: '', name: '' }}
-                    options={MAPPED_RELATIONSHIP_TYPE}
-                  />
-                </Grid>
-
-                <Box pb={2}>
-                  <FormLabel component="legend">{GUARANTOR_NOTE}</FormLabel>
-                </Box>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
-                      controllerName="guarantorSuffix"
-                      controllerLabel={SUFFIX}
-                      error={guarantorSuffixError}
+                      controllerName="guarantorZipCode"
+                      controllerLabel={ZIP_CODE}
+                      error={guarantorZipCodeError}
                     />
                   </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
-                      controllerName="guarantorFirstName"
-                      controllerLabel={FIRST_NAME}
-                      error={guarantorFirstNameError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guarantorMiddleName"
-                      controllerLabel={MIDDLE_NAME}
-                      error={guarantorMiddleNameError}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guarantorLastName"
-                      controllerLabel={LAST_NAME}
-                      error={guarantorLastNameError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="guarantorZipCode"
-                    controllerLabel={ZIP_CODE}
-                    error={guarantorZipCodeError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="guarantorAddress"
-                    controllerLabel={ADDRESS}
-                    error={guarantorAddressError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="guarantorAddress2"
-                    controllerLabel={ADDRESS_2}
-                    error={guarantorAddress2Error}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={4}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guarantorCity"
-                      controllerLabel={CITY}
-                      error={guarantorCityError}
+                      controllerName="guarantorAddress"
+                      controllerLabel={ADDRESS}
+                      error={guarantorAddressError}
                     />
                   </Grid>
 
-                  <Grid item md={4}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
-                      controllerName="guarantorState"
-                      controllerLabel={STATE}
-                      error={guarantorStateError}
+                      controllerName="guarantorAddress2"
+                      controllerLabel={ADDRESS_2}
+                      error={guarantorAddress2Error}
                     />
                   </Grid>
 
-                  <Grid item md={4}>
+                  <Grid container spacing={3}>
+                    <Grid item md={4}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guarantorCity"
+                        controllerLabel={CITY}
+                        error={guarantorCityError}
+                      />
+                    </Grid>
+
+                    <Grid item md={4}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guarantorState"
+                        controllerLabel={STATE}
+                        error={guarantorStateError}
+                      />
+                    </Grid>
+
+                    <Grid item md={4}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guarantorCountry"
+                        controllerLabel={COUNTRY}
+                        error={guarantorCountryError}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PatientController
+                        fieldType="text"
+                        controllerName="guarantorSsn"
+                        controllerLabel={SSN}
+                        error={guarantorSsnError}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+                      <PhoneField name="guarantorPhone" error={guarantorPhoneError} label={PHONE} />
+                    </Grid>
+                  </Grid>
+
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
-                      fieldType="text"
-                      controllerName="guarantorCountry"
-                      controllerLabel={COUNTRY}
-                      error={guarantorCountryError}
+                      disabled
+                      fieldType="email"
+                      controllerName="guarantorEmail"
+                      controllerLabel={EMAIL}
+                      error={guarantorEmailError}
                     />
                   </Grid>
-                </Grid>
 
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
+                  <Grid item md={12} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
-                      controllerName="guarantorSsn"
-                      controllerLabel={SSN}
-                      error={guarantorSsnError}
+                      controllerName="guarantorEmployerName"
+                      controllerLabel={EMPLOYER}
+                      error={guarantorEmployerNameError}
                     />
                   </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guarantorPhone"
-                      controllerLabel={PHONE}
-                      error={guarantorPhoneError}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    // disabled
-                    controllerName="guarantorEmail"
-                    controllerLabel={EMAIL}
-                    error={guarantorEmailError}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="guarantorEmployerName"
-                    controllerLabel={EMPLOYER}
-                    error={guarantorEmployerNameError}
-                  />
-                </Grid>
-              </CardComponent>
+                </CardComponent>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
 
-        <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={loading}>
-            {UPDATE_PATIENT}
-            {loading && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>
+          <Box display="flex" justifyContent="flex-end" pt={2}>
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+              {UPDATE_PATIENT}
+              {loading && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
 
-      </form>
+        </form>
       }
     </FormProvider>
 

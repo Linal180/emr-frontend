@@ -8,6 +8,7 @@ import Alert from "../../../common/Alert";
 import DoctorController from "../controllers";
 import Selector from '../../../common/Selector';
 import DatePicker from "../../../common/DatePicker";
+import PhoneField from '../../../common/PhoneInput';
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
@@ -381,21 +382,11 @@ const AddDoctorForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="text"
-                      controllerName="billingPhone"
-                      error={billingPhoneError}
-                      controllerLabel={PHONE}
-                    />
+                    <PhoneField name="billingPhone" error={billingPhoneError} label={PHONE} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="text"
-                      controllerName="billingFax"
-                      error={billingFaxError}
-                      controllerLabel={FAX}
-                    />
+                    <PhoneField name="billingFax" error={billingFaxError} label={FAX} />
                   </Grid>
                 </Grid>
 
@@ -538,21 +529,11 @@ const AddDoctorForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="text"
-                      controllerName="phone"
-                      error={phoneError}
-                      controllerLabel={PHONE}
-                    />
+                    <PhoneField name="phone" error={phoneError} label={PHONE} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <DoctorController
-                      fieldType="text"
-                      controllerName="mobile"
-                      error={mobileError}
-                      controllerLabel={MOBILE}
-                    />
+                    <PhoneField name="mobile" error={mobileError} label={MOBILE} />
                   </Grid>
                 </Grid>
 

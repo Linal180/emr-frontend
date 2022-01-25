@@ -16,6 +16,7 @@ query FindAllPatient($patientInput: PatientInput!) {
       id
       firstName
       middleName
+      email
       lastName
       firstNameUsed
       prefferedName
@@ -105,20 +106,6 @@ query FindAllPatient($patientInput: PatientInput!) {
         mammographyCertificationNumber
         npi
         serviceCode
-        createdAt
-        updatedAt
-      }
-      
-      user {
-        id
-        email
-        token
-        status
-        userId
-        userType
-        inviteSentAt
-        emailVerified
-        inviteAcceptedAt
         createdAt
         updatedAt
       }
@@ -236,6 +223,7 @@ query GetPatient($getPatient: GetPatient!) {
         lastName
         createdAt
         updatedAt
+        
         schedule {
           id
           startAt
@@ -244,20 +232,6 @@ query GetPatient($getPatient: GetPatient!) {
           createdAt
           updatedAt
         }
-      }
-
-      user {
-        id
-        email
-        token
-        status
-        userId
-        userType
-        inviteSentAt
-        emailVerified
-        inviteAcceptedAt
-        createdAt
-        updatedAt
       }
     }
   }

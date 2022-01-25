@@ -308,6 +308,10 @@ export const theme = createTheme({
         "& .MuiAutocomplete-input": {
           height: 'auto',
           padding: '3.7px 0px 0 4px !important'
+        },
+
+        "& .MuiAutocomplete-inputRoot": {
+          minHeight: 42,
         }
       }
     },

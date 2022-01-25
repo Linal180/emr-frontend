@@ -38,3 +38,6 @@ export const ORANGE = "#FFF9F4";
 export const ORANGE_ONE = "#F89C47";
 
 export const PINK = "#F1416C";
+
+export const RED = "#F64E60";
+export const RED_ONE = "#FFE2E5";

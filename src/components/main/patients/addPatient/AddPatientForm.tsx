@@ -9,6 +9,7 @@ import {
 import Alert from "../../../common/Alert";
 import PatientController from "../controllers";
 import Selector from '../../../common/Selector';
+import PhoneField from '../../../common/PhoneInput';
 import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
@@ -20,7 +21,7 @@ import { patientsSchema } from '../../../../validationSchemas';
 import { PatientInputProps } from '../../../../interfacesTypes';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
-  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, UserRole
+  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation,
 } from "../../../../generated/graphql";
 import {
   FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, PHONE,
@@ -109,24 +110,24 @@ const AddPatientForm: FC = (): JSX.Element => {
 
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
 
-      userFirstName, userLastName, userPassword, userPhone, userZipCode,
+      // userFirstName, userLastName, userPassword, userPhone, userZipCode,
     } = inputs;
 
-    const { id: selectedFacility } = facilityId
-    const { id: selectedUsualProvider } = usualProviderId
-    const { id: selectedRegistrationDepartment } = registrationDepartment
-    const { id: selectedPrimaryDepartment } = primaryDepartment
-    const { id: selectedSexualOrientation } = sexualOrientation
-    const { id: selectedPronouns } = pronouns
-    const { id: selectedRace } = race
-    const { id: selectedEthnicity } = ethnicity
-    const { id: selectedMaritalStatus } = maritialStatus
-    const { id: selectedGenderIdentity } = genderIdentity
-    const { id: selectedGender } = gender
-    const { id: selectedSexAtBirth } = sexAtBirth
-    const { id: selectedGuarantorRelationship } = guarantorRelationship
-    const { id: selectedEmergencyRelationship } = emergencyRelationship
-    const { id: selectedKinRelationship } = kinRelationship
+    const { id: selectedFacility } = facilityId || {}
+    const { id: selectedUsualProvider } = usualProviderId || {}
+    const { id: selectedRegistrationDepartment } = registrationDepartment || {}
+    const { id: selectedPrimaryDepartment } = primaryDepartment || {}
+    const { id: selectedSexualOrientation } = sexualOrientation || {}
+    const { id: selectedPronouns } = pronouns || {}
+    const { id: selectedRace } = race || {}
+    const { id: selectedEthnicity } = ethnicity || {}
+    const { id: selectedMaritalStatus } = maritialStatus || {}
+    const { id: selectedGenderIdentity } = genderIdentity || {}
+    const { id: selectedGender } = gender || {}
+    const { id: selectedSexAtBirth } = sexAtBirth || {}
+    const { id: selectedGuarantorRelationship } = guarantorRelationship || {}
+    const { id: selectedEmergencyRelationship } = emergencyRelationship || {}
+    const { id: selectedKinRelationship } = kinRelationship || {}
 
     if (user) {
       const { id: userId } = user
@@ -153,7 +154,7 @@ const AddPatientForm: FC = (): JSX.Element => {
               statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
               primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,
               registrationDepartment: selectedRegistrationDepartment as RegDepartment || RegDepartment.Hospital,
-              race: selectedRace as Race || Race.White,
+              race: selectedRace as Race || Race.White, email: basicEmail || '',
             },
 
             createContactInput: {
@@ -193,12 +194,6 @@ const AddPatientForm: FC = (): JSX.Element => {
               name: employerName || '', email: employerEmail || 'test@gmail.com', phone: employerPhone || '',
               usualOccupation: employerUsualOccupation || '', industry: employerIndustry || '',
             },
-
-            registerUserInput: {
-              firstName: userFirstName || '', lastName: userLastName || '', email: basicEmail || '',
-              facilityId: selectedFacility, phone: userPhone || '', zipCode: userZipCode || '',
-              password: userPassword || '', adminId: userId || '', roleType: UserRole.Patient
-            }
           }
         }
       })
@@ -480,21 +475,11 @@ const AddPatientForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="basicPhone"
-                      controllerLabel={HOME_PHONE}
-                      error={basicPhoneError}
-                    />
+                    <PhoneField name="basicPhone" error={basicPhoneError} label={HOME_PHONE} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="basicMobile"
-                      controllerLabel={MOBILE_PHONE}
-                      error={basicMobileError}
-                    />
+                    <PhoneField name="basicMobile" error={basicMobileError} label={MOBILE_PHONE} />
                   </Grid>
                 </Grid>
               </CardComponent>
@@ -525,21 +510,11 @@ const AddPatientForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="emergencyPhone"
-                      controllerLabel={HOME_PHONE}
-                      error={emergencyPhoneError}
-                    />
+                    <PhoneField name="emergencyPhone" error={emergencyPhoneError} label={HOME_PHONE} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="emergencyMobile"
-                      controllerLabel={MOBILE_PHONE}
-                      error={emergencyMobileError}
-                    />
+                    <PhoneField name="emergencyMobile" error={emergencyMobileError} label={MOBILE_PHONE} />
                   </Grid>
                 </Grid>
               </CardComponent>
@@ -570,24 +545,13 @@ const AddPatientForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="kinPhone"
-                      controllerLabel={HOME_PHONE}
-                      error={kinPhoneError}
-                    />
+                    <PhoneField name="kinPhone" error={kinPhoneError} label={HOME_PHONE} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="kinMobile"
-                      controllerLabel={MOBILE_PHONE}
-                      error={kinMobileError}
-                    />
+                    <PhoneField name="kinMobile" error={kinMobileError} label={MOBILE_PHONE} />
                   </Grid>
                 </Grid>
-
               </CardComponent>
 
               <Box pb={3} />
@@ -623,7 +587,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                     />
                   </Grid>
 
-                  <Grid item md={12} sm={12} xs={12}>
+                  <Grid item md={6} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
                       controllerName="guardianSuffix"
@@ -646,6 +610,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       error={languageError}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
                     <Selector
                       name="race"
@@ -883,40 +848,38 @@ const AddPatientForm: FC = (): JSX.Element => {
               <Box pb={3} />
 
               <CardComponent cardTitle={EMPLOYMENT}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="employerName"
-                    controllerLabel={EMPLOYER_NAME}
-                    error={employerNameError}
-                  />
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PatientController
+                      fieldType="text"
+                      controllerName="employerName"
+                      controllerLabel={EMPLOYER_NAME}
+                      error={employerNameError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="employerPhone" error={employerPhoneError} label={EMPLOYER_PHONE} />
+                  </Grid>
                 </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="employerPhone"
-                    controllerLabel={EMPLOYER_PHONE}
-                    error={employerPhoneError}
-                  />
-                </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="employerUsualOccupation"
-                    controllerLabel={USUAL_OCCUPATION}
-                    error={employerUsualOccupationError}
-                  />
-                </Grid>
+                <PatientController
+                  fieldType="text"
+                  controllerName="employerUsualOccupation"
+                  controllerLabel={USUAL_OCCUPATION}
+                  error={employerUsualOccupationError}
+                />
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <PatientController
-                    fieldType="text"
-                    controllerName="employerIndustry"
-                    controllerLabel={USUAL_INDUSTRY}
-                    error={employerIndustryError}
-                  />
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PatientController
+                      fieldType="text"
+                      controllerName="employerIndustry"
+                      controllerLabel={USUAL_INDUSTRY}
+                      error={employerIndustryError}
+                    />
+                  </Grid>
                 </Grid>
               </CardComponent>
 
@@ -1041,13 +1004,9 @@ const AddPatientForm: FC = (): JSX.Element => {
                       error={guarantorSsnError}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="guarantorPhone"
-                      controllerLabel={PHONE}
-                      error={guarantorPhoneError}
-                    />
+                    <PhoneField name="guarantorPhone" error={guarantorPhoneError} label={PHONE} />
                   </Grid>
                 </Grid>
 
