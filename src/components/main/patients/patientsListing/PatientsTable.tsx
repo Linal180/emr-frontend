@@ -1,5 +1,6 @@
 // packages block
 import { FC, ChangeEvent, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
@@ -12,7 +13,7 @@ import { renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION } from "../../../../constants";
+import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -44,14 +45,12 @@ const PatientsTable: FC = (): JSX.Element => {
       const { findAllPatient } = data || {};
 
       if (findAllPatient) {
-        const { pagination, } = findAllPatient
+        const { pagination, patients } = findAllPatient
+        patients && setPatients(patients as PatientsPayload['patients'])
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && setTotalPages(totalPages)
-          }
-
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && setTotalPages(totalPages)
         }
       }
     }
@@ -129,8 +128,7 @@ const PatientsTable: FC = (): JSX.Element => {
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              {renderTh(FIRST_NAME)}
-              {renderTh(LAST_NAME)}
+              {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(ACTION, "center")}
@@ -153,15 +151,20 @@ const PatientsTable: FC = (): JSX.Element => {
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">{firstName}</TableCell>
-                    <TableCell scope="row">{lastName}</TableCell>
+                    <TableCell scope="row">
+                      <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
+                        {`${firstName} ${lastName}`}
+                      </Link>
+                    </TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <IconButton size="small">
-                          <EditIcon />
-                        </IconButton>
+                        <Link to={`${PATIENTS_ROUTE}/${id}`}>
+                          <IconButton size="small">
+                            <EditIcon />
+                          </IconButton>
+                        </Link>
 
                         <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />

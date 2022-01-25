@@ -19,7 +19,7 @@ import {
   BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION,
   INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE,
   FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, FEDERAL_TAX_ID,
-  MAMMOGRAPHY_CERTIFICATION_NUMBER, MAPPED_SERVICE_CODES
+  MAMMOGRAPHY_CERTIFICATION_NUMBER, MAPPED_SERVICE_CODES, SERVICE_CODE
 } from "../../../../constants";
 
 const AddFacilityForm: FC = (): JSX.Element => {
@@ -118,6 +118,7 @@ const AddFacilityForm: FC = (): JSX.Element => {
     billingState: { message: billingStateError } = {},
     tamxonomyCode: { message: tamxonomyCodeError } = {},
     billingAddress: { message: billingAddressError } = {},
+    billingCountry: { message: billingCountryError } = {},
     billingZipCode: { message: billingZipCodeError } = {},
     billingAddress2: { message: billingAddress2Error } = {},
     insurancePlanType: { message: insurancePlanTypeError } = {},
@@ -226,11 +227,12 @@ const AddFacilityForm: FC = (): JSX.Element => {
 
                 <Selector
                   value={{ id: "", name: "" }}
-                  label={PRACTICE_TYPE}
+                  label={SERVICE_CODE}
                   name="serviceCode"
                   error={serviceCodeError}
                   options={MAPPED_SERVICE_CODES}
                 />
+
               </CardComponent>
             </Grid>
 
@@ -311,7 +313,7 @@ const AddFacilityForm: FC = (): JSX.Element => {
                       fieldType="text"
                       controllerName="billingCountry"
                       controllerLabel={COUNTRY}
-                      error={billingStateError}
+                      error={billingCountryError}
                     />
                   </Grid>
                 </Grid>
@@ -409,7 +411,7 @@ const AddFacilityForm: FC = (): JSX.Element => {
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
         </Box>
-      </form >
+      </form>
     </FormProvider>
   );
 };

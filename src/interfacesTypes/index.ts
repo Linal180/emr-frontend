@@ -2,10 +2,15 @@
 import { ComponentType, Dispatch, ReactNode, ElementType } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule } from "react-hook-form";
+import { Control, ValidationRule, FieldValues } from "react-hook-form";
 // graphql block
-import { LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateBillingAddressInput, UpdateContactInput, UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, ServicesPayload, CreateServiceInput } from "../generated/graphql";
-import { type } from "os";
+import {
+  LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput,
+  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, AllDoctorPayload,
+  CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput
+} from "../generated/graphql";
+import { Action } from "../reducers/locationReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -35,9 +40,9 @@ export interface ListContextInterface {
   facilityList: FacilitiesPayload['facility'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
-  serviceList: ServicesPayload['services'];
-  setServiceList: Function;
-  fetchAllServiceList: Function;
+  doctorList: AllDoctorPayload['doctors'];
+  setDoctorList: Function;
+  fetchAllDoctorList: Function;
 }
 
 export interface Children {
@@ -91,7 +96,7 @@ export interface ServiceConfirmationTypes extends DialogTypes {
   success?: boolean;
   actionText?: string;
   description?: string;
-  setTableData:Function | undefined;
+  setTableData: Function | undefined;
   tableData: ServicesPayload['services'];
 }
 
@@ -145,13 +150,15 @@ export interface PageHeaderProps {
   noAdd?: boolean;
   path?: Path[];
   openModel?: boolean;
-  setTableData?:Function;
+  openModal?: () => void;
+  setTableData?: Function;
   tableData?: ServicesPayload['services'];
 }
 
 export interface FacilityServicesProps {
-  setTableData?:Function;
+  setTableData?: Function;
   tableData?: ServicesPayload['services'];
+  openModal?: () => void
 }
 
 export interface IStepperButtons {
@@ -228,6 +235,7 @@ export interface SelectorProps {
   name: string
   label: string
   error?: string
+  disabled?: boolean
   value?: SelectorOption
   options: SelectorOption[]
 }
@@ -293,10 +301,6 @@ export interface MappedGenderInterface {
   label: string;
 }
 
-export type ParamsType = {
-  id: string
-}
-
 export interface DatePickerProps {
   name: string;
   label: string;
@@ -305,6 +309,59 @@ export interface DatePickerProps {
 
 type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
   | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
+
+export interface MappedGenderidentityInterface {
+  value: Genderidentity;
+  label: string;
+}
+export interface MappedRaceInterface {
+  value: Race;
+  label: string;
+}
+
+export interface MappedEthnicityInterface {
+  value: Ethnicity;
+  label: string;
+}
+
+export interface MappedSexualorientationInterface {
+  value: Sexualorientation;
+  label: string;
+}
+
+export interface MappedPronounsInterface {
+  value: Pronouns;
+  label: string;
+}
+
+export interface MappedHomeboundInterface {
+  value: Homebound;
+  label: string;
+}
+
+export interface MappedRelationshipTypeInterface {
+  value: RelationshipType;
+  label: string;
+}
+
+export interface MappedRegDepartmentInterface {
+  value: RegDepartment;
+  label: string;
+}
+
+export interface MappedPrimaryDepartmentInterface {
+  value: PrimaryDepartment;
+  label: string;
+}
+
+export interface MappedMaritialstatusInterface {
+  value: Maritialstatus;
+  label: string;
+}
+
+export type ParamsType = {
+  id: string
+}
 
 export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 export type ExtendedUpdateStaffInputProps = Omit<UpdateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
@@ -350,9 +407,10 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type CustomFacilityInputProps = UpdateBillingAddressInput & UpdateContactInput & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
+export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode"> & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
 
 type ContactInputTypes =
+  | "name"
   | "fax"
   | "city"
   | "state"
@@ -439,5 +497,151 @@ export interface ServiceInputControlsProps extends IControlLabel {
   controllerName: CreateServiceInputTypes
 }
 
-export type ServiceInputProps = Omit<CreateServiceInput, "facilityId">  & { facilityId: SelectorOption } ;
+export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
 
+export interface RenderInputFieldProps {
+  name: string
+  label: string
+  control?: Control<FieldValues, object> | undefined
+}
+
+export interface StepLabelType {
+  title: string
+  subTitle: string
+}
+
+export interface FormVerification {
+  imageSide: string;
+}
+
+export interface StepperComponentProps {
+  activeStep: number
+}
+
+type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed" | "prefferedName" | "previousFirstName"
+  | "previouslastName" | "motherMaidenName" | "ssn" | "dob" | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
+  | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent" | "medicationHistoryAuthority" | "note" | "language"
+  | "ethnicity" | "sexualOrientation" | "sexAtBirth" | "pronouns" | "homeBound" | "holdStatement" | "statementDelivereOnline"
+  | "statementNote" | "statementNoteDateFrom" | "statementNoteDateTo" | "adminId" | "gender" | "race" | "genderIdentity" | "maritialStatus"
+  | "facilityId" | "usualProviderId"
+
+type BasicContactControlTypes = | "basicEmail" | "basicPhone" | "basicMobile" | "basicAddress" | "basicAddress2" | "basicZipCode" | "basicCity"
+  | "basicState" | "basicCountry"
+
+interface BasicContactControlInputs {
+  basicEmail: string;
+  basicPhone: string;
+  basicMobile: string;
+  basicAddress: string;
+  basicAddress2: string;
+  basicZipCode: string;
+  basicCity: string;
+  basicState: string;
+  basicCountry: string;
+}
+
+type EmergencyContactControlTypes = | "emergencyName" | "emergencyRelationship" | "emergencyPhone" | "emergencyMobile"
+
+interface EmergencyContactControlInputs {
+  emergencyName: string;
+  emergencyPhone: string;
+  emergencyMobile: string;
+  emergencyRelationship: SelectorOption;
+}
+
+type KinContactControlTypes = | "kinName" | "kinRelationship" | "kinPhone" | "kinMobile"
+
+interface KinContactControlInputs {
+  kinName: string;
+  kinRelationship: SelectorOption;
+  kinPhone: string;
+  kinMobile: string;
+}
+
+type GuardianContactControlTypes = | "guardianFirstName" | "guardianMiddleName" | "guardianLastName" | "guardianEmail" | "guardianSuffix"
+
+interface GuardianContactControlInputs {
+  guardianFirstName: string;
+  guardianMiddleName: string;
+  guardianLastName: string;
+  guardianSuffix: string;
+}
+
+type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName" | "guarantorLastName" | "guarantorEmail" | "guarantorRelationship"
+  | "guarantorDob" | "guarantorPhone" | "guarantorSuffix" | "guarantorSsn" | "guarantorAddress" | "guarantorAddress2" | "guarantorZipCode"
+  | "guarantorCity" | "guarantorState" | "guarantorCountry" | "guarantorEmployerName"
+
+interface GuarantorContactControlInputs {
+  guarantorFirstName: string;
+  guarantorMiddleName: string;
+  guarantorLastName: string;
+  guarantorDob: string;
+  guarantorEmail: string;
+  guarantorRelationship: SelectorOption;
+  guarantorPhone: string;
+  guarantorSsn: string;
+  guarantorSuffix: string;
+  guarantorAddress: string;
+  guarantorAddress2: string;
+  guarantorZipCode: string;
+  guarantorCity: string;
+  guarantorState: string;
+  guarantorCountry: string;
+  guarantorEmployerName: string;
+}
+
+type EmployerControlTypes = | "employerName" | "employerEmail" | "employerPhone" | "employerIndustry" | "employerUsualOccupation"
+
+interface EmployerControlInputs {
+  employerName: string;
+  employerEmail: string;
+  employerPhone: string;
+  employerIndustry: string;
+  employerUsualOccupation: string;
+}
+
+type RegisterUserControlTypes = | "userFirstName" | "userLastName" | "userPassword" | "userEmail" | "userPhone" | "userZipCode"
+
+interface RegisterUserInputs {
+  userFirstName: string
+  userLastName: string
+  userPassword: string
+  userEmail: string
+  userPhone: string
+  userZipCode: string
+}
+
+export interface PatientInputControlProps extends IControlLabel {
+  controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes | GuardianContactControlTypes | EmergencyContactControlTypes
+}
+
+export type PatientInputProps =
+  Omit<CreatePatientItemInput, "gender" | "race" | "genderIdentity" | "maritialStatus" | "sexAtBirth"
+    | "primaryDepartment" | "registrationDepartment" | "pronouns" | "ethnicity" | "sexualOrientation"
+    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity">
+  & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption }
+  & { sexualOrientation: SelectorOption } & { sexualOrientation: SelectorOption }
+  & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { facilityId: SelectorOption }
+  & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
+  & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
+  & { registrationDepartment: SelectorOption }
+  & BasicContactControlInputs
+  & EmergencyContactControlInputs & KinContactControlInputs
+  & GuardianContactControlInputs & GuarantorContactControlInputs
+  & EmployerControlInputs & RegisterUserInputs;
+
+export interface ContactInputControlProps extends IControlLabel {
+  controllerName: ContactInputTypes
+}
+
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
+
+export interface LocationTableProps {
+  openModal: boolean;
+  locationDispatch: Dispatch<Action>;
+}
+
+export interface LocationModalProps extends DialogTypes {
+  locationId?: string;
+  reload: () => void;
+}

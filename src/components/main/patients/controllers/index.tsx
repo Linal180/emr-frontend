@@ -1,9 +1,13 @@
 // packages block
-import { FormControl, InputLabel, TextField } from "@material-ui/core";
 import { FC } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
+import { FormControl, InputLabel, TextField } from "@material-ui/core";
+// interfaces block
+import { PatientInputControlProps } from "../../../../interfacesTypes";
 
-const AddPatientController: FC<any> = ({ control, controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const PatientController: FC<PatientInputControlProps> = ({ controllerName, controllerLabel, fieldType, error, disabled }): JSX.Element => {
+  const { control } = useFormContext()
+
   return (
     <Controller
       name={controllerName}
@@ -18,6 +22,7 @@ const AddPatientController: FC<any> = ({ control, controllerName, controllerLabe
           <TextField
             fullWidth
             error={invalid}
+            disabled={disabled}
             type={fieldType}
             variant="outlined"
             id={controllerName}
@@ -30,4 +35,4 @@ const AddPatientController: FC<any> = ({ control, controllerName, controllerLabe
   );
 };
 
-export default AddPatientController;
+export default PatientController;

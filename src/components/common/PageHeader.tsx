@@ -9,7 +9,7 @@ import { PageHeaderProps } from "../../interfacesTypes";
 import Breadcrumb from "./Breadcrumb";
 import { ACTIVE_TEXT, ADD_FACILITY_SERVICE } from "../../constants";
 
-const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModel, tableData, setTableData }): JSX.Element => {
+const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModel, openModal, tableData, setTableData }): JSX.Element => {
   const [openPopup, setOpenPopup] = useState<boolean>(false);
 
   const onButtonClick = () => {
@@ -23,27 +23,38 @@ const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, link
         {path && <Breadcrumb path={path} />}
       </Box>
 
-      {!noAdd && !openModel && <>
-        {hasComponent &&
-          <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
-            {buttonText || ""}
-          </Button>
-        }
-      </>}
+      {!noAdd &&
+        <>
+          {hasComponent ?
+            <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
+              {buttonText || ""}
+            </Button>
+            :
+            (buttonText &&
+              <Button color="primary" variant="contained" onClick={openModal}>
+                {buttonText}
+              </Button>
+            )
+          }
+        </>
+      }
 
       {openModel &&
         <Button color="primary" variant="contained" onClick={() => onButtonClick()}>
           {buttonText || ""}
-        </Button>}
+        </Button>
+      }
 
-      {openModel && <AddServiceModal
-        title={ADD_FACILITY_SERVICE}
-        isOpen={openPopup}
-        description={ACTIVE_TEXT}
-        tableData={tableData}
-        setTableData={setTableData}
-        setOpen={(open: boolean) => setOpenPopup(open)}
-      />}
+      {openModel &&
+        <AddServiceModal
+          title={ADD_FACILITY_SERVICE}
+          isOpen={openPopup}
+          description={ACTIVE_TEXT}
+          tableData={tableData}
+          setTableData={setTableData}
+          setOpen={(open: boolean) => setOpenPopup(open)}
+        />
+      }
     </Box>
   );
 };
