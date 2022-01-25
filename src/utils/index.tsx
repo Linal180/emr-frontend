@@ -167,3 +167,7 @@ export const setRecord = (id: string, name: string): SelectorOption => {
 
   return { id, name: value };
 };
+
+export const formatPhone = (phone: string): string => {
+  return (phone && phone) ? `(${phone.substring(0,3)})  ${phone.substring(3,6 )}-${phone.substring(6,11)}` : ''
+};

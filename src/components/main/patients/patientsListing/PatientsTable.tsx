@@ -9,7 +9,7 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../utils";
+import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
@@ -144,11 +144,10 @@ const PatientsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               patients?.map((record: PatientPayload['patient'], index: number) => {
-                const { id, firstName, lastName, user, contacts } = record || {};
+                const { id, firstName, lastName, email, contacts } = record || {};
                 const patientContact = contacts && contacts[0];
                 const { phone } = patientContact || {};
-                const { email } = user || {};
-
+                
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
@@ -157,7 +156,7 @@ const PatientsTable: FC = (): JSX.Element => {
                       </Link>
                     </TableCell>
                     <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PATIENTS_ROUTE}/${id}`}>
