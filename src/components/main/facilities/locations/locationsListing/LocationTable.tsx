@@ -16,7 +16,7 @@ import { LocationTableProps, ParamsType } from "../../../../../interfacesTypes";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
 import { locationReducer, Action, initialState, State, ActionType } from '../../../../../reducers/locationReducer';
 import { ContactPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
-import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY, TRY_AGAIN } from "../../../../../constants";
+import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY } from "../../../../../constants";
 
 const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }): JSX.Element => {
   const classes = useTableStyles()
@@ -92,9 +92,6 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_LOCATION_ID, deleteLocationId: id })
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
-    } else {
-      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-      Alert.error(TRY_AGAIN)
     }
   };
 

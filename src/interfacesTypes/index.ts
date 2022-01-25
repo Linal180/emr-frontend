@@ -6,11 +6,12 @@ import { Control, ValidationRule, FieldValues } from "react-hook-form";
 // graphql block
 import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput,
-  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, AllDoctorPayload,
+  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
+import { serviceAction } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -90,15 +91,6 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
-export interface ServiceConfirmationTypes extends DialogTypes {
-  isLoading?: boolean;
-  title?: string;
-  success?: boolean;
-  actionText?: string;
-  description?: string;
-  handleService: () => void;
-}
-
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
 }
@@ -139,7 +131,7 @@ export interface CardComponentType extends Children {
   requestLink?: string
 }
 
-export interface IPageHeader {
+export interface PageHeaderProps {
   isOpen?: boolean;
   setOpen?: Function;
   hasComponent?: boolean;
@@ -149,6 +141,14 @@ export interface IPageHeader {
   noAdd?: boolean;
   path?: Path[];
   openModel?: boolean;
+  openModal?: () => void;
+  setTableData?: Function;
+  tableData?: ServicesPayload['services'];
+}
+
+export interface FacilityServicesProps {
+  setTableData?: Function;
+  tableData?: ServicesPayload['services'];
   openModal?: () => void
 }
 
@@ -477,6 +477,19 @@ export interface DoctorInputControlProps extends IControlLabel {
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
 
+type CreateServiceInputTypes =
+  | "duration"
+  | "facilityId"
+  | "isActive"
+  | "name"
+  | "price"
+
+export interface ServiceInputControlsProps extends IControlLabel {
+  controllerName: CreateServiceInputTypes
+}
+
+export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
+
 export interface RenderInputFieldProps {
   name: string
   label: string
@@ -608,6 +621,21 @@ export type PatientInputProps =
   & GuardianContactControlInputs & GuarantorContactControlInputs
   & EmployerControlInputs & RegisterUserInputs;
 
+export interface ServiceInputControlsProps extends IControlLabel {
+  controllerName: CreateServiceInputTypes
+}
+
+export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
+
+export interface ServiceTableProps {
+  serviceDispatch: Dispatch<serviceAction>
+  openModal: boolean;
+}
+
+export interface ServiceModalProps extends DialogTypes {
+  serviceId?: string;
+  reload: () => void;
+}
 export interface ContactInputControlProps extends IControlLabel {
   controllerName: ContactInputTypes
 }

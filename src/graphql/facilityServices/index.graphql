@@ -1,0 +1,102 @@
+query findAllServices($serviceInput: ServiceInput!) {
+	findAllServices(serviceInput: $serviceInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    response {
+      name
+      error
+      status
+	  message
+    }
+    services {
+      id
+      name
+      duration 
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+query getService($getService: GetService!) {
+	getService(getService: $getService) {
+    response {
+      name
+      error
+      status
+	  message
+    }
+    service {
+      id
+      name
+      duration 
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+      facility {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+mutation RemoveService($removeService: RemoveService!){
+	removeService(removeService: $removeService){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation CreateService($createServiceInput: CreateServiceInput!) {
+  createService(createServiceInput: $createServiceInput){
+    service {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+    }
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateService($updateServiceInput: UpdateServiceInput!) {
+  updateService(updateServiceInput: $updateServiceInput){
+    service {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+    }
+    response{
+      name
+      status
+      message
+    }
+  }
+}

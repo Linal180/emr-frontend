@@ -1,15 +1,17 @@
-import { WHITE_FOUR, BLUE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE } from './../../../theme/colors';
+import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX } from './../../../theme/colors';
 import { makeStyles, StepConnector, withStyles } from "@material-ui/core";
 
 export const CustomConnector = withStyles({
   alternativeLabel: {
     top: 22,
   },
+
   active: {
     '& $line': {
       border: `1px dashed ${WHITE_FOUR}`,
     },
   },
+
   completed: {
     '& $line': {
       border: `1px dashed ${WHITE_FOUR}`,
@@ -23,14 +25,13 @@ export const CustomConnector = withStyles({
     border: `1px dashed ${WHITE_FOUR}`,
     width: 2,
     marginLeft: 8,
-
   },
 })(StepConnector);
 
 
 export const useColorLibStepIconStyles = makeStyles({
   root: {
-    backgroundColor: BLUE_FOUR,
+    backgroundColor: WHITE_SIX,
     zIndex: 1,
     width: 40,
     height: 40,
@@ -43,6 +44,7 @@ export const useColorLibStepIconStyles = makeStyles({
     fontWeight: 600,
     fontFamily: "Poppins, sans-serif",
   },
+
   active: {
     backgroundColor: BLUE_THREE,
     width: 40,
@@ -53,8 +55,9 @@ export const useColorLibStepIconStyles = makeStyles({
     fontWeight: 600,
     color: WHITE,
   },
+
   completed: {
-    backgroundColor: BLUE_FOUR,
+    backgroundColor: WHITE_SIX,
     zIndex: 1,
     fontSize: 18,
     color: BLUE_THREE,
@@ -110,6 +113,7 @@ export const usePatientInformation = makeStyles({
         color: BLACK_ONE,
       },
     },
+
     '& h5': {
       color: BLACK_TWO,
     },
@@ -125,7 +129,6 @@ export const usePatientInformation = makeStyles({
     justifyContent: 'center',
     gap: 20,
   }
-
 });
 
 export const toggleButtonComponent = makeStyles({
@@ -140,6 +143,7 @@ export const toggleButtonComponent = makeStyles({
       padding: "9px 30px",
       borderRadius: 6,
     },
+
     "& .MuiToggleButtonGroup-groupedHorizontal:not(:first-child)": {
       borderTopRightRadius: "6px",
       borderBottomRightRadius: "6px"

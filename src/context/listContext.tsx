@@ -3,7 +3,9 @@ import { createContext, FC, useEffect, useCallback, useReducer, Reducer } from "
 // graphql, interfaces/types, reducer and constants block
 import { LIST_PAGE_LIMIT, TOKEN } from "../constants";
 import { ListContextInterface } from "../interfacesTypes";
-import { AllDoctorPayload, FacilitiesPayload, useFindAllDoctorLazyQuery, useFindAllFacilitiesLazyQuery } from "../generated/graphql";
+import {
+  AllDoctorPayload, useFindAllDoctorLazyQuery, FacilitiesPayload, useFindAllFacilitiesLazyQuery,
+} from "../generated/graphql";
 import { Action, ActionType, initialState, listContextReducer, State as LocalState } from '../reducers/listContextReducer';
 
 export const ListContext = createContext<ListContextInterface>({
@@ -98,14 +100,11 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     });
   }, [findAllDoctor])
 
-
-
   useEffect(() => { hasToken && fetchAllFacilityList(facilityPages) }, [fetchAllFacilityList, hasToken, facilityPages])
   useEffect(() => { hasToken && fetchAllDoctorList(doctorPages) }, [fetchAllDoctorList, hasToken, doctorPages])
 
   const setFacilityList = (facilities: FacilitiesPayload['facility']) => dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: facilities });
   const setDoctorList = (doctors: AllDoctorPayload['doctors']) => dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: doctors });
-
   const setFacilityPages = (pageNumber: number) => dispatch({ type: ActionType.SET_FACILITY_PAGES, facilityPages: pageNumber });
   const setDoctorPages = (pageNumber: number) => dispatch({ type: ActionType.SET_DOCTOR_PAGES, doctorPages: pageNumber });
 

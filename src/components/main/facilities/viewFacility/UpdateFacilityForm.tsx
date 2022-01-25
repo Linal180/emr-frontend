@@ -17,7 +17,6 @@ import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
 import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
 import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND } from "../../../../constants";
-
 const UpdateFacilityForm: FC = (): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext)
   const { id } = useParams<ParamsType>();
@@ -27,31 +26,24 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
   });
   const { reset, handleSubmit, setValue, formState: { errors } } = methods;
   const [facility, setFacility] = useState<FacilityPayload['facility']>()
-
   const [getFacility] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
-
     onError({ message }) {
       Alert.error(message)
     },
-
     onCompleted(data) {
       const { getFacility: { response, facility } } = data;
-
       if (response) {
         const { status } = response
-
         if (facility && status && status === 200) {
           const {
             name, cliaIdNumber, federalTaxId, insurancePlanType, mammographyCertificationNumber,
             npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode,
             contacts, billingAddress,
           } = facility
-
           setFacility(facility)
-
           npi && setValue('npi', npi)
           name && setValue('name', name)
           code && setValue('code', code)
@@ -63,10 +55,8 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
           serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
           practiceType && setValue('practiceType', setRecord(practiceType, practiceType))
           mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
-
           if (contacts) {
             const { email, phone, zipCode, mobile, fax, address, address2, city, state, country } = contacts[0]
-
             fax && setValue('fax', fax)
             city && setValue('city', city)
             email && setValue('email', email)
@@ -78,7 +68,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
             country && setValue('country', country)
             address2 && setValue('address2', address2)
           }
-
           if (billingAddress) {
             const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
             fax && setValue('billingFax', fax)
@@ -95,18 +84,14 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
       }
     }
   });
-
   const [updateFacility, { loading }] = useUpdateFacilityMutation({
     onError({ message }) {
       Alert.error(message)
     },
-
     onCompleted(data) {
       const { updateFacility: { response } } = data;
-
       if (response) {
         const { status } = response
-
         if (status && status === 200) {
           Alert.success(FACILITY_UPDATED);
           fetchAllFacilityList();
@@ -116,7 +101,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
       }
     }
   });
-
   useEffect(() => {
     if (id) {
       getFacility({
@@ -128,7 +112,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
       Alert.error(FACILITY_NOT_FOUND)
     }
   }, [getFacility, id])
-
   const onSubmit: SubmitHandler<CustomFacilityInputProps> = async (inputs) => {
     if (facility) {
       const {
@@ -138,15 +121,12 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
         billingPhone, billingEmail, billingFax, billingCity, billingState, billingCountry, billingAddress2,
         billingAddress, billingZipCode
       } = inputs;
-
       const { contacts, billingAddress: billing } = facility;
-
       if (id && contacts && billing) {
         const { id: contactId } = contacts[0]
         const { id: billingId } = billing[0]
         const { id: selectedPracticeType } = practiceType;
         const { id: selectedServiceCode } = serviceCode;
-
         await updateFacility({
           variables: {
             updateFacilityInput: {
@@ -158,13 +138,11 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                 serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24,
                 mammographyCertificationNumber: mammographyCertificationNumber || ''
               },
-
               updateContactInput: {
                 id: contactId, phone: phone || '', email: email || '', fax: fax || '',
                 city: city || '', state: state || '', country: country || '', zipCode: zipCode || '',
                 address: address || '', address2: address2 || ''
               },
-
               updateBillingAddressInput: {
                 id: billingId, phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', city: billingCity || '',
                 state: billingState || '', country: billingCountry || '', zipCode: billingZipCode || '', address: billingAddress || '',
@@ -176,7 +154,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
       }
     }
   };
-
   const {
     npi: { message: npiError } = {},
     fax: { message: faxError } = {},
@@ -207,7 +184,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
     insurancePlanType: { message: insurancePlanTypeError } = {},
     mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
   } = errors;
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -221,7 +197,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   controllerLabel={NAME}
                   error={nameError}
                 />
-
                 <Selector
                   value={{ id: "", name: "" }}
                   label={PRACTICE_TYPE}
@@ -229,7 +204,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   error={practiceTypeError}
                   options={MAPPED_PRACTICE_TYPES}
                 />
-
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="code"
@@ -237,9 +211,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   error={codeError}
                 />
               </CardComponent>
-
               <Box pb={3} />
-
               <CardComponent cardTitle={FACILITY_IDS} isEdit={true}>
                 <Grid container spacing={3}>
                   <Grid item md={6}>
@@ -250,7 +222,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={cliaIdNumberError}
                     />
                   </Grid>
-
                   <Grid item md={6}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -260,7 +231,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
-
                 <Grid container spacing={3}>
                   <Grid item md={6}>
                     <UpdateFacilityController
@@ -270,7 +240,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={tamxonomyCodeError}
                     />
                   </Grid>
-
                   <Grid item md={6}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -280,14 +249,12 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
-
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="insurancePlanType"
                   controllerLabel={INSURANCE_PLAN_TYPE}
                   error={insurancePlanTypeError}
                 />
-
                 <Grid container spacing={3}>
                   <Grid item md={6}>
                     <UpdateFacilityController
@@ -297,7 +264,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={mammographyCertificationNumberError}
                     />
                   </Grid>
-
                   <Grid item md={6}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -307,7 +273,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
-
                 <Selector
                   value={{ id: "", name: "" }}
                   label={SERVICE_CODE}
@@ -317,7 +282,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                 />
               </CardComponent>
             </Grid>
-
             <Grid item md={6}>
               <CardComponent cardTitle={BILLING_ADDRESS} isEdit={true}>
                 <UpdateFacilityController
@@ -327,7 +291,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   controllerLabel={EMAIL}
                   error={billingEmailError}
                 />
-
                 <Grid container spacing={3}>
                   <Grid item md={4}>
                     <UpdateFacilityController
@@ -337,7 +300,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={billingPhoneError}
                     />
                   </Grid>
-
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -346,7 +308,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={billingFaxError}
                     />
                   </Grid>
-
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -356,21 +317,18 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
-
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="billingAddress"
                   controllerLabel={ADDRESS}
                   error={billingAddressError}
                 />
-
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="billingAddress2"
                   controllerLabel={ADDRESS_2}
                   error={billingAddress2Error}
                 />
-
                 <Grid container spacing={3}>
                   <Grid item md={4}>
                     <UpdateFacilityController
@@ -379,9 +337,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       controllerLabel={CITY}
                       error={billingCityError}
                     />
-
                   </Grid>
-
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -390,7 +346,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={billingStateError}
                     />
                   </Grid>
-
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -401,9 +356,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   </Grid>
                 </Grid>
               </CardComponent>
-
               <Box pb={3} />
-
               <CardComponent cardTitle={FACILITY_CONTACT} isEdit={true}>
                 <UpdateFacilityController
                   disabled
@@ -412,7 +365,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   controllerLabel={EMAIL}
                   error={emailError}
                 />
-
                 <Grid container spacing={3}>
                   <Grid item md={4}>
                     <UpdateFacilityController
@@ -422,7 +374,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={phoneError}
                     />
                   </Grid>
-
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -431,7 +382,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={faxError}
                     />
                   </Grid>
-
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -441,21 +391,18 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
-
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="address"
                   controllerLabel={ADDRESS}
                   error={addressError}
                 />
-
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="address2"
                   controllerLabel={ADDRESS_2}
                   error={address2Error}
                 />
-
                 <Grid container spacing={3}>
                   <Grid item md={4}>
                     <UpdateFacilityController
@@ -465,7 +412,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={cityError}
                     />
                   </Grid>
-
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -474,7 +420,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={stateError}
                     />
                   </Grid>
-
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -488,7 +433,6 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
             </Grid>
           </Grid>
         </Box>
-
         <Box display="flex" justifyContent="flex-end" pt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {UPDATE_FACILITY}
@@ -499,5 +443,4 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
     </FormProvider>
   );
 };
-
 export default UpdateFacilityForm;

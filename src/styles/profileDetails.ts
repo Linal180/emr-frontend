@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_ONE, BLUE_SIX, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
+import { BLACK_ONE, BLUE_SEVEN, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
@@ -71,7 +71,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
       fontWeight: 600,
       borderRadius: 6,
       background: WHITE_SIX,
-      color: BLUE_SIX,
+      color: BLUE_SEVEN,
     }
   })
 );

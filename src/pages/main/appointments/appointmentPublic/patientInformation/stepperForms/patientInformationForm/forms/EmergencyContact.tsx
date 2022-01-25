@@ -1,11 +1,13 @@
+// packages block
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
+// components block
 import CardComponent from '../../../../../../../../components/common/CardComponent';
 import RenderInputField from '../../../components/RenderInputField';
 import ToggleButtonComponent from '../../../components/ToggleButtonComponent';
 
 const EmergencyContact = () => {
-  const { control, handleSubmit, formState: { errors } } = useForm({});
+  const { control } = useForm({});
 
   const renderSelectField = (name: string, label: string) => (
     <Controller
