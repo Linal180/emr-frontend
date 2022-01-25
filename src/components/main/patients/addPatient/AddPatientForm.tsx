@@ -21,7 +21,7 @@ import { patientsSchema } from '../../../../validationSchemas';
 import { PatientInputProps } from '../../../../interfacesTypes';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
-  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, UserRole
+  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation,
 } from "../../../../generated/graphql";
 import {
   FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, PHONE,
@@ -110,7 +110,7 @@ const AddPatientForm: FC = (): JSX.Element => {
 
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
 
-      userFirstName, userLastName, userPassword, userPhone, userZipCode,
+      // userFirstName, userLastName, userPassword, userPhone, userZipCode,
     } = inputs;
 
     const { id: selectedFacility } = facilityId
@@ -195,11 +195,11 @@ const AddPatientForm: FC = (): JSX.Element => {
               usualOccupation: employerUsualOccupation || '', industry: employerIndustry || '',
             },
 
-            registerUserInput: {
-              firstName: userFirstName || '', lastName: userLastName || '', email: basicEmail || '',
-              facilityId: selectedFacility, phone: userPhone || '', zipCode: userZipCode || '',
-              password: userPassword || '', adminId: userId || '', roleType: UserRole.Patient
-            }
+            // registerUserInput: {
+            //   firstName: userFirstName || '', lastName: userLastName || '', email: basicEmail || '',
+            //   facilityId: selectedFacility, phone: userPhone || '', zipCode: userZipCode || '',
+            //   password: userPassword || '', adminId: userId || '', roleType: UserRole.Patient
+            // }
           }
         }
       })
