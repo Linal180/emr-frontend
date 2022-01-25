@@ -9,20 +9,20 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../utils";
+import { formatPhone, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon, TablesSearchIcon } from '../../../../assets/svgs'
 import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF } from "../../../../constants";
+import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF, STAFF_TEXT } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 
 const StaffTable: FC = (): JSX.Element => {
+  const classes = useTableStyles()
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [deleteStaffId, setDeleteStaffId] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
-  const classes = useTableStyles()
   
   const [findAllStaff, { loading, error }] = useFindAllStaffLazyQuery({
     variables: {
@@ -149,14 +149,14 @@ const StaffTable: FC = (): JSX.Element => {
                 </TableCell>
               </TableRow>
             ) : (
-              staff?.map((record: StaffPayload['staff'], index: number) => {
+              staff?.map((record: StaffPayload['staff']) => {
                 const { id, firstName, lastName, email, phone, username } = record || {};
 
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{username}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
@@ -178,7 +178,7 @@ const StaffTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !staff) || error || !staff?.length) && (
+        {((!loading && staff?.length === 0) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>
@@ -196,7 +196,7 @@ const StaffTable: FC = (): JSX.Element => {
         )}
 
         <ConfirmationModal
-          title={DELETE_STAFF}
+          title={STAFF_TEXT}
           isOpen={openDelete}
           isLoading={deleteStaffLoading}
           description={DELETE_STAFF_DESCRIPTION}

@@ -1,6 +1,7 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
+import { Home } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
@@ -8,13 +9,13 @@ import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../utils";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION } from "../../../../constants";
+import { formatPhone, renderTh } from "../../../../utils";
+import { ListContext } from "../../../../context/listContext";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import { ListContext } from "../../../../context/listContext";
+import { EditIcon, TablesSearchIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
+import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -30,7 +31,7 @@ const FacilityTable: FC = (): JSX.Element => {
     variables: {
       facilityInput: {
         paginationOptions: {
-          page: 1,
+          page,
           limit: PAGE_LIMIT
         }
       }
@@ -110,6 +111,7 @@ const FacilityTable: FC = (): JSX.Element => {
       })
     }
   };
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -169,10 +171,22 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{state}</TableCell>
                       <TableCell scope="row">{zipCode}</TableCell>
                       <TableCell scope="row">{fax}</TableCell>
-                      <TableCell scope="row">{phone}</TableCell>
+                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
+                            <IconButton size="small">
+                              <ServiceIcon />
+                            </IconButton>
+                          </Link>
+
+                          <Link to={`${FACILITIES_ROUTE}/${id}/${FACILITY_LOCATIONS_ROUTE}`}>
+                            <IconButton size="small">
+                              <Home color="primary" />
+                            </IconButton>
+                          </Link>
+
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <IconButton size="small">
                               <EditIcon />
@@ -191,14 +205,14 @@ const FacilityTable: FC = (): JSX.Element => {
             </TableBody>
           </Table>
 
-          {((!loading && !facilities) || error || !facilities?.length) && (
+          {((!loading && facilities?.length === 0) || error) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>
           )}
 
           <ConfirmationModal
-            title={DELETE_FACILITY}
+            title={FACILITY}
             isOpen={openDelete}
             isLoading={deleteFacilityLoading}
             description={DELETE_FACILITY_DESCRIPTION}

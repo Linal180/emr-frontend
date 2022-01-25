@@ -71,7 +71,10 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (message === UNAUTHORIZED || message === TOKEN_INVALID) handleLogout();
   }
 
-  if (networkError) Alert.error(networkError.message);
+  if (networkError) {
+    Alert.error(networkError.message)
+    client.clearStore()
+  }
 });
 
 const client = new ApolloClient({

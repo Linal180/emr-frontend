@@ -1,0 +1,268 @@
+query FindAllPatient($patientInput: PatientInput!) {
+  findAllPatient(patientInput: $patientInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+
+    patients {
+      id
+      firstName
+      middleName
+      email
+      lastName
+      firstNameUsed
+      prefferedName
+      previousFirstName
+      previouslastName
+      motherMaidenName
+      ssn
+      gender
+      dob
+      registrationDepartment
+      primaryDepartment
+      registrationDate
+      deceasedDate
+      privacyNotice
+      releaseOfInfoBill
+      callToConsent
+      medicationHistoryAuthority
+      patientNote
+      language
+      race
+      ethnicity
+      maritialStatus
+      sexualOrientation
+      genderIdentity
+      sexAtBirth
+      pronouns
+      homeBound
+      holdStatement
+      statementDelivereOnline
+      statementNote
+      statementNoteDateFrom
+      statementNoteDateTo
+      createdAt
+      updatedAt
+      
+      contacts {
+        id
+        email
+        phone
+        mobile
+        address
+        address2
+        city
+        state
+        zipCode
+        country
+        name
+        suffix
+        firstName
+        primaryContact
+        middleName
+        lastName
+        serviceCode
+        pager
+        fax
+        ssn
+        employerName
+        relationship
+        contactType
+        createdAt
+        updatedAt
+      }
+
+      employer {
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query GetPatient($getPatient: GetPatient!) {
+  getPatient(getPatient: $getPatient) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    patient {
+      id
+      firstName
+      middleName
+      lastName
+      suffix
+      firstNameUsed
+      prefferedName
+      previousFirstName
+      previouslastName
+      motherMaidenName
+      ssn
+      gender
+      dob
+      registrationDepartment
+      primaryDepartment
+      registrationDate
+      deceasedDate
+      privacyNotice
+      releaseOfInfoBill
+      callToConsent
+      medicationHistoryAuthority
+      patientNote
+      language
+      race
+      ethnicity
+      maritialStatus
+      sexualOrientation
+      genderIdentity
+      sexAtBirth
+      pronouns
+      homeBound
+      holdStatement
+      statementDelivereOnline
+      statementNote
+      statementNoteDateFrom
+      statementNoteDateTo
+      createdAt
+      updatedAt
+      
+      contacts {
+        id
+        email
+        name
+        suffix
+        firstName
+        middleName
+        lastName
+        phone
+        serviceCode
+        primaryContact
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        ssn
+        employerName
+        relationship
+        contactType
+      }
+
+      employer {
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        updatedAt
+      }
+      
+      usualProvider {
+        id
+        firstName
+        lastName
+        createdAt
+        updatedAt
+        
+        schedule {
+          id
+          startAt
+          endAt
+          recurringEndDate
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+}
+
+mutation RemovePatient($removePatient: RemovePatient!){
+	removePatient(removePatient: $removePatient){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation CreatePatient($createPatientInput: CreatePatientInput!){
+  createPatient(createPatientInput: $createPatientInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdatePatient($updatePatientInput: UpdatePatientInput!){
+  updatePatient(updatePatientInput: $updatePatientInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

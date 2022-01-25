@@ -28,5 +28,14 @@ export const useTableStyles = makeStyles(() => ({
   searchContainer: {
     padding: "15px 30px",
     borderBottom: `1px solid ${WHITE_THREE}`
+  },
+
+  status: {
+    fontWeight: 'bold',
+    fontSize: '0.75rem',
+    borderRadius: 8,
+    padding: '8px 15px',
+    display: 'inline-block',
   }
+  
 }))

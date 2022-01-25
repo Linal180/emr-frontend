@@ -4,7 +4,8 @@ import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle,
 // interfaces/types block/theme/svgs/constants
 import { DeleteWarningIcon } from "../../assets/svgs";
 import { ConfirmationTypes } from "../../interfacesTypes";
-import { DELETE_RECORD, DELETE_RECORD_LEARN_MORE_TEXT, DELETE_RECORD_TEXT, CANCEL } from "../../constants";
+import { aboutToDelete, deleteRecordTitle } from "../../utils";
+import { DELETE_RECORD, DELETE_RECORD_LEARN_MORE_TEXT, CANCEL } from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success }): JSX.Element => {
   const [checked, setChecked] = useState(false);
@@ -28,14 +29,18 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
-        {title}
+        {deleteRecordTitle(title || '')}
       </DialogTitle>
 
       <DialogContent>
         <Box display="flex">
-          <DeleteWarningIcon />
+          <Box pt={0.75}>
+            <DeleteWarningIcon />
+          </Box>
+
           <CardContent>
-            <Typography component="h4" variant="h5">{DELETE_RECORD_TEXT}</Typography>
+            <Typography component="h4" variant="h5">{aboutToDelete(title || '')}</Typography>
+
             <Typography>
               {DELETE_RECORD_LEARN_MORE_TEXT}
             </Typography>
@@ -45,20 +50,17 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
 
       <Box display="flex" ml={4} pb={2}>
         <FormControlLabel
-          control={
-            <Checkbox color="secondary"
-              checked={checked}
-              onChange={handleChange}
-            />
-          }
+          control={<Checkbox color="primary" checked={checked} onChange={handleChange} />}
           label={description}
         />
       </Box>
 
       <DialogActions>
-        <Button onClick={handleClose} color="default">
-          {CANCEL}
-        </Button>
+        <Box pr={1}>
+          <Button onClick={handleClose} color="default">
+            {CANCEL}
+          </Button>
+        </Box>
 
         <Button onClick={onDelete} color="secondary" disabled={!checked || isLoading} variant="contained">
           {isLoading && <CircularProgress size={20} color={buttonColor} />}

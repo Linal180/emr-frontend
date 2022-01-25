@@ -6,7 +6,7 @@ import PageHeader from '../../../common/PageHeader';
 // constants block
 import { PATIENTS_BREAD, ADD_PATIENT, PATIENT_NEW_BREAD, USERS_BREAD } from '../../../../constants';
 
-const AddPatientComponent: FC = () => {
+const AddPatientComponent: FC = (): JSX.Element => {
   return (
     <>
       <PageHeader

@@ -201,7 +201,74 @@ input[type="email"] {
 }
 
 .MuiPopover-paper.user-setting-menu {
-  margin-top: -35px;
+  margin: -40px 0 0 18px;
   width: 240px;
   left: 40px !important;
+}
+
+.custom-calendar .MuiPickersStaticWrapper-staticWrapperRoot {
+  margin-top: -10px;
+}
+
+.custom-calendar .MuiPickersBasePicker-pickerView {
+  min-height: 330px;
+  justify-content: flex-start;
+}
+
+.MuiPickersBasePicker-pickerView .MuiPickersCalendarHeader-switchHeader .MuiPickersCalendarHeader-iconButton {
+  padding: 5px;
+}
+
+.MuiPickersBasePicker-pickerView .MuiPickersCalendarHeader-switchHeader .MuiPickersSlideTransition-transitionContainer > p {
+  font-size: 16px;
+  color: #333;
+  font-weight: 600;
+}
+
+.MuiPickersBasePicker-pickerView .MuiPickersCalendarHeader-daysHeader .MuiPickersCalendarHeader-dayLabel {
+  font-size: 14px;
+  width: 42px;
+}
+
+.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day {
+  height: 42px;
+  width: 42px;
+}
+
+.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected {
+  background-color: #009EF6;
+}
+
+.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day .MuiIconButton-label > p {
+  font-size: 15px;
+  color: #666666;
+  font-weight: 500;
+}
+
+.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-current .MuiIconButton-label > p {
+  color: #009EF6;
+}
+
+.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected .MuiIconButton-label > p {
+  color: #fff;
+}
+
+body .MuiTabPanel-root {
+  padding: 20px 0 0 0;
+}
+
+.react-tel-input {
+  font-family: "Poppins, sans-serif"; 
+  font-size: 14px;
+}
+
+.react-tel-input .form-control {
+  width: 100%;
+  border-color: #ECF0F3;
+  height: 42px;
+  color: currentColor;
+}
+
+.react-tel-input .flag-dropdown {
+  border-color: #ECF0F3;
 }

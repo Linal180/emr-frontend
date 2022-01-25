@@ -1,7 +1,10 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
 // color-constants and font-family block
-import { PINK, BLUE_TWO, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN } from ".";
+import {
+  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE,
+  GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, BLUE_SEVEN,
+} from ".";
 
 const customTheme = createTheme()
 export const theme = createTheme({
@@ -13,6 +16,11 @@ export const theme = createTheme({
 
     secondary: {
       main: PINK,
+      contrastText: WHITE,
+    },
+
+    info: {
+      main: BLUE_ONE,
       contrastText: WHITE,
     },
 
@@ -98,7 +106,7 @@ export const theme = createTheme({
                 backgroundColor: WHITE,
               }
             }
-          }
+          },
         },
       },
     },
@@ -114,6 +122,12 @@ export const theme = createTheme({
         borderRadius: 10,
         maxWidth: 810,
         minHeight: 265
+      },
+
+      paperWidthMd: {
+        borderRadius: 10,
+        maxWidth: 910,
+        minHeight: 265
       }
     },
 
@@ -123,7 +137,8 @@ export const theme = createTheme({
         borderBottom: `1px solid ${GRAY_SIX}`,
 
         "& h2": {
-          fontSize: 20
+          fontSize: 20,
+          color: BLACK_ONE,
         }
       }
     },
@@ -137,21 +152,70 @@ export const theme = createTheme({
 
     MuiDialogContent: {
       root: {
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        background: ORANGE,
-        border: `1px dashed ${ORANGE}`,
-        borderRadius: 6,
-        minHeight: 83,
-        margin: 30,
-        padding: 16
+        padding: 30,
+
+        "& > div": {
+          background: ORANGE,
+          border: `1px dashed ${ORANGE_ONE}`,
+          borderRadius: 6,
+          padding: 20,
+        },
+
+        "& .MuiCardContent-root": {
+          padding: '0 0 0 15px'
+        },
+
+        "& h4": {
+          fontWeight: 'bold',
+          marginBottom: 2,
+        },
+
+        "& p": {
+          color: BLACK_TWO,
+          lineHeight: '22px',
+          fontWeight: 500,
+          maxWidth: '80%'
+        }
       }
     },
 
     MuiCheckbox: {
       root: {
-        color: BLUE_TWO
+        color: WHITE_THREE,
+
+        "& .MuiIconButton-label": {
+          position: 'relative',
+          marginRight: 0,
+
+          "&:before": {
+            content: `""`,
+            height: 24,
+            width: 24,
+            position: "absolute",
+            background: WHITE_THREE,
+            zIndex: 9,
+            borderRadius: 6,
+          },
+        },
+
+
+        "& .MuiSvgIcon-root": {
+          height: 32,
+          width: 32,
+          borderRadius: 6,
+        },
+
+        "&[class*=PrivateSwitchBase-checked]": {
+          "& .MuiIconButton-label": {
+            "&:before": {
+              display: 'none',
+            }
+          },
+
+          "& .MuiSvgIcon-root": {
+            color: BLUE_THREE
+          }
+        }
       }
     },
 
@@ -160,12 +224,46 @@ export const theme = createTheme({
         borderRadius: 6,
         maxHeight: 42,
         padding: '9px 20px',
-        boxShadow: 'none'
+        boxShadow: 'none',
+        color: BLACK_TWO,
+
+        "&.blue-button": {
+          backgroundColor: BLUE_ONE,
+          color: WHITE,
+
+          "&:hover": {
+            backgroundColor: BLUE_THREE,
+          }
+        }
+      },
+
+      outlined: {
+        borderRadius: 6,
+        maxHeight: 42,
+        padding: '9px 20px',
+        boxShadow: 'none',
+
+        "&.blue-button": {
+          borderColor: BLUE_ONE,
+          color: BLUE_ONE,
+          borderStyle: 'dashed',
+
+          "&:hover": {
+            borderColor: BLUE_THREE,
+            color: BLUE_THREE,
+          }
+        }
       },
 
       label: {
         fontSize: 14,
         fontWeight: 600,
+      },
+
+      text: {
+        "& .MuiButton-label": {
+          color: GRAY_TWO
+        }
       }
     },
 
@@ -204,6 +302,17 @@ export const theme = createTheme({
       marginNormal: {
         position: 'relative',
         paddingBottom: customTheme.spacing(3)
+      },
+
+      root: {
+        "& .MuiAutocomplete-input": {
+          height: 'auto',
+          padding: '3.7px 0px 0 4px !important'
+        },
+
+        "& .MuiAutocomplete-inputRoot": {
+          minHeight: 42,
+        }
       }
     },
 
@@ -268,7 +377,7 @@ export const theme = createTheme({
 
     MuiCardContent: {
       root: {
-        padding: "0 27px",
+        padding: "0px 30px",
 
         "&:last-child": {
           paddingBottom: 0
@@ -369,6 +478,51 @@ export const theme = createTheme({
           }
         }
       }
-    }
+    },
+
+    MuiFormControlLabel: {
+      label: {
+        fontWeight: 500,
+        color: BLACK_ONE
+      }
+    },
+
+    MuiSelect: {
+      select: {
+        paddingTop: 13,
+      },
+
+      selectMenu: {
+        minHeight: 42,
+      }
+    },
+
+    MuiTabs: {
+      indicator: {
+        display: 'none'
+      },
+    },
+
+    MuiTab: {
+      root: {
+        minWidth: '0 !important',
+        lineHeight: '19px',
+        padding: '8px 15px',
+        fontSize: 13,
+        fontWeight: 500,
+        minHeight: 0,
+        borderRadius: 4,
+
+        "&.Mui-selected": {
+          background: `rgba(0, 158, 247, 0.1)`,
+          color: BLUE_SEVEN,
+        }
+      },
+
+      textColorInherit: {
+        color: BLACK_SIX,
+        opacity: 1,
+      }
+    },
   },
 });

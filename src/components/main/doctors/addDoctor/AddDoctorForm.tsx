@@ -1,28 +1,47 @@
 // packages block
-import { FC, useState } from 'react';
-import { Controller, FormProvider, useForm } from "react-hook-form";
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, FormControlLabel, Switch, FormGroup, FormHelperText } from "@material-ui/core";
+import { FC, useState, useContext } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, CircularProgress, FormControl, Grid, FormControlLabel, Switch, FormGroup, FormHelperText } from "@material-ui/core";
 // components block
-import AddDoctorController from "./AddDoctorController";
+import Alert from "../../../common/Alert";
+import DoctorController from "../controllers";
+import Selector from '../../../common/Selector';
+import DatePicker from "../../../common/DatePicker";
+import PhoneField from '../../../common/PhoneInput';
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
-import { MappedRoleInterface } from "../../../../interfacesTypes";
-import { Gender, UserRole } from "../../../../generated/graphql";
-import {
-  FIRST_NAME, LAST_NAME, MAPPED_GENDER, CITY, STATE, COUNTRY, MAPPED_ROLES, AVAILIBITY_STATUS, ADD_DOCTOR, ADDITIONAL_INFO, BILLING_ADDRESS, SCHEDULE_APPOINTMENTS_TEXT, CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION,
-  MIDDLE_INITIAL, PREFIX, SUFFIX, PROVIDER_INITIALS, CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER, TAXONOMY_CODE, DEA_NUMBER, DEA_ACTIVE_DATE, DEA_ERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS, ADDRESS_2, FEDERAL_TAX_ID,
-  CHECK_PAYABLE_TO, BANK_ACCOUNT, MOBILE, PAGER, TAX_ID, NPI, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER, MAMMOGRAPHY_CERT_NUMBER, CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_SUFF, SPECIALITY_LICENSE,
-  ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LISENCE_ACTIVE_DATE, LICENSE_TERM_DATE, PRESCRIPTIVE_AUTH_NUMBER,
-} from "../../../../constants";
+import history from '../../../../history';
+import { AuthContext } from '../../../../context';
+import { renderFacilities } from '../../../../utils';
+import { doctorSchema } from '../../../../validationSchemas';
+import { DoctorInputProps } from "../../../../interfacesTypes";
 import { useFormStyles } from '../../../../styles/formsStyles';
+import { ListContext } from '../../../../context/listContext';
+import { Speciality, SsnType, useCreateDoctorMutation, UserRole } from "../../../../generated/graphql";
+import {
+  FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_SSN_TYPES, FACILITY,
+  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CREATE_DOCTOR, ADDITIONAL_INFO, BILLING_ADDRESS,
+  SCHEDULE_APPOINTMENTS_TEXT, CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME,
+  PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER, TAXONOMY_CODE,
+  DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS, ADDRESS_2,
+  MOBILE, PAGER, TAX_ID, NPI, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
+  MAMMOGRAPHY_CERT_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
+  ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
+  PRESCRIPTIVE_AUTH_NUMBER, AVAILABILITY_STATUS, DOCTOR_CREATED, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
+  LANGUAGE_SPOKEN, SPECIALTY, TYPE,
+} from "../../../../constants";
 
-const AddDoctorForm: FC = () => {
+const AddDoctorForm: FC = (): JSX.Element => {
+  const { user } = useContext(AuthContext)
+  const { facilityList } = useContext(ListContext)
   const classes = useFormStyles()
-  const methods = useForm<any>({
-    mode: "all"
+  const methods = useForm<DoctorInputProps>({
+    mode: "all",
+    resolver: yupResolver(doctorSchema)
   });
-  const { handleSubmit, control } = methods;
-  const [value, setValue] = useState({
+  const { reset, handleSubmit, formState: { errors } } = methods;
+  const [values, setValues] = useState({
     sunday: false,
     monday: false,
     tuesday: false,
@@ -32,17 +51,152 @@ const AddDoctorForm: FC = () => {
     saturday: false,
   });
 
-  const handleChange = (event: any) => {
-    setValue(
-      {
-        ...value,
-        [event.target.name]: event.target.checked
-      }
-    )
-  };
-  const onSubmit: any = () => {
+  const [createDoctor, { loading }] = useCreateDoctorMutation({
+    onError({ message }) {
+      if (message === FORBIDDEN_EXCEPTION) {
+        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+      } else
+        Alert.error(message)
+    },
 
+    onCompleted(data) {
+      const { createDoctor: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(DOCTOR_CREATED);
+          reset()
+          history.push(DOCTORS_ROUTE)
+        }
+      }
+    }
+  });
+
+  const handleChange = (event: any) => {
+    setValues({
+      ...values,
+      [event.target.name]: event.target.checked
+    })
   };
+
+  const onSubmit: SubmitHandler<DoctorInputProps> = async (inputs) => {
+    const { email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country,
+      billingEmail, billingPhone, billingFax, billingAddress, billingAddress2, billingZipCode, billingCity, billingState, billingCountry, billingUserId,
+      dob, ssn, prefix, suffix, ssnType, lastName, firstName, speciality, middleName, providerIntials,
+      degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi, upin,
+      emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber, blueShildNumber,
+      taxIdStuff, facilityId, specialityLicense, anesthesiaLicense, dpsCtpNumber, stateLicense,
+      licenseActiveDate, licenseTermDate, prescriptiveAuthNumber, password
+    } = inputs;
+
+    const { id: selectedSsnType } = ssnType;
+    const { id: selectedSpecialty } = speciality;
+    const { id: selectedFacility } = facilityId;
+
+    if (user) {
+      const { id: userId } = user
+
+      await createDoctor({
+        variables: {
+          createDoctorInput: {
+            createDoctorItemInput: {
+              firstName: firstName || "", middleName: middleName || "", lastName: lastName || "", prefix: prefix || "",
+              suffix: suffix || "", email: email || "", password: password || "", facilityId: selectedFacility || "",
+              providerIntials: providerIntials || "", degreeCredentials: degreeCredentials || "",
+              speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology, dob: dob || "", ssn: ssn || "",
+              ssnType: selectedSsnType as SsnType || SsnType.Medicare, roleType: UserRole.Doctor, adminId: userId || "",
+              languagesSpoken: languagesSpoken || "", taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
+              deaActiveDate: deaActiveDate || "", deaTermDate: deaTermDate || "", taxId: taxId || "", npi: npi || "",
+              upin: upin || "", emcProviderId: emcProviderId || "", medicareGrpNumber: medicareGrpNumber || "",
+              medicaidGrpNumber: medicaidGrpNumber || "", meammographyCertNumber: meammographyCertNumber || "",
+              campusGrpNumber: campusGrpNumber || "", blueShildNumber: blueShildNumber || "", taxIdStuff: taxIdStuff || "",
+              specialityLicense: specialityLicense || "", anesthesiaLicense: anesthesiaLicense || "", dpsCtpNumber: dpsCtpNumber || "",
+              stateLicense: stateLicense || "", licenseActiveDate: licenseActiveDate || "", licenseTermDate: licenseTermDate || "",
+              prescriptiveAuthNumber: prescriptiveAuthNumber || "",
+            },
+
+            createContactInput: {
+              email: email || "", pager: pager || "", phone: phone || "", mobile: mobile || "",
+              fax: fax || "", address: address || "", address2: address2 || "", zipCode: zipCode || "", city: city || "",
+              state: state || "", country: country || "", facilityId: selectedFacility || ""
+            },
+
+            createBillingAddressInput: {
+              email: billingEmail || "", phone: billingPhone || "", fax: billingFax || "",
+              address: billingAddress || "", address2: billingAddress2 || "", zipCode: billingZipCode || "",
+              city: billingCity || "", state: billingState || "", country: billingCountry || "",
+              userId: billingUserId || "", facilityId: selectedFacility || ""
+            }
+          }
+        }
+      })
+    } else {
+      Alert.error("Failed to create doctor!")
+    }
+  };
+
+  const {
+    dob: { message: dobError } = {},
+    ssn: { message: ssnError } = {},
+    prefix: { message: prefixError } = {},
+    suffix: { message: suffixError } = {},
+    ssnType: { id: ssnTypeError } = {},
+    lastName: { message: lastNameError } = {},
+    firstName: { message: firstNameError } = {},
+    speciality: { id: specialtyError } = {},
+    middleName: { message: middleNameError } = {},
+    providerIntials: { message: providerInitialsError } = {},
+    degreeCredentials: { message: degreeCredentialsError } = {},
+    languagesSpoken: { message: languagesSpokenError } = {},
+    taxonomyCode: { message: taxonomyCodeError } = {},
+    deaNumber: { message: deaNumberError } = {},
+    deaActiveDate: { message: deaActiveDateError } = {},
+    deaTermDate: { message: deaTermDateError } = {},
+    taxId: { message: taxIdError } = {},
+    npi: { message: npiError } = {},
+    upin: { message: upinError } = {},
+    emcProviderId: { message: emcProviderIdError } = {},
+    medicareGrpNumber: { message: medicareGrpNumberError } = {},
+    medicaidGrpNumber: { message: medicaidGrpNumberError } = {},
+    meammographyCertNumber: { message: meammographyCertNumberError } = {},
+    campusGrpNumber: { message: campusGrpNumberError } = {},
+    blueShildNumber: { message: blueShieldNumberError } = {},
+    taxIdStuff: { message: taxIdStuffError } = {},
+    facilityId: { id: facilityError } = {},
+
+    specialityLicense: { message: specialtyLicenseError } = {},
+    anesthesiaLicense: { message: anesthesiaLicenseError } = {},
+    dpsCtpNumber: { message: dpsCtpNumberError } = {},
+    stateLicense: { message: stateLicenseError } = {},
+    licenseActiveDate: { message: licenseActiveDateError } = {},
+    licenseTermDate: { message: licenseTermDateError } = {},
+    prescriptiveAuthNumber: { message: prescriptiveAuthNumberError } = {},
+
+    fax: { message: faxError } = {},
+    city: { message: cityError } = {},
+    state: { message: stateError } = {},
+    email: { message: emailError } = {},
+    pager: { message: pagerError } = {},
+    phone: { message: phoneError } = {},
+    mobile: { message: mobileError } = {},
+    address: { message: addressError } = {},
+    zipCode: { message: zipCodeError } = {},
+    country: { message: countryError } = {},
+    address2: { message: address2Error } = {},
+
+    billingFax: { message: billingFaxError } = {},
+    billingCity: { message: billingCityError } = {},
+    billingState: { message: billingStateError } = {},
+    billingEmail: { message: billingEmailError } = {},
+    billingPhone: { message: billingPhoneError } = {},
+    billingAddress: { message: billingAddressError } = {},
+    billingZipCode: { message: billingZipCodeError } = {},
+    billingCountry: { message: billingCountryError } = {},
+    billingAddress2: { message: billingAddress2Error } = {},
+
+  } = errors;
 
   return (
     <FormProvider {...methods}>
@@ -53,37 +207,76 @@ const AddDoctorForm: FC = () => {
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
-                      fieldType="text"
-                      controllerName="firstName"
-                      control={control}
-                      controllerLabel={FIRST_NAME}
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={FACILITY}
+                      name="facilityId"
+                      error={facilityError?.message || ""}
+                      options={renderFacilities(facilityList)}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={SPECIALTY}
+                      name="speciality"
+                      error={specialtyError?.message || ""}
+                      options={MAPPED_SPECIALTIES}
+                    />
+                  </Grid>
+                </Grid>
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={TYPE}
+                      name="ssnType"
+                      error={ssnTypeError?.message || ""}
+                      options={MAPPED_SSN_TYPES}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DoctorController
                       fieldType="text"
-                      controllerName="lastName"
-                      control={control}
-                      controllerLabel={LAST_NAME}
+                      controllerName="firstName"
+                      error={firstNameError}
+                      controllerLabel={FIRST_NAME}
                     />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="middleInitial"
-                      control={control}
-                      controllerLabel={MIDDLE_INITIAL}
+                      controllerName="lastName"
+                      error={lastNameError}
+                      controllerLabel={LAST_NAME}
                     />
                   </Grid>
+
+                  <Grid item md={6}>
+                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
+                      fieldType="text"
+                      controllerName="middleName"
+                      error={middleNameError}
+                      controllerLabel={MIDDLE_NAME}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DoctorController
                       fieldType="text"
                       controllerName="prefix"
-                      control={control}
+                      error={prefixError}
                       controllerLabel={PREFIX}
                     />
                   </Grid>
@@ -91,18 +284,19 @@ const AddDoctorForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="suffix"
-                      control={control}
+                      error={suffixError}
                       controllerLabel={SUFFIX}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="providerInitials"
-                      control={control}
+                      controllerName="providerIntials"
+                      error={providerInitialsError}
                       controllerLabel={PROVIDER_INITIALS}
                     />
                   </Grid>
@@ -110,412 +304,211 @@ const AddDoctorForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="credentials"
-                      control={control}
-                      controllerLabel={CREDENTIALS}
+                      controllerName="degreeCredentials"
+                      error={degreeCredentialsError}
+                      controllerLabel={DEGREE_CREDENTIALS}
                     />
                   </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="specialty"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-
                 </Grid>
-
-                <Grid item md={12}>
-                  <AddDoctorController
-                    fieldType="date"
-                    controllerName="dob"
-                    control={control}
-                    controllerLabel={DOB}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="primaryServiceLocation"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-
               </CardComponent>
 
               <Box pb={3} />
 
               <CardComponent cardTitle={ADDITIONAL_INFO}>
-
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="socialSecurityNumber"
-                      control={control}
+                      controllerName="ssn"
+                      error={ssnError}
                       controllerLabel={SOCIAL_SECURITY_NUMBER}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="socialSecurityType"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
-                    fieldType="text"
-                    controllerName="taxonomyCode"
-                    control={control}
-                    controllerLabel={TAXONOMY_CODE}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
-                    fieldType="text"
-                    controllerName="DEANumber"
-                    control={control}
-                    controllerLabel={DEA_NUMBER}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="DEAActiveDate"
-                      control={control}
-                      controllerLabel={DEA_ACTIVE_DATE}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
-                      fieldType="text"
-                      controllerName="DEATermDate"
-                      control={control}
-                      controllerLabel={DEA_ERM_DATE}
+                      controllerName="deaNumber"
+                      error={deaNumberError}
+                      controllerLabel={DEA_NUMBER}
                     />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="languageSpoken"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
+                    <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE} error={deaActiveDateError || ''} />
                   </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="gender"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER.map((gender) => {
-                                const { label, value } = gender || {};
 
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DatePicker name="deaTermDate" label={DEA_TERM_DATE} error={deaTermDateError || ''} />
                   </Grid>
                 </Grid>
 
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DoctorController
+                      fieldType="text"
+                      controllerName="taxonomyCode"
+                      error={taxonomyCodeError}
+                      controllerLabel={TAXONOMY_CODE}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DoctorController
+                      fieldType="text"
+                      controllerName="languagesSpoken"
+                      error={languagesSpokenError}
+                      controllerLabel={LANGUAGE_SPOKEN}
+                    />
+                  </Grid>
+                </Grid>
               </CardComponent>
 
               <Box pb={3} />
 
               <CardComponent cardTitle={BILLING_ADDRESS}>
-
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
-                    controllerName="email"
-                    control={control}
+                    controllerName="billingEmail"
+                    error={billingEmailError}
                     controllerLabel={EMAIL}
                   />
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
-                      fieldType="text"
-                      controllerName="phone"
-                      control={control}
-                      controllerLabel={PHONE}
-                    />
+                    <PhoneField name="billingPhone" error={billingPhoneError} label={PHONE} />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
-                      fieldType="text"
-                      controllerName="fax"
-                      control={control}
-                      controllerLabel={FAX}
-                    />
+                    <PhoneField name="billingFax" error={billingFaxError} label={FAX} />
                   </Grid>
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
-                    controllerName="zipCode"
-                    control={control}
+                    controllerName="billingZipCode"
+                    error={billingZipCodeError}
                     controllerLabel={ZIP_CODE}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
-                    controllerName="address"
-                    control={control}
+                    controllerName="billingAddress"
+                    error={billingAddressError}
                     controllerLabel={ADDRESS}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
-                    controllerName="address2"
-                    control={control}
+                    controllerName="billingAddress2"
+                    error={billingAddress2Error}
                     controllerLabel={ADDRESS_2}
                   />
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={4}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="city"
+                      controllerName="billingCity"
+                      error={billingCityError}
                       controllerLabel={CITY}
                     />
                   </Grid>
 
                   <Grid item md={4}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="state"
+                      controllerName="billingState"
+                      error={billingStateError}
                       controllerLabel={STATE}
                     />
                   </Grid>
 
                   <Grid item md={4}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="country"
+                      controllerName="billingCountry"
+                      error={billingCountryError}
                       controllerLabel={COUNTRY}
                     />
                   </Grid>
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <Controller
-                    name="practiceType"
-                    defaultValue={Gender.Male}
-                    control={control}
-                    render={({ field }) => {
-                      return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                          <Select
-                            labelId="demo-customized-select-label-gender"
-                            id="demo-customized-select-1"
-                            variant="outlined"
-                            value={field.value}
-                            onChange={field.onChange}
-                          >
-                            {MAPPED_GENDER.map((gender) => {
-                              const { label, value } = gender || {};
-
-                              return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                            })}
-                          </Select>
-                        </FormControl>
-                      )
-                    }}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
-                    fieldType="text"
-                    controllerName="federalTaxID"
-                    control={control}
-                    controllerLabel={FEDERAL_TAX_ID}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
-                    fieldType="text"
-                    controllerName="checkPayableTo"
-                    control={control}
-                    controllerLabel={CHECK_PAYABLE_TO}
-                  />
-                </Grid>
-
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
-                    fieldType="text"
-                    controllerName="bankAccount"
-                    control={control}
-                    controllerLabel={BANK_ACCOUNT}
-                  />
                 </Grid>
               </CardComponent>
             </Grid>
 
             <Grid md={6} item>
-
               <CardComponent cardTitle={SCHEDULE_APPOINTMENTS_TEXT}>
                 <Box mb={3}>
                   <Grid item md={12} sm={12} xs={12}>
                     <FormControl fullWidth>
                       <FormGroup>
                         <FormControlLabel
-                          className={classes.controlLabel}
-                          labelPlacement="start"
-                          control={<Switch checked={value.sunday} onChange={handleChange} name="sunday" color='primary' />}
                           label="Sunday"
-                        />
-                        <FormHelperText className={classes.heplerText}>{AVAILIBITY_STATUS}</FormHelperText>
-                        <FormControlLabel
-                          className={classes.controlLabel}
                           labelPlacement="start"
-                          control={<Switch checked={value.monday} onChange={handleChange} name="monday" color='primary' />}
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.sunday} onChange={handleChange} name="sunday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
                           label="Monday"
-                        />
-                        <FormHelperText className={classes.heplerText}>{AVAILIBITY_STATUS}</FormHelperText>
-                        <FormControlLabel
-                          className={classes.controlLabel}
                           labelPlacement="start"
-                          control={<Switch checked={value.wednesday} onChange={handleChange} name="wednesday" color='primary' />}
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
+                          label="Tuesday"
+                          labelPlacement="start"
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
                           label="Wednesday"
-                        />
-                        <FormHelperText className={classes.heplerText}>{AVAILIBITY_STATUS}</FormHelperText>
-                        <FormControlLabel
-                          className={classes.controlLabel}
                           labelPlacement="start"
-                          control={<Switch checked={value.thursday} onChange={handleChange} name="thursday" color='primary' />}
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.wednesday} onChange={handleChange} name="wednesday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
                           label="Thursday"
-                        />
-                        <FormHelperText className={classes.heplerText}>{AVAILIBITY_STATUS}</FormHelperText>
-                        <FormControlLabel
-                          className={classes.controlLabel}
                           labelPlacement="start"
-                          control={<Switch checked={value.friday} onChange={handleChange} name="friday" color='primary' />}
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.thursday} onChange={handleChange} name="thursday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
                           label="Friday"
-                        />
-                        <FormHelperText className={classes.heplerText}>{AVAILIBITY_STATUS}</FormHelperText>
-                        <FormControlLabel
-                          className={classes.controlLabel}
                           labelPlacement="start"
-                          control={<Switch checked={value.saturday} onChange={handleChange} name="saturday" color='primary' />}
-                          label="Saturday"
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.friday} onChange={handleChange} name="friday" color='primary' />}
                         />
-                        <FormHelperText className={classes.heplerText}>{AVAILIBITY_STATUS}</FormHelperText>
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
+
+                        <FormControlLabel
+                          label="Saturday"
+                          labelPlacement="start"
+                          className={classes.controlLabel}
+                          control={<Switch checked={values.saturday} onChange={handleChange} name="saturday" color='primary' />}
+                        />
+                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
                       </FormGroup>
                     </FormControl>
                   </Grid>
@@ -525,127 +518,120 @@ const AddDoctorForm: FC = () => {
               <Box pb={3} />
 
               <CardComponent cardTitle={CONTACT_INFORMATION}>
-
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
                     controllerName="email"
-                    control={control}
+                    error={emailError}
                     controllerLabel={EMAIL}
                   />
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
-                      fieldType="text"
-                      controllerName="phone"
-                      control={control}
-                      controllerLabel={PHONE}
-                    />
+                    <PhoneField name="phone" error={phoneError} label={PHONE} />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
-                      fieldType="text"
-                      controllerName="mobile"
-                      control={control}
-                      controllerLabel={MOBILE}
-                    />
+                    <PhoneField name="mobile" error={mobileError} label={MOBILE} />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="pager"
-                      control={control}
+                      error={pagerError}
                       controllerLabel={PAGER}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="fax"
-                      control={control}
+                      error={faxError}
                       controllerLabel={FAX}
                     />
                   </Grid>
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
                     controllerName="zipCode"
-                    control={control}
+                    error={zipCodeError}
                     controllerLabel={ZIP_CODE}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
                     controllerName="address"
-                    control={control}
+                    error={addressError}
                     controllerLabel={ADDRESS}
                   />
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
                     controllerName="address2"
-                    control={control}
+                    error={address2Error}
                     controllerLabel={ADDRESS_2}
                   />
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={4}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="city"
+                      error={cityError}
                       controllerLabel={CITY}
                     />
                   </Grid>
 
                   <Grid item md={4}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="state"
+                      error={stateError}
                       controllerLabel={STATE}
                     />
                   </Grid>
 
                   <Grid item md={4}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="country"
+                      error={countryError}
                       controllerLabel={COUNTRY}
                     />
                   </Grid>
                 </Grid>
-
               </CardComponent>
 
               <Box pb={3} />
 
               <CardComponent cardTitle={TAX_ID_DETAILS}>
-
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="taxID"
-                      control={control}
+                      controllerName="taxId"
+                      error={taxIdError}
                       controllerLabel={TAX_ID}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="NPI"
-                      control={control}
+                      controllerName="npi"
+                      error={npiError}
                       controllerLabel={NPI}
                     />
                   </Grid>
@@ -653,18 +639,19 @@ const AddDoctorForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="UPIN"
-                      control={control}
+                      controllerName="upin"
+                      error={upinError}
                       controllerLabel={UPIN}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="EMCProviderID"
-                      control={control}
+                      controllerName="emcProviderId"
+                      error={emcProviderIdError}
                       controllerLabel={EMC_PROVIDER_ID}
                     />
                   </Grid>
@@ -672,73 +659,19 @@ const AddDoctorForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="organizationType"
-                      defaultValue={UserRole.Staff}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-role" shrink>Role</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-role"
-                              id="demo-customized-select"
-                              variant="outlined"
-                            >
-                              {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
-                                const { label, value } = role;
-
-                                return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Controller
-                      name="billingFacility"
-                      defaultValue={Gender.Male}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal'>
-                            <InputLabel id="demo-customized-select-label-gender" shrink>Gender</InputLabel>
-                            <Select
-                              labelId="demo-customized-select-label-gender"
-                              id="demo-customized-select-1"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_GENDER.map((gender) => {
-                                const { label, value } = gender || {};
-
-                                return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-                          </FormControl>
-                        )
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="medicareGRPNumber"
-                      control={control}
+                      controllerName="medicareGrpNumber"
+                      error={medicareGrpNumberError}
                       controllerLabel={MEDICARE_GRP_NUMBER}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="medicaidGRPNumber"
-                      control={control}
+                      controllerName="medicaidGrpNumber"
+                      error={medicaidGrpNumberError}
                       controllerLabel={MEDICAID_GRP_NUMBER}
                     />
                   </Grid>
@@ -746,56 +679,59 @@ const AddDoctorForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="mammographyCertNumber"
-                      control={control}
+                      controllerName="meammographyCertNumber"
+                      error={meammographyCertNumberError}
                       controllerLabel={MAMMOGRAPHY_CERT_NUMBER}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="champusGRPNumber"
-                      control={control}
-                      controllerLabel={CHAMPUS_GRP_NUMBER}
+                      controllerName="campusGrpNumber"
+                      error={campusGrpNumberError}
+                      controllerLabel={CAMPUS_GRP_NUMBER}
                     />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="blueShiedNumber"
-                      control={control}
+                      controllerName="blueShildNumber"
+                      error={blueShieldNumberError}
                       controllerLabel={BLUE_SHIED_NUMBER}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="taxIDSuff"
-                      control={control}
-                      controllerLabel={TAX_ID_SUFF}
+                      controllerName="taxIdStuff"
+                      error={taxIdStuffError}
+                      controllerLabel={TAX_ID_STUFF}
                     />
                   </Grid>
                 </Grid>
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="specialityLicense"
-                      control={control}
-                      controllerLabel={SPECIALITY_LICENSE}
+                      error={specialtyLicenseError}
+                      controllerLabel={SPECIALTY_LICENSE}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="anesthesiaLicense"
-                      control={control}
+                      error={anesthesiaLicenseError}
                       controllerLabel={ANESTHESIA_LICENSE}
                     />
                   </Grid>
@@ -803,18 +739,19 @@ const AddDoctorForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
-                      controllerName="CTPNumber"
-                      control={control}
+                      controllerName="dpsCtpNumber"
+                      error={dpsCtpNumberError}
                       controllerLabel={CTP_NUMBER}
                     />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
+                    <DoctorController
                       fieldType="text"
                       controllerName="stateLicense"
-                      control={control}
+                      error={stateLicenseError}
                       controllerLabel={STATE_LICENSE}
                     />
                   </Grid>
@@ -822,45 +759,36 @@ const AddDoctorForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
-                      fieldType="text"
-                      controllerName="lisenceActiveDate"
-                      control={control}
-                      controllerLabel={LISENCE_ACTIVE_DATE}
-                    />
+                    <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE} error={licenseActiveDateError || ''} />
                   </Grid>
+
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddDoctorController
-                      fieldType="text"
-                      controllerName="licenseTermDate"
-                      control={control}
-                      controllerLabel={LICENSE_TERM_DATE}
-                    />
+                    <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE} error={licenseTermDateError || ''} />
                   </Grid>
                 </Grid>
 
                 <Grid item md={12} sm={12} xs={12}>
-                  <AddDoctorController
+                  <DoctorController
                     fieldType="text"
                     controllerName="prescriptiveAuthNumber"
-                    control={control}
+                    error={prescriptiveAuthNumberError}
                     controllerLabel={PRESCRIPTIVE_AUTH_NUMBER}
                   />
                 </Grid>
-
               </CardComponent>
             </Grid>
           </Grid>
         </Box>
 
         <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary">
-            {ADD_DOCTOR}
+          <Button type="submit" variant="contained" color="primary" disabled={loading}>
+            {CREATE_DOCTOR}
+            {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
         </Box>
 
       </form>
-    </FormProvider >
+    </FormProvider>
   );
 };
 

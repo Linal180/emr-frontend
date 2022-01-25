@@ -1,29 +1,33 @@
 // packages block
-import { FC, useContext, useEffect } from 'react';
+import { FC, useContext } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, MenuItem, Select, FormHelperText } from "@material-ui/core";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Selector from '../../../common/Selector';
+import DatePicker from '../../../common/DatePicker';
 import AddStaffController from "./AddStaffController";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
+import { renderFacilities } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { addStaffSchema } from '../../../../validationSchemas';
-import { MappedRoleInterface } from "../../../../interfacesTypes";
-import { CreateStaffInput, Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
-import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MAPPED_GENDER, MAPPED_ROLES, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS } from "../../../../constants";
+import { ExtendedStaffInputProps } from "../../../../interfacesTypes";
+import { Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
+import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_ROLES, MAPPED_GENDER, ROLE } from "../../../../constants";
+import PhoneField from '../../../common/PhoneInput';
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
-  const methods = useForm<CreateStaffInput>({
+  const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(addStaffSchema)
   });
-  const { reset, handleSubmit, setValue, control, formState: { errors } } = methods;
+  const { reset, handleSubmit, control, formState: { errors } } = methods;
 
   const [createStaff, { loading }] = useCreateStaffMutation({
     onError({ message }) {
@@ -48,22 +52,21 @@ const AddStaffForm: FC = () => {
     }
   });
 
-  useEffect(() => {
-    setValue("facilityId", facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : "")
-  }, [facilityList, setValue]);
-
-  const onSubmit: SubmitHandler<CreateStaffInput> = async ({ firstName, lastName, username, password, email, phone, mobile, roleType, dob, gender, facilityId }) => {
+  const onSubmit: SubmitHandler<ExtendedStaffInputProps> = async ({ firstName, lastName, username, password, email, phone, mobile, roleType, dob, gender, facilityId }) => {
     if (user) {
       const { id } = user
+      const { id: facilityID } = facilityId
+      const { id: role } = roleType
+      const { id: staffGender } = gender
 
       await createStaff({
         variables: {
           createStaffInput: {
-            firstName, lastName, email, password, phone, mobile, roleType, dob, gender, facilityId, adminId: id, username
+            firstName, lastName, email, password, phone, mobile, roleType: role as UserRole, dob, gender: staffGender as Gender, facilityId: facilityID, adminId: id, username
           }
         }
       })
-    }
+    } else Alert.error("Can't create staff")
   };
 
   const { email: { message: emailError } = {},
@@ -74,8 +77,9 @@ const AddStaffForm: FC = () => {
     password: { message: passwordError } = {},
     lastName: { message: lastNameError } = {},
     firstName: { message: firstNameError } = {},
-    facilityId: { message: facilityError } = {},
-    roleType: { message: roleTypeError } = {},
+    facilityId: { id: facilityError } = {},
+    roleType: { id: roleTypeError } = {},
+    gender: { id: genderError } = {},
   } = errors;
 
   return (
@@ -87,61 +91,22 @@ const AddStaffForm: FC = () => {
               <CardComponent cardTitle={IDENTIFICATION}>
                 <Grid container spacing={3}>
                   <Grid item md={6}>
-                    <Controller
-                      name="roleType"
-                      defaultValue={UserRole.Staff}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal' error={Boolean(roleTypeError)}>
-                            <InputLabel id="role" shrink>Role</InputLabel>
-                            <Select
-                              labelId="role"
-                              id="role-select"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {MAPPED_ROLES.map((role: MappedRoleInterface, index: number) => {
-                                const { label, value } = role;
-
-                                return <MenuItem key={index} value={value}>{label}</MenuItem>;
-                              })}
-                            </Select>
-
-                            <FormHelperText>{roleTypeError}</FormHelperText>
-                          </FormControl>
-                        )
-                      }}
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={FACILITY}
+                      name="facilityId"
+                      error={facilityError?.message || ""}
+                      options={renderFacilities(facilityList)}
                     />
                   </Grid>
 
                   <Grid item md={6}>
-                    <Controller
-                      name="facilityId"
-                      defaultValue={facilityList && facilityList[0] && facilityList[0].id ? facilityList[0]?.id : ""}
-                      control={control}
-                      render={({ field }) => {
-                        return (
-                          <FormControl fullWidth margin='normal' error={Boolean(facilityError)}>
-                            <InputLabel id="facility" shrink>{FACILITY}</InputLabel>
-                            <Select
-                              labelId="facility"
-                              id="select-facility"
-                              variant="outlined"
-                              value={field.value}
-                              onChange={field.onChange}
-                            >
-                              {facilityList?.map((facility) => {
-                                const { id, name } = facility || {};
-
-                                return <MenuItem key={id} value={id}>{name}</MenuItem>;
-                              })}
-                            </Select>
-                            <FormHelperText>{facilityError && facilityError}</FormHelperText>
-                          </FormControl>
-                        )
-                      }}
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={ROLE}
+                      name="roleType"
+                      error={roleTypeError?.message || ""}
+                      options={MAPPED_ROLES}
                     />
                   </Grid>
                 </Grid>
@@ -168,46 +133,36 @@ const AddStaffForm: FC = () => {
                   </Grid>
                 </Grid>
 
-                <Controller
-                  name="gender"
-                  defaultValue={Gender.Male}
-                  control={control}
-                  render={({ field }) => {
-                    return (
-                      <FormControl fullWidth margin='normal'>
-                        <InputLabel id="gender" shrink>{GENDER}</InputLabel>
-                        <Select
-                          labelId="gender"
-                          id="gender-select"
-                          variant="outlined"
-                          value={field.value}
-                          onChange={field.onChange}
-                        >
-                          {MAPPED_GENDER.map((gender) => {
-                            const { label, value } = gender || {};
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={GENDER}
+                      name="gender"
+                      error={genderError?.message || ""}
+                      options={MAPPED_GENDER}
+                    />
+                  </Grid>
 
-                            return <MenuItem key={value} value={value}>{label}</MenuItem>;
-                          })}
-                        </Select>
-                      </FormControl>
-                    )
-                  }}
-                />
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <AddStaffController
-                    fieldType="date"
-                    controllerName="dob"
-                    control={control}
-                    error={dobError}
-                    controllerLabel={DOB}
-                  />
+                  <Grid item md={6} sm={12} xs={12}>
+                    <DatePicker name="dob" label={DOB} error={dobError || ''} />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="phone" error={phoneError} label={PHONE} />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="mobile" error={mobileError} label={MOBILE} />
+                  </Grid>
                 </Grid>
               </CardComponent>
             </Grid>
 
             <Grid md={6} item>
-
               <CardComponent cardTitle={ACCOUNT_INFO}>
                 <AddStaffController
                   fieldType="email"
@@ -232,31 +187,11 @@ const AddStaffForm: FC = () => {
                   <Grid item md={6} sm={12} xs={12}>
                     <AddStaffController
                       fieldType="password"
+                      isPassword
                       controllerName="password"
                       control={control}
                       error={passwordError}
                       controllerLabel={PASSWORD_LABEL}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="text"
-                      controllerName="phone"
-                      control={control}
-                      error={phoneError}
-                      controllerLabel={PHONE}
-                    />
-                  </Grid>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
-                      fieldType="text"
-                      controllerName="mobile"
-                      control={control}
-                      error={mobileError}
-                      controllerLabel={MOBILE}
                     />
                   </Grid>
                 </Grid>
@@ -273,7 +208,7 @@ const AddStaffForm: FC = () => {
         </Box>
 
       </form>
-    </FormProvider >
+    </FormProvider>
   );
 };
 

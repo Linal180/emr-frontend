@@ -1,42 +1,30 @@
 // packages block
-import { ReactNode } from "react";
 import moment from "moment";
-import states from "states-us";
-import { Typography, Box, Chip, TableCell, Grid, colors } from "@material-ui/core";
+import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { TOKEN, USER_EMAIL } from "../constants";
-import { TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType } from "../generated/graphql"
+import { LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
+import { SelectorOption, TableAlignType } from "../interfacesTypes";
+import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload } from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
   localStorage.removeItem(USER_EMAIL);
-  history.push("/login");
+  history.push(LOGIN_ROUTE);
   client.clearStore();
 };
 
-export const firstLatterUppercase = (value: string) => {
+export const upperToNormal = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
-export const stateNames = () => {
-  return states.map((state) => state.name);
-};
+export const formatValue = (value: string) => {
+  let formatted = ''
+  value.split("_").map(term => formatted = formatted + term.charAt(0).toUpperCase() + term.slice(1).toLowerCase() + ' ')
 
-export const renderItem = (
-  name: string,
-  value: Maybe<string> | number | ReactNode | undefined,
-  noWrap?: boolean,
-) => (
-  <>
-    <Typography variant="body2">{name}</Typography>
-    <Typography component="h5" variant="h5" noWrap={noWrap}>
-      {value}
-    </Typography>
-  </>
-);
+  return formatted;
+};
 
 export const renderTh = (text: string, align?: TableAlignType) => (
   <TableCell component="th" align={align}>
@@ -44,24 +32,6 @@ export const renderTh = (text: string, align?: TableAlignType) => (
       {text}
     </Typography>
   </TableCell>
-);
-
-export const renderItems = (
-  name: string,
-  value: string[]
-) => (
-  <>
-    <Typography variant="body2">{name}</Typography>
-    <Grid container>
-      {value.map(item => (
-        <Grid item key={`${item}-index`}>
-          <Box pt={1} pr={1}>
-            <Chip label={item} variant="outlined" />
-          </Box>
-        </Grid>
-      ))}
-    </Grid>
-  </>
 );
 
 export const requiredLabel = (label: string) => {
@@ -74,25 +44,6 @@ export const requiredLabel = (label: string) => {
       </Box>
     </Box>
   )
-}
-
-export const dateFormat = (date: string): string => {
-  return date
-    ? moment(date, "x").format("DD/MM/YYYY")
-    : "N/A";
-};
-
-export const renderEmailVerifiedStatusColor = (status: boolean): string => {
-  switch (status) {
-    case false:
-      return colors.red[700]
-
-    case true:
-      return colors.green[700]
-
-    default:
-      return colors.grey[700]
-  }
 }
 
 export const isCurrentUserCanMakeAdmin = (currentUserRole: Maybe<Maybe<Role>[]> | undefined) => {
@@ -152,7 +103,7 @@ export const RequiredMessage = (fieldName: string) => `${fieldName} is required`
 export const getPracticeType = (type: PracticeType): string => {
   switch (type) {
     case PracticeType.Hospital:
-      return PracticeType.Hospital
+      return 'Hospital'
     case PracticeType.Clinic:
       return 'Clinic'
     case PracticeType.Lab:
@@ -160,4 +111,63 @@ export const getPracticeType = (type: PracticeType): string => {
     default:
       return 'Hospital'
   }
+};
+
+export const getTimestamps = (date: string): string => {
+  return date ? moment(date).format().toString() : ""
+};
+
+export const getDate = (date: string) => {
+  return moment(date, "x").format("YYYY-MM-DD")
+};
+
+export const deleteRecordTitle = (recordType: string) => {
+  return `Delete ${recordType} Record`;
+}
+
+export const aboutToDelete = (recordType: string) => {
+  return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!facilities) {
+    for (let facility of facilities) {
+      if (facility) {
+        const { id, name } = facility;
+
+        data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
+  const data: SelectorOption[] = [];
+  if (!!doctors) {
+    for (let doctor of doctors) {
+      if (doctor) {
+        const { id, firstName, lastName } = doctor;
+        data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const setRecord = (id: string, name: string): SelectorOption => {
+  let value = ''
+  if (name) {
+    value = formatValue(name)
+  }
+
+  return { id, name: value };
+};
+
+export const formatPhone = (phone: string): string => {
+  return (phone && phone) ? `(${phone.substring(0,3)})  ${phone.substring(3,6 )}-${phone.substring(6,11)}` : ''
 };

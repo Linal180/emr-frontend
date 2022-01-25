@@ -1,27 +1,28 @@
 // packages block
 import { FC, ChangeEvent, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
-import TableLoader from "../../../common/TableLoader";
 import Alert from "../../../common/Alert";
+import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../utils";
+import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
-import { ACTION, EMAIL, FIRST_NAME, LAST_NAME, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION } from "../../../../constants";
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
+import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const classes = useTableStyles()
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [deletePatientId, setDeletePatientId] = useState<string>("");
   const [patients, setPatients] = useState<PatientsPayload['patients']>([]);
-  const classes = useTableStyles()
 
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
     variables: {
@@ -44,14 +45,12 @@ const PatientsTable: FC = (): JSX.Element => {
       const { findAllPatient } = data || {};
 
       if (findAllPatient) {
-        const { pagination, } = findAllPatient
+        const { pagination, patients } = findAllPatient
+        patients && setPatients(patients as PatientsPayload['patients'])
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && setTotalPages(totalPages)
-          }
-
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && setTotalPages(totalPages)
         }
       }
     }
@@ -129,8 +128,7 @@ const PatientsTable: FC = (): JSX.Element => {
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              {renderTh(FIRST_NAME)}
-              {renderTh(LAST_NAME)}
+              {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(ACTION, "center")}
@@ -146,22 +144,26 @@ const PatientsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               patients?.map((record: PatientPayload['patient'], index: number) => {
-                const { id, firstName, lastName, user, contacts } = record || {};
+                const { id, firstName, lastName, email, contacts } = record || {};
                 const patientContact = contacts && contacts[0];
                 const { phone } = patientContact || {};
-                const { email } = user || {};
-
+                
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">{firstName}</TableCell>
-                    <TableCell scope="row">{lastName}</TableCell>
+                    <TableCell scope="row">
+                      <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
+                        {`${firstName} ${lastName}`}
+                      </Link>
+                    </TableCell>
                     <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <IconButton size="small">
-                          <EditIcon />
-                        </IconButton>
+                        <Link to={`${PATIENTS_ROUTE}/${id}`}>
+                          <IconButton size="small">
+                            <EditIcon />
+                          </IconButton>
+                        </Link>
 
                         <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
@@ -175,7 +177,7 @@ const PatientsTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !patients) || error || !patients?.length) && (
+        {((!loading && !patients?.length) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

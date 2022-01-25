@@ -29,7 +29,7 @@ const AppMenuItem: FC<AppMenuItemProps> = (props) => {
   const MenuItemChildren = (
     <List component="div" disablePadding>
       {items.map((childItem, index) => {
-        const childItemActiveClass = pathname.includes(childItem.name.toLowerCase()) ? "child-item active-child" : 'child-item';
+        const childItemActiveClass = pathname.split("-").join(" ").includes(childItem.name.toLowerCase()) ? "child-item active-child" : 'child-item';
 
         return (
           <AppMenuItemComponent link={childItem.link} key={index}>
