@@ -1,8 +1,8 @@
 // packages block
 import { FC, useReducer, Reducer } from 'react';
 // components block
-import FacilityServicesTable from "./FacilityServicesTable";
 import PageHeader from '../../../../common/PageHeader';
+import FacilityServicesTable from './FacilityServicesTable';
 // constants block / generated
 import { ADD_SERVICE, FACILITY_SERVICES_BREAD, FACILITY_SERVICES_TEXT } from "../../../../../constants";
 import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../../reducers/serviceReducer';
