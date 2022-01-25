@@ -25,7 +25,7 @@ const index = () => {
             </Box>
 
             <Box pb={2}>
-              <FormControlLabel control={<Checkbox defaultChecked />} label={CONSENT_AGREEMENT_LABEL} />
+              <FormControlLabel control={<Checkbox color="primary" defaultChecked />} label={CONSENT_AGREEMENT_LABEL} />
             </Box>
           </Grid>
         </Grid>

@@ -983,6 +983,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                         <FormControlLabel
                           control={
                             <Checkbox
+                              color="primary"
                               checked={state.one}
                               onChange={handleChangeForCheckBox("one")}
                             />
@@ -992,7 +993,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
 
                         <FormControlLabel
                           control={
-                            <Checkbox checked={state.two} onChange={handleChangeForCheckBox("two")} />
+                            <Checkbox color="primary" checked={state.two} onChange={handleChangeForCheckBox("two")} />
                           }
                           label="Release of Billing Information and Assignment of Benefits"
                         />
@@ -1006,7 +1007,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                             <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
                             <FormControlLabel
                               control={
-                                <Checkbox checked={state.three} onChange={handleChangeForCheckBox("three")} />
+                                <Checkbox color="primary" checked={state.three} onChange={handleChangeForCheckBox("three")} />
                               }
                               label="Granted"
                             />
@@ -1021,6 +1022,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                             <FormControlLabel
                               control={
                                 <Checkbox
+                                  color="primary"
                                   checked={state.four}
                                   onChange={handleChangeForCheckBox("four")}
                                 />
