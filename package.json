@@ -21,6 +21,7 @@
     "@types/rc-time-picker": "^3.5.0",
     "@types/react": "^17.0.20",
     "@types/react-dom": "^17.0.9",
+    "@types/react-router": "^5.1.18",
     "axios": "^0.22.0",
     "date-fns": "^2.28.0",
     "dompurify": "^2.3.3",

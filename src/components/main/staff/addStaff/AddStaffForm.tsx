@@ -77,9 +77,9 @@ const AddStaffForm: FC = () => {
     password: { message: passwordError } = {},
     lastName: { message: lastNameError } = {},
     firstName: { message: firstNameError } = {},
-    facilityId: { message: facilityError } = {},
-    roleType: { message: roleTypeError } = {},
-    gender: { message: genderError } = {},
+    facilityId: { id: facilityError } = {},
+    roleType: { id: roleTypeError } = {},
+    gender: { id: genderError } = {},
   } = errors;
 
   return (
@@ -95,7 +95,7 @@ const AddStaffForm: FC = () => {
                       value={{ id: "", name: "" }}
                       label={FACILITY}
                       name="facilityId"
-                      error={facilityError}
+                      error={facilityError?.message || ""}
                       options={renderFacilities(facilityList)}
                     />
                   </Grid>
@@ -105,7 +105,7 @@ const AddStaffForm: FC = () => {
                       value={{ id: "", name: "" }}
                       label={ROLE}
                       name="roleType"
-                      error={roleTypeError}
+                      error={roleTypeError?.message || ""}
                       options={MAPPED_ROLES}
                     />
                   </Grid>
@@ -139,7 +139,7 @@ const AddStaffForm: FC = () => {
                       value={{ id: "", name: "" }}
                       label={GENDER}
                       name="gender"
-                      error={genderError}
+                      error={genderError?.message || ""}
                       options={MAPPED_GENDER}
                     />
                   </Grid>

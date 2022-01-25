@@ -142,10 +142,10 @@ const AddDoctorForm: FC = (): JSX.Element => {
     ssn: { message: ssnError } = {},
     prefix: { message: prefixError } = {},
     suffix: { message: suffixError } = {},
-    ssnType: { message: ssnTypeError } = {},
+    ssnType: { id: ssnTypeError } = {},
     lastName: { message: lastNameError } = {},
     firstName: { message: firstNameError } = {},
-    speciality: { message: specialtyError } = {},
+    speciality: { id: specialtyError } = {},
     middleName: { message: middleNameError } = {},
     providerIntials: { message: providerInitialsError } = {},
     degreeCredentials: { message: degreeCredentialsError } = {},
@@ -164,7 +164,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
     campusGrpNumber: { message: campusGrpNumberError } = {},
     blueShildNumber: { message: blueShieldNumberError } = {},
     taxIdStuff: { message: taxIdStuffError } = {},
-    facilityId: { message: facilityError } = {},
+    facilityId: { id: facilityError } = {},
 
     specialityLicense: { message: specialtyLicenseError } = {},
     anesthesiaLicense: { message: anesthesiaLicenseError } = {},
@@ -211,7 +211,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                       value={{ id: "", name: "" }}
                       label={FACILITY}
                       name="facilityId"
-                      error={facilityError}
+                      error={facilityError?.message || ""}
                       options={renderFacilities(facilityList)}
                     />
                   </Grid>
@@ -221,7 +221,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                       value={{ id: "", name: "" }}
                       label={SPECIALTY}
                       name="speciality"
-                      error={specialtyError}
+                      error={specialtyError?.message || ""}
                       options={MAPPED_SPECIALTIES}
                     />
                   </Grid>
@@ -232,7 +232,7 @@ const AddDoctorForm: FC = (): JSX.Element => {
                       value={{ id: "", name: "" }}
                       label={TYPE}
                       name="ssnType"
-                      error={ssnTypeError}
+                      error={ssnTypeError?.message || ""}
                       options={MAPPED_SSN_TYPES}
                     />
                   </Grid>
