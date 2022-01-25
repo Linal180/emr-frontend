@@ -9,7 +9,7 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh, upperToNormal } from "../../../../utils";
+import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload } from "../../../../generated/graphql";
@@ -160,7 +160,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{firstName}</TableCell>
                     <TableCell scope="row">{lastName}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{upperToNormal(specialty as string)}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">

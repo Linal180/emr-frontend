@@ -21,7 +21,7 @@ import { patientsSchema } from '../../../../validationSchemas';
 import { PatientInputProps } from '../../../../interfacesTypes';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
-  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation, UserRole
+  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation,
 } from "../../../../generated/graphql";
 import {
   FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, PHONE,
@@ -110,24 +110,24 @@ const AddPatientForm: FC = (): JSX.Element => {
 
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
 
-      userFirstName, userLastName, userPassword, userPhone, userZipCode,
+      // userFirstName, userLastName, userPassword, userPhone, userZipCode,
     } = inputs;
 
-    const { id: selectedFacility } = facilityId
-    const { id: selectedUsualProvider } = usualProviderId
-    const { id: selectedRegistrationDepartment } = registrationDepartment
-    const { id: selectedPrimaryDepartment } = primaryDepartment
-    const { id: selectedSexualOrientation } = sexualOrientation
-    const { id: selectedPronouns } = pronouns
-    const { id: selectedRace } = race
-    const { id: selectedEthnicity } = ethnicity
-    const { id: selectedMaritalStatus } = maritialStatus
-    const { id: selectedGenderIdentity } = genderIdentity
-    const { id: selectedGender } = gender
-    const { id: selectedSexAtBirth } = sexAtBirth
-    const { id: selectedGuarantorRelationship } = guarantorRelationship
-    const { id: selectedEmergencyRelationship } = emergencyRelationship
-    const { id: selectedKinRelationship } = kinRelationship
+    const { id: selectedFacility } = facilityId || {}
+    const { id: selectedUsualProvider } = usualProviderId || {}
+    const { id: selectedRegistrationDepartment } = registrationDepartment || {}
+    const { id: selectedPrimaryDepartment } = primaryDepartment || {}
+    const { id: selectedSexualOrientation } = sexualOrientation || {}
+    const { id: selectedPronouns } = pronouns || {}
+    const { id: selectedRace } = race || {}
+    const { id: selectedEthnicity } = ethnicity || {}
+    const { id: selectedMaritalStatus } = maritialStatus || {}
+    const { id: selectedGenderIdentity } = genderIdentity || {}
+    const { id: selectedGender } = gender || {}
+    const { id: selectedSexAtBirth } = sexAtBirth || {}
+    const { id: selectedGuarantorRelationship } = guarantorRelationship || {}
+    const { id: selectedEmergencyRelationship } = emergencyRelationship || {}
+    const { id: selectedKinRelationship } = kinRelationship || {}
 
     if (user) {
       const { id: userId } = user
@@ -154,7 +154,7 @@ const AddPatientForm: FC = (): JSX.Element => {
               statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
               primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,
               registrationDepartment: selectedRegistrationDepartment as RegDepartment || RegDepartment.Hospital,
-              race: selectedRace as Race || Race.White,
+              race: selectedRace as Race || Race.White, email: basicEmail || '',
             },
 
             createContactInput: {
@@ -194,12 +194,6 @@ const AddPatientForm: FC = (): JSX.Element => {
               name: employerName || '', email: employerEmail || 'test@gmail.com', phone: employerPhone || '',
               usualOccupation: employerUsualOccupation || '', industry: employerIndustry || '',
             },
-
-            registerUserInput: {
-              firstName: userFirstName || '', lastName: userLastName || '', email: basicEmail || '',
-              facilityId: selectedFacility, phone: userPhone || '', zipCode: userZipCode || '',
-              password: userPassword || '', adminId: userId || '', roleType: UserRole.Patient
-            }
           }
         }
       })

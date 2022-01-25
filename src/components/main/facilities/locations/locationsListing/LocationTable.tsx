@@ -81,7 +81,7 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
     if (!searchQuery && facilityId) {
       findAllContacts()
     }
-  }, [page, findAllContacts, searchQuery, facilityId, locations]);
+  }, [findAllContacts, searchQuery, facilityId]);
 
   const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
 
