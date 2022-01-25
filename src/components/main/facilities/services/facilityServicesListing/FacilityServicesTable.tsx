@@ -85,6 +85,12 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
     }
   }, [page, findAllServices, searchQuery, facilityId, services]);
 
+  useEffect(() => {
+    if (!openModal) {
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    }
+  }, [openModal]);
+
   const onDeleteClick = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_SERVICE_ID, deleteServiceId: id })
