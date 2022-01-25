@@ -56,7 +56,7 @@ const FacilityTable: FC = (): JSX.Element => {
             totalPages && setTotalPage(totalPages)
           }
 
-          facility && setFacilities(facility)
+          facility && setFacilities(facility as FacilitiesPayload['facility'])
         }
       }
     }

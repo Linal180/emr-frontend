@@ -9,7 +9,7 @@ import Alert from "../../../../common/Alert";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 import TableLoader from "../../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload } from "../../../../../generated/graphql";
+import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload, ServicesPayload } from "../../../../../generated/graphql";
 import { renderTh } from "../../../../../utils";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
@@ -50,7 +50,7 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
       const { findAllServices } = data || {};
       if (findAllServices) {
         const { services, pagination } = findAllServices
-        dispatch({ type: ActionType.SET_SERVICES, services: services || [] });
+        dispatch({ type: ActionType.SET_SERVICES, services: services as ServicesPayload['services'] || [] });
         if (!searchQuery && pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
