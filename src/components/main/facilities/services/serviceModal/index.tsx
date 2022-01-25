@@ -153,7 +153,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
 
   const {
     name: { message: nameError } = {},
-    facilityId: { message: facilityIdError } = {},
+    facilityId: { id: facilityIdError } = {},
     price: { message: priceError } = {},
     duration: { message: durationError } = {},
   } = errors;
@@ -173,7 +173,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
                   label={FACILITY}
                   name="facilityId"
                   options={renderFacilities(facilityList)}
-                  error={facilityIdError}
+                  error={facilityIdError?.message}
                 />
 
                 <Grid item md={12}>
