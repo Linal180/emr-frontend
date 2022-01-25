@@ -8,6 +8,7 @@ import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
+import PhoneField from '../../../common/PhoneInput';
 import CardComponent from "../../../common/CardComponent";
 import UpdateStaffController from "./UpdateStaffController";
 import ViewDataLoader from '../../../common/ViewDataLoader';
@@ -203,23 +204,11 @@ const UpdateStaffForm: FC = () => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <UpdateStaffController
-                          fieldType="text"
-                          controllerName="phone"
-                          control={control}
-                          error={phoneError}
-                          controllerLabel={PHONE}
-                        />
+                        <PhoneField name="phone" error={phoneError} label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <UpdateStaffController
-                          fieldType="text"
-                          controllerName="mobile"
-                          control={control}
-                          error={mobileError}
-                          controllerLabel={MOBILE}
-                        />
+                        <PhoneField name="mobile" error={mobileError} label={MOBILE} />
                       </Grid>
                     </Grid>
                   </>

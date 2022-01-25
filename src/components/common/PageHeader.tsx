@@ -7,7 +7,7 @@ import Breadcrumb from "./Breadcrumb";
 // interfaces/types block
 import { IPageHeader } from "../../interfacesTypes";
 
-const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModel, openModal }): JSX.Element => {
+const PageHeader: FC<IPageHeader> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModal }): JSX.Element => {
 
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
