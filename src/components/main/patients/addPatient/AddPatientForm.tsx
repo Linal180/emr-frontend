@@ -870,16 +870,14 @@ const AddPatientForm: FC = (): JSX.Element => {
                 </Grid>
 
 
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <PatientController
-                      fieldType="text"
-                      controllerName="employerUsualOccupation"
-                      controllerLabel={USUAL_OCCUPATION}
-                      error={employerUsualOccupationError}
-                    />
-                  </Grid>
+                <PatientController
+                  fieldType="text"
+                  controllerName="employerUsualOccupation"
+                  controllerLabel={USUAL_OCCUPATION}
+                  error={employerUsualOccupationError}
+                />
 
+                <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
                     <PatientController
                       fieldType="text"
