@@ -273,6 +273,11 @@ body .MuiTabPanel-root {
   border-color: #ECF0F3;
 }
 
-.MuiCheckbox-root[class*=PrivateSwitchBase-checked] .MuiSvgIcon-root {
+.MuiCheckbox-colorPrimary.Mui-checked,
+.MuiCheckbox-root.Mui-checked .MuiSvgIcon-root {
   color: #00A3FF;
+}
+
+.MuiCheckbox-root.Mui-checked .MuiIconButton-label:before {
+  display: none;
 }
