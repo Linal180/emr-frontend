@@ -65,7 +65,6 @@ export const listContextReducer = (state: State, action: Action): State => {
         serviceList: action.serviceList
       }
     case ActionType.SET_DOCTOR_PAGES:
-    case ActionType.SET_DOCTOR_PAGES:
       return {
         ...state,
         doctorPages: action.doctorPages

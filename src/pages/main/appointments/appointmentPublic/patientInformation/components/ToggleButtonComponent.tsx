@@ -5,17 +5,14 @@ import { toggleButtonComponent } from "../../../../../../styles/publicAppointmen
 
 const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
   const classes = toggleButtonComponent()
+  
   return (
     <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
       <InputLabel shrink id={`${name}-toggle`}>
         {label}
       </InputLabel>
-      <ToggleButtonGroup
-        color="primary"
-        value={"yes"}
-        exclusive
-      // onChange={handleChange}
-      >
+
+      <ToggleButtonGroup color="primary" value={"yes"} exclusive>
         <ToggleButton value="yes">Yes</ToggleButton>
         <ToggleButton value="no">No</ToggleButton>
       </ToggleButtonGroup>

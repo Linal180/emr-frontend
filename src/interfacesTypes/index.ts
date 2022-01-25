@@ -91,16 +91,6 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
-export interface ServiceConfirmationTypes extends DialogTypes {
-  isLoading?: boolean;
-  title?: string;
-  success?: boolean;
-  actionText?: string;
-  description?: string;
-  setTableData: Function | undefined;
-  tableData: ServicesPayload['services'];
-}
-
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
 }

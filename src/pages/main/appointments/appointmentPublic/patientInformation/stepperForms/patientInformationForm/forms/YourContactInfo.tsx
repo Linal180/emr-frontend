@@ -1,11 +1,12 @@
+// packages block
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-ui/core"
-import { ToggleButton, ToggleButtonGroup } from "@material-ui/lab";
 import { Controller, useForm } from "react-hook-form";
+// components block
 import CardComponent from "../../../../../../../../components/common/CardComponent";
 import ToggleButtonComponent from "../../../components/ToggleButtonComponent";
 
 const YourContactInfo = () => {
-  const { control, handleSubmit, formState: { errors } } = useForm({});
+  const { control } = useForm({});
 
   const renderSelectField = (name: string, label: string) => (
     <Controller
@@ -48,6 +49,7 @@ const YourContactInfo = () => {
           <Grid item md={6} sm={12} xs={12}>
             <ToggleButtonComponent name="voiceMail" label="Is it okay for us to leave a voicemail?" />
           </Grid>
+
           <Grid item md={6} sm={12} xs={12}>
             <ToggleButtonComponent name="confirmAppointment" label="May we phone, email, or send a text to you to confirm appointments?" />
           </Grid>
