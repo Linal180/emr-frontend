@@ -3,7 +3,7 @@ import { Box, Checkbox, FormControlLabel, Grid, Typography } from '@material-ui/
 import CardComponent from '../../../../../../../components/common/CardComponent';
 import { agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL } from '../../../../../../../constants';
 import { consentAgreement } from '../../../../../../../styles/publicAppointment/consentAgreement';
-import { BLUE_FOUR } from '../../../../../../../theme';
+import { WHITE_SIX } from '../../../../../../../theme';
 
 const index = () => {
   const classes = consentAgreement()
@@ -14,7 +14,7 @@ const index = () => {
         <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>
         <Grid container spacing={3}>
           <Grid item md={12} sm={12} xs={12}>
-            <Box bgcolor={BLUE_FOUR} minHeight="80vh" my={2} p={3.75}>
+            <Box bgcolor={WHITE_SIX} minHeight="80vh" my={2} p={3.75}>
               <ul>
                 {agreementPoints.map((point) => (
                   <li>

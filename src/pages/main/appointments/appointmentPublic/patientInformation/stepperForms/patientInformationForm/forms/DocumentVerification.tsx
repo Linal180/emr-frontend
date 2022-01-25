@@ -1,10 +1,12 @@
+// packages block
 import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { Controller, useForm } from 'react-hook-form';
+// Components block
 import CardComponent from '../../../../../../../../components/common/CardComponent';
 import RenderInputField from '../../../components/RenderInputField';
 
 const DocumentVerification = () => {
-  const { control, handleSubmit, formState: { errors } } = useForm({});
+  const { control } = useForm({});
 
   const renderSelectField = (name: string, label: string) => (
     <Controller

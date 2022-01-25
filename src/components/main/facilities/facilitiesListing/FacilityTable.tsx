@@ -13,9 +13,9 @@ import { renderTh } from "../../../../utils";
 import { ListContext } from "../../../../context/listContext";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
+import { EditIcon, TablesSearchIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
 import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, FACILITY_LOCATIONS_ROUTE } from "../../../../constants";
+import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -175,7 +175,13 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
+                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
+                            <IconButton size="small">
+                              <ServiceIcon />
+                            </IconButton>
+                          </Link>
+
+                          <Link to={`${FACILITIES_ROUTE}/${id}/${FACILITY_LOCATIONS_ROUTE}`}>
                             <IconButton size="small">
                               <Home color="primary" />
                             </IconButton>

@@ -163,9 +163,12 @@ export const COMMENTS = "Comments";
 export const PASSWORD = "password";
 export const ACTIVATE = "Activate";
 export const ZIP = "Zip";
+export const ACTIVE = "Active";
+export const INACTIVE = "Inactive";
 export const VERIFIED = "Verified";
 export const CLIA_ID_NUMBER = "CLIA ID Number";
 export const FACILITY = "Facility";
+export const SERVICE = "Service";
 export const FACILITY_ID = "Facility ID";
 export const INSURANCE_PLAN_TYPE = "Insurance Plan Type";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
@@ -210,7 +213,9 @@ export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
 export const ADD_SERVICE = "Add Service";
+export const UPDATE_SERVICE = "Update Service";
 export const ADD_FACILITY_SERVICE = "Add Facility Service";
+export const UPDATE_FACILITY_SERVICE = "Update Facility Service";
 export const ADD_LOCATION = "Add Facility Location";
 export const EDIT_LOCATION = "Edit Facility Location";
 export const UPDATE_LOCATION = "Update Facility Location";
@@ -275,6 +280,7 @@ export const GUARANTOR = "Guarantor";
 export const REGISTRATION_DATES = "Provider/ Registration Dates";
 export const PRIVACY = "Privacy";
 export const PRICE = "Price";
+export const IS_ACTIVE = "Active";
 export const EMERGENCY_CONTACT = "Emergency Contact";
 export const NEXT_OF_KIN = "Next Of Kin";
 export const EMPLOYMENT = "Employment";
@@ -350,6 +356,7 @@ export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
+export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
@@ -440,6 +447,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
+export const SERVICE_NOT_FOUND = 'Service not found!';
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!"
 export const TRY_AGAIN = "Something went wrong. Try again!";
@@ -452,6 +460,8 @@ export const STAFF_UPDATED = "Staff updated successfully!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
+export const SERVICE_CREATED = "Service created successfully!";
+export const SERVICE_UPDATED = "Service updated successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -462,6 +472,7 @@ export const USER_EXIST = "User already exists with this email.";
 export const FACILITY_UPDATED = "Facility updated successfully!";
 export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
+export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
@@ -544,10 +555,6 @@ export const APP_MENU_ITEMS = [
       {
         name: LIST_FACILITIES_TEXT,
         link: FACILITIES_ROUTE,
-      },
-      {
-        name: LIST_FACILITY_SERVICES_TEXT,
-        link: FACILITY_SERVICES_ROUTE,
       },
     ],
   },

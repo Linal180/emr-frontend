@@ -9,7 +9,7 @@ import history from "../../../../history";
 // constants, history, styling block
 import { PROFILE_TOP_TABS } from "../../../../constants";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon, StarProfileIcon } from "../../../../assets/svgs";
+import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import { BLACK_TWO } from "../../../../theme";
 import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
 
@@ -56,8 +56,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     )
   }
 
-  console.log("patientData", patientData)
-
   const { firstName, lastName, dob, contacts, usualProvider, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
 
@@ -94,11 +92,9 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   let providerName = ""
   let providerDateAdded = createdAt ? moment.unix(parseInt(createdAt)).format("MMM. DD, YYYY") : '--'
-  let providerLastSchedule = ""
-  let providerNextAppointment = ""
 
   if (usualProvider && usualProvider[0]) {
-    const { firstName, lastName, schedule } = usualProvider[0]
+    const { firstName, lastName } = usualProvider[0]
     providerName = `${firstName} ${lastName}` || "--"
   }
 

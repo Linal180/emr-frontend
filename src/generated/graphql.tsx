@@ -37,6 +37,43 @@ export type AllStaffPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type Attachment = {
+  __typename?: 'Attachment';
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  key?: Maybe<Scalars['String']>;
+  type: AttachmentType;
+  typeId: Scalars['String'];
+  updatedAt: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
+};
+
+export type AttachmentMediaPayload = {
+  __typename?: 'AttachmentMediaPayload';
+  preSignedUrl?: Maybe<Scalars['String']>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type AttachmentPayload = {
+  __typename?: 'AttachmentPayload';
+  attachment?: Maybe<Attachment>;
+  response?: Maybe<ResponsePayload>;
+};
+
+/** The type is assigned */
+export enum AttachmentType {
+  Doctor = 'DOCTOR',
+  Patient = 'PATIENT',
+  Lab = 'lab'
+}
+
+export type AttachmentsPayload = {
+  __typename?: 'AttachmentsPayload';
+  attachments?: Maybe<Array<Maybe<Attachment>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type BillingAddress = {
   __typename?: 'BillingAddress';
   address?: Maybe<Scalars['String']>;
@@ -122,6 +159,16 @@ export type ContactsPayload = {
   contacts?: Maybe<Array<Maybe<Contact>>>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type CreateAttachmentInput = {
+  description?: Maybe<Scalars['String']>;
+  subTitle?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  /** enum type for module type - Upload Media */
+  type: AttachmentType;
+  typeId: Scalars['String'];
+  url?: Maybe<Scalars['String']>;
 };
 
 export type CreateBillingAddressInput = {
@@ -221,6 +268,7 @@ export type CreateDoctorItemInput = {
   taxId?: Maybe<Scalars['String']>;
   taxIdStuff?: Maybe<Scalars['String']>;
   taxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
   upin?: Maybe<Scalars['String']>;
 };
 
@@ -396,6 +444,7 @@ export type Doctor = {
   taxId?: Maybe<Scalars['String']>;
   taxIdStuff?: Maybe<Scalars['String']>;
   taxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   upin?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
@@ -505,6 +554,10 @@ export enum Gender {
   Other = 'OTHER'
 }
 
+export type GetAttachment = {
+  typeId: Scalars['String'];
+};
+
 export type GetContact = {
   id: Scalars['String'];
 };
@@ -519,6 +572,10 @@ export type GetDoctorSchedule = {
 
 export type GetFacility = {
   id: Scalars['String'];
+};
+
+export type GetMedia = {
+  id?: Maybe<Scalars['String']>;
 };
 
 export type GetPatient = {
@@ -577,6 +634,7 @@ export enum Maritialstatus {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
+  createAttachmentData: AttachmentPayload;
   createContact: ContactPayload;
   createDoctor: DoctorPayload;
   createFacility: FacilityPayload;
@@ -590,6 +648,7 @@ export type Mutation = {
   forgotPassword: ForgotPasswordPayload;
   login: AccessUserPayload;
   registerUser: UserPayload;
+  removeAttachmentData: AttachmentPayload;
   removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
@@ -600,9 +659,11 @@ export type Mutation = {
   removeUser: UserPayload;
   resendVerificationEmail: UserPayload;
   resetPassword: UserPayload;
+  updateAttachmentData: AttachmentPayload;
   updateContact: ContactPayload;
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
+  updateFacilityTimeZone: FacilityPayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientProvider: PatientPayload;
@@ -617,6 +678,11 @@ export type Mutation = {
 
 export type MutationActivateUserArgs = {
   user: UserIdInput;
+};
+
+
+export type MutationCreateAttachmentDataArgs = {
+  createAttachmentInput: CreateAttachmentInput;
 };
 
 
@@ -685,6 +751,11 @@ export type MutationRegisterUserArgs = {
 };
 
 
+export type MutationRemoveAttachmentDataArgs = {
+  removeAttachment: RemoveAttachment;
+};
+
+
 export type MutationRemoveContactArgs = {
   removeContact: RemoveContact;
 };
@@ -735,6 +806,11 @@ export type MutationResetPasswordArgs = {
 };
 
 
+export type MutationUpdateAttachmentDataArgs = {
+  updateAttachmentInput: UpdateAttachmentInput;
+};
+
+
 export type MutationUpdateContactArgs = {
   updateContactInput: UpdateContactInput;
 };
@@ -747,6 +823,11 @@ export type MutationUpdateDoctorArgs = {
 
 export type MutationUpdateFacilityArgs = {
   updateFacilityInput: UpdateFacilityInput;
+};
+
+
+export type MutationUpdateFacilityTimeZoneArgs = {
+  updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput;
 };
 
 
@@ -907,6 +988,8 @@ export type Query = {
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
+  getAttachment: AttachmentMediaPayload;
+  getAttachments: AttachmentsPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getDoctorSchedules: SchedulesPayload;
@@ -958,6 +1041,16 @@ export type QueryFindAllServicesArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
+};
+
+
+export type QueryGetAttachmentArgs = {
+  getMedia: GetMedia;
+};
+
+
+export type QueryGetAttachmentsArgs = {
+  getAttachment: GetAttachment;
 };
 
 
@@ -1070,6 +1163,10 @@ export enum RelationshipType {
   Unknown = 'UNKNOWN',
   Ward = 'WARD'
 }
+
+export type RemoveAttachment = {
+  id?: Maybe<Scalars['String']>;
+};
 
 export type RemoveContact = {
   id: Scalars['String'];
@@ -1294,6 +1391,17 @@ export type StaffPayload = {
   staff?: Maybe<Staff>;
 };
 
+export type UpdateAttachmentInput = {
+  description?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
+  subTitle?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
+  /** enum type for module type - Upload Media */
+  type?: Maybe<AttachmentType>;
+  typeId?: Maybe<Scalars['String']>;
+  url?: Maybe<Scalars['String']>;
+};
+
 export type UpdateBillingAddressInput = {
   address?: Maybe<Scalars['String']>;
   address2?: Maybe<Scalars['String']>;
@@ -1394,6 +1502,7 @@ export type UpdateDoctorItemInput = {
   taxId?: Maybe<Scalars['String']>;
   taxIdStuff?: Maybe<Scalars['String']>;
   taxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
   upin?: Maybe<Scalars['String']>;
 };
 
@@ -1431,6 +1540,11 @@ export type UpdateFacilityItemInput = {
   serviceCode?: Maybe<ServiceCode>;
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
+  timeZone?: Maybe<Scalars['String']>;
+};
+
+export type UpdateFacilityTimeZoneInput = {
+  id: Scalars['String'];
   timeZone?: Maybe<Scalars['String']>;
 };
 
@@ -1729,6 +1843,41 @@ export type CreateFacilityMutationVariables = Exact<{
 
 
 export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: Maybe<string>, cliaIdNumber?: Maybe<string>, federalTaxId?: Maybe<string>, isPrivate?: Maybe<boolean>, revenueCode?: Maybe<string>, tamxonomyCode?: Maybe<string>, insurancePlanType?: Maybe<string>, mammographyCertificationNumber?: Maybe<string>, npi?: Maybe<string>, serviceCode: ServiceCode, createdAt?: Maybe<string>, updatedAt?: Maybe<string>, contacts?: Maybe<Array<{ __typename?: 'Contact', id: string, email?: Maybe<string>, mobile?: Maybe<string>, phone?: Maybe<string>, pager?: Maybe<string>, fax?: Maybe<string>, address?: Maybe<string>, address2?: Maybe<string>, serviceCode: ServiceCodes, zipCode?: Maybe<string>, city?: Maybe<string>, state?: Maybe<string>, country?: Maybe<string>, userId?: Maybe<string>, createdAt: string, updatedAt: string }>>, staff?: Maybe<Array<{ __typename?: 'Staff', id: string, firstName: string, lastName: string, email: string, username: string, dob: string, phone?: Maybe<string>, mobile?: Maybe<string>, gender: Gender, createdAt: string, updatedAt: string, user?: Maybe<{ __typename?: 'User', id: string, email: string, token?: Maybe<string>, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string }> }>> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type FindAllServicesQueryVariables = Exact<{
+  serviceInput: ServiceInput;
+}>;
+
+
+export type FindAllServicesQuery = { __typename?: 'Query', findAllServices: { __typename?: 'ServicesPayload', pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, services?: Maybe<Array<Maybe<{ __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: Maybe<boolean>, facilityId?: Maybe<string>, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>>> } };
+
+export type GetServiceQueryVariables = Exact<{
+  getService: GetService;
+}>;
+
+
+export type GetServiceQuery = { __typename?: 'Query', getService: { __typename?: 'ServicePayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, service?: Maybe<{ __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: Maybe<boolean>, facilityId?: Maybe<string>, createdAt?: Maybe<string>, updatedAt?: Maybe<string>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }> }> } };
+
+export type RemoveServiceMutationVariables = Exact<{
+  removeService: RemoveService;
+}>;
+
+
+export type RemoveServiceMutation = { __typename?: 'Mutation', removeService: { __typename?: 'ServicePayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type CreateServiceMutationVariables = Exact<{
+  createServiceInput: CreateServiceInput;
+}>;
+
+
+export type CreateServiceMutation = { __typename?: 'Mutation', createService: { __typename?: 'ServicePayload', service?: Maybe<{ __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: Maybe<boolean>, facilityId?: Maybe<string>, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
+
+export type UpdateServiceMutationVariables = Exact<{
+  updateServiceInput: UpdateServiceInput;
+}>;
+
+
+export type UpdateServiceMutation = { __typename?: 'Mutation', updateService: { __typename?: 'ServicePayload', service?: Maybe<{ __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: Maybe<boolean>, facilityId?: Maybe<string>, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }> } };
 
 export type CreateContactMutationVariables = Exact<{
   createContactInput: CreateContactInput;
@@ -3287,6 +3436,248 @@ export function useCreateFacilityMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateFacilityMutationHookResult = ReturnType<typeof useCreateFacilityMutation>;
 export type CreateFacilityMutationResult = Apollo.MutationResult<CreateFacilityMutation>;
 export type CreateFacilityMutationOptions = Apollo.BaseMutationOptions<CreateFacilityMutation, CreateFacilityMutationVariables>;
+export const FindAllServicesDocument = gql`
+    query findAllServices($serviceInput: ServiceInput!) {
+  findAllServices(serviceInput: $serviceInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    response {
+      name
+      error
+      status
+      message
+    }
+    services {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllServicesQuery__
+ *
+ * To run a query within a React component, call `useFindAllServicesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllServicesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllServicesQuery({
+ *   variables: {
+ *      serviceInput: // value for 'serviceInput'
+ *   },
+ * });
+ */
+export function useFindAllServicesQuery(baseOptions: Apollo.QueryHookOptions<FindAllServicesQuery, FindAllServicesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllServicesQuery, FindAllServicesQueryVariables>(FindAllServicesDocument, options);
+      }
+export function useFindAllServicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllServicesQuery, FindAllServicesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllServicesQuery, FindAllServicesQueryVariables>(FindAllServicesDocument, options);
+        }
+export type FindAllServicesQueryHookResult = ReturnType<typeof useFindAllServicesQuery>;
+export type FindAllServicesLazyQueryHookResult = ReturnType<typeof useFindAllServicesLazyQuery>;
+export type FindAllServicesQueryResult = Apollo.QueryResult<FindAllServicesQuery, FindAllServicesQueryVariables>;
+export const GetServiceDocument = gql`
+    query getService($getService: GetService!) {
+  getService(getService: $getService) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    service {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+      facility {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetServiceQuery__
+ *
+ * To run a query within a React component, call `useGetServiceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServiceQuery({
+ *   variables: {
+ *      getService: // value for 'getService'
+ *   },
+ * });
+ */
+export function useGetServiceQuery(baseOptions: Apollo.QueryHookOptions<GetServiceQuery, GetServiceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetServiceQuery, GetServiceQueryVariables>(GetServiceDocument, options);
+      }
+export function useGetServiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetServiceQuery, GetServiceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetServiceQuery, GetServiceQueryVariables>(GetServiceDocument, options);
+        }
+export type GetServiceQueryHookResult = ReturnType<typeof useGetServiceQuery>;
+export type GetServiceLazyQueryHookResult = ReturnType<typeof useGetServiceLazyQuery>;
+export type GetServiceQueryResult = Apollo.QueryResult<GetServiceQuery, GetServiceQueryVariables>;
+export const RemoveServiceDocument = gql`
+    mutation RemoveService($removeService: RemoveService!) {
+  removeService(removeService: $removeService) {
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveServiceMutationFn = Apollo.MutationFunction<RemoveServiceMutation, RemoveServiceMutationVariables>;
+
+/**
+ * __useRemoveServiceMutation__
+ *
+ * To run a mutation, you first call `useRemoveServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeServiceMutation, { data, loading, error }] = useRemoveServiceMutation({
+ *   variables: {
+ *      removeService: // value for 'removeService'
+ *   },
+ * });
+ */
+export function useRemoveServiceMutation(baseOptions?: Apollo.MutationHookOptions<RemoveServiceMutation, RemoveServiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveServiceMutation, RemoveServiceMutationVariables>(RemoveServiceDocument, options);
+      }
+export type RemoveServiceMutationHookResult = ReturnType<typeof useRemoveServiceMutation>;
+export type RemoveServiceMutationResult = Apollo.MutationResult<RemoveServiceMutation>;
+export type RemoveServiceMutationOptions = Apollo.BaseMutationOptions<RemoveServiceMutation, RemoveServiceMutationVariables>;
+export const CreateServiceDocument = gql`
+    mutation CreateService($createServiceInput: CreateServiceInput!) {
+  createService(createServiceInput: $createServiceInput) {
+    service {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+    }
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateServiceMutationFn = Apollo.MutationFunction<CreateServiceMutation, CreateServiceMutationVariables>;
+
+/**
+ * __useCreateServiceMutation__
+ *
+ * To run a mutation, you first call `useCreateServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createServiceMutation, { data, loading, error }] = useCreateServiceMutation({
+ *   variables: {
+ *      createServiceInput: // value for 'createServiceInput'
+ *   },
+ * });
+ */
+export function useCreateServiceMutation(baseOptions?: Apollo.MutationHookOptions<CreateServiceMutation, CreateServiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateServiceMutation, CreateServiceMutationVariables>(CreateServiceDocument, options);
+      }
+export type CreateServiceMutationHookResult = ReturnType<typeof useCreateServiceMutation>;
+export type CreateServiceMutationResult = Apollo.MutationResult<CreateServiceMutation>;
+export type CreateServiceMutationOptions = Apollo.BaseMutationOptions<CreateServiceMutation, CreateServiceMutationVariables>;
+export const UpdateServiceDocument = gql`
+    mutation UpdateService($updateServiceInput: UpdateServiceInput!) {
+  updateService(updateServiceInput: $updateServiceInput) {
+    service {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+    }
+    response {
+      name
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateServiceMutationFn = Apollo.MutationFunction<UpdateServiceMutation, UpdateServiceMutationVariables>;
+
+/**
+ * __useUpdateServiceMutation__
+ *
+ * To run a mutation, you first call `useUpdateServiceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateServiceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateServiceMutation, { data, loading, error }] = useUpdateServiceMutation({
+ *   variables: {
+ *      updateServiceInput: // value for 'updateServiceInput'
+ *   },
+ * });
+ */
+export function useUpdateServiceMutation(baseOptions?: Apollo.MutationHookOptions<UpdateServiceMutation, UpdateServiceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateServiceMutation, UpdateServiceMutationVariables>(UpdateServiceDocument, options);
+      }
+export type UpdateServiceMutationHookResult = ReturnType<typeof useUpdateServiceMutation>;
+export type UpdateServiceMutationResult = Apollo.MutationResult<UpdateServiceMutation>;
+export type UpdateServiceMutationOptions = Apollo.BaseMutationOptions<UpdateServiceMutation, UpdateServiceMutationVariables>;
 export const CreateContactDocument = gql`
     mutation CreateContact($createContactInput: CreateContactInput!) {
   createContact(createContactInput: $createContactInput) {

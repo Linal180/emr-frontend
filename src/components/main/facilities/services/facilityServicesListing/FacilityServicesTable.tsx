@@ -4,20 +4,19 @@ import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
-import Alert from "../../../common/Alert";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import TableLoader from "../../../common/TableLoader";
-import ServiceModal from "../services/serviceModal";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
+import Alert from "../../../../common/Alert";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import TableLoader from "../../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload } from "../../../../generated/graphql";
-import { renderTh } from "../../../../utils";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../constants";
-import { ServiceTableProps, ParamsType } from "../../../../interfacesTypes";
-import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../reducers/serviceReducer';
-
+import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload } from "../../../../../generated/graphql";
+import { renderTh } from "../../../../../utils";
+import { useTableStyles } from "../../../../../styles/tableStyles";
+import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
+import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../../constants";
+import { ServiceTableProps, ParamsType } from "../../../../../interfacesTypes";
+import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../../reducers/serviceReducer';
+import ServiceModal from "../serviceModal";
 const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openModal }): JSX.Element => {
   const classes = useTableStyles()
   const { id: facilityId } = useParams<ParamsType>();
@@ -25,6 +24,10 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
   const { page, totalPages, isEdit, openDelete, serviceId, deleteServiceId, searchQuery, services } = state;
 
   const [findAllServices, { loading, error }] = useFindAllServicesLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
     variables: {
       serviceInput: {
         facilityId,
@@ -34,9 +37,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
         }
       }
     },
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
 
     onError() {
       dispatch({
@@ -46,11 +46,9 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
 
     onCompleted(data) {
       const { findAllServices } = data || {};
-
       if (findAllServices) {
         const { services, pagination } = findAllServices
         dispatch({ type: ActionType.SET_SERVICES, services: services || [] });
-
         if (!searchQuery && pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
@@ -68,7 +66,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
     onCompleted(data) {
       if (data) {
         const { removeService: { response } } = data
-
         if (response) {
           const { message } = response
           message && Alert.success(message);
@@ -172,7 +169,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
                 services?.map((service: ServicePayload['service'], index: number) => {
                   const { id, name, duration, price, isActive } = service || {};
                   const ActiveStatus = isActive === true ? `${ACTIVE}` : `${INACTIVE}`
-
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{name}</TableCell>
@@ -184,7 +180,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
                           <IconButton size="small">
                             <EditIcon />
                           </IconButton>
-
                           <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
                           </IconButton>

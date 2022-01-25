@@ -1,12 +1,12 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK_ONE, BLACK_TWO, BLUE_FIVE, GRAY_TWO, WHITE_FIVE } from "../../../theme";
+import { BLUE_SIX, GRAY_TWO, } from "../../../theme";
 
 export const documentVerificationForm = makeStyles({
   dropZoneContainer: {
     marginTop: 24,
     padding: 30,
-    border: `1px dashed ${BLUE_FIVE}`,
     borderRadius: 8,
+    border: `1px dashed ${BLUE_SIX}`,
     display: "flex",
     alignItems: "center",
     position: "relative",
