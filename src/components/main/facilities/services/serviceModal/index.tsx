@@ -4,16 +4,16 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import { Button, Dialog, DialogActions, DialogTitle, CircularProgress, FormControlLabel, Checkbox, Box, Grid, FormControl } from "@material-ui/core";
 // components block
-import Alert from "../../../common/Alert";
-import ServiceController from "./ServiceController";
-import Selector from '../../../common/Selector';
+import Alert from "../../../../common/Alert";
+import ServiceController from "../controller";
+import Selector from '../../../../common/Selector';
 // interfaces/types block/theme/svgs/constants
-import { renderFacilities, setRecord } from '../../../../utils';
-import { ListContext } from '../../../../context/listContext';
-import { serviceSchema } from '../../../../validationSchemas';
-import { extendedServiceInput, ServiceModalProps } from "../../../../interfacesTypes";
-import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED, UPDATE_SERVICE, ACTIVE_TEXT, ADD_FACILITY_SERVICE, UPDATE_FACILITY_SERVICE } from "../../../../constants";
-import { useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation } from "../../../../generated/graphql";
+import { renderFacilities, setRecord } from '../../../../../utils';
+import { ListContext } from '../../../../../context/listContext';
+import { serviceSchema } from '../../../../../validationSchemas';
+import { extendedServiceInput, ServiceModalProps } from "../../../../../interfacesTypes";
+import { CANCEL, ADD_SERVICE, SERVICE_NAME_TEXT, DURATION_TEXT, PRICE_TEXT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, SERVICE_CREATED, FACILITY, SERVICE_UPDATED, UPDATE_SERVICE, ACTIVE_TEXT, ADD_FACILITY_SERVICE, UPDATE_FACILITY_SERVICE } from "../../../../../constants";
+import { useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation } from "../../../../../generated/graphql";
 
 const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceId, reload }): JSX.Element => {
   const [checked, setChecked] = useState(false);
@@ -52,13 +52,12 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
         if (service && status && status === 200) {
           const { name, isActive, price, duration, facility } = service || {}
           const { id: facilityId, name: facilityName } = facility || {};
-          console.log(facility, "===")
           facilityId && setValue('facilityId', setRecord(facilityId, facilityName || ""))
-          console.log(facilityName, "=============")
           name && setValue('name', name)
           price && setValue('price', price)
           duration && setValue('duration', duration)
           isActive && setValue('isActive', isActive)
+          isActive && setChecked(isActive)
         }
       }
     }
@@ -99,8 +98,8 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
       if (response) {
         const { status } = response
         if (status && status === 200) {
-          reset()
           Alert.success(SERVICE_CREATED);
+          reset()
           handleClose();
           reload();
         }
@@ -144,11 +143,8 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
     })
   }, [getService, serviceId])
 
-
-
   useEffect(() => {
     if (isEdit && serviceId) {
-      console.log(serviceId);
       fetchServices()
     }
   }, [fetchServices, isEdit, serviceId])
@@ -179,6 +175,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
                   options={renderFacilities(facilityList)}
                   error={facilityIdError}
                 />
+
                 <Grid item md={12}>
                   <ServiceController
                     fieldType="text"
@@ -187,6 +184,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
                     error={nameError}
                   />
                 </Grid>
+
                 <Grid item md={12}>
                   <ServiceController
                     fieldType="text"
@@ -195,6 +193,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
                     error={durationError}
                   />
                 </Grid>
+
                 <Grid item md={12}>
                   <ServiceController
                     fieldType="text"
@@ -203,6 +202,7 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
                     error={priceError}
                   />
                 </Grid>
+
                 <Grid md={12} item>
                   <Controller
                     name="isActive"
@@ -228,7 +228,6 @@ const ServiceModal: FC<ServiceModalProps> = ({ setOpen, isOpen, isEdit, serviceI
                     {disableSubmit && <CircularProgress size={20} color="inherit" />}
                     {isEdit ? UPDATE_SERVICE : ADD_SERVICE}
                   </Button>
-
                 </DialogActions>
               </Grid>
             </Grid>

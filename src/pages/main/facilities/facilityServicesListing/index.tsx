@@ -1,7 +1,7 @@
 // packages block
 import { FC } from "react";
 // components block
-import FacilityServicesComponent from "../../../../components/main/facilities/facilityServicesListing";
+import FacilityServicesComponent from "../../../../components/main/facilities/services/facilityServicesListing";
 
 const FacilityServices: FC = (): JSX.Element => <FacilityServicesComponent />;
 

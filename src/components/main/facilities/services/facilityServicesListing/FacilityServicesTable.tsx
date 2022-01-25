@@ -1,27 +1,25 @@
 // packages block
-import { FC, useEffect, ChangeEvent, Reducer, useReducer, useContext } from "react";
+import { FC, useEffect, ChangeEvent, Reducer, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
-import Alert from "../../../common/Alert";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import TableLoader from "../../../common/TableLoader";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
+import Alert from "../../../../common/Alert";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import TableLoader from "../../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload } from "../../../../generated/graphql";
-import { renderTh } from "../../../../utils";
-import { ListContext } from "../../../../context/listContext";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../constants";
-import { ServiceTableProps, ParamsType } from "../../../../interfacesTypes";
-import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../reducers/serviceReducer';
-import ServiceModal from "../FacilityServices";
+import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload } from "../../../../../generated/graphql";
+import { renderTh } from "../../../../../utils";
+import { useTableStyles } from "../../../../../styles/tableStyles";
+import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
+import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../../constants";
+import { ServiceTableProps, ParamsType } from "../../../../../interfacesTypes";
+import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../../reducers/serviceReducer';
+import ServiceModal from "../serviceModal";
 
 const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openModal }): JSX.Element => {
   const classes = useTableStyles()
-  const { fetchAllFacilityList } = useContext(ListContext);
   const { id: facilityId } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, totalPages, isEdit, openDelete, serviceId, deleteServiceId, searchQuery, services } = state;
@@ -48,7 +46,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
 
     onCompleted(data) {
       const { findAllServices } = data || {};
-      console.log(data);
 
       if (findAllServices) {
         const { services, pagination } = findAllServices
@@ -86,7 +83,7 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
     if (!searchQuery && facilityId) {
       findAllServices()
     }
-  }, [page, findAllServices, searchQuery, facilityId]);
+  }, [page, findAllServices, searchQuery, facilityId, services]);
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -116,7 +113,8 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
   };
 
   const handleReload = () => {
-    fetchAllFacilityList()
+    dispatch({ type: ActionType.SET_SERVICES, services: [] })
+    findAllServices();
   }
 
   const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
@@ -179,6 +177,7 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
                           <IconButton size="small">
                             <EditIcon />
                           </IconButton>
+
                           <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
                           </IconButton>

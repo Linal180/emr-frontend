@@ -55,8 +55,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     )
   }
 
-  console.log("patientData", patientData)
-
   const age = 24
   const phoneNumber = +182735728362
   const email = "nicholas@emr.com"
