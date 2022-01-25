@@ -17,6 +17,8 @@ import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE,
 import { ServiceTableProps, ParamsType } from "../../../../../interfacesTypes";
 import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../../reducers/serviceReducer';
 import ServiceModal from "../serviceModal";
+import { BLUE_FIVE, BLUE_FOUR, RED, RED_ONE } from "../../../../../theme";
+
 const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openModal }): JSX.Element => {
   const classes = useTableStyles()
   const { id: facilityId } = useParams<ParamsType>();
@@ -80,7 +82,7 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
     if (!searchQuery && facilityId) {
       findAllServices()
     }
-  }, [page, findAllServices, searchQuery, facilityId, services]);
+  }, [findAllServices, searchQuery, facilityId]);
 
   useEffect(() => {
     if (!openModal) {
@@ -168,16 +170,23 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
               ) : (
                 services?.map((service: ServicePayload['service'], index: number) => {
                   const { id, name, duration, price, isActive } = service || {};
-                  const ActiveStatus = isActive === true ? `${ACTIVE}` : `${INACTIVE}`
+                  const ActiveStatus = isActive ? ACTIVE : INACTIVE;
+                  const StatusBackground = isActive ? BLUE_FIVE : RED_ONE
+                  const StatusColor = isActive ? BLUE_FOUR : RED
+
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">{duration}</TableCell>
                       <TableCell scope="row">{price}</TableCell>
-                      <TableCell className={classes.status} scope="row">{ActiveStatus}</TableCell>
                       <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center" onClick={() => handleEdit(id || '')}>
-                          <IconButton size="small">
+                        <Box className={classes.status} component='span' bgcolor={StatusBackground} color={StatusColor}>
+                          {ActiveStatus}
+                        </Box>
+                      </TableCell>
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <IconButton onClick={() => handleEdit(id || '')} size="small">
                             <EditIcon />
                           </IconButton>
                           <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
@@ -217,16 +226,18 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
         </Box>
       </Box>
 
-      {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" pt={2.25}>
-          <Pagination
-            count={totalPages}
-            shape="rounded"
-            page={page}
-            onChange={handleChange}
-          />
-        </Box>
-      )}
+      {
+        totalPages > 1 && (
+          <Box display="flex" justifyContent="flex-end" pt={2.25}>
+            <Pagination
+              count={totalPages}
+              shape="rounded"
+              page={page}
+              onChange={handleChange}
+            />
+          </Box>
+        )
+      }
     </>
   );
 };

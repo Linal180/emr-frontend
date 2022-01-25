@@ -115,7 +115,7 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
   };
 
   const handleReload = () => {
-    dispatch({ type: ActionType.SET_LOCATIONS, locations: []});
+    dispatch({ type: ActionType.SET_LOCATIONS, locations: [] });
     findAllContacts();
   }
 
