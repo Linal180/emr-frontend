@@ -53,7 +53,7 @@ const DoctorsTable: FC = (): JSX.Element => {
             totalPages && setTotalPages(totalPages)
           }
 
-          doctors && setDoctors(doctors)
+          doctors && setDoctors(doctors as AllDoctorPayload['doctors'])
         }
       }
     }

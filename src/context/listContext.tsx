@@ -41,7 +41,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
           }
         }
 
-        !!facility && !!facilityList && setFacilityList([...facilityList, ...facility])
+        !!facility && !!facilityList && setFacilityList([...facilityList, ...facility] as FacilitiesPayload['facility'])
       }
     }
   })
@@ -65,7 +65,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
           }
         }
 
-        !!doctors && !!doctorList && setDoctorList([...doctorList, ...doctors])
+        !!doctors && !!doctorList && setDoctorList([...doctorList, ...doctors] as AllDoctorPayload['doctors'])
       }
     }
   })

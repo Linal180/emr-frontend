@@ -23,7 +23,7 @@ const StaffTable: FC = (): JSX.Element => {
   const [deleteStaffId, setDeleteStaffId] = useState<string>("");
   const [totalPages, setTotalPages] = useState<number>(0);
   const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
-  
+
   const [findAllStaff, { loading, error }] = useFindAllStaffLazyQuery({
     variables: {
       staffInput: {
@@ -53,7 +53,7 @@ const StaffTable: FC = (): JSX.Element => {
             totalPages && setTotalPages(totalPages)
           }
 
-          allstaff && setStaff(allstaff)
+          allstaff && setStaff(allstaff as AllStaffPayload['allstaff'])
         }
       }
     }

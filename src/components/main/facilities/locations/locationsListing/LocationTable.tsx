@@ -15,7 +15,7 @@ import ConfirmationModal from "../../../../common/ConfirmationModal";
 import { LocationTableProps, ParamsType } from "../../../../../interfacesTypes";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
 import { locationReducer, Action, initialState, State, ActionType } from '../../../../../reducers/locationReducer';
-import { ContactPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
+import { ContactPayload, ContactsPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
 import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY } from "../../../../../constants";
 
 const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }): JSX.Element => {
@@ -52,7 +52,7 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
         if (!searchQuery && pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-          dispatch({ type: ActionType.SET_LOCATIONS, locations: contacts || [] });
+          dispatch({ type: ActionType.SET_LOCATIONS, locations: contacts as ContactsPayload['contacts'] || undefined });
         }
       }
     }

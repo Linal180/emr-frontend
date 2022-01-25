@@ -272,3 +272,7 @@ body .MuiTabPanel-root {
 .react-tel-input .flag-dropdown {
   border-color: #ECF0F3;
 }
+
+.MuiCheckbox-root[class*=PrivateSwitchBase-checked] .MuiSvgIcon-root {
+  color: #00A3FF;
+}
