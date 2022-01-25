@@ -166,8 +166,8 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
     zipCode: { message: zipCodeError } = {},
     address: { message: addressError } = {},
     address2: { message: address2Error } = {},
-    facilityId: { message: facilityError } = {},
-    serviceCode: { message: serviceCodeError } = {},
+    facilityId: { id: facilityError } = {},
+    serviceCode: { id: serviceCodeError } = {},
   } = errors;
 
   const disableSubmit = createContactLoading || updateContactLoading || getContactLoading
@@ -198,7 +198,7 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
                         value={{ id: "", name: "" }}
                         label={ASSOCIATED_FACILITY}
                         name="facilityId"
-                        error={facilityError}
+                        error={facilityError?.message}
                         options={renderFacilities(facilityList)}
                       />
 
@@ -206,7 +206,7 @@ const LocationModal: FC<LocationModalProps> = ({ setOpen, isOpen, isEdit, locati
                         value={{ id: "", name: "" }}
                         label={POS}
                         name="serviceCode"
-                        error={serviceCodeError}
+                        error={serviceCodeError?.message}
                         options={MAPPED_SERVICE_CODES}
                       />
                     </CardComponent>

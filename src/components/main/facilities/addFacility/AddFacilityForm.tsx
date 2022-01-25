@@ -109,11 +109,11 @@ const AddFacilityForm: FC = (): JSX.Element => {
     address2: { message: address2Error } = {},
     billingFax: { message: billingFaxError } = {},
     billingCity: { message: billingCityError } = {},
-    serviceCode: { message: serviceCodeError } = {},
+    serviceCode: { id: serviceCodeError } = {},
     revenueCode: { message: revenueCodeError } = {},
     cliaIdNumber: { message: cliaIdNumberError } = {},
     federalTaxId: { message: federalTaxIdError } = {},
-    practiceType: { message: practiceTypeError } = {},
+    practiceType: { id: practiceTypeError } = {},
     billingPhone: { message: billingPhoneError } = {},
     billingEmail: { message: billingEmailError } = {},
     billingState: { message: billingStateError } = {},
@@ -146,7 +146,7 @@ const AddFacilityForm: FC = (): JSX.Element => {
                       value={{ id: "", name: "" }}
                       label={PRACTICE_TYPE}
                       name="practiceType"
-                      error={practiceTypeError}
+                      error={practiceTypeError?.message}
                       options={MAPPED_PRACTICE_TYPES}
                     />
                   </Grid>
@@ -236,7 +236,7 @@ const AddFacilityForm: FC = (): JSX.Element => {
                   value={{ id: "", name: "" }}
                   label={SERVICE_CODE}
                   name="serviceCode"
-                  error={serviceCodeError}
+                  error={serviceCodeError?.message}
                   options={MAPPED_SERVICE_CODES}
                 />
 
