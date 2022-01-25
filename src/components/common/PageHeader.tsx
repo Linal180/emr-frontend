@@ -2,8 +2,9 @@
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Box, Typography, Button } from "@material-ui/core";
-// interfaces/types block
+// components block
 import Breadcrumb from "./Breadcrumb";
+// interfaces/types block
 import { PageHeaderProps } from "../../interfacesTypes";
 
 const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModal }): JSX.Element => {

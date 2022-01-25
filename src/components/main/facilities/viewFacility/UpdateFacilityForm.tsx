@@ -7,6 +7,7 @@ import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
+import PhoneField from '../../../common/PhoneInput';
 import CardComponent from "../../../common/CardComponent";
 import UpdateFacilityController from './UpdateFacilityController';
 // utils, interfaces and graphql block
@@ -178,6 +179,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
     billingEmail: { message: billingEmailError } = {},
     billingState: { message: billingStateError } = {},
     tamxonomyCode: { message: tamxonomyCodeError } = {},
+    billingCountry: { message: billingCountryError } = {},
     billingAddress: { message: billingAddressError } = {},
     billingZipCode: { message: billingZipCodeError } = {},
     billingAddress2: { message: billingAddress2Error } = {},
@@ -197,21 +199,31 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   controllerLabel={NAME}
                   error={nameError}
                 />
-                <Selector
-                  value={{ id: "", name: "" }}
-                  label={PRACTICE_TYPE}
-                  name="practiceType"
-                  error={practiceTypeError}
-                  options={MAPPED_PRACTICE_TYPES}
-                />
-                <UpdateFacilityController
-                  fieldType="text"
-                  controllerName="code"
-                  controllerLabel={CODE}
-                  error={codeError}
-                />
+
+                <Grid container spacing={3}>
+                  <Grid item md={6}>
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={PRACTICE_TYPE}
+                      name="practiceType"
+                      error={practiceTypeError}
+                      options={MAPPED_PRACTICE_TYPES}
+                    />
+                  </Grid>
+
+                  <Grid item md={6}>
+                    <UpdateFacilityController
+                      fieldType="text"
+                      controllerName="code"
+                      controllerLabel={CODE}
+                      error={codeError}
+                    />
+                  </Grid>
+                </Grid>
               </CardComponent>
+
               <Box pb={3} />
+
               <CardComponent cardTitle={FACILITY_IDS} isEdit={true}>
                 <Grid container spacing={3}>
                   <Grid item md={6}>
@@ -222,6 +234,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={cliaIdNumberError}
                     />
                   </Grid>
+
                   <Grid item md={6}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -231,6 +244,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
+
                 <Grid container spacing={3}>
                   <Grid item md={6}>
                     <UpdateFacilityController
@@ -240,6 +254,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={tamxonomyCodeError}
                     />
                   </Grid>
+
                   <Grid item md={6}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -249,12 +264,14 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
+
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="insurancePlanType"
                   controllerLabel={INSURANCE_PLAN_TYPE}
                   error={insurancePlanTypeError}
                 />
+
                 <Grid container spacing={3}>
                   <Grid item md={6}>
                     <UpdateFacilityController
@@ -264,6 +281,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={mammographyCertificationNumberError}
                     />
                   </Grid>
+
                   <Grid item md={6}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -273,6 +291,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
+
                 <Selector
                   value={{ id: "", name: "" }}
                   label={SERVICE_CODE}
@@ -280,34 +299,22 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                   error={serviceCodeError}
                   options={MAPPED_SERVICE_CODES}
                 />
+
               </CardComponent>
             </Grid>
+
             <Grid item md={6}>
               <CardComponent cardTitle={BILLING_ADDRESS} isEdit={true}>
-                <UpdateFacilityController
-                  disabled
-                  fieldType="text"
-                  controllerName="billingEmail"
-                  controllerLabel={EMAIL}
-                  error={billingEmailError}
-                />
                 <Grid container spacing={3}>
-                  <Grid item md={4}>
+                  <Grid item md={8}>
                     <UpdateFacilityController
                       fieldType="text"
-                      controllerName="billingPhone"
-                      controllerLabel={PHONE}
-                      error={billingPhoneError}
+                      controllerName="billingEmail"
+                      controllerLabel={EMAIL}
+                      error={billingEmailError}
                     />
                   </Grid>
-                  <Grid item md={4}>
-                    <UpdateFacilityController
-                      fieldType="text"
-                      controllerName="billingFax"
-                      controllerLabel={FAX}
-                      error={billingFaxError}
-                    />
-                  </Grid>
+
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -317,18 +324,31 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="billingPhone" error={billingPhoneError} label={PHONE} />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="billingFax" error={billingFaxError} label={FAX} />
+                  </Grid>
+                </Grid>
+
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="billingAddress"
                   controllerLabel={ADDRESS}
                   error={billingAddressError}
                 />
+
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="billingAddress2"
                   controllerLabel={ADDRESS_2}
                   error={billingAddress2Error}
                 />
+
                 <Grid container spacing={3}>
                   <Grid item md={4}>
                     <UpdateFacilityController
@@ -337,7 +357,9 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       controllerLabel={CITY}
                       error={billingCityError}
                     />
+
                   </Grid>
+
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -346,42 +368,31 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={billingStateError}
                     />
                   </Grid>
+
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
                       controllerName="billingCountry"
                       controllerLabel={COUNTRY}
-                      error={billingCityError}
+                      error={billingCountryError}
                     />
                   </Grid>
                 </Grid>
               </CardComponent>
+
               <Box pb={3} />
+
               <CardComponent cardTitle={FACILITY_CONTACT} isEdit={true}>
-                <UpdateFacilityController
-                  disabled
-                  fieldType="text"
-                  controllerName="email"
-                  controllerLabel={EMAIL}
-                  error={emailError}
-                />
                 <Grid container spacing={3}>
-                  <Grid item md={4}>
+                  <Grid item md={8}>
                     <UpdateFacilityController
                       fieldType="text"
-                      controllerName="phone"
-                      controllerLabel={PHONE}
-                      error={phoneError}
+                      controllerName="email"
+                      controllerLabel={EMAIL}
+                      error={emailError}
                     />
                   </Grid>
-                  <Grid item md={4}>
-                    <UpdateFacilityController
-                      fieldType="text"
-                      controllerName="fax"
-                      controllerLabel={FAX}
-                      error={faxError}
-                    />
-                  </Grid>
+
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -391,18 +402,31 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                     />
                   </Grid>
                 </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="phone" error={phoneError} label={PHONE} />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <PhoneField name="fax" error={faxError} label={FAX} />
+                  </Grid>
+                </Grid>
+
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="address"
                   controllerLabel={ADDRESS}
                   error={addressError}
                 />
+
                 <UpdateFacilityController
                   fieldType="text"
                   controllerName="address2"
                   controllerLabel={ADDRESS_2}
                   error={address2Error}
                 />
+
                 <Grid container spacing={3}>
                   <Grid item md={4}>
                     <UpdateFacilityController
@@ -412,6 +436,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={cityError}
                     />
                   </Grid>
+
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -420,6 +445,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       error={stateError}
                     />
                   </Grid>
+
                   <Grid item md={4}>
                     <UpdateFacilityController
                       fieldType="text"
@@ -433,6 +459,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
             </Grid>
           </Grid>
         </Box>
+
         <Box display="flex" justifyContent="flex-end" pt={2}>
           <Button type="submit" variant="contained" color="primary" disabled={loading}>
             {UPDATE_FACILITY}
