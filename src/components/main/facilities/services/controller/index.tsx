@@ -2,9 +2,9 @@
 import { TextField, InputLabel, FormControl } from "@material-ui/core";
 import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { ServiceInputControlsProps } from "../../../../interfacesTypes";
+import { ServiceInputControlsProps } from "../../../../../interfacesTypes";
 
-const AddServiceController: FC<ServiceInputControlsProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const ServiceController: FC<ServiceInputControlsProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
   const { control } = useFormContext();
 
   return (
@@ -29,4 +29,4 @@ const AddServiceController: FC<ServiceInputControlsProps> = ({ controllerName, c
   );
 };
 
-export default AddServiceController;
+export default ServiceController;

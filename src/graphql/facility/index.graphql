@@ -1,5 +1,5 @@
 query FindAllFacilities($facilityInput: FacilityInput!) {
-	findAllFacility(facilityInput: $facilityInput) {
+    findAllFacility(facilityInput: $facilityInput) {
     facility {
       id
       name
@@ -36,7 +36,6 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
         createdAt
         updatedAt
       }
-
       staff {
         id
         firstName
@@ -65,24 +64,21 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
         }
       }
     }
-
     pagination {
       page
       totalCount
       totalPages
     }
-
     response {
       name
       error
       status
-			message
+            message
     }
   }
 }
-
 query GetFacility($getFacility: GetFacility!){
-	getFacility(getFacility: $getFacility){
+    getFacility(getFacility: $getFacility){
     facility{
       id
       name
@@ -118,7 +114,6 @@ query GetFacility($getFacility: GetFacility!){
         createdAt
         updatedAt
       }
-
       billingAddress {
         id
         email
@@ -135,7 +130,6 @@ query GetFacility($getFacility: GetFacility!){
         createdAt
         updatedAt
       }
-
       staff {
         id
         firstName
@@ -148,7 +142,6 @@ query GetFacility($getFacility: GetFacility!){
         gender
         createdAt
         updatedAt
-
         user {
           id
           email
@@ -164,7 +157,6 @@ query GetFacility($getFacility: GetFacility!){
         }
       }
     }
-
     response{
       name
       status
@@ -172,9 +164,8 @@ query GetFacility($getFacility: GetFacility!){
     }
   }
 }
-
 mutation RemoveFacility($removeFacility: RemoveFacility!){
-	removeFacility(removeFacility: $removeFacility){
+    removeFacility(removeFacility: $removeFacility){
     response{
       name
       status
@@ -182,7 +173,6 @@ mutation RemoveFacility($removeFacility: RemoveFacility!){
     }
   }
 }
-
 mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
   updateFacility(updateFacilityInput: $updateFacilityInput){
     facility{
@@ -217,7 +207,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
         country
         userId
       }
-
       staff {
         id
         firstName
@@ -228,7 +217,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
         phone
         mobile
         gender
-
         user {
           id
           email
@@ -242,7 +230,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
         }
       }
     }
-
     response{
       name
       status
@@ -250,7 +237,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
     }
   }
 }
-
 mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
   createFacility(createFacilityInput: $createFacilityInput){
     facility {
@@ -289,7 +275,6 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
         createdAt
         updatedAt
       }
-
       staff {
         id
         firstName
@@ -302,7 +287,6 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
         gender
         createdAt
         updatedAt
-
         user {
           id
           email
@@ -318,7 +302,6 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
         }
       }
     }
-
     response{
       name
       status

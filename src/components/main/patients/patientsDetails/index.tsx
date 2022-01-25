@@ -56,8 +56,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     )
   }
 
-  console.log("patientData", patientData)
-
   const { firstName, lastName, dob, contacts, usualProvider, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
 

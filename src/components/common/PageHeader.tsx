@@ -1,21 +1,12 @@
 // packages block
-import { FC, useState } from "react";
+import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Box, Typography, Button } from "@material-ui/core";
-// components block
-import AddServiceModal from "../main/facilities/addFacilityServices/AddServiceModal";
 // interfaces/types block
-import { PageHeaderProps } from "../../interfacesTypes";
 import Breadcrumb from "./Breadcrumb";
-import { ACTIVE_TEXT, ADD_FACILITY_SERVICE } from "../../constants";
+import { PageHeaderProps } from "../../interfacesTypes";
 
-const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModel, openModal, tableData, setTableData }): JSX.Element => {
-  const [openPopup, setOpenPopup] = useState<boolean>(false);
-
-  const onButtonClick = () => {
-    setOpenPopup(true)
-  };
-
+const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, linkToPage, noAdd, path, openModal }): JSX.Element => {
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
       <Box>
@@ -34,26 +25,8 @@ const PageHeader: FC<PageHeaderProps> = ({ title, buttonText, hasComponent, link
               <Button color="primary" variant="contained" onClick={openModal}>
                 {buttonText}
               </Button>
-            )
-          }
+            )}
         </>
-      }
-
-      {openModel &&
-        <Button color="primary" variant="contained" onClick={() => onButtonClick()}>
-          {buttonText || ""}
-        </Button>
-      }
-
-      {openModel &&
-        <AddServiceModal
-          title={ADD_FACILITY_SERVICE}
-          isOpen={openPopup}
-          description={ACTIVE_TEXT}
-          tableData={tableData}
-          setTableData={setTableData}
-          setOpen={(open: boolean) => setOpenPopup(open)}
-        />
       }
     </Box>
   );

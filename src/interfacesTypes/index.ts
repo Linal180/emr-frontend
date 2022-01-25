@@ -6,11 +6,12 @@ import { Control, ValidationRule, FieldValues } from "react-hook-form";
 // graphql block
 import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput,
-  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender, AllDoctorPayload,
+  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
+import { serviceAction } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -630,6 +631,21 @@ export type PatientInputProps =
   & GuardianContactControlInputs & GuarantorContactControlInputs
   & EmployerControlInputs & RegisterUserInputs;
 
+export interface ServiceInputControlsProps extends IControlLabel {
+  controllerName: CreateServiceInputTypes
+}
+
+export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
+
+export interface ServiceTableProps {
+  serviceDispatch: Dispatch<serviceAction>
+  openModal: boolean;
+}
+
+export interface ServiceModalProps extends DialogTypes {
+  serviceId?: string;
+  reload: () => void;
+}
 export interface ContactInputControlProps extends IControlLabel {
   controllerName: ContactInputTypes
 }

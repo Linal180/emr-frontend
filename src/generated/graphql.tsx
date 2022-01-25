@@ -1851,6 +1851,13 @@ export type FindAllServicesQueryVariables = Exact<{
 
 export type FindAllServicesQuery = { __typename?: 'Query', findAllServices: { __typename?: 'ServicesPayload', pagination?: Maybe<{ __typename?: 'PaginationPayload', page?: Maybe<number>, totalCount?: Maybe<number>, totalPages?: Maybe<number> }>, response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, services?: Maybe<Array<Maybe<{ __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: Maybe<boolean>, facilityId?: Maybe<string>, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }>>> } };
 
+export type GetServiceQueryVariables = Exact<{
+  getService: GetService;
+}>;
+
+
+export type GetServiceQuery = { __typename?: 'Query', getService: { __typename?: 'ServicePayload', response?: Maybe<{ __typename?: 'ResponsePayload', name?: Maybe<string>, error?: Maybe<string>, status?: Maybe<number>, message?: Maybe<string> }>, service?: Maybe<{ __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: Maybe<boolean>, facilityId?: Maybe<string>, createdAt?: Maybe<string>, updatedAt?: Maybe<string>, facility?: Maybe<{ __typename?: 'Facility', id: string, name: string, createdAt?: Maybe<string>, updatedAt?: Maybe<string> }> }> } };
+
 export type RemoveServiceMutationVariables = Exact<{
   removeService: RemoveService;
 }>;
@@ -3484,6 +3491,62 @@ export function useFindAllServicesLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type FindAllServicesQueryHookResult = ReturnType<typeof useFindAllServicesQuery>;
 export type FindAllServicesLazyQueryHookResult = ReturnType<typeof useFindAllServicesLazyQuery>;
 export type FindAllServicesQueryResult = Apollo.QueryResult<FindAllServicesQuery, FindAllServicesQueryVariables>;
+export const GetServiceDocument = gql`
+    query getService($getService: GetService!) {
+  getService(getService: $getService) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    service {
+      id
+      name
+      duration
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+      facility {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetServiceQuery__
+ *
+ * To run a query within a React component, call `useGetServiceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetServiceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetServiceQuery({
+ *   variables: {
+ *      getService: // value for 'getService'
+ *   },
+ * });
+ */
+export function useGetServiceQuery(baseOptions: Apollo.QueryHookOptions<GetServiceQuery, GetServiceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetServiceQuery, GetServiceQueryVariables>(GetServiceDocument, options);
+      }
+export function useGetServiceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetServiceQuery, GetServiceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetServiceQuery, GetServiceQueryVariables>(GetServiceDocument, options);
+        }
+export type GetServiceQueryHookResult = ReturnType<typeof useGetServiceQuery>;
+export type GetServiceLazyQueryHookResult = ReturnType<typeof useGetServiceLazyQuery>;
+export type GetServiceQueryResult = Apollo.QueryResult<GetServiceQuery, GetServiceQueryVariables>;
 export const RemoveServiceDocument = gql`
     mutation RemoveService($removeService: RemoveService!) {
   removeService(removeService: $removeService) {

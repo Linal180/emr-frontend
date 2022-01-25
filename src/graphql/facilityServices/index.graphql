@@ -24,6 +24,33 @@ query findAllServices($serviceInput: ServiceInput!) {
   }
 }
 
+query getService($getService: GetService!) {
+	getService(getService: $getService) {
+    response {
+      name
+      error
+      status
+	  message
+    }
+    service {
+      id
+      name
+      duration 
+      price
+      isActive
+      facilityId
+      createdAt
+      updatedAt
+      facility {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
 mutation RemoveService($removeService: RemoveService!){
 	removeService(removeService: $removeService){
     response{

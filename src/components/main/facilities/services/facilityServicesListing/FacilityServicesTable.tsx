@@ -1,32 +1,35 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useEffect, useReducer } from "react";
+import { FC, useEffect, ChangeEvent, Reducer, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
+import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
-import Alert from "../../../../common/Alert";
-import LocationModal from "../locationModal";
-import TableLoader from "../../../../common/TableLoader";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
+import Alert from "../../../../common/Alert";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import TableLoader from "../../../../common/TableLoader";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload } from "../../../../../generated/graphql";
 import { renderTh } from "../../../../../utils";
 import { useTableStyles } from "../../../../../styles/tableStyles";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
-import { LocationTableProps, ParamsType } from "../../../../../interfacesTypes";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
-import { locationReducer, Action, initialState, State, ActionType } from '../../../../../reducers/locationReducer';
-import { ContactPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
-import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY } from "../../../../../constants";
-
-const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }): JSX.Element => {
+import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../../constants";
+import { ServiceTableProps, ParamsType } from "../../../../../interfacesTypes";
+import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../../reducers/serviceReducer';
+import ServiceModal from "../serviceModal";
+const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openModal }): JSX.Element => {
   const classes = useTableStyles()
   const { id: facilityId } = useParams<ParamsType>();
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(locationReducer, initialState)
-  const { page, totalPages, isEdit, openDelete, locationId, deleteLocationId, searchQuery, locations } = state;
+  const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
+  const { page, totalPages, isEdit, openDelete, serviceId, deleteServiceId, searchQuery, services } = state;
 
-  const [findAllContacts, { loading, error }] = useFindAllContactsLazyQuery({
+  const [findAllServices, { loading, error }] = useFindAllServicesLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
     variables: {
-      contactInput: {
+      serviceInput: {
         facilityId,
         paginationOptions: {
           page,
@@ -35,43 +38,39 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
       }
     },
 
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
     onError() {
-      dispatch({ type: ActionType.SET_LOCATIONS, locations: [] });
+      dispatch({
+        type: ActionType.SET_SERVICES, services: []
+      });
     },
 
     onCompleted(data) {
-      const { findAllContacts } = data || {};
-
-      if (findAllContacts) {
-        const { contacts, pagination } = findAllContacts
-
+      const { findAllServices } = data || {};
+      if (findAllServices) {
+        const { services, pagination } = findAllServices
+        dispatch({ type: ActionType.SET_SERVICES, services: services || [] });
         if (!searchQuery && pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-          dispatch({ type: ActionType.SET_LOCATIONS, locations: contacts || [] });
         }
       }
     }
   });
 
-  const [removeContact, { loading: deleteLocationLoading }] = useRemoveContactMutation({
+  const [removeService, { loading: deleteServiceLoading }] = useRemoveServiceMutation({
     onError() {
-      Alert.error(CANT_DELETE_LOCATION)
+      Alert.error(CANT_DELETE_SERVICE)
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
     onCompleted(data) {
       if (data) {
-        const { removeContact: { response } } = data
-
+        const { removeService: { response } } = data
         if (response) {
-          Alert.success(LOCATION_DELETED_SUCCESSFULLY);
+          const { message } = response
+          message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          findAllContacts();
+          findAllServices();
         }
       }
     }
@@ -79,28 +78,29 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
 
   useEffect(() => {
     if (!searchQuery && facilityId) {
-      findAllContacts()
+      findAllServices()
     }
-  }, [page, findAllContacts, searchQuery, facilityId, locations]);
+  }, [page, findAllServices, searchQuery, facilityId, services]);
 
-
-  const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
-
-  const handleSearch = () => { }
+  useEffect(() => {
+    if (!openModal) {
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+    }
+  }, [openModal]);
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      dispatch({ type: ActionType.SET_DELETE_LOCATION_ID, deleteLocationId: id })
+      dispatch({ type: ActionType.SET_DELETE_SERVICE_ID, deleteServiceId: id })
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
-  const handleDeleteLocation = async () => {
-    if (deleteLocationId) {
-      await removeContact({
+  const handleDeleteService = async () => {
+    if (deleteServiceId) {
+      await removeService({
         variables: {
-          removeContact: {
-            id: deleteLocationId
+          removeService: {
+            id: deleteServiceId
           }
         }
       })
@@ -109,22 +109,20 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
 
   const handleEdit = (id: string) => {
     if (id) {
+      dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: id })
       dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
-      dispatch({ type: ActionType.SET_LOCATION_ID, locationId: id })
-      locationDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
+      serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
     }
   };
 
   const handleReload = () => {
-    dispatch({ type: ActionType.SET_LOCATIONS, locations: []});
-    findAllContacts();
+    dispatch({ type: ActionType.SET_SERVICES, services: [] })
+    findAllServices();
   }
 
-  useEffect(() => {
-    if (!openModal) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
-    }
-  }, [openModal])
+  const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
+
+  const handleSearch = () => { }
 
   return (
     <>
@@ -153,12 +151,9 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}
-                {renderTh(CITY)}
-                {renderTh(STATE)}
-                {renderTh(ZIP)}
-                {renderTh(FAX)}
-                {renderTh(PHONE)}
-                {renderTh(EMAIL)}
+                {renderTh(DURATION)}
+                {renderTh(PRICE)}
+                {renderTh(STATUS)}
                 {renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
@@ -171,24 +166,20 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
                   </TableCell>
                 </TableRow>
               ) : (
-                locations?.map((location: ContactPayload['contact']) => {
-                  const { id, name, city, state, zipCode, fax, phone, email } = location || {};
-
+                services?.map((service: ServicePayload['service'], index: number) => {
+                  const { id, name, duration, price, isActive } = service || {};
+                  const ActiveStatus = isActive === true ? `${ACTIVE}` : `${INACTIVE}`
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{name}</TableCell>
-                      <TableCell scope="row">{city}</TableCell>
-                      <TableCell scope="row">{state}</TableCell>
-                      <TableCell scope="row">{zipCode}</TableCell>
-                      <TableCell scope="row">{fax}</TableCell>
-                      <TableCell scope="row">{phone}</TableCell>
-                      <TableCell scope="row">{email}</TableCell>
+                      <TableCell scope="row">{duration}</TableCell>
+                      <TableCell scope="row">{price}</TableCell>
+                      <TableCell className={classes.status} scope="row">{ActiveStatus}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center" onClick={() => handleEdit(id || '')}>
                           <IconButton size="small">
                             <EditIcon />
                           </IconButton>
-
                           <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
                           </IconButton>
@@ -201,27 +192,27 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
             </TableBody>
           </Table>
 
-          {((!loading && locations?.length === 0) || error) && (
+          {((!loading && services?.length === 0) || error) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>
           )}
 
           <ConfirmationModal
-            title={LOCATION}
+            title={SERVICE}
             isOpen={openDelete}
-            isLoading={deleteLocationLoading}
-            description={DELETE_LOCATION_DESCRIPTION}
-            handleDelete={handleDeleteLocation}
+            isLoading={deleteServiceLoading}
+            description={DELETE_SERVICE_DESCRIPTION}
+            handleDelete={handleDeleteService}
             setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
           />
 
-          <LocationModal
+          <ServiceModal
             isEdit={isEdit}
             isOpen={openModal}
             reload={handleReload}
-            locationId={locationId}
-            setOpen={(open: boolean) => locationDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: open })}
+            serviceId={serviceId}
+            setOpen={(open: boolean) => serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: open })}
           />
         </Box>
       </Box>
@@ -229,9 +220,9 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
       {totalPages > 1 && (
         <Box display="flex" justifyContent="flex-end" pt={2.25}>
           <Pagination
-            page={page}
-            shape="rounded"
             count={totalPages}
+            shape="rounded"
+            page={page}
             onChange={handleChange}
           />
         </Box>
@@ -240,4 +231,4 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
   );
 };
 
-export default LocationTable;
+export default FacilityServicesTable;

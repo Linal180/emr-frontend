@@ -20,7 +20,7 @@ export const ListContext = createContext<ListContextInterface>({
 export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(listContextReducer, initialState)
-  const { doctorPages, doctorList, facilityPages, facilityList, serviceList, servicePages } = state;
+  const { doctorPages, doctorList, facilityPages, facilityList } = state;
 
   const [findAllFacility] = useFindAllFacilitiesLazyQuery({
     notifyOnNetworkStatusChange: true,

@@ -4,6 +4,11 @@ export interface State {
   facilityList: FacilitiesPayload['facility'];
   servicePages: number;
   serviceList: ServicesPayload['services']
+}
+
+export interface State {
+  facilityPages: number;
+  facilityList: FacilitiesPayload['facility'];
   doctorPages: number;
   doctorList: AllDoctorPayload['doctors'];
 }
@@ -27,7 +32,6 @@ export enum ActionType {
 }
 
 export enum ActionTypeForDoctor {
-
 }
 
 export type Action =
@@ -60,6 +64,7 @@ export const listContextReducer = (state: State, action: Action): State => {
         ...state,
         serviceList: action.serviceList
       }
+    case ActionType.SET_DOCTOR_PAGES:
     case ActionType.SET_DOCTOR_PAGES:
       return {
         ...state,

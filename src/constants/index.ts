@@ -213,7 +213,9 @@ export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
 export const ADD_SERVICE = "Add Service";
+export const UPDATE_SERVICE = "Update Service";
 export const ADD_FACILITY_SERVICE = "Add Facility Service";
+export const UPDATE_FACILITY_SERVICE = "Update Facility Service";
 export const ADD_LOCATION = "Add Facility Location";
 export const EDIT_LOCATION = "Edit Facility Location";
 export const UPDATE_LOCATION = "Update Facility Location";
@@ -445,6 +447,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
+export const SERVICE_NOT_FOUND = 'Service not found!';
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!"
 export const TRY_AGAIN = "Something went wrong. Try again!";
@@ -458,6 +461,7 @@ export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
 export const SERVICE_CREATED = "Service created successfully!";
+export const SERVICE_UPDATED = "Service updated successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
@@ -551,10 +555,6 @@ export const APP_MENU_ITEMS = [
       {
         name: LIST_FACILITIES_TEXT,
         link: FACILITIES_ROUTE,
-      },
-      {
-        name: LIST_FACILITY_SERVICES_TEXT,
-        link: FACILITY_SERVICES_ROUTE,
       },
     ],
   },
