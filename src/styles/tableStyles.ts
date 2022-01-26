@@ -47,6 +47,10 @@ export const useTableStyles = makeStyles(() => ({
     justifyContent: 'center',
     borderRadius: 6,
     marginLeft:6,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    
+    "& svg": {
+      maxWidth: 16
+    }
   },
 }))

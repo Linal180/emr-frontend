@@ -656,8 +656,8 @@ export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
-  { id: Homebound.No, name: formatValue(Homebound.No) },
-  { id: Homebound.Yes, name: formatValue(Homebound.Yes) },
+  { id: Homebound.No, name: Homebound.No},
+  { id: Homebound.Yes, name: Homebound.Yes},
 ];
 
 export const MAPPED_PRONOUNS: SelectorOption[] = [
