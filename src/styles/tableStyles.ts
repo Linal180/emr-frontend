@@ -36,6 +36,17 @@ export const useTableStyles = makeStyles(() => ({
     borderRadius: 8,
     padding: '8px 15px',
     display: 'inline-block',
-  }
-  
+  },
+
+  iconsBackground: {
+    background: WHITE_THREE,
+    height:32,
+    width:32,
+    display:'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginLeft:6,
+    cursor: 'pointer'
+  },
 }))
