@@ -84,6 +84,7 @@
     "@types/draftjs-to-html": "^0.8.1",
     "@types/react-draft-wysiwyg": "^1.13.3",
     "@types/react-file-icon": "^1.0.1",
-    "@types/react-router-dom": "^5.3.0"
+    "@types/react-router-dom": "^5.3.0",
+    "react-error-overlay": "^6.0.9"
   }
 }
