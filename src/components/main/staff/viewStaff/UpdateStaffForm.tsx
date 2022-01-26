@@ -15,11 +15,15 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { ListContext } from '../../../../context/listContext';
-import { renderFacilities, setRecord } from "../../../../utils";
+import { getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import { updateStaffSchema } from '../../../../validationSchemas';
 import { ParamsType, ExtendedStaffInputProps } from "../../../../interfacesTypes";
 import { Gender, useGetStaffLazyQuery, useUpdateStaffMutation } from "../../../../generated/graphql";
-import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER, STAFF_NOT_FOUND } from "../../../../constants";
+import {
+  EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
+  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER,
+  STAFF_NOT_FOUND
+} from "../../../../constants";
 
 const UpdateStaffForm: FC = () => {
   const { id } = useParams<ParamsType>();
@@ -109,7 +113,7 @@ const UpdateStaffForm: FC = () => {
       await updateStaff({
         variables: {
           updateStaffInput: {
-            id, firstName, lastName, email, phone, mobile, dob, gender: genderId as Gender, facilityId: facilityID, username
+            id, firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''), gender: genderId as Gender, facilityId: facilityID, username
           }
         }
       })

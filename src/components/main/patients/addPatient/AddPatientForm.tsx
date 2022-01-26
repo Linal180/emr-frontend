@@ -15,11 +15,11 @@ import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { renderDoctors, renderFacilities } from '../../../../utils';
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { patientsSchema } from '../../../../validationSchemas';
 import { PatientInputProps } from '../../../../interfacesTypes';
+import { getTimestamps, renderDoctors, renderFacilities } from '../../../../utils';
 import { toggleButtonComponent } from "../../../../styles/publicAppointment/patientInformation";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
@@ -139,12 +139,12 @@ const AddPatientForm: FC = (): JSX.Element => {
               suffix: suffix || '', firstName: firstName || '', middleName: middleName || '', lastName: lastName || '',
               firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '', previousFirstName: previousFirstName || '',
               previouslastName: previouslastName || '', motherMaidenName: motherMaidenName || '', ssn: ssn || '',
-              dob: dob || '', registrationDate: registrationDate || '', deceasedDate: deceasedDate || '',
+              dob: getTimestamps(dob || ''), registrationDate: getTimestamps(registrationDate || ''), deceasedDate: getTimestamps(deceasedDate || ''),
               privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false, adminId: userId || '',
               callToConsent: callToConsent || false, medicationHistoryAuthority: medicationHistoryAuthority || false,
-              patientNote: patientNote || '', language: language || '', statementNoteDateTo: statementNoteDateTo || '',
+              patientNote: patientNote || '', language: language || '', statementNoteDateTo: getTimestamps(statementNoteDateTo || ''),
               homeBound: homeBound || Homebound.No, holdStatement: holdStatement || Holdstatement.None,
-              statementNoteDateFrom: statementNoteDateFrom || '', pronouns: selectedPronouns as Pronouns || Pronouns.None,
+              statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''), pronouns: selectedPronouns as Pronouns || Pronouns.None,
               ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, facilityId: selectedFacility || '',
               gender: selectedGender as Genderidentity || Genderidentity.None, usualProviderId: selectedUsualProvider || '',
               sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
@@ -200,7 +200,6 @@ const AddPatientForm: FC = (): JSX.Element => {
     } else {
       Alert.error(FAILED_TO_CREATE_PATIENT)
     }
-
   };
 
   const {
