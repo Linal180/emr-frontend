@@ -186,12 +186,12 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
                       </TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <IconButton onClick={() => handleEdit(id || '')} size="small">
+                          <Box className={classes.iconsBackground} onClick={() => handleEdit(id || '')}>
                             <EditIcon />
-                          </IconButton>
-                          <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
+                          </Box>
+                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
-                          </IconButton>
+                          </Box>
                         </Box>
                       </TableCell>
                     </TableRow>

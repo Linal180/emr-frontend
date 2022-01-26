@@ -161,14 +161,14 @@ const StaffTable: FC = (): JSX.Element => {
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${STAFF_ROUTE}/${id}`}>
-                          <IconButton size="small">
+                          <Box className={classes.iconsBackground}>
                             <EditIcon />
-                          </IconButton>
+                          </Box>
                         </Link>
 
-                        <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
+                        <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
-                        </IconButton>
+                        </Box>
                       </Box>
                     </TableCell>
                   </TableRow>

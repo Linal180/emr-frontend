@@ -13,7 +13,7 @@ import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME } from "../../../../constants";
+import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, COUNTRY } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -131,6 +131,8 @@ const PatientsTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
+              {renderTh(COUNTRY)}
+              {renderTh(CITY)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -146,8 +148,8 @@ const PatientsTable: FC = (): JSX.Element => {
               patients?.map((record: PatientPayload['patient'], index: number) => {
                 const { id, firstName, lastName, email, contacts } = record || {};
                 const patientContact = contacts && contacts[0];
-                const { phone } = patientContact || {};
-                
+                const { phone, country, city } = patientContact || {};
+
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
@@ -157,17 +159,19 @@ const PatientsTable: FC = (): JSX.Element => {
                     </TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                    <TableCell scope="row">{country || ''}</TableCell>
+                    <TableCell scope="row">{city || ''}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PATIENTS_ROUTE}/${id}`}>
-                          <IconButton size="small">
+                          <Box className={classes.iconsBackground}>
                             <EditIcon />
-                          </IconButton>
+                          </Box>
                         </Link>
 
-                        <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
+                        <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
-                        </IconButton>
+                        </Box>
                       </Box>
                     </TableCell>
                   </TableRow>
