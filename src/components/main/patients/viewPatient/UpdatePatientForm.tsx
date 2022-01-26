@@ -14,7 +14,7 @@ import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { getDate, renderDoctors, renderFacilities, setRecord } from '../../../../utils';
+import { getDate, getTimestamps, renderDoctors, renderFacilities, setRecord } from '../../../../utils';
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { patientsSchema } from '../../../../validationSchemas';
@@ -113,7 +113,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
           previousFirstName && setValue("previousFirstName", previousFirstName)
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           medicationHistoryAuthority && setValue("medicationHistoryAuthority", medicationHistoryAuthority)
-
+          console.log("GET", deceasedDate)
           deceasedDate && setValue("deceasedDate", deceasedDate)
           registrationDate && setValue("registrationDate", registrationDate)
           releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
@@ -302,7 +302,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
     const { id: selectedGuarantorRelationship } = guarantorRelationship
     const { id: selectedEmergencyRelationship } = emergencyRelationship
     const { id: selectedKinRelationship } = kinRelationship
-
+    console.log("SET", deceasedDate)
     if (user) {
       const { id: userId } = user
 
@@ -313,7 +313,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
               id, suffix: suffix || '', firstName: firstName || '', middleName: middleName || '', lastName: lastName || '',
               firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '', previousFirstName: previousFirstName || '',
               previouslastName: previouslastName || '', motherMaidenName: motherMaidenName || '', ssn: ssn || '',
-              dob: dob || '', registrationDate: registrationDate || '', deceasedDate: deceasedDate || '',
+              dob: dob || '', registrationDate: registrationDate || '', deceasedDate: getTimestamps(deceasedDate || ''),
               privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false, adminId: userId || '',
               callToConsent: callToConsent || false, medicationHistoryAuthority: medicationHistoryAuthority || false,
               patientNote: patientNote || '', language: language || '', statementNoteDateTo: statementNoteDateTo || '',
@@ -912,6 +912,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                   <Grid container spacing={3}>
                     <Grid item md={6} sm={12} xs={12}>
                       <Selector
+                        disabled
                         value={{ id: '', name: '' }}
                         label={FACILITY}
                         name="facilityId"
@@ -922,6 +923,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
 
                     <Grid item md={6} sm={12} xs={12}>
                       <Selector
+                        disabled
                         value={{ id: '', name: '' }}
                         label={USUAL_PROVIDER_ID}
                         name="usualProviderId"

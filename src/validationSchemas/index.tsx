@@ -13,11 +13,16 @@ import {
   DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
   CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER,
   STATE_LICENSE, PRESCRIPTIVE_AUTH_NUMBER, EMPLOYER_NAME, USUAL_INDUSTRY, PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID,
-  MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION,
+  MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE,
+  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE, TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
 const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
+const npiSchema = { npi: yup.string().required(RequiredMessage(NPI)).matches(NPI_REGEX, NPI_VALIDATION_MESSAGE) }
+const cliaIdNumberSchema = { cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER)).matches(CLIA_REGEX, CLIA_VALIDATION_MESSAGE) }
+const revenueCodeSchema = { revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE)).matches(REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE) }
+const taxonomyCodeSchema = { taxonomyCode: yup.string().required(RequiredMessage(TAXONOMY_CODE)).matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE) }
 const dobSchema = {
   dob: yup.string().test(value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
 }
@@ -173,15 +178,15 @@ export const updateStaffSchema = yup.object({
 })
 
 export const facilitySchema = yup.object({
+  ...npiSchema,
   ...contactSchema,
+  ...revenueCodeSchema,
   ...serviceCodeSchema,
+  ...cliaIdNumberSchema,
   ...practiceTypeSchema,
   ...billingAddressSchema,
-  npi: yup.string().required(RequiredMessage(NPI)),
   name: yup.string().required(RequiredMessage(NAME)),
   code: yup.string().required(RequiredMessage(CODE)),
-  revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE)),
-  cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER)),
   federalTaxId: yup.string().required(RequiredMessage(FEDERAL_TAX_ID)),
   tamxonomyCode: yup.string().required(RequiredMessage(TAMXONOMY_CODE)),
   insurancePlanType: yup.string().required(RequiredMessage(INSURANCE_PLAN_TYPE)),
@@ -189,11 +194,12 @@ export const facilitySchema = yup.object({
 })
 
 export const basicDoctorSchema = {
+  ...npiSchema,
   ...deaDateSchema,
   ...doctorDobSchema,
   ...facilityIdSchema,
   ...licenseDateSchema,
-  npi: yup.string().required(RequiredMessage(NPI)),
+  ...taxonomyCodeSchema,
   ssn: yup.string().required(RequiredMessage(SSN)),
   upin: yup.string().required(RequiredMessage(UPIN)),
   taxId: yup.string().required(RequiredMessage(TAX_ID)),
@@ -211,7 +217,6 @@ export const basicDoctorSchema = {
   dpsCtpNumber: yup.string().required(RequiredMessage(CTP_NUMBER)),
   taxIdStuff: yup.string().required(RequiredMessage(TAX_ID_STUFF)),
   stateLicense: yup.string().required(RequiredMessage(STATE_LICENSE)),
-  taxonomyCode: yup.string().required(RequiredMessage(TAMXONOMY_CODE)),
   emcProviderId: yup.string().required(RequiredMessage(EMC_PROVIDER_ID)),
   languagesSpoken: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
   campusGrpNumber: yup.string().required(RequiredMessage(CAMPUS_GRP_NUMBER)),
