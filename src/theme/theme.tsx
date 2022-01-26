@@ -226,6 +226,7 @@ export const theme = createTheme({
         padding: '9px 20px',
         boxShadow: 'none',
         color: BLACK_TWO,
+        // backgroundColor: BLUE_SEVEN,
 
         "&.blue-button": {
           backgroundColor: BLUE_ONE,

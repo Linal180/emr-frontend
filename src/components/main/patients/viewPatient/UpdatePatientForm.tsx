@@ -1,10 +1,11 @@
 // packages block
-import { FC, useState, useContext, ChangeEvent, useEffect } from 'react';
+import { FC, useState, useContext, ChangeEvent, useEffect, MouseEvent } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, InputLabel, FormControlLabel, FormLabel, FormGroup, Checkbox, Radio, RadioGroup
+  CircularProgress, Box, Button, FormControl, Grid, InputLabel, FormControlLabel, FormLabel, FormGroup, Checkbox,
 } from "@material-ui/core";
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 // components block
 import Alert from "../../../common/Alert";
 import PatientController from "../controllers";
@@ -12,6 +13,7 @@ import Selector from '../../../common/Selector';
 import PhoneField from '../../../common/PhoneInput';
 import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
+import { toggleButtonComponent } from "../../../../styles/publicAppointment/patientInformation";
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { getDate, getTimestamps, renderDoctors, renderFacilities, setRecord } from '../../../../utils';
@@ -51,7 +53,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
     four: false,
     five: false
   })
-  const [selection, setSelection] = useState({ value: "1", });
+  const [selection, setSelection] = useState<string>("NO");
   const methods = useForm<PatientInputProps>({ mode: "all", resolver: yupResolver(patientsSchema) });
   const { reset, handleSubmit, setValue, control, formState: { errors } } = methods;
   const [basicContactId, setBasicContactId] = useState<string>('')
@@ -60,6 +62,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
   const [guardianContactId, setGuardianContactId] = useState<string>('')
   const [guarantorContactId, setGuarantorContactId] = useState<string>('')
   const [employerId, setEmployerId] = useState<string>('')
+  const classes = toggleButtonComponent()
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -251,10 +254,9 @@ const UpdatePatientForm: FC = (): JSX.Element => {
   });
 
 
-  const updateSelection = (event: ChangeEvent<HTMLInputElement>, value: string) => {
-    event.persist();
-    const name = event.target.name;
-    setSelection({ ...selection, [name]: value });
+  const updateSelection = (event: MouseEvent<HTMLElement>,
+    value: string,) => {
+    setSelection(value);
   };
 
   const handleChangeForCheckBox = (name: string) => (
@@ -883,22 +885,21 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                       control={control}
                       render={() => {
                         return (
-                          <FormControl fullWidth margin='normal'>
+                          <FormControl fullWidth margin='normal' className={classes.toggleContainer}>
                             <InputLabel id="demo-customized-select-label-gender" shrink>{HOMEBOUND}</InputLabel>
-                            <RadioGroup
-                              name="value"
-                              value={selection.value}
+                            <ToggleButtonGroup
+                              value={selection}
                               onChange={updateSelection}
+                              color="priamry"
+                              exclusive
                             >
                               {MAPPED_HOMEBOUND.map(homeBound => (
-                                <FormControlLabel
-                                  label={homeBound.name}
+                                <ToggleButton
                                   key={homeBound.id}
                                   value={homeBound.name}
-                                  control={<Radio color="primary" />}
-                                />
+                                >{homeBound.name}</ToggleButton>
                               ))}
-                            </RadioGroup>
+                            </ToggleButtonGroup>
                           </FormControl>
                         )
                       }}

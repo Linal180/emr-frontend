@@ -9,8 +9,8 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
+import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload } from "../../../../generated/graphql";
 import {
@@ -152,7 +152,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               doctors?.map((doctor: DoctorPayload['doctor']) => {
-                const { id, firstName, lastName, speciality: specialty, contacts, facility } = doctor || {};
+                const { id, firstName, lastName, speciality: specialty, contacts, facility, languagesSpoken } = doctor || {};
                 const doctorContact = contacts && contacts[0];
                 const { email, phone } = doctorContact || {};
                 const { name } = facility || {};
@@ -162,19 +162,20 @@ const DoctorsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                    <TableCell scope="row">{languagesSpoken}</TableCell>
                     <TableCell scope="row">{upperToNormal(specialty as string)}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${DOCTORS_ROUTE}/${id}`}>
-                          <IconButton size="small">
+                          <Box className={classes.iconsBackground}>
                             <EditIcon />
-                          </IconButton>
+                          </Box>
                         </Link>
 
-                        <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
+                        <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
-                        </IconButton>
+                        </Box>
                       </Box>
                     </TableCell>
                   </TableRow>

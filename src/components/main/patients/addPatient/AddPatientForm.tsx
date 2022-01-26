@@ -1,10 +1,11 @@
 // packages block
-import { FC, useState, useContext, ChangeEvent } from 'react';
+import { FC, useState, useContext, ChangeEvent, MouseEvent } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, InputLabel, FormControlLabel, FormLabel, FormGroup, Checkbox, Radio, RadioGroup
+  CircularProgress, Box, Button, FormControl, Grid, InputLabel, FormControlLabel, FormLabel, FormGroup, Checkbox,
 } from "@material-ui/core";
+import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 // components block
 import Alert from "../../../common/Alert";
 import PatientController from "../controllers";
@@ -19,6 +20,7 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { patientsSchema } from '../../../../validationSchemas';
 import { PatientInputProps } from '../../../../interfacesTypes';
+import { toggleButtonComponent } from "../../../../styles/publicAppointment/patientInformation";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
   Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation,
@@ -48,9 +50,10 @@ const AddPatientForm: FC = (): JSX.Element => {
     four: false,
     five: false
   })
-  const [selection, setSelection] = useState({ value: "1", });
+  const [selection, setSelection] = useState<string>("NO");
   const methods = useForm<PatientInputProps>({ mode: "all", resolver: yupResolver(patientsSchema) });
   const { reset, handleSubmit, control, formState: { errors } } = methods;
+  const classes = toggleButtonComponent()
 
   const [createPatient, { loading }] = useCreatePatientMutation({
     onError({ message }) {
@@ -75,10 +78,9 @@ const AddPatientForm: FC = (): JSX.Element => {
     }
   });
 
-  const updateSelection = (event: ChangeEvent<HTMLInputElement>, value: string) => {
-    event.persist();
-    const name = event.target.name;
-    setSelection({ ...selection, [name]: value });
+  const updateSelection = (event: MouseEvent<HTMLElement>,
+    value: string,) => {
+    setSelection(value);
   };
 
   const handleChangeForCheckBox = (name: string) => (
@@ -691,22 +693,21 @@ const AddPatientForm: FC = (): JSX.Element => {
                     control={control}
                     render={() => {
                       return (
-                        <FormControl fullWidth margin='normal'>
-                          <InputLabel id="demo-customized-select-label-gender" shrink>{HOMEBOUND}</InputLabel>
-                          <RadioGroup
-                            name="value"
-                            value={selection.value}
+                        <FormControl fullWidth margin='normal' className={classes.toggleContainer}>
+                          <InputLabel id="home-bound-toggle" shrink>{HOMEBOUND}</InputLabel>
+                          <ToggleButtonGroup
+                            value={selection}
                             onChange={updateSelection}
+                            color="priamry"
+                            exclusive
                           >
                             {MAPPED_HOMEBOUND.map(homeBound => (
-                              <FormControlLabel
-                                label={homeBound.name}
+                              <ToggleButton
                                 key={homeBound.id}
                                 value={homeBound.name}
-                                control={<Radio color="primary" />}
-                              />
+                              >{homeBound.name}</ToggleButton>
                             ))}
-                          </RadioGroup>
+                          </ToggleButtonGroup>
                         </FormControl>
                       )
                     }}

@@ -153,7 +153,7 @@ export const ACTION = "Actions";
 export const DRAWER_WIDTH = 300;
 export const SUCCESS = "success";
 export const COMMENT = "Comment";
-export const SIGN_IN = "Sign in";
+export const SIGN_IN = "Sign In";
 export const TOKEN = "emr_token";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
@@ -491,6 +491,7 @@ export const REQUEST_NOT_FOUND = "Requests not found for current user";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
+export const ADMIN_PORTAL_NEW_MESSAGE = "Enter your credentials to login to your portal";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Reset password token not found.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Managers can access Admin Portal!";
@@ -663,8 +664,8 @@ export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
-  { id: Homebound.No, name: formatValue(Homebound.No) },
-  { id: Homebound.Yes, name: formatValue(Homebound.Yes) },
+  { id: Homebound.No, name: Homebound.No},
+  { id: Homebound.Yes, name: Homebound.Yes},
 ];
 
 export const MAPPED_PRONOUNS: SelectorOption[] = [

@@ -20,6 +20,7 @@ import EmailVerification from "../pages/auth/verifyEmail";
 import AddPatient from "../pages/main/patients/addPatient";
 import Doctors from "../pages/main/doctors/doctorsListing";
 import Invoices from "../pages/main/billing/invoicesListing";
+import ViewPatient from "../pages/main/patients/viewPatient";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import LabResults from "../pages/main/reports/labResultsListing";
@@ -29,14 +30,13 @@ import Facilities from "../pages/main/facilities/facilitiesListing";
 import AddAppointment from "../pages/main/appointments/addAppointment";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
 import Appointments from "../pages/main/appointments/appointmentsListing";
-import FacilityServices from "../pages/main/facilities/facilityServicesListing";
-import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 import Locations from "../pages/main/facilities/locations/locationListing";
 import AppointmentPublic from "../pages/main/appointments/appointmentPublic";
+import FacilityServices from "../pages/main/facilities/facilityServicesListing";
+import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 import PatientInformation from "../pages/main/appointments/appointmentPublic/patientInformation";
 import SlotConfirmation from "../pages/main/appointments/appointmentPublic/slotConfirmation";
 import AppointmentSuccess from "../pages/main/appointments/appointmentPublic/appointmentSuccess";
-import ViewPatient from "../pages/main/patients/viewPatinet";
 // constants
 import { AuthContext } from "../context";
 import {

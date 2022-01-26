@@ -1,7 +1,7 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import { Home } from "@material-ui/icons";
+import { RemoveRedEye } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
@@ -176,26 +176,26 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
-                            <IconButton size="small">
+                          <Box className={classes.iconsBackground}>
                               <ServiceIcon />
-                            </IconButton>
+                            </Box>
                           </Link>
 
                           <Link to={`${FACILITIES_ROUTE}/${id}/${FACILITY_LOCATIONS_ROUTE}`}>
-                            <IconButton size="small">
-                              <Home color="primary" />
-                            </IconButton>
+                          <Box className={classes.iconsBackground}>
+                              <RemoveRedEye color="primary" />
+                            </Box>
                           </Link>
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
-                            <IconButton size="small">
+                            <Box className={classes.iconsBackground}>
                               <EditIcon />
-                            </IconButton>
+                            </Box>
                           </Link>
 
-                          <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
+                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
-                          </IconButton>
+                          </Box>
                         </Box>
                       </TableCell>
                     </TableRow>
