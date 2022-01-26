@@ -109,8 +109,6 @@ const AddPatientForm: FC = (): JSX.Element => {
       guarantorState, guarantorCountry, guarantorEmployerName, guarantorSsn,
 
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
-
-      // userFirstName, userLastName, userPassword, userPhone, userZipCode,
     } = inputs;
 
     const { id: selectedFacility } = facilityId || {}
@@ -191,7 +189,7 @@ const AddPatientForm: FC = (): JSX.Element => {
             },
 
             createEmployerInput: {
-              name: employerName || '', email: employerEmail || 'test@gmail.com', phone: employerPhone || '',
+              name: employerName || '', email: employerEmail || '', phone: employerPhone || '',
               usualOccupation: employerUsualOccupation || '', industry: employerIndustry || '',
             },
           }
@@ -232,6 +230,7 @@ const AddPatientForm: FC = (): JSX.Element => {
     guarantorRelationship: { id: guarantorRelationshipError } = {},
     statementNoteDateFrom: { message: statementNoteDateFromError } = {},
     registrationDepartment: { id: registrationDepartmentError } = {},
+    usualProviderId: { id: usualProviderError } = {},
 
     basicCity: { message: basicCityError } = {},
     basicState: { message: basicStateError } = {},
@@ -268,7 +267,6 @@ const AddPatientForm: FC = (): JSX.Element => {
     kinMobile: { message: kinMobileError } = {},
     kinRelationship: { id: kinRelationshipError } = {},
 
-
     employerName: { message: employerNameError } = {},
     employerPhone: { message: employerPhoneError } = {},
     employerIndustry: { message: employerIndustryError } = {},
@@ -278,7 +276,6 @@ const AddPatientForm: FC = (): JSX.Element => {
     guardianLastName: { message: guardianLastNameError } = {},
     guardianFirstName: { message: guardianFirstNameError } = {},
     guardianMiddleName: { message: guardianMiddleNameError } = {},
-
   } = errors;
 
   return (
@@ -736,6 +733,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                       value={{ id: '', name: '' }}
                       label={USUAL_PROVIDER_ID}
                       name="usualProviderId"
+                      error={usualProviderError?.message}
                       options={renderDoctors(doctorList)}
                     />
                   </Grid>

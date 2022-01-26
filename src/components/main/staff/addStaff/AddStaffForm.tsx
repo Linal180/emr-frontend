@@ -5,9 +5,9 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import StaffController from '../controller';
 import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
-import AddStaffController from "./AddStaffController";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
 import history from "../../../../history";
@@ -113,7 +113,7 @@ const AddStaffForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
+                    <StaffController
                       fieldType="text"
                       controllerName="firstName"
                       control={control}
@@ -123,7 +123,7 @@ const AddStaffForm: FC = () => {
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
+                    <StaffController
                       fieldType="text"
                       controllerName="lastName"
                       control={control}
@@ -164,7 +164,7 @@ const AddStaffForm: FC = () => {
 
             <Grid md={6} item>
               <CardComponent cardTitle={ACCOUNT_INFO}>
-                <AddStaffController
+                <StaffController
                   fieldType="email"
                   controllerName="email"
                   control={control}
@@ -175,7 +175,7 @@ const AddStaffForm: FC = () => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
+                    <StaffController
                       fieldType="text"
                       controllerName="username"
                       control={control}
@@ -185,7 +185,7 @@ const AddStaffForm: FC = () => {
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <AddStaffController
+                    <StaffController
                       fieldType="password"
                       isPassword
                       controllerName="password"

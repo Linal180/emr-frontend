@@ -8,7 +8,7 @@ import ShowPassword from "../../../common/ShowPassword";
 import {PASSWORD, TEXT } from "../../../../constants";
 import { AddStaffInputControlProps, PasswordType } from "../../../../interfacesTypes";
 
-const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, isPassword }): JSX.Element => {
+const StaffController: FC<AddStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, isPassword }): JSX.Element => {
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
 
   const handleClickShowPassword = () => {
@@ -52,4 +52,4 @@ const AddStaffController: FC<AddStaffInputControlProps> = ({ control, controller
   );
 };
 
-export default AddStaffController;
+export default StaffController;

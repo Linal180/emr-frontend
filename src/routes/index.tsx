@@ -58,7 +58,6 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={PATIENT_INFORMATION} component={PatientInformation} exact />
       <PublicRoute path={SLOT_CONFIRMATION} component={SlotConfirmation} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_SUCCESS} component={AppointmentSuccess} exact />
-      <PublicRoute path='/c' component={AppointmentPublic} exact />
       <Route exact path="/">
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>

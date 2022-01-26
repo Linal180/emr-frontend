@@ -6,25 +6,25 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import StaffController from '../controller';
 import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
 import PhoneField from '../../../common/PhoneInput';
 import CardComponent from "../../../common/CardComponent";
-import UpdateStaffController from "./UpdateStaffController";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { ListContext } from '../../../../context/listContext';
 import { renderFacilities, setRecord } from "../../../../utils";
 import { updateStaffSchema } from '../../../../validationSchemas';
-import { ParamsType, ExtendedUpdateStaffInputProps } from "../../../../interfacesTypes";
+import { ParamsType, ExtendedStaffInputProps } from "../../../../interfacesTypes";
 import { Gender, useGetStaffLazyQuery, useUpdateStaffMutation } from "../../../../generated/graphql";
-import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER } from "../../../../constants";
+import { EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE, DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER, STAFF_NOT_FOUND } from "../../../../constants";
 
 const UpdateStaffForm: FC = () => {
   const { id } = useParams<ParamsType>();
   const { facilityList } = useContext(ListContext)
-  const methods = useForm<ExtendedUpdateStaffInputProps>({
+  const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(updateStaffSchema)
   });
@@ -89,7 +89,6 @@ const UpdateStaffForm: FC = () => {
     }
   });
 
-
   useEffect(() => {
     if (id) {
       getStaff({
@@ -99,12 +98,10 @@ const UpdateStaffForm: FC = () => {
           }
         }
       })
-    } else {
-      Alert.error('Staff not found!')
-    }
+    } else Alert.error(STAFF_NOT_FOUND)
   }, [getStaff, id])
 
-  const onSubmit: SubmitHandler<ExtendedUpdateStaffInputProps> = async ({ firstName, lastName, email, username, phone, mobile, dob, gender, facilityId }) => {
+  const onSubmit: SubmitHandler<ExtendedStaffInputProps> = async ({ firstName, lastName, email, username, phone, mobile, dob, gender, facilityId }) => {
     if (id) {
       const { id: facilityID } = facilityId
       const { id: genderId } = gender
@@ -166,7 +163,7 @@ const UpdateStaffForm: FC = () => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <UpdateStaffController
+                        <StaffController
                           fieldType="text"
                           controllerName="firstName"
                           control={control}
@@ -176,7 +173,7 @@ const UpdateStaffForm: FC = () => {
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <UpdateStaffController
+                        <StaffController
                           fieldType="text"
                           controllerName="lastName"
                           control={control}
@@ -220,7 +217,7 @@ const UpdateStaffForm: FC = () => {
               <CardComponent cardTitle={ACCOUNT_INFO}>
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <UpdateStaffController
+                    <StaffController
                       fieldType="email"
                       controllerName="email"
                       control={control}
@@ -229,7 +226,7 @@ const UpdateStaffForm: FC = () => {
                       controllerLabel={EMAIL}
                     />
 
-                    <UpdateStaffController
+                    <StaffController
                       fieldType="text"
                       controllerName="username"
                       control={control}

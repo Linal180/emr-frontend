@@ -407,8 +407,8 @@ export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
-export const PATIENT_APPOINTMENT_SUCCESS = "/patient-information/success";
-export const SLOT_CONFIRMATION = "/public-appointment/available-slot";
+export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
+export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -446,6 +446,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const STAFF_NOT_FOUND = 'Staff not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
 export const SERVICE_NOT_FOUND = 'Service not found!';
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
@@ -664,7 +665,6 @@ export const MAPPED_PRONOUNS: SelectorOption[] = [
   { id: Pronouns.He, name: formatValue(Pronouns.He) },
   { id: Pronouns.She, name: formatValue(Pronouns.She) },
   { id: Pronouns.None, name: formatValue(Pronouns.None) },
-
 ];
 
 export const MAPPED_RACE: SelectorOption[] = [

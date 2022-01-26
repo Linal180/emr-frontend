@@ -1,17 +1,33 @@
 // packages block
 import * as yup from "yup";
+import moment from "moment";
 // utils and constants block
 import { RequiredMessage } from "../utils";
 import {
-  ADDRESS, ADDRESS_2, ALPHABETS_REGEX, CITY, CLIA_ID_NUMBER, CODE, CONFIRM_YOUR_PASSWORD, COUNTRY, DOB, EMAIL, FACILITY, FAX, FEDERAL_TAX_ID, FIRST_NAME,
-  GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME, MAMMOGRAPHY_CERTIFICATION_NUMBER, MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX,
-  PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE, PROVIDER, MIDDLE_NAME, DURATION,
-  PRICE, REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE, ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS,
-  SPECIALTY, SSN, SSN_TYPE, DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER, CAMPUS_GRP_NUMBER,
-  BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
-  PRESCRIPTIVE_AUTH_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMPLOYER_NAME, MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION,
+  ADDRESS, ADDRESS_2, ALPHABETS_REGEX, CITY, CLIA_ID_NUMBER, CODE, CONFIRM_YOUR_PASSWORD, COUNTRY, DOB, EMAIL,
+  FACILITY, FAX, FEDERAL_TAX_ID, FIRST_NAME, GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME,
+  MAMMOGRAPHY_CERTIFICATION_NUMBER, MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX,
+  PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER,
+  PRACTICE_TYPE, PROVIDER, MIDDLE_NAME, DURATION, PRICE, REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE,
+  ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE,
+  DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
+  CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER,
+  STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, PRESCRIPTIVE_AUTH_NUMBER, DEA_ACTIVE_DATE,
+  DEA_TERM_DATE, EMPLOYER_NAME, MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION,
   USUAL_INDUSTRY, PREVIOUS_LAST_NAME, DECREASED_DATE, REGISTRATION_DATE, EXPIRATION_DATE, ISSUE_DATE,
+  USUAL_PROVIDER_ID,
 } from "../constants";
+
+
+const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
+const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
+const dobSchema = {
+  dob: yup.string().test(
+    value => {
+      return moment().diff(moment(value), 'days') >= 1;
+    }
+  )
+}
 
 const roleTypeSchema = {
   roleType: yup.object().shape({
@@ -19,8 +35,6 @@ const roleTypeSchema = {
     id: yup.string().required()
   }).required(RequiredMessage(ROLE))
 }
-const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
-const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
 
 const serviceCodeSchema = {
   serviceCode: yup.object().shape({
@@ -41,6 +55,13 @@ const genderSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).required(RequiredMessage(GENDER))
+}
+
+const usualProviderSchema = {
+  usualProviderId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(USUAL_PROVIDER_ID))
 }
 
 const facilityIdSchema = {
@@ -102,7 +123,8 @@ const staffBasicSchema = {
   ...roleTypeSchema,
   ...genderSchema,
   ...facilityIdSchema,
-  dob: yup.date().required(RequiredMessage(DOB)),
+  ...dobSchema,
+  // dob: yup.date().required(RequiredMessage(DOB)),
   username: yup.string().required(RequiredMessage(PROVIDER)),
   lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
   firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
@@ -287,6 +309,9 @@ export const employerPatientSchema = {
 };
 
 export const patientsSchema = yup.object({
+  ...facilityIdSchema,
+  ...genderSchema,
+  ...usualProviderSchema,
   ...PatientSchema,
   ...basicContactSchema,
   ...employerPatientSchema,
