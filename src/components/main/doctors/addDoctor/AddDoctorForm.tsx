@@ -1,8 +1,8 @@
 // packages block
-import { FC, useState, useContext } from 'react';
+import { FC, useContext } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, FormControlLabel, Switch, FormGroup, FormHelperText } from "@material-ui/core";
+import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import DoctorController from "../controllers";
@@ -15,41 +15,30 @@ import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { renderFacilities } from '../../../../utils';
 import { doctorSchema } from '../../../../validationSchemas';
-import { DoctorInputProps } from "../../../../interfacesTypes";
-import { useFormStyles } from '../../../../styles/formsStyles';
 import { ListContext } from '../../../../context/listContext';
+import { DoctorInputProps } from "../../../../interfacesTypes";
 import { Speciality, SsnType, useCreateDoctorMutation, UserRole } from "../../../../generated/graphql";
 import {
   FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_SSN_TYPES, FACILITY,
   FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CREATE_DOCTOR, ADDITIONAL_INFO, BILLING_ADDRESS,
-  SCHEDULE_APPOINTMENTS_TEXT, CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME,
+  CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME,
   PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER, TAXONOMY_CODE,
   DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS, ADDRESS_2,
   MOBILE, PAGER, TAX_ID, NPI, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
   MAMMOGRAPHY_CERT_NUMBER, CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
-  PRESCRIPTIVE_AUTH_NUMBER, AVAILABILITY_STATUS, DOCTOR_CREATED, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
+  PRESCRIPTIVE_AUTH_NUMBER, DOCTOR_CREATED, DOCTORS_ROUTE, MAPPED_SPECIALTIES,
   LANGUAGE_SPOKEN, SPECIALTY, TYPE,
 } from "../../../../constants";
 
 const AddDoctorForm: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
-  const classes = useFormStyles()
   const methods = useForm<DoctorInputProps>({
     mode: "all",
     resolver: yupResolver(doctorSchema)
   });
   const { reset, handleSubmit, formState: { errors } } = methods;
-  const [values, setValues] = useState({
-    sunday: false,
-    monday: false,
-    tuesday: false,
-    wednesday: false,
-    thursday: false,
-    friday: false,
-    saturday: false,
-  });
 
   const [createDoctor, { loading }] = useCreateDoctorMutation({
     onError({ message }) {
@@ -73,13 +62,6 @@ const AddDoctorForm: FC = (): JSX.Element => {
       }
     }
   });
-
-  const handleChange = (event: any) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.checked
-    })
-  };
 
   const onSubmit: SubmitHandler<DoctorInputProps> = async (inputs) => {
     const { email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country,
@@ -339,7 +321,9 @@ const AddDoctorForm: FC = (): JSX.Element => {
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE} error={deaActiveDateError || ''} />
+                    <DatePicker name="deaActiveDate"
+
+                      label={DEA_ACTIVE_DATE} error={deaActiveDateError || ''} />
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
@@ -449,74 +433,6 @@ const AddDoctorForm: FC = (): JSX.Element => {
             </Grid>
 
             <Grid md={6} item>
-              <CardComponent cardTitle={SCHEDULE_APPOINTMENTS_TEXT}>
-                <Box mb={3}>
-                  <Grid item md={12} sm={12} xs={12}>
-                    <FormControl fullWidth>
-                      <FormGroup>
-                        <FormControlLabel
-                          label="Sunday"
-                          labelPlacement="start"
-                          className={classes.controlLabel}
-                          control={<Switch checked={values.sunday} onChange={handleChange} name="sunday" color='primary' />}
-                        />
-                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-
-                        <FormControlLabel
-                          label="Monday"
-                          labelPlacement="start"
-                          className={classes.controlLabel}
-                          control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
-                        />
-                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-
-                        <FormControlLabel
-                          label="Tuesday"
-                          labelPlacement="start"
-                          className={classes.controlLabel}
-                          control={<Switch checked={values.monday} onChange={handleChange} name="monday" color='primary' />}
-                        />
-                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-
-                        <FormControlLabel
-                          label="Wednesday"
-                          labelPlacement="start"
-                          className={classes.controlLabel}
-                          control={<Switch checked={values.wednesday} onChange={handleChange} name="wednesday" color='primary' />}
-                        />
-                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-
-                        <FormControlLabel
-                          label="Thursday"
-                          labelPlacement="start"
-                          className={classes.controlLabel}
-                          control={<Switch checked={values.thursday} onChange={handleChange} name="thursday" color='primary' />}
-                        />
-                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-
-                        <FormControlLabel
-                          label="Friday"
-                          labelPlacement="start"
-                          className={classes.controlLabel}
-                          control={<Switch checked={values.friday} onChange={handleChange} name="friday" color='primary' />}
-                        />
-                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-
-                        <FormControlLabel
-                          label="Saturday"
-                          labelPlacement="start"
-                          className={classes.controlLabel}
-                          control={<Switch checked={values.saturday} onChange={handleChange} name="saturday" color='primary' />}
-                        />
-                        <FormHelperText className={classes.helperText}>{AVAILABILITY_STATUS}</FormHelperText>
-                      </FormGroup>
-                    </FormControl>
-                  </Grid>
-                </Box>
-              </CardComponent>
-
-              <Box pb={3} />
-
               <CardComponent cardTitle={CONTACT_INFORMATION}>
                 <Grid item md={12} sm={12} xs={12}>
                   <DoctorController

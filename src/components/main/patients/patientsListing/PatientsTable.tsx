@@ -131,8 +131,8 @@ const PatientsTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(COUNTRY)}
               {renderTh(CITY)}
+              {renderTh(COUNTRY)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -148,8 +148,8 @@ const PatientsTable: FC = (): JSX.Element => {
               patients?.map((record: PatientPayload['patient'], index: number) => {
                 const { id, firstName, lastName, email, contacts } = record || {};
                 const patientContact = contacts && contacts[0];
-                const { phone, country, city } = patientContact || {};
-
+                const { phone, city, country } = patientContact || {};
+                
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
@@ -159,8 +159,8 @@ const PatientsTable: FC = (): JSX.Element => {
                     </TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{country || ''}</TableCell>
-                    <TableCell scope="row">{city || ''}</TableCell>
+                    <TableCell scope="row">{city}</TableCell>
+                    <TableCell scope="row">{country}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PATIENTS_ROUTE}/${id}`}>

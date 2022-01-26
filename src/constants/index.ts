@@ -8,9 +8,12 @@ import {
 } from "../generated/graphql";
 
 // regex
+export const NPI_REGEX = /^\d{10}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
+export const REVENUE_CODE_REGEX = /^\d{4}$/;
+export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
+export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
-export const LONGITUDE_LATITUDE_REGEX = /^-?([1-8]?[1-9]|[1-9]0)\.{1}\d{1,6}/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
@@ -407,8 +410,8 @@ export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
-export const PATIENT_APPOINTMENT_SUCCESS = "/patient-information/success";
-export const SLOT_CONFIRMATION = "/public-appointment/available-slot";
+export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
+export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -435,6 +438,10 @@ export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
+export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
+export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
+export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code 10-alphanumeric";
+export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;
 export const MaxLength = (fieldName: string, length: number) => `${fieldName} can be up to ${length} characters long`;
@@ -442,10 +449,10 @@ export const MinLength = (fieldName: string, length: number) => `${fieldName} sh
 export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
 export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
-
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const STAFF_NOT_FOUND = 'Staff not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
 export const SERVICE_NOT_FOUND = 'Service not found!';
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
@@ -665,7 +672,6 @@ export const MAPPED_PRONOUNS: SelectorOption[] = [
   { id: Pronouns.He, name: formatValue(Pronouns.He) },
   { id: Pronouns.She, name: formatValue(Pronouns.She) },
   { id: Pronouns.None, name: formatValue(Pronouns.None) },
-
 ];
 
 export const MAPPED_RACE: SelectorOption[] = [

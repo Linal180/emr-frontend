@@ -9,11 +9,14 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
+import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload } from "../../../../generated/graphql";
-import { ACTION, EMAIL, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE, CANT_DELETE_DOCTOR, DOCTOR, NAME, LANGUAGE_SPOKEN } from "../../../../constants";
+import {
+  ACTION, EMAIL, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
+  CANT_DELETE_DOCTOR, DOCTOR, NAME
+} from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -134,7 +137,6 @@ const DoctorsTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(LANGUAGE_SPOKEN)}
               {renderTh(SPECIALTY)}
               {renderTh(FACILITY)}
               {renderTh(ACTION, "center")}
@@ -157,7 +159,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">{`${firstName}${lastName}`}</TableCell>
+                    <TableCell scope="row">{firstName} {lastName}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{languagesSpoken}</TableCell>

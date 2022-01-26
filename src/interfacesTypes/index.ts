@@ -5,7 +5,7 @@ import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule, FieldValues } from "react-hook-form";
 // graphql block
 import {
-  LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateStaffInput, UpdateContactInput,
+  LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
   RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload
@@ -355,7 +355,6 @@ export type ParamsType = {
 }
 
 export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
-export type ExtendedUpdateStaffInputProps = Omit<UpdateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
 export interface AddStaffInputControlProps extends IControlLabel {
   control: Control<ExtendedStaffInputProps, object>;
@@ -363,7 +362,7 @@ export interface AddStaffInputControlProps extends IControlLabel {
 }
 
 export interface UpdateStaffInputControlProps extends IControlLabel {
-  control: Control<ExtendedUpdateStaffInputProps, object>;
+  control: Control<ExtendedStaffInputProps, object>;
   controllerName: StaffControlTypes;
 }
 
