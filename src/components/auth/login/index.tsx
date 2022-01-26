@@ -1,10 +1,9 @@
 // packages block
 import { useContext, useEffect } from "react";
-import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, Typography } from "@material-ui/core";
+import { Button, CircularProgress } from "@material-ui/core";
 // components block
 import AuthLayout from "../AuthLayout";
 import Alert from "../../common/Alert";
@@ -16,7 +15,7 @@ import { AuthContext } from "../../../context";
 import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
-import { ADMIN, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD, NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE, SOMETHING_WENT_WRONG, LOGIN_SUCCESSFULLY } from "../../../constants";
+import { ADMIN, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE, SOMETHING_WENT_WRONG, LOGIN_SUCCESSFULLY } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
@@ -101,11 +100,7 @@ const LoginComponent = (): JSX.Element => {
           error={passwordError}
         />
 
-        <Box py={2}>
-          <Typography component={Link} to={FORGET_PASSWORD_ROUTE}>{FORGOT_PASSWORD}</Typography>
-        </Box>
-
-        <Button type="submit" variant="contained" color="primary" fullWidth disabled={loading}>
+        <Button type="submit" variant="contained" color="inherit" fullWidth disabled={loading}>
           {SIGN_IN}
           {loading && <CircularProgress size={20} color="inherit" />}
         </Button>
