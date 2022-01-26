@@ -147,7 +147,7 @@ const PatientsTable: FC = (): JSX.Element => {
                 const { id, firstName, lastName, email, contacts } = record || {};
                 const patientContact = contacts && contacts[0];
                 const { phone } = patientContact || {};
-                
+
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
@@ -160,14 +160,14 @@ const PatientsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PATIENTS_ROUTE}/${id}`}>
-                          <IconButton size="small">
+                          <Box className={classes.iconsBackground}>
                             <EditIcon />
-                          </IconButton>
+                          </Box>
                         </Link>
 
-                        <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
+                        <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
-                        </IconButton>
+                        </Box>
                       </Box>
                     </TableCell>
                   </TableRow>

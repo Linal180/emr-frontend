@@ -184,13 +184,13 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <IconButton size="small" onClick={() => handleEdit(id || '')}>
+                          <Box className={classes.iconsBackground} onClick={() => handleEdit(id || '')}>
                             <EditIcon />
-                          </IconButton>
+                          </Box>
 
-                          <IconButton aria-label="delete" color="primary" size="small" onClick={() => onDeleteClick(id || '')}>
+                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
-                          </IconButton>
+                          </Box>
                         </Box>
                       </TableCell>
                     </TableRow>
