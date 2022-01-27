@@ -1953,7 +1953,7 @@ export type UpdateFacilityTimeZoneMutationVariables = Exact<{
 }>;
 
 
-export type UpdateFacilityTimeZoneMutation = { __typename?: 'Mutation', updateFacilityTimeZone: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, timeZone?: string | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdateFacilityTimeZoneMutation = { __typename?: 'Mutation', updateFacilityTimeZone: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, timeZone?: string | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type FindAllStaffQueryVariables = Exact<{
   staffInput: StaffInput;
@@ -4348,7 +4348,6 @@ export const UpdateFacilityTimeZoneDocument = gql`
   ) {
     facility {
       id
-      name
       timeZone
     }
     response {
@@ -4378,8 +4377,7 @@ export type UpdateFacilityTimeZoneMutationFn = Apollo.MutationFunction<UpdateFac
  *   },
  * });
  */
-export function 
-useUpdateFacilityTimeZoneMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFacilityTimeZoneMutation, UpdateFacilityTimeZoneMutationVariables>) {
+export function useUpdateFacilityTimeZoneMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFacilityTimeZoneMutation, UpdateFacilityTimeZoneMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<UpdateFacilityTimeZoneMutation, UpdateFacilityTimeZoneMutationVariables>(UpdateFacilityTimeZoneDocument, options);
       }

@@ -2,9 +2,9 @@ mutation UpdateFacilityTimeZone($updateFacilityTimeZoneInput: UpdateFacilityTime
   updateFacilityTimeZone(updateFacilityTimeZoneInput: $updateFacilityTimeZoneInput){
     facility {
       id 
-      name
       timeZone
     }
+
     response{
       name
       status
