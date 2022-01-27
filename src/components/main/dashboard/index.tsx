@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 // svgs block
 import { EMRIcon } from "../../../assets/svgs";
 import DASHBOARD_IMAGE from "../../../assets/images/dashboard-image.svg"
+import { DASHBOARD_ROUTE } from "../../../constants";
 
 const DashboardComponent = (): JSX.Element => (
   <Box pt={5}>
@@ -17,7 +18,7 @@ const DashboardComponent = (): JSX.Element => (
 
     <Box className="subHeading">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dolor interdum et risus. Accumsan.</Box>
 
-    <Link to="/">
+    <Link to={`${DASHBOARD_ROUTE}/start-project`}>
       <Button color="primary" variant="contained" className="blue-button">Start a Project</Button>
     </Link>
 
