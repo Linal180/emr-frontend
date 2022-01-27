@@ -38,6 +38,7 @@ import ScheduleAppointments from "../pages/main/appointments/scheduleAppointment
 import PatientInformation from "../pages/main/appointments/appointmentPublic/patientInformation";
 import SlotConfirmation from "../pages/main/appointments/appointmentPublic/slotConfirmation";
 import AppointmentSuccess from "../pages/main/appointments/appointmentPublic/appointmentSuccess";
+import { StartProject } from "../pages/main/dashboard/startProject";
 // constants
 import { AuthContext } from "../context";
 import {
@@ -66,6 +67,7 @@ const Routes: FC = (): JSX.Element => {
       <MainLayout>
         <Switch>
           <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
+          <PrivateRoute exact path={`${DASHBOARD_ROUTE}/start-project`} component={StartProject} />
           <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
           <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} />
           <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
