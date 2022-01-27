@@ -1,0 +1,14 @@
+mutation UpdateFacilityTimeZone($updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput!) {
+  updateFacilityTimeZone(updateFacilityTimeZoneInput: $updateFacilityTimeZoneInput){
+    facility {
+      id 
+      name
+      timeZone
+    }
+    response{
+      name
+      status
+      message
+    }
+  }
+}

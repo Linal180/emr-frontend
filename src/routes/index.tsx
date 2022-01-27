@@ -6,6 +6,7 @@ import PageNotFound from "../pages/404";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../pages/main/dashboard";
+import Settings from "../pages/main/settings";
 import AddStaff from "../pages/main/staff/addStaff";
 import AddBill from "../pages/main/billing/addBill";
 import Staff from "../pages/main/staff/staffListing";
@@ -42,7 +43,7 @@ import { AuthContext } from "../context";
 import {
   DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE,
   VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION, SLOT_CONFIRMATION,
-  PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE
+  PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -88,6 +89,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id/${FACILITY_LOCATIONS_ROUTE}`} component={Locations} />
+          <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
         </Switch>
       </MainLayout>
 
