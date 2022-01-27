@@ -14,7 +14,7 @@ import {
   CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER,
   STATE_LICENSE, PRESCRIPTIVE_AUTH_NUMBER, EMPLOYER_NAME, USUAL_INDUSTRY, PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID,
   MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE,
-  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE, TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, FACILITY_ID,
+  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE, TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
@@ -248,7 +248,6 @@ export const doctorSchema = yup.object({
   ...billingAddressSchema,
 })
 
-
 export const facilityServicesSchema = {
   ...facilityIdSchema,
   duration: yup.string().required(RequiredMessage(DURATION)),
@@ -355,11 +354,7 @@ export const patientsSchema = yup.object({
   ...emergencyPatientSchema
 })
 
-export const facilityTimeZoneSchema = {
-  facilityId: yup.string().required(RequiredMessage(FACILITY_ID)),
-  timeZone: yup.string().required(RequiredMessage(TIME_ZONE_TEXT)),
-};
-
 export const settingSchema = yup.object({
-  ...facilityTimeZoneSchema,
+  ...facilityIdSchema,
+  ...timeZoneSchema
 })

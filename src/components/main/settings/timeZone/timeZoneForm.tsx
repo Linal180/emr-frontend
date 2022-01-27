@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useContext, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, Grid, CircularProgress, FormControl, InputLabel, TextField, FormHelperText } from "@material-ui/core";
@@ -25,8 +25,7 @@ import { settingSchema } from '../../../../validationSchemas';
 
 const AddTimeZoneForm: FC = (): JSX.Element => {
   const { facilityList, fetchAllFacilityList } = useContext(ListContext)
-  const [facilityId, setFacilityId] = useState<string>('')
-  const [facility, setFacility] = useState<FacilityPayload['facility']>()
+  const [, setFacility] = useState<FacilityPayload['facility']>()
 
   const methods = useForm<CustomUpdateFacilityTimeZoneInputProps>({
     mode: "all",
@@ -54,32 +53,28 @@ const AddTimeZoneForm: FC = (): JSX.Element => {
   });
 
   const onSubmit: SubmitHandler<CustomUpdateFacilityTimeZoneInputProps> = async (inputs) => {
-    const { timeZone,
-    } = inputs
+    const { timeZone, facilityId } = inputs
 
-    const { name } = timeZone
+    const { name } = timeZone || {}
+    const { id } = facilityId || {}
+
     await updateFacilityTimeZone({
       variables: {
         updateFacilityTimeZoneInput: {
-          id: facilityId,
+          id,
           timeZone: name
         },
       }
     })
   }
 
-  useEffect(() => {
-    if (facilityId) {
-      const selectedFacility = facilityList?.find(facility => facility?.id === facilityId)
-      selectedFacility && setFacility(selectedFacility)
-      const { timeZone } = selectedFacility || {};
-      timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
-      console.log("facilityId", facilityId);
-      console.log("selectedFacility", selectedFacility);
+  const handleChange = (_: ChangeEvent<unknown>, value: string) => {
+    const selectedFacility = facilityList?.find(facility => facility?.id === value)
 
-    }
-  }, [facilityId])
-
+    selectedFacility && setFacility(selectedFacility)
+    const { timeZone } = selectedFacility || {};
+    timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
+  };
 
   const options = renderFacilities(facilityList);
 
@@ -91,7 +86,6 @@ const AddTimeZoneForm: FC = (): JSX.Element => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {JSON.stringify(errors)}
         <Grid container spacing={3}>
           <Grid md={12} item>
             <CardComponent cardTitle={SET_TIME_ZONE}>
@@ -124,7 +118,10 @@ const AddTimeZoneForm: FC = (): JSX.Element => {
                                 <FormHelperText>{facilityIdError?.message}</FormHelperText>
                               </FormControl>
                             )}
-                            onChange={(_, data) => field.onChange(data)}
+                            onChange={(_, data) => {
+                              field.onChange(data)
+                              handleChange(_, data.id)
+                            }}
                           />
                         );
                       }}
@@ -150,7 +147,6 @@ const AddTimeZoneForm: FC = (): JSX.Element => {
                         </Button>
                       </Box>
                     </Grid>
-
                   </Grid>
                 </Grid>
               </Box>
