@@ -8,17 +8,21 @@ import Alert from "../../../common/Alert";
 import StaffController from '../controller';
 import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
+import PhoneField from '../../../common/PhoneInput';
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
-import { renderFacilities } from '../../../../utils';
+import { getTimestamps, renderFacilities } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { addStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps } from "../../../../interfacesTypes";
 import { Gender, useCreateStaffMutation, UserRole } from "../../../../generated/graphql";
-import { DOB, EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED, CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION, PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_ROLES, MAPPED_GENDER, ROLE } from "../../../../constants";
-import PhoneField from '../../../common/PhoneInput';
+import {
+  DOB, EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PASSWORD_LABEL, PHONE, STAFF_CREATED,
+  CREATE_STAFF, STAFF_ROUTE, FORBIDDEN_EXCEPTION, FACILITY, ACCOUNT_INFO, IDENTIFICATION,
+  PROVIDER, GENDER, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_ROLES, MAPPED_GENDER, ROLE
+} from "../../../../constants";
 
 const AddStaffForm: FC = () => {
   const { user } = useContext(AuthContext)
@@ -62,7 +66,7 @@ const AddStaffForm: FC = () => {
       await createStaff({
         variables: {
           createStaffInput: {
-            firstName, lastName, email, password, phone, mobile, roleType: role as UserRole, dob, gender: staffGender as Gender, facilityId: facilityID, adminId: id, username
+            firstName, lastName, email, password, phone, mobile, roleType: role as UserRole, dob: getTimestamps(dob || ''), gender: staffGender as Gender, facilityId: facilityID, adminId: id, username
           }
         }
       })
