@@ -44,6 +44,7 @@ import {
   VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION, SLOT_CONFIRMATION,
   PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE
 } from "../constants";
+import DetailDoctor from "../pages/main/doctors/detailDoctor";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -72,6 +73,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details`} component={PatientDetails} />
+          <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
           <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
           <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />

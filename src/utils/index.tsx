@@ -121,6 +121,10 @@ export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
 };
 
+export const getFormattedDate = (date: string) => {
+  return moment(date, "x").format("ddd MMM. DD, YYYY")
+};
+
 export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }

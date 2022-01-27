@@ -1,0 +1,44 @@
+mutation CreateSchedule($createScheduleInput: CreateScheduleInput!){
+  createSchedule(createScheduleInput: $createScheduleInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateSchedule($updateScheduleInput: UpdateScheduleInput!){
+  updateSchedule(updateScheduleInput: $updateScheduleInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query GetSchedule($getSchedule: GetSchedule!){
+  getSchedule(getSchedule: $getSchedule){
+    response {
+      error
+      status
+      message
+    }
+    
+    schedule {
+      id
+      startAt
+      endAt
+      recurringEndDate
+      createdAt
+      updatedAt
+      
+      doctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}

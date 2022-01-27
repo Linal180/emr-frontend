@@ -21,6 +21,7 @@ type Key = string | number | undefined;
 export interface CloseSnackbarProps {
   id: Key;
 }
+
 export interface BackdropInputType {
   loading: boolean
 }
@@ -354,7 +355,8 @@ export type ParamsType = {
   id: string
 }
 
-export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
+export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender">
+  & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
 export interface AddStaffInputControlProps extends IControlLabel {
   control: Control<ExtendedStaffInputProps, object>;
@@ -399,89 +401,30 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
 
 export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode"> & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
 
-type ContactInputTypes =
-  | "name"
-  | "fax"
-  | "city"
-  | "state"
-  | "email"
-  | "pager"
-  | "phone"
-  | "mobile"
-  | "userId"
-  | "address"
-  | "zipCode"
-  | "country"
-  | "address2"
-  | "facilityId"
+type ContactInputTypes = | "name" | "fax" | "city" | "state" | "email" | "pager" | "phone"
+  | "mobile" | "userId" | "address" | "zipCode" | "country" | "address2" | "facilityId"
 
-type BillingInputTypes =
-  | "billingFax"
-  | "billingCity"
-  | "billingState"
-  | "billingEmail"
-  | "billingPager"
-  | "billingPhone"
-  | "billingUserId"
-  | "billingMobile"
-  | "billingAddress"
-  | "billingZipCode"
-  | "billingCountry"
-  | "billingAddress2"
-  | "billingFacilityId"
+type BillingInputTypes = | "billingFax" | "billingCity" | "billingState" | "billingEmail" | "billingPager"
+  | "billingPhone" | "billingUserId" | "billingMobile" | "billingAddress" | "billingZipCode" | "billingCountry"
+  | "billingAddress2" | "billingFacilityId"
 
-type DoctorControlTypes =
-  | "dob"
-  | "ssn"
-  | "email"
-  | "prefix"
-  | "suffix"
-  | "adminId"
-  | "ssnType"
-  | "lastName"
-  | "password"
-  | "roleType"
-  | "firstName"
-  | "speciality"
-  | "facilityId"
-  | "middleName"
-  | "providerIntials"
-  | "degreeCredentials"
-  | "languagesSpoken"
-  | "deaNumber"
-  | "deaActiveDate"
-  | "deaTermDate"
-  | "taxId"
-  | "upin"
-  | "npi"
-  | "taxonomyCode"
-  | "emcProviderId"
-  | "medicareGrpNumber"
-  | "medicaidGrpNumber"
-  | "meammographyCertNumber"
-  | "campusGrpNumber"
-  | "blueShildNumber"
-  | "taxIdStuff"
-  | "specialityLicense"
-  | "anesthesiaLicense"
-  | "dpsCtpNumber"
-  | "stateLicense"
-  | "licenseActiveDate"
-  | "licenseTermDate"
+type DoctorControlTypes = | "dob" | "ssn" | "email" | "prefix" | "suffix" | "adminId" | "ssnType" | "lastName"
+  | "password" | "roleType" | "firstName" | "speciality" | "facilityId" | "middleName" | "providerIntials"
+  | "degreeCredentials" | "languagesSpoken" | "deaNumber" | "deaActiveDate" | "deaTermDate" | "taxId"
+  | "upin" | "npi" | "taxonomyCode" | "emcProviderId" | "medicareGrpNumber" | "medicaidGrpNumber"
+  | "meammographyCertNumber" | "campusGrpNumber" | "blueShildNumber" | "taxIdStuff" | "specialityLicense"
+  | "anesthesiaLicense" | "dpsCtpNumber" | "stateLicense" | "licenseActiveDate" | "licenseTermDate"
   | "prescriptiveAuthNumber"
 
 export interface DoctorInputControlProps extends IControlLabel {
   controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes
 }
 
-export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType">
+  & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption }
+  & { ssnType: SelectorOption } & { speciality: SelectorOption };
 
-type CreateServiceInputTypes =
-  | "duration"
-  | "facilityId"
-  | "isActive"
-  | "name"
-  | "price"
+type CreateServiceInputTypes = | "duration" | "facilityId" | "isActive" | "name" | "price"
 
 export interface ServiceInputControlsProps extends IControlLabel {
   controllerName: CreateServiceInputTypes
@@ -508,15 +451,17 @@ export interface StepperComponentProps {
   activeStep: number
 }
 
-type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed" | "prefferedName" | "previousFirstName"
-  | "previouslastName" | "motherMaidenName" | "ssn" | "dob" | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
-  | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent" | "medicationHistoryAuthority" | "note" | "language"
-  | "ethnicity" | "sexualOrientation" | "sexAtBirth" | "pronouns" | "homeBound" | "holdStatement" | "statementDelivereOnline"
-  | "statementNote" | "statementNoteDateFrom" | "statementNoteDateTo" | "adminId" | "gender" | "race" | "genderIdentity" | "maritialStatus"
-  | "facilityId" | "usualProviderId"
+type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed"
+  | "prefferedName" | "previousFirstName" | "previouslastName" | "motherMaidenName" | "ssn" | "dob"
+  | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
+  | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent"
+  | "medicationHistoryAuthority" | "note" | "language" | "ethnicity" | "sexualOrientation"
+  | "sexAtBirth" | "pronouns" | "homeBound" | "holdStatement" | "statementDelivereOnline"
+  | "statementNote" | "statementNoteDateFrom" | "statementNoteDateTo" | "adminId" | "gender"
+  | "race" | "genderIdentity" | "maritialStatus" | "facilityId" | "usualProviderId"
 
-type BasicContactControlTypes = | "basicEmail" | "basicPhone" | "basicMobile" | "basicAddress" | "basicAddress2" | "basicZipCode" | "basicCity"
-  | "basicState" | "basicCountry"
+type BasicContactControlTypes = | "basicEmail" | "basicPhone" | "basicMobile" | "basicAddress"
+  | "basicAddress2" | "basicZipCode" | "basicCity" | "basicState" | "basicCountry"
 
 interface BasicContactControlInputs {
   basicEmail: string;
@@ -548,7 +493,8 @@ interface KinContactControlInputs {
   kinMobile: string;
 }
 
-type GuardianContactControlTypes = | "guardianFirstName" | "guardianMiddleName" | "guardianLastName" | "guardianEmail" | "guardianSuffix"
+type GuardianContactControlTypes = | "guardianFirstName" | "guardianMiddleName" | "guardianLastName"
+  | "guardianEmail" | "guardianSuffix"
 
 interface GuardianContactControlInputs {
   guardianFirstName: string;
@@ -557,9 +503,11 @@ interface GuardianContactControlInputs {
   guardianSuffix: string;
 }
 
-type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName" | "guarantorLastName" | "guarantorEmail" | "guarantorRelationship"
-  | "guarantorDob" | "guarantorPhone" | "guarantorSuffix" | "guarantorSsn" | "guarantorAddress" | "guarantorAddress2" | "guarantorZipCode"
-  | "guarantorCity" | "guarantorState" | "guarantorCountry" | "guarantorEmployerName"
+type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName"
+  | "guarantorLastName" | "guarantorEmail" | "guarantorRelationship" | "guarantorDob"
+  | "guarantorPhone" | "guarantorSuffix" | "guarantorSsn" | "guarantorAddress"
+  | "guarantorAddress2" | "guarantorZipCode" | "guarantorCity" | "guarantorState"
+  | "guarantorCountry" | "guarantorEmployerName"
 
 interface GuarantorContactControlInputs {
   guarantorFirstName: string;
@@ -580,7 +528,8 @@ interface GuarantorContactControlInputs {
   guarantorEmployerName: string;
 }
 
-type EmployerControlTypes = | "employerName" | "employerEmail" | "employerPhone" | "employerIndustry" | "employerUsualOccupation"
+type EmployerControlTypes = | "employerName" | "employerEmail" | "employerPhone"
+  | "employerIndustry" | "employerUsualOccupation"
 
 interface EmployerControlInputs {
   employerName: string;
@@ -590,7 +539,8 @@ interface EmployerControlInputs {
   employerUsualOccupation: string;
 }
 
-type RegisterUserControlTypes = | "userFirstName" | "userLastName" | "userPassword" | "userEmail" | "userPhone" | "userZipCode"
+type RegisterUserControlTypes = | "userFirstName" | "userLastName" | "userPassword" | "userEmail"
+  | "userPhone" | "userZipCode"
 
 interface RegisterUserInputs {
   userFirstName: string
@@ -602,7 +552,9 @@ interface RegisterUserInputs {
 }
 
 export interface PatientInputControlProps extends IControlLabel {
-  controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes | GuardianContactControlTypes | EmergencyContactControlTypes
+  controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes
+  | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes
+  | GuardianContactControlTypes | EmergencyContactControlTypes
 }
 
 export type PatientInputProps =
@@ -635,11 +587,13 @@ export interface ServiceModalProps extends DialogTypes {
   serviceId?: string;
   reload: () => void;
 }
+
 export interface ContactInputControlProps extends IControlLabel {
   controllerName: ContactInputTypes
 }
 
-export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode">
+  & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
 
 export interface LocationTableProps {
   openModal: boolean;

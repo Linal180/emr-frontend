@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, useEffect, ChangeEvent } from "react";
+import { FC, useEffect, ChangeEvent, Reducer, useReducer } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
@@ -12,7 +12,12 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload } from "../../../../generated/graphql";
+import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
+import {
+  useFindAllDoctorLazyQuery, useRemoveDoctorMutation,
+  DoctorPayload,
+  AllDoctorPayload
+} from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
   CANT_DELETE_DOCTOR, DOCTOR, NAME
@@ -20,12 +25,8 @@ import {
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [page, setPage] = useState<number>(1);
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [deleteDoctorId, setDeleteDoctorId] = useState<string>("");
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [doctors, setDoctors] = useState<AllDoctorPayload['doctors']>([]);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
 
   const [findAllDoctor, { loading, error }] = useFindAllDoctorLazyQuery({
     variables: {
@@ -41,7 +42,7 @@ const DoctorsTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      setDoctors([]);
+      dispatch({ type: ActionType.SET_DOCTORS, doctors: [] })
     },
 
     onCompleted(data) {
@@ -53,19 +54,19 @@ const DoctorsTable: FC = (): JSX.Element => {
         if (!searchQuery) {
           if (pagination) {
             const { totalPages } = pagination
-            totalPages && setTotalPages(totalPages)
+            totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }
 
-          doctors && setDoctors(doctors as AllDoctorPayload['doctors'])
+          doctors && dispatch({ type: ActionType.SET_DOCTORS, doctors: doctors as AllDoctorPayload['doctors'] })
         }
       }
     }
-  });
+  }); 
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
       Alert.error(CANT_DELETE_DOCTOR)
-      setOpenDelete(false)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
     onCompleted(data) {
@@ -75,8 +76,8 @@ const DoctorsTable: FC = (): JSX.Element => {
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          setOpenDelete(false)
           findAllDoctor()
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
     }
@@ -88,12 +89,14 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   }, [page, findAllDoctor, searchQuery]);
 
-  const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
+  const handleChange = (event: ChangeEvent<unknown>, value: number) => dispatch({
+    type: ActionType.SET_PAGE, page: value
+  });
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setDeleteDoctorId(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_DELETE_DOCTOR_ID, deleteDoctorId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
@@ -116,7 +119,8 @@ const DoctorsTable: FC = (): JSX.Element => {
           name="searchQuery"
           className={classes.tablesSearchIcon}
           value={searchQuery}
-          onChange={({ target: { value } }) => setSearchQuery(value)}
+          onChange={({ target: { value } }) => dispatch(
+            { type: ActionType.SET_SEARCH_QUERY, searchQuery: value })}
           onKeyPress={({ key }) => key === "Enter"}
           placeholder="Search"
           variant="outlined"
@@ -137,8 +141,8 @@ const DoctorsTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(SPECIALTY)}
               {renderTh(FACILITY)}
+              {renderTh(SPECIALTY)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -159,7 +163,11 @@ const DoctorsTable: FC = (): JSX.Element => {
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">{firstName} {lastName}</TableCell>
+                    <TableCell scope="row">
+                      <Link to={`${DOCTORS_ROUTE}/${id}/details`}>
+                        {`${firstName} ${lastName}`}
+                      </Link>
+                    </TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{languagesSpoken}</TableCell>
@@ -206,9 +214,9 @@ const DoctorsTable: FC = (): JSX.Element => {
           title={DOCTOR}
           isOpen={openDelete}
           isLoading={deleteDoctorLoading}
-          description={DELETE_DOCTOR_DESCRIPTION}
           handleDelete={handleDeleteDoctor}
-          setOpen={(open: boolean) => setOpenDelete(open)}
+          description={DELETE_DOCTOR_DESCRIPTION}
+          setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
         />
       </Box>
     </Box>

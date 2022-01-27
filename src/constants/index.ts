@@ -25,6 +25,7 @@ export const CREATE_LOCATION = "Create location";
 export const UPDATE_LOCATION_TEXT = "Update location";
 export const ADD_STAFF = "Add Staff";
 export const CREATE_DOCTOR = "Create Doctor";
+export const CREATE_APPOINTMENT = "Create Appointment";
 export const ADD_DOCTOR = "Add Doctor";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
@@ -391,7 +392,6 @@ export const RELATIONSHIP_MANAGER = "RELATIONSHIP_MANAGER";
 // routes paths
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
-export const REQUESTS = "/requests";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
@@ -820,5 +820,20 @@ export const PROFILE_TOP_TABS = [
   {
     title: 'Communicator',
     value: "7"
+  },
+]
+
+export const DOCTOR_TOP_TABS = [
+  {
+    title: 'Doctor Profile',
+    value: "1"
+  },
+  {
+    title: 'Doctors Schedule',
+    value: "2"
+  },
+  {
+    title: 'Doctors Appointments',
+    value: "3"
   },
 ]

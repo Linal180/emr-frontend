@@ -4,20 +4,23 @@ import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
-import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
+import ServiceModal from "../serviceModal";
 import Alert from "../../../../common/Alert";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
 import TableLoader from "../../../../common/TableLoader";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload, ServicesPayload } from "../../../../../generated/graphql";
 import { renderTh } from "../../../../../utils";
 import { useTableStyles } from "../../../../../styles/tableStyles";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
-import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../../constants";
-import { ServiceTableProps, ParamsType } from "../../../../../interfacesTypes";
-import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../../reducers/serviceReducer';
-import ServiceModal from "../serviceModal";
 import { BLUE_FIVE, BLUE_FOUR, RED, RED_ONE } from "../../../../../theme";
+import { ServiceTableProps, ParamsType } from "../../../../../interfacesTypes";
+import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
+import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../../reducers/serviceReducer';
+import {
+  ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION,
+  ACTIVE, INACTIVE
+} from "../../../../../constants";
 
 const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openModal }): JSX.Element => {
   const classes = useTableStyles()

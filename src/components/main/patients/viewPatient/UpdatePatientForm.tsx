@@ -105,6 +105,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
           firstName && setValue("firstName", firstName)
           middleName && setValue("middleName", middleName)
           patientNote && setValue("patientNote", patientNote)
+          deceasedDate && setValue("deceasedDate", deceasedDate)
           firstNameUsed && setValue("firstNameUsed", firstNameUsed)
           privacyNotice && setValue("privacyNotice", privacyNotice)
           callToConsent && setValue("callToConsent", callToConsent)
@@ -113,15 +114,13 @@ const UpdatePatientForm: FC = (): JSX.Element => {
           statementNote && setValue("statementNote", statementNote)
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
-          previousFirstName && setValue("previousFirstName", previousFirstName)
-          statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
-          medicationHistoryAuthority && setValue("medicationHistoryAuthority", medicationHistoryAuthority)
-          console.log("GET", deceasedDate)
-          deceasedDate && setValue("deceasedDate", deceasedDate)
           registrationDate && setValue("registrationDate", registrationDate)
+          previousFirstName && setValue("previousFirstName", previousFirstName)
           releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
+          statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
+          medicationHistoryAuthority && setValue("medicationHistoryAuthority", medicationHistoryAuthority)
 
           race && setValue("race", setRecord(race || '', race || ''))
           gender && setValue("gender", setRecord(gender || '', gender || ''))
@@ -191,14 +190,13 @@ const UpdatePatientForm: FC = (): JSX.Element => {
               email && setValue("guarantorEmail", email)
               suffix && setValue("guarantorSuffix", suffix)
               zipCode && setValue("guarantorZipCode", zipCode)
+              country && setValue("guarantorCountry", country)
               address && setValue("guarantorAddress", address)
               address2 && setValue("guarantorAddress2", address2)
-              country && setValue("guarantorCountry", country)
               lastName && setValue("guarantorFirstName", lastName)
               firstName && setValue("guarantorLastName", firstName)
               middleName && setValue("guarantorMiddleName", middleName)
               employerName && setValue("guarantorEmployerName", employerName)
-
             }
 
             const guardianContact = contacts.filter(contact => contact.contactType === ContactType.Guardian)[0]
@@ -211,12 +209,11 @@ const UpdatePatientForm: FC = (): JSX.Element => {
               lastName && setValue("guardianLastName", lastName)
               firstName && setValue("guardianFirstName", firstName)
               middleName && setValue("guardianMiddleName", middleName)
-
             }
           }
 
           if (employer) {
-            const { id, name, email, phone, industry, usualOccupation } = employer[0];
+            const { id, name, email, phone, industry, usualOccupation } = employer[0] || {};
 
             setEmployerId(id)
             name && setValue('employerName', name)
@@ -252,7 +249,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
       }
     }
   });
-
 
   const updateSelection = (event: MouseEvent<HTMLElement>,
     value: string,) => {
@@ -304,7 +300,7 @@ const UpdatePatientForm: FC = (): JSX.Element => {
     const { id: selectedGuarantorRelationship } = guarantorRelationship
     const { id: selectedEmergencyRelationship } = emergencyRelationship
     const { id: selectedKinRelationship } = kinRelationship
-    console.log("SET", deceasedDate)
+
     if (user) {
       const { id: userId } = user
 
