@@ -1,11 +1,10 @@
 // packages block
-import { FC, useState, useContext, ChangeEvent, MouseEvent } from 'react';
+import { FC, useState, useContext, ChangeEvent } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, InputLabel, FormControlLabel, FormLabel, FormGroup, Checkbox,
+  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox,
 } from "@material-ui/core";
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 // components block
 import Alert from "../../../common/Alert";
 import PatientController from "../controllers";
@@ -13,6 +12,7 @@ import Selector from '../../../common/Selector';
 import PhoneField from '../../../common/PhoneInput';
 import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
+import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
@@ -20,7 +20,7 @@ import { ListContext } from '../../../../context/listContext';
 import { patientsSchema } from '../../../../validationSchemas';
 import { PatientInputProps } from '../../../../interfacesTypes';
 import { getTimestamps, renderDoctors, renderFacilities } from '../../../../utils';
-import { toggleButtonComponent } from "../../../../styles/publicAppointment/patientInformation";
+
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
   Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useCreatePatientMutation,
@@ -32,7 +32,7 @@ import {
   MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, REGISTRATION_DATE, NOTICE_ON_FILE, CONSENT_TO_CALL,
   MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE,
   EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, PATIENTS_ROUTE,
-  LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS, MAPPED_HOMEBOUND,
+  LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS,
   MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
   SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY, SEX_AT_BIRTH,
@@ -50,10 +50,9 @@ const AddPatientForm: FC = (): JSX.Element => {
     four: false,
     five: false
   })
-  const [selection, setSelection] = useState<string>("NO");
+
   const methods = useForm<PatientInputProps>({ mode: "all", resolver: yupResolver(patientsSchema) });
   const { reset, handleSubmit, control, formState: { errors } } = methods;
-  const classes = toggleButtonComponent()
 
   const [createPatient, { loading }] = useCreatePatientMutation({
     onError({ message }) {
@@ -77,11 +76,6 @@ const AddPatientForm: FC = (): JSX.Element => {
       }
     }
   });
-
-  const updateSelection = (event: MouseEvent<HTMLElement>,
-    value: string,) => {
-    setSelection(value);
-  };
 
   const handleChangeForCheckBox = (name: string) => (
     event: ChangeEvent<HTMLInputElement>
@@ -690,26 +684,7 @@ const AddPatientForm: FC = (): JSX.Element => {
                   <Controller
                     name="homeBound"
                     control={control}
-                    render={() => {
-                      return (
-                        <FormControl fullWidth margin='normal' className={classes.toggleContainer}>
-                          <InputLabel id="home-bound-toggle" shrink>{HOMEBOUND}</InputLabel>
-                          <ToggleButtonGroup
-                            value={selection}
-                            onChange={updateSelection}
-                            color="priamry"
-                            exclusive
-                          >
-                            {MAPPED_HOMEBOUND.map(homeBound => (
-                              <ToggleButton
-                                key={homeBound.id}
-                                value={homeBound.name}
-                              >{homeBound.name}</ToggleButton>
-                            ))}
-                          </ToggleButtonGroup>
-                        </FormControl>
-                      )
-                    }}
+                    render={() => <ToggleButtonComponent label={HOMEBOUND} name="home-bound-toggle" />}
                   />
                 </Grid>
               </CardComponent>

@@ -114,7 +114,7 @@ export const getPracticeType = (type: PracticeType): string => {
 };
 
 export const getTimestamps = (date: string): string => {
-  return date ? moment(date).format().toString() : ""
+  return date ? moment(date).format().toString() : moment().format().toString()
 };
 
 export const getDate = (date: string) => {
@@ -170,4 +170,14 @@ export const setRecord = (id: string, name: string): SelectorOption => {
 
 export const formatPhone = (phone: string): string => {
   return (phone && phone) ? `(${phone.substring(0,3)})  ${phone.substring(3,6 )}-${phone.substring(6,11)}` : ''
+};
+
+export const dateValidation = (endDate: string, startDate: string): boolean => {
+  if(startDate && endDate){
+    return new Date(endDate) >= new Date(startDate)
+  } else return true;
+};
+
+export const dateValidationMessage = (endDateName: string, startDateName: string): string => {
+  return `${endDateName} should be greater than ${startDateName}`
 };

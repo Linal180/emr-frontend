@@ -2,9 +2,9 @@
 import { ChangeEvent, useState } from "react";
 import { Box, FormControl, InputLabel } from "@material-ui/core";
 // theme, interface/type and theme block
-import { RenderInputFieldProps } from "../../../../../../interfacesTypes";
-import { AntSwitch, toggleButtonComponent } from "../../../../../../styles/publicAppointment/patientInformation";
-import { GRAY_TWO, WHITE } from "../../../../../../theme";
+import { RenderInputFieldProps } from "../../interfacesTypes";
+import { AntSwitch, toggleButtonComponent } from "../../styles/publicAppointment/patientInformation";
+import { GRAY_TWO, WHITE } from "../../theme";
 
 const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
   const classes = toggleButtonComponent()
@@ -27,9 +27,6 @@ const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
         <AntSwitch checked={isChecked} onChange={handleChange} name={`${name}-toggle`} />
         <Box color={isChecked ? GRAY_TWO : WHITE}>No</Box>
       </label>
-
-      <Box display="flex" alignItems="center" gridGap={8}>
-      </Box>
     </FormControl>
   );
 };

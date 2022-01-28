@@ -8,7 +8,7 @@ import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, UpdateFacilityTimeZoneInput
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -675,4 +675,68 @@ export interface PhoneInputProps {
   error?: string
   isRequired?: boolean
   name: PhoneInputTypes
+}
+
+export interface DropzoneImageType {
+  imageModuleType: AttachmentType;
+  isEdit?: boolean;
+  attachmentId: string;
+  itemId: string;
+  isDisabled?: boolean;
+  attachment?: Attachment;
+  handleClose: Function;
+  setAttachments: Function;
+  setActiveStep?: Function
+  reset: Function;
+  hasHighlight?: boolean
+}
+
+interface Message {
+  message: string;
+}
+
+export interface MediaPatientDataType extends Message {
+  patient: Patient;
+}
+
+export interface ICreateMediaInput {
+  title?: string;
+  subTitle?: string;
+  description?: string;
+}
+
+export interface MediaModalTypes extends DialogTypes {
+  imageModuleType: AttachmentType;
+  itemId: string;
+  setEdit: Function
+  setAttachments: Function;
+  attachment?: Attachment;
+  attachments?: Attachment[]
+}
+
+export interface MediaCardsType {
+  itemId: string;
+  moduleType: AttachmentType;
+  hasCollage?: boolean;
+  attachmentsData?: Maybe<Attachment[]> | undefined
+  hasHighlights?: boolean
+}
+
+export interface IMediaControl extends IFieldTypes {
+  fieldName: MediaControlTypes;
+  isDisabled?: boolean;
+  control: Control<ICreateMediaInput, object>;
+}
+
+export interface MediaCardComponentType {
+  title: string;
+  setOpen: Function;
+  isOpen: boolean;
+  imageModuleType?: string;
+  setAttachment?: Function;
+  setAttachments: Function;
+  setEdit: Function;
+  isEdit: boolean;
+  attachments?: Attachment[];
+  allAttachments: Attachment[];
 }

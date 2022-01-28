@@ -3,7 +3,7 @@ import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from "@material-
 import { Controller, useForm } from "react-hook-form";
 // components block
 import CardComponent from "../../../../../../../../components/common/CardComponent";
-import ToggleButtonComponent from "../../../components/ToggleButtonComponent";
+import ToggleButtonComponent from "../../../../../../../../components/common/ToggleButtonComponent";
 
 const YourContactInfo = () => {
   const { control } = useForm({});

@@ -12,7 +12,10 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
-import { AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload } from "../../../../generated/graphql";
+import {
+  AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation,
+  DoctorPayload
+} from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
   CANT_DELETE_DOCTOR, DOCTOR, NAME
@@ -152,7 +155,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               doctors?.map((doctor: DoctorPayload['doctor']) => {
-                const { id, firstName, lastName, speciality: specialty, contacts, facility, languagesSpoken } = doctor || {};
+                const { id, firstName, lastName, speciality: specialty, contacts, facility } = doctor || {};
                 const doctorContact = contacts && contacts[0];
                 const { email, phone } = doctorContact || {};
                 const { name } = facility || {};
@@ -162,7 +165,6 @@ const DoctorsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{languagesSpoken}</TableCell>
                     <TableCell scope="row">{upperToNormal(specialty as string)}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">

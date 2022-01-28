@@ -1,4 +1,4 @@
-import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, GRAY_TWO, BLUE_SIX } from './../../../theme/colors';
+import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, BLUE_SIX } from './../../../theme/colors';
 import { createStyles, makeStyles, StepConnector, Switch, withStyles } from "@material-ui/core";
 
 export const CustomConnector = withStyles({
@@ -69,20 +69,8 @@ export const useColorLibStepIconStyles = makeStyles({
 });
 
 export const usePatientInformation = makeStyles({
-  customGrid: {
-    display: "flex",
-  },
-
   stepperGrid: {
     minWidth: 320,
-  },
-
-  mainGrid: {
-    flex: 1,
-
-    '@media (max-width:960px)': {
-      flex: "auto",
-    },
   },
 
   mainGridContainer: {
@@ -123,12 +111,6 @@ export const usePatientInformation = makeStyles({
       fontWeight: 500,
     },
   },
-
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: 20,
-  }
 });
 
 export const toggleButtonComponent = makeStyles({
@@ -182,7 +164,8 @@ export const toggleButtonComponent = makeStyles({
 export const verificationFormStyles = makeStyles({
   verticalContainer: {
     "& .MuiCard-root": {
-      height: "calc(100vh - 130px)"
+      height: "calc(100vh - 130px)",
+      overflowY: "auto",
     },
   }
 })
@@ -208,10 +191,12 @@ export const AntSwitch = withStyles(() =>
       backgroundColor: WHITE_FIVE,
       boxShadow: 'none',
       transform: 'translateX(93%)',
+      transition: 'all .3s ease-in',
     },
 
     switchBase: {
       padding: 4,
+      transform: 'none !important',
 
       '&$checked': {
         '& + $track': {
@@ -222,7 +207,7 @@ export const AntSwitch = withStyles(() =>
 
         "& .MuiSwitch-thumb": {
           backgroundColor: BLUE_SIX,
-          transform: 'translateX(-27%)',
+          transform: 'translateX(0)',
         }
       },
     },

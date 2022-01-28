@@ -2,20 +2,18 @@
 import * as yup from "yup";
 import moment from "moment";
 // utils and constants block
-import { requiredMessage } from "../utils";
+import { dateValidation, requiredMessage } from "../utils";
 import {
   ADDRESS, ADDRESS_2, ALPHABETS_REGEX, CITY, CLIA_ID_NUMBER, CODE, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL,
-  FACILITY, FAX, FEDERAL_TAX_ID, FIRST_NAME, GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME,
-  MAMMOGRAPHY_CERTIFICATION_NUMBER, MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX,
+  FACILITY, FEDERAL_TAX_ID, FIRST_NAME, GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME,
+  MAMMOGRAPHY_CERTIFICATION_NUMBER, MaxLength, MinLength, MOBILE_NUMBER, NAME, NUMBER_REGEX,
   PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER,
-  PRACTICE_TYPE, MIDDLE_NAME, DURATION, PRICE, REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE,
-  ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE,
-  DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
-  CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER,
-  STATE_LICENSE, PRESCRIPTIVE_AUTH_NUMBER, EMPLOYER_NAME, USUAL_INDUSTRY, PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID,
-  MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE,
-  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE,
-  TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT,
+  PRACTICE_TYPE, MIDDLE_NAME, DURATION, PRICE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE,
+  ValidMessage, ZIP_CODE, SUFFIX, SSN, LANGUAGE_SPOKEN, EMPLOYER_NAME, USUAL_INDUSTRY,
+  PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID, USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE,
+  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE,
+  TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP,
+  MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
@@ -115,36 +113,42 @@ const passwordAndRepeatPasswordSchema = {
 const deaDateSchema = {
   deaActiveDate: yup.string().test(value => {
     if (!value) return true
+
     return new Date(value || '') <= new Date()
   }),
 
-  deaTermDate: yup.string().test((value, ctx) => {
+  deaTermDate: yup.string().test((value, { parent: { deaActiveDate } }) => {
     if (!value) return true
-    return new Date(value || '') >= new Date() && new Date(value || '') >= new Date(ctx.parent.deaActiveDate)
+
+    return dateValidation(value, deaActiveDate)
   })
 }
 
 const licenseDateSchema = {
   licenseActiveDate: yup.string().test(value => {
     if (!value) return true
+
     return new Date(value || '') <= new Date()
   }),
 
-  licenseTermDate: yup.string().test((value, ctx) => {
+  licenseTermDate: yup.string().test((value, { parent: { licenseActiveDate } }) => {
     if (!value) return true
-    return new Date(value || '') >= new Date() && new Date(value || '') >= new Date(ctx.parent.licenseActiveDate)
+
+    return dateValidation(value, licenseActiveDate)
   })
 }
 
 const patientRegisterDateSchema = {
   registrationDate: yup.string().test(value => {
     if (!value) return true
+
     return new Date(value || '') <= new Date()
   }),
 
-  deceasedDate: yup.string().test((value, ctx) => {
+  deceasedDate: yup.string().test((value, { parent: { registrationDate } }) => {
     if (!value) return true
-    return new Date(value || '') <= new Date() && new Date(value || '') >= new Date(ctx.parent.registrationDate)
+
+    return dateValidation(value, registrationDate)
   })
 }
 
@@ -152,7 +156,8 @@ const patientStatementDateSchema = {
   statementNoteDateFrom: yup.string().test(value => new Date(value || '') <= new Date()),
   statementNoteDateTo: yup.string().test((value, ctx) => {
     if (!value) return true
-    return new Date(value || '') > new Date(ctx.parent.statementNoteDateFrom)
+
+    return new Date(value || '') >= new Date(ctx.parent.statementNoteDateFrom)
   })
 }
 
@@ -160,6 +165,7 @@ const firstLastNameSchema = {
   lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
     .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26))
     .required(requiredMessage(LAST_NAME)),
+
   firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
     .min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26))
     .required(requiredMessage(FIRST_NAME)),

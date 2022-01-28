@@ -7,13 +7,11 @@ import DateFnsUtils from '@date-io/date-fns';
 // interfaces constants and utils block
 import { requiredLabel } from '../../utils';
 import { DatePickerProps } from "../../interfacesTypes";
-import { ContactSupportOutlined } from '@material-ui/icons';
 
 const DatePicker: FC<DatePickerProps> = ({ name, label, error, isRequired }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control } = useFormContext()
   
-  console.log("Name:", name, "======", error)
   return (
     <Controller
       name={name}

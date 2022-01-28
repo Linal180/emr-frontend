@@ -33,9 +33,4 @@ export const appointmentSuccessStyles = makeStyles((theme) => ({
       color: GRAY_TWO,
     }
   },
-
-  buttonContainer: {
-    display: "flex",
-    gap: 24,
-  }
 }));

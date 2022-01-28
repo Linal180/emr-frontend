@@ -16,7 +16,7 @@ import history from '../../../../history';
 import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getDate, getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
+import { dateValidationMessage, getDate, getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
 import {
   DoctorPayload, Speciality, SsnType, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole,
   useUpdateDoctorMutation
@@ -370,7 +370,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   return (
     <FormProvider {...methods}>
-      {JSON.stringify(errors)}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
@@ -385,8 +384,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
-                          error={facilityError?.message && requiredMessage(FACILITY)}
                           options={renderFacilities(facilityList)}
+                          error={facilityError?.message && requiredMessage(FACILITY)}
                         />
                       </Grid>
 
@@ -396,8 +395,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={SPECIALTY}
                           name="speciality"
-                          error={specialtyError?.message && requiredMessage(SPECIALTY)}
                           options={MAPPED_SPECIALTIES}
+                          error={specialtyError?.message && requiredMessage(SPECIALTY)}
                         />
                       </Grid>
                     </Grid>
@@ -409,8 +408,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={TYPE}
                           name="ssnType"
-                          error={ssnTypeError?.message && requiredMessage(TYPE)}
                           options={MAPPED_SSN_TYPES}
+                          error={ssnTypeError?.message && requiredMessage(TYPE)}
                         />
                       </Grid>
 
@@ -524,11 +523,15 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE} error={deaActiveDateError || ''} />
+                        <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE}
+                          error={deaActiveDateError || ''}
+                        />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="deaTermDate" label={DEA_TERM_DATE} error={deaTermDateError || ''} />
+                        <DatePicker name="deaTermDate" label={DEA_TERM_DATE}
+                          error={(deaTermDateError && dateValidationMessage(DEA_TERM_DATE, DEA_ACTIVE_DATE)) || ''}
+                        />
                       </Grid>
                     </Grid>
 
@@ -889,11 +892,15 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE} error={licenseActiveDateError || ''} />
+                        <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE}
+                          error={licenseActiveDateError || ''}
+                        />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE} error={licenseTermDateError || ''} />
+                        <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE}
+                          error={(licenseTermDateError && dateValidationMessage(LICENSE_TERM_DATE, LICENSE_ACTIVE_DATE)) || ''}
+                        />
                       </Grid>
                     </Grid>
 
