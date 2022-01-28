@@ -21,7 +21,8 @@ const PatientDetailsComponent = (): JSX.Element => {
   const [patientData, setPatientData] = useState<Patient | null>();
   const [deletedAttachment,] = useState<string>('');
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [attachments, setAttachments] = useState<AttachmentsPayload["attachments"]>();
+  const [attachmentUrl, setAttachmentUrl] = useState<string>('');
+  const [attachmentsData, setAttachmentsData] = useState<AttachmentsPayload["attachments"]>();
 
 
   const { location: { pathname } } = history
@@ -53,7 +54,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
         if (patient && !loading) {
           const { attachments } = patient
-          setAttachments(attachments)
+          setAttachmentsData(attachments)
           setPatientData(patient as Patient)
         }
       }
@@ -205,7 +206,8 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-  const { id, url } = (attachments && attachments[2]) || {}
+  attachmentsData && attachmentsData[0] && setAttachmentUrl(attachmentsData[0].url || '')
+  const attachmentId = attachmentsData && attachmentsData[0]?.id
 
   return (
     <Box>
@@ -218,11 +220,10 @@ const PatientDetailsComponent = (): JSX.Element => {
 
         <Box className={classes.profileDetailsContainer}>
           <Box className={classes.profileCard}>
-            <Box key={url} display="flex" alignItems="center">
-              <Box pl={1} onClick={() => handleAttachmentClick(id || "")} >
-                {JSON.stringify(url)}
+            <Box key={attachmentId} display="flex" alignItems="center">
+              <Box pl={1} onClick={() => handleAttachmentClick(attachmentId || "")} >
                 <Box pr={3.75}>
-                  {url ? <img src={url} alt='patient profile' /> : <Avatar variant="square" src="" className={classes.profileImage}></Avatar>}
+                  <Avatar variant="square" src={attachmentUrl || ''} className={classes.profileImage} />
                 </Box>
               </Box>
             </Box>
