@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { Box, Button, Card, Grid } from '@material-ui/core';
+import { Box, Button, Card } from '@material-ui/core';
 import { WHITE_TWO } from '../../../../../theme';
 import PatientInformationForm from './stepperForms/patientInformationForm';
 import DocumentVerificationForm from './stepperForms/documentVerificationForm';
@@ -36,38 +36,34 @@ const Index: FC = (): JSX.Element => {
 
   return (
     <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75}>
-      <Grid container spacing={3} className={classes.customGrid}>
-        <Grid item className={classes.stepperGrid}>
+      <Box display="flex" flexWrap="wrap" gridGap={20}>
+        <Box className={classes.stepperGrid}>
           <Card className={classes.stepperContainer}>
             <Stepper activeStep={activeStep} />
           </Card>
-        </Grid>
+        </Box>
 
-        <Grid item className={classes.mainGrid}>
-          <Box className={classes.mainGridContainer}>
-            {getPatientInformationStep(activeStep)}
-          </Box>
-        </Grid>
+        <Box flex={1}>
+          {getPatientInformationStep(activeStep)}
+        </Box>
+      </Box>
 
-        <Grid item md={12}>
-          <Box className={classes.buttonContainer}>
-            <Button variant="contained" disabled={activeStep === 0} onClick={handleBackStep}>
-              Back
-            </Button>
+      <Box display="flex" justifyContent="center" gridGap={20} mt={3}>
+        <Button variant="contained" disabled={activeStep === 0} onClick={handleBackStep}>
+          Back
+        </Button>
 
-            {activeStep < 2 ?
-              <Button variant="contained" className="blue-button" onClick={handleNextStep}>
-                Next
-              </Button>
-              :
-              <Link to={PATIENT_APPOINTMENT_SUCCESS}>
-                <Button variant="contained" className="blue-button">Finish</Button>
-              </Link>
-            }
-          </Box>
-        </Grid>
-      </Grid>
-    </Box >
+        {activeStep < 2 ?
+          <Button variant="contained" className="blue-button" onClick={handleNextStep}>
+            Next
+          </Button>
+          :
+          <Link to={PATIENT_APPOINTMENT_SUCCESS}>
+            <Button variant="contained" className="blue-button">Finish</Button>
+          </Link>
+        }
+      </Box>
+    </Box>
   );
 };
 

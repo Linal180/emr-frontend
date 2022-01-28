@@ -29,7 +29,7 @@ const index = () => {
             </ul>
           </Box>
 
-          <Box pt={15} className={classes.buttonContainer}>
+          <Box display="flex" gridGap={20} mt={3}>
             <Button type="submit" variant="contained">
               Cancel Booking
             </Button>

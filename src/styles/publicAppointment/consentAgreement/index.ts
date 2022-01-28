@@ -2,12 +2,6 @@ import { makeStyles } from "@material-ui/core";
 import { GRAY_TWO } from "../../../theme";
 
 export const consentAgreement = makeStyles({
-  container: {
-    "& .MuiCard-root": {
-      height: "calc(100vh - 130px)"
-    },
-  },
-
   agreementContainer: {
     "& h3": {
       fontSize: 26,
@@ -25,8 +19,8 @@ export const consentAgreement = makeStyles({
   },
 
   agreementPointsContainer: {
-    maxHeight: "68%",
-    overflow: "auto",
+    maxHeight: "calc(100vh - 344px)",
+    overflowY: "auto",
   },
 });
 
