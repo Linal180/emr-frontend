@@ -138,6 +138,7 @@ export interface PageHeaderProps {
   hasComponent?: boolean;
   linkToPage?: string;
   title: string;
+  subTitle?: string;
   buttonText?: string;
   noAdd?: boolean;
   path?: Path[];

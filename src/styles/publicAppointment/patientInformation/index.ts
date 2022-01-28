@@ -146,7 +146,20 @@ export const toggleButtonComponent = makeStyles({
 
     "& .MuiToggleButtonGroup-groupedHorizontal:not(:first-child)": {
       borderTopRightRadius: "6px",
-      borderBottomRightRadius: "6px"
+      borderBottomRightRadius: "6px",
+    },
+
+    "& .MuiToggleButtonGroup-groupedHorizontal:not(:last-child)": {
+      borderTopLeftRadius: "6px",
+      borderBottomLeftRadius: "6px",
     }
+  }
+})
+
+export const verificationFormStyles = makeStyles({
+  verticalContainer: {
+    "& .MuiCard-root": {
+      height: "calc(100vh - 130px)"
+    },
   }
 })
