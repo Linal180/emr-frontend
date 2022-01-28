@@ -17,7 +17,7 @@ import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, ParamsType } from '../../../../interfacesTypes';
 import { FacilityPayload, PracticeType, ServiceCode, useGetFacilityLazyQuery, useUpdateFacilityMutation } from "../../../../generated/graphql";
-import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND } from "../../../../constants";
+import { CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE, TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND, TIME_ZONE_TEXT, MAPPED_TIME_ZONES } from "../../../../constants";
 const UpdateFacilityForm: FC = (): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext)
   const { id } = useParams<ParamsType>();
@@ -41,13 +41,14 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
         if (facility && status && status === 200) {
           const {
             name, cliaIdNumber, federalTaxId, insurancePlanType, mammographyCertificationNumber,
-            npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode,
+            npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode, timeZone,
             contacts, billingAddress,
           } = facility
           setFacility(facility)
           npi && setValue('npi', npi)
           name && setValue('name', name)
           code && setValue('code', code)
+          timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
           revenueCode && setValue('revenueCode', revenueCode)
           cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
           federalTaxId && setValue('federalTaxId', federalTaxId)
@@ -120,9 +121,11 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
         revenueCode, practiceType, serviceCode,
         phone, email, fax, city, state, country, address2, address, zipCode,
         billingPhone, billingEmail, billingFax, billingCity, billingState, billingCountry, billingAddress2,
-        billingAddress, billingZipCode
+        billingAddress, billingZipCode, timeZone
       } = inputs;
       const { contacts, billingAddress: billing } = facility;
+      const { name: timeZoneName } = timeZone
+
       if (id && contacts && billing) {
         const { id: contactId } = contacts[0]
         const { id: billingId } = billing[0]
@@ -133,7 +136,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
             updateFacilityInput: {
               updateFacilityItemInput: {
                 id, name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
-                insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
+                insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', timeZone: timeZoneName || '',
                 tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '',
                 practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
                 serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24,
@@ -184,6 +187,7 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
     billingZipCode: { message: billingZipCodeError } = {},
     billingAddress2: { message: billingAddress2Error } = {},
     insurancePlanType: { message: insurancePlanTypeError } = {},
+    timeZone: { id: timeZoneError } = {},
     mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
   } = errors;
   return (
@@ -217,6 +221,16 @@ const UpdateFacilityForm: FC = (): JSX.Element => {
                       controllerName="code"
                       controllerLabel={CODE}
                       error={codeError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6}>
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={TIME_ZONE_TEXT}
+                      name="timeZone"
+                      error={timeZoneError?.message}
+                      options={MAPPED_TIME_ZONES}
                     />
                   </Grid>
                 </Grid>

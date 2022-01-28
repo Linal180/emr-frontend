@@ -13,6 +13,7 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
       insurancePlanType
       mammographyCertificationNumber
       npi
+      timeZone
       serviceCode
       createdAt
       updatedAt
@@ -89,6 +90,7 @@ query GetFacility($getFacility: GetFacility!){
       isPrivate
       revenueCode
       tamxonomyCode
+      timeZone
       insurancePlanType
       mammographyCertificationNumber
       npi
@@ -173,6 +175,7 @@ mutation RemoveFacility($removeFacility: RemoveFacility!){
     }
   }
 }
+
 mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
   updateFacility(updateFacilityInput: $updateFacilityInput){
     facility{
@@ -185,6 +188,7 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
       isPrivate
       revenueCode
       tamxonomyCode
+      timeZone
       insurancePlanType
       mammographyCertificationNumber
       npi
@@ -230,6 +234,7 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
         }
       }
     }
+
     response{
       name
       status
@@ -250,6 +255,7 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
       revenueCode
       tamxonomyCode
       insurancePlanType
+      timeZone
       mammographyCertificationNumber
       npi
       serviceCode

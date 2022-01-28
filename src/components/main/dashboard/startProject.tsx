@@ -2,7 +2,10 @@
 import { Box, Button, Card, Typography } from "@material-ui/core";
 import { Add, FilterList } from '@material-ui/icons';
 import { ViewState } from '@devexpress/dx-react-scheduler';
-import { Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, ViewSwitcher, DayView, WeekView } from '@devexpress/dx-react-scheduler-material-ui';
+import {
+  Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, ViewSwitcher,
+  DayView, WeekView, AppointmentTooltip
+} from '@devexpress/dx-react-scheduler-material-ui';
 // components block
 import PageHeader from "../../common/PageHeader";
 // constants block
@@ -170,6 +173,10 @@ const StartProjectComponent = (): JSX.Element => {
             <DateNavigator />
             <TodayButton />
             <Appointments />
+            <AppointmentTooltip
+              showCloseButton
+              showOpenButton
+            />
           </Scheduler>
         </Box>
       </Card>

@@ -15,7 +15,7 @@ import {
   STATE_LICENSE, PRESCRIPTIVE_AUTH_NUMBER, EMPLOYER_NAME, USUAL_INDUSTRY, PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID,
   MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE,
   CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE,
-  TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE,
+  TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
@@ -63,6 +63,13 @@ const practiceTypeSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).required(RequiredMessage(PRACTICE_TYPE))
+}
+
+const timeZoneSchema = {
+  timeZone: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(RequiredMessage(TIME_ZONE_TEXT))
 }
 
 const genderSchema = {
@@ -200,6 +207,7 @@ export const updateStaffSchema = yup.object({
 export const facilitySchema = yup.object({
   ...npiSchema,
   ...contactSchema,
+  ...timeZoneSchema,
   ...revenueCodeSchema,
   ...serviceCodeSchema,
   ...cliaIdNumberSchema,
@@ -258,7 +266,6 @@ export const doctorSchema = yup.object({
   ...contactSchema,
   ...billingAddressSchema,
 })
-
 
 export const facilityServicesSchema = {
   ...facilityIdSchema,
@@ -364,4 +371,9 @@ export const patientsSchema = yup.object({
   ...guardianPatientSchema,
   ...kinPatientSchema,
   ...emergencyPatientSchema
+})
+
+export const settingSchema = yup.object({
+  ...facilityIdSchema,
+  ...timeZoneSchema
 })

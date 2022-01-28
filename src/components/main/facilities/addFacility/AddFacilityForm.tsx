@@ -20,7 +20,7 @@ import {
   BILLING_ADDRESS, EMAIL, FACILITIES_ROUTE, FACILITY_INFO, FACILITY_CREATED, FAX, FORBIDDEN_EXCEPTION,
   INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, PHONE, REVENUE_CODE, STATE, TAMXONOMY_CODE,
   FACILITY_CONTACT, ZIP, ADDRESS, ADDRESS_2, PRACTICE_TYPE, FEDERAL_TAX_ID,
-  MAMMOGRAPHY_CERTIFICATION_NUMBER, MAPPED_SERVICE_CODES, SERVICE_CODE
+  MAMMOGRAPHY_CERTIFICATION_NUMBER, MAPPED_SERVICE_CODES, SERVICE_CODE, TIME_ZONE_TEXT, MAPPED_TIME_ZONES
 } from "../../../../constants";
 
 const AddFacilityForm: FC = (): JSX.Element => {
@@ -58,7 +58,7 @@ const AddFacilityForm: FC = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<CustomFacilityInputProps> = async (inputs) => {
     const {
-      name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode, mammographyCertificationNumber,
+      name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, timeZone, tamxonomyCode, mammographyCertificationNumber,
       revenueCode, practiceType, serviceCode,
       phone, email, fax, city, state, country, address, address2, zipCode,
       billingPhone, billingEmail, billingFax, billingCity, billingState, billingCountry, billingAddress2,
@@ -67,13 +67,13 @@ const AddFacilityForm: FC = (): JSX.Element => {
 
     const { id: selectedPracticeType } = practiceType;
     const { id: selectedServiceCode } = serviceCode;
-
+    const { name: timeZoneName } = timeZone
     await createFacility({
       variables: {
         createFacilityInput: {
           createFacilityItemInput: {
             name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
-            insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
+            insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '', timeZone: timeZoneName || '',
             tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '',
             practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital, serviceCode:
               selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24, mammographyCertificationNumber: mammographyCertificationNumber || ''
@@ -123,6 +123,7 @@ const AddFacilityForm: FC = (): JSX.Element => {
     billingZipCode: { message: billingZipCodeError } = {},
     billingAddress2: { message: billingAddress2Error } = {},
     insurancePlanType: { message: insurancePlanTypeError } = {},
+    timeZone: { id: timeZoneError } = {},
     mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
   } = errors;
 
@@ -157,6 +158,16 @@ const AddFacilityForm: FC = (): JSX.Element => {
                       controllerName="code"
                       controllerLabel={CODE}
                       error={codeError}
+                    />
+                  </Grid>
+
+                  <Grid item md={6}>
+                    <Selector
+                      value={{ id: "", name: "" }}
+                      label={TIME_ZONE_TEXT}
+                      name="timeZone"
+                      error={timeZoneError?.message}
+                      options={MAPPED_TIME_ZONES}
                     />
                   </Grid>
                 </Grid>
