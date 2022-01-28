@@ -1,4 +1,4 @@
-import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, GRAY_TWO, BLUE_SIX } from './../../../theme/colors';
+import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, BLUE_SIX } from './../../../theme/colors';
 import { createStyles, makeStyles, StepConnector, Switch, withStyles } from "@material-ui/core";
 
 export const CustomConnector = withStyles({
