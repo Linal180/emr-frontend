@@ -40,11 +40,5 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         }
       }
     },
-
-    buttonContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      gap: 24,
-    }
   })
 );

@@ -9,11 +9,9 @@ const index = () => {
 
   return (
     <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75}
-      sx={{
-        justifyContent: "center",
-        display: "flex",
-        alignItems: "center",
-      }}
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
     >
       <Card >
         <Box minHeight="580px" className={classes.container}>
@@ -27,7 +25,7 @@ const index = () => {
             <Typography component="h5" variant="h5">{SLOT_CONFIRMATION_SUB_HEADING_TWO}</Typography>
           </Box>
 
-          <Box pt={15} className={classes.buttonContainer}>
+          <Box display="flex" gridGap={20} mt={3}>
             <Button type="submit" variant="contained">
               Cancel Booking
             </Button>
