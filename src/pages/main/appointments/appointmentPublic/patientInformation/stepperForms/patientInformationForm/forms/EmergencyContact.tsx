@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 // components block
 import CardComponent from '../../../../../../../../components/common/CardComponent';
 import RenderInputField from '../../../components/RenderInputField';
-import ToggleButtonComponent from '../../../components/ToggleButtonComponent';
+import ToggleButtonComponent from '../../../../../../../../components/common/ToggleButtonComponent';
 
 const EmergencyContact = () => {
   const { control } = useForm({});
