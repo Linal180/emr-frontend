@@ -1,4 +1,4 @@
-import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX } from './../../../theme/colors';
+import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, GRAY_TWO } from './../../../theme/colors';
 import { makeStyles, StepConnector, withStyles } from "@material-ui/core";
 
 export const CustomConnector = withStyles({
@@ -133,6 +133,29 @@ export const usePatientInformation = makeStyles({
 
 export const toggleButtonComponent = makeStyles({
   toggleContainer: {
+    "& .toggle-main": {
+      display: 'flex',
+      position: 'relative',
+      border: `1px solid ${GRAY_SIX}`,
+      fontWeight: 500,
+      fontSize: 14,
+      width: 145,
+      height: 44,
+      padding: 5,
+      borderRadius: 6,
+
+      "& > div": {
+        position: 'relative',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 2,
+        zIndex: 2,
+        flex: 1,
+      }
+    },
+
     "& .MuiToggleButtonGroup-root": {
       marginTop: 10,
     },
