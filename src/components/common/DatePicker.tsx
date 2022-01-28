@@ -1,14 +1,15 @@
 import { FC, useState } from 'react';
-import { Controller, useFormContext } from "react-hook-form";
+import 'date-fns';
 import { FormControl, InputLabel } from '@material-ui/core';
+import { Controller, useFormContext } from "react-hook-form";
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
-import 'date-fns';
-// interfaces block
+// interfaces constants and utils block
+import { requiredLabel } from '../../utils';
 import { VALID_DATE_REQUIRED } from "../../constants";
 import { DatePickerProps } from "../../interfacesTypes";
 
-const DatePicker: FC<DatePickerProps> = ({ name, label, error }): JSX.Element => {
+const DatePicker: FC<DatePickerProps> = ({ name, label, error, isRequired }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control } = useFormContext()
 
@@ -20,7 +21,7 @@ const DatePicker: FC<DatePickerProps> = ({ name, label, error }): JSX.Element =>
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={`${name}-dialog`}>
-            {label}
+            {isRequired ? requiredLabel(label) : label}
           </InputLabel>
 
           <MuiPickersUtilsProvider utils={DateFnsUtils}>

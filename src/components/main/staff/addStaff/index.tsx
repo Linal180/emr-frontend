@@ -1,7 +1,7 @@
 // packages block
 import { FC } from 'react';
 // component block
-import AddStaffForm from "./AddStaffForm";
+import StaffForm from "../staffForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
 import { ADD_STAFF, STAFF_BREAD, STAFF_NEW_BREAD, USERS_BREAD } from '../../../../constants';
@@ -14,7 +14,7 @@ const AddStaffComponent: FC = () => {
         path={[USERS_BREAD, STAFF_BREAD, STAFF_NEW_BREAD]}
       />
 
-      <AddStaffForm />
+      <StaffForm />
     </>
   )
 };

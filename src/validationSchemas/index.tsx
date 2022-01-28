@@ -8,21 +8,34 @@ import {
   FACILITY, FAX, FEDERAL_TAX_ID, FIRST_NAME, GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME,
   MAMMOGRAPHY_CERTIFICATION_NUMBER, MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX,
   PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER,
-  PRACTICE_TYPE, PROVIDER, MIDDLE_NAME, DURATION, PRICE, REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE,
+  PRACTICE_TYPE, MIDDLE_NAME, DURATION, PRICE, REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE,
   ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE,
   DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
   CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER,
   STATE_LICENSE, PRESCRIPTIVE_AUTH_NUMBER, EMPLOYER_NAME, USUAL_INDUSTRY, PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID,
   MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE,
-  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE, TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE,
+  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE,
+  TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
 const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
 const npiSchema = { npi: yup.string().required(RequiredMessage(NPI)).matches(NPI_REGEX, NPI_VALIDATION_MESSAGE) }
-const cliaIdNumberSchema = { cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER)).matches(CLIA_REGEX, CLIA_VALIDATION_MESSAGE) }
-const revenueCodeSchema = { revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE)).matches(REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE) }
-const taxonomyCodeSchema = { taxonomyCode: yup.string().required(RequiredMessage(TAXONOMY_CODE)).matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE) }
+const cliaIdNumberSchema = {
+  cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER))
+    .matches(CLIA_REGEX, CLIA_VALIDATION_MESSAGE)
+}
+
+const revenueCodeSchema = {
+  revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE))
+    .matches(REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE)
+}
+
+const taxonomyCodeSchema = {
+  taxonomyCode: yup.string().required(RequiredMessage(TAXONOMY_CODE))
+    .matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE)
+}
+
 const dobSchema = {
   dob: yup.string().test(value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
 }
@@ -94,7 +107,6 @@ const licenseDateSchema = {
   })
 }
 
-
 const patientRegisterDateSchema = {
   registrationDate: yup.string().test(value => new Date(value || '') <= new Date()),
   deceasedDate: yup.string().test((value, ctx) => {
@@ -110,6 +122,15 @@ const patientStatementDateSchema = {
     return new Date(value || '') > new Date(ctx.parent.statementNoteDateFrom)
   })
 }
+
+const firstLastNameSchema = {
+  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
+    .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26))
+    .required(RequiredMessage(LAST_NAME)),
+  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
+    .min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26))
+    .required(RequiredMessage(FIRST_NAME)),
+};
 
 export const loginValidationSchema = yup.object({
   ...emailSchema,
@@ -159,11 +180,10 @@ const staffBasicSchema = {
   ...genderSchema,
   ...roleTypeSchema,
   ...facilityIdSchema,
-  username: yup.string().required(RequiredMessage(PROVIDER)),
-  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
-  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
-  mobile: yup.string().min(11, MinLength(MOBILE_NUMBER, 11)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
+  ...firstLastNameSchema,
+  username: yup.string(),
+  mobile: yup.string().min(11, MinLength(MOBILE_NUMBER, 11)).max(15, MaxLength(MOBILE_NUMBER, 15)),
+  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
 }
 
 export const addStaffSchema = yup.object({
@@ -200,6 +220,7 @@ export const basicDoctorSchema = {
   ...facilityIdSchema,
   ...licenseDateSchema,
   ...taxonomyCodeSchema,
+  ...firstLastNameSchema,
   ssn: yup.string().required(RequiredMessage(SSN)),
   upin: yup.string().required(RequiredMessage(UPIN)),
   taxId: yup.string().required(RequiredMessage(TAX_ID)),
@@ -230,8 +251,6 @@ export const basicDoctorSchema = {
   prescriptiveAuthNumber: yup.string().required(RequiredMessage(PRESCRIPTIVE_AUTH_NUMBER)),
   meammographyCertNumber: yup.string().required(RequiredMessage(MAMMOGRAPHY_CERTIFICATION_NUMBER)),
   middleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
-  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
 };
 
 export const doctorSchema = yup.object({

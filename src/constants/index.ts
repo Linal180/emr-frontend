@@ -18,12 +18,15 @@ export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
+export const EMPTY_OPTION = { id: "", name: "" };
 export const ALL_STAFF = "Staff";
 export const CREATE_STAFF = "Create Staff";
 export const CREATE_FACILITY = "Create facility";
 export const CREATE_LOCATION = "Create location";
 export const UPDATE_LOCATION_TEXT = "Update location";
 export const ADD_STAFF = "Add Staff";
+export const CANT_UPDATE_STAFF = "Staff cant be updated";
+export const CANT_CREATE_STAFF = "Can't create staff";
 export const CREATE_DOCTOR = "Create Doctor";
 export const ADD_DOCTOR = "Add Doctor";
 export const EDIT_DOCTOR = "Edit Doctor";

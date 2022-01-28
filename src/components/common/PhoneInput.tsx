@@ -1,10 +1,14 @@
+// packages block
 import { FC } from 'react';
+import PhoneInput from 'react-phone-input-2';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, FormHelperText } from "@material-ui/core";
-import PhoneInput from 'react-phone-input-2';
+// styles utils and interface block
 import 'react-phone-input-2/lib/style.css'
+import { requiredLabel } from '../../utils';
+import { PhoneInputProps } from '../../interfacesTypes';
 
-const PhoneField: FC<any> = ({ name, label, error }) => {
+const PhoneField: FC<PhoneInputProps> = ({ name, label, error, isRequired }) => {
   const { control } = useFormContext()
 
   return (
@@ -14,7 +18,10 @@ const PhoneField: FC<any> = ({ name, label, error }) => {
       control={control}
       render={({ field, fieldState: { invalid } }) => {
         return <FormControl fullWidth margin='normal' error={Boolean(error)}>
-          <InputLabel id={`${name}-autocomplete`} shrink>{label}</InputLabel>
+          <InputLabel id={`${name}-autocomplete`} shrink>
+            {isRequired ? requiredLabel(label) : label}
+          </InputLabel>
+
           <PhoneInput
             country={'us'}
             disableDropdown
@@ -23,7 +30,7 @@ const PhoneField: FC<any> = ({ name, label, error }) => {
             onChange={(phone: any) => field.onChange(phone)}
           />
 
-          <FormHelperText>{error}</FormHelperText>
+          <FormHelperText>{invalid && error}</FormHelperText>
         </FormControl>;
       }}
     />

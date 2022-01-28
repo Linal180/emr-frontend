@@ -228,6 +228,7 @@ export interface SelectorProps {
   label: string
   error?: string
   disabled?: boolean
+  isRequired?: boolean
   value?: SelectorOption
   options: SelectorOption[]
 }
@@ -245,11 +246,12 @@ export type ResetPasswordInputs = {
 };
 
 interface IControlLabel {
-  controllerLabel: string | JSX.Element;
+  controllerLabel: string;
   fieldType?: string;
   pattern?: ValidationRule<RegExp> | undefined;
   error?: string;
   disabled?: boolean;
+  isRequired?: boolean;
   isPassword?: boolean;
 }
 
@@ -297,6 +299,7 @@ export interface DatePickerProps {
   name: string;
   label: string;
   error: string;
+  isRequired?: boolean
 }
 
 type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
@@ -355,15 +358,10 @@ export type ParamsType = {
   id: string
 }
 
-export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
+export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender">
+  & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
-export interface AddStaffInputControlProps extends IControlLabel {
-  control: Control<ExtendedStaffInputProps, object>;
-  controllerName: StaffControlTypes;
-}
-
-export interface UpdateStaffInputControlProps extends IControlLabel {
-  control: Control<ExtendedStaffInputProps, object>;
+export interface StaffInputControlProps extends IControlLabel {
   controllerName: StaffControlTypes;
 }
 
@@ -650,4 +648,20 @@ export interface LocationTableProps {
 export interface LocationModalProps extends DialogTypes {
   locationId?: string;
   reload: () => void;
+}
+
+export interface StaffFormProps {
+  id?: string
+  isEdit?: boolean
+}
+
+type PhoneInputTypes = | "phone" | "fax" | "mobile" | "basicPhone" | "basicMobile" | "basicFax"
+  | "billingPhone" | "billingFax" | "billingMobile" | "emergencyPhone" | "emergencyMobile"
+  | "kinPhone" | "kinMobile" | "employerPhone" | "guarantorPhone"
+
+export interface PhoneInputProps {
+  label: string
+  error?: string
+  isRequired?: boolean
+  name: PhoneInputTypes
 }
