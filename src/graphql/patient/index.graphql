@@ -49,6 +49,15 @@ query FindAllPatient($patientInput: PatientInput!) {
       statementNote
       statementNoteDateFrom
       statementNoteDateTo
+      attachments {
+      id
+      type
+      typeId
+      key
+      url
+      createdAt
+      updatedAt
+    }
       createdAt
       updatedAt
       
@@ -159,6 +168,15 @@ query GetPatient($getPatient: GetPatient!) {
       statementNote
       statementNoteDateFrom
       statementNoteDateTo
+      attachments{
+       id
+       type
+       typeId
+       key
+       url
+       createdAt
+       updatedAt
+      }
       createdAt
       updatedAt
       
