@@ -8,7 +8,7 @@ import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -137,6 +137,7 @@ export interface PageHeaderProps {
   hasComponent?: boolean;
   linkToPage?: string;
   title: string;
+  subTitle?: string;
   buttonText?: string;
   noAdd?: boolean;
   path?: Path[];
@@ -385,7 +386,7 @@ interface CustomBillingAddressInputs {
 type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phone" | "fax" | "zipCode" | "address"
   | "address2" | "city" | "state" | "country" | "billingEmail" | "billingPhone" | "billingFax" | "billingZipCode"
   | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"
-  | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType"
+  | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType" | 'timeZone'
   | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
   | "serviceCode" | "mobile" | "pager";
 
@@ -397,7 +398,18 @@ export interface UpdateFacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
-export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode"> & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode"> & CustomBillingAddressInputs & { serviceCode: SelectorOption } & { practiceType: SelectorOption };
+export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode">
+  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone"> & CustomBillingAddressInputs
+  & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption };
+
+type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
+
+export interface UpdateFacilityTimeZoneControlProps extends IControlLabel {
+  controllerName: UpdateFacilityTimeZoneControlTypes;
+}
+
+export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZoneInput, "timeZone">
+  & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
 type ContactInputTypes =
   | "name"

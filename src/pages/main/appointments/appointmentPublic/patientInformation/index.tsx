@@ -6,6 +6,8 @@ import DocumentVerificationForm from './stepperForms/documentVerificationForm';
 import { usePatientInformation } from '../../../../../styles/publicAppointment/patientInformation';
 import ConsentAgreement from './stepperForms/consentAgreement';
 import Stepper from './components/stepper';
+import { Link } from 'react-router-dom';
+import { PATIENT_APPOINTMENT_SUCCESS } from '../../../../../constants';
 
 const Index: FC = (): JSX.Element => {
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -50,12 +52,18 @@ const Index: FC = (): JSX.Element => {
         <Grid item md={12}>
           <Box className={classes.buttonContainer}>
             <Button variant="contained" disabled={activeStep === 0} onClick={handleBackStep}>
-              Cancel Booking
+              Back
             </Button>
 
-            <Button variant="contained" className="blue-button" disabled={activeStep === 2} onClick={handleNextStep}>
-              Next
-            </Button>
+            {activeStep < 2 ?
+              <Button variant="contained" className="blue-button" onClick={handleNextStep}>
+                Next
+              </Button>
+              :
+              <Link to={PATIENT_APPOINTMENT_SUCCESS}>
+                <Button variant="contained" className="blue-button">Finish</Button>
+              </Link>
+            }
           </Box>
         </Grid>
       </Grid>

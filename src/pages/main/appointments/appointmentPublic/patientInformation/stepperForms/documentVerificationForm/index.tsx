@@ -1,52 +1,56 @@
 import { Box, Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import CardComponent from '../../../../../../../components/common/CardComponent';
+import { verificationFormStyles } from '../../../../../../../styles/publicAppointment/patientInformation';
 import { GRAY_TWO } from '../../../../../../../theme';
 import DropZoneContainer from '../../components/DropZoneContainer';
 
 
 const index = () => {
+  const classes = verificationFormStyles()
   return (
-    <CardComponent cardTitle="Document Verification">
-      <Box py={2}>
-        <Typography component="h4" variant="h4">Driving License</Typography>
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <DropZoneContainer imageSide="Front Side" />
-          </Grid>
+    <Box className={classes.verticalContainer}>
+      <CardComponent cardTitle="Document Verification">
+        <Box py={2}>
+          <Typography component="h4" variant="h4">Driving License</Typography>
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <DropZoneContainer imageSide="Front Side" />
+            </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
-            <DropZoneContainer imageSide="Back Side" />
+            <Grid item md={6} sm={12} xs={12}>
+              <DropZoneContainer imageSide="Back Side" />
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
 
-      <Box py={2}>
-        <Typography component="h4" variant="h4">Insurance Card</Typography>
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <DropZoneContainer imageSide="Front Side" />
-          </Grid>
+        <Box py={2}>
+          <Typography component="h4" variant="h4">Insurance Card</Typography>
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <DropZoneContainer imageSide="Front Side" />
+            </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
-            <DropZoneContainer imageSide="Back Side" />
+            <Grid item md={6} sm={12} xs={12}>
+              <DropZoneContainer imageSide="Back Side" />
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
 
-      <Box py={2}>
-        <Typography component="h4" variant="h4">Insurance Card <Box display="inline" color={GRAY_TWO}>(Secondary)</Box></Typography>
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <DropZoneContainer imageSide="Front Side" />
-          </Grid>
+        <Box py={2}>
+          <Typography component="h4" variant="h4">Insurance Card <Box display="inline" color={GRAY_TWO}>(Secondary)</Box></Typography>
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <DropZoneContainer imageSide="Front Side" />
+            </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
-            <DropZoneContainer imageSide="Back Side" />
+            <Grid item md={6} sm={12} xs={12}>
+              <DropZoneContainer imageSide="Back Side" />
+            </Grid>
           </Grid>
-        </Grid>
-      </Box>
-    </CardComponent>
+        </Box>
+      </CardComponent>
+    </Box>
   );
 };
 

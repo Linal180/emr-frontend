@@ -1,3 +1,5 @@
+//packages block
+import moment from 'moment-timezone';
 // graphql and interfaces block
 import { formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
@@ -36,6 +38,9 @@ export const VIEW_STAFF = "View Staff";
 export const UPDATE_STAFF = "Update Staff";
 export const UPDATE_FACILITY = "Update Facility";
 export const UPDATE_DOCTOR = "Update Doctor";
+export const SET_TIME_ZONE = "Set Time Zone";
+export const TIME_ZONE_TEXT = "Time Zone";
+export const UPDATE_TIME = "Update Time";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
 export const PROVIDER = "Provider";
@@ -249,6 +254,7 @@ export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const APPOINTMENT_TEXT = "Appointment";
+export const SETTINGS_TEXT = "Settings";
 export const CLAIM_FEED_TEXT = "Claim Feed";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
@@ -397,6 +403,7 @@ export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const STAFF_ROUTE = "/staff";
 export const DOCTORS_ROUTE = "/doctors";
+export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
@@ -613,6 +620,10 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
 ]
 
+export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezone => {
+  return { id: timezone, name: timezone }
+})
+
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
   { id: ServiceCode.Hospice_34, name: formatValue(ServiceCode.Hospice_34) },
   { id: ServiceCode.Ambulance_41, name: formatValue(ServiceCode.Ambulance_41) },
@@ -664,8 +675,8 @@ export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
-  { id: Homebound.No, name: Homebound.No},
-  { id: Homebound.Yes, name: Homebound.Yes},
+  { id: Homebound.No, name: Homebound.No },
+  { id: Homebound.Yes, name: Homebound.Yes },
 ];
 
 export const MAPPED_PRONOUNS: SelectorOption[] = [
@@ -783,6 +794,7 @@ export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }
 export const USERS_BREAD = { text: USERS_TEXT, link: '' }
 export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: '' }
+export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE }
 export const BILLING_BREAD = { text: BILLING_TEXT, link: '' }
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: '' }
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE }

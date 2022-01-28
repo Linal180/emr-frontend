@@ -525,5 +525,13 @@ export const theme = createTheme({
         opacity: 1,
       }
     },
+
+    MuiFormLabel: {
+      root: {
+        "&.Mui-focused": {
+          color: GRAY_THREE
+        }
+      }
+    }
   },
 });

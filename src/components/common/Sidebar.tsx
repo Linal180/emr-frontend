@@ -1,5 +1,6 @@
 // packages block
 import { FC, MouseEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import { AccountCircle } from "@material-ui/icons";
 import { Box, Drawer, Button, Menu, MenuItem } from "@material-ui/core";
 import dotenv from "dotenv";
@@ -9,6 +10,7 @@ import AppMenu from "./AppMenu";
 import { handleLogout } from "../../utils";
 import { useSidebarStyles } from "../../styles/sidebarStyles";
 import { SettingIcon } from "../../assets/svgs"
+import { SETTINGS_ROUTE } from "../../constants";
 dotenv.config();
 
 const Sidebar: FC = (): JSX.Element => {
@@ -47,13 +49,15 @@ const Sidebar: FC = (): JSX.Element => {
 
       <Box display="flex" alignItems="center" justifyContent='space-between' pb={1.5} pl={3.375} pr={1.5}>
         <Box display="flex" alignItems="center">
-          <AccountCircle />
+          <Button aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen}>
+            <AccountCircle />
+          </Button>
           <Box ml={1}>Administrator</Box>
         </Box>
 
-        <Button aria-label="account of current user" aria-controls={menuId} aria-haspopup="true" onClick={handleProfileMenuOpen}>
+        <Link to={SETTINGS_ROUTE}>
           <SettingIcon />
-        </Button>
+        </Link>
         {renderMenu}
       </Box>
     </Drawer>

@@ -20,6 +20,10 @@ img, svg {
   max-width: 100%;
 }
 
+body {
+  font-family: Poppins, sans-serif;
+}
+
 .MuiButton-root .MuiCircularProgress-root {
   position: absolute;
   top: 50%;
@@ -280,4 +284,12 @@ body .MuiTabPanel-root {
 
 .MuiCheckbox-root.Mui-checked .MuiIconButton-label:before {
   display: none;
+}
+
+.subHeading {
+  color: #B5B5C3;
+  font-size: 20px;
+  font-weight: 500;
+  max-width: 532px;
+  padding-bottom: 26px;
 }
