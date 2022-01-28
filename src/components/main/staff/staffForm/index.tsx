@@ -16,7 +16,7 @@ import history from "../../../../history";
 import { AuthContext, ListContext } from '../../../../context';
 import { getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import { addStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
-import { ExtendedStaffInputProps, StaffFormProps } from "../../../../interfacesTypes";
+import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, UserRole,
   useUpdateStaffMutation
@@ -28,7 +28,7 @@ import {
   FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION
 } from "../../../../constants";
 
-const StaffForm: FC<StaffFormProps> = ({ isEdit, id }) => {
+const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const methods = useForm<ExtendedStaffInputProps>({

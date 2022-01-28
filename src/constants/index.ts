@@ -22,6 +22,9 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 // constants
 export const EMPTY_OPTION = { id: "", name: "" };
 export const ALL_STAFF = "Staff";
+export const DOCTOR_NOT_FOUND = "Doctor not found!";
+export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
+export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const CREATE_STAFF = "Create Staff";
 export const CREATE_FACILITY = "Create facility";
 export const CREATE_LOCATION = "Create location";
@@ -103,7 +106,7 @@ export const BILLING_FACILITY = "Billing Facility";
 export const MEDICARE_GRP_NUMBER = "Medicare GRP Number";
 export const MEDICAID_GRP_NUMBER = "Medicaid GRP Number";
 export const MAMMOGRAPHY_CERT_NUMBER = "Mammography Cert Number";
-export const CAMPUS_GRP_NUMBER = "Campus GRP Number";
+export const CHAMPUS_GRP_NUMBER = "Champus GRP Number";
 export const BLUE_SHIED_NUMBER = "Blue Shied Number";
 export const TAX_ID_STUFF = "Tax ID Stuff / Provider Site ID";
 export const SPECIALTY_LICENSE = "Specialty License";
@@ -444,13 +447,14 @@ export const toolbarOptions = {
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
-export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code 10-alphanumeric";
+export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;

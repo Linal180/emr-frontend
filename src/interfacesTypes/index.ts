@@ -661,7 +661,7 @@ export interface LocationModalProps extends DialogTypes {
   reload: () => void;
 }
 
-export interface StaffFormProps {
+export interface GeneralFormProps {
   id?: string
   isEdit?: boolean
 }

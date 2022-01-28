@@ -6,18 +6,19 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import DateFnsUtils from '@date-io/date-fns';
 // interfaces constants and utils block
 import { requiredLabel } from '../../utils';
-import { VALID_DATE_REQUIRED } from "../../constants";
 import { DatePickerProps } from "../../interfacesTypes";
+import { ContactSupportOutlined } from '@material-ui/icons';
 
 const DatePicker: FC<DatePickerProps> = ({ name, label, error, isRequired }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control } = useFormContext()
-
+  
+  console.log("Name:", name, "======", error)
   return (
     <Controller
       name={name}
       control={control}
-      defaultValue={null}
+      defaultValue=''
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={`${name}-dialog`}>
@@ -37,9 +38,11 @@ const DatePicker: FC<DatePickerProps> = ({ name, label, error, isRequired }): JS
               onClick={() => setOpenPicker(!openPicker)}
               onClose={() => setOpenPicker(!openPicker)}
               onChange={field.onChange}
+              onKeyDown={(e) => e.preventDefault()}
               error={invalid}
-              helperText={error && VALID_DATE_REQUIRED}
+              helperText={error}
               autoOk
+              clearable
             />
           </MuiPickersUtilsProvider>
         </FormControl>
