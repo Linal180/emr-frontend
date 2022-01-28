@@ -388,11 +388,7 @@ type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phon
   | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
   | "serviceCode" | "mobile" | "pager";
 
-export interface CreateFacilityInputControlProps extends IControlLabel {
-  controllerName: FacilityControlTypes;
-}
-
-export interface UpdateFacilityInputControlProps extends IControlLabel {
+export interface FacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
