@@ -69,20 +69,8 @@ export const useColorLibStepIconStyles = makeStyles({
 });
 
 export const usePatientInformation = makeStyles({
-  customGrid: {
-    display: "flex",
-  },
-
   stepperGrid: {
     minWidth: 320,
-  },
-
-  mainGrid: {
-    flex: 1,
-
-    '@media (max-width:960px)': {
-      flex: "auto",
-    },
   },
 
   mainGridContainer: {
@@ -123,12 +111,6 @@ export const usePatientInformation = makeStyles({
       fontWeight: 500,
     },
   },
-
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: 20,
-  }
 });
 
 export const toggleButtonComponent = makeStyles({
@@ -182,7 +164,8 @@ export const toggleButtonComponent = makeStyles({
 export const verificationFormStyles = makeStyles({
   verticalContainer: {
     "& .MuiCard-root": {
-      height: "calc(100vh - 130px)"
+      height: "calc(100vh - 130px)",
+      overflowY: "auto",
     },
   }
 })

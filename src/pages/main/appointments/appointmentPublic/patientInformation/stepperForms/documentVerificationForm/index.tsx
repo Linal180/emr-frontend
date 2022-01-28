@@ -8,6 +8,7 @@ import DropZoneContainer from '../../components/DropZoneContainer';
 
 const index = () => {
   const classes = verificationFormStyles()
+
   return (
     <Box className={classes.verticalContainer}>
       <CardComponent cardTitle="Document Verification">
