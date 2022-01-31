@@ -5,8 +5,8 @@ import Login from "../pages/auth/login";
 import PageNotFound from "../pages/404";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
-import Dashboard from "../pages/main/dashboard";
 import Settings from "../pages/main/settings";
+import Dashboard from "../pages/main/dashboard";
 import AddStaff from "../pages/main/staff/addStaff";
 import AddBill from "../pages/main/billing/addBill";
 import Staff from "../pages/main/staff/staffListing";
@@ -31,22 +31,26 @@ import Facilities from "../pages/main/facilities/facilitiesListing";
 import { StartProject } from "../pages/main/dashboard/startProject";
 import AddAppointment from "../pages/main/appointments/addAppointment";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
+import { AddService } from "../pages/main/facilities/services/addService";
 import Appointments from "../pages/main/appointments/appointmentsListing";
 import Locations from "../pages/main/facilities/locations/locationListing";
+import { Services } from "../pages/main/facilities/services/serviceListing";
+import { ViewService } from "../pages/main/facilities/services/viewService";
 import AppointmentPublic from "../pages/main/appointments/appointmentPublic";
 import { AddLocation } from "../pages/main/facilities/locations/addLocation";
 import { ViewLocation } from "../pages/main/facilities/locations/viewLocation";
-import FacilityServices from "../pages/main/facilities/facilityServicesListing";
 import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
-import PatientInformation from "../pages/main/appointments/appointmentPublic/patientInformation";
 import SlotConfirmation from "../pages/main/appointments/appointmentPublic/slotConfirmation";
 import AppointmentSuccess from "../pages/main/appointments/appointmentPublic/appointmentSuccess";
+import PatientInformation from "../pages/main/appointments/appointmentPublic/patientInformation";
 // constants
 import { AuthContext } from "../context";
 import {
-  DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE,
-  VIEW_APPOINTMENTS_ROUTE, LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION, SLOT_CONFIRMATION,
-  PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE
+  DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, 
+  STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, 
+  LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION, 
+  SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, 
+  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -89,12 +93,14 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
           <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
           <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
-          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_SERVICES_ROUTE}`} component={FacilityServices} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_LOCATIONS_ROUTE}`} component={Locations} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_LOCATIONS_ROUTE}/new`} component={AddLocation} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_LOCATIONS_ROUTE}/:id`} component={ViewLocation} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_SERVICES_ROUTE}`} component={Services} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
           <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
         </Switch>
       </MainLayout>

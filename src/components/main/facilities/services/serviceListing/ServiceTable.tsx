@@ -4,26 +4,33 @@ import { useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
-import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 import Alert from "../../../../common/Alert";
-import ConfirmationModal from "../../../../common/ConfirmationModal";
 import TableLoader from "../../../../common/TableLoader";
+import ConfirmationModal from "../../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload, ServicesPayload } from "../../../../../generated/graphql";
 import { renderTh } from "../../../../../utils";
+import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
-import { ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE, DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE } from "../../../../../constants";
-import { ServiceTableProps, ParamsType } from "../../../../../interfacesTypes";
-import { serviceReducer, serviceAction, initialState, State, ActionType } from '../../../../../reducers/serviceReducer';
-import ServiceModal from "../serviceModal";
 import { BLUE_FIVE, BLUE_FOUR, RED, RED_ONE } from "../../../../../theme";
+import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
+import {
+  serviceReducer, serviceAction, initialState, State, ActionType
+} from '../../../../../reducers/serviceReducer';
+import {
+  useFindAllServicesLazyQuery, useRemoveServiceMutation, ServicePayload, ServicesPayload
+} from "../../../../../generated/graphql";
+import {
+  ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE,
+  DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE, FACILITIES_ROUTE, FACILITY_SERVICES_ROUTE
+} from "../../../../../constants";
+import history from "../../../../../history";
 
-const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openModal }): JSX.Element => {
+const ServicesTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { id: facilityId } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
-  const { page, totalPages, isEdit, openDelete, serviceId, deleteServiceId, searchQuery, services } = state;
+  const { page, totalPages, openDelete, deleteServiceId, searchQuery, services } = state;
 
   const [findAllServices, { loading, error }] = useFindAllServicesLazyQuery({
     fetchPolicy: "network-only",
@@ -84,12 +91,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
     }
   }, [findAllServices, searchQuery, facilityId]);
 
-  useEffect(() => {
-    if (!openModal) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
-    }
-  }, [openModal]);
-
   const onDeleteClick = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_SERVICE_ID, deleteServiceId: id })
@@ -111,16 +112,9 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
 
   const handleEdit = (id: string) => {
     if (id) {
-      dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: id })
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
-      serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
+      history.push(`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}/${id}`)
     }
   };
-
-  const handleReload = () => {
-    dispatch({ type: ActionType.SET_SERVICES, services: [] })
-    findAllServices();
-  }
 
   const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
 
@@ -133,7 +127,9 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
           <TextField
             value={searchQuery}
             className={classes.tablesSearchIcon}
-            onChange={({ target: { value } }) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: value })}
+            onChange={({ target: { value } }) => dispatch({
+              type: ActionType.SET_SEARCH_QUERY, searchQuery: value
+            })}
             onKeyPress={({ key }) => key === "Enter" && handleSearch()}
             name="searchQuery"
             variant="outlined"
@@ -215,14 +211,6 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
             handleDelete={handleDeleteService}
             setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
           />
-
-          <ServiceModal
-            isEdit={isEdit}
-            isOpen={openModal}
-            reload={handleReload}
-            serviceId={serviceId}
-            setOpen={(open: boolean) => serviceDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: open })}
-          />
         </Box>
       </Box>
 
@@ -242,4 +230,4 @@ const FacilityServicesTable: FC<ServiceTableProps> = ({ serviceDispatch, openMod
   );
 };
 
-export default FacilityServicesTable;
+export default ServicesTable;

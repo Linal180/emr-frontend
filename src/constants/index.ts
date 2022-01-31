@@ -30,6 +30,7 @@ export const DOCTOR_NOT_FOUND = "Doctor not found!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const CREATE_STAFF = "Create Staff";
+export const CREATE_SERVICE = "Create Service";
 export const CREATE_FACILITY = "Create facility";
 export const CREATE_LOCATION = "Create location";
 export const UPDATE_LOCATION_TEXT = "Update location";
@@ -58,6 +59,7 @@ export const CONTACT = "Contact";
 export const STAFF_BASIC_INFO = "Staff Basic Info";
 export const LOCATION_INFO = "Location Info";
 export const FACILITY_INFO = "Facility Information";
+export const SERVICE_INFO = "Service Information";
 export const FACILITY_CONTACT = "Contact";
 export const ASSOCIATED_FACILITY = "Associated Facility";
 export const BILLING_ADDRESS = "Billing Address";
@@ -232,6 +234,7 @@ export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
 export const ADD_SERVICE = "Add Service";
 export const UPDATE_SERVICE = "Update Service";
+export const EDIT_SERVICE = "Edit Service";
 export const ADD_FACILITY_SERVICE = "Add Facility Service";
 export const UPDATE_FACILITY_SERVICE = "Update Facility Service";
 export const ADD_LOCATION = "Add Facility Location";
@@ -787,7 +790,6 @@ export const agreementPoints = [
   "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis",
 ]
 
-
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
 export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
@@ -796,6 +798,8 @@ export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
 export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_LOCATION_NEW_BREAD = {text: ADD_LOCATION, link: '' }
 export const FACILITY_LOCATION_EDIT_BREAD = {text: EDIT_LOCATION, link: '' }
+export const FACILITY_SERVICE_NEW_BREAD = {text: ADD_SERVICE, link: '' }
+export const FACILITY_SERVICE_EDIT_BREAD = {text: EDIT_SERVICE, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }

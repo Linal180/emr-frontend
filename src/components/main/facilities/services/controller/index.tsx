@@ -1,10 +1,14 @@
 // packages block
-import { TextField, InputLabel, FormControl } from "@material-ui/core";
 import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { TextField, InputLabel, FormControl } from "@material-ui/core";
+// utils and interfaces block
+import { requiredLabel } from "../../../../../utils";
 import { ServiceInputControlsProps } from "../../../../../interfacesTypes";
 
-const ServiceController: FC<ServiceInputControlsProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const ServiceController: FC<ServiceInputControlsProps> = ({
+  controllerName, controllerLabel, fieldType, error, isRequired
+}): JSX.Element => {
   const { control } = useFormContext();
 
   return (
@@ -13,7 +17,9 @@ const ServiceController: FC<ServiceInputControlsProps> = ({ controllerName, cont
       control={control}
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={controllerName}>{controllerLabel}</InputLabel>
+          <InputLabel shrink htmlFor={controllerName}>
+            {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
+          </InputLabel>
 
           <TextField
             type={fieldType}
