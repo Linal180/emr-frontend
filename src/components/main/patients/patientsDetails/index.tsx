@@ -43,7 +43,7 @@ const PatientDetailsComponent = (): JSX.Element => {
       if (data) {
         const { getPatient: { patient } } = data
 
-        if (patient && !loading) {
+        if (patient || !loading) {
           setPatientData(patient as Patient)
         }
       }
