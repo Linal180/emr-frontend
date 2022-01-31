@@ -9,6 +9,7 @@ import FacilityController from '../controllers';
 import Selector from '../../../common/Selector';
 import PhoneField from '../../../common/PhoneInput';
 import CardComponent from "../../../common/CardComponent";
+import ViewDataLoader from '../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { setRecord } from '../../../../utils';
@@ -22,12 +23,11 @@ import {
 import {
   ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID,
   CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO,
-  TAMXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS,
+  TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS,
   FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE,
   MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND,
   TIME_ZONE_TEXT, MAPPED_TIME_ZONES, CREATE_FACILITY, EMPTY_OPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_CREATED, FORBIDDEN_EXCEPTION
 } from "../../../../constants";
-import ViewDataLoader from '../../../common/ViewDataLoader';
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext)
@@ -88,6 +88,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             country && setValue('country', country)
             address2 && setValue('address2', address2)
           }
+
           if (billingAddress) {
             const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
 
@@ -178,7 +179,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const { id: selectedServiceCode } = serviceCode;
     const { id: selectedPracticeType } = practiceType;
 
-
     if (isEdit) {
       const { contacts, billingAddress: billing } = facility || {};
 
@@ -242,7 +242,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         }
       })
     }
-
   };
 
   const {
@@ -298,6 +297,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6}>
                         <Selector
+                          isRequired
                           value={EMPTY_OPTION}
                           label={PRACTICE_TYPE}
                           name="practiceType"
@@ -308,6 +308,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={6}>
                         <FacilityController
+                          isRequired
                           fieldType="text"
                           controllerName="code"
                           controllerLabel={CODE}
@@ -360,7 +361,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <FacilityController
                           fieldType="text"
                           controllerName="tamxonomyCode"
-                          controllerLabel={TAMXONOMY_CODE}
+                          controllerLabel={TAXONOMY_CODE}
                           error={tamxonomyCodeError}
                         />
                       </Grid>
@@ -471,7 +472,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           controllerLabel={CITY}
                           error={billingCityError}
                         />
-
                       </Grid>
 
                       <Grid item md={4}>
@@ -524,7 +524,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="phone" error={phoneError} label={PHONE} />
+                        <PhoneField name="phone" error={phoneError} label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
@@ -533,7 +533,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     </Grid>
 
                     <FacilityController
-                      isRequired
                       fieldType="text"
                       controllerName="address"
                       controllerLabel={ADDRESS}

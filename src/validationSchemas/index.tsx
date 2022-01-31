@@ -4,24 +4,28 @@ import moment from "moment";
 // utils and constants block
 import { dateValidation, requiredMessage } from "../utils";
 import {
-  ADDRESS, ADDRESS_2, ALPHABETS_REGEX, CITY, CLIA_ID_NUMBER, CODE, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL,
-  FACILITY, FEDERAL_TAX_ID, FIRST_NAME, GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME,
-  MAMMOGRAPHY_CERTIFICATION_NUMBER, MaxLength, MinLength, MOBILE_NUMBER, NAME, NUMBER_REGEX,
-  PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER,
-  PRACTICE_TYPE, MIDDLE_NAME, DURATION, PRICE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE,
-  ValidMessage, ZIP_CODE, SUFFIX, SSN, LANGUAGE_SPOKEN, EMPLOYER_NAME, USUAL_INDUSTRY,
-  PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID, USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE,
-  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE,
-  TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP,
-  MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME,
+  ADDRESS, ADDRESS_2, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL,
+  FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, MaxLength, MinLength,
+  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
+  PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE, MIDDLE_NAME,
+  DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, SUFFIX, SSN,
+  LANGUAGE_SPOKEN, EMPLOYER_NAME, USUAL_INDUSTRY, PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID,
+  USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE,
+  REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX,
+  TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP, MOTHERS_MAIDEN_NAME,
+  PREVIOUS_FIRST_NAME, TID_VALIDATION_MESSAGE, TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE,
+  MAMMOGRAPHY_CERT_NUMBER_REGEX, FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
 const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)) };
 const npiSchema = { npi: yup.string().matches(NPI_REGEX, NPI_VALIDATION_MESSAGE) }
 const cliaIdNumberSchema = {
-  cliaIdNumber: yup.string().required(requiredMessage(CLIA_ID_NUMBER))
-    .matches(CLIA_REGEX, CLIA_VALIDATION_MESSAGE)
+  cliaIdNumber: yup.string().matches(CLIA_REGEX, CLIA_VALIDATION_MESSAGE)
+}
+
+const federalTaxIdSchema = {
+  federalTaxId: yup.string().matches(TID_REGEX, TID_VALIDATION_MESSAGE),
 }
 
 const revenueCodeSchema = {
@@ -32,6 +36,11 @@ const taxonomyCodeSchema = {
   taxonomyCode: yup.string().matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE)
 }
 
+const facilityCodeSchema = {
+  code: yup.string().matches(FACILITY_CODE_REGEX, FACILITY_CODE_VALIDATION_MESSAGE)
+  .required(requiredMessage(CODE))
+}
+
 const dobSchema = {
   dob: yup.string().test(value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
 }
@@ -39,6 +48,11 @@ const dobSchema = {
 const doctorDobSchema = {
   dob: yup.string().test(value => moment().diff(moment(value), 'years') > 20 && moment().diff(moment(value), 'years') < 100)
 }
+
+const mammographySchema = {
+  mammographyCertificationNumber: yup.string().notRequired()
+    .matches(MAMMOGRAPHY_CERT_NUMBER_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE),
+};
 
 const roleTypeSchema = {
   roleType: yup.object().shape({
@@ -242,15 +256,15 @@ export const facilitySchema = yup.object({
   ...timeZoneSchema,
   ...revenueCodeSchema,
   ...serviceCodeSchema,
+  ...mammographySchema,
+  ...facilityCodeSchema,
   ...cliaIdNumberSchema,
   ...practiceTypeSchema,
+  ...federalTaxIdSchema,
   ...billingAddressSchema,
+  insurancePlanType: yup.string(),
   name: yup.string().required(requiredMessage(NAME)),
-  code: yup.string().required(requiredMessage(CODE)),
-  federalTaxId: yup.string().required(requiredMessage(FEDERAL_TAX_ID)),
-  tamxonomyCode: yup.string().required(requiredMessage(TAMXONOMY_CODE)),
-  insurancePlanType: yup.string().required(requiredMessage(INSURANCE_PLAN_TYPE)),
-  mammographyCertificationNumber: yup.string().required(requiredMessage(MAMMOGRAPHY_CERTIFICATION_NUMBER)),
+  tamxonomyCode: yup.string().matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE),
 })
 
 export const basicDoctorSchema = {
