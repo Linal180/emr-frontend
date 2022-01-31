@@ -51,6 +51,9 @@ export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
+export const AVAILABILITY_TEXT = "Availability";
+export const ADD_MORE_RECORDS_TEXT = "Add more records"
+export const NON_AVAILABILITY_TEXT = "Non-Availability";
 export const ADDITIONAL_INFO = "Additional Info";
 export const AVAILABILITY_STATUS = "set your availability status";
 export const TAX_ID_DETAILS = "Tax ID Details";
@@ -664,8 +667,8 @@ export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
-  { id: Homebound.No, name: Homebound.No},
-  { id: Homebound.Yes, name: Homebound.Yes},
+  { id: Homebound.No, name: Homebound.No },
+  { id: Homebound.Yes, name: Homebound.Yes },
 ];
 
 export const MAPPED_PRONOUNS: SelectorOption[] = [
@@ -835,5 +838,36 @@ export const DOCTOR_TOP_TABS = [
   {
     title: 'Doctors Appointments',
     value: "3"
+  },
+]
+
+export const WEEK_DAYS = [
+  {
+    index: 1,
+    name: 'Monday',
+  },
+  {
+    index: 2,
+    name: 'Tuesday',
+  },
+  {
+    index: 3,
+    name: 'Wednesday',
+  },
+  {
+    index: 4,
+    name: 'Thursday',
+  },
+  {
+    index: 5,
+    name: 'Friday',
+  },
+  {
+    index: 6,
+    name: 'Saturday',
+  },
+  {
+    index: 7,
+    name: 'Sunday',
   },
 ]

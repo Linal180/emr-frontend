@@ -14,7 +14,7 @@ import { useParams } from "react-router";
 import { ParamsType } from "../../../../interfacesTypes";
 import Alert from "../../../common/Alert";
 import { getDate, getFormattedDate } from "../../../../utils";
-import DoctorScheduleForm from "../schedules/ScheduleForm";
+import DoctorScheduleForm from "../schedules";
 
 const DoctorDetailComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -166,7 +166,7 @@ const DoctorDetailComponent = (): JSX.Element => {
           </TabPanel>
 
           <TabPanel value="2">
-            <Grid container spacing={3}>
+            <Grid spacing={3}>
               <DoctorScheduleForm />
             </Grid>
           </TabPanel>
