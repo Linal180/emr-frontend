@@ -1,7 +1,7 @@
 // packages block
 import { FC } from 'react';
 // component block
-import AddFacilityForm from "./AddFacilityForm";
+import FacilityForm from "../facilityForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
 import { ADD_FACILITY, FACILITIES_BREAD, FACILITY_NEW_BREAD } from '../../../../constants';
@@ -14,7 +14,7 @@ const AddFacilityComponent: FC = (): JSX.Element => {
         path={[FACILITIES_BREAD, FACILITY_NEW_BREAD]}
       />
 
-      <AddFacilityForm />
+      <FacilityForm />
     </>
   )
 };

@@ -11,21 +11,31 @@ import {
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;
+export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
+export const FACILITY_CODE_REGEX =  /^[A-Z]{2,5}$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
+export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
+export const EMPTY_OPTION = { id: "", name: "" };
 export const ALL_STAFF = "Staff";
+export const CALENDER = "Calender";
+export const DOCTOR_NOT_FOUND = "Doctor not found!";
+export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
+export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const CREATE_STAFF = "Create Staff";
 export const CREATE_FACILITY = "Create facility";
 export const CREATE_LOCATION = "Create location";
 export const UPDATE_LOCATION_TEXT = "Update location";
 export const ADD_STAFF = "Add Staff";
+export const CANT_UPDATE_STAFF = "Staff cant be updated";
+export const CANT_CREATE_STAFF = "Can't create staff";
 export const CREATE_DOCTOR = "Create Doctor";
 export const ADD_DOCTOR = "Add Doctor";
 export const EDIT_DOCTOR = "Edit Doctor";
@@ -100,7 +110,7 @@ export const BILLING_FACILITY = "Billing Facility";
 export const MEDICARE_GRP_NUMBER = "Medicare GRP Number";
 export const MEDICAID_GRP_NUMBER = "Medicaid GRP Number";
 export const MAMMOGRAPHY_CERT_NUMBER = "Mammography Cert Number";
-export const CAMPUS_GRP_NUMBER = "Campus GRP Number";
+export const CHAMPUS_GRP_NUMBER = "Champus GRP Number";
 export const BLUE_SHIED_NUMBER = "Blue Shied Number";
 export const TAX_ID_STUFF = "Tax ID Stuff / Provider Site ID";
 export const SPECIALTY_LICENSE = "Specialty License";
@@ -441,13 +451,17 @@ export const toolbarOptions = {
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
+export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
+export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
+export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
-export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code 10-alphanumeric";
+export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;
@@ -459,6 +473,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const LOCATION_NOT_FOUND = 'Location not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
 export const SERVICE_NOT_FOUND = 'Service not found!';
@@ -776,9 +791,11 @@ export const agreementPoints = [
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
 export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
-export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
+export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
+export const FACILITY_LOCATION_NEW_BREAD = {text: ADD_LOCATION, link: '' }
+export const FACILITY_LOCATION_EDIT_BREAD = {text: EDIT_LOCATION, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }

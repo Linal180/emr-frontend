@@ -8,7 +8,7 @@ import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, UpdateFacilityTimeZoneInput
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -228,6 +228,7 @@ export interface SelectorProps {
   label: string
   error?: string
   disabled?: boolean
+  isRequired?: boolean
   value?: SelectorOption
   options: SelectorOption[]
 }
@@ -245,11 +246,12 @@ export type ResetPasswordInputs = {
 };
 
 interface IControlLabel {
-  controllerLabel: string | JSX.Element;
+  controllerLabel: string;
   fieldType?: string;
   pattern?: ValidationRule<RegExp> | undefined;
   error?: string;
   disabled?: boolean;
+  isRequired?: boolean;
   isPassword?: boolean;
 }
 
@@ -297,6 +299,7 @@ export interface DatePickerProps {
   name: string;
   label: string;
   error: string;
+  isRequired?: boolean
 }
 
 type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
@@ -352,18 +355,14 @@ export interface MappedMaritialstatusInterface {
 }
 
 export type ParamsType = {
-  id: string
+  id: string;
+  facilityId?: string;
 }
 
-export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender"> & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
+export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender">
+  & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
-export interface AddStaffInputControlProps extends IControlLabel {
-  control: Control<ExtendedStaffInputProps, object>;
-  controllerName: StaffControlTypes;
-}
-
-export interface UpdateStaffInputControlProps extends IControlLabel {
-  control: Control<ExtendedStaffInputProps, object>;
+export interface StaffInputControlProps extends IControlLabel {
   controllerName: StaffControlTypes;
 }
 
@@ -390,11 +389,7 @@ type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phon
   | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
   | "serviceCode" | "mobile" | "pager";
 
-export interface CreateFacilityInputControlProps extends IControlLabel {
-  controllerName: FacilityControlTypes;
-}
-
-export interface UpdateFacilityInputControlProps extends IControlLabel {
+export interface FacilityInputControlProps extends IControlLabel {
   controllerName: FacilityControlTypes;
 }
 
@@ -661,4 +656,84 @@ export interface LocationTableProps {
 export interface LocationModalProps extends DialogTypes {
   locationId?: string;
   reload: () => void;
+}
+
+export interface GeneralFormProps {
+  id?: string
+  isEdit?: boolean
+}
+
+type PhoneInputTypes = | "phone" | "fax" | "mobile" | "basicPhone" | "basicMobile" | "basicFax"
+  | "billingPhone" | "billingFax" | "billingMobile" | "emergencyPhone" | "emergencyMobile"
+  | "kinPhone" | "kinMobile" | "employerPhone" | "guarantorPhone"
+
+export interface PhoneInputProps {
+  label: string
+  error?: string
+  isRequired?: boolean
+  name: PhoneInputTypes
+}
+
+export interface DropzoneImageType {
+  imageModuleType: AttachmentType;
+  isEdit?: boolean;
+  attachmentId: string;
+  itemId: string;
+  isDisabled?: boolean;
+  attachment?: Attachment;
+  handleClose: Function;
+  setAttachments: Function;
+  setActiveStep?: Function
+  reset: Function;
+  hasHighlight?: boolean
+}
+
+interface Message {
+  message: string;
+}
+
+export interface MediaPatientDataType extends Message {
+  patient: Patient;
+}
+
+export interface ICreateMediaInput {
+  title?: string;
+  subTitle?: string;
+  description?: string;
+}
+
+export interface MediaModalTypes extends DialogTypes {
+  imageModuleType: AttachmentType;
+  itemId: string;
+  setEdit: Function
+  setAttachments: Function;
+  attachment?: Attachment;
+  attachments?: Attachment[]
+}
+
+export interface MediaCardsType {
+  itemId: string;
+  moduleType: AttachmentType;
+  hasCollage?: boolean;
+  attachmentsData?: Maybe<Attachment[]> | undefined
+  hasHighlights?: boolean
+}
+
+export interface IMediaControl extends IFieldTypes {
+  fieldName: MediaControlTypes;
+  isDisabled?: boolean;
+  control: Control<ICreateMediaInput, object>;
+}
+
+export interface MediaCardComponentType {
+  title: string;
+  setOpen: Function;
+  isOpen: boolean;
+  imageModuleType?: string;
+  setAttachment?: Function;
+  setAttachments: Function;
+  setEdit: Function;
+  isEdit: boolean;
+  attachments?: Attachment[];
+  allAttachments: Attachment[];
 }

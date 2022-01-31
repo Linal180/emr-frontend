@@ -3,9 +3,12 @@ import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, InputLabel, FormControl } from "@material-ui/core";
 // styles, constants, utils and interfaces block
-import { UpdateFacilityInputControlProps } from "../../../../interfacesTypes";
+import { requiredLabel } from "../../../../utils";
+import { FacilityInputControlProps } from "../../../../interfacesTypes";
 
-const UpdateFacilityController: FC<UpdateFacilityInputControlProps> = ({ controllerName, controllerLabel, fieldType, error, disabled }): JSX.Element => {
+const FacilityController: FC<FacilityInputControlProps> = ({
+  controllerName, controllerLabel, fieldType, error, disabled, isRequired
+}): JSX.Element => {
   const { control } = useFormContext();
 
   return (
@@ -14,7 +17,9 @@ const UpdateFacilityController: FC<UpdateFacilityInputControlProps> = ({ control
       control={control}
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={controllerName}>{controllerLabel}</InputLabel>
+          <InputLabel shrink htmlFor={controllerName}>
+            {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
+          </InputLabel>
 
           <TextField
             type={fieldType}
@@ -31,4 +36,4 @@ const UpdateFacilityController: FC<UpdateFacilityInputControlProps> = ({ control
   );
 };
 
-export default UpdateFacilityController;
+export default FacilityController;

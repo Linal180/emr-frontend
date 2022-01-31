@@ -23,7 +23,7 @@ import { patientsSchema } from '../../../../validationSchemas';
 import { ParamsType, PatientInputProps } from '../../../../interfacesTypes';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
-  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useGetPatientLazyQuery, useUpdatePatientMutation
+  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useGetPatientLazyQuery, useUpdatePatientMutation, AttachmentType
 } from "../../../../generated/graphql";
 import {
   FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, PHONE,
@@ -41,6 +41,7 @@ import {
 } from "../../../../constants";
 import { useParams } from 'react-router-dom';
 import BackdropLoader from '../../../common/Backdrop';
+import MediaCards from '../../../common/AddMedia/MediaCards';
 
 const UpdatePatientForm: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -116,7 +117,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
           previousFirstName && setValue("previousFirstName", previousFirstName)
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           medicationHistoryAuthority && setValue("medicationHistoryAuthority", medicationHistoryAuthority)
-          console.log("GET", deceasedDate)
           deceasedDate && setValue("deceasedDate", deceasedDate)
           registrationDate && setValue("registrationDate", registrationDate)
           releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
@@ -304,7 +304,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
     const { id: selectedGuarantorRelationship } = guarantorRelationship
     const { id: selectedEmergencyRelationship } = emergencyRelationship
     const { id: selectedKinRelationship } = kinRelationship
-    console.log("SET", deceasedDate)
     if (user) {
       const { id: userId } = user
 
@@ -593,6 +592,9 @@ const UpdatePatientForm: FC = (): JSX.Element => {
                     <Grid item md={6} sm={12} xs={12}>
                       <DatePicker name="dob" label={DOB} error={dobError || ''} />
                     </Grid>
+                  </Grid>
+                  <Grid container spacing={3}>
+                    <MediaCards moduleType={AttachmentType.Patient} itemId={id} />
                   </Grid>
                 </CardComponent>
 

@@ -1,11 +1,14 @@
 // packages block
 import { FC } from "react";
-import { FormControl, InputLabel, TextField } from "@material-ui/core";
 import { Controller, useFormContext } from "react-hook-form";
+import { FormControl, InputLabel, TextField } from "@material-ui/core";
 // interface block
+import { requiredLabel } from "../../../../utils";
 import { DoctorInputControlProps } from "../../../../interfacesTypes";
 
-const DoctorController: FC<DoctorInputControlProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const DoctorController: FC<DoctorInputControlProps> = ({ controllerName, controllerLabel, fieldType,
+  error, isRequired
+}): JSX.Element => {
   const { control } = useFormContext();
 
   return (
@@ -15,7 +18,7 @@ const DoctorController: FC<DoctorInputControlProps> = ({ controllerName, control
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={controllerName}>
-            {controllerLabel}
+            {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
           </InputLabel>
 
           <TextField

@@ -7,16 +7,23 @@ import moment from "moment";
 import CardComponent from "../../../common/CardComponent";
 import history from "../../../../history";
 // constants, history, styling block
-import { PROFILE_TOP_TABS } from "../../../../constants";
+import { DELETE_REQUEST, DELETE_REQUEST_DESCRIPTION, PATIENTS_ROUTE, PROFILE_TOP_TABS } from "../../../../constants";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import { BLACK_TWO } from "../../../../theme";
-import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
+import { AttachmentsPayload, Patient, useGetAttachmentLazyQuery, useGetPatientQuery, useRemoveAttachmentDataMutation } from "../../../../generated/graphql";
+import ConfirmationModal from "../../../common/ConfirmationModal";
+import Alert from "../../../common/Alert";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const [value, setValue] = useState('1');
   const [patientData, setPatientData] = useState<Patient | null>();
+  const [deletedAttachment,] = useState<string>('');
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+  const [attachmentUrl, setAttachmentUrl] = useState<string>('');
+  const [attachmentsData, setAttachmentsData] = useState<AttachmentsPayload["attachments"]>();
+
 
   const { location: { pathname } } = history
   const getPatientIdArray = pathname.split("/")
@@ -27,11 +34,13 @@ const PatientDetailsComponent = (): JSX.Element => {
   };
 
   const { loading } = useGetPatientQuery({
-    nextFetchPolicy: "network-only",
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     variables: {
       getPatient: {
-        id: getPatientId
+        id: getPatientId,
       }
     },
 
@@ -43,12 +52,69 @@ const PatientDetailsComponent = (): JSX.Element => {
       if (data) {
         const { getPatient: { patient } } = data
 
-        if (patient || !loading) {
+        if (patient && !loading) {
+          const { attachments } = patient
+          setAttachmentsData(attachments)
           setPatientData(patient as Patient)
         }
       }
     },
   });
+
+  const [removeAttachmentData, { loading: deleteAttachmentLoading }] = useRemoveAttachmentDataMutation({
+    onError({ message }) {
+      Alert.error(message)
+      setOpenDeleteModal(false)
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { removeAttachmentData: { response } } = data
+
+        if (response) {
+          const { message } = response
+          message && Alert.success(message);
+          setOpenDeleteModal(false)
+          history.push(PATIENTS_ROUTE)
+        }
+      }
+    }
+  });
+
+  const [getAttachmentUrl,] = useGetAttachmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() { },
+
+    onCompleted(data) {
+      const { getAttachment: { preSignedUrl } } = data
+      preSignedUrl && window.open(preSignedUrl, '_blank');
+    },
+  });
+
+  const handleAttachmentClick = (id: string) => {
+    getAttachmentUrl({
+      variables: {
+        getMedia: {
+          id
+        }
+      }
+    })
+  }
+
+  const handleDeleteAttachment = async () => {
+    if (deletedAttachment) {
+      await removeAttachmentData({
+        variables: {
+          removeAttachment: {
+            id: deletedAttachment
+          }
+        }
+      })
+    }
+  };
 
   if (!patientData && loading) {
     return (
@@ -140,6 +206,9 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
+  attachmentsData && attachmentsData[0] && setAttachmentUrl(attachmentsData[0].url || '')
+  const attachmentId = attachmentsData && attachmentsData[0]?.id
+
   return (
     <Box>
       <TabContext value={value}>
@@ -151,8 +220,12 @@ const PatientDetailsComponent = (): JSX.Element => {
 
         <Box className={classes.profileDetailsContainer}>
           <Box className={classes.profileCard}>
-            <Box pr={3.75}>
-              <Avatar variant="square" src="" className={classes.profileImage}></Avatar>
+            <Box key={attachmentId} display="flex" alignItems="center">
+              <Box pl={1} onClick={() => handleAttachmentClick(attachmentId || "")} >
+                <Box pr={3.75}>
+                  <Avatar variant="square" src={attachmentUrl || ''} className={classes.profileImage} />
+                </Box>
+              </Box>
             </Box>
 
             <Box flex={1}>
@@ -214,6 +287,17 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
         </Box>
       </TabContext>
+
+      {openDeleteModal && (
+        <ConfirmationModal
+          title={DELETE_REQUEST}
+          isOpen={openDeleteModal}
+          isLoading={deleteAttachmentLoading}
+          description={DELETE_REQUEST_DESCRIPTION}
+          handleDelete={handleDeleteAttachment}
+          setOpen={(open: boolean) => setOpenDeleteModal(open)}
+        />
+      )}
     </Box>
   )
 }

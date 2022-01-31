@@ -4,8 +4,10 @@ import { Controller, useFormContext } from "react-hook-form";
 import { TextField, InputLabel, FormControl } from "@material-ui/core";
 // styles, constants, utils and interfaces 
 import { ContactInputControlProps } from "../../../../../interfacesTypes";
+import { requiredLabel } from "../../../../../utils";
 
-const LocationController: FC<ContactInputControlProps> = ({ controllerName, controllerLabel, fieldType, error }): JSX.Element => {
+const LocationController: FC<ContactInputControlProps> = ({ controllerName, controllerLabel, fieldType,
+  error, isRequired }): JSX.Element => {
   const { control } = useFormContext();
 
   return (
@@ -14,7 +16,9 @@ const LocationController: FC<ContactInputControlProps> = ({ controllerName, cont
       control={control}
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={controllerName}>{controllerLabel}</InputLabel>
+          <InputLabel shrink htmlFor={controllerName}>
+            {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
+          </InputLabel>
 
           <TextField
             type={fieldType}

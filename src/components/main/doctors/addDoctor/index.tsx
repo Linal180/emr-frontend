@@ -1,7 +1,7 @@
 // packages block
 import { FC } from 'react';
 // component block
-import AddDoctorForm from "./AddDoctorForm";
+import DoctorForm from "../doctorForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
 import { ADD_DOCTOR, DOCTORS_BREAD, DOCTOR_NEW_BREAD, USERS_BREAD } from '../../../../constants';
@@ -14,7 +14,7 @@ const AddDoctorComponent: FC = (): JSX.Element => {
         path={[USERS_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD]}
       />
 
-      <AddDoctorForm />
+      <DoctorForm />
     </>
   )
 };
