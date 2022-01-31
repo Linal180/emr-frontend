@@ -64,7 +64,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, desc
 
         <Button onClick={onDelete} color="secondary" disabled={!checked || isLoading} variant="contained">
           {isLoading && <CircularProgress size={20} color={buttonColor} />}
-          aaaaaa
+
           {actionText ? actionText : DELETE_RECORD}
         </Button>
       </DialogActions>

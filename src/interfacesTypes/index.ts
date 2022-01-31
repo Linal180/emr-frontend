@@ -355,7 +355,8 @@ export interface MappedMaritialstatusInterface {
 }
 
 export type ParamsType = {
-  id: string
+  id: string;
+  facilityId?: string;
 }
 
 export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender">

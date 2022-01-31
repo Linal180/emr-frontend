@@ -25,6 +25,7 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 // constants
 export const EMPTY_OPTION = { id: "", name: "" };
 export const ALL_STAFF = "Staff";
+export const CALENDER = "Calender";
 export const DOCTOR_NOT_FOUND = "Doctor not found!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
@@ -472,6 +473,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const LOCATION_NOT_FOUND = 'Location not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
 export const SERVICE_NOT_FOUND = 'Service not found!';
@@ -789,9 +791,11 @@ export const agreementPoints = [
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
 export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
-export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
+export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
+export const FACILITY_LOCATION_NEW_BREAD = {text: ADD_LOCATION, link: '' }
+export const FACILITY_LOCATION_EDIT_BREAD = {text: EDIT_LOCATION, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }

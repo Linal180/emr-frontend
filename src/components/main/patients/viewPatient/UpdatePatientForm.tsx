@@ -117,7 +117,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
           previousFirstName && setValue("previousFirstName", previousFirstName)
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           medicationHistoryAuthority && setValue("medicationHistoryAuthority", medicationHistoryAuthority)
-          console.log("GET", deceasedDate)
           deceasedDate && setValue("deceasedDate", deceasedDate)
           registrationDate && setValue("registrationDate", registrationDate)
           releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
@@ -305,7 +304,6 @@ const UpdatePatientForm: FC = (): JSX.Element => {
     const { id: selectedGuarantorRelationship } = guarantorRelationship
     const { id: selectedEmergencyRelationship } = emergencyRelationship
     const { id: selectedKinRelationship } = kinRelationship
-    console.log("SET", deceasedDate)
     if (user) {
       const { id: userId } = user
 

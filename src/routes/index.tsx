@@ -28,17 +28,19 @@ import LabResults from "../pages/main/reports/labResultsListing";
 import ViewFacility from "../pages/main/facilities/viewFacility";
 import PatientDetails from "../pages/main/patients/patientDetails";
 import Facilities from "../pages/main/facilities/facilitiesListing";
+import { StartProject } from "../pages/main/dashboard/startProject";
 import AddAppointment from "../pages/main/appointments/addAppointment";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
 import Appointments from "../pages/main/appointments/appointmentsListing";
 import Locations from "../pages/main/facilities/locations/locationListing";
 import AppointmentPublic from "../pages/main/appointments/appointmentPublic";
+import { AddLocation } from "../pages/main/facilities/locations/addLocation";
+import { ViewLocation } from "../pages/main/facilities/locations/viewLocation";
 import FacilityServices from "../pages/main/facilities/facilityServicesListing";
 import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
 import PatientInformation from "../pages/main/appointments/appointmentPublic/patientInformation";
 import SlotConfirmation from "../pages/main/appointments/appointmentPublic/slotConfirmation";
 import AppointmentSuccess from "../pages/main/appointments/appointmentPublic/appointmentSuccess";
-import { StartProject } from "../pages/main/dashboard/startProject";
 // constants
 import { AuthContext } from "../context";
 import {
@@ -90,7 +92,9 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_SERVICES_ROUTE}`} component={FacilityServices} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
           <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
-          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id/${FACILITY_LOCATIONS_ROUTE}`} component={Locations} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_LOCATIONS_ROUTE}`} component={Locations} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_LOCATIONS_ROUTE}/new`} component={AddLocation} />
+          <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_LOCATIONS_ROUTE}/:id`} component={ViewLocation} />
           <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
         </Switch>
       </MainLayout>
