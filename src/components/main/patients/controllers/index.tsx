@@ -3,9 +3,12 @@ import { FC } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { FormControl, InputLabel, TextField } from "@material-ui/core";
 // interfaces block
+import { requiredLabel } from "../../../../utils";
 import { PatientInputControlProps } from "../../../../interfacesTypes";
 
-const PatientController: FC<PatientInputControlProps> = ({ controllerName, controllerLabel, fieldType, error, disabled }): JSX.Element => {
+const PatientController: FC<PatientInputControlProps> = ({
+  controllerName, controllerLabel, fieldType, error, disabled, isRequired
+}): JSX.Element => {
   const { control } = useFormContext()
 
   return (
@@ -16,7 +19,7 @@ const PatientController: FC<PatientInputControlProps> = ({ controllerName, contr
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={controllerName}>
-            {controllerLabel}
+            {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
           </InputLabel>
 
           <TextField

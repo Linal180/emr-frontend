@@ -1,12 +1,16 @@
 // packages block
 import { FC } from 'react';
+import { useParams } from 'react-router';
 // component block
-import UpdatePatientForm from "./UpdatePatientForm";
+import PatientForm from "../patientForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
+import { ParamsType } from '../../../../interfacesTypes';
 import { EDIT_PATIENT, PATIENTS_BREAD, PATIENT_EDIT_BREAD, USERS_BREAD } from '../../../../constants';
 
 const AddPatientComponent: FC = (): JSX.Element => {
+  const { id } = useParams<ParamsType>();
+
   return (
     <>
       <PageHeader
@@ -14,7 +18,7 @@ const AddPatientComponent: FC = (): JSX.Element => {
         path={[USERS_BREAD, PATIENTS_BREAD, PATIENT_EDIT_BREAD]}
       />
 
-      <UpdatePatientForm />
+      <PatientForm isEdit id={id} />
     </>
   )
 };
