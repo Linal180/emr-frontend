@@ -110,7 +110,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           setDoctor(doctor)
 
           if (contacts) {
-            const { email, phone, zipCode, mobile, fax, address, address2, city, state, country } = contacts[0]
+            const { email, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = contacts[0]
 
             fax && setValue('fax', fax)
             city && setValue('city', city)
@@ -122,6 +122,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             address && setValue('address', address)
             country && setValue('country', country)
             address2 && setValue('address2', address2)
+            pager && setValue('pager', pager)
           }
 
           if (billingAddress) {
