@@ -12,6 +12,7 @@ import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import { PROFILE_TOP_TABS } from "../../../../constants";
+import { formatPhone } from "../../../../utils";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -57,7 +58,7 @@ const PatientDetailsComponent = (): JSX.Element => {
     )
   }
 
-  const { firstName, lastName, dob, contacts, usualProvider, createdAt } = patientData || {}
+  const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
 
   const PATIENT_AGE = moment().diff(dob, 'years');
@@ -67,7 +68,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   if (selfContact && selfContact[0]) {
     const { phone, email, country, state } = selfContact[0]
-    selfPhoneNumber = phone || "--"
+    selfPhoneNumber = formatPhone(phone || '') || "--"
     selfEmail = email || "--"
     selfCurrentLocation = `${country} ${state}` || "--"
   }
@@ -94,9 +95,19 @@ const PatientDetailsComponent = (): JSX.Element => {
   let providerName = ""
   let providerDateAdded = createdAt ? moment.unix(parseInt(createdAt)).format("MMM. DD, YYYY") : '--'
 
-  if (usualProvider && usualProvider[0]) {
-    const { firstName, lastName } = usualProvider[0]
-    providerName = `${firstName} ${lastName}` || "--"
+  if (doctorPatients) {
+    const currentDoctor = doctorPatients.map(doctorPatient => {
+      if(doctorPatient.currentProvider){
+        return doctorPatient.doctor
+      }
+
+      return null
+    })[0];
+
+    if(currentDoctor){
+      const { firstName, lastName } =  currentDoctor || {};
+      providerName = `${firstName} ${lastName}` || "--"
+    }
   }
 
   const ProfileAdditionalDetails = [

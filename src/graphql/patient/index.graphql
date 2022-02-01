@@ -15,49 +15,40 @@ query FindAllPatient($patientInput: PatientInput!) {
     patients {
       id
       firstName
-      middleName
+      # middleName
       email
       lastName
-      firstNameUsed
-      prefferedName
-      previousFirstName
-      previouslastName
-      motherMaidenName
-      ssn
+      # firstNameUsed
+      # prefferedName
+      # previousFirstName
+      # previouslastName
+      # motherMaidenName
+      # ssn
       gender
       dob
-      registrationDepartment
-      primaryDepartment
-      registrationDate
-      deceasedDate
-      privacyNotice
-      releaseOfInfoBill
-      callToConsent
-      medicationHistoryAuthority
-      patientNote
-      language
-      race
-      ethnicity
-      maritialStatus
-      sexualOrientation
-      genderIdentity
-      sexAtBirth
-      pronouns
-      homeBound
-      holdStatement
-      statementDelivereOnline
-      statementNote
-      statementNoteDateFrom
-      statementNoteDateTo
-      attachments {
-      id
-      type
-      typeId
-      key
-      url
-      createdAt
-      updatedAt
-    }
+      # registrationDepartment
+      # primaryDepartment
+      # registrationDate
+      # deceasedDate
+      # privacyNotice
+      # releaseOfInfoBill
+      # callToConsent
+      # medicationHistoryAuthority
+      # patientNote
+      # language
+      # race
+      # ethnicity
+      # maritialStatus
+      # sexualOrientation
+      # genderIdentity
+      # sexAtBirth
+      # pronouns
+      # homeBound
+      # holdStatement
+      # statementDelivereOnline
+      # statementNote
+      # statementNoteDateFrom
+      # statementNoteDateTo
       createdAt
       updatedAt
       
@@ -168,15 +159,6 @@ query GetPatient($getPatient: GetPatient!) {
       statementNote
       statementNoteDateFrom
       statementNoteDateTo
-      attachments{
-       id
-       type
-       typeId
-       key
-       url
-       createdAt
-       updatedAt
-      }
       createdAt
       updatedAt
       
@@ -235,18 +217,15 @@ query GetPatient($getPatient: GetPatient!) {
         updatedAt
       }
       
-      usualProvider {
+      doctorPatients {
         id
-        firstName
-        lastName
-        createdAt
-        updatedAt
+        doctorId
+        currentProvider
         
-        schedule {
+        doctor {
           id
-          startAt
-          endAt
-          recurringEndDate
+          firstName
+          lastName
           createdAt
           updatedAt
         }
