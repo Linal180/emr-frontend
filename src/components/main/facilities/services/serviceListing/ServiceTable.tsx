@@ -1,6 +1,6 @@
 // packages block
 import { FC, useEffect, ChangeEvent, Reducer, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
 // components block
@@ -24,7 +24,6 @@ import {
   ACTION, NAME, DURATION, STATUS, PRICE, PAGE_LIMIT, CANT_DELETE_SERVICE, SERVICE,
   DELETE_SERVICE_DESCRIPTION, ACTIVE, INACTIVE, FACILITIES_ROUTE, FACILITY_SERVICES_ROUTE
 } from "../../../../../constants";
-import history from "../../../../../history";
 
 const ServicesTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -110,12 +109,6 @@ const ServicesTable: FC = (): JSX.Element => {
     }
   };
 
-  const handleEdit = (id: string) => {
-    if (id) {
-      history.push(`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}/${id}`)
-    }
-  };
-
   const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
 
   const handleSearch = () => { }
@@ -180,11 +173,15 @@ const ServicesTable: FC = (): JSX.Element => {
                           {ActiveStatus}
                         </Box>
                       </TableCell>
+
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Box className={classes.iconsBackground} onClick={() => handleEdit(id || '')}>
-                            <EditIcon />
+                          <Box className={classes.iconsBackground}>
+                            <Link to={`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}/${id}`}>
+                              <EditIcon />
+                            </Link>
                           </Box>
+
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                             <TrashIcon />
                           </Box>

@@ -20,7 +20,7 @@ import { toggleButtonComponent } from "../../../../styles/publicAppointment/pati
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
-import { patientsSchema } from '../../../../validationSchemas';
+import { extendedPatientSchema } from '../../../../validationSchemas';
 import { GeneralFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -65,7 +65,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   })
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(patientsSchema)
+    resolver: yupResolver(extendedPatientSchema)
   });
   const { handleSubmit, setValue, control, formState: { errors } } = methods;
 
@@ -88,13 +88,23 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent,
             patientNote, language, race, ethnicity, maritialStatus, sexualOrientation, genderIdentity, sexAtBirth,
             pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
-            statementNoteDateTo, usualProvider, facility, contacts, employer, medicationHistoryAuthority,
+            statementNoteDateTo, facility, contacts, employer, medicationHistoryAuthority, doctorPatients
           } = patient;
 
-          if (usualProvider) {
-            const { id: usualProviderId, firstName, lastName } = usualProvider[0] || {};
-            usualProviderId && setValue("usualProviderId", setRecord(usualProviderId,
-              `${firstName} ${lastName}` || ''))
+          if (doctorPatients) {
+            const currentDoctor = doctorPatients.map(doctorPatient => {
+              if (doctorPatient.currentProvider) {
+                return doctorPatient.doctor
+              }
+
+              return null
+            })[0];
+
+            if (currentDoctor) {
+              const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
+              usualProviderId && setValue("usualProviderId", setRecord(usualProviderId,
+                `${firstName} ${lastName}` || ''))
+            }
           }
 
           if (facility) {
@@ -664,6 +674,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid item md={12} sm={12} xs={12}>
                       <PatientController
+                        isRequired
                         fieldType="text"
                         controllerName="basicZipCode"
                         controllerLabel={ZIP_CODE}

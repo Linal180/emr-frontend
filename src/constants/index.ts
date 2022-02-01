@@ -12,9 +12,12 @@ import {
 // regex
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
+export const ZIP_REGEX = /^\d{5}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
+export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
+export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
 export const FACILITY_CODE_REGEX = /^[A-Z]{2,5}$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
@@ -457,6 +460,8 @@ export const toolbarOptions = {
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
+export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
+export const ZIP_VALIDATION_MESSAGE = "Valid zip code is 5-digit long";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const REQUIRED_MESSAGE = "This field is required";

@@ -11,7 +11,7 @@ const DropZoneContainer: FC<FormVerification> = ({ imageSide }) => {
 
   return (
     <Box display="flex" className={classes.dropZoneContainer}>
-      <Box >
+      <Box>
         <FileIcon />
         <Typography component="p" variant="body2">{imageSide}</Typography>
       </Box>

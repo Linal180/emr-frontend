@@ -219,7 +219,6 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                 )}
               </CardComponent>
             </Grid>
-
           </Grid>
         </Box>
 
