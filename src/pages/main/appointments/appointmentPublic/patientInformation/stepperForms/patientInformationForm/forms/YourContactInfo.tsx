@@ -37,7 +37,7 @@ const YourContactInfo = () => {
   )
 
   return (
-    <Box pt={3} >
+    <Box pt={3}>
       <CardComponent cardTitle="How we can contact you?">
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>

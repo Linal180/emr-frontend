@@ -13,7 +13,7 @@ const index = () => {
       justifyContent="center"
       alignItems="center"
     >
-      <Card >
+      <Card>
         <Box minHeight="580px" className={classes.container}>
           <Box maxWidth="700px">
             <Typography component="h3" variant="h3" >Thank you! Your visit at 8:15 am has been confirmed.</Typography>

@@ -32,7 +32,7 @@ const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
           {children}
         </Box>
       </Box>
-    </Box >
+    </Box>
   );
 };
 

@@ -26,6 +26,7 @@ import {
 } from "../../../../../constants";
 import { useParams } from 'react-router';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
+import PhoneField from '../../../../common/PhoneInput';
 
 const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
@@ -232,21 +233,11 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
                     <Grid container spacing={2}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <LocationController
-                          fieldType="text"
-                          controllerName="phone"
-                          error={phoneError}
-                          controllerLabel={PHONE}
-                        />
+                        <PhoneField name="phone" error={phoneError} label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <LocationController
-                          fieldType="text"
-                          controllerName="fax"
-                          error={faxError}
-                          controllerLabel={FAX}
-                        />
+                        <PhoneField name="fax" error={faxError} label={FAX} />
                       </Grid>
                     </Grid>
 
@@ -318,7 +309,7 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           </Button>
         </Box>
       </form>
-    </FormProvider >
+    </FormProvider>
   );
 };
 

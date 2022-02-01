@@ -1,34 +1,27 @@
 // packages block
 import { ChangeEvent, useState } from "react";
-import { Avatar, Box, Button, Grid, Tab, Typography } from "@material-ui/core";
-import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import moment from "moment";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { Avatar, Box, Button, Grid, Tab, Typography } from "@material-ui/core";
 // components block
 import CardComponent from "../../../common/CardComponent";
-import history from "../../../../history";
 // constants, history, styling block
-import { DELETE_REQUEST, DELETE_REQUEST_DESCRIPTION, PATIENTS_ROUTE, PROFILE_TOP_TABS } from "../../../../constants";
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
+import history from "../../../../history";
 import { BLACK_TWO } from "../../../../theme";
-import { AttachmentsPayload, Patient, useGetAttachmentLazyQuery, useGetPatientQuery, useRemoveAttachmentDataMutation } from "../../../../generated/graphql";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import Alert from "../../../common/Alert";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
+import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
+import { PROFILE_TOP_TABS } from "../../../../constants";
+import { formatPhone } from "../../../../utils";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const [value, setValue] = useState('1');
   const [patientData, setPatientData] = useState<Patient | null>();
-  const [deletedAttachment,] = useState<string>('');
-  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-  const [attachmentUrl, setAttachmentUrl] = useState<string>('');
-  const [attachmentsData, setAttachmentsData] = useState<AttachmentsPayload["attachments"]>();
-
-
   const { location: { pathname } } = history
   const getPatientIdArray = pathname.split("/")
   const getPatientId = getPatientIdArray[getPatientIdArray.length - 2]
-
+  
   const handleChange = (event: ChangeEvent<{}>, newValue: string) => {
     setValue(newValue);
   };
@@ -53,76 +46,19 @@ const PatientDetailsComponent = (): JSX.Element => {
         const { getPatient: { patient } } = data
 
         if (patient && !loading) {
-          const { attachments } = patient
-          setAttachmentsData(attachments)
           setPatientData(patient as Patient)
         }
       }
     },
   });
 
-  const [removeAttachmentData, { loading: deleteAttachmentLoading }] = useRemoveAttachmentDataMutation({
-    onError({ message }) {
-      Alert.error(message)
-      setOpenDeleteModal(false)
-    },
-
-    onCompleted(data) {
-      if (data) {
-        const { removeAttachmentData: { response } } = data
-
-        if (response) {
-          const { message } = response
-          message && Alert.success(message);
-          setOpenDeleteModal(false)
-          history.push(PATIENTS_ROUTE)
-        }
-      }
-    }
-  });
-
-  const [getAttachmentUrl,] = useGetAttachmentLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() { },
-
-    onCompleted(data) {
-      const { getAttachment: { preSignedUrl } } = data
-      preSignedUrl && window.open(preSignedUrl, '_blank');
-    },
-  });
-
-  const handleAttachmentClick = (id: string) => {
-    getAttachmentUrl({
-      variables: {
-        getMedia: {
-          id
-        }
-      }
-    })
-  }
-
-  const handleDeleteAttachment = async () => {
-    if (deletedAttachment) {
-      await removeAttachmentData({
-        variables: {
-          removeAttachment: {
-            id: deletedAttachment
-          }
-        }
-      })
-    }
-  };
-
-  if (!patientData && loading) {
+  if (!patientData || loading) {
     return (
       <Box>Loading...</Box>
     )
   }
 
-  const { firstName, lastName, dob, contacts, usualProvider, createdAt } = patientData || {}
+  const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
 
   const PATIENT_AGE = moment().diff(dob, 'years');
@@ -132,7 +68,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   if (selfContact && selfContact[0]) {
     const { phone, email, country, state } = selfContact[0]
-    selfPhoneNumber = phone || "--"
+    selfPhoneNumber = formatPhone(phone || '') || "--"
     selfEmail = email || "--"
     selfCurrentLocation = `${country} ${state}` || "--"
   }
@@ -159,9 +95,19 @@ const PatientDetailsComponent = (): JSX.Element => {
   let providerName = ""
   let providerDateAdded = createdAt ? moment.unix(parseInt(createdAt)).format("MMM. DD, YYYY") : '--'
 
-  if (usualProvider && usualProvider[0]) {
-    const { firstName, lastName } = usualProvider[0]
-    providerName = `${firstName} ${lastName}` || "--"
+  if (doctorPatients) {
+    const currentDoctor = doctorPatients.map(doctorPatient => {
+      if(doctorPatient.currentProvider){
+        return doctorPatient.doctor
+      }
+
+      return null
+    })[0];
+
+    if(currentDoctor){
+      const { firstName, lastName } =  currentDoctor || {};
+      providerName = `${firstName} ${lastName}` || "--"
+    }
   }
 
   const ProfileAdditionalDetails = [
@@ -206,9 +152,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-  attachmentsData && attachmentsData[0] && setAttachmentUrl(attachmentsData[0].url || '')
-  const attachmentId = attachmentsData && attachmentsData[0]?.id
-
   return (
     <Box>
       <TabContext value={value}>
@@ -220,10 +163,10 @@ const PatientDetailsComponent = (): JSX.Element => {
 
         <Box className={classes.profileDetailsContainer}>
           <Box className={classes.profileCard}>
-            <Box key={attachmentId} display="flex" alignItems="center">
-              <Box pl={1} onClick={() => handleAttachmentClick(attachmentId || "")} >
+            <Box display="flex" alignItems="center">
+              <Box pl={1}>
                 <Box pr={3.75}>
-                  <Avatar variant="square" src={attachmentUrl || ''} className={classes.profileImage} />
+                  <Avatar variant="square" src='' className={classes.profileImage} />
                 </Box>
               </Box>
             </Box>
@@ -287,17 +230,6 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
         </Box>
       </TabContext>
-
-      {openDeleteModal && (
-        <ConfirmationModal
-          title={DELETE_REQUEST}
-          isOpen={openDeleteModal}
-          isLoading={deleteAttachmentLoading}
-          description={DELETE_REQUEST_DESCRIPTION}
-          handleDelete={handleDeleteAttachment}
-          setOpen={(open: boolean) => setOpenDeleteModal(open)}
-        />
-      )}
     </Box>
   )
 }
