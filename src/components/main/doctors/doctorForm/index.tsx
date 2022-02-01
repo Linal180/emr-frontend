@@ -30,7 +30,7 @@ import {
   MAMMOGRAPHY_CERT_NUMBER, CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
-  LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
+  LANGUAGE_SPOKEN, SPECIALITY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   TAXONOMY_CODE,
   EMPTY_OPTION,
@@ -394,10 +394,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
-                          label={SPECIALTY}
+                          label={SPECIALITY}
                           name="speciality"
                           options={MAPPED_SPECIALTIES}
-                          error={specialtyError?.message && requiredMessage(SPECIALTY)}
+                          error={specialtyError?.message && requiredMessage(SPECIALITY)}
                         />
                       </Grid>
                     </Grid>
