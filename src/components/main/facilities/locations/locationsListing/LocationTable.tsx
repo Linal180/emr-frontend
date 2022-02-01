@@ -1,6 +1,6 @@
 // packages block
 import { ChangeEvent, FC, Reducer, useEffect, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import {
   Box, IconButton, Table, TableBody, TableCell, TableHead, TextField,
@@ -11,8 +11,7 @@ import Alert from "../../../../common/Alert";
 import TableLoader from "../../../../common/TableLoader";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import history from "../../../../../history";
-import { renderTh } from "../../../../../utils";
+import { formatPhone, renderTh } from "../../../../../utils";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
@@ -117,12 +116,6 @@ const LocationTable: FC = (): JSX.Element => {
     }
   };
 
-  const handleEdit = (id: string) => {
-    if (id) {
-      history.push(`${FACILITIES_ROUTE}/${facilityId}${FACILITY_LOCATIONS_ROUTE}/${id}`)
-    }
-  };
-
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -179,13 +172,15 @@ const LocationTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{city}</TableCell>
                       <TableCell scope="row">{state}</TableCell>
                       <TableCell scope="row">{zipCode}</TableCell>
-                      <TableCell scope="row">{fax}</TableCell>
-                      <TableCell scope="row">{phone}</TableCell>
+                      <TableCell scope="row">{formatPhone(fax || '')}</TableCell>
+                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Box className={classes.iconsBackground} onClick={() => handleEdit(id || '')}>
-                            <EditIcon />
+                          <Box className={classes.iconsBackground}>
+                            <Link to={`${FACILITIES_ROUTE}/${facilityId}${FACILITY_LOCATIONS_ROUTE}/${id}`}>
+                              <EditIcon />
+                            </Link>
                           </Box>
 
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
