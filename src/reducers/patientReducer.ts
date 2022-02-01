@@ -63,8 +63,8 @@ export type Action =
   | { type: ActionType.SET_BASIC_CONTACT_ID; basicContactId: string }
   | { type: ActionType.SET_DELETE_PATIENT_ID; deletePatientId: string }
   | { type: ActionType.SET_GUARDIAN_CONTACT_ID; guardianContactId: string }
-  | { type: ActionType.SET_EMERGENCY_CONTACT_ID; emergencyContactId: string }
   | { type: ActionType.SET_PATIENTS, patients: PatientsPayload['patients'] }
+  | { type: ActionType.SET_EMERGENCY_CONTACT_ID; emergencyContactId: string }
   | { type: ActionType.SET_GUARANTOR_CONTACT_ID; guarantorContactId: string }
 
 export const patientReducer = (state: State, action: Action): State => {
@@ -152,6 +152,5 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         emergencyContactId: action.emergencyContactId
       }
-
   }
 };

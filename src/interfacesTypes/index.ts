@@ -246,13 +246,13 @@ export type ResetPasswordInputs = {
 };
 
 interface IControlLabel {
-  controllerLabel: string;
-  fieldType?: string;
-  pattern?: ValidationRule<RegExp> | undefined;
   error?: string;
+  fieldType?: string;
   disabled?: boolean;
   isRequired?: boolean;
   isPassword?: boolean;
+  controllerLabel: string;
+  pattern?: ValidationRule<RegExp> | undefined;
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -644,6 +644,10 @@ export interface ServiceModalProps extends DialogTypes {
 }
 export interface ContactInputControlProps extends IControlLabel {
   controllerName: ContactInputTypes
+}
+
+export interface CustomInputControlProps extends IControlLabel {
+  controllerName: string
 }
 
 export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }

@@ -3,14 +3,14 @@ import { FC, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { FormControl, InputLabel, TextField } from "@material-ui/core";
 // components block
-import ShowPassword from "../../../common/ShowPassword";
+import ShowPassword from "../components/common/ShowPassword";
 // styles, constants, utils and interfaces block
-import { PASSWORD, TEXT } from "../../../../constants";
-import { StaffInputControlProps, PasswordType } from "../../../../interfacesTypes";
-import { requiredLabel } from "../../../../utils";
+import { requiredLabel } from "../utils";
+import { PASSWORD, TEXT } from "../constants";
+import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
-const StaffController: FC<StaffInputControlProps> = ({ isRequired, controllerName, controllerLabel,
-  fieldType, error, isPassword, disabled
+const InputController: FC<CustomInputControlProps> = ({
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled
 }): JSX.Element => {
   const { control } = useFormContext()
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
@@ -56,5 +56,5 @@ const StaffController: FC<StaffInputControlProps> = ({ isRequired, controllerNam
     />
   );
 };
--
-export default StaffController;
+
+export default InputController;

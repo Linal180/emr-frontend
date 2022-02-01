@@ -121,6 +121,10 @@ export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
 };
 
+export const getFormattedDate = (date: string) => {
+  return moment(date, "x").format("ddd MMM. DD, YYYY")
+};
+
 export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
@@ -169,11 +173,11 @@ export const setRecord = (id: string, name: string): SelectorOption => {
 };
 
 export const formatPhone = (phone: string): string => {
-  return (phone && phone) ? `(${phone.substring(0,3)})  ${phone.substring(3,6 )}-${phone.substring(6,11)}` : ''
+  return (phone && phone) ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : ''
 };
 
 export const dateValidation = (endDate: string, startDate: string): boolean => {
-  if(startDate && endDate){
+  if (startDate && endDate) {
     return new Date(endDate) >= new Date(startDate)
   } else return true;
 };
