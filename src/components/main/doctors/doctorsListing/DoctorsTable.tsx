@@ -14,13 +14,11 @@ import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
 import {
-  useFindAllDoctorLazyQuery, useRemoveDoctorMutation,
-  DoctorPayload,
-  AllDoctorPayload
+  AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
-  CANT_DELETE_DOCTOR, DOCTOR, NAME
+  ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
+  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALITY
 } from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
@@ -61,7 +59,7 @@ const DoctorsTable: FC = (): JSX.Element => {
         }
       }
     }
-  }); 
+  });
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -141,11 +139,11 @@ const DoctorsTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
+              {renderTh(SPECIALITY)}
               {renderTh(FACILITY)}
-              {renderTh(SPECIALTY)}
               {renderTh(ACTION, "center")}
-            </TableRow>
-          </TableHead>
+            </TableRow >
+          </TableHead >
 
           <TableBody>
             {loading ? (
@@ -156,7 +154,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               doctors?.map((doctor: DoctorPayload['doctor']) => {
-                const { id, firstName, lastName, speciality: specialty, contacts, facility, languagesSpoken } = doctor || {};
+                const { id, firstName, lastName, speciality: specialty, contacts, facility } = doctor || {};
                 const doctorContact = contacts && contacts[0];
                 const { email, phone } = doctorContact || {};
                 const { name } = facility || {};
@@ -168,9 +166,9 @@ const DoctorsTable: FC = (): JSX.Element => {
                         {`${firstName} ${lastName}`}
                       </Link>
                     </TableCell>
+
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{languagesSpoken}</TableCell>
                     <TableCell scope="row">{upperToNormal(specialty as string)}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
@@ -191,7 +189,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               })
             )}
           </TableBody>
-        </Table>
+        </Table >
 
         {((!loading && doctors?.length === 0) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
@@ -199,16 +197,18 @@ const DoctorsTable: FC = (): JSX.Element => {
           </Box>
         )}
 
-        {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
-            <Pagination
-              shape="rounded"
-              page={page}
-              count={totalPages}
-              onChange={handleChange}
-            />
-          </Box>
-        )}
+        {
+          totalPages > 1 && (
+            <Box display="flex" justifyContent="flex-end" pt={3}>
+              <Pagination
+                shape="rounded"
+                page={page}
+                count={totalPages}
+                onChange={handleChange}
+              />
+            </Box>
+          )
+        }
 
         <ConfirmationModal
           title={DOCTOR}
@@ -218,8 +218,8 @@ const DoctorsTable: FC = (): JSX.Element => {
           description={DELETE_DOCTOR_DESCRIPTION}
           setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
         />
-      </Box>
-    </Box>
+      </Box >
+    </Box >
   );
 };
 

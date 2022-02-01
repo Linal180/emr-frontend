@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 // components block
 import CardComponent from '../../../../../../../../components/common/CardComponent';
 import RenderInputField from '../../../components/RenderInputField';
-import ToggleButtonComponent from '../../../components/ToggleButtonComponent';
+import ToggleButtonComponent from '../../../../../../../../components/common/ToggleButtonComponent';
 
 const EmergencyContact = () => {
   const { control } = useForm({});
@@ -38,7 +38,7 @@ const EmergencyContact = () => {
   )
 
   return (
-    <Box pt={3} >
+    <Box pt={3}>
       <CardComponent cardTitle="Emergency Contact">
         <Grid container spacing={3}>
           <Grid item md={6} sm={12} xs={12}>
@@ -106,7 +106,7 @@ const EmergencyContact = () => {
 
 
       </CardComponent>
-    </Box >
+    </Box>
   );
 };
 

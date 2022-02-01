@@ -1,28 +1,38 @@
 // packages block
 import { ChangeEvent, FC, Reducer, useEffect, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
+import {
+  Box, IconButton, Table, TableBody, TableCell, TableHead, TextField,
+  TableRow
+} from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
-import LocationModal from "../locationModal";
 import TableLoader from "../../../../common/TableLoader";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../../utils";
+import { formatPhone, renderTh } from "../../../../../utils";
+import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
-import { LocationTableProps, ParamsType } from "../../../../../interfacesTypes";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
-import { locationReducer, Action, initialState, State, ActionType } from '../../../../../reducers/locationReducer';
-import { ContactPayload, ContactsPayload, useFindAllContactsLazyQuery, useRemoveContactMutation } from "../../../../../generated/graphql";
-import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION, LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY } from "../../../../../constants";
+import {
+  locationReducer, Action, initialState, State, ActionType
+} from '../../../../../reducers/locationReducer';
+import {
+  ContactPayload, ContactsPayload, useFindAllContactsLazyQuery,
+  useRemoveContactMutation
+} from "../../../../../generated/graphql";
+import {
+  ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, FAX, STATE, CANT_DELETE_LOCATION,
+  LOCATION, DELETE_LOCATION_DESCRIPTION, LOCATION_DELETED_SUCCESSFULLY, FACILITIES_ROUTE, FACILITY_LOCATIONS_ROUTE
+} from "../../../../../constants";
 
-const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }): JSX.Element => {
+const LocationTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { id: facilityId } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(locationReducer, initialState)
-  const { page, totalPages, isEdit, openDelete, locationId, deleteLocationId, searchQuery, locations } = state;
+  const { page, totalPages, openDelete, deleteLocationId, searchQuery, locations } = state;
 
   const [findAllContacts, { loading, error }] = useFindAllContactsLazyQuery({
     variables: {
@@ -106,25 +116,6 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
     }
   };
 
-  const handleEdit = (id: string) => {
-    if (id) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
-      dispatch({ type: ActionType.SET_LOCATION_ID, locationId: id })
-      locationDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: true })
-    }
-  };
-
-  const handleReload = () => {
-    dispatch({ type: ActionType.SET_LOCATIONS, locations: [] });
-    findAllContacts();
-  }
-
-  useEffect(() => {
-    if (!openModal) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
-    }
-  }, [openModal])
-
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -132,7 +123,9 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
           <TextField
             value={searchQuery}
             className={classes.tablesSearchIcon}
-            onChange={({ target: { value } }) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: value })}
+            onChange={({ target: { value } }) => dispatch({
+              type: ActionType.SET_SEARCH_QUERY, searchQuery: value
+            })}
             onKeyPress={({ key }) => key === "Enter" && handleSearch()}
             name="searchQuery"
             variant="outlined"
@@ -179,13 +172,15 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
                       <TableCell scope="row">{city}</TableCell>
                       <TableCell scope="row">{state}</TableCell>
                       <TableCell scope="row">{zipCode}</TableCell>
-                      <TableCell scope="row">{fax}</TableCell>
-                      <TableCell scope="row">{phone}</TableCell>
+                      <TableCell scope="row">{formatPhone(fax || '')}</TableCell>
+                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Box className={classes.iconsBackground} onClick={() => handleEdit(id || '')}>
-                            <EditIcon />
+                          <Box className={classes.iconsBackground}>
+                            <Link to={`${FACILITIES_ROUTE}/${facilityId}${FACILITY_LOCATIONS_ROUTE}/${id}`}>
+                              <EditIcon />
+                            </Link>
                           </Box>
 
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
@@ -212,15 +207,9 @@ const LocationTable: FC<LocationTableProps> = ({ locationDispatch, openModal }):
             isLoading={deleteLocationLoading}
             description={DELETE_LOCATION_DESCRIPTION}
             handleDelete={handleDeleteLocation}
-            setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
-          />
-
-          <LocationModal
-            isEdit={isEdit}
-            isOpen={openModal}
-            reload={handleReload}
-            locationId={locationId}
-            setOpen={(open: boolean) => locationDispatch({ type: ActionType.SET_OPEN_MODAL, openModal: open })}
+            setOpen={(open: boolean) => dispatch({
+              type: ActionType.SET_OPEN_DELETE, openDelete: open
+            })}
           />
         </Box>
       </Box>

@@ -1,3 +1,5 @@
+//packages block
+import moment from 'moment-timezone';
 // graphql and interfaces block
 import { formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
@@ -9,27 +11,42 @@ import {
 
 // regex
 export const NPI_REGEX = /^\d{10}$/;
+export const TID_REGEX = /^9\d{8}$/;
+export const ZIP_REGEX = /^\d{5}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
+export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
+export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
+export const FACILITY_CODE_REGEX = /^[A-Z]{2,5}$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
+export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
+export const EMPTY_OPTION = { id: "", name: "" };
 export const ALL_STAFF = "Staff";
+export const CALENDER = "Calender";
+export const DOCTOR_NOT_FOUND = "Doctor not found!";
+export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
+export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const CREATE_STAFF = "Create Staff";
+export const CREATE_SERVICE = "Create Service";
 export const CREATE_FACILITY = "Create facility";
 export const CREATE_LOCATION = "Create location";
 export const UPDATE_LOCATION_TEXT = "Update location";
 export const ADD_STAFF = "Add Staff";
+export const CANT_UPDATE_STAFF = "Staff cant be updated";
+export const CANT_CREATE_STAFF = "Can't create staff";
 export const CREATE_DOCTOR = "Create Doctor";
 export const CREATE_APPOINTMENT = "Create Appointment";
 export const ADD_DOCTOR = "Add Doctor";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
 export const UPDATE_PATIENT = "Update Patient";
+export const CREATE_PATIENT = "Create Patient";
 export const EDIT_PATIENT = "Edit Patient";
 export const ADD_RESULT = "Add Result";
 export const ADD_APPOINTMENT = "Add Appointment";
@@ -37,6 +54,9 @@ export const VIEW_STAFF = "View Staff";
 export const UPDATE_STAFF = "Update Staff";
 export const UPDATE_FACILITY = "Update Facility";
 export const UPDATE_DOCTOR = "Update Doctor";
+export const SET_TIME_ZONE = "Set Time Zone";
+export const TIME_ZONE_TEXT = "Time Zone";
+export const UPDATE_TIME = "Update Time";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
 export const PROVIDER = "Provider";
@@ -44,6 +64,7 @@ export const CONTACT = "Contact";
 export const STAFF_BASIC_INFO = "Staff Basic Info";
 export const LOCATION_INFO = "Location Info";
 export const FACILITY_INFO = "Facility Information";
+export const SERVICE_INFO = "Service Information";
 export const FACILITY_CONTACT = "Contact";
 export const ASSOCIATED_FACILITY = "Associated Facility";
 export const BILLING_ADDRESS = "Billing Address";
@@ -55,14 +76,14 @@ export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records"
 export const NON_AVAILABILITY_TEXT = "Non-Availability";
 export const ADDITIONAL_INFO = "Additional Info";
-export const AVAILABILITY_STATUS = "set your availability status";
+export const AVAILABILITY_STATUS = "Set your availability status";
 export const TAX_ID_DETAILS = "Tax ID Details";
 export const MIDDLE_NAME = "Middle initial";
 export const PREFIX = "Prefix";
 export const SUFFIX = "Suffix";
 export const PROVIDER_INITIALS = "Provider Initials";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
-export const SPECIALTY = "Specialty";
+export const SPECIALITY = "Speciality";
 export const DOB = "Date of Birth";
 export const DESEASED_DATE = "deseased Date";
 export const DOCTOR_ID = "doctor id";
@@ -99,7 +120,7 @@ export const BILLING_FACILITY = "Billing Facility";
 export const MEDICARE_GRP_NUMBER = "Medicare GRP Number";
 export const MEDICAID_GRP_NUMBER = "Medicaid GRP Number";
 export const MAMMOGRAPHY_CERT_NUMBER = "Mammography Cert Number";
-export const CAMPUS_GRP_NUMBER = "Campus GRP Number";
+export const CHAMPUS_GRP_NUMBER = "Champus GRP Number";
 export const BLUE_SHIED_NUMBER = "Blue Shied Number";
 export const TAX_ID_STUFF = "Tax ID Stuff / Provider Site ID";
 export const SPECIALTY_LICENSE = "Specialty License";
@@ -151,7 +172,7 @@ export const USER_NAME = "Username";
 export const STATUS = "Status";
 export const CLAIMED = "Claimed";
 export const SSN = "SSN";
-export const SSN_TYPE = "Snn Type";
+export const SSN_TYPE = "SNN Type";
 export const TAGS_TEXT = "Tags";
 export const ACTION = "Actions";
 export const DRAWER_WIDTH = 300;
@@ -212,7 +233,7 @@ export const DEACTIVATED = "DEACTIVATED";
 export const HIDDEN_PASSWORD = "*******";
 export const DELETE_USER = "Delete User";
 export const DELETE_STAFF = "Delete Staff";
-export const DELETE_PATIENT = "Delete Staff";
+export const DELETE_PATIENT = "Delete Patient";
 export const DELETE_RECORD = "Delete Record";
 export const DELETE_FACILITY = "Delete Facility";
 export const LOCATIONS_TEXT = "Locations";
@@ -221,6 +242,7 @@ export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
 export const ADD_SERVICE = "Add Service";
 export const UPDATE_SERVICE = "Update Service";
+export const EDIT_SERVICE = "Edit Service";
 export const ADD_FACILITY_SERVICE = "Add Facility Service";
 export const UPDATE_FACILITY_SERVICE = "Update Facility Service";
 export const ADD_LOCATION = "Add Facility Location";
@@ -253,6 +275,7 @@ export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const APPOINTMENT_TEXT = "Appointment";
+export const SETTINGS_TEXT = "Settings";
 export const CLAIM_FEED_TEXT = "Claim Feed";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
@@ -326,7 +349,7 @@ export const SEXUAL_ORIENTATION = "Sexual Orientation"
 export const USUAL_PROVIDER_ID = "Usual Provider"
 export const PRONOUNS = "pronouns"
 export const RACE = "Race"
-export const RELATIONSHIP = "RelationShip"
+export const RELATIONSHIP = "Relationship"
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor"
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
 export const EMPLOYER_PHONE = "Employer Phone";
@@ -400,6 +423,7 @@ export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const STAFF_ROUTE = "/staff";
 export const DOCTORS_ROUTE = "/doctors";
+export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
@@ -437,13 +461,19 @@ export const toolbarOptions = {
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
+export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
+export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
+export const ZIP_VALIDATION_MESSAGE = "Valid zip code is 5-digit long";
+export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
+export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
-export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code 10-alphanumeric";
+export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;
@@ -453,8 +483,9 @@ export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed th
 export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 // ALERT MESSAGES
-export const LOGIN_SUCCESSFULLY = "Welcome to ERM";
+export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const LOCATION_NOT_FOUND = 'Location not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
 export const SERVICE_NOT_FOUND = 'Service not found!';
@@ -616,6 +647,10 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
 ]
 
+export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezone => {
+  return { id: timezone, name: timezone }
+})
+
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
   { id: ServiceCode.Hospice_34, name: formatValue(ServiceCode.Hospice_34) },
   { id: ServiceCode.Ambulance_41, name: formatValue(ServiceCode.Ambulance_41) },
@@ -764,13 +799,16 @@ export const agreementPoints = [
   "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis",
 ]
 
-
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
 export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
-export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
 export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
+export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
+export const FACILITY_LOCATION_NEW_BREAD = { text: ADD_LOCATION, link: '' }
+export const FACILITY_LOCATION_EDIT_BREAD = { text: EDIT_LOCATION, link: '' }
+export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: '' }
+export const FACILITY_SERVICE_EDIT_BREAD = { text: EDIT_SERVICE, link: '' }
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }
@@ -786,6 +824,7 @@ export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }
 export const USERS_BREAD = { text: USERS_TEXT, link: '' }
 export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: '' }
+export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE }
 export const BILLING_BREAD = { text: BILLING_TEXT, link: '' }
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: '' }
 export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE }

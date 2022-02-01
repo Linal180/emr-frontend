@@ -10,7 +10,7 @@ import ResetPasswordController from "./ResetPasswordController";
 import AuthLayout from "../AuthLayout";
 // context, constants, graphql, interfaces, utils and styles block
 import history from "../../../history";
-import { getToken, requiredLabel } from "../../../utils";
+import { getToken } from "../../../utils";
 import { ResetPasswordInputs } from "../../../interfacesTypes";
 import { useResetPasswordMutation, } from "../../../generated/graphql";
 import { resetPasswordValidationSchema } from "../../../validationSchemas";
@@ -62,17 +62,19 @@ const ResetPasswordComponent = (): JSX.Element => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <ResetPasswordController
           control={control}
+          isRequired
           controllerName="password"
-          controllerLabel={requiredLabel(PASSWORD_LABEL)}
+          controllerLabel={PASSWORD_LABEL}
           fieldType="password"
           isPassword
           error={passwordError}
         />
 
         <ResetPasswordController
+          isRequired
           control={control}
           controllerName="repeatPassword"
-          controllerLabel={requiredLabel(CONFIRM_PASSWORD)}
+          controllerLabel={CONFIRM_PASSWORD}
           fieldType="password"
           isPassword
           error={repeatPasswordError}

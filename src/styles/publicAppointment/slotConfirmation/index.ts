@@ -25,9 +25,4 @@ export const slotConfirmationStyles = makeStyles((theme) => ({
       color: GRAY_TWO,
     },
   },
-
-  buttonContainer: {
-    display: "flex",
-    gap: 24,
-  }
 }));

@@ -1,38 +1,39 @@
 // packages block
 import { ChangeEvent, useState } from "react";
-import { Avatar, Box, Button, Grid, Tab, Typography } from "@material-ui/core";
-import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import moment from "moment";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { Avatar, Box, Button, Grid, Tab, Typography } from "@material-ui/core";
 // components block
 import CardComponent from "../../../common/CardComponent";
-import history from "../../../../history";
 // constants, history, styling block
-import { PROFILE_TOP_TABS } from "../../../../constants";
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
+import history from "../../../../history";
 import { BLACK_TWO } from "../../../../theme";
+import { PROFILE_TOP_TABS } from "../../../../constants";
+import { formatPhone, getDate, getFormattedDate } from "../../../../utils";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
-import { getDate, getFormattedDate } from "../../../../utils";
+import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const [value, setValue] = useState('1');
   const [patientData, setPatientData] = useState<Patient | null>();
-
   const { location: { pathname } } = history
   const getPatientIdArray = pathname.split("/")
   const getPatientId = getPatientIdArray[getPatientIdArray.length - 2]
-
+  
   const handleChange = (event: ChangeEvent<{}>, newValue: string) => {
     setValue(newValue);
   };
 
   const { loading } = useGetPatientQuery({
-    nextFetchPolicy: "network-only",
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     variables: {
       getPatient: {
-        id: getPatientId
+        id: getPatientId,
       }
     },
 
@@ -51,13 +52,13 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   });
 
-  if (!patientData && loading) {
+  if (!patientData || loading) {
     return (
       <Box>Loading...</Box>
     )
   }
 
-  const { firstName, lastName, dob, contacts, usualProvider, createdAt } = patientData || {}
+  const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
 
   const PATIENT_AGE = moment().diff(getDate(dob || ''), 'years');
@@ -67,7 +68,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   
   if (selfContact && selfContact[0]) {
     const { phone, email, country, state } = selfContact[0]
-    selfPhoneNumber = phone || "--"
+    selfPhoneNumber = formatPhone(phone || '') || "--"
     selfEmail = email || "--"
     selfCurrentLocation = `${country} ${state}` || "--"
   }
@@ -94,9 +95,19 @@ const PatientDetailsComponent = (): JSX.Element => {
   let providerName = ""
   let providerDateAdded = createdAt ? getFormattedDate(createdAt || '') : '--'
 
-  if (usualProvider && usualProvider[0]) {
-    const { firstName, lastName } = usualProvider[0]
-    providerName = `${firstName} ${lastName}` || "--"
+  if (doctorPatients) {
+    const currentDoctor = doctorPatients.map(doctorPatient => {
+      if(doctorPatient.currentProvider){
+        return doctorPatient.doctor
+      }
+
+      return null
+    })[0];
+
+    if(currentDoctor){
+      const { firstName, lastName } =  currentDoctor || {};
+      providerName = `${firstName} ${lastName}` || "--"
+    }
   }
 
   const ProfileAdditionalDetails = [
@@ -152,8 +163,12 @@ const PatientDetailsComponent = (): JSX.Element => {
 
         <Box className={classes.profileDetailsContainer}>
           <Box className={classes.profileCard}>
-            <Box pr={3.75}>
-              <Avatar variant="square" src="" className={classes.profileImage}></Avatar>
+            <Box display="flex" alignItems="center">
+              <Box pl={1}>
+                <Box pr={3.75}>
+                  <Avatar variant="square" src='' className={classes.profileImage} />
+                </Box>
+              </Box>
             </Box>
 
             <Box flex={1}>

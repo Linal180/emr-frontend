@@ -1,10 +1,15 @@
+// 
+import { useParams } from "react-router";
 // component block
-import UpdateStaffForm from "./UpdateStaffForm";
-// constant block
-import { STAFF_BREAD, STAFF_EDIT_BREAD, USERS_BREAD, VIEW_STAFF } from "../../../../constants";
+import StaffForm from "../staffForm";
 import PageHeader from "../../../common/PageHeader";
+// constant block
+import { ParamsType } from "../../../../interfacesTypes";
+import { STAFF_BREAD, STAFF_EDIT_BREAD, USERS_BREAD, VIEW_STAFF } from "../../../../constants";
 
-const ViewStaffComponent = () => {
+const ViewStaffComponent = (): JSX.Element => {
+  const { id } = useParams<ParamsType>();
+  
   return (
     <>
       <PageHeader
@@ -12,7 +17,7 @@ const ViewStaffComponent = () => {
         path={[USERS_BREAD, STAFF_BREAD, STAFF_EDIT_BREAD]}
       />
 
-      <UpdateStaffForm />
+      <StaffForm id={id} isEdit />
     </>
   )
 };

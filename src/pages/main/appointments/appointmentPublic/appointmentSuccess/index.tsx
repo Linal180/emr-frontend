@@ -16,7 +16,7 @@ const index = () => {
         alignItems: "center",
       }}
     >
-      <Card >
+      <Card>
         <Box minHeight="580px" className={classes.container}>
           <Box maxWidth="700px">
             <Typography component="h3" variant="h3" >Thank you! When you arrive, Please make sure to have these documents with you.</Typography>
@@ -29,7 +29,7 @@ const index = () => {
             </ul>
           </Box>
 
-          <Box pt={15} className={classes.buttonContainer}>
+          <Box display="flex" gridGap={20} mt={3}>
             <Button type="submit" variant="contained">
               Cancel Booking
             </Button>

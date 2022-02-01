@@ -1,5 +1,5 @@
-import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_TWO } from './../../../theme/colors';
-import { makeStyles, StepConnector, withStyles } from "@material-ui/core";
+import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, GRAY_TWO, BLUE_SIX } from './../../../theme/colors';
+import { createStyles, makeStyles, StepConnector, Switch, withStyles } from "@material-ui/core";
 
 export const CustomConnector = withStyles({
   alternativeLabel: {
@@ -69,20 +69,8 @@ export const useColorLibStepIconStyles = makeStyles({
 });
 
 export const usePatientInformation = makeStyles({
-  customGrid: {
-    display: "flex",
-  },
-
   stepperGrid: {
     minWidth: 320,
-  },
-
-  mainGrid: {
-    flex: 1,
-
-    '@media (max-width:960px)': {
-      flex: "auto",
-    },
   },
 
   mainGridContainer: {
@@ -123,16 +111,33 @@ export const usePatientInformation = makeStyles({
       fontWeight: 500,
     },
   },
-
-  buttonContainer: {
-    display: 'flex',
-    justifyContent: 'center',
-    gap: 20,
-  }
 });
 
 export const toggleButtonComponent = makeStyles({
   toggleContainer: {
+    "& .toggle-main": {
+      display: 'flex',
+      position: 'relative',
+      border: `1px solid ${GRAY_SIX}`,
+      fontWeight: 500,
+      fontSize: 14,
+      width: 145,
+      height: 44,
+      padding: 5,
+      borderRadius: 6,
+
+      "& > div": {
+        position: 'relative',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 2,
+        zIndex: 2,
+        flex: 1,
+      }
+    },
+
     "& .MuiToggleButtonGroup-root": {
       marginTop: 10,
     },
@@ -186,7 +191,59 @@ export const toggleButtonComponent = makeStyles({
 export const verificationFormStyles = makeStyles({
   verticalContainer: {
     "& .MuiCard-root": {
-      height: "calc(100vh - 130px)"
+      height: "calc(100vh - 130px)",
+      overflowY: "auto",
     },
   }
 })
+
+export const AntSwitch = withStyles(() =>
+  createStyles({
+    root: {
+      width: '100%',
+      height: "100%",
+      padding: 5,
+      display: 'flex',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+    },
+
+
+    thumb: {
+      width: 70,
+      height: 34,
+      opacity: 0.8,
+      borderRadius: 6,
+      backgroundColor: WHITE_FIVE,
+      boxShadow: 'none',
+      transform: 'translateX(93%)',
+      transition: 'all .3s ease-in',
+    },
+
+    switchBase: {
+      padding: 4,
+      transform: 'none !important',
+
+      '&$checked': {
+        '& + $track': {
+          opacity: 0.8,
+          backgroundColor: 'transparent',
+          borderColor: 'none',
+        },
+
+        "& .MuiSwitch-thumb": {
+          backgroundColor: BLUE_SIX,
+          transform: 'translateX(0)',
+        }
+      },
+    },
+
+    track: {
+      border: `none`,
+      backgroundColor: WHITE,
+    },
+
+    checked: {},
+  }),
+)(Switch);

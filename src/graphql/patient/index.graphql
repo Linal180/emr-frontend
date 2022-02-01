@@ -14,52 +14,25 @@ query FindAllPatient($patientInput: PatientInput!) {
 
     patients {
       id
-      firstName
-      middleName
-      email
-      lastName
-      firstNameUsed
-      prefferedName
-      previousFirstName
-      previouslastName
-      motherMaidenName
-      ssn
-      gender
       dob
-      registrationDepartment
-      primaryDepartment
-      registrationDate
-      deceasedDate
-      privacyNotice
-      releaseOfInfoBill
-      callToConsent
-      medicationHistoryAuthority
-      patientNote
-      language
-      race
-      ethnicity
-      maritialStatus
-      sexualOrientation
-      genderIdentity
-      sexAtBirth
-      pronouns
-      homeBound
-      holdStatement
-      statementDelivereOnline
-      statementNote
-      statementNoteDateFrom
-      statementNoteDateTo
+      email
+      gender
+      lastName
+      firstName
       createdAt
       updatedAt
       
       contacts {
         id
+        fax
+        ssn
+        city
         email
+        pager
         phone
         mobile
         address
         address2
-        city
         state
         zipCode
         country
@@ -70,9 +43,6 @@ query FindAllPatient($patientInput: PatientInput!) {
         middleName
         lastName
         serviceCode
-        pager
-        fax
-        ssn
         employerName
         relationship
         contactType
@@ -94,18 +64,18 @@ query FindAllPatient($patientInput: PatientInput!) {
 
       facility {
         id
+        npi
         name
-        practiceType
         code
+        practiceType
         cliaIdNumber
         federalTaxId
         isPrivate
         revenueCode
         tamxonomyCode
         insurancePlanType
-        mammographyCertificationNumber
-        npi
         serviceCode
+        mammographyCertificationNumber
         createdAt
         updatedAt
       }
@@ -217,18 +187,15 @@ query GetPatient($getPatient: GetPatient!) {
         updatedAt
       }
       
-      usualProvider {
+      doctorPatients {
         id
-        firstName
-        lastName
-        createdAt
-        updatedAt
+        doctorId
+        currentProvider
         
-        schedule {
+        doctor {
           id
-          startAt
-          endAt
-          recurringEndDate
+          firstName
+          lastName
           createdAt
           updatedAt
         }

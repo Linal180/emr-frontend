@@ -5,8 +5,9 @@ import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
 // utils and interfaces/types block
 import { SelectorProps } from "../../interfacesTypes";
+import { requiredLabel } from "../../utils";
 
-const Selector: FC<SelectorProps> = ({ name, label, error, options, disabled }): JSX.Element => {
+const Selector: FC<SelectorProps> = ({ name, label, error, options, disabled, isRequired }): JSX.Element => {
   const { control } = useFormContext()
 
   return (
@@ -26,7 +27,9 @@ const Selector: FC<SelectorProps> = ({ name, label, error, options, disabled }):
             renderOption={(option) => option.name}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(error)}>
-                <InputLabel id={`${name}-autocomplete`} shrink>{label}</InputLabel>
+                <InputLabel id={`${name}-autocomplete`} shrink>
+                  {isRequired ? requiredLabel(label) : label}
+                </InputLabel>
 
                 <TextField
                   {...params}

@@ -1,14 +1,18 @@
 // packages block
 import { FC, useState } from "react";
-import { Controller } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { FormControl, InputLabel, TextField } from "@material-ui/core";
 // components block
 import ShowPassword from "../../../common/ShowPassword";
 // styles, constants, utils and interfaces block
-import {PASSWORD, TEXT } from "../../../../constants";
-import { AddStaffInputControlProps, PasswordType } from "../../../../interfacesTypes";
+import { PASSWORD, TEXT } from "../../../../constants";
+import { StaffInputControlProps, PasswordType } from "../../../../interfacesTypes";
+import { requiredLabel } from "../../../../utils";
 
-const StaffController: FC<AddStaffInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, isPassword }): JSX.Element => {
+const StaffController: FC<StaffInputControlProps> = ({ isRequired, controllerName, controllerLabel,
+  fieldType, error, isPassword, disabled
+}): JSX.Element => {
+  const { control } = useFormContext()
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
 
   const handleClickShowPassword = () => {
@@ -27,13 +31,14 @@ const StaffController: FC<AddStaffInputControlProps> = ({ control, controllerNam
       render={({ field, fieldState: { invalid } }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={controllerName}>
-            {controllerLabel}
+            {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
           </InputLabel>
 
           <TextField
             fullWidth
             error={invalid}
             variant="outlined"
+            disabled={disabled}
             id={controllerName}
             type={fieldType === "password" ? passwordType : fieldType}
             helperText={error && error}

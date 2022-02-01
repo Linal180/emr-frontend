@@ -184,7 +184,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
         </Grid>
 
         <Grid item md={12}>
-          <Box pt={4} className={classes.buttonContainer}>
+          <Box pt={4} display="flex" justifyContent="center" gridGap={20}>
             <Button type="submit" variant="contained">
               Cancel Booking
             </Button>

@@ -2,27 +2,49 @@
 import * as yup from "yup";
 import moment from "moment";
 // utils and constants block
-import { RequiredMessage } from "../utils";
+import { dateValidation, requiredMessage } from "../utils";
 import {
-  ADDRESS, ADDRESS_2, ALPHABETS_REGEX, CITY, CLIA_ID_NUMBER, CODE, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL,
-  FACILITY, FAX, FEDERAL_TAX_ID, FIRST_NAME, GENDER, INSURANCE_PLAN_TYPE, INVALID_EMAIL, LAST_NAME,
-  MAMMOGRAPHY_CERTIFICATION_NUMBER, MaxLength, MinLength, MOBILE_NUMBER, NAME, NPI, NUMBER_REGEX,
-  PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL, PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER,
-  PRACTICE_TYPE, PROVIDER, MIDDLE_NAME, DURATION, PRICE, REVENUE_CODE, ROLE, SERVICE_CODE, STATE, TAMXONOMY_CODE,
-  ValidMessage, ZIP_CODE, PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, SPECIALTY, SSN, SSN_TYPE,
-  DEA_NUMBER, LANGUAGE_SPOKEN, TAX_ID, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
-  CAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE, ANESTHESIA_LICENSE, CTP_NUMBER,
-  STATE_LICENSE, PRESCRIPTIVE_AUTH_NUMBER, EMPLOYER_NAME, USUAL_INDUSTRY, PREVIOUS_LAST_NAME, USUAL_PROVIDER_ID,
-  MOTHERS_MAIDEN_NAME, PREVIOUS_FIRST_NAME, RELATIONSHIP, USUAL_OCCUPATION, NPI_REGEX, NPI_VALIDATION_MESSAGE,
-  CLIA_REGEX, CLIA_VALIDATION_MESSAGE, REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE, TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE,
+  ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL,
+  FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, MaxLength, MinLength,
+  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
+  PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE, MIDDLE_NAME,
+  DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, USUAL_PROVIDER_ID,
+  NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE,
+  REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX,
+  TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP, TID_VALIDATION_MESSAGE,
+  TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
+  FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
+  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH,
 } from "../constants";
 
-const passwordSchema = { password: yup.string().required(RequiredMessage(PASSWORD_LABEL)) }
-const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)) };
-const npiSchema = { npi: yup.string().required(RequiredMessage(NPI)).matches(NPI_REGEX, NPI_VALIDATION_MESSAGE) }
-const cliaIdNumberSchema = { cliaIdNumber: yup.string().required(RequiredMessage(CLIA_ID_NUMBER)).matches(CLIA_REGEX, CLIA_VALIDATION_MESSAGE) }
-const revenueCodeSchema = { revenueCode: yup.string().required(RequiredMessage(REVENUE_CODE)).matches(REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE) }
-const taxonomyCodeSchema = { taxonomyCode: yup.string().required(RequiredMessage(TAXONOMY_CODE)).matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE) }
+const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
+const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)) };
+const npiSchema = { npi: yup.string().matches(NPI_REGEX, NPI_VALIDATION_MESSAGE) }
+const cliaIdNumberSchema = {
+  cliaIdNumber: yup.string().matches(CLIA_REGEX, CLIA_VALIDATION_MESSAGE)
+}
+
+const federalTaxIdSchema = {
+  federalTaxId: yup.string().matches(TID_REGEX, TID_VALIDATION_MESSAGE),
+}
+
+const revenueCodeSchema = {
+  revenueCode: yup.string().matches(REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE).notRequired()
+}
+
+const taxonomyCodeSchema = {
+  taxonomyCode: yup.string().matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE)
+}
+
+const ssnSchema = {
+  ssn: yup.string().matches(SSN_REGEX, SSN_VALIDATION_MESSAGE)
+}
+
+const facilityCodeSchema = {
+  code: yup.string().matches(FACILITY_CODE_REGEX, FACILITY_CODE_VALIDATION_MESSAGE)
+    .required(requiredMessage(CODE))
+}
+
 const dobSchema = {
   dob: yup.string().test(value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
 }
@@ -31,85 +53,145 @@ const doctorDobSchema = {
   dob: yup.string().test(value => moment().diff(moment(value), 'years') > 20 && moment().diff(moment(value), 'years') < 100)
 }
 
+const mammographySchema = {
+  mammographyCertificationNumber: yup.string().notRequired()
+    .matches(MAMMOGRAPHY_CERT_NUMBER_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE),
+};
+
 const roleTypeSchema = {
   roleType: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(ROLE))
+  }).required(requiredMessage(ROLE))
 }
 
 const serviceCodeSchema = {
   serviceCode: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(SERVICE_CODE))
+  }).required(requiredMessage(SERVICE_CODE))
 }
 
 const practiceTypeSchema = {
   practiceType: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(PRACTICE_TYPE))
+  }).required(requiredMessage(PRACTICE_TYPE))
+}
+
+const timeZoneSchema = {
+  timeZone: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(requiredMessage(TIME_ZONE_TEXT))
 }
 
 const genderSchema = {
   gender: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(GENDER))
+  }).required(requiredMessage(GENDER))
 }
 
 const usualProviderSchema = {
   usualProviderId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(USUAL_PROVIDER_ID))
+  }).required(requiredMessage(USUAL_PROVIDER_ID))
 }
 
 const facilityIdSchema = {
   facilityId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(FACILITY))
+  }).required(requiredMessage(FACILITY))
+}
+
+const ssnTypeSchema = {
+  ssnType: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }),
+};
+
+const specialtySchema = {
+  speciality: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }),
 }
 
 const passwordAndRepeatPasswordSchema = {
-  password: yup.string().required(RequiredMessage(PASSWORD)).matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
-  repeatPassword: yup.string().oneOf([yup.ref("password"), null], PASSWORDS_MUST_MATCH).required(CONFIRM_YOUR_PASSWORD),
+  password: yup.string().required(requiredMessage(PASSWORD))
+    .matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
+  repeatPassword: yup.string().oneOf([yup.ref("password"), null], PASSWORDS_MUST_MATCH)
+    .required(CONFIRM_YOUR_PASSWORD),
 }
 
 const deaDateSchema = {
-  deaActiveDate: yup.string().test(value => new Date(value || '') <= new Date()),
-  deaTermDate: yup.string().test((value, ctx) => {
-    if (!value) return false
-    return new Date(value || '') >= new Date() && new Date(value || '') >= new Date(ctx.parent.deaActiveDate)
+  deaActiveDate: yup.string().test(value => {
+    if (!value) return true
+
+    return new Date(value || '') <= new Date()
+  }),
+
+  deaTermDate: yup.string().test((value, { parent: { deaActiveDate } }) => {
+    if (!value) return true
+
+    return dateValidation(value, deaActiveDate)
   })
 }
 
 const licenseDateSchema = {
-  licenseActiveDate: yup.string().test(value => new Date(value || '') <= new Date()),
-  licenseTermDate: yup.string().test((value, ctx) => {
-    if (!value) return false
-    return new Date(value || '') >= new Date() && new Date(value || '') >= new Date(ctx.parent.licenseActiveDate)
+  licenseActiveDate: yup.string().test(value => {
+    if (!value) return true
+
+    return new Date(value || '') <= new Date()
+  }),
+
+  licenseTermDate: yup.string().test((value, { parent: { licenseActiveDate } }) => {
+    if (!value) return true
+
+    return dateValidation(value, licenseActiveDate)
   })
 }
 
-
 const patientRegisterDateSchema = {
-  registrationDate: yup.string().test(value => new Date(value || '') <= new Date()),
-  deceasedDate: yup.string().test((value, ctx) => {
-    if (!value) return false
-    return new Date(value || '') <= new Date() && new Date(value || '') >= new Date(ctx.parent.registrationDate)
+  registrationDate: yup.string().test(value => {
+    if (!value) return true
+
+    return new Date(value || '') <= new Date()
+  }),
+
+  deceasedDate: yup.string().test((value, { parent: { registrationDate } }) => {
+    if (!value) return true
+
+    return dateValidation(value, registrationDate)
   })
 }
 
 const patientStatementDateSchema = {
-  statementNoteDateFrom: yup.string().test(value => new Date(value || '') <= new Date()),
+  statementNoteDateFrom: yup.string().test(value => {
+    if (!value) return true
+
+    return new Date(value || '') <= new Date()
+  }),
   statementNoteDateTo: yup.string().test((value, ctx) => {
-    if (!value) return false
-    return new Date(value || '') > new Date(ctx.parent.statementNoteDateFrom)
+    if (!value) return true
+
+    return new Date(value || '') >= new Date(ctx.parent.statementNoteDateFrom)
   })
 }
+
+const firstLastNameSchema = {
+  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
+    .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26))
+    .required(requiredMessage(LAST_NAME)),
+
+  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
+    .min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26))
+    .required(requiredMessage(FIRST_NAME)),
+};
 
 export const loginValidationSchema = yup.object({
   ...emailSchema,
@@ -126,26 +208,26 @@ export const forgetPasswordValidationSchema = yup.object({
 
 export const contactSchema = {
   ...emailSchema,
-  fax: yup.string().required(RequiredMessage(FAX)),
-  city: yup.string().required(RequiredMessage(CITY)),
-  state: yup.string().required(RequiredMessage(STATE)),
-  address: yup.string().required(RequiredMessage(ADDRESS)),
-  country: yup.string().required(RequiredMessage(COUNTRY)),
-  zipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
-  address2: yup.string().required(RequiredMessage(ADDRESS_2)),
-  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+  fax: yup.string(),
+  city: yup.string(),
+  state: yup.string(),
+  address: yup.string(),
+  country: yup.string(),
+  zipCode: yup.string(),
+  address2: yup.string(),
+  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
 };
 
 export const billingAddressSchema = {
-  billingFax: yup.string().required(RequiredMessage(FAX)),
-  billingCity: yup.string().required(RequiredMessage(CITY)),
-  billingState: yup.string().required(RequiredMessage(STATE)),
-  billingCountry: yup.string().required(RequiredMessage(COUNTRY)),
-  billingAddress: yup.string().required(RequiredMessage(ADDRESS)),
-  billingZipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
-  billingAddress2: yup.string().required(RequiredMessage(ADDRESS_2)),
-  billingEmail: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)),
-  billingPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+  billingFax: yup.string(),
+  billingCity: yup.string(),
+  billingState: yup.string(),
+  billingCountry: yup.string(),
+  billingAddress: yup.string(),
+  billingZipCode: yup.string(),
+  billingAddress2: yup.string(),
+  billingEmail: yup.string().email(INVALID_EMAIL),
+  billingPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
 }
 
 export const extendedContactSchema = yup.object({
@@ -159,11 +241,10 @@ const staffBasicSchema = {
   ...genderSchema,
   ...roleTypeSchema,
   ...facilityIdSchema,
-  username: yup.string().required(RequiredMessage(PROVIDER)),
-  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
-  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
-  mobile: yup.string().min(11, MinLength(MOBILE_NUMBER, 11)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
+  ...firstLastNameSchema,
+  username: yup.string(),
+  mobile: yup.string().min(11, MinLength(MOBILE_NUMBER, 11)).max(15, MaxLength(MOBILE_NUMBER, 15)),
+  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
 }
 
 export const addStaffSchema = yup.object({
@@ -180,58 +261,52 @@ export const updateStaffSchema = yup.object({
 export const facilitySchema = yup.object({
   ...npiSchema,
   ...contactSchema,
+  ...timeZoneSchema,
   ...revenueCodeSchema,
   ...serviceCodeSchema,
+  ...mammographySchema,
+  ...facilityCodeSchema,
   ...cliaIdNumberSchema,
   ...practiceTypeSchema,
+  ...federalTaxIdSchema,
   ...billingAddressSchema,
-  name: yup.string().required(RequiredMessage(NAME)),
-  code: yup.string().required(RequiredMessage(CODE)),
-  federalTaxId: yup.string().required(RequiredMessage(FEDERAL_TAX_ID)),
-  tamxonomyCode: yup.string().required(RequiredMessage(TAMXONOMY_CODE)),
-  insurancePlanType: yup.string().required(RequiredMessage(INSURANCE_PLAN_TYPE)),
-  mammographyCertificationNumber: yup.string().required(RequiredMessage(MAMMOGRAPHY_CERTIFICATION_NUMBER)),
+  insurancePlanType: yup.string(),
+  name: yup.string().required(requiredMessage(NAME)),
+  tamxonomyCode: yup.string().matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE),
 })
 
 export const basicDoctorSchema = {
+  ...ssnSchema,
   ...npiSchema,
   ...deaDateSchema,
+  ...ssnTypeSchema,
   ...doctorDobSchema,
+  ...specialtySchema,
   ...facilityIdSchema,
   ...licenseDateSchema,
   ...taxonomyCodeSchema,
-  ssn: yup.string().required(RequiredMessage(SSN)),
-  upin: yup.string().required(RequiredMessage(UPIN)),
-  taxId: yup.string().required(RequiredMessage(TAX_ID)),
-  prefix: yup.string().required(RequiredMessage(PREFIX)),
-  suffix: yup.string().required(RequiredMessage(SUFFIX)),
-  ssnType: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(RequiredMessage(SSN_TYPE)),
-  deaNumber: yup.string().required(RequiredMessage(DEA_NUMBER)),
-  speciality: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(RequiredMessage(SPECIALTY)),
-  dpsCtpNumber: yup.string().required(RequiredMessage(CTP_NUMBER)),
-  taxIdStuff: yup.string().required(RequiredMessage(TAX_ID_STUFF)),
-  stateLicense: yup.string().required(RequiredMessage(STATE_LICENSE)),
-  emcProviderId: yup.string().required(RequiredMessage(EMC_PROVIDER_ID)),
-  languagesSpoken: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
-  campusGrpNumber: yup.string().required(RequiredMessage(CAMPUS_GRP_NUMBER)),
-  blueShildNumber: yup.string().required(RequiredMessage(BLUE_SHIED_NUMBER)),
-  providerIntials: yup.string().required(RequiredMessage(PROVIDER_INITIALS)),
-  specialityLicense: yup.string().required(RequiredMessage(SPECIALTY_LICENSE)),
-  degreeCredentials: yup.string().required(RequiredMessage(DEGREE_CREDENTIALS)),
-  anesthesiaLicense: yup.string().required(RequiredMessage(ANESTHESIA_LICENSE)),
-  medicareGrpNumber: yup.string().required(RequiredMessage(MEDICARE_GRP_NUMBER)),
-  medicaidGrpNumber: yup.string().required(RequiredMessage(MEDICAID_GRP_NUMBER)),
-  prescriptiveAuthNumber: yup.string().required(RequiredMessage(PRESCRIPTIVE_AUTH_NUMBER)),
-  meammographyCertNumber: yup.string().required(RequiredMessage(MAMMOGRAPHY_CERTIFICATION_NUMBER)),
+  ...firstLastNameSchema,
+  upin: yup.string(),
+  taxId: yup.string(),
+  prefix: yup.string(),
+  suffix: yup.string(),
+  deaNumber: yup.string(),
+  dpsCtpNumber: yup.string(),
+  taxIdStuff: yup.string(),
+  stateLicense: yup.string(),
+  emcProviderId: yup.string(),
+  languagesSpoken: yup.string(),
+  campusGrpNumber: yup.string(),
+  blueShildNumber: yup.string(),
+  providerIntials: yup.string(),
+  specialityLicense: yup.string(),
+  degreeCredentials: yup.string(),
+  anesthesiaLicense: yup.string(),
+  medicareGrpNumber: yup.string(),
+  medicaidGrpNumber: yup.string(),
+  prescriptiveAuthNumber: yup.string(),
+  meammographyCertNumber: yup.string(),
   middleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
-  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
 };
 
 export const doctorSchema = yup.object({
@@ -240,12 +315,11 @@ export const doctorSchema = yup.object({
   ...billingAddressSchema,
 })
 
-
 export const facilityServicesSchema = {
   ...facilityIdSchema,
-  duration: yup.string().required(RequiredMessage(DURATION)),
-  name: yup.string().required(RequiredMessage(NAME)),
-  price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(1, MinLength(PRICE, 1)).max(15, MaxLength(PRICE, 15)).required(RequiredMessage(PRICE)),
+  name: yup.string().required(requiredMessage(NAME)),
+  duration: yup.string().matches(NUMBER_REGEX, ValidMessage(DURATION)).min(1, MinLength(DURATION, 1)).max(3, MaxLength(DURATION, 3)).required(requiredMessage(DURATION)),
+  price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(2, MinLength(PRICE, 2)).max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
 };
 
 export const serviceSchema = yup.object({
@@ -253,88 +327,90 @@ export const serviceSchema = yup.object({
 })
 
 export const PatientSchema = {
+  ...ssnSchema,
   ...dobSchema,
   ...patientRegisterDateSchema,
   ...patientStatementDateSchema,
-  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
-  middleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
-  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  prefferedName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  previousFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(PREVIOUS_FIRST_NAME)).min(3, MinLength(PREVIOUS_FIRST_NAME, 3)).max(26, MaxLength(PREVIOUS_FIRST_NAME, 26)).required(RequiredMessage(PREVIOUS_FIRST_NAME)),
-  motherMaidenName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MOTHERS_MAIDEN_NAME)).min(3, MinLength(MOTHERS_MAIDEN_NAME, 3)).max(26, MaxLength(MOTHERS_MAIDEN_NAME, 26)).required(RequiredMessage(MOTHERS_MAIDEN_NAME)),
-  previouslastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(PREVIOUS_LAST_NAME)).min(3, MinLength(PREVIOUS_LAST_NAME, 3)).max(26, MaxLength(PREVIOUS_LAST_NAME, 26)).required(RequiredMessage(PREVIOUS_LAST_NAME)),
-  language: yup.string().required(RequiredMessage(LANGUAGE_SPOKEN)),
+  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(requiredMessage(FIRST_NAME)),
+  middleName: yup.string(),
+  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(requiredMessage(LAST_NAME)),
+  prefferedName: yup.string(),
+  previousFirstName: yup.string(),
+  motherMaidenName: yup.string(),
+  previouslastName: yup.string(),
+  language: yup.string(),
   sexAtBirth: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(LANGUAGE_SPOKEN)),
-  suffix: yup.string().required(RequiredMessage(SUFFIX)),
-  ssn: yup.string().required(RequiredMessage(SSN)),
+  }).required(requiredMessage(SEX_AT_BIRTH)),
+  suffix: yup.string(),
 };
 
 export const basicContactSchema = {
-  basicPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
-  basicMobile: yup.string().min(11, MinLength(MOBILE_NUMBER, 11)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
-  basicAddress: yup.string().required(RequiredMessage(ADDRESS)),
-  basicAddress2: yup.string().required(RequiredMessage(ADDRESS_2)),
-  basicZipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
-  basicCity: yup.string().required(RequiredMessage(CITY)),
-  basicCountry: yup.string().required(RequiredMessage(COUNTRY)),
-  basicState: yup.string().required(RequiredMessage(STATE)),
+  basicEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
+  basicPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(requiredMessage(PHONE_NUMBER)),
+  basicMobile: yup.string(),
+  basicAddress: yup.string().required(requiredMessage(ADDRESS)).min(4, MinLength(ADDRESS, 4)).max(30, MaxLength(ADDRESS, 30)),
+  basicAddress2: yup.string(),
+  basicZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
+  basicCity: yup.string().required(requiredMessage(CITY)).min(2, MinLength(CITY, 2)).max(20, MaxLength(CITY, 20)),
+  basicCountry: yup.string().required(requiredMessage(COUNTRY)).min(2, MinLength(COUNTRY, 2)).max(20, MaxLength(COUNTRY, 20)),
+  basicState: yup.string().required(requiredMessage(STATE)).min(2, MinLength(STATE, 2)).max(15, MaxLength(STATE, 15)),
 };
 
 export const emergencyPatientSchema = {
-  employerUsualOccupation: yup.string().required(RequiredMessage(USUAL_OCCUPATION)),
-  employerIndustry: yup.string().required(RequiredMessage(USUAL_INDUSTRY)),
-  emergencyName: yup.string().required(RequiredMessage(NAME)),
-  emergencyPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+  employerUsualOccupation: yup.string(),
+  employerIndustry: yup.string(),
+  emergencyName: yup.string(),
+  emergencyPhone: yup.string(),
 };
 
 export const kinPatientSchema = {
-  kinName: yup.string().required(RequiredMessage(NAME)),
-  kinMobile: yup.string().min(11, MinLength(MOBILE_NUMBER, 11)).max(15, MaxLength(MOBILE_NUMBER, 15)).required(RequiredMessage(MOBILE_NUMBER)),
+  kinName: yup.string(),
+  kinMobile: yup.string(),
+  kinPhone: yup.string(),
   kinRelationship: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(RELATIONSHIP)),
-  kinPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
+  }),
 };
 
 export const guardianPatientSchema = {
-  guardianFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
-  guardianMiddleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
-  guardianLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  guardianSuffix: yup.string().required(RequiredMessage(SUFFIX)),
+  guardianFirstName: yup.string(),
+  guardianMiddleName: yup.string(),
+  guardianLastName: yup.string(),
+  guardianSuffix: yup.string(),
 };
 
 export const guarantorPatientSchema = {
-  guarantorFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(RequiredMessage(FIRST_NAME)),
-  guarantorMiddleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
-  guarantorLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(RequiredMessage(LAST_NAME)),
-  guarantorEmail: yup.string().email(INVALID_EMAIL).required(RequiredMessage(EMAIL)),
+  guarantorFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME)).min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26)).required(requiredMessage(FIRST_NAME)),
+  guarantorMiddleName: yup.string(),
+  guarantorLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME)).min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(requiredMessage(LAST_NAME)),
+  guarantorEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   guarantorRelationship: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(RequiredMessage(RELATIONSHIP)),
-  guarantorPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
-  guarantorSuffix: yup.string().required(RequiredMessage(SUFFIX)),
-  guarantorSsn: yup.string().required(RequiredMessage(SSN)),
-  guarantorAddress: yup.string().required(RequiredMessage(ADDRESS)),
-  guarantorAddress2: yup.string().required(RequiredMessage(ADDRESS_2)),
-  guarantorZipCode: yup.string().required(RequiredMessage(ZIP_CODE)),
-  guarantorCity: yup.string().required(RequiredMessage(CITY)),
-  guarantorCountry: yup.string().required(RequiredMessage(COUNTRY)),
-  guarantorEmployerName: yup.string().required(RequiredMessage(EMPLOYER_NAME)),
+  }).required(requiredMessage(RELATIONSHIP)),
+  guarantorPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(requiredMessage(PHONE_NUMBER)),
+  guarantorSuffix: yup.string(),
+  guarantorSsn: yup.string().matches(SSN_REGEX, SSN_VALIDATION_MESSAGE),
+  guarantorAddress: yup.string().required(requiredMessage(ADDRESS)),
+  guarantorAddress2: yup.string(),
+  guarantorZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
+  guarantorCity: yup.string().required(requiredMessage(CITY)).min(2, MinLength(CITY, 2)).max(20, MaxLength(CITY, 20)),
+  guarantorState: yup.string().required(requiredMessage(STATE)).min(2, MinLength(STATE, 2)).max(15, MaxLength(STATE, 15)),
+  guarantorCountry: yup.string(),
+  guarantorEmployerName: yup.string(),
 };
 
 export const employerPatientSchema = {
-  employerName: yup.string().required(RequiredMessage(NAME)),
-  employerPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)).required(RequiredMessage(PHONE_NUMBER)),
-  employerIndustry: yup.string().required(RequiredMessage(USUAL_INDUSTRY)),
-  employerUsualOccupation: yup.string().required(RequiredMessage(USUAL_OCCUPATION)),
+  employerName: yup.string(),
+  employerPhone: yup.string(),
+  employerIndustry: yup.string(),
+  employerUsualOccupation: yup.string(),
 };
 
-export const patientsSchema = yup.object({
+export const extendedPatientSchema = yup.object({
   ...facilityIdSchema,
   ...genderSchema,
   ...usualProviderSchema,
@@ -345,4 +421,9 @@ export const patientsSchema = yup.object({
   ...guardianPatientSchema,
   ...kinPatientSchema,
   ...emergencyPatientSchema
+})
+
+export const settingSchema = yup.object({
+  ...facilityIdSchema,
+  ...timeZoneSchema
 })

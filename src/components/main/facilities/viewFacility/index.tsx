@@ -1,12 +1,16 @@
 // packages block
 import { FC } from "react";
+import { useParams } from "react-router";
 // component block
+import UpdateFacilityForm from "../facilityForm";
 import PageHeader from "../../../common/PageHeader";
-import UpdateFacilityForm from "./UpdateFacilityForm";
 // constant block
+import { ParamsType } from "../../../../interfacesTypes";
 import { FACILITIES_BREAD, FACILITY_EDIT_BREAD, VIEW_FACILITY } from "../../../../constants";
 
 const ViewFacilityComponent: FC = (): JSX.Element => {
+  const { id } = useParams<ParamsType>();
+
   return (
     <>
       <PageHeader
@@ -14,7 +18,7 @@ const ViewFacilityComponent: FC = (): JSX.Element => {
         path={[FACILITIES_BREAD, FACILITY_EDIT_BREAD]}
       />
 
-      <UpdateFacilityForm />
+      <UpdateFacilityForm id={id} isEdit />
     </>
   )
 };

@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { WHITE_ONE } from "../theme";
-
+import { BLACK, WHITE_ONE } from "../theme";
 import { DRAWER_WIDTH } from "../constants";
 
 export const useSidebarStyles = makeStyles(() => ({
@@ -11,7 +10,16 @@ export const useSidebarStyles = makeStyles(() => ({
     position: 'relative',
     height: 'calc(100vh - 120px)',
     borderRight: 'none',
-    overflowY: 'hidden'
+    overflowY: 'hidden',
+
+    "& .MuiButton-root": {
+      minWidth: 40
+    },
+
+    "& .MuiButton-label": {
+      color: BLACK,
+      justifyContent: 'flex-start',
+    }
   },
 
   appMenuContainer: {
@@ -20,6 +28,7 @@ export const useSidebarStyles = makeStyles(() => ({
     "& .MuiList-root": {
       height: '100%',
       overflowY: "auto",
-    }
+    },
+
   }
 }));

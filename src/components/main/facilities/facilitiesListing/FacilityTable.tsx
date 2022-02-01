@@ -14,8 +14,15 @@ import { ListContext } from "../../../../context/listContext";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import { EditIcon, TablesSearchIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
-import { FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, CODE, FAX, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE } from "../../../../constants";
+import {
+  FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery,
+  useRemoveFacilityMutation
+} from "../../../../generated/graphql";
+import {
+  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY,
+  CODE, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY,
+  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE
+} from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -143,7 +150,6 @@ const FacilityTable: FC = (): JSX.Element => {
                 {renderTh(CITY)}
                 {renderTh(STATE)}
                 {renderTh(ZIP)}
-                {renderTh(FAX)}
                 {renderTh(PHONE)}
                 {renderTh(EMAIL)}
                 {renderTh(ACTION, "center")}
@@ -158,10 +164,10 @@ const FacilityTable: FC = (): JSX.Element => {
                   </TableCell>
                 </TableRow>
               ) : (
-                facilities?.map((facility: FacilityPayload['facility'], index: number) => {
+                facilities?.map((facility: FacilityPayload['facility']) => {
                   const { id, name, code, contacts } = facility || {};
                   const facilityContact = contacts && contacts[0]
-                  const { email, phone, fax, zipCode, city, state } = facilityContact || {}
+                  const { email, phone, zipCode, city, state } = facilityContact || {}
 
                   return (
                     <TableRow key={id}>
@@ -170,19 +176,18 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{city}</TableCell>
                       <TableCell scope="row">{state}</TableCell>
                       <TableCell scope="row">{zipCode}</TableCell>
-                      <TableCell scope="row">{fax}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
-                          <Box className={classes.iconsBackground}>
+                            <Box className={classes.iconsBackground}>
                               <ServiceIcon />
                             </Box>
                           </Link>
 
-                          <Link to={`${FACILITIES_ROUTE}/${id}/${FACILITY_LOCATIONS_ROUTE}`}>
-                          <Box className={classes.iconsBackground}>
+                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
+                            <Box className={classes.iconsBackground}>
                               <RemoveRedEye color="primary" />
                             </Box>
                           </Link>
