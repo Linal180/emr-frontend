@@ -17,8 +17,8 @@ import {
   DoctorPayload
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, SPECIALTY, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
-  CANT_DELETE_DOCTOR, DOCTOR, NAME
+  ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
+  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALITY
 } from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
@@ -140,7 +140,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(SPECIALTY)}
+              {renderTh(SPECIALITY)}
               {renderTh(FACILITY)}
               {renderTh(ACTION, "center")}
             </TableRow>

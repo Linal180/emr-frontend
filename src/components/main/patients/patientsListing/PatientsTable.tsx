@@ -13,7 +13,7 @@ import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, COUNTRY } from "../../../../constants";
+import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, COUNTRY, PATIENT } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -149,7 +149,7 @@ const PatientsTable: FC = (): JSX.Element => {
                 const { id, firstName, lastName, email, contacts } = record || {};
                 const patientContact = contacts && contacts[0];
                 const { phone, city, country } = patientContact || {};
-                
+
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
@@ -199,7 +199,7 @@ const PatientsTable: FC = (): JSX.Element => {
         )}
 
         <ConfirmationModal
-          title={DELETE_PATIENT}
+          title={PATIENT}
           isOpen={openDelete}
           isLoading={deletePatientLoading}
           description={DELETE_PATIENT_DESCRIPTION}

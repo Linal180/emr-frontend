@@ -20,8 +20,8 @@ import {
   useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation
 } from "../../../../../generated/graphql";
 import {
-  ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS, 
-  FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION, 
+  ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
   PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
   FACILITIES_ROUTE, FACILITY,
 } from "../../../../../constants";
@@ -157,7 +157,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+        <Box maxHeight="calc(100vh - 248px)">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={SERVICE_INFO}>
@@ -201,7 +201,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                         />
                       </Grid>
                     </Grid>
-                    
+
                     <Grid md={12} item>
                       <Controller
                         name="isActive"
