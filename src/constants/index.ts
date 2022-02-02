@@ -29,6 +29,13 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 export const EMPTY_OPTION = { id: "", name: "" };
 export const ALL_STAFF = "Staff";
 export const CALENDER = "Calender";
+export const AUTO_ACCIDENT = "Auto Accident";
+export const OTHER_ACCIDENT = "Other Accident";
+export const PRIMARY_INSURANCE = "Primary Insurance";
+export const SECONDARY_INSURANCE = "Secondary Insurance";
+export const INFORMATION = "Information";
+export const PATIENT_CONDITION = "Patient Condition";
+export const APPOINTMENT_TYPE = "Appointment Type";
 export const DOCTOR_NOT_FOUND = "Doctor not found!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
@@ -51,6 +58,7 @@ export const CREATE_PATIENT = "Create Patient";
 export const EDIT_PATIENT = "Edit Patient";
 export const ADD_RESULT = "Add Result";
 export const ADD_APPOINTMENT = "Add Appointment";
+export const EDIT_APPOINTMENT = "Edit Appointment";
 export const VIEW_STAFF = "View Staff";
 export const UPDATE_STAFF = "Update Staff";
 export const UPDATE_FACILITY = "Update Facility";
@@ -406,7 +414,6 @@ export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the 
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 
-
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
@@ -484,10 +491,16 @@ export const MinLength = (fieldName: string, length: number) => `${fieldName} sh
 export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
 export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
+
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."
+export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully"
+export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully"
+export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated."
 export const FACILITY_NOT_FOUND = 'Facility not found!';
 export const LOCATION_NOT_FOUND = 'Location not found!';
+export const APPOINTMENT_NOT_FOUND = 'Appointment not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
 export const SERVICE_NOT_FOUND = 'Service not found!';
@@ -816,6 +829,7 @@ export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }
 export const APPOINTMENT_NEW_BREAD = { text: ADD_APPOINTMENT, link: `${VIEW_APPOINTMENTS_ROUTE}/new` }
+export const APPOINTMENT_EDIT_BREAD = { text: EDIT_APPOINTMENT, link: '' }
 export const RESULT_NEW_BREAD = { text: ADD_RESULT, link: `${LAB_RESULTS_ROUTE}/new` }
 export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE }
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: '' }

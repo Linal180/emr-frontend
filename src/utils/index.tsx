@@ -6,7 +6,7 @@ import client from "../apollo";
 import history from "../history";
 import { LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
 import { SelectorOption, TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload } from "../generated/graphql"
+import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, ServicesPayload, PatientsPayload } from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -149,12 +149,42 @@ export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
   return data;
 }
 
+export const renderServices = (services: ServicesPayload['services']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!services) {
+    for (let service of services) {
+      if (service) {
+        const { id, name, duration } = service;
+
+        data.push({ id, name: `${name} \t (duration: ${duration} minutes)` })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
   const data: SelectorOption[] = [];
   if (!!doctors) {
     for (let doctor of doctors) {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
+        data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderPatient = (patients: PatientsPayload['patients']) => {
+  const data: SelectorOption[] = [];
+  if (!!patients) {
+    for (let patient of patients) {
+      if (patient) {
+        const { id, firstName, lastName } = patient;
         data.push({ id, name: `${firstName} ${lastName}` })
       }
     }

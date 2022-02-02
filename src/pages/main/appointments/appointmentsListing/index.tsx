@@ -1,4 +1,4 @@
 // components block
-import AppointmentsComponent from "../../../../components/main/appointments/appointmentsListing/index";
+import AppointmentsComponent from "../../../../components/main/appointments/appointmentsListing";
 
 export const Appointments = () => <AppointmentsComponent />;

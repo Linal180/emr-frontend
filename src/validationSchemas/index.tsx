@@ -14,7 +14,7 @@ import {
   TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP, TID_VALIDATION_MESSAGE,
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
-  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH,
+  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
@@ -65,6 +65,13 @@ const roleTypeSchema = {
   }).required(requiredMessage(ROLE))
 }
 
+const patientIdSchema = {
+  patientId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(requiredMessage(PATIENT))
+}
+
 const serviceCodeSchema = {
   serviceCode: yup.object().shape({
     name: yup.string().required(),
@@ -100,6 +107,13 @@ const usualProviderSchema = {
   }).required(requiredMessage(USUAL_PROVIDER_ID))
 }
 
+const providerIdSchema = {
+  providerId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(requiredMessage(PROVIDER))
+}
+
 const facilityIdSchema = {
   facilityId: yup.object().shape({
     name: yup.string().required(),
@@ -119,6 +133,13 @@ const specialtySchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }),
+}
+
+const serviceIdSchema = {
+  serviceId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(requiredMessage(SERVICE)),
 }
 
 const passwordAndRepeatPasswordSchema = {
@@ -426,4 +447,18 @@ export const extendedPatientSchema = yup.object({
 export const settingSchema = yup.object({
   ...facilityIdSchema,
   ...timeZoneSchema
+})
+
+export const appointmentSchema = yup.object({
+  ...patientIdSchema,
+  ...serviceIdSchema,
+  ...providerIdSchema,
+  ...facilityIdSchema,
+  notes: yup.string(),
+  employment: yup.boolean(),
+  autoAccident: yup.boolean(),
+  otherAccident: yup.boolean(),
+  primaryInsurance: yup.string(),
+  secondaryInsurance: yup.string(),
+  scheduleDateTime: yup.string().test(value => new Date(value || '') > new Date()),
 })

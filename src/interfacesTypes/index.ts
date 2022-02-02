@@ -8,7 +8,7 @@ import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -44,7 +44,18 @@ export interface ListContextInterface {
   doctorList: AllDoctorPayload['doctors'];
   setDoctorList: Function;
   fetchAllDoctorList: Function;
+  locationList: ContactsPayload['contacts'];
+  setLocationList: Function;
+  fetchAllLocationList: Function;
+  serviceList: ServicesPayload['services'];
+  setServicesList: Function;
+  fetchAllServicesList: Function;
+  patientList: PatientsPayload['patients'];
+  setPatientList: Function;
+  fetchAllPatientList: Function;
 }
+
+
 
 export interface Children {
   children: ReactNode;
@@ -741,3 +752,7 @@ export interface MediaCardComponentType {
   attachments?: Attachment[];
   allAttachments: Attachment[];
 }
+
+export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
+  "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
+  & { serviceId: SelectorOption } & { providerId: SelectorOption };

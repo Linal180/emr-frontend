@@ -43,6 +43,53 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
   }
 }
 
+query GetAppointment($getAppointment: GetAppointment!){
+  getAppointment(getAppointment: $getAppointment){
+    response {
+      error
+      status
+      message
+    }
+    
+    appointment {
+      id
+      notes
+      reason
+      employment
+      autoAccident
+      otherAccident
+      scheduleDateTime
+      primaryInsurance
+      secondaryInsurance
+      createdAt
+      updatedAt
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        firstName
+        lastName
+      }
+      
+      facility {
+        id
+        name
+      }
+    }
+  }
+}
+
 mutation RemoveAppointment($removeAppointment: RemoveAppointment!){
   removeAppointment(removeAppointment: $removeAppointment){
     response {
