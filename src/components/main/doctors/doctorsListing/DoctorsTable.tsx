@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, useEffect, ChangeEvent } from "react";
+import { FC, useState, useEffect, ChangeEvent, useContext } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
@@ -9,6 +9,7 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
@@ -22,6 +23,7 @@ import {
 } from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
+  const { fetchAllDoctorList } = useContext(ListContext)
   const classes = useTableStyles()
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [page, setPage] = useState<number>(1);
@@ -80,6 +82,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           setOpenDelete(false)
           findAllDoctor()
+          fetchAllDoctorList();
         }
       }
     }
@@ -91,7 +94,7 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   }, [page, findAllDoctor, searchQuery]);
 
-  const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
   const onDeleteClick = (id: string) => {
     if (id) {

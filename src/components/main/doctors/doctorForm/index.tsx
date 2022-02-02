@@ -16,7 +16,10 @@ import history from '../../../../history';
 import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { dateValidationMessage, getDate, getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
+import {
+  dateValidationMessage, getDate, getTimestamps, renderFacilities,
+  requiredMessage, setRecord
+} from "../../../../utils";
 import {
   DoctorPayload, Speciality, SsnType, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole,
   useUpdateDoctorMutation
@@ -32,14 +35,12 @@ import {
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
   LANGUAGE_SPOKEN, SPECIALITY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  TAXONOMY_CODE,
-  EMPTY_OPTION,
-  DOCTOR_DOB_VALIDATION_MESSAGE,
+  TAXONOMY_CODE, EMPTY_OPTION, DOCTOR_DOB_VALIDATION_MESSAGE,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList } = useContext(ListContext)
+  const { facilityList, fetchAllDoctorList } = useContext(ListContext)
   const [doctor, setDoctor] = useState<DoctorPayload['doctor']>()
   const methods = useForm<DoctorInputProps>({
     mode: "all",
@@ -159,6 +160,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (status && status === 200) {
           Alert.success(DOCTOR_CREATED);
+          fetchAllDoctorList();
           reset()
           history.push(DOCTORS_ROUTE)
         }
@@ -179,6 +181,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (status && status === 200) {
           Alert.success(DOCTOR_UPDATED);
+          fetchAllDoctorList();
           reset()
           history.push(DOCTORS_ROUTE)
         }

@@ -51,6 +51,7 @@ query FindAllContacts($contactInput: ContactInput!){
       zipCode
       city
       state
+      facilityId
       country
       createdAt
       updatedAt
