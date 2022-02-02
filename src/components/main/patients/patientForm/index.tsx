@@ -1,10 +1,9 @@
 // packages block
-import { FC, useState, useContext, ChangeEvent, useEffect, MouseEvent, Reducer, useReducer } from 'react';
+import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import { Controller, FormProvider, useForm, SubmitHandler } from "react-hook-form";
+import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, InputLabel, FormControlLabel, FormLabel,
+  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel,
   FormGroup, Checkbox,
 } from "@material-ui/core";
 // components block
@@ -15,7 +14,7 @@ import PhoneField from '../../../common/PhoneInput';
 import DatePicker from "../../../common/DatePicker";
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
-import { toggleButtonComponent } from "../../../../styles/publicAppointment/patientInformation";
+import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
@@ -44,16 +43,15 @@ import {
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX, SEX_AT_BIRTH,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, MAPPED_HOMEBOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT,
+  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT,
   CREATE_PATIENT, EMPTY_OPTION,
 } from "../../../../constants";
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
-  const classes = toggleButtonComponent()
   const { user } = useContext(AuthContext)
   const { doctorList, facilityList } = useContext(ListContext)
   const [{
-    basicContactId, selection, emergencyContactId, kinContactId, guardianContactId,
+    basicContactId, emergencyContactId, kinContactId, guardianContactId,
     guarantorContactId, employerId
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
@@ -67,7 +65,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(extendedPatientSchema)
   });
-  const { handleSubmit, setValue, control, formState: { errors } } = methods;
+  const { handleSubmit, setValue, formState: { errors } } = methods;
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -117,7 +115,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           suffix && setValue("suffix", suffix)
           lastName && setValue("lastName", lastName)
           language && setValue("language", language)
-          homeBound && setValue("homeBound", homeBound)
           firstName && setValue("firstName", firstName)
           middleName && setValue("middleName", middleName)
           patientNote && setValue("patientNote", patientNote)
@@ -133,6 +130,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
           releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
+          homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
@@ -292,10 +290,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   });
 
-  const updateSelection = (_: MouseEvent<HTMLElement>, value: string,) => {
-    dispatch({ type: ActionType.SET_SELECTION, selection: value })
-  };
-
   const handleChangeForCheckBox = (name: string) => (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -357,7 +351,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         medicationHistoryAuthority: medicationHistoryAuthority || false,
         patientNote: patientNote || '', language: language || '',
         statementNoteDateTo: getTimestamps(statementNoteDateTo || ''),
-        homeBound: homeBound || Homebound.No, holdStatement: holdStatement || Holdstatement.None,
+        homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
         pronouns: selectedPronouns as Pronouns || Pronouns.None,
         ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, facilityId: selectedFacility || '',
@@ -975,7 +969,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <Controller
+                      {/* <Controller
                         name="homeBound"
                         control={control}
                         render={() => {
@@ -998,7 +992,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             </FormControl>
                           )
                         }}
-                      />
+                      /> */}
+                      <ToggleButtonComponent name="homeBound" label={HOMEBOUND} />
                     </Grid>
                   </>
                 )}
