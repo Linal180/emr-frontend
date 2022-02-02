@@ -27,11 +27,11 @@ query findAllServices($serviceInput: ServiceInput!) {
 query getService($getService: GetService!) {
 	getService(getService: $getService) {
     response {
-      name
       error
       status
-	  message
+      message
     }
+
     service {
       id
       name
@@ -41,6 +41,7 @@ query getService($getService: GetService!) {
       facilityId
       createdAt
       updatedAt
+
       facility {
         id
         name
