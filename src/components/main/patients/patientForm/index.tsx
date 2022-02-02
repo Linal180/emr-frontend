@@ -969,30 +969,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      {/* <Controller
-                        name="homeBound"
-                        control={control}
-                        render={() => {
-                          return (
-                            <FormControl fullWidth margin='normal' className={classes.toggleContainer}>
-                              <InputLabel id="demo-customized-select-label-gender" shrink>{HOMEBOUND}</InputLabel>
-                              <ToggleButtonGroup
-                                value={selection}
-                                onChange={updateSelection}
-                                color="primary"
-                                exclusive
-                              >
-                                {MAPPED_HOMEBOUND.map(homeBound => (
-                                  <ToggleButton
-                                    key={homeBound.id}
-                                    value={homeBound.name}
-                                  >{homeBound.name}</ToggleButton>
-                                ))}
-                              </ToggleButtonGroup>
-                            </FormControl>
-                          )
-                        }}
-                      /> */}
                       <ToggleButtonComponent name="homeBound" label={HOMEBOUND} />
                     </Grid>
                   </>
