@@ -6,7 +6,7 @@ import client from "../apollo";
 import history from "../history";
 import { LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
 import { SelectorOption, TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload } from "../generated/graphql"
+import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, ServicesPayload, ContactsPayload } from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -149,6 +149,38 @@ export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
   return data;
 }
 
+export const renderServices = (services: ServicesPayload['services']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!services) {
+    for (let service of services) {
+      if (service) {
+        const { id, name } = service;
+
+        data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderLocations = (locations: ContactsPayload['contacts']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!locations) {
+    for (let location of locations) {
+      if (location) {
+        const { id, name } = location;
+
+        data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
   const data: SelectorOption[] = [];
   if (!!doctors) {
@@ -173,11 +205,11 @@ export const setRecord = (id: string, name: string): SelectorOption => {
 };
 
 export const formatPhone = (phone: string): string => {
-  return (phone && phone) ? `(${phone.substring(0,3)})  ${phone.substring(3,6 )}-${phone.substring(6,11)}` : ''
+  return (phone && phone) ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : ''
 };
 
 export const dateValidation = (endDate: string, startDate: string): boolean => {
-  if(startDate && endDate){
+  if (startDate && endDate) {
     return new Date(endDate) >= new Date(startDate)
   } else return true;
 };

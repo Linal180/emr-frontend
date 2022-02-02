@@ -1,5 +1,14 @@
 mutation CreateSchedule($createScheduleInput: CreateScheduleInput!){
   createSchedule(createScheduleInput: $createScheduleInput){
+    schedule{
+      id
+			startAt
+      endAt
+      location{
+        id
+        name
+      }
+    }
     response {
       error
       status

@@ -8,7 +8,7 @@ import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput
+  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput, ContactsPayload, ScheduleInput, CreateScheduleInput
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -33,6 +33,10 @@ export interface AuthContextProps {
   setIsLoggedIn: (isLoggedIn: boolean) => void;
 }
 
+export interface DoctorScheduleSlotProps {
+  doctorFacilityId?: string | undefined;
+}
+
 export interface AppContextProps {
   isSidebarOpen: boolean;
   setIsSidebarOpen: Dispatch<React.SetStateAction<boolean>>;
@@ -45,6 +49,12 @@ export interface ListContextInterface {
   doctorList: AllDoctorPayload['doctors'];
   setDoctorList: Function;
   fetchAllDoctorList: Function;
+  locationList: ContactsPayload['contacts'];
+  setLocationList: Function;
+  fetchAllLocationList: Function;
+  serviceList: ServicesPayload['services'];
+  setServicesList: Function;
+  fetchAllServicesList: Function;
 }
 
 export interface Children {
@@ -221,7 +231,7 @@ export interface IDetailCellProps {
 
 export interface SelectorOption {
   id: string
-  name: string
+  name: string | undefined | null
 }
 
 export interface SelectorProps {
@@ -274,6 +284,10 @@ export type SubMenuTypes = {
   link: string | null;
 };
 
+export interface CustomInputControlProps extends IControlLabel {
+  controllerName: string
+}
+
 export interface AppMenuItemTypes {
   name: string;
   link?: string;
@@ -301,6 +315,14 @@ export interface DatePickerProps {
   label: string;
   error: string;
   isRequired?: boolean
+}
+
+export interface TimePickerProps {
+  controllerName: string;
+  controllerLabel: string;
+  error?: string;
+  isRequired?: boolean;
+  fieldType: string;
 }
 
 type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
@@ -366,6 +388,9 @@ export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "rol
 export interface StaffInputControlProps extends IControlLabel {
   controllerName: StaffControlTypes;
 }
+
+export type ScheduleInputProps = Omit<CreateScheduleInput, "locationId" | "servicesIds">
+  & { locationId: SelectorOption } & { servicesIds: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingEmail: string;

@@ -6,7 +6,9 @@ export interface State {
   openDelete: boolean;
   searchQuery: string;
   deleteDoctorId: string;
-  doctors: AllDoctorPayload['doctors']
+  doctors: AllDoctorPayload['doctors'];
+  scheduleOpenModal: boolean;
+  doctorFacilityId: string;
 }
 
 export const initialState: State = {
@@ -16,6 +18,8 @@ export const initialState: State = {
   searchQuery: "",
   openDelete: false,
   deleteDoctorId: "",
+  scheduleOpenModal: false,
+  doctorFacilityId: "",
 }
 
 export enum ActionType {
@@ -25,6 +29,9 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_SEARCH_QUERY = 'setSearchQuery',
   SET_DELETE_DOCTOR_ID = 'setDeleteDoctorId',
+  SET_SCHEDULE_OPEN_MODAL = 'setScheduleOpenModal',
+  SET_DOCTOR_FACILITY_ID = 'setDoctorFacilityId',
+
 }
 
 export type Action =
@@ -34,6 +41,8 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_DELETE_DOCTOR_ID; deleteDoctorId: string }
   | { type: ActionType.SET_DOCTORS; doctors: AllDoctorPayload['doctors'] }
+  | { type: ActionType.SET_SCHEDULE_OPEN_MODAL; scheduleOpenModal: boolean }
+  | { type: ActionType.SET_DOCTOR_FACILITY_ID; doctorFacilityId: string }
 
 export const doctorReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -71,6 +80,16 @@ export const doctorReducer = (state: State, action: Action): State => {
       return {
         ...state,
         deleteDoctorId: action.deleteDoctorId
+      }
+    case ActionType.SET_SCHEDULE_OPEN_MODAL:
+      return {
+        ...state,
+        scheduleOpenModal: action.scheduleOpenModal
+      }
+    case ActionType.SET_DOCTOR_FACILITY_ID:
+      return {
+        ...state,
+        doctorFacilityId: action.doctorFacilityId
       }
   };
 }

@@ -1,6 +1,7 @@
 // packages block
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, Reducer, useReducer } from "react";
 import moment from "moment";
+import { useParams } from "react-router";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { Avatar, Box, Grid, Tab } from "@material-ui/core";
 // components block
@@ -10,14 +11,18 @@ import { DOCTORS_ROUTE, DOCTOR_TOP_TABS } from "../../../../constants";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { Doctor, useGetDoctorLazyQuery } from "../../../../generated/graphql";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
-import { useParams } from "react-router";
 import { ParamsType } from "../../../../interfacesTypes";
 import Alert from "../../../common/Alert";
 import { getDate, getFormattedDate } from "../../../../utils";
 import DoctorScheduleForm from "../schedules";
+import {
+  doctorReducer, Action, initialState, State, ActionType
+} from '../../../../reducers/doctorReducer';
 
 const DoctorDetailComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const { doctorFacilityId } = state;
   const { id } = useParams<ParamsType>();
   const [value, setValue] = useState('1');
   const [doctor, setDoctor] = useState<Doctor | null>();
@@ -41,6 +46,10 @@ const DoctorDetailComponent = (): JSX.Element => {
 
       if (response) {
         const { status } = response
+        const { facilityId } = doctor || {};
+        if (facilityId) {
+          dispatch({ type: ActionType.SET_DOCTOR_FACILITY_ID, doctorFacilityId: facilityId })
+        }
 
         if (doctor && status && status === 200) {
           setDoctor(doctor)
@@ -71,7 +80,6 @@ const DoctorDetailComponent = (): JSX.Element => {
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
-  console.log(contacts && contacts)
   if (selfContact && selfContact[0]) {
     const { phone, email, country, state } = selfContact[0]
     selfPhoneNumber = phone || "--"
@@ -167,7 +175,9 @@ const DoctorDetailComponent = (): JSX.Element => {
 
           <TabPanel value="2">
             <Grid spacing={3}>
-              <DoctorScheduleForm />
+              <DoctorScheduleForm
+                doctorFacilityId={doctorFacilityId}
+              />
             </Grid>
           </TabPanel>
         </Box>

@@ -1,14 +1,11 @@
-import { FacilitiesPayload, ServicesPayload, AllDoctorPayload } from "../generated/graphql"
+import { FacilitiesPayload, ServicesPayload, AllDoctorPayload, ContactsPayload } from "../generated/graphql"
 export interface State {
   facilityPages: number;
   facilityList: FacilitiesPayload['facility'];
   servicePages: number;
   serviceList: ServicesPayload['services']
-}
-
-export interface State {
-  facilityPages: number;
-  facilityList: FacilitiesPayload['facility'];
+  locationPages: number;
+  locationList: ContactsPayload['contacts'];
   doctorPages: number;
   doctorList: AllDoctorPayload['doctors'];
 }
@@ -20,6 +17,8 @@ export const initialState: State = {
   serviceList: [],
   doctorPages: 1,
   doctorList: [],
+  locationPages: 1,
+  locationList: [],
 }
 
 export enum ActionType {
@@ -29,6 +28,8 @@ export enum ActionType {
   SET_SERVICE_LIST = "setServiceList",
   SET_DOCTOR_PAGES = "setDoctorPages",
   SET_DOCTOR_LIST = "setDoctorList",
+  SET_LOCATION_PAGES = "setLocationPages",
+  SET_LOCATION_LIST = "setLocationList",
 }
 
 export enum ActionTypeForDoctor {
@@ -41,6 +42,8 @@ export type Action =
   | { type: ActionType.SET_SERVICE_LIST; serviceList: ServicesPayload['services'] }
   | { type: ActionType.SET_DOCTOR_PAGES; doctorPages: number }
   | { type: ActionType.SET_DOCTOR_LIST; doctorList: AllDoctorPayload['doctors'] }
+  | { type: ActionType.SET_LOCATION_PAGES; locationPages: number }
+  | { type: ActionType.SET_LOCATION_LIST; locationList: ContactsPayload['contacts'] }
 
 export const listContextReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -73,6 +76,16 @@ export const listContextReducer = (state: State, action: Action): State => {
       return {
         ...state,
         doctorList: action.doctorList
+      }
+    case ActionType.SET_LOCATION_PAGES:
+      return {
+        ...state,
+        locationPages: action.locationPages
+      }
+    case ActionType.SET_LOCATION_LIST:
+      return {
+        ...state,
+        locationList: action.locationList
       }
   }
 };

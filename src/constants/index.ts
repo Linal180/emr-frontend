@@ -107,12 +107,15 @@ export const CITY = "City";
 export const STATE = "State"
 export const COUNTRY = "Country";
 export const PRACTICE_TYPE = "Practice Type";
+export const PICK_DAY_TEXT = "Pick Day";
+export const PICK_TIME_TEXT = "Pick Time";
 export const FEDERAL_TAX_ID = "Federal Tax ID";
 export const CHECK_PAYABLE_TO = "Check Payable To";
 export const BANK_ACCOUNT = "Bank Account";
 export const PAGER = "Pager";
 export const TAX_ID = "Tax ID";
 export const NPI = "NPI";
+export const APPOINTMENT_TYPE = "Appointment Type:"
 export const UPIN = "UPIN";
 export const EMC_PROVIDER_ID = "EMC Provider ID";
 export const Organization_Type = "Organization Type";
@@ -133,6 +136,7 @@ export const SERVICE_NAME_TEXT = "Service Name";
 export const DURATION_TEXT = "Duration (In Minutes)";
 export const PRICE_TEXT = "Price (In USD)";
 export const LICENSE_TERM_DATE = "License Term Date";
+export const ADD_TEXT = "ADD";
 export const PRESCRIPTIVE_AUTH_NUMBER = "Prescriptive Auth number";
 export const FACILITY_IDS = "Facility IDs";
 export const FACILITY_TYPE = "Facility Type";
@@ -216,6 +220,7 @@ export const UNVERIFIED = "Unverified";
 export const FIRST_NAME = "First Name";
 export const SEND_EMAIL = "Send Email";
 export const START_DATE = "Start date";
+export const END_DATE = "End date";
 export const REQUESTS_TEXT = "Requests";
 export const CLINICAL_TEXT = "Clinical";
 export const INVOICES_TEXT = "Invoices";
@@ -880,33 +885,33 @@ export const DOCTOR_TOP_TABS = [
   },
 ]
 
-export const WEEK_DAYS = [
+export const WEEK_DAYS: SelectorOption[] = [
   {
-    index: 1,
+    id: '1',
     name: 'Monday',
   },
   {
-    index: 2,
+    id: '2',
     name: 'Tuesday',
   },
   {
-    index: 3,
+    id: '3',
     name: 'Wednesday',
   },
   {
-    index: 4,
+    id: '4',
     name: 'Thursday',
   },
   {
-    index: 5,
+    id: '5',
     name: 'Friday',
   },
   {
-    index: 6,
+    id: '6',
     name: 'Saturday',
   },
   {
-    index: 7,
+    id: '7',
     name: 'Sunday',
   },
 ]
