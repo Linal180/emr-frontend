@@ -1,201 +1,204 @@
 // packages block
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@material-ui/core";
-import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
-import DateFnsUtils from '@date-io/date-fns';
+import { useContext } from "react";
+import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+import { Box, Button, Grid } from "@material-ui/core";
 // components block
 import CardComponent from "../../../common/CardComponent";
+import { ListContext } from '../../../../context';
+import DatePicker from "../../../common/DatePicker";
+import PhoneField from '../../../common/PhoneInput';
 // constants block
+import { APPOINTMENT_TYPE, BOOK_APPOINTMENT, CANCEL, DOB, EMAIL, EMPTY_OPTION, INSURANCE_COMPANY, MAPPED_GENDER_IDENTITY, MAPPED_PAYMENT_METHOD, MAPPED_RELATIONSHIP_TYPE, MEMBERSHIP_ID, PATIENT_DETAILS, PATIENT_FIRST_NAME, PATIENT_LAST_NAME, PAYMENT_TYPE, PHONE, RELATIONSHIP_WITH_PATIENT, SELECT_PROVIDER, SELECT_SERVICES, SEX_AT_BIRTH, YOUR_NAME } from "../../../../constants";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
-import { PATIENT_DETAILS, SELECT_SERVICES, VISIT_REASON } from "../../../../constants";
-
+import Selector from "../../../common/Selector";
+import InputController from "../../../../controller";
+import { renderDoctors, renderServices } from "../../../../utils";
+import AppointmentDatePicker from "./AppointmentDatePicker";
 
 const ScheduleAppointmentsPublic = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
-  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
-  const { control } = useForm({});
+  const { serviceList, doctorList } = useContext(ListContext)
+  const methods = useForm<any>({
+    mode: "all",
+  });
+  const { handleSubmit } = methods;
 
-  const renderInputField = (name: string, label: string) => (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue=""
-      render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={name}>
-            {label}
-          </InputLabel>
+  const onSubmit: SubmitHandler<any> = () => {
 
-          <TextField
-            type="text"
-            id={name}
-            variant="outlined"
-            error={invalid}
-            fullWidth
-            // helperText={"error && error"}
-            {...field}
-          />
-        </FormControl>
-      )}
-    />
-  )
-
-  const renderSelectField = (name: string, label: string) => (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue=""
-      render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth margin="normal">
-          <InputLabel shrink id={`${name}-select`}>
-            {label}
-          </InputLabel>
-
-          <Select
-            labelId={`${name}-select`}
-            id={name}
-            variant="outlined"
-            value={field.value}
-            onChange={field.onChange}
-          >
-            <MenuItem value={-1}>{label}</MenuItem>;
-            <MenuItem value={1}>{`${label} 1`}</MenuItem>;
-            <MenuItem value={2}>{`${label} 2`}</MenuItem>;
-            <MenuItem value={3}>{`${label} 3`}</MenuItem>;
-          </Select>
-        </FormControl>
-      )}
-    />
-  )
+  }
 
   return (
-    <form onSubmit={() => { }}>
-      <Grid container spacing={3}>
-        <Grid lg={9} md={8} sm={6} xs={12} item>
-          <CardComponent cardTitle={SELECT_SERVICES}>
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                {renderSelectField("reasonToVisit", VISIT_REASON)}
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={3}>
-              <Grid item md={3} sm={12} xs={12}>
-                {renderSelectField("selectPayment", "Select Payment")}
-              </Grid>
-
-              <Grid item md={3} sm={12} xs={12}>
-                {renderSelectField("selectPayment", "Select Payment")}
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Grid container spacing={3}>
+          <Grid lg={9} md={8} sm={6} xs={12} item>
+            <CardComponent cardTitle={SELECT_SERVICES}>
+              <Grid container spacing={3}>
+                <Grid item md={6} sm={12} xs={12}>
+                  <Selector
+                    isRequired
+                    value={EMPTY_OPTION}
+                    label={APPOINTMENT_TYPE}
+                    name="serviceId"
+                    options={renderServices(serviceList)}
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item md={3} sm={12} xs={12}>
-                {renderSelectField("selectPayment", "Select Payment")}
+              <Grid container spacing={3}>
+                <Grid item md={3} sm={12} xs={12}>
+                  <Selector
+                    name="paymentType"
+                    label={PAYMENT_TYPE}
+                    value={EMPTY_OPTION}
+                    options={MAPPED_PAYMENT_METHOD}
+                  />
+                </Grid>
+
+                <Grid item md={3} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="insuranceCompany"
+                    controllerLabel={INSURANCE_COMPANY}
+                  />
+                </Grid>
+
+                <Grid item md={3} sm={12} xs={12}>
+                  <Selector
+                    isRequired
+                    value={EMPTY_OPTION}
+                    label={SELECT_PROVIDER}
+                    name="providerId"
+                    options={renderDoctors(doctorList)}
+                  />
+                </Grid>
+
+                <Grid item md={3} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="membershipId"
+                    controllerLabel={MEMBERSHIP_ID}
+                  />
+                </Grid>
+              </Grid>
+            </CardComponent>
+
+            <Box pt={3} />
+
+            <CardComponent cardTitle={PATIENT_DETAILS}>
+              <Grid container spacing={3}>
+                <Grid item md={6} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="patientFirstName"
+                    controllerLabel={PATIENT_FIRST_NAME}
+                  />
+                </Grid>
+
+                <Grid item md={6} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="patientLastName"
+                    controllerLabel={PATIENT_LAST_NAME}
+                  />
+                </Grid>
               </Grid>
 
-              <Grid item md={3} sm={12} xs={12}>
-                {renderInputField("selectPayment", "Select Payment")}
-              </Grid>
-            </Grid>
-          </CardComponent>
-
-          <Box pt={3} />
-
-          <CardComponent cardTitle={PATIENT_DETAILS}>
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                {renderSelectField("reasonToVisit", VISIT_REASON)}
-              </Grid>
-
-              <Grid item md={6} sm={12} xs={12}>
-                {renderSelectField("reasonToVisit", VISIT_REASON)}
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={3}>
-              <Grid item md={3} sm={12} xs={12}>
-                {renderSelectField("selectPayment", "Select Payment")}
-              </Grid>
-              <Grid item md={3} sm={12} xs={12}>
-                {renderSelectField("selectPayment", "Select Payment")}
-              </Grid>
-              <Grid item md={3} sm={12} xs={12}>
-                {renderSelectField("selectPayment", "Select Payment")}
-              </Grid>
-              <Grid item md={3} sm={12} xs={12}>
-                {renderInputField("selectPayment", "Select Payment")}
-              </Grid>
-            </Grid>
-
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12} xs={12}>
-                {renderSelectField("reasonToVisit", VISIT_REASON)}
+              <Grid container spacing={3}>
+                <Grid item md={3} sm={12} xs={12}>
+                  <Selector
+                    name="sexAtBirth"
+                    label={SEX_AT_BIRTH}
+                    value={EMPTY_OPTION}
+                    options={MAPPED_GENDER_IDENTITY}
+                  />
+                </Grid>
+                <Grid item md={3} sm={12} xs={12}>
+                  <DatePicker isRequired name="dob" label={DOB}
+                    error={''}
+                  />
+                </Grid>
+                <Grid item md={3} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="email"
+                    controllerLabel={EMAIL}
+                  />
+                </Grid>
+                <Grid item md={3} sm={12} xs={12}>
+                  <PhoneField name="billingPhone" label={PHONE} />
+                </Grid>
               </Grid>
 
-              <Grid item md={6} sm={12} xs={12}>
-                {renderSelectField("reasonToVisit", VISIT_REASON)}
+              <Grid container spacing={3}>
+                <Grid item md={6} sm={12} xs={12}>
+                  <Selector
+                    name="emergencyRelationship"
+                    label={RELATIONSHIP_WITH_PATIENT}
+                    value={EMPTY_OPTION}
+                    options={MAPPED_RELATIONSHIP_TYPE}
+                  />
+                </Grid>
+
+                <Grid item md={6} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="yourName"
+                    controllerLabel={YOUR_NAME}
+                  />
+                </Grid>
               </Grid>
-            </Grid>
-          </CardComponent>
+            </CardComponent>
+          </Grid>
+
+          <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
+            <CardComponent cardTitle="Availlable Slots">
+              <AppointmentDatePicker />
+
+              <ul className={classes.timeSlots}>
+                <li>
+                  <div>
+                    <input type="radio" name="timeSlots" id="timeSlotOne" />
+                    <label htmlFor="timeSlotOne">01:00PM - 01:30PM</label>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <input type="radio" name="timeSlots" id="timeSlotTwo" />
+                    <label htmlFor="timeSlotTwo">01:00PM - 01:30PM</label>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <input type="radio" name="timeSlots" id="timeSlotThree" />
+                    <label htmlFor="timeSlotThree">01:00PM - 01:30PM</label>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <input type="radio" name="timeSlots" id="timeSlotFour" />
+                    <label htmlFor="timeSlotFour">01:00PM - 01:30PM</label>
+                  </div>
+                </li>
+              </ul>
+            </CardComponent>
+          </Grid>
+
+          <Grid item md={12}>
+            <Box pt={4} display="flex" justifyContent="center" gridGap={20}>
+              <Button type="submit" variant="contained">
+                {CANCEL}
+              </Button>
+              <Button type="submit" variant="contained" className='blue-button'>
+                {BOOK_APPOINTMENT}
+              </Button>
+            </Box>
+          </Grid>
         </Grid>
-
-        <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
-          <CardComponent cardTitle="Available Slots">
-            <MuiPickersUtilsProvider utils={DateFnsUtils}>
-              <DatePicker
-                variant="static"
-                openTo="date"
-                value={date}
-                onChange={currentDate => currentDate && setDate(currentDate)}
-                autoOk
-                fullWidth
-                disableToolbar
-              />
-            </MuiPickersUtilsProvider>
-
-            <ul className={classes.timeSlots}>
-              <li>
-                <div>
-                  <input type="radio" name="timeSlots" id="timeSlotOne" />
-                  <label htmlFor="timeSlotOne">01:00PM - 01:30PM</label>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <input type="radio" name="timeSlots" id="timeSlotTwo" />
-                  <label htmlFor="timeSlotTwo">01:00PM - 01:30PM</label>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <input type="radio" name="timeSlots" id="timeSlotThree" />
-                  <label htmlFor="timeSlotThree">01:00PM - 01:30PM</label>
-                </div>
-              </li>
-              <li>
-                <div>
-                  <input type="radio" name="timeSlots" id="timeSlotFour" />
-                  <label htmlFor="timeSlotFour">01:00PM - 01:30PM</label>
-                </div>
-              </li>
-            </ul>
-          </CardComponent>
-        </Grid>
-
-        <Grid item md={12}>
-          <Box pt={4} display="flex" justifyContent="center" gridGap={20}>
-            <Button type="submit" variant="contained">
-              Cancel Booking
-            </Button>
-            <Button type="submit" variant="contained" className='blue-button'>
-              Select
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
-    </form>
+      </form>
+    </FormProvider>
   )
 }
 
 export default ScheduleAppointmentsPublic;
+

@@ -1,107 +1,158 @@
 // packages block
-import { FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
-import { Controller, useForm } from 'react-hook-form';
+import { useContext } from "react";
+import { Grid } from '@material-ui/core';
+import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 // Components block
+import { ListContext } from '../../../../../../../../context';
 import CardComponent from '../../../../../../../../components/common/CardComponent';
-import RenderInputField from '../../../components/RenderInputField';
+import Selector from '../../../../../../../../components/common/Selector';
+import { APARTMENT, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE } from '../../../../../../../../constants';
+import InputController from '../../../../../../../../controller';
+import { renderDoctors } from '../../../../../../../../utils';
 
 const DocumentVerification = () => {
-  const { control } = useForm({});
+  const { doctorList } = useContext(ListContext)
+  const methods = useForm<any>({
+    mode: "all",
+  });
+  const { handleSubmit } = methods;
 
-  const renderSelectField = (name: string, label: string) => (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue=""
-      render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth margin="normal">
-          <InputLabel shrink id={`${name}-select`}>
-            {label}
-          </InputLabel>
+  const onSubmit: SubmitHandler<any> = () => {
 
-          <Select
-            labelId={`${name}-select`}
-            id={name}
-            variant="outlined"
-            value={field.value}
-            onChange={field.onChange}
-          >
-            <MenuItem value={-1}>{label}</MenuItem>;
-            <MenuItem value={1}>{`${label} 1`}</MenuItem>;
-            <MenuItem value={2}>{`${label} 2`}</MenuItem>;
-            <MenuItem value={3}>{`${label} 3`}</MenuItem>;
-          </Select>
-        </FormControl>
-      )}
-    />
-  )
+  }
 
   return (
-    <CardComponent cardTitle="Document Verification">
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={12} xs={12}>
-          <RenderInputField name="streetAddress" label="Street Address" control={control} />
-        </Grid>
+    <FormProvider {...methods}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <CardComponent cardTitle="Document Verification">
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="streetAddress"
+                controllerLabel={STREET_ADDRESS}
+              />
+            </Grid>
 
-        <Grid item md={6} sm={12} xs={12}>
-          <RenderInputField name="apartmentSuiteOther" label="Apartment/Suite/Other" control={control} />
-        </Grid>
-      </Grid>
+            <Grid item md={6} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="apartment"
+                controllerLabel={APARTMENT}
+              />
+            </Grid>
+          </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item md={3} sm={12} xs={12}>
-          {renderSelectField("city", "City")}
-        </Grid>
+          <Grid container spacing={3}>
+            <Grid item md={3} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="city"
+                controllerLabel={CITY}
+              />
+            </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
-          {renderSelectField("state", "State")}
-        </Grid>
+            <Grid item md={3} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="state"
+                controllerLabel={STATE}
+              />
+            </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
-          {renderSelectField("zipCode", "Zip Code")}
-        </Grid>
+            <Grid item md={3} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="zipCode"
+                controllerLabel={ZIP_CODE}
+              />
+            </Grid>
 
-        <Grid item md={3} sm={12} xs={12}>
-          {renderSelectField("county", "County")}
-        </Grid>
-      </Grid>
+            <Grid item md={3} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="country"
+                controllerLabel={COUNTRY}
+              />
+            </Grid>
+          </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={12} xs={12}>
-          <RenderInputField name="ssh" label="SSN" control={control} />
-        </Grid>
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="ssn"
+                controllerLabel={SSN}
+              />
+            </Grid>
 
-        <Grid item md={6} sm={12} xs={12}>
-          {renderSelectField("selectProvider", "Select Provider")}
-        </Grid>
-      </Grid>
+            <Grid item md={6} sm={12} xs={12}>
+              <Selector
+                isRequired
+                value={EMPTY_OPTION}
+                label={SELECT_PROVIDER}
+                name="providerId"
+                options={renderDoctors(doctorList)}
+              />
+            </Grid>
+          </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={12} xs={12}>
-          {renderSelectField("preferredPharmacy", "Preferred Pharmacy")}
-        </Grid>
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <InputController
+                fieldType="text"
+                controllerName="preferredPharmacy"
+                controllerLabel={PREFERRED_PHARMACY}
+              />
+            </Grid>
 
-        <Grid item md={6} sm={12} xs={12}>
-          {renderSelectField("preferredLanguage", "Preferred Language")}
-        </Grid>
-      </Grid>
+            <Grid item md={6} sm={12} xs={12}>
+              <Selector
+                isRequired
+                value={EMPTY_OPTION}
+                label={PREFERRED_LANGUAGE}
+                name="preferredLanguage"
+                options={renderDoctors(doctorList)}
+              />
+            </Grid>
+          </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={12} xs={12}>
-          {renderSelectField("race", "Race")}
-        </Grid>
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <Selector
+                isRequired
+                value={EMPTY_OPTION}
+                label={RACE}
+                name="race"
+                options={MAPPED_RACE}
+              />
+            </Grid>
 
-        <Grid item md={6} sm={12} xs={12}>
-          {renderSelectField("ethnicity", "Ethnicity")}
-        </Grid>
-      </Grid>
+            <Grid item md={6} sm={12} xs={12}>
+              <Selector
+                isRequired
+                value={EMPTY_OPTION}
+                label={ETHNICITY}
+                name="ethnicity"
+                options={MAPPED_ETHNICITY}
+              />
+            </Grid>
+          </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={12} xs={12}>
-          {renderSelectField("MaritalStatus", "Marital Status")}
-        </Grid>
-      </Grid>
-    </CardComponent>
+          <Grid container spacing={3}>
+            <Grid item md={6} sm={12} xs={12}>
+              <Selector
+                isRequired
+                value={EMPTY_OPTION}
+                label={MARITAL_STATUS}
+                name="maritalStatus"
+                options={renderDoctors(doctorList)}
+              />
+            </Grid>
+          </Grid>
+        </CardComponent>
+      </form>
+    </FormProvider>
   );
 };
 

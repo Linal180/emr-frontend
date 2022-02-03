@@ -1,111 +1,130 @@
 // packages block
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select } from '@material-ui/core';
-import { Controller, useForm } from 'react-hook-form';
+import { useContext } from "react";
+import { Box, Grid } from '@material-ui/core';
+import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 // components block
+import { ListContext } from '../../../../../../../../context';
 import CardComponent from '../../../../../../../../components/common/CardComponent';
-import RenderInputField from '../../../components/RenderInputField';
+import Selector from '../../../../../../../../components/common/Selector';
 import ToggleButtonComponent from '../../../../../../../../components/common/ToggleButtonComponent';
+import { APARTMENT, CITY, COUNTRY, EMERGENCY_CONTACT_FIRST_NAME, EMERGENCY_CONTACT_LAST_NAME, EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, EMPTY_OPTION, STATE, STREET_ADDRESS, ZIP_CODE } from '../../../../../../../../constants';
+import InputController from '../../../../../../../../controller';
+import { renderDoctors } from '../../../../../../../../utils';
 
 const EmergencyContact = () => {
-  const { control } = useForm({});
+  const { doctorList } = useContext(ListContext)
+  const methods = useForm<any>({
+    mode: "all",
+  });
+  const { handleSubmit } = methods;
 
-  const renderSelectField = (name: string, label: string) => (
-    <Controller
-      name={name}
-      control={control}
-      defaultValue=""
-      render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth margin="normal">
-          <InputLabel shrink id={`${name}-select`}>
-            {label}
-          </InputLabel>
+  const onSubmit: SubmitHandler<any> = () => {
 
-          <Select
-            labelId={`${name}-select`}
-            id={name}
-            variant="outlined"
-            value={field.value}
-            onChange={field.onChange}
-          >
-            <MenuItem value={-1}>{label}</MenuItem>;
-            <MenuItem value={1}>{`${label} 1`}</MenuItem>;
-            <MenuItem value={2}>{`${label} 2`}</MenuItem>;
-            <MenuItem value={3}>{`${label} 3`}</MenuItem>;
-          </Select>
-        </FormControl>
-      )}
-    />
-  )
+  }
 
   return (
     <Box pt={3}>
-      <CardComponent cardTitle="Emergency Contact">
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <RenderInputField name="emergencyContactFirstName" label="Emergency Contact First Name" control={control} />
-          </Grid>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <CardComponent cardTitle="Emergency Contact">
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="emergencyContactFirstName"
+                  controllerLabel={EMERGENCY_CONTACT_FIRST_NAME}
+                />
+              </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
-            <RenderInputField name="emergencyContactLastName" label="Emergency Contact Last Name" control={control} />
-          </Grid>
-        </Grid>
+              <Grid item md={6} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="emergencyContactLastName"
+                  controllerLabel={EMERGENCY_CONTACT_LAST_NAME}
+                />
+              </Grid>
+            </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <RenderInputField name="emergencyContactRelationshipToPatient" label="Emergency Contact Relationship To Patient" control={control} />
-          </Grid>
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <Selector
+                  isRequired
+                  value={EMPTY_OPTION}
+                  label={EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT}
+                  name="emergencyContactRelationshipToPatient"
+                  options={renderDoctors(doctorList)}
+                />
+              </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
-            <RenderInputField name="emergencyContactPhone" label="Emergency Contact Phone" control={control} />
-          </Grid>
-        </Grid>
+              <Grid item md={6} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="emergencyContactPhone"
+                  controllerLabel={EMERGENCY_CONTACT_PHONE}
+                />
+              </Grid>
+            </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <RenderInputField name="emergencyContactRelationshipToPatient" label="Emergency Contact Relationship To Patient" control={control} />
-          </Grid>
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <ToggleButtonComponent name="billingInfo" label="Can we release medical and billing information to this contact?" />
+              </Grid>
+            </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
-            <RenderInputField name="emergencyContactPhone" label="Emergency Contact Phone" control={control} />
-          </Grid>
-        </Grid>
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="streetAddress"
+                  controllerLabel={STREET_ADDRESS}
+                />
+              </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <ToggleButtonComponent name="billingInfo" label="Can we release medical and billing information to this contact?" />
-          </Grid>
-        </Grid>
+              <Grid item md={6} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="apartment"
+                  controllerLabel={APARTMENT}
+                />
+              </Grid>
+            </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12} xs={12}>
-            <RenderInputField name="streetAddress" label="Street Address" control={control} />
-          </Grid>
+            <Grid container spacing={3}>
+              <Grid item md={3} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="city"
+                  controllerLabel={CITY}
+                />
+              </Grid>
 
-          <Grid item md={6} sm={12} xs={12}>
-            <RenderInputField name="apartmentSuiteOther" label="Apartment/Suite/Other" control={control} />
-          </Grid>
-        </Grid>
+              <Grid item md={3} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="state"
+                  controllerLabel={STATE}
+                />
+              </Grid>
 
-        <Grid container spacing={3}>
-          <Grid item md={3} sm={12} xs={12}>
-            {renderSelectField("city", "City")}
-          </Grid>
+              <Grid item md={3} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="zipCode"
+                  controllerLabel={ZIP_CODE}
+                />
+              </Grid>
 
-          <Grid item md={3} sm={12} xs={12}>
-            {renderSelectField("state", "State")}
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12}>
-            {renderSelectField("zipCode", "Zip Code")}
-          </Grid>
-
-          <Grid item md={3} sm={12} xs={12}>
-            {renderSelectField("county", "County")}
-          </Grid>
-        </Grid>
-
-
-      </CardComponent>
+              <Grid item md={3} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="country"
+                  controllerLabel={COUNTRY}
+                />
+              </Grid>
+            </Grid>
+          </CardComponent>
+        </form>
+      </FormProvider>
     </Box>
   );
 };
