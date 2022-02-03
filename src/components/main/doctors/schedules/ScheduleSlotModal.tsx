@@ -30,7 +30,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({ doctorDispatcher, i
   });
   const { reset, handleSubmit } = methods;
 
-  const [createSchedule, { loading: createDoctorSlotSchedulingLoading }] = useCreateScheduleMutation({
+  const [createSchedule,] = useCreateScheduleMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)

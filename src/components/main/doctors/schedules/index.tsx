@@ -25,7 +25,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   const [{ scheduleOpenModal }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const [schedules, setSchedules] = useState<SchedulesPayload['schedules']>([]);
 
-  const [getDoctorSchedules, { loading: allDoctorSlotsLoading }] = useGetDoctorScheduleLazyQuery({
+  const [getDoctorSchedules,] = useGetDoctorScheduleLazyQuery({
     variables: {
       getDoctorSchedule: {
         id: id
@@ -131,7 +131,14 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                               </Typography>
 
                               <Typography className={classes.heading}>
-                                {scheduleServices}
+                                {scheduleServices?.map(scheduleService => {
+                                  const { service } = scheduleService || {}
+                                  const { name } = service || {};
+
+                                  return (
+                                    <Typography className={classes.heading}>{name}</Typography>
+                                  )
+                                })}
                               </Typography>
                             </Box>
                           </Box>
