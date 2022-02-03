@@ -6,7 +6,10 @@ import client from "../apollo";
 import history from "../history";
 import { LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
 import { SelectorOption, TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, ServicesPayload, ContactsPayload } from "../generated/graphql"
+import {
+  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
+  ServicesPayload, PatientsPayload, ContactsPayload
+} from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -155,9 +158,9 @@ export const renderServices = (services: ServicesPayload['services']) => {
   if (!!services) {
     for (let service of services) {
       if (service) {
-        const { id, name } = service;
+        const { id, name, duration } = service;
 
-        data.push({ id, name })
+        data.push({ id, name: `${name} \t (duration: ${duration} minutes)` })
       }
     }
   }
@@ -195,6 +198,20 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
   return data;
 }
 
+export const renderPatient = (patients: PatientsPayload['patients']) => {
+  const data: SelectorOption[] = [];
+  if (!!patients) {
+    for (let patient of patients) {
+      if (patient) {
+        const { id, firstName, lastName } = patient;
+        data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const setRecord = (id: string, name: string): SelectorOption => {
   let value = ''
   if (name) {
@@ -216,4 +233,10 @@ export const dateValidation = (endDate: string, startDate: string): boolean => {
 
 export const dateValidationMessage = (endDateName: string, startDateName: string): string => {
   return `${endDateName} should be greater than ${startDateName}`
+};
+
+export const getTimeFromTimestamps = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toISOString()
 };

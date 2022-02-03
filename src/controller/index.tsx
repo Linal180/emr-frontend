@@ -8,11 +8,13 @@ import ShowPassword from "../components/common/ShowPassword";
 import { requiredLabel } from "../utils";
 import { PASSWORD, TEXT } from "../constants";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
+
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled
 }): JSX.Element => {
   const { control } = useFormContext()
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
+  
   const handleClickShowPassword = () => {
     if (passwordType === PASSWORD) {
       setPasswordType(TEXT);
@@ -20,6 +22,7 @@ const InputController: FC<CustomInputControlProps> = ({
       setPasswordType(PASSWORD);
     }
   };
+  
   return (
     <Controller
       name={controllerName}
@@ -30,6 +33,7 @@ const InputController: FC<CustomInputControlProps> = ({
           <InputLabel shrink htmlFor={controllerName}>
             {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
           </InputLabel>
+          
           <TextField
             fullWidth
             error={invalid}
@@ -52,4 +56,5 @@ const InputController: FC<CustomInputControlProps> = ({
     />
   );
 };
+
 export default InputController;

@@ -29,27 +29,28 @@ import ViewFacility from "../pages/main/facilities/viewFacility";
 import PatientDetails from "../pages/main/patients/patientDetails";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 import { StartProject } from "../pages/main/dashboard/startProject";
-import AddAppointment from "../pages/main/appointments/addAppointment";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
 import { AddService } from "../pages/main/facilities/services/addService";
-import Appointments from "../pages/main/appointments/appointmentsListing";
+import { AddAppointment } from "../pages/main/appointments/addAppointment";
 import Locations from "../pages/main/facilities/locations/locationListing";
 import { Services } from "../pages/main/facilities/services/serviceListing";
 import { ViewService } from "../pages/main/facilities/services/viewService";
+import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
 import AppointmentPublic from "../pages/main/appointments/appointmentPublic";
 import { AddLocation } from "../pages/main/facilities/locations/addLocation";
+import { Appointments } from "../pages/main/appointments/appointmentsListing";
 import { ViewLocation } from "../pages/main/facilities/locations/viewLocation";
-import ScheduleAppointments from "../pages/main/appointments/scheduleAppointments";
+import { ScheduleAppointments } from "../pages/main/appointments/scheduleAppointments";
 import SlotConfirmation from "../pages/main/appointments/appointmentPublic/slotConfirmation";
 import AppointmentSuccess from "../pages/main/appointments/appointmentPublic/appointmentSuccess";
 import PatientInformation from "../pages/main/appointments/appointmentPublic/patientInformation";
 // constants
 import { AuthContext } from "../context";
 import {
-  DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, 
-  STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, 
-  LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION, 
-  SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE, 
+  DASHBOARD_ROUTE, FACILITIES_ROUTE, FORGET_PASSWORD_ROUTE, LOGIN_ROUTE, RESET_PASSWORD_ROUTE,
+  STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE,
+  LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
+  SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
   FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE
 } from "../constants";
 import DetailDoctor from "../pages/main/doctors/detailDoctor";
@@ -86,6 +87,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
           <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
           <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />
+          <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id`} component={ViewAppointment} />
           <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
           <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
           <PrivateRoute exact path={CLAIMS_ROUTE} component={ClaimFeed} />

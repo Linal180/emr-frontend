@@ -1,14 +1,17 @@
 // packages block
-import { FC, useEffect, ChangeEvent, Reducer, useReducer } from "react";
+import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
+import {
+  Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
@@ -23,6 +26,7 @@ import {
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { fetchAllDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
 
@@ -75,6 +79,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           findAllDoctor()
+          fetchAllDoctorList();
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
@@ -87,7 +92,7 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   }, [page, findAllDoctor, searchQuery]);
 
-  const handleChange = (event: ChangeEvent<unknown>, value: number) => dispatch({
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
   });
 
@@ -154,7 +159,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               doctors?.map((doctor: DoctorPayload['doctor']) => {
-                const { id, firstName, lastName, speciality: specialty, contacts, facility } = doctor || {};
+                const { id, firstName, lastName, speciality, contacts, facility } = doctor || {};
                 const doctorContact = contacts && contacts[0];
                 const { email, phone } = doctorContact || {};
                 const { name } = facility || {};
@@ -169,7 +174,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{upperToNormal(specialty as string)}</TableCell>
+                    <TableCell scope="row">{upperToNormal(speciality as string)}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
@@ -216,7 +221,9 @@ const DoctorsTable: FC = (): JSX.Element => {
           isLoading={deleteDoctorLoading}
           handleDelete={handleDeleteDoctor}
           description={DELETE_DOCTOR_DESCRIPTION}
-          setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+          setOpen={(open: boolean) => dispatch({
+            type: ActionType.SET_OPEN_DELETE, openDelete: open
+          })}
         />
       </Box >
     </Box >

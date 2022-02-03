@@ -7,8 +7,10 @@ import { Control, ValidationRule, FieldValues } from "react-hook-form";
 import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
-  CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput, ContactsPayload, ScheduleInput, CreateScheduleInput
+  CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment,
+  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, ServicesPayload,
+  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe,
+  UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -55,7 +57,12 @@ export interface ListContextInterface {
   serviceList: ServicesPayload['services'];
   setServicesList: Function;
   fetchAllServicesList: Function;
+  patientList: PatientsPayload['patients'];
+  setPatientList: Function;
+  fetchAllPatientList: Function;
 }
+
+
 
 export interface Children {
   children: ReactNode;
@@ -257,13 +264,13 @@ export type ResetPasswordInputs = {
 };
 
 interface IControlLabel {
-  controllerLabel: string;
-  fieldType?: string;
-  pattern?: ValidationRule<RegExp> | undefined;
   error?: string;
+  fieldType?: string;
   disabled?: boolean;
   isRequired?: boolean;
   isPassword?: boolean;
+  controllerLabel: string;
+  pattern?: ValidationRule<RegExp> | undefined;
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -310,7 +317,7 @@ export interface MappedGenderInterface {
   label: string;
 }
 
-export interface DatePickerProps {
+export interface PickerProps {
   name: string;
   label: string;
   error: string;
@@ -591,13 +598,13 @@ export interface PatientInputControlProps extends IControlLabel {
 export type PatientInputProps =
   Omit<CreatePatientItemInput, "gender" | "race" | "genderIdentity" | "maritialStatus" | "sexAtBirth"
     | "primaryDepartment" | "registrationDepartment" | "pronouns" | "ethnicity" | "sexualOrientation"
-    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity">
+    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity" | "homeBound">
   & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption }
   & { sexualOrientation: SelectorOption } & { sexualOrientation: SelectorOption }
   & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { facilityId: SelectorOption }
   & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
   & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
-  & { registrationDepartment: SelectorOption }
+  & { registrationDepartment: SelectorOption } & { homeBound: boolean }
   & BasicContactControlInputs
   & EmergencyContactControlInputs & KinContactControlInputs
   & GuardianContactControlInputs & GuarantorContactControlInputs
@@ -623,8 +630,11 @@ export interface ContactInputControlProps extends IControlLabel {
   controllerName: ContactInputTypes
 }
 
-export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode">
-  & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
+export interface CustomInputControlProps extends IControlLabel {
+  controllerName: string
+}
+
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
 
 export interface LocationTableProps {
   openModal: boolean;
@@ -715,3 +725,7 @@ export interface MediaCardComponentType {
   attachments?: Attachment[];
   allAttachments: Attachment[];
 }
+
+export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
+  "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
+  & { serviceId: SelectorOption } & { providerId: SelectorOption };
