@@ -14,7 +14,7 @@ import { Action } from '../../../../reducers/doctorReducer';
 import { ActionType } from "../../../../reducers/doctorReducer";
 import { ScheduleInputProps, ParamsType } from "../../../../interfacesTypes";
 import { useCreateScheduleMutation } from "../../../../generated/graphql";
-import TimePicker from "../../../common/TimePicker";
+import InputController from "../../../../controller";
 
 interface DoctorScheduleModalProps {
   isOpen: boolean;
@@ -52,6 +52,8 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({ doctorDispatcher, i
     }
   });
 
+
+
   const handleClose = () => {
     reset();
     doctorDispatcher({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: false })
@@ -65,7 +67,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({ doctorDispatcher, i
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, servicesIds, startAt }) => {
     const { id: selectedLocation } = locationId || {}
     const { id: selectedService } = servicesIds || {}
-
     await createSchedule({
       variables: {
         createScheduleInput: {
@@ -97,7 +98,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({ doctorDispatcher, i
 
                 <Grid container spacing={3}>
                   <Grid item md={6} sm={12} xs={12}>
-                    <TimePicker
+                    <InputController
                       isRequired
                       fieldType="time"
                       controllerName="startAt"
@@ -106,7 +107,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({ doctorDispatcher, i
                   </Grid>
 
                   <Grid item md={6} sm={12} xs={12}>
-                    <TimePicker
+                    <InputController
                       isRequired
                       fieldType="time"
                       controllerName="endAt"

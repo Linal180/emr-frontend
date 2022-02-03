@@ -16,6 +16,12 @@ export type Scalars = {
   DateTime: any;
 };
 
+/** The patient appointment status type assigned */
+export enum Appointmentstatus {
+  Cancelled = 'CANCELLED',
+  Initiated = 'INITIATED'
+}
+
 export type AccessUserPayload = {
   __typename?: 'AccessUserPayload';
   access_token?: Maybe<Scalars['String']>;
@@ -39,6 +45,7 @@ export type AllStaffPayload = {
 
 export type Appointment = {
   __typename?: 'Appointment';
+  appointmentCancelReason?: Maybe<Scalars['String']>;
   appointmentType?: Maybe<Service>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
@@ -60,8 +67,11 @@ export type Appointment = {
   provider?: Maybe<Doctor>;
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
-  scheduleDateTime: Scalars['String'];
+  scheduleEndDateTime: Scalars['String'];
+  scheduleStartDateTime: Scalars['String'];
   secondaryInsurance?: Maybe<Scalars['String']>;
+  status: Appointmentstatus;
+  token?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -142,6 +152,19 @@ export type BillingAddress = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+/** The patient's communication method assigned */
+export enum Communicationtype {
+  Email = 'EMAIL',
+  Message = 'MESSAGE',
+  Phone = 'PHONE',
+  VoiceMessage = 'VOICE_MESSAGE'
+}
+
+export type CancelAppointment = {
+  reason: Scalars['String'];
+  token: Scalars['String'];
+};
+
 export type Contact = {
   __typename?: 'Contact';
   address?: Maybe<Scalars['String']>;
@@ -211,7 +234,6 @@ export type CreateAppointmentInput = {
   employment?: Maybe<Scalars['Boolean']>;
   facilityId: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
-  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -221,7 +243,8 @@ export type CreateAppointmentInput = {
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId: Scalars['String'];
   reason?: Maybe<Scalars['String']>;
-  scheduleDateTime: Scalars['String'];
+  scheduleEndDateTime: Scalars['String'];
+  scheduleStartDateTime: Scalars['String'];
   secondaryInsurance?: Maybe<Scalars['String']>;
   serviceId: Scalars['String'];
 };
@@ -347,6 +370,24 @@ export type CreateEmployerInput = {
   usualOccupation?: Maybe<Scalars['String']>;
 };
 
+export type CreateExternalAppointmentInput = {
+  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput;
+  createPatientItemInput: CreatePatientItemInput;
+};
+
+export type CreateExternalAppointmentItemInput = {
+  facilityId: Scalars['String'];
+  insuranceCompany?: Maybe<Scalars['String']>;
+  isExternal?: Maybe<Scalars['Boolean']>;
+  membershipID?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  paymentType: PaymentType;
+  providerId: Scalars['String'];
+  scheduleEndDateTime: Scalars['String'];
+  scheduleStartDateTime: Scalars['String'];
+  serviceId: Scalars['String'];
+};
+
 export type CreateFacilityInput = {
   createBillingAddressInput: CreateBillingAddressInput;
   createContactInput: CreateContactInput;
@@ -403,6 +444,9 @@ export type CreatePatientItemInput = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  pharmacy?: Maybe<Scalars['String']>;
+  phonePermission?: Maybe<Scalars['Boolean']>;
+  preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
@@ -422,15 +466,16 @@ export type CreatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
+  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateScheduleInput = {
   doctorId: Scalars['String'];
-  endAt: Scalars['DateTime'];
+  endAt: Scalars['String'];
   locationId: Scalars['String'];
   recurringEndDate?: Maybe<Scalars['DateTime']>;
   servicesIds: Array<Scalars['String']>;
-  startAt: Scalars['DateTime'];
+  startAt: Scalars['String'];
 };
 
 export type CreateServiceInput = {
@@ -715,10 +760,12 @@ export enum Maritialstatus {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
+  cancelAppointment: AppointmentPayload;
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createContact: ContactPayload;
   createDoctor: DoctorPayload;
+  createExternalAppointment: AppointmentPayload;
   createFacility: FacilityPayload;
   createPatient: PatientPayload;
   createSchedule: SchedulePayload;
@@ -729,6 +776,7 @@ export type Mutation = {
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
   login: AccessUserPayload;
+  patientInfo: PatientPayload;
   registerUser: UserPayload;
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
@@ -765,6 +813,11 @@ export type MutationActivateUserArgs = {
 };
 
 
+export type MutationCancelAppointmentArgs = {
+  cancelAppointment: CancelAppointment;
+};
+
+
 export type MutationCreateAppointmentArgs = {
   createAppointmentInput: CreateAppointmentInput;
 };
@@ -782,6 +835,11 @@ export type MutationCreateContactArgs = {
 
 export type MutationCreateDoctorArgs = {
   createDoctorInput: CreateDoctorInput;
+};
+
+
+export type MutationCreateExternalAppointmentArgs = {
+  createExternalAppointmentInput: CreateExternalAppointmentInput;
 };
 
 
@@ -832,6 +890,11 @@ export type MutationForgotPasswordArgs = {
 
 export type MutationLoginArgs = {
   loginUser: LoginUserInput;
+};
+
+
+export type MutationPatientInfoArgs = {
+  patientInfoInput: PatientInfoInput;
 };
 
 
@@ -1022,6 +1085,9 @@ export type Patient = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  pharmacy?: Maybe<Scalars['String']>;
+  phonePermission: Scalars['Boolean'];
+  preferredCommunicationMethod: Communicationtype;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
@@ -1042,6 +1108,26 @@ export type Patient = {
   suffix?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
+  voiceCallPermission: Scalars['Boolean'];
+};
+
+export type PatientInfoInput = {
+  createContactInput: CreateContactInput;
+  createEmergencyContactInput: CreateContactInput;
+  patientInfoItemInput: PatientInfoItemInput;
+};
+
+export type PatientInfoItemInput = {
+  ethnicity?: Maybe<Ethnicity>;
+  id: Scalars['String'];
+  language?: Maybe<Scalars['String']>;
+  maritialStatus?: Maybe<Maritialstatus>;
+  pharmacy?: Maybe<Scalars['String']>;
+  phonePermission?: Maybe<Scalars['Boolean']>;
+  preferredCommunicationMethod?: Maybe<Communicationtype>;
+  race?: Maybe<Race>;
+  ssn?: Maybe<Scalars['String']>;
+  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type PatientInput = {
@@ -1363,12 +1449,12 @@ export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
   doctor?: Maybe<Doctor>;
-  endAt: Scalars['DateTime'];
+  endAt: Scalars['String'];
   id: Scalars['String'];
   location?: Maybe<Contact>;
   recurringEndDate?: Maybe<Scalars['DateTime']>;
   scheduleServices?: Maybe<Array<ScheduleServices>>;
-  startAt: Scalars['DateTime'];
+  startAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
 
@@ -1540,7 +1626,6 @@ export type UpdateAppointmentInput = {
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
-  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -1550,7 +1635,8 @@ export type UpdateAppointmentInput = {
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
-  scheduleDateTime?: Maybe<Scalars['String']>;
+  scheduleEndDateTime?: Maybe<Scalars['String']>;
+  scheduleStartDateTime?: Maybe<Scalars['String']>;
   secondaryInsurance?: Maybe<Scalars['String']>;
   serviceId?: Maybe<Scalars['String']>;
 };
@@ -1750,6 +1836,9 @@ export type UpdatePatientItemInput = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  pharmacy?: Maybe<Scalars['String']>;
+  phonePermission?: Maybe<Scalars['Boolean']>;
+  preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
@@ -1769,6 +1858,7 @@ export type UpdatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
+  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdatePatientProvider = {
@@ -1783,12 +1873,12 @@ export type UpdateRoleInput = {
 
 export type UpdateScheduleInput = {
   doctorId?: Maybe<Scalars['String']>;
-  endAt?: Maybe<Scalars['DateTime']>;
+  endAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   locationId?: Maybe<Scalars['String']>;
   recurringEndDate?: Maybe<Scalars['DateTime']>;
   servicesIds?: Maybe<Array<Scalars['String']>>;
-  startAt?: Maybe<Scalars['DateTime']>;
+  startAt?: Maybe<Scalars['String']>;
 };
 
 export type UpdateServiceInput = {
@@ -2151,7 +2241,7 @@ export type CreateScheduleMutationVariables = Exact<{
 }>;
 
 
-export type CreateScheduleMutation = { __typename?: 'Mutation', createSchedule: { __typename?: 'SchedulePayload', schedule?: { __typename?: 'Schedule', id: string, startAt: any, endAt: any, location?: { __typename?: 'Contact', id: string, name?: string | null | undefined } | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreateScheduleMutation = { __typename?: 'Mutation', createSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type UpdateScheduleMutationVariables = Exact<{
   updateScheduleInput: UpdateScheduleInput;
@@ -2165,7 +2255,21 @@ export type GetScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, schedule?: { __typename?: 'Schedule', id: string, startAt: any, endAt: any, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, schedule?: { __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined } };
+
+export type FindAllSchedulesQueryVariables = Exact<{
+  scheduleInput: ScheduleInput;
+}>;
+
+
+export type FindAllSchedulesQuery = { __typename?: 'Query', findAllSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+
+export type GetDoctorScheduleQueryVariables = Exact<{
+  getDoctorSchedule: GetDoctorSchedule;
+}>;
+
+
+export type GetDoctorScheduleQuery = { __typename?: 'Query', getDoctorSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type UpdateFacilityTimeZoneMutationVariables = Exact<{
   updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput;
@@ -4700,15 +4804,6 @@ export type UpdatePatientMutationOptions = Apollo.BaseMutationOptions<UpdatePati
 export const CreateScheduleDocument = gql`
     mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
   createSchedule(createScheduleInput: $createScheduleInput) {
-    schedule {
-      id
-      startAt
-      endAt
-      location {
-        id
-        name
-      }
-    }
     response {
       error
       status
@@ -4832,6 +4927,120 @@ export function useGetScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetScheduleQueryHookResult = ReturnType<typeof useGetScheduleQuery>;
 export type GetScheduleLazyQueryHookResult = ReturnType<typeof useGetScheduleLazyQuery>;
 export type GetScheduleQueryResult = Apollo.QueryResult<GetScheduleQuery, GetScheduleQueryVariables>;
+export const FindAllSchedulesDocument = gql`
+    query FindAllSchedules($scheduleInput: ScheduleInput!) {
+  findAllSchedules(scheduleInput: $scheduleInput) {
+    response {
+      error
+      status
+      message
+    }
+    pagination {
+      page
+      limit
+      totalPages
+    }
+    schedules {
+      id
+      startAt
+      endAt
+      recurringEndDate
+      createdAt
+      updatedAt
+      doctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllSchedulesQuery__
+ *
+ * To run a query within a React component, call `useFindAllSchedulesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllSchedulesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllSchedulesQuery({
+ *   variables: {
+ *      scheduleInput: // value for 'scheduleInput'
+ *   },
+ * });
+ */
+export function useFindAllSchedulesQuery(baseOptions: Apollo.QueryHookOptions<FindAllSchedulesQuery, FindAllSchedulesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllSchedulesQuery, FindAllSchedulesQueryVariables>(FindAllSchedulesDocument, options);
+      }
+export function useFindAllSchedulesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllSchedulesQuery, FindAllSchedulesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllSchedulesQuery, FindAllSchedulesQueryVariables>(FindAllSchedulesDocument, options);
+        }
+export type FindAllSchedulesQueryHookResult = ReturnType<typeof useFindAllSchedulesQuery>;
+export type FindAllSchedulesLazyQueryHookResult = ReturnType<typeof useFindAllSchedulesLazyQuery>;
+export type FindAllSchedulesQueryResult = Apollo.QueryResult<FindAllSchedulesQuery, FindAllSchedulesQueryVariables>;
+export const GetDoctorScheduleDocument = gql`
+    query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!) {
+  getDoctorSchedules(getDoctorSchedule: $getDoctorSchedule) {
+    response {
+      error
+      status
+      message
+    }
+    pagination {
+      page
+      limit
+      totalPages
+    }
+    schedules {
+      id
+      startAt
+      endAt
+      recurringEndDate
+      createdAt
+      updatedAt
+      doctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDoctorScheduleQuery__
+ *
+ * To run a query within a React component, call `useGetDoctorScheduleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDoctorScheduleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDoctorScheduleQuery({
+ *   variables: {
+ *      getDoctorSchedule: // value for 'getDoctorSchedule'
+ *   },
+ * });
+ */
+export function useGetDoctorScheduleQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorScheduleQuery, GetDoctorScheduleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDoctorScheduleQuery, GetDoctorScheduleQueryVariables>(GetDoctorScheduleDocument, options);
+      }
+export function useGetDoctorScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDoctorScheduleQuery, GetDoctorScheduleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDoctorScheduleQuery, GetDoctorScheduleQueryVariables>(GetDoctorScheduleDocument, options);
+        }
+export type GetDoctorScheduleQueryHookResult = ReturnType<typeof useGetDoctorScheduleQuery>;
+export type GetDoctorScheduleLazyQueryHookResult = ReturnType<typeof useGetDoctorScheduleLazyQuery>;
+export type GetDoctorScheduleQueryResult = Apollo.QueryResult<GetDoctorScheduleQuery, GetDoctorScheduleQueryVariables>;
 export const UpdateFacilityTimeZoneDocument = gql`
     mutation UpdateFacilityTimeZone($updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput!) {
   updateFacilityTimeZone(
