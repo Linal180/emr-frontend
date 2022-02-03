@@ -5,8 +5,8 @@ import { formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
-  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, RegDepartment, RelationshipType,
-  ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
+  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, 
+  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
 } from "../generated/graphql";
 
 // regex
@@ -51,7 +51,6 @@ export const ADD_STAFF = "Add Staff";
 export const CANT_UPDATE_STAFF = "Staff cant be updated";
 export const CANT_CREATE_STAFF = "Can't create staff";
 export const CREATE_DOCTOR = "Create Doctor";
-export const CREATE_APPOINTMENT = "Create Appointment";
 export const ADD_DOCTOR = "Add Doctor";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
@@ -128,7 +127,6 @@ export const TAX_ID = "Tax ID";
 export const NPI = "NPI";
 export const FORM_TEXT = "Form";
 export const TO_TEXT = "TO";
-export const APPOINTMENT_TYPE = "Appointment Type:"
 export const UPIN = "UPIN";
 export const EMC_PROVIDER_ID = "EMC Provider ID";
 export const Organization_Type = "Organization Type";

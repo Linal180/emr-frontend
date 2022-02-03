@@ -36,7 +36,7 @@ export interface AuthContextProps {
 }
 
 export interface DoctorScheduleSlotProps {
-  doctorFacilityId?: string | undefined;
+  doctorFacilityId?: string;
 }
 
 export interface AppContextProps {
@@ -62,7 +62,20 @@ export interface ListContextInterface {
   fetchAllPatientList: Function;
 }
 
-
+export interface FacilityContextInterface {
+  doctorList: AllDoctorPayload['doctors'];
+  setDoctorList: Function;
+  fetchAllDoctorList: Function;
+  locationList: ContactsPayload['contacts'];
+  setLocationList: Function;
+  fetchAllLocationList: Function;
+  serviceList: ServicesPayload['services'];
+  setServicesList: Function;
+  fetchAllServicesList: Function;
+  patientList: PatientsPayload['patients'];
+  setPatientList: Function;
+  fetchAllPatientList: Function;
+}
 
 export interface Children {
   children: ReactNode;
@@ -439,34 +452,9 @@ export interface UpdateFacilityTimeZoneControlProps extends IControlLabel {
 export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZoneInput, "timeZone">
   & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
-type ContactInputTypes = | "name" | "fax" | "city" | "state" | "email" | "pager" | "phone"
-  | "mobile" | "userId" | "address" | "zipCode" | "country" | "address2" | "facilityId"
-
-type BillingInputTypes = | "billingFax" | "billingCity" | "billingState" | "billingEmail" | "billingPager"
-  | "billingPhone" | "billingUserId" | "billingMobile" | "billingAddress" | "billingZipCode" | "billingCountry"
-  | "billingAddress2" | "billingFacilityId"
-
-type DoctorControlTypes = | "dob" | "ssn" | "email" | "prefix" | "suffix" | "adminId" | "ssnType" | "lastName"
-  | "password" | "roleType" | "firstName" | "speciality" | "facilityId" | "middleName" | "providerIntials"
-  | "degreeCredentials" | "languagesSpoken" | "deaNumber" | "deaActiveDate" | "deaTermDate" | "taxId"
-  | "upin" | "npi" | "taxonomyCode" | "emcProviderId" | "medicareGrpNumber" | "medicaidGrpNumber"
-  | "meammographyCertNumber" | "campusGrpNumber" | "blueShildNumber" | "taxIdStuff" | "specialityLicense"
-  | "anesthesiaLicense" | "dpsCtpNumber" | "stateLicense" | "licenseActiveDate" | "licenseTermDate"
-  | "prescriptiveAuthNumber"
-
-export interface DoctorInputControlProps extends IControlLabel {
-  controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes
-}
-
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType">
   & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption }
   & { ssnType: SelectorOption } & { speciality: SelectorOption };
-
-type CreateServiceInputTypes = | "duration" | "facilityId" | "isActive" | "name" | "price"
-
-export interface ServiceInputControlsProps extends IControlLabel {
-  controllerName: CreateServiceInputTypes
-}
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
 
@@ -610,11 +598,9 @@ export type PatientInputProps =
   & GuardianContactControlInputs & GuarantorContactControlInputs
   & EmployerControlInputs & RegisterUserInputs;
 
-export interface ServiceInputControlsProps extends IControlLabel {
-  controllerName: CreateServiceInputTypes
-}
 
-export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
+export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
+  & { facilityId: SelectorOption };
 
 export interface ServiceTableProps {
   serviceDispatch: Dispatch<serviceAction>
@@ -626,15 +612,12 @@ export interface ServiceModalProps extends DialogTypes {
   reload: () => void;
 }
 
-export interface ContactInputControlProps extends IControlLabel {
-  controllerName: ContactInputTypes
-}
-
 export interface CustomInputControlProps extends IControlLabel {
   controllerName: string
 }
 
-export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode">
+  & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
 
 export interface LocationTableProps {
   openModal: boolean;

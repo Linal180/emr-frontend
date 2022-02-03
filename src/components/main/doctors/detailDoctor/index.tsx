@@ -1,35 +1,33 @@
 // packages block
-import { ChangeEvent, useEffect, useState, Reducer, useReducer } from "react";
+import { ChangeEvent, useEffect, Reducer, useReducer } from "react";
 import moment from "moment";
 import { useParams } from "react-router";
-import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { Avatar, Box, Grid, Tab } from "@material-ui/core";
+import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 // components block
+import Alert from "../../../common/Alert";
+import DoctorScheduleForm from "../schedules";
 // constants, history, styling block
 import history from "../../../../history";
-import { DOCTORS_ROUTE, DOCTOR_TOP_TABS } from "../../../../constants";
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { Doctor, useGetDoctorLazyQuery } from "../../../../generated/graphql";
-import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import { ParamsType } from "../../../../interfacesTypes";
-import Alert from "../../../common/Alert";
 import { getDate, getFormattedDate } from "../../../../utils";
-import DoctorScheduleForm from "../schedules";
+import { useGetDoctorLazyQuery } from "../../../../generated/graphql";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { DOCTORS_ROUTE, DOCTOR_NOT_FOUND, DOCTOR_TOP_TABS } from "../../../../constants";
+import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/doctorReducer';
 
 const DoctorDetailComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { doctorFacilityId } = state;
   const { id } = useParams<ParamsType>();
-  const [value, setValue] = useState('1');
-  const [doctor, setDoctor] = useState<Doctor | null>();
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const { doctorFacilityId, currentTab, doctor } = state;
 
-  const handleChange = (event: ChangeEvent<{}>, newValue: string) => {
-    setValue(newValue);
-  };
+  const handleChange = (_: ChangeEvent<{}>, value: string) => dispatch({
+    type: ActionType.SET_CURRENT_TAB, currentTab: value
+  })
 
   const [getDoctor] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -42,18 +40,12 @@ const DoctorDetailComponent = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { getDoctor: { response, doctor } } = data;
+      const { getDoctor: { doctor } } = data;
 
-      if (response) {
-        const { status } = response
-        const { facilityId } = doctor || {};
-        if (facilityId) {
-          dispatch({ type: ActionType.SET_DOCTOR_FACILITY_ID, doctorFacilityId: facilityId })
-        }
-
-        if (doctor && status && status === 200) {
-          setDoctor(doctor)
-        }
+      if (doctor) {
+        const { facilityId } = doctor;
+        dispatch({ type: ActionType.SET_DOCTOR, doctor })
+        facilityId && dispatch({ type: ActionType.SET_DOCTOR_FACILITY_ID, doctorFacilityId: facilityId })
       }
     }
   });
@@ -62,19 +54,15 @@ const DoctorDetailComponent = (): JSX.Element => {
     if (id) {
       getDoctor({
         variables: {
-          getDoctor: {
-            id
-          }
+          getDoctor: { id }
         }
       })
-    } else {
-      Alert.error('Doctor not found!')
-    }
+    } else
+      Alert.error(DOCTOR_NOT_FOUND)
   }, [getDoctor, id])
 
   const { firstName, lastName, dob, contacts, createdAt } = doctor || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
-
   const DOCTOR_AGE = moment().diff(getDate(dob || ''), 'years');
 
   let selfPhoneNumber = "";
@@ -125,7 +113,7 @@ const DoctorDetailComponent = (): JSX.Element => {
 
   return (
     <Box>
-      <TabContext value={value}>
+      <TabContext value={currentTab}>
         <TabList onChange={handleChange} aria-label="Profile top tabs">
           {DOCTOR_TOP_TABS.map(item => (
             <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />

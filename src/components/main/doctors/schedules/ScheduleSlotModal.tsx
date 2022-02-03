@@ -8,7 +8,7 @@ import Selector from '../../../common/Selector';
 import Alert from "../../../common/Alert";
 // interfaces/types block, theme, svgs and constants
 import { CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, ADD_TEXT, APPOINTMENT_TYPE, LOCATIONS_TEXT, DOCTOR_CREATED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, START_DATE, END_DATE } from "../../../../constants";
-import { ListContext } from '../../../../context';
+import { FacilityContext } from '../../../../context';
 import { getTimestamps, renderLocations, renderServices } from "../../../../utils";
 import { Action } from '../../../../reducers/doctorReducer';
 import { ActionType } from "../../../../reducers/doctorReducer";
@@ -24,7 +24,7 @@ interface DoctorScheduleModalProps {
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({ doctorDispatcher, isOpen, doctorFacilityId }): JSX.Element => {
   const { id } = useParams<ParamsType>();
-  const { serviceList, locationList, fetchAllServicesList, fetchAllLocationList } = useContext(ListContext)
+  const { serviceList, locationList, fetchAllServicesList, fetchAllLocationList } = useContext(FacilityContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
   });
@@ -62,7 +62,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({ doctorDispatcher, i
   useEffect(() => {
     fetchAllServicesList(doctorFacilityId)
     fetchAllLocationList(doctorFacilityId)
-  }, [doctorFacilityId])
+  }, [doctorFacilityId, fetchAllLocationList, fetchAllServicesList])
 
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, servicesIds, startAt }) => {
     const { id: selectedLocation } = locationId || {}
@@ -78,7 +78,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({ doctorDispatcher, i
         }
       }
     })
-
   };
 
   return (

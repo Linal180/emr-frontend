@@ -1,8 +1,9 @@
 // packages block
-import { FC, Reducer, useEffect, useReducer, useState } from "react";
+import { FC, Reducer, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { Box, Grid, Typography } from "@material-ui/core";
 // components block
+import Alert from "../../../common/Alert";
 import DoctorScheduleModal from "./ScheduleSlotModal";
 import CardComponent from "../../../common/CardComponent";
 // interfaces, graphql, constants block
@@ -16,36 +17,32 @@ import {
   SchedulePayload, SchedulesPayload, useGetDoctorScheduleLazyQuery
 } from "../../../../generated/graphql";
 import {
-  ADD_MORE_RECORDS_TEXT, APPOINTMENT_TYPE, AVAILABILITY_TEXT, FORM_TEXT, LOCATION, TO_TEXT
+  ADD_MORE_RECORDS_TEXT, APPOINTMENT_TYPE, AVAILABILITY_TEXT, DOCTOR_NOT_FOUND, FORM_TEXT, LOCATION, TO_TEXT
 } from "../../../../constants";
 
 const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) => {
   const classes = useDoctorScheduleStyles();
   const { id } = useParams<ParamsType>();
-  const [{ scheduleOpenModal }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const [schedules, setSchedules] = useState<SchedulesPayload['schedules']>([]);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
+  const { scheduleOpenModal, doctorSchedules } = state;
 
-  const [getDoctorSchedules,] = useGetDoctorScheduleLazyQuery({
+  const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
     variables: {
-      getDoctorSchedule: {
-        id: id
-      }
+      getDoctorSchedule: { id }
     },
 
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setSchedules([]);
+      dispatch({ type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: [] })
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules } = data || {};
-
-      if (getDoctorSchedules) {
-        const { schedules } = getDoctorSchedules
-        schedules && setSchedules(schedules as SchedulesPayload['schedules'])
-      }
+      const { getDoctorSchedules: { schedules } } = data || {};
+      schedules && dispatch({
+        type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
+      })
     }
   });
 
@@ -63,8 +60,11 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   // };
 
   useEffect(() => {
-    getDoctorSchedules()
-  }, [getDoctorSchedules])
+    if (id) {
+      getDoctorSchedules()
+    } else
+      Alert.error(DOCTOR_NOT_FOUND)
+  }, [getDoctorSchedules, id])
 
   return (
     <Grid container spacing={3}>
@@ -73,10 +73,9 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
           <Grid container spacing={3}>
             <Grid item md={12} sm={12} xs={12}>
               <Box display="flex" flexDirection="column" justifyContent="space-between" pt={3}>
-                {schedules?.map((record: SchedulePayload['schedule']) => {
-                  const { startAt, location, scheduleServices, endAt } = record || {}
+                {doctorSchedules?.map((schedule: SchedulePayload['schedule']) => {
+                  const { startAt, endAt, location, scheduleServices } = schedule || {}
                   const { name } = location || {}
-
 
                   return (
                     <Box className={classes.viewSlots} mb={3}>
@@ -135,9 +134,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                                   const { service } = scheduleService || {}
                                   const { name } = service || {};
 
-                                  return (
-                                    <Typography className={classes.heading}>{name}</Typography>
-                                  )
+                                  return <Typography className={classes.heading}>{name}</Typography>
                                 })}
                               </Typography>
                             </Box>
@@ -151,6 +148,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
 
               <Box onClick={handleSlotCard} className={classes.addSlot} mb={2}>
                 <AddSlotIcon />
+
                 <Typography>
                   {ADD_MORE_RECORDS_TEXT}
                 </Typography>

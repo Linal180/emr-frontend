@@ -18,6 +18,7 @@ export const useDoctorScheduleStyles = makeStyles(() =>
         marginLeft: 5,
       }
     },
+
     viewSlots: {
       width: '100%',
       border: `1px dashed ${WHITE_FOUR}`,
