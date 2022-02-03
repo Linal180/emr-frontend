@@ -20,8 +20,8 @@ import {
 } from "../../../../../generated/graphql";
 import {
   ADDRESS, ADDRESS_2, ASSOCIATED_FACILITY, CITY, CONTACT, COUNTRY, CREATE_LOCATION,
-  EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, FACILITY_LOCATIONS_ROUTE, FAX, LOCATION_INFO,
-  LOCATION_NOT_FOUND, MAPPED_SERVICE_CODES, NAME, PHONE, POS, STATE, UPDATE_LOCATION,
+  EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, FACILITY_LOCATIONS_ROUTE, FAX, LOCATION_CREATED, LOCATION_INFO,
+  LOCATION_NOT_FOUND, LOCATION_UPDATED, MAPPED_SERVICE_CODES, NAME, PHONE, POS, STATE, UPDATE_LOCATION,
   ZIP_CODE
 } from "../../../../../constants";
 import { useParams } from 'react-router';
@@ -54,8 +54,8 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
         if (contact && status && status === 200) {
           const { name, email, phone, zipCode, fax, address, address2, city, state,
-            serviceCode, country, facility } = contact || {}
-          const { id, name: facilityName } = facility || {};
+            serviceCode, country, facilityId } = contact || {}
+          const selectedFacility = facilityList?.filter(facility => facility?.id === facilityId)[0]
 
           fax && setValue('fax', fax)
           name && setValue('name', name)
@@ -67,8 +67,8 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           address && setValue('address', address)
           country && setValue('country', country)
           address2 && setValue('address2', address2)
-          facility && setValue('facilityId', setRecord(id || '', facilityName || ''))
           serviceCode && setValue('serviceCode', setRecord(serviceCode || '', serviceCode || ''))
+          facilityId && selectedFacility && setValue('facilityId', setRecord(facilityId, selectedFacility.name))
         }
       }
     }
@@ -83,10 +83,10 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
       const { createContact: { response } } = data;
 
       if (response) {
-        const { status, message } = response;
+        const { status } = response;
 
-        if (status && message && status === 200) {
-          Alert.success(message)
+        if (status && status === 200) {
+          Alert.success(LOCATION_CREATED)
           history.push(`${FACILITIES_ROUTE}/${currentFacility}${FACILITY_LOCATIONS_ROUTE}`)
         }
       }
@@ -102,10 +102,10 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
       const { updateContact: { response } } = data;
 
       if (response) {
-        const { status, message } = response
+        const { status } = response
 
-        if (status && message && status === 200) {
-          Alert.success(message)
+        if (status && status === 200) {
+          Alert.success(LOCATION_UPDATED)
           history.push(`${FACILITIES_ROUTE}/${currentFacility}${FACILITY_LOCATIONS_ROUTE}`)
         }
       }

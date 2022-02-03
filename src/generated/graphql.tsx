@@ -16,6 +16,12 @@ export type Scalars = {
   DateTime: any;
 };
 
+/** The patient appointment status type assigned */
+export enum Appointmentstatus {
+  Cancelled = 'CANCELLED',
+  Initiated = 'INITIATED'
+}
+
 export type AccessUserPayload = {
   __typename?: 'AccessUserPayload';
   access_token?: Maybe<Scalars['String']>;
@@ -39,6 +45,7 @@ export type AllStaffPayload = {
 
 export type Appointment = {
   __typename?: 'Appointment';
+  appointmentCancelReason?: Maybe<Scalars['String']>;
   appointmentType?: Maybe<Service>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
@@ -60,8 +67,11 @@ export type Appointment = {
   provider?: Maybe<Doctor>;
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
-  scheduleDateTime: Scalars['String'];
+  scheduleEndDateTime: Scalars['String'];
+  scheduleStartDateTime: Scalars['String'];
   secondaryInsurance?: Maybe<Scalars['String']>;
+  status: Appointmentstatus;
+  token?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -142,6 +152,19 @@ export type BillingAddress = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+/** The patient's communication method assigned */
+export enum Communicationtype {
+  Email = 'EMAIL',
+  Message = 'MESSAGE',
+  Phone = 'PHONE',
+  VoiceMessage = 'VOICE_MESSAGE'
+}
+
+export type CancelAppointment = {
+  reason: Scalars['String'];
+  token: Scalars['String'];
+};
+
 export type Contact = {
   __typename?: 'Contact';
   address?: Maybe<Scalars['String']>;
@@ -211,7 +234,6 @@ export type CreateAppointmentInput = {
   employment?: Maybe<Scalars['Boolean']>;
   facilityId: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
-  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -221,7 +243,8 @@ export type CreateAppointmentInput = {
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId: Scalars['String'];
   reason?: Maybe<Scalars['String']>;
-  scheduleDateTime: Scalars['String'];
+  scheduleEndDateTime: Scalars['String'];
+  scheduleStartDateTime: Scalars['String'];
   secondaryInsurance?: Maybe<Scalars['String']>;
   serviceId: Scalars['String'];
 };
@@ -347,6 +370,24 @@ export type CreateEmployerInput = {
   usualOccupation?: Maybe<Scalars['String']>;
 };
 
+export type CreateExternalAppointmentInput = {
+  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput;
+  createPatientItemInput: CreatePatientItemInput;
+};
+
+export type CreateExternalAppointmentItemInput = {
+  facilityId: Scalars['String'];
+  insuranceCompany?: Maybe<Scalars['String']>;
+  isExternal?: Maybe<Scalars['Boolean']>;
+  membershipID?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  paymentType: PaymentType;
+  providerId: Scalars['String'];
+  scheduleEndDateTime: Scalars['String'];
+  scheduleStartDateTime: Scalars['String'];
+  serviceId: Scalars['String'];
+};
+
 export type CreateFacilityInput = {
   createBillingAddressInput: CreateBillingAddressInput;
   createContactInput: CreateContactInput;
@@ -403,6 +444,9 @@ export type CreatePatientItemInput = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  pharmacy?: Maybe<Scalars['String']>;
+  phonePermission?: Maybe<Scalars['Boolean']>;
+  preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
@@ -422,15 +466,16 @@ export type CreatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
+  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreateScheduleInput = {
   doctorId: Scalars['String'];
-  endAt: Scalars['DateTime'];
+  endAt: Scalars['String'];
   locationId: Scalars['String'];
   recurringEndDate?: Maybe<Scalars['DateTime']>;
   servicesIds: Array<Scalars['String']>;
-  startAt: Scalars['DateTime'];
+  startAt: Scalars['String'];
 };
 
 export type CreateServiceInput = {
@@ -715,10 +760,12 @@ export enum Maritialstatus {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
+  cancelAppointment: AppointmentPayload;
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createContact: ContactPayload;
   createDoctor: DoctorPayload;
+  createExternalAppointment: AppointmentPayload;
   createFacility: FacilityPayload;
   createPatient: PatientPayload;
   createSchedule: SchedulePayload;
@@ -729,6 +776,7 @@ export type Mutation = {
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
   login: AccessUserPayload;
+  patientInfo: PatientPayload;
   registerUser: UserPayload;
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
@@ -765,6 +813,11 @@ export type MutationActivateUserArgs = {
 };
 
 
+export type MutationCancelAppointmentArgs = {
+  cancelAppointment: CancelAppointment;
+};
+
+
 export type MutationCreateAppointmentArgs = {
   createAppointmentInput: CreateAppointmentInput;
 };
@@ -782,6 +835,11 @@ export type MutationCreateContactArgs = {
 
 export type MutationCreateDoctorArgs = {
   createDoctorInput: CreateDoctorInput;
+};
+
+
+export type MutationCreateExternalAppointmentArgs = {
+  createExternalAppointmentInput: CreateExternalAppointmentInput;
 };
 
 
@@ -832,6 +890,11 @@ export type MutationForgotPasswordArgs = {
 
 export type MutationLoginArgs = {
   loginUser: LoginUserInput;
+};
+
+
+export type MutationPatientInfoArgs = {
+  patientInfoInput: PatientInfoInput;
 };
 
 
@@ -1022,6 +1085,9 @@ export type Patient = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  pharmacy?: Maybe<Scalars['String']>;
+  phonePermission: Scalars['Boolean'];
+  preferredCommunicationMethod: Communicationtype;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
@@ -1042,6 +1108,26 @@ export type Patient = {
   suffix?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
+  voiceCallPermission: Scalars['Boolean'];
+};
+
+export type PatientInfoInput = {
+  createContactInput: CreateContactInput;
+  createEmergencyContactInput: CreateContactInput;
+  patientInfoItemInput: PatientInfoItemInput;
+};
+
+export type PatientInfoItemInput = {
+  ethnicity?: Maybe<Ethnicity>;
+  id: Scalars['String'];
+  language?: Maybe<Scalars['String']>;
+  maritialStatus?: Maybe<Maritialstatus>;
+  pharmacy?: Maybe<Scalars['String']>;
+  phonePermission?: Maybe<Scalars['Boolean']>;
+  preferredCommunicationMethod?: Maybe<Communicationtype>;
+  race?: Maybe<Race>;
+  ssn?: Maybe<Scalars['String']>;
+  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type PatientInput = {
@@ -1363,12 +1449,12 @@ export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
   doctor?: Maybe<Doctor>;
-  endAt: Scalars['DateTime'];
+  endAt: Scalars['String'];
   id: Scalars['String'];
   location?: Maybe<Contact>;
   recurringEndDate?: Maybe<Scalars['DateTime']>;
   scheduleServices?: Maybe<Array<ScheduleServices>>;
-  startAt: Scalars['DateTime'];
+  startAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
 
@@ -1540,7 +1626,6 @@ export type UpdateAppointmentInput = {
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
-  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -1550,7 +1635,8 @@ export type UpdateAppointmentInput = {
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
-  scheduleDateTime?: Maybe<Scalars['String']>;
+  scheduleEndDateTime?: Maybe<Scalars['String']>;
+  scheduleStartDateTime?: Maybe<Scalars['String']>;
   secondaryInsurance?: Maybe<Scalars['String']>;
   serviceId?: Maybe<Scalars['String']>;
 };
@@ -1750,6 +1836,9 @@ export type UpdatePatientItemInput = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  pharmacy?: Maybe<Scalars['String']>;
+  phonePermission?: Maybe<Scalars['Boolean']>;
+  preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
   previouslastName?: Maybe<Scalars['String']>;
@@ -1769,6 +1858,7 @@ export type UpdatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
+  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdatePatientProvider = {
@@ -1783,12 +1873,12 @@ export type UpdateRoleInput = {
 
 export type UpdateScheduleInput = {
   doctorId?: Maybe<Scalars['String']>;
-  endAt?: Maybe<Scalars['DateTime']>;
+  endAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   locationId?: Maybe<Scalars['String']>;
   recurringEndDate?: Maybe<Scalars['DateTime']>;
   servicesIds?: Maybe<Array<Scalars['String']>>;
-  startAt?: Maybe<Scalars['DateTime']>;
+  startAt?: Maybe<Scalars['String']>;
 };
 
 export type UpdateServiceInput = {
@@ -1901,14 +1991,14 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, scheduleDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, scheduleStartDateTime: string, scheduleEndDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, employment?: boolean | null | undefined, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, scheduleDateTime: string, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, employment?: boolean | null | undefined, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, scheduleStartDateTime: string, scheduleEndDateTime: string, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -2067,7 +2157,7 @@ export type FindAllContactsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllContactsQuery = { __typename?: 'Query', findAllContacts: { __typename?: 'ContactsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, name?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, middleName?: string | null | undefined, suffix?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, serviceCode: ServiceCodes, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, createdAt: string, updatedAt: string, facility?: { __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, revenueCode?: string | null | undefined, tamxonomyCode?: string | null | undefined, insurancePlanType?: string | null | undefined, timeZone?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, serviceCode: ServiceCode, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllContactsQuery = { __typename?: 'Query', findAllContacts: { __typename?: 'ContactsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, name?: string | null | undefined, firstName?: string | null | undefined, lastName?: string | null | undefined, middleName?: string | null | undefined, suffix?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, serviceCode: ServiceCodes, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, facilityId?: string | null | undefined, country?: string | null | undefined, createdAt: string, updatedAt: string, facility?: { __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, revenueCode?: string | null | undefined, tamxonomyCode?: string | null | undefined, insurancePlanType?: string | null | undefined, timeZone?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, serviceCode: ServiceCode, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type RemoveContactMutationVariables = Exact<{
   removeContact: RemoveContact;
@@ -2158,7 +2248,7 @@ export type GetServiceQueryVariables = Exact<{
 }>;
 
 
-export type GetServiceQuery = { __typename?: 'Query', getService: { __typename?: 'ServicePayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, service?: { __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: boolean | null | undefined, facilityId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetServiceQuery = { __typename?: 'Query', getService: { __typename?: 'ServicePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, service?: { __typename?: 'Service', id: string, name: string, duration: string, price: string, isActive?: boolean | null | undefined, facilityId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type RemoveServiceMutationVariables = Exact<{
   removeService: RemoveService;
@@ -2238,7 +2328,8 @@ export const FindAllAppointmentsDocument = gql`
     }
     appointments {
       id
-      scheduleDateTime
+      scheduleStartDateTime
+      scheduleEndDateTime
       createdAt
       updatedAt
       appointmentType {
@@ -2307,7 +2398,8 @@ export const GetAppointmentDocument = gql`
       employment
       autoAccident
       otherAccident
-      scheduleDateTime
+      scheduleStartDateTime
+      scheduleEndDateTime
       primaryInsurance
       secondaryInsurance
       createdAt
@@ -4034,6 +4126,7 @@ export const FindAllContactsDocument = gql`
       zipCode
       city
       state
+      facilityId
       country
       createdAt
       updatedAt
@@ -4777,7 +4870,6 @@ export const GetServiceDocument = gql`
     query getService($getService: GetService!) {
   getService(getService: $getService) {
     response {
-      name
       error
       status
       message

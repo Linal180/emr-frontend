@@ -52,9 +52,10 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
         const { status } = response
 
         if (service && status && status === 200) {
-          const { name, isActive, price, duration, facility } = service || {}
-          const { id: facilityId, name: facilityName } = facility || {};
-          facilityId && setValue('facilityId', setRecord(facilityId, facilityName || ""))
+          const { name, isActive, price, facilityId, duration } = service || {}
+          const selectedFacility =  facilityList?.filter(facility => facility?.id === facilityId)[0]
+
+          facilityId && selectedFacility && setValue('facilityId', setRecord(facilityId, selectedFacility.name))
           name && setValue('name', name)
           price && setValue('price', price)
           duration && setValue('duration', duration)

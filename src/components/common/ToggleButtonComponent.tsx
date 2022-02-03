@@ -14,7 +14,6 @@ const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked } } = event
-
     setIsChecked(checked);
     setValue(name, checked)
   };
@@ -24,11 +23,9 @@ const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
       name={name}
       control={control}
       defaultValue=""
-      render={({ field, }) => (
+      render={() => (
         <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-          <InputLabel shrink>
-            {label}
-          </InputLabel>
+          <InputLabel shrink>{label}</InputLabel>
 
           <label className="toggle-main">
             <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
@@ -38,7 +35,6 @@ const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
         </FormControl>
       )}
     />
-
   );
 };
 

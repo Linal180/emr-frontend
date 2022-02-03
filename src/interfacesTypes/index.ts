@@ -626,13 +626,13 @@ export interface PatientInputControlProps extends IControlLabel {
 export type PatientInputProps =
   Omit<CreatePatientItemInput, "gender" | "race" | "genderIdentity" | "maritialStatus" | "sexAtBirth"
     | "primaryDepartment" | "registrationDepartment" | "pronouns" | "ethnicity" | "sexualOrientation"
-    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity">
+    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity" | "homeBound">
   & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption }
   & { sexualOrientation: SelectorOption } & { sexualOrientation: SelectorOption }
   & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { facilityId: SelectorOption }
   & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
   & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
-  & { registrationDepartment: SelectorOption }
+  & { registrationDepartment: SelectorOption } & { homeBound: boolean }
   & BasicContactControlInputs
   & EmergencyContactControlInputs & KinContactControlInputs
   & GuardianContactControlInputs & GuarantorContactControlInputs

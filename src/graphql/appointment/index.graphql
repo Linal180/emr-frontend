@@ -13,7 +13,8 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
     
     appointments {
       id
-      scheduleDateTime
+      scheduleStartDateTime
+      scheduleEndDateTime
       createdAt
       updatedAt
       
@@ -58,7 +59,8 @@ query GetAppointment($getAppointment: GetAppointment!){
       employment
       autoAccident
       otherAccident
-      scheduleDateTime
+      scheduleStartDateTime
+      scheduleEndDateTime
       primaryInsurance
       secondaryInsurance
       createdAt
