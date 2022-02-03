@@ -163,7 +163,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
             ) : (
               appointments?.map((appointment: AppointmentPayload['appointment']) => {
                 const {
-                  id, scheduleStartDateTime, scheduleEndDateTime, provider, facility, patient, appointmentType
+                  id, scheduleStartDateTime, provider, facility, patient, appointmentType
                 } = appointment || {};
                 const { name } = facility || {};
                 const { firstName, lastName } = patient || {};
