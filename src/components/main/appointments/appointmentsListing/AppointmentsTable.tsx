@@ -22,7 +22,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT
+  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES
 } from "../../../../constants";
 
 const AppointmentsTable: FC = (): JSX.Element => {
@@ -162,7 +162,9 @@ const AppointmentsTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               appointments?.map((appointment: AppointmentPayload['appointment']) => {
-                const { id, scheduleDateTime, provider, facility, patient, appointmentType } = appointment || {};
+                const {
+                  id, scheduleStartDateTime, scheduleEndDateTime, provider, facility, patient, appointmentType
+                } = appointment || {};
                 const { name } = facility || {};
                 const { firstName, lastName } = patient || {};
                 const { duration, name: type } = appointmentType || {};
@@ -173,8 +175,10 @@ const AppointmentsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{type}</TableCell>
                     <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
-                    <TableCell scope="row">{getFormattedDate(scheduleDateTime || '')}</TableCell>
-                    <TableCell scope="row">{duration}</TableCell>
+                    <TableCell scope="row">
+                      {getFormattedDate(scheduleStartDateTime || '')}
+                    </TableCell>
+                    <TableCell scope="row">{duration} {MINUTES}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

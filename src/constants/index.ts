@@ -29,6 +29,7 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 export const EMPTY_OPTION = { id: "", name: "" };
 export const ALL_STAFF = "Staff";
 export const CALENDER = "Calender";
+export const MINUTES = "minutes";
 export const AUTO_ACCIDENT = "Auto Accident";
 export const OTHER_ACCIDENT = "Other Accident";
 export const PRIMARY_INSURANCE = "Primary Insurance";
@@ -508,6 +509,8 @@ export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!"
 export const TRY_AGAIN = "Something went wrong. Try again!";
 export const INVALID_EMAIL = "Invalid email address";
+export const SCHEDULE_START = "Schedule Start Time";
+export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";

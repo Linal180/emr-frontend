@@ -2,13 +2,13 @@ import { FC, useState } from 'react';
 import 'date-fns';
 import { FormControl, InputLabel } from '@material-ui/core';
 import { Controller, useFormContext } from "react-hook-form";
-import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardTimePicker } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 // interfaces constants and utils block
 import { requiredLabel } from '../../utils';
 import { PickerProps } from "../../interfacesTypes";
 
-const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.Element => {
+const TimePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control } = useFormContext()
   
@@ -24,13 +24,12 @@ const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.El
           </InputLabel>
 
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
+            <KeyboardTimePicker
               {...field}
               id={`${name}-dialog`}
               variant="inline"
-              format="MM/dd/yyyy"
               inputVariant="outlined"
-              KeyboardButtonProps={{ 'aria-label': 'change date', }}
+              KeyboardButtonProps={{ 'aria-label': 'change time', }}
               open={openPicker}
               value={field.value}
               onClick={() => setOpenPicker(!openPicker)}
@@ -49,4 +48,4 @@ const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.El
   );
 }
 
-export default DatePicker;
+export default TimePicker;

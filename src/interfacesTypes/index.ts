@@ -306,7 +306,7 @@ export interface MappedGenderInterface {
   label: string;
 }
 
-export interface DatePickerProps {
+export interface PickerProps {
   name: string;
   label: string;
   error: string;

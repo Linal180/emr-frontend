@@ -35,6 +35,7 @@ import { AddAppointment } from "../pages/main/appointments/addAppointment";
 import Locations from "../pages/main/facilities/locations/locationListing";
 import { Services } from "../pages/main/facilities/services/serviceListing";
 import { ViewService } from "../pages/main/facilities/services/viewService";
+import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
 import AppointmentPublic from "../pages/main/appointments/appointmentPublic";
 import { AddLocation } from "../pages/main/facilities/locations/addLocation";
 import { Appointments } from "../pages/main/appointments/appointmentsListing";
@@ -84,6 +85,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
           <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
           <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />
+          <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id`} component={ViewAppointment} />
           <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
           <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
           <PrivateRoute exact path={CLAIMS_ROUTE} component={ClaimFeed} />

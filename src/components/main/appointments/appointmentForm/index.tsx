@@ -1,11 +1,15 @@
 // packages block
-import { useEffect, FC, useContext } from 'react';
+import { useEffect, FC, useContext, useState } from 'react';
+import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
+import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
+import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
+import TimePicker from '../../../common/TimePicker';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
@@ -14,29 +18,32 @@ import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
 import history from "../../../../history";
 import { ListContext } from '../../../../context';
 import { appointmentSchema } from '../../../../validationSchemas';
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
 import { ExtendedAppointmentInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
   getTimestamps, renderDoctors, renderFacilities, renderPatient, renderServices,
-  requiredMessage, setRecord
+  getTimeFromTimestamps, requiredMessage, setRecord
 } from "../../../../utils";
 import {
   PaymentType, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
-  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENTS_ROUTE, APPOINTMENT_UPDATED_SUCCESSFULLY,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
-  AUTO_ACCIDENT, OTHER_ACCIDENT
+  AUTO_ACCIDENT, OTHER_ACCIDENT, SCHEDULE_START, SCHEDULE_END, VIEW_APPOINTMENTS_ROUTE
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
+  const classes = usePublicAppointmentStyles();
   const { facilityList, serviceList, doctorList, patientList } = useContext(ListContext)
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
   });
   const { reset, setValue, handleSubmit, formState: { errors } } = methods;
+  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
     fetchPolicy: "network-only",
@@ -55,7 +62,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
         if (appointment && status && status === 200) {
           const {
-            reason, scheduleDateTime, notes, primaryInsurance, secondaryInsurance,
+            reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
             employment, autoAccident, otherAccident, appointmentType, facility,
             provider, patient,
           } = appointment || {}
@@ -70,13 +77,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           employment && setValue('employment', employment)
           autoAccident && setValue('autoAccident', autoAccident)
           otherAccident && setValue('otherAccident', otherAccident)
-          scheduleDateTime && setValue('scheduleDateTime', scheduleDateTime)
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
           serviceId && setValue('serviceId', setRecord(serviceId, serviceName || ''))
           facilityId && setValue('facilityId', setRecord(facilityId, facilityName || ''))
           patientId && setValue('patientId', setRecord(patientId, `${patientFN} ${patientLN}` || ''))
           providerId && setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}` || ''))
+          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime || ''))
+          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime || ''))
         }
       }
     }
@@ -96,7 +104,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (status && status === 200) {
           Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
           reset()
-          history.push(APPOINTMENTS_ROUTE)
+          history.push(VIEW_APPOINTMENTS_ROUTE)
         }
       }
     }
@@ -118,7 +126,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (status && status === 200) {
           Alert.success(APPOINTMENT_UPDATED_SUCCESSFULLY);
           reset()
-          history.push(APPOINTMENTS_ROUTE)
+          history.push(VIEW_APPOINTMENTS_ROUTE)
         }
       }
     }
@@ -140,8 +148,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const onSubmit: SubmitHandler<ExtendedAppointmentInputProps> = async (inputs) => {
     const {
-      reason, scheduleDateTime, notes, primaryInsurance, secondaryInsurance,
-      employment, autoAccident, otherAccident, serviceId, facilityId,
+      reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance,
+      secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId,
       providerId, patientId
     } = inputs;
 
@@ -151,12 +159,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     const { id: selectedFacility } = facilityId || {};
 
     const appointmentInput = {
-      reason: reason || '', scheduleDateTime: getTimestamps(scheduleDateTime || ''),
+      reason: reason || '', scheduleStartDateTime: getTimestamps(scheduleStartDateTime || ''),
+      scheduleEndDateTime: getTimestamps(scheduleEndDateTime || ''), paymentType: PaymentType.Self,
       autoAccident: autoAccident || false, otherAccident: otherAccident || false,
       primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
       notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
       serviceId: selectedService, providerId: selectedProvider, employment: employment || false,
-      paymentType: PaymentType.Self,
     };
 
     if (isEdit) {
@@ -183,7 +191,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     reason: { message: reasonError } = {},
     providerId: { id: providerError } = {},
     facilityId: { id: facilityError } = {},
+    scheduleEndDateTime: { message: scheduleEndError } = {},
     primaryInsurance: { message: primaryInsuranceError } = {},
+    scheduleStartDateTime: { message: scheduleStartError } = {},
     secondaryInsurance: { message: secondaryInsuranceError } = {},
   } = errors;
 
@@ -246,6 +256,24 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       error={patientError?.message && requiredMessage(PROVIDER)}
                     />
 
+                    <Grid container spacing={3}>
+                      <Grid item md={6} sm={12} xs={12}>
+                        <TimePicker
+                          label={SCHEDULE_START}
+                          error={scheduleStartError || ''}
+                          name="scheduleStartDateTime"
+                        />
+                      </Grid>
+
+                      <Grid item md={6} sm={12} xs={12}>
+                        <TimePicker
+                          label={SCHEDULE_END}
+                          error={scheduleEndError || ''}
+                          name="scheduleEndDateTime"
+                        />
+                      </Grid>
+                    </Grid>
+
                     <InputController
                       fieldType="text"
                       controllerName="reason"
@@ -279,6 +307,53 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             </Grid>
 
             <Grid md={6} item>
+              <Grid item md={12} sm={12} className="custom-calendar">
+                <CardComponent cardTitle="Available Slots">
+                  <Box display="flex" justifyContent="center">
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <DatePicker
+                        variant="static"
+                        openTo="date"
+                        value={date}
+                        onChange={currentDate => currentDate && setDate(currentDate)}
+                        autoOk
+                        fullWidth
+                        disableToolbar
+                      />
+                    </MuiPickersUtilsProvider>
+                  </Box>
+
+                  <ul className={classes.timeSlots}>
+                    <li>
+                      <div>
+                        <input type="radio" name="timeSlots" id="timeSlotOne" />
+                        <label htmlFor="timeSlotOne">01:00PM - 01:30PM</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div>
+                        <input type="radio" name="timeSlots" id="timeSlotTwo" />
+                        <label htmlFor="timeSlotTwo">01:00PM - 01:30PM</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div>
+                        <input type="radio" name="timeSlots" id="timeSlotThree" />
+                        <label htmlFor="timeSlotThree">01:00PM - 01:30PM</label>
+                      </div>
+                    </li>
+                    <li>
+                      <div>
+                        <input type="radio" name="timeSlots" id="timeSlotFour" />
+                        <label htmlFor="timeSlotFour">01:00PM - 01:30PM</label>
+                      </div>
+                    </li>
+                  </ul>
+                </CardComponent>
+              </Grid>
+
+              <Box pb={3} />
+
               <CardComponent cardTitle={PATIENT_CONDITION}>
                 {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>

@@ -8,8 +8,8 @@ import DateFnsUtils from '@date-io/date-fns';
 // components block
 import CardComponent from "../../../common/CardComponent";
 // constants block
-import { PATIENT_DETAILS, SELECT_SERVICES, VISIT_REASON } from "../../../../constants";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
+import { PATIENT_DETAILS, SELECT_SERVICES, VISIT_REASON } from "../../../../constants";
 
 
 const ScheduleAppointmentsPublic = (): JSX.Element => {
@@ -141,7 +141,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
         </Grid>
 
         <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
-          <CardComponent cardTitle="Availlable Slots">
+          <CardComponent cardTitle="Available Slots">
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
               <DatePicker
                 variant="static"

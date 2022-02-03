@@ -6,7 +6,10 @@ import client from "../apollo";
 import history from "../history";
 import { LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
 import { SelectorOption, TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, ServicesPayload, PatientsPayload } from "../generated/graphql"
+import {
+  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
+  ServicesPayload, PatientsPayload
+} from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -214,4 +217,10 @@ export const dateValidation = (endDate: string, startDate: string): boolean => {
 
 export const dateValidationMessage = (endDateName: string, startDateName: string): string => {
   return `${endDateName} should be greater than ${startDateName}`
+};
+
+export const getTimeFromTimestamps = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toISOString()
 };
