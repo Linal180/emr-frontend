@@ -96,7 +96,23 @@ query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!){
       recurringEndDate
       createdAt
       updatedAt
-      
+
+      location {
+        id
+        name
+      }
+
+      scheduleServices {
+        id
+        serviceId
+
+        service {
+          id
+          name
+        }
+        
+      }
+
       doctor {
         id
         firstName

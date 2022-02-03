@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { WHITE_SIX, BLUE_THREE } from "../theme";
+import { WHITE_SIX, BLUE_THREE, WHITE_FOUR, BLACK_ONE, GRAY_TWO, WHITE_THREE } from "../theme";
 
 export const useDoctorScheduleStyles = makeStyles(() =>
   createStyles({
@@ -16,6 +16,40 @@ export const useDoctorScheduleStyles = makeStyles(() =>
 
       "& .MuiTypography-body1": {
         marginLeft: 5,
+      }
+    },
+    viewSlots: {
+      width: '100%',
+      border: `1px dashed ${WHITE_FOUR}`,
+      padding: 10,
+      borderRadius: 6,
+      minHeight: 116
+    },
+
+    heading: {
+      fontSize: 14,
+      color: BLACK_ONE,
+      fontWeight: 700,
+    },
+
+    subHeading: {
+      fontSize: 13,
+      color: GRAY_TWO,
+    },
+
+    iconsBackground: {
+      background: WHITE_THREE,
+      height: 32,
+      width: 32,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 6,
+      marginLeft: 6,
+      cursor: 'pointer',
+
+      "& svg": {
+        maxWidth: 16
       }
     }
   })

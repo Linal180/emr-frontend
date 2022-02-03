@@ -2269,7 +2269,7 @@ export type GetDoctorScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorScheduleQuery = { __typename?: 'Query', getDoctorSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type GetDoctorScheduleQuery = { __typename?: 'Query', getDoctorSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, location?: { __typename?: 'Contact', id: string, name?: string | null | undefined } | null | undefined, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, serviceId?: string | null | undefined, service?: { __typename?: 'Service', id: string, name: string } | null | undefined }> | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
 export type UpdateFacilityTimeZoneMutationVariables = Exact<{
   updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput;
@@ -5004,6 +5004,18 @@ export const GetDoctorScheduleDocument = gql`
       recurringEndDate
       createdAt
       updatedAt
+      location {
+        id
+        name
+      }
+      scheduleServices {
+        id
+        serviceId
+        service {
+          id
+          name
+        }
+      }
       doctor {
         id
         firstName
