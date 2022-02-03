@@ -712,3 +712,13 @@ export interface MediaCardComponentType {
 export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
   "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
   & { serviceId: SelectorOption } & { providerId: SelectorOption };
+
+type Days = | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
+
+export interface daySchedule {
+  day: Days;
+  from: string;
+  to: string;
+  location: string;
+  type: string
+}

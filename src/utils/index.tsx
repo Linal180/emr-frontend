@@ -5,10 +5,10 @@ import { Typography, Box, TableCell } from "@material-ui/core";
 import client from "../apollo";
 import history from "../history";
 import { LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
-import { SelectorOption, TableAlignType } from "../interfacesTypes";
+import { daySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload
 } from "../generated/graphql"
 
 export const handleLogout = () => {
@@ -240,3 +240,8 @@ export const getTimeFromTimestamps = (timestamp: string) => {
 
   return new Date(parseInt(timestamp)).toISOString()
 };
+
+export const getDaySchedules = (schedules: SchedulesPayload['schedules']): daySchedule[] => {
+
+  return [];
+}

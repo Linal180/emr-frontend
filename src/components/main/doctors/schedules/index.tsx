@@ -26,7 +26,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { scheduleOpenModal, doctorSchedules } = state;
 
-  const [getDoctorSchedules] = useGetDoctorScheduleLazyQuery({
+  const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
     variables: {
       getDoctorSchedule: { id }
     },
