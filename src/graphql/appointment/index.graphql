@@ -121,3 +121,14 @@ mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
     }
   }
 }
+
+
+mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExternalAppointmentInput!){
+  createExternalAppointment(createExternalAppointmentInput: $createExternalAppointmentInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

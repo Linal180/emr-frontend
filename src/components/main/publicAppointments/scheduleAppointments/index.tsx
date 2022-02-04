@@ -2,13 +2,14 @@
 import { useContext } from "react";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { Box, Button, Grid } from "@material-ui/core";
+import { Link } from "react-router-dom";
 // components block
 import CardComponent from "../../../common/CardComponent";
 import { ListContext } from '../../../../context';
 import DatePicker from "../../../common/DatePicker";
 import PhoneField from '../../../common/PhoneInput';
 // constants block
-import { APPOINTMENT_TYPE, BOOK_APPOINTMENT, CANCEL, DOB, EMAIL, EMPTY_OPTION, INSURANCE_COMPANY, MAPPED_GENDER_IDENTITY, MAPPED_PAYMENT_METHOD, MAPPED_RELATIONSHIP_TYPE, MEMBERSHIP_ID, PATIENT_DETAILS, PATIENT_FIRST_NAME, PATIENT_LAST_NAME, PAYMENT_TYPE, PHONE, RELATIONSHIP_WITH_PATIENT, SELECT_PROVIDER, SELECT_SERVICES, SEX_AT_BIRTH, YOUR_NAME } from "../../../../constants";
+import { APPOINTMENT_TYPE, BOOK_APPOINTMENT, CANCEL, DOB, EMAIL, EMPTY_OPTION, INSURANCE_COMPANY, MAPPED_GENDER_IDENTITY, MAPPED_PAYMENT_METHOD, MAPPED_RELATIONSHIP_TYPE, MEMBERSHIP_ID, PATIENT_DETAILS, PATIENT_FIRST_NAME, PATIENT_LAST_NAME, PAYMENT_TYPE, PHONE, RELATIONSHIP_WITH_PATIENT, SELECT_PROVIDER, SELECT_SERVICES, SEX_AT_BIRTH, SLOT_CONFIRMATION, YOUR_NAME } from "../../../../constants";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
 import Selector from "../../../common/Selector";
 import InputController from "../../../../controller";
@@ -36,7 +37,6 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
               <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
                   <Selector
-                    isRequired
                     value={EMPTY_OPTION}
                     label={APPOINTMENT_TYPE}
                     name="serviceId"
@@ -65,7 +65,6 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
 
                 <Grid item md={3} sm={12} xs={12}>
                   <Selector
-                    isRequired
                     value={EMPTY_OPTION}
                     label={SELECT_PROVIDER}
                     name="providerId"
@@ -189,9 +188,12 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
               <Button type="submit" variant="contained">
                 {CANCEL}
               </Button>
-              <Button type="submit" variant="contained" className='blue-button'>
-                {BOOK_APPOINTMENT}
-              </Button>
+              <Link to={SLOT_CONFIRMATION}>
+                <Button type="submit" variant="contained" className='blue-button'>
+                  {BOOK_APPOINTMENT}
+                </Button>
+              </Link>
+
             </Box>
           </Grid>
         </Grid>
