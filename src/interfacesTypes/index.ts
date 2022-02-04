@@ -10,9 +10,10 @@ import {
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment,
   Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, ServicesPayload,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe,
-  UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput
+  UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput, Schedule
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
+import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -410,7 +411,7 @@ export interface StaffInputControlProps extends IControlLabel {
 }
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "locationId" | "servicesIds">
-  & { locationId: SelectorOption } & { servicesIds: SelectorOption };
+  & { locationId: SelectorOption } & { servicesIds: SelectorOption } & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingEmail: string;
@@ -715,10 +716,18 @@ export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patien
 
 type Days = | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
 
-export interface daySchedule {
+export interface DoctorScheduleModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  reload: Function;
+  doctorDispatcher: Dispatch<DoctorAction>;
+  doctorFacilityId: string | undefined;
+}
+
+export interface DaySchedule {
   day: Days;
-  from: string;
-  to: string;
-  location: string;
-  type: string
+  slots: Schedule[];
+}
+
+export interface DoctorScheduleProps {
+  schedule: Schedule
 }

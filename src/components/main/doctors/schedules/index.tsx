@@ -6,25 +6,28 @@ import { Box, Grid, Typography } from "@material-ui/core";
 import Alert from "../../../common/Alert";
 import DoctorScheduleModal from "./ScheduleSlotModal";
 import CardComponent from "../../../common/CardComponent";
+import ViewDataLoader from "../../../common/ViewDataLoader";
+import DoctorScheduleBox from "../../../common/DoctorScheduleBox";
 // interfaces, graphql, constants block
+import { getDaySchedules } from "../../../../utils";
 import { AddSlotIcon, EditIcon } from '../../../../assets/svgs';
 import { useDoctorScheduleStyles } from '../../../../styles/doctorSchedule';
-import { DoctorScheduleSlotProps, ParamsType } from "../../../../interfacesTypes";
+import { DaySchedule, DoctorScheduleSlotProps, ParamsType } from "../../../../interfacesTypes";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/doctorReducer';
 import {
-  SchedulePayload, SchedulesPayload, useGetDoctorScheduleLazyQuery
+  SchedulesPayload, useGetDoctorScheduleLazyQuery
 } from "../../../../generated/graphql";
 import {
-  ADD_MORE_RECORDS_TEXT, APPOINTMENT_TYPE, AVAILABILITY_TEXT, DOCTOR_NOT_FOUND, FORM_TEXT, LOCATION, TO_TEXT
+  ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, DOCTOR_NOT_FOUND
 } from "../../../../constants";
 
 const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) => {
   const classes = useDoctorScheduleStyles();
   const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { scheduleOpenModal, doctorSchedules } = state;
+  const { scheduleOpenModal, byDaySchedules, isEdit, scheduleId } = state;
 
   const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
     variables: {
@@ -40,24 +43,31 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
 
     onCompleted(data) {
       const { getDoctorSchedules: { schedules } } = data || {};
-      schedules && dispatch({
-        type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
-      })
+
+      if (schedules && schedules.length > 0) {
+        dispatch({
+          type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
+        });
+
+        dispatch({
+          type: ActionType.SET_BY_DAY_SCHEDULES,
+          byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
+        })
+      }
     }
   });
 
   const handleSlotCard = () => {
     dispatch({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: true })
+    dispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
   };
 
-  // const handleEdit = (id: string) => {
-  //   if (id) {
-  //     dispatch({ type: ActionType.SET_SERVICE_ID, serviceId: id })
-  //     dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
-  //     dispatch({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: true })
-
-  //   }
-  // };
+  const handleEdit = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
+      dispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: id })
+    }
+  };
 
   useEffect(() => {
     if (id) {
@@ -70,97 +80,52 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     <Grid container spacing={3}>
       <Grid item md={6}>
         <CardComponent cardTitle={AVAILABILITY_TEXT}>
-          <Grid container spacing={3}>
-            <Grid item md={12} sm={12} xs={12}>
-              <Box display="flex" flexDirection="column" justifyContent="space-between" pt={3}>
-                {doctorSchedules?.map((schedule: SchedulePayload['schedule']) => {
-                  const { startAt, endAt, location, scheduleServices } = schedule || {}
-                  const { name } = location || {}
+          {getSchedulesLoading ?
+            <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
+              <Grid container spacing={3}>
+                <Grid item md={12} sm={12} xs={12}>
+                  <Box display="flex" flexDirection="column" justifyContent="space-between" pt={3}>
+                    {byDaySchedules?.map((schedule: DaySchedule) => {
+                      const { day, slots } = schedule || {}
 
-                  return (
-                    <Box className={classes.viewSlots} mb={3}>
-                      <Box display="flex" flexDirection="row" justifyContent="space-between">
-                        <Typography className={classes.heading}>
-                          Monday
-                        </Typography>
-
-                        <Box className={classes.iconsBackground} >
-                          <EditIcon />
-                        </Box>
-                      </Box>
-
-                      <Box display="flex" flexDirection="column" justifyContent="space-between">
-                        <Box display="flex" flexDirection="row" justifyContent="space-between">
-                          <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
-                            <Typography className={classes.subHeading}>
-                              {FORM_TEXT}
-                            </Typography>
-
-                            <Typography className={classes.heading}>
-                              {startAt}
-                            </Typography>
-                          </Box>
-
-                          <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
-                            <Typography className={classes.subHeading}>
-                              {TO_TEXT}
-                            </Typography>
-
-                            <Typography className={classes.heading}>
-                              {endAt}
-                            </Typography>
-                          </Box>
-                        </Box>
-
-                        <Box>
-                          <Box display="flex" flexDirection="row" justifyContent="space-between">
-                            <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
-                              <Typography className={classes.subHeading}>
-                                {LOCATION}:
-                              </Typography>
-
+                      return slots && slots.length > 0
+                        && (
+                          <Box className={classes.viewSlots} mb={3}>
+                            <Box display="flex" flexDirection="row" justifyContent="space-between">
                               <Typography className={classes.heading}>
-                                {name}
+                                {day}
                               </Typography>
+
+                              <Box className={classes.iconsBackground} onClick={() => handleEdit(id)}>
+                                <EditIcon />
+                              </Box>
                             </Box>
 
-                            <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
-                              <Typography className={classes.subHeading}>
-                                {APPOINTMENT_TYPE}
-                              </Typography>
-
-                              <Typography className={classes.heading}>
-                                {scheduleServices?.map(scheduleService => {
-                                  const { service } = scheduleService || {}
-                                  const { name } = service || {};
-
-                                  return <Typography className={classes.heading}>{name}</Typography>
-                                })}
-                              </Typography>
-                            </Box>
+                            {slots.map(slot => slot && <DoctorScheduleBox schedule={slot} />)}
                           </Box>
-                        </Box>
-                      </Box>
-                    </Box>
-                  )
-                })}
-              </Box>
+                        )
+                    })}
+                  </Box>
 
-              <Box onClick={handleSlotCard} className={classes.addSlot} mb={2}>
-                <AddSlotIcon />
+                  <Box onClick={handleSlotCard} className={classes.addSlot} mb={2}>
+                    <AddSlotIcon />
 
-                <Typography>
-                  {ADD_MORE_RECORDS_TEXT}
-                </Typography>
+                    <Typography>
+                      {ADD_MORE_RECORDS_TEXT}
+                    </Typography>
 
-                <DoctorScheduleModal
-                  isOpen={scheduleOpenModal}
-                  doctorDispatcher={dispatch}
-                  doctorFacilityId={doctorFacilityId}
-                />
-              </Box>
-            </Grid>
-          </Grid>
+                    <DoctorScheduleModal
+                      id={scheduleId}
+                      isEdit={isEdit}
+                      isOpen={scheduleOpenModal}
+                      doctorDispatcher={dispatch}
+                      reload={getDoctorSchedules}
+                      doctorFacilityId={doctorFacilityId}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+            )}
         </CardComponent>
       </Grid>
     </Grid>

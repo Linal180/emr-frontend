@@ -4,11 +4,11 @@ import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
-import { daySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
+import { DAYS, LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
+import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule
 } from "../generated/graphql"
 
 export const handleLogout = () => {
@@ -241,7 +241,39 @@ export const getTimeFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
-export const getDaySchedules = (schedules: SchedulesPayload['schedules']): daySchedule[] => {
+export const getStandardTime = (timestamp: string) => {
+  if (!timestamp) return "";
 
-  return [];
+  return new Date(parseInt(timestamp)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+};
+
+const getDayFromTimestamps = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toLocaleString('en-us', { weekday: 'long' })
 }
+
+export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySchedule[] => {
+  const daySchedules: DaySchedule[] = [
+    { day: DAYS.Monday, slots: [] },
+    { day: DAYS.Tuesday, slots: [] },
+    { day: DAYS.Wednesday, slots: [] },
+    { day: DAYS.Thursday, slots: [] },
+    { day: DAYS.Friday, slots: [] },
+    { day: DAYS.Saturday, slots: [] },
+    { day: DAYS.Sunday, slots: [] }
+  ]
+
+  if (schedules && schedules.length > 0) {
+    schedules.map(schedule => {
+      const { startAt } = schedule || {};
+      const day = getDayFromTimestamps(startAt || '')
+      const dayIndex = daySchedules.findIndex(slot => slot.day.toString() === day);
+
+      dayIndex !== -1 && daySchedules[dayIndex].slots.push(schedule as Schedule)
+      return ''
+    })
+  }
+
+  return daySchedules;
+};

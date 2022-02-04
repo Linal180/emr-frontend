@@ -5,7 +5,7 @@ import { formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
-  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race, 
+  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PracticeType, Pronouns, Race,
   RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
 } from "../generated/graphql";
 
@@ -27,6 +27,15 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 
 // constants
 export const EMPTY_OPTION = { id: "", name: "" };
+export enum DAYS {
+  Monday = "Monday",
+  Tuesday = "Tuesday",
+  Wednesday = "Wednesday",
+  Thursday = "Thursday",
+  Friday = "Friday",
+  Saturday = "Saturday",
+  Sunday = "Sunday",
+};
 export const ALL_STAFF = "Staff";
 export const CALENDER = "Calender";
 export const MINUTES = "minutes";
@@ -43,6 +52,8 @@ export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const CREATE_STAFF = "Create Staff";
 export const CREATE_APPOINTMENT = "Create Appointment";
 export const UPDATE_APPOINTMENT = "Update Appointment";
+export const CREATE_SCHEDULE = "Create Schedule";
+export const UPDATE_SCHEDULE = "Update Schedule";
 export const CREATE_SERVICE = "Create Service";
 export const CREATE_FACILITY = "Create facility";
 export const CREATE_LOCATION = "Create location";
@@ -50,6 +61,8 @@ export const UPDATE_LOCATION_TEXT = "Update location";
 export const ADD_STAFF = "Add Staff";
 export const CANT_UPDATE_STAFF = "Staff cant be updated";
 export const CANT_CREATE_STAFF = "Can't create staff";
+export const CANT_UPDATE_SCHEDULE = "Schedule cant be updated";
+export const CANT_CREATE_SCHEDULE = "Can't create schedule";
 export const CREATE_DOCTOR = "Create Doctor";
 export const ADD_DOCTOR = "Add Doctor";
 export const EDIT_DOCTOR = "Edit Doctor";
@@ -95,7 +108,7 @@ export const PROVIDER_INITIALS = "Provider Initials";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SPECIALITY = "Speciality";
 export const DOB = "Date of Birth";
-export const DESEASED_DATE = "deseased Date";
+export const DECEASED_DATE = "Deceased Date";
 export const DOCTOR_ID = "doctor id";
 export const PATIENT_ID = "patient id";
 export const PRIMARY_SERVICE_LOCATION = "Primary Service Location";
@@ -125,8 +138,8 @@ export const BANK_ACCOUNT = "Bank Account";
 export const PAGER = "Pager";
 export const TAX_ID = "Tax ID";
 export const NPI = "NPI";
-export const FORM_TEXT = "Form";
-export const TO_TEXT = "TO";
+export const FORM_TEXT = "Form:";
+export const TO_TEXT = "To:";
 export const UPIN = "UPIN";
 export const EMC_PROVIDER_ID = "EMC Provider ID";
 export const Organization_Type = "Organization Type";
@@ -147,7 +160,6 @@ export const SERVICE_NAME_TEXT = "Service Name";
 export const DURATION_TEXT = "Duration (In Minutes)";
 export const PRICE_TEXT = "Price (In USD)";
 export const LICENSE_TERM_DATE = "License Term Date";
-export const ADD_TEXT = "ADD";
 export const PRESCRIPTIVE_AUTH_NUMBER = "Prescriptive Auth number";
 export const FACILITY_IDS = "Facility IDs";
 export const FACILITY_TYPE = "Facility Type";
@@ -182,7 +194,9 @@ export const LAST_APPOINTMENT = "Last Appointment";
 export const RESET = "Reset";
 export const REASON = "Reason";
 export const APPOINTMENT = "Appointment";
-
+export const DAY = "Day";
+export const STARTING_TIME = "Starting time";
+export const ENDING_TIME = "Ending time";
 export const BILLED = "Billed";
 export const EMR_TEXT = "EMR";
 export const USER_NAME = "Username";
@@ -506,11 +520,14 @@ export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully"
 export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully"
+export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully"
+export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully"
 export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated."
 export const FACILITY_NOT_FOUND = 'Facility not found!';
 export const LOCATION_NOT_FOUND = 'Location not found!';
 export const APPOINTMENT_NOT_FOUND = 'Appointment not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
+export const SCHEDULE_NOT_FOUND = 'Schedule not found!';
 export const PATIENT_NOT_FOUND = 'Patient not found!';
 export const SERVICE_NOT_FOUND = 'Service not found!';
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
@@ -911,32 +928,11 @@ export const DOCTOR_TOP_TABS = [
 ]
 
 export const WEEK_DAYS: SelectorOption[] = [
-  {
-    id: '1',
-    name: 'Monday',
-  },
-  {
-    id: '2',
-    name: 'Tuesday',
-  },
-  {
-    id: '3',
-    name: 'Wednesday',
-  },
-  {
-    id: '4',
-    name: 'Thursday',
-  },
-  {
-    id: '5',
-    name: 'Friday',
-  },
-  {
-    id: '6',
-    name: 'Saturday',
-  },
-  {
-    id: '7',
-    name: 'Sunday',
-  },
+  { id: DAYS.Monday, name: DAYS.Monday, },
+  { id: DAYS.Tuesday, name: DAYS.Tuesday, },
+  { id: DAYS.Wednesday, name: DAYS.Wednesday, },
+  { id: DAYS.Thursday, name: DAYS.Thursday, },
+  { id: DAYS.Friday, name: DAYS.Friday, },
+  { id: DAYS.Saturday, name: DAYS.Saturday, },
+  { id: DAYS.Sunday, name: DAYS.Sunday, },
 ]

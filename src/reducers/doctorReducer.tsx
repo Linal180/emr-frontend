@@ -1,8 +1,10 @@
 import { AllDoctorPayload, DoctorPayload, SchedulesPayload } from "../generated/graphql"
-import { daySchedule } from "../interfacesTypes";
+import { DaySchedule } from "../interfacesTypes";
 
 export interface State {
   page: number;
+  isEdit: boolean;
+  scheduleId: string;
   currentTab: string;
   totalPages: number;
   openDelete: boolean;
@@ -10,7 +12,7 @@ export interface State {
   deleteDoctorId: string;
   doctorFacilityId: string;
   scheduleOpenModal: boolean;
-  byDaySchedules: daySchedule[];
+  byDaySchedules: DaySchedule[];
   doctor: DoctorPayload['doctor'];
   doctors: AllDoctorPayload['doctors'];
   doctorSchedules: SchedulesPayload['schedules'];
@@ -21,6 +23,8 @@ export const initialState: State = {
   doctors: [],
   doctor: null,
   totalPages: 0,
+  isEdit: false,
+  scheduleId: "",
   currentTab: "1",
   searchQuery: "",
   openDelete: false,
@@ -34,8 +38,10 @@ export const initialState: State = {
 export enum ActionType {
   SET_PAGE = 'setPage',
   SET_DOCTOR = 'setDoctor',
+  SET_IS_EDIT = 'setIsEdit',
   SET_DOCTORS = 'setDoctors',
-  SET_CURRENT_TAB = 'SetCurrentTab',
+  SET_SCHEDULE_ID = 'setScheduleId',
+  SET_CURRENT_TAB = 'setCurrentTab',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_SEARCH_QUERY = 'setSearchQuery',
@@ -49,6 +55,8 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
+  | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
+  | { type: ActionType.SET_SCHEDULE_ID, scheduleId: string }
   | { type: ActionType.SET_CURRENT_TAB; currentTab: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
@@ -57,7 +65,7 @@ export type Action =
   | { type: ActionType.SET_DELETE_DOCTOR_ID; deleteDoctorId: string }
   | { type: ActionType.SET_DOCTOR_FACILITY_ID; doctorFacilityId: string }
   | { type: ActionType.SET_DOCTORS; doctors: AllDoctorPayload['doctors'] }
-  | { type: ActionType.SET_BY_DAY_SCHEDULES; byDaySchedules: daySchedule[] }
+  | { type: ActionType.SET_BY_DAY_SCHEDULES; byDaySchedules: DaySchedule[] }
   | { type: ActionType.SET_SCHEDULE_OPEN_MODAL; scheduleOpenModal: boolean }
   | { type: ActionType.SET_DOCTOR_SCHEDULES; doctorSchedules: SchedulesPayload['schedules'] }
 
@@ -67,6 +75,18 @@ export const doctorReducer = (state: State, action: Action): State => {
       return {
         ...state,
         page: action.page
+      }
+
+    case ActionType.SET_IS_EDIT:
+      return {
+        ...state,
+        isEdit: action.isEdit
+      }
+
+    case ActionType.SET_SCHEDULE_ID:
+      return {
+        ...state,
+        scheduleId: action.scheduleId
       }
 
     case ActionType.SET_BY_DAY_SCHEDULES:
