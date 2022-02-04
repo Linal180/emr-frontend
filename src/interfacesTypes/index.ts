@@ -13,8 +13,8 @@ import {
   UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput, Schedule
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
-import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { serviceAction } from "../reducers/serviceReducer";
+import { Action as DoctorAction } from "../reducers/doctorReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;

@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext, useState } from 'react';
+import { useEffect, FC, useContext, useState, Reducer, useReducer } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -21,11 +21,14 @@ import { appointmentSchema } from '../../../../validationSchemas';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
 import { ExtendedAppointmentInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
+  appointmentReducer, Action, initialState, State, ActionType
+} from '../../../../reducers/appointmentReducer';
+import {
   getTimestamps, renderDoctors, renderFacilities, renderPatient, renderServices,
-  getTimeFromTimestamps, requiredMessage, setRecord
+  getTimeFromTimestamps, requiredMessage, setRecord, getStandardTime
 } from "../../../../utils";
 import {
-  PaymentType, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation
+  PaymentType, SchedulesPayload, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -38,11 +41,14 @@ import {
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
   const { facilityList, serviceList, doctorList, patientList } = useContext(ListContext)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const { providerId, availableSchedules } = state;
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
   });
-  const { reset, setValue, handleSubmit, formState: { errors } } = methods;
+  const { reset, setValue, handleSubmit, getValues, formState: { errors } } = methods;
+  const { providerId: { id: selectedProvider } = {} } = getValues()
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
@@ -87,6 +93,27 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime || ''))
         }
       }
+    }
+  });
+
+  const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
+    variables: {
+      getDoctorSchedule: { id: providerId }
+    },
+
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      dispatch({ type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: [] })
+    },
+
+    onCompleted(data) {
+      const { getDoctorSchedules: { schedules } } = data || {};
+
+      schedules && dispatch({
+        type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: schedules as SchedulesPayload['schedules']
+      });
     }
   });
 
@@ -145,6 +172,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       setValue('otherAccident', false)
     }
   }, [getAppointment, id, isEdit, setValue])
+
+  useEffect(() => {
+    if (selectedProvider) {
+      getDoctorSchedules({
+        variables: {
+          getDoctorSchedule: { id: selectedProvider }
+        }
+      })
+    }
+  }, [getDoctorSchedules, selectedProvider])
 
   const onSubmit: SubmitHandler<ExtendedAppointmentInputProps> = async (inputs) => {
     const {
@@ -322,33 +359,24 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       />
                     </MuiPickersUtilsProvider>
                   </Box>
+                  {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+                    <ul className={classes.timeSlots}>
+                      {!!availableSchedules?.length && availableSchedules.map(schedule => {
+                        const { startAt, endAt } = schedule || {}
 
-                  <ul className={classes.timeSlots}>
-                    <li>
-                      <div>
-                        <input type="radio" name="timeSlots" id="timeSlotOne" />
-                        <label htmlFor="timeSlotOne">01:00PM - 01:30PM</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div>
-                        <input type="radio" name="timeSlots" id="timeSlotTwo" />
-                        <label htmlFor="timeSlotTwo">01:00PM - 01:30PM</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div>
-                        <input type="radio" name="timeSlots" id="timeSlotThree" />
-                        <label htmlFor="timeSlotThree">01:00PM - 01:30PM</label>
-                      </div>
-                    </li>
-                    <li>
-                      <div>
-                        <input type="radio" name="timeSlots" id="timeSlotFour" />
-                        <label htmlFor="timeSlotFour">01:00PM - 01:30PM</label>
-                      </div>
-                    </li>
-                  </ul>
+                        return (
+                          <li>
+                            <div>
+                              <input type="radio" name="timeSlots" id="timeSlotOne" />
+                              <label htmlFor="timeSlotOne">
+                                {getStandardTime(startAt || '')} - {getStandardTime(endAt || '')}
+                              </label>
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
                 </CardComponent>
               </Grid>
 
