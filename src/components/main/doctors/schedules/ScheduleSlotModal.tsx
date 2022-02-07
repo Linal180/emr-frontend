@@ -14,8 +14,7 @@ import { ActionType } from "../../../../reducers/doctorReducer";
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
-  getDayFromTimestamps, getISOTime, getTimestamps, renderLocations,
-  renderServices, setRecord
+  getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
@@ -133,10 +132,11 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, servicesIds, startAt, day }) => {
     const { id: selectedLocation } = locationId || {}
     const { id: selectedService } = servicesIds || {}
+    const { id: dayName } = day || {}
 
     const scheduleInput = {
       doctorId, locationId: selectedLocation || '', servicesIds: [selectedService] || [],
-      startAt: getTimestamps(startAt || ''), endAt: getTimestamps(endAt || ''),
+      startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
 
     if (doctorId) {

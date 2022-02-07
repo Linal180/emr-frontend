@@ -250,7 +250,7 @@ export const getISOTime = (timestamp: string) => {
 export const getStandardTime = (timestamp: string) => {
   if (!timestamp) return "";
 
-  return new Date(parseInt(timestamp)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+  return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 };
 
 export const getDayFromTimestamps = (timestamp: string) => {
@@ -282,4 +282,25 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
   }
 
   return daySchedules;
+};
+
+export const setTimeDay = (time: string, day: string): string => {
+  const date = new Date(time)
+  const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
+  const selectedDay = days.findIndex(weekDay => weekDay === day);
+  const currentDay = new Date(time).getDay()
+  let x = 0
+  let result = moment(date).format().toString();
+
+  if (selectedDay > currentDay) {
+    x = selectedDay - currentDay
+
+    result = moment(date.setDate(date.getDate() + x)).format().toString()
+  } else if (currentDay > selectedDay) {
+    x = currentDay - selectedDay
+
+    result =  moment(date.setDate(date.getDate() - (x % 7))).format().toString()
+  }
+
+  return result
 };
