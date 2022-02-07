@@ -63,6 +63,7 @@ query GetAppointment($getAppointment: GetAppointment!){
       scheduleEndDateTime
       primaryInsurance
       secondaryInsurance
+      paymentType
       createdAt
       updatedAt
       

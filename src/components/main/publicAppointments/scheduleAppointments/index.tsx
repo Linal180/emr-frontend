@@ -1,31 +1,121 @@
 // packages block
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { Box, Button, Grid } from "@material-ui/core";
-import { Link } from "react-router-dom";
 // components block
-import CardComponent from "../../../common/CardComponent";
-import { ListContext } from '../../../../context';
-import DatePicker from "../../../common/DatePicker";
-import PhoneField from '../../../common/PhoneInput';
-// constants block
-import { APPOINTMENT_TYPE, BOOK_APPOINTMENT, CANCEL, DOB, EMAIL, EMPTY_OPTION, INSURANCE_COMPANY, MAPPED_GENDER_IDENTITY, MAPPED_PAYMENT_METHOD, MAPPED_RELATIONSHIP_TYPE, MEMBERSHIP_ID, PATIENT_DETAILS, PATIENT_FIRST_NAME, PATIENT_LAST_NAME, PAYMENT_TYPE, PHONE, RELATIONSHIP_WITH_PATIENT, SELECT_PROVIDER, SELECT_SERVICES, SEX_AT_BIRTH, SLOT_CONFIRMATION, YOUR_NAME } from "../../../../constants";
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
+import Alert from "../../../common/Alert";
 import Selector from "../../../common/Selector";
+import { ListContext } from '../../../../context';
+import PhoneField from '../../../common/PhoneInput';
+import DatePicker from "../../../common/DatePicker";
 import InputController from "../../../../controller";
-import { renderDoctors, renderServices } from "../../../../utils";
+import CardComponent from "../../../common/CardComponent";
 import AppointmentDatePicker from "./AppointmentDatePicker";
+import ViewDataLoader from "../../../common/ViewDataLoader";
+// constants block
+import history from "../../../../history";
+import {
+  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, BOOK_APPOINTMENT, CANCEL, DOB, EMAIL,
+  EMPTY_OPTION, INSURANCE_COMPANY, MAPPED_GENDER_IDENTITY, MAPPED_PAYMENT_METHOD, MAPPED_RELATIONSHIP_TYPE, MEMBERSHIP_ID,
+  PATIENT_DETAILS, PATIENT_FIRST_NAME, PATIENT_LAST_NAME, PAYMENT_TYPE, PHONE, RELATIONSHIP_WITH_PATIENT,
+  SELECT_PROVIDER, SELECT_SERVICES, SEX_AT_BIRTH, SLOT_CONFIRMATION, YOUR_NAME
+} from "../../../../constants";
+import { getTimestamps, renderDoctors, renderServices } from "../../../../utils";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
+import { ExtendedExternalAppointmentInputProps } from "../../../../interfacesTypes";
+import {
+  ContactType, Genderidentity, PaymentType, RelationshipType,
+  useCreateExternalAppointmentMutation, useGetAppointmentLazyQuery
+} from "../../../../generated/graphql";
 
 const ScheduleAppointmentsPublic = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
   const { serviceList, doctorList } = useContext(ListContext)
-  const methods = useForm<any>({
+  const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
   });
-  const { handleSubmit } = methods;
+  const { reset, setValue, handleSubmit, getValues } = methods;
+  const { paymentType } = getValues()
 
-  const onSubmit: SubmitHandler<any> = () => {
+  const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { getAppointment: { response, appointment } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (appointment && status && status === 200) {
+
+          const { paymentType } = appointment || {}
+
+          paymentType && setValue('paymentType', paymentType as PaymentType)
+        }
+      }
+    }
+  });
+
+  const [createExternalAppointment, { loading: createExternalAppointmentLoading }] = useCreateExternalAppointmentMutation({
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { createExternalAppointment: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
+          reset()
+          history.push(SLOT_CONFIRMATION)
+        }
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (paymentType) {
+      // getAppointment()
+    }
+  }, [paymentType])
+
+  const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
+    const {
+      facilityId, patientId, providerId, serviceId, dob, email, firstName, lastName, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime, membershipID, paymentType, guardianName, guardianRelationship
+    } = inputs;
+
+    const { id: selectedService } = serviceId || {};
+    const { id: selectedProvider } = providerId || {};
+    const { id: selectedSexAtBirth } = sexAtBirth;
+    const { id: selectedGuardianRelationship } = guardianRelationship || {};
+
+    await createExternalAppointment({
+      variables: {
+        createExternalAppointmentInput: {
+          createExternalAppointmentItemInput: {
+            serviceId: selectedService || '', providerId: selectedProvider, facilityId, paymentType: paymentType as PaymentType.Self, patientId,
+            membershipID, scheduleStartDateTime: getTimestamps(scheduleStartDateTime || ''), scheduleEndDateTime: getTimestamps(scheduleEndDateTime || '')
+          },
+          createPatientItemInput: {
+            firstName: firstName || "", lastName: lastName || "", facilityId, dob, sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None, email: email || ""
+          },
+          createGuardianContactInput: {
+            name: guardianName, relationship: selectedGuardianRelationship as RelationshipType || RelationshipType.Other, contactType: ContactType.Guardian
+          }
+        }
+      }
+    })
   }
 
   return (
@@ -36,49 +126,58 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
             <CardComponent cardTitle={SELECT_SERVICES}>
               <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
-                  <Selector
-                    value={EMPTY_OPTION}
-                    label={APPOINTMENT_TYPE}
-                    name="serviceId"
-                    options={renderServices(serviceList)}
-                  />
+                  {createExternalAppointmentLoading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
+                    <Selector
+                      value={EMPTY_OPTION}
+                      label={APPOINTMENT_TYPE}
+                      name="serviceId"
+                      options={renderServices(serviceList)}
+                    />
+                  )}
+                </Grid>
+
+                <Grid item md={6} sm={12} xs={12}>
+                  {createExternalAppointmentLoading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
+                    <Selector
+                      value={EMPTY_OPTION}
+                      label={SELECT_PROVIDER}
+                      name="providerId"
+                      options={renderDoctors(doctorList)}
+                    />
+                  )}
                 </Grid>
               </Grid>
 
               <Grid container spacing={3}>
-                <Grid item md={3} sm={12} xs={12}>
-                  <Selector
-                    name="paymentType"
-                    label={PAYMENT_TYPE}
-                    value={EMPTY_OPTION}
-                    options={MAPPED_PAYMENT_METHOD}
-                  />
+                <Grid item md={6} sm={12} xs={12}>
+                  {createExternalAppointmentLoading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
+                    <Selector
+                      name="paymentType"
+                      label={PAYMENT_TYPE}
+                      value={EMPTY_OPTION}
+                      options={MAPPED_PAYMENT_METHOD}
+                    />
+                  )}
                 </Grid>
 
-                <Grid item md={3} sm={12} xs={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="insuranceCompany"
-                    controllerLabel={INSURANCE_COMPANY}
-                  />
-                </Grid>
-
-                <Grid item md={3} sm={12} xs={12}>
-                  <Selector
-                    value={EMPTY_OPTION}
-                    label={SELECT_PROVIDER}
-                    name="providerId"
-                    options={renderDoctors(doctorList)}
-                  />
-                </Grid>
-
-                <Grid item md={3} sm={12} xs={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="membershipId"
-                    controllerLabel={MEMBERSHIP_ID}
-                  />
-                </Grid>
+                {getAppointmentLoading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
+                  <>
+                    <Grid item md={3} sm={12} xs={12}>
+                      <InputController
+                        fieldType="text"
+                        controllerName="insuranceCompany"
+                        controllerLabel={INSURANCE_COMPANY}
+                      />
+                    </Grid>
+                    <Grid item md={3} sm={12} xs={12}>
+                      <InputController
+                        fieldType="text"
+                        controllerName="membershipId"
+                        controllerLabel={MEMBERSHIP_ID}
+                      />
+                    </Grid>
+                  </>
+                )}
               </Grid>
             </CardComponent>
 
@@ -89,7 +188,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="patientFirstName"
+                    controllerName="firstName"
                     controllerLabel={PATIENT_FIRST_NAME}
                   />
                 </Grid>
@@ -97,7 +196,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="patientLastName"
+                    controllerName="lastName"
                     controllerLabel={PATIENT_LAST_NAME}
                   />
                 </Grid>
@@ -105,18 +204,22 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
 
               <Grid container spacing={3}>
                 <Grid item md={3} sm={12} xs={12}>
-                  <Selector
-                    name="sexAtBirth"
-                    label={SEX_AT_BIRTH}
-                    value={EMPTY_OPTION}
-                    options={MAPPED_GENDER_IDENTITY}
-                  />
+                  {createExternalAppointmentLoading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
+                    <Selector
+                      name="sexAtBirth"
+                      label={SEX_AT_BIRTH}
+                      value={EMPTY_OPTION}
+                      options={MAPPED_GENDER_IDENTITY}
+                    />
+                  )}
                 </Grid>
+
                 <Grid item md={3} sm={12} xs={12}>
                   <DatePicker isRequired name="dob" label={DOB}
                     error={''}
                   />
                 </Grid>
+
                 <Grid item md={3} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
@@ -124,6 +227,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
                     controllerLabel={EMAIL}
                   />
                 </Grid>
+
                 <Grid item md={3} sm={12} xs={12}>
                   <PhoneField name="billingPhone" label={PHONE} />
                 </Grid>
@@ -132,7 +236,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
               <Grid container spacing={3}>
                 <Grid item md={6} sm={12} xs={12}>
                   <Selector
-                    name="emergencyRelationship"
+                    name="guardianRelationship"
                     label={RELATIONSHIP_WITH_PATIENT}
                     value={EMPTY_OPTION}
                     options={MAPPED_RELATIONSHIP_TYPE}
@@ -142,7 +246,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="yourName"
+                    controllerName="guardianName"
                     controllerLabel={YOUR_NAME}
                   />
                 </Grid>
@@ -188,12 +292,10 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
               <Button type="submit" variant="contained">
                 {CANCEL}
               </Button>
-              <Link to={SLOT_CONFIRMATION}>
-                <Button type="submit" variant="contained" className='blue-button'>
-                  {BOOK_APPOINTMENT}
-                </Button>
-              </Link>
 
+              <Button type="submit" variant="contained" className='blue-button'>
+                {BOOK_APPOINTMENT}
+              </Button>
             </Box>
           </Grid>
         </Grid>

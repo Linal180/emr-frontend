@@ -372,6 +372,7 @@ export type CreateEmployerInput = {
 
 export type CreateExternalAppointmentInput = {
   createExternalAppointmentItemInput: CreateExternalAppointmentItemInput;
+  createGuardianContactInput: CreateContactInput;
   createPatientItemInput: CreatePatientItemInput;
 };
 
@@ -444,6 +445,7 @@ export type CreatePatientItemInput = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
@@ -1085,6 +1087,7 @@ export type Patient = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission: Scalars['Boolean'];
   preferredCommunicationMethod: Communicationtype;
@@ -1836,6 +1839,7 @@ export type UpdatePatientItemInput = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
@@ -1998,7 +2002,7 @@ export type GetAppointmentQueryVariables = Exact<{
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, employment?: boolean | null | undefined, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, scheduleStartDateTime: string, scheduleEndDateTime: string, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, employment?: boolean | null | undefined, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, scheduleStartDateTime: string, scheduleEndDateTime: string, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, paymentType: PaymentType, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -2020,6 +2024,13 @@ export type UpdateAppointmentMutationVariables = Exact<{
 
 
 export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type CreateExternalAppointmentMutationVariables = Exact<{
+  createExternalAppointmentInput: CreateExternalAppointmentInput;
+}>;
+
+
+export type CreateExternalAppointmentMutation = { __typename?: 'Mutation', createExternalAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
@@ -2437,6 +2448,7 @@ export const GetAppointmentDocument = gql`
       scheduleEndDateTime
       primaryInsurance
       secondaryInsurance
+      paymentType
       createdAt
       updatedAt
       appointmentType {
@@ -2601,6 +2613,45 @@ export function useUpdateAppointmentMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateAppointmentMutationHookResult = ReturnType<typeof useUpdateAppointmentMutation>;
 export type UpdateAppointmentMutationResult = Apollo.MutationResult<UpdateAppointmentMutation>;
 export type UpdateAppointmentMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentMutation, UpdateAppointmentMutationVariables>;
+export const CreateExternalAppointmentDocument = gql`
+    mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExternalAppointmentInput!) {
+  createExternalAppointment(
+    createExternalAppointmentInput: $createExternalAppointmentInput
+  ) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateExternalAppointmentMutationFn = Apollo.MutationFunction<CreateExternalAppointmentMutation, CreateExternalAppointmentMutationVariables>;
+
+/**
+ * __useCreateExternalAppointmentMutation__
+ *
+ * To run a mutation, you first call `useCreateExternalAppointmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateExternalAppointmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createExternalAppointmentMutation, { data, loading, error }] = useCreateExternalAppointmentMutation({
+ *   variables: {
+ *      createExternalAppointmentInput: // value for 'createExternalAppointmentInput'
+ *   },
+ * });
+ */
+export function useCreateExternalAppointmentMutation(baseOptions?: Apollo.MutationHookOptions<CreateExternalAppointmentMutation, CreateExternalAppointmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateExternalAppointmentMutation, CreateExternalAppointmentMutationVariables>(CreateExternalAppointmentDocument, options);
+      }
+export type CreateExternalAppointmentMutationHookResult = ReturnType<typeof useCreateExternalAppointmentMutation>;
+export type CreateExternalAppointmentMutationResult = Apollo.MutationResult<CreateExternalAppointmentMutation>;
+export type CreateExternalAppointmentMutationOptions = Apollo.BaseMutationOptions<CreateExternalAppointmentMutation, CreateExternalAppointmentMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
