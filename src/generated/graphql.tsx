@@ -2271,6 +2271,13 @@ export type GetDoctorScheduleQueryVariables = Exact<{
 
 export type GetDoctorScheduleQuery = { __typename?: 'Query', getDoctorSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, location?: { __typename?: 'Contact', id: string, name?: string | null | undefined } | null | undefined, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, serviceId?: string | null | undefined, service?: { __typename?: 'Service', id: string, name: string } | null | undefined }> | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
 
+export type RemoveScheduleMutationVariables = Exact<{
+  removeSchedule: RemoveSchedule;
+}>;
+
+
+export type RemoveScheduleMutation = { __typename?: 'Mutation', removeSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
 export type FindAllServicesQueryVariables = Exact<{
   serviceInput: ServiceInput;
 }>;
@@ -5109,6 +5116,43 @@ export function useGetDoctorScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetDoctorScheduleQueryHookResult = ReturnType<typeof useGetDoctorScheduleQuery>;
 export type GetDoctorScheduleLazyQueryHookResult = ReturnType<typeof useGetDoctorScheduleLazyQuery>;
 export type GetDoctorScheduleQueryResult = Apollo.QueryResult<GetDoctorScheduleQuery, GetDoctorScheduleQueryVariables>;
+export const RemoveScheduleDocument = gql`
+    mutation RemoveSchedule($removeSchedule: RemoveSchedule!) {
+  removeSchedule(removeSchedule: $removeSchedule) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveScheduleMutationFn = Apollo.MutationFunction<RemoveScheduleMutation, RemoveScheduleMutationVariables>;
+
+/**
+ * __useRemoveScheduleMutation__
+ *
+ * To run a mutation, you first call `useRemoveScheduleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveScheduleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeScheduleMutation, { data, loading, error }] = useRemoveScheduleMutation({
+ *   variables: {
+ *      removeSchedule: // value for 'removeSchedule'
+ *   },
+ * });
+ */
+export function useRemoveScheduleMutation(baseOptions?: Apollo.MutationHookOptions<RemoveScheduleMutation, RemoveScheduleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveScheduleMutation, RemoveScheduleMutationVariables>(RemoveScheduleDocument, options);
+      }
+export type RemoveScheduleMutationHookResult = ReturnType<typeof useRemoveScheduleMutation>;
+export type RemoveScheduleMutationResult = Apollo.MutationResult<RemoveScheduleMutation>;
+export type RemoveScheduleMutationOptions = Apollo.BaseMutationOptions<RemoveScheduleMutation, RemoveScheduleMutationVariables>;
 export const FindAllServicesDocument = gql`
     query findAllServices($serviceInput: ServiceInput!) {
   findAllServices(serviceInput: $serviceInput) {

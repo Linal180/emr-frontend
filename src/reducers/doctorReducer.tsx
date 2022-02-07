@@ -10,8 +10,10 @@ export interface State {
   openDelete: boolean;
   searchQuery: string;
   deleteDoctorId: string;
+  deleteScheduleId: string;
   doctorFacilityId: string;
   scheduleOpenModal: boolean;
+  openScheduleDelete: boolean;
   byDaySchedules: DaySchedule[];
   doctor: DoctorPayload['doctor'];
   doctors: AllDoctorPayload['doctors'];
@@ -31,8 +33,10 @@ export const initialState: State = {
   byDaySchedules: [],
   deleteDoctorId: "",
   doctorSchedules: [],
+  deleteScheduleId: "",
   doctorFacilityId: "",
   scheduleOpenModal: false,
+  openScheduleDelete: false,
 }
 
 export enum ActionType {
@@ -49,7 +53,9 @@ export enum ActionType {
   SET_DELETE_DOCTOR_ID = 'setDeleteDoctorId',
   SET_DOCTOR_SCHEDULES = 'setDoctorSchedules',
   SET_DOCTOR_FACILITY_ID = 'setDoctorFacilityId',
+  SET_DELETE_SCHEDULE_ID = 'setDeleteScheduleId',
   SET_SCHEDULE_OPEN_MODAL = 'setScheduleOpenModal',
+  SET_OPEN_SCHEDULE_DELETE = 'setOpenScheduleDelete',
 }
 
 export type Action =
@@ -62,10 +68,12 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_DOCTOR; doctor: DoctorPayload['doctor'] }
   | { type: ActionType.SET_DELETE_DOCTOR_ID; deleteDoctorId: string }
+  | { type: ActionType.SET_DELETE_SCHEDULE_ID; deleteScheduleId: string }
   | { type: ActionType.SET_DOCTOR_FACILITY_ID; doctorFacilityId: string }
   | { type: ActionType.SET_DOCTORS; doctors: AllDoctorPayload['doctors'] }
   | { type: ActionType.SET_BY_DAY_SCHEDULES; byDaySchedules: DaySchedule[] }
   | { type: ActionType.SET_SCHEDULE_OPEN_MODAL; scheduleOpenModal: boolean }
+  | { type: ActionType.SET_OPEN_SCHEDULE_DELETE; openScheduleDelete: boolean }
   | { type: ActionType.SET_DOCTOR_SCHEDULES; doctorSchedules: SchedulesPayload['schedules'] }
 
 export const doctorReducer = (state: State, action: Action): State => {
@@ -80,6 +88,18 @@ export const doctorReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isEdit: action.isEdit
+      }
+
+    case ActionType.SET_OPEN_SCHEDULE_DELETE:
+      return {
+        ...state,
+        openScheduleDelete: action.openScheduleDelete
+      }
+
+    case ActionType.SET_DELETE_SCHEDULE_ID:
+      return {
+        ...state,
+        deleteScheduleId: action.deleteScheduleId
       }
 
     case ActionType.SET_SCHEDULE_ID:

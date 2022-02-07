@@ -132,3 +132,13 @@ query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!){
     }
   }
 }
+
+mutation RemoveSchedule($removeSchedule: RemoveSchedule!){
+  removeSchedule(removeSchedule: $removeSchedule){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

@@ -8,6 +8,7 @@ import DoctorScheduleModal from "./ScheduleSlotModal";
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from "../../../common/ViewDataLoader";
 import DoctorScheduleBox from "../../../common/DoctorScheduleBox";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 // interfaces, graphql, constants block
 import { getDaySchedules } from "../../../../utils";
 import { AddSlotIcon } from '../../../../assets/svgs';
@@ -17,17 +18,18 @@ import {
   doctorReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/doctorReducer';
 import {
-  SchedulesPayload, useGetDoctorScheduleLazyQuery
+  SchedulesPayload, useGetDoctorScheduleLazyQuery, useRemoveScheduleMutation
 } from "../../../../generated/graphql";
 import {
-  ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, DOCTOR_NOT_FOUND
+  ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_DOCTOR_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
+  DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE
 } from "../../../../constants";
 
 const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) => {
   const classes = useDoctorScheduleStyles();
   const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { scheduleOpenModal, byDaySchedules, isEdit, scheduleId } = state;
+  const { scheduleOpenModal, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
 
   const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
     variables: {
@@ -57,6 +59,38 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     }
   });
 
+  const [removeSchedule, { loading: deleteScheduleLoading }] = useRemoveScheduleMutation({
+    onError() {
+      Alert.error(CANT_DELETE_DOCTOR_SCHEDULE)
+      dispatch({ type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: false })
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { removeSchedule: { response } } = data
+
+        if (response) {
+          const { message } = response
+          message && Alert.success(message);
+          getDoctorSchedules();
+          dispatch({ type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: false })
+        }
+      }
+    }
+  });
+
+  const handleDeleteSchedule = async () => {
+    if (deleteScheduleId) {
+      await removeSchedule({
+        variables: {
+          removeSchedule: {
+            id: deleteScheduleId
+          }
+        }
+      })
+    }
+  };
+
   const handleSlotCard = () => {
     dispatch({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: true })
     dispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
@@ -77,7 +111,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
             <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
-                  <Box display="flex" flexDirection="column" justifyContent="space-between" pt={3}>
+                  <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto" pt={3}>
                     {byDaySchedules?.map((schedule: DaySchedule) => {
                       const { day, slots } = schedule || {}
 
@@ -94,7 +128,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                     })}
                   </Box>
 
-                  <Box onClick={handleSlotCard} className={classes.addSlot} mb={2}>
+                  <Box display="flex" justifyContent="flex-end" onClick={handleSlotCard} className={classes.addSlot} my={2}>
                     <AddSlotIcon />
 
                     <Typography>
@@ -114,6 +148,17 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
         doctorDispatcher={dispatch}
         reload={getDoctorSchedules}
         doctorFacilityId={doctorFacilityId}
+      />
+
+      <ConfirmationModal
+        title={DOCTOR_SCHEDULE}
+        isOpen={openScheduleDelete}
+        isLoading={deleteScheduleLoading}
+        handleDelete={handleDeleteSchedule}
+        description={DELETE_DOCTOR_SCHEDULE_DESCRIPTION}
+        setOpen={(open: boolean) => dispatch({
+          type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: open
+        })}
       />
     </Grid>
   );

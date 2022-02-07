@@ -14,8 +14,7 @@ import { ActionType } from "../../../../reducers/doctorReducer";
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
-  getDayFromTimestamps, getISOTime, getTimestamps, renderLocations,
-  renderServices, setRecord
+  getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
@@ -64,8 +63,8 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
           endAt && setValue('endAt', getISOTime(endAt || ''))
           startAt && setValue('startAt', getISOTime(startAt || ''))
           serviceId && serviceName && setValue('servicesIds', setRecord(serviceId, serviceName || ''))
-          locationId && locationName && setValue('locationId', setRecord(locationId || '', locationName || ''))
           setValue('day', setRecord(getDayFromTimestamps(startAt || ''), getDayFromTimestamps(startAt || '')))
+          locationId && locationName && setValue('locationId', setRecord(locationId || '', locationName || ''))
         }
       }
     }
@@ -133,10 +132,11 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, servicesIds, startAt, day }) => {
     const { id: selectedLocation } = locationId || {}
     const { id: selectedService } = servicesIds || {}
+    const { id: dayName } = day || {}
 
     const scheduleInput = {
       doctorId, locationId: selectedLocation || '', servicesIds: [selectedService] || [],
-      startAt: getTimestamps(startAt || ''), endAt: getTimestamps(endAt || ''),
+      startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
 
     if (doctorId) {
@@ -180,7 +180,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
             <Grid container spacing={3}>
               <Grid item md={12} sm={12} xs={12}>
                 {getScheduleLoading ?
-                  <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
+                  <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
                     <>
                       <Selector
                         isRequired
