@@ -7,11 +7,14 @@ import { Control, ValidationRule, FieldValues } from "react-hook-form";
 import {
   LoginUserInput, User, UpdateUserInput, CreateStaffInput, UpdateContactInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
-  CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race,
-  RegDepartment, RelationshipType, Sexualorientation, ServicesPayload, CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe, UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload
+  CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment,
+  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, ServicesPayload,
+  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe,
+  UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput, Schedule
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
+import { Action as DoctorAction } from "../reducers/doctorReducer";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -21,6 +24,7 @@ type Key = string | number | undefined;
 export interface CloseSnackbarProps {
   id: Key;
 }
+
 export interface BackdropInputType {
   loading: boolean
 }
@@ -30,6 +34,10 @@ export interface AuthContextProps {
   isLoggedIn: boolean;
   setUser: (user: User | null) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+}
+
+export interface DoctorScheduleSlotProps {
+  doctorFacilityId?: string;
 }
 
 export interface AppContextProps {
@@ -55,7 +63,20 @@ export interface ListContextInterface {
   fetchAllPatientList: Function;
 }
 
-
+export interface FacilityContextInterface {
+  doctorList: AllDoctorPayload['doctors'];
+  setDoctorList: Function;
+  fetchAllDoctorList: Function;
+  locationList: ContactsPayload['contacts'];
+  setLocationList: Function;
+  fetchAllLocationList: Function;
+  serviceList: ServicesPayload['services'];
+  setServicesList: Function;
+  fetchAllServicesList: Function;
+  patientList: PatientsPayload['patients'];
+  setPatientList: Function;
+  fetchAllPatientList: Function;
+}
 
 export interface Children {
   children: ReactNode;
@@ -231,7 +252,7 @@ export interface IDetailCellProps {
 
 export interface SelectorOption {
   id: string
-  name: string
+  name: string | undefined | null
 }
 
 export interface SelectorProps {
@@ -284,6 +305,10 @@ export type SubMenuTypes = {
   link: string | null;
 };
 
+export interface CustomInputControlProps extends IControlLabel {
+  controllerName: string
+}
+
 export interface AppMenuItemTypes {
   name: string;
   link?: string;
@@ -311,6 +336,14 @@ export interface PickerProps {
   label: string;
   error: string;
   isRequired?: boolean
+}
+
+export interface TimePickerProps {
+  controllerName: string;
+  controllerLabel: string;
+  error?: string;
+  isRequired?: boolean;
+  fieldType: string;
 }
 
 type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
@@ -377,6 +410,9 @@ export interface StaffInputControlProps extends IControlLabel {
   controllerName: StaffControlTypes;
 }
 
+export type ScheduleInputProps = Omit<CreateScheduleInput, "locationId" | "servicesIds">
+  & { locationId: SelectorOption } & { servicesIds: SelectorOption } & { day: SelectorOption };
+
 interface CustomBillingAddressInputs {
   billingEmail: string;
   billingPhone: string;
@@ -417,93 +453,9 @@ export interface UpdateFacilityTimeZoneControlProps extends IControlLabel {
 export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZoneInput, "timeZone">
   & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
-type ContactInputTypes =
-  | "name"
-  | "fax"
-  | "city"
-  | "state"
-  | "email"
-  | "pager"
-  | "phone"
-  | "mobile"
-  | "userId"
-  | "address"
-  | "zipCode"
-  | "country"
-  | "address2"
-  | "facilityId"
-
-type BillingInputTypes =
-  | "billingFax"
-  | "billingCity"
-  | "billingState"
-  | "billingEmail"
-  | "billingPager"
-  | "billingPhone"
-  | "billingUserId"
-  | "billingMobile"
-  | "billingAddress"
-  | "billingZipCode"
-  | "billingCountry"
-  | "billingAddress2"
-  | "billingFacilityId"
-
-type DoctorControlTypes =
-  | "dob"
-  | "ssn"
-  | "email"
-  | "prefix"
-  | "suffix"
-  | "adminId"
-  | "ssnType"
-  | "lastName"
-  | "password"
-  | "roleType"
-  | "firstName"
-  | "speciality"
-  | "facilityId"
-  | "middleName"
-  | "providerIntials"
-  | "degreeCredentials"
-  | "languagesSpoken"
-  | "deaNumber"
-  | "deaActiveDate"
-  | "deaTermDate"
-  | "taxId"
-  | "upin"
-  | "npi"
-  | "taxonomyCode"
-  | "emcProviderId"
-  | "medicareGrpNumber"
-  | "medicaidGrpNumber"
-  | "meammographyCertNumber"
-  | "campusGrpNumber"
-  | "blueShildNumber"
-  | "taxIdStuff"
-  | "specialityLicense"
-  | "anesthesiaLicense"
-  | "dpsCtpNumber"
-  | "stateLicense"
-  | "licenseActiveDate"
-  | "licenseTermDate"
-  | "prescriptiveAuthNumber"
-
-export interface DoctorInputControlProps extends IControlLabel {
-  controllerName: DoctorControlTypes | BillingInputTypes | ContactInputTypes
-}
-
-export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType"> & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption } & { ssnType: SelectorOption } & { speciality: SelectorOption };
-
-type CreateServiceInputTypes =
-  | "duration"
-  | "facilityId"
-  | "isActive"
-  | "name"
-  | "price"
-
-export interface ServiceInputControlsProps extends IControlLabel {
-  controllerName: CreateServiceInputTypes
-}
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType">
+  & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption }
+  & { ssnType: SelectorOption } & { speciality: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
 
@@ -526,15 +478,17 @@ export interface StepperComponentProps {
   activeStep: number
 }
 
-type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed" | "prefferedName" | "previousFirstName"
-  | "previouslastName" | "motherMaidenName" | "ssn" | "dob" | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
-  | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent" | "medicationHistoryAuthority" | "note" | "language"
-  | "ethnicity" | "sexualOrientation" | "sexAtBirth" | "pronouns" | "homeBound" | "holdStatement" | "statementDelivereOnline"
-  | "statementNote" | "statementNoteDateFrom" | "statementNoteDateTo" | "adminId" | "gender" | "race" | "genderIdentity" | "maritialStatus"
-  | "facilityId" | "usualProviderId"
+type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed"
+  | "prefferedName" | "previousFirstName" | "previouslastName" | "motherMaidenName" | "ssn" | "dob"
+  | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
+  | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent"
+  | "medicationHistoryAuthority" | "note" | "language" | "ethnicity" | "sexualOrientation"
+  | "sexAtBirth" | "pronouns" | "homeBound" | "holdStatement" | "statementDelivereOnline"
+  | "statementNote" | "statementNoteDateFrom" | "statementNoteDateTo" | "adminId" | "gender"
+  | "race" | "genderIdentity" | "maritialStatus" | "facilityId" | "usualProviderId"
 
-type BasicContactControlTypes = | "basicEmail" | "basicPhone" | "basicMobile" | "basicAddress" | "basicAddress2" | "basicZipCode" | "basicCity"
-  | "basicState" | "basicCountry"
+type BasicContactControlTypes = | "basicEmail" | "basicPhone" | "basicMobile" | "basicAddress"
+  | "basicAddress2" | "basicZipCode" | "basicCity" | "basicState" | "basicCountry"
 
 interface BasicContactControlInputs {
   basicEmail: string;
@@ -566,7 +520,8 @@ interface KinContactControlInputs {
   kinMobile: string;
 }
 
-type GuardianContactControlTypes = | "guardianFirstName" | "guardianMiddleName" | "guardianLastName" | "guardianEmail" | "guardianSuffix"
+type GuardianContactControlTypes = | "guardianFirstName" | "guardianMiddleName" | "guardianLastName"
+  | "guardianEmail" | "guardianSuffix"
 
 interface GuardianContactControlInputs {
   guardianFirstName: string;
@@ -575,9 +530,11 @@ interface GuardianContactControlInputs {
   guardianSuffix: string;
 }
 
-type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName" | "guarantorLastName" | "guarantorEmail" | "guarantorRelationship"
-  | "guarantorDob" | "guarantorPhone" | "guarantorSuffix" | "guarantorSsn" | "guarantorAddress" | "guarantorAddress2" | "guarantorZipCode"
-  | "guarantorCity" | "guarantorState" | "guarantorCountry" | "guarantorEmployerName"
+type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName"
+  | "guarantorLastName" | "guarantorEmail" | "guarantorRelationship" | "guarantorDob"
+  | "guarantorPhone" | "guarantorSuffix" | "guarantorSsn" | "guarantorAddress"
+  | "guarantorAddress2" | "guarantorZipCode" | "guarantorCity" | "guarantorState"
+  | "guarantorCountry" | "guarantorEmployerName"
 
 interface GuarantorContactControlInputs {
   guarantorFirstName: string;
@@ -598,7 +555,8 @@ interface GuarantorContactControlInputs {
   guarantorEmployerName: string;
 }
 
-type EmployerControlTypes = | "employerName" | "employerEmail" | "employerPhone" | "employerIndustry" | "employerUsualOccupation"
+type EmployerControlTypes = | "employerName" | "employerEmail" | "employerPhone"
+  | "employerIndustry" | "employerUsualOccupation"
 
 interface EmployerControlInputs {
   employerName: string;
@@ -608,7 +566,8 @@ interface EmployerControlInputs {
   employerUsualOccupation: string;
 }
 
-type RegisterUserControlTypes = | "userFirstName" | "userLastName" | "userPassword" | "userEmail" | "userPhone" | "userZipCode"
+type RegisterUserControlTypes = | "userFirstName" | "userLastName" | "userPassword" | "userEmail"
+  | "userPhone" | "userZipCode"
 
 interface RegisterUserInputs {
   userFirstName: string
@@ -620,7 +579,9 @@ interface RegisterUserInputs {
 }
 
 export interface PatientInputControlProps extends IControlLabel {
-  controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes | GuardianContactControlTypes | EmergencyContactControlTypes
+  controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes
+  | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes
+  | GuardianContactControlTypes | EmergencyContactControlTypes
 }
 
 export type PatientInputProps =
@@ -638,11 +599,9 @@ export type PatientInputProps =
   & GuardianContactControlInputs & GuarantorContactControlInputs
   & EmployerControlInputs & RegisterUserInputs;
 
-export interface ServiceInputControlsProps extends IControlLabel {
-  controllerName: CreateServiceInputTypes
-}
 
-export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
+export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
+  & { facilityId: SelectorOption };
 
 export interface ServiceTableProps {
   serviceDispatch: Dispatch<serviceAction>
@@ -653,15 +612,13 @@ export interface ServiceModalProps extends DialogTypes {
   serviceId?: string;
   reload: () => void;
 }
-export interface ContactInputControlProps extends IControlLabel {
-  controllerName: ContactInputTypes
-}
 
 export interface CustomInputControlProps extends IControlLabel {
   controllerName: string
 }
 
-export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode"> & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode">
+  & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
 
 export interface LocationTableProps {
   openModal: boolean;
@@ -756,3 +713,21 @@ export interface MediaCardComponentType {
 export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
   "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
   & { serviceId: SelectorOption } & { providerId: SelectorOption };
+
+type Days = | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
+
+export interface DoctorScheduleModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  reload: Function;
+  doctorDispatcher: Dispatch<DoctorAction>;
+  doctorFacilityId: string | undefined;
+}
+
+export interface DaySchedule {
+  day: Days;
+  slots: Schedule[];
+}
+
+export interface DoctorScheduleProps {
+  schedule: Schedule
+}

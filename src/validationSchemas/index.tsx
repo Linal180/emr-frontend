@@ -14,7 +14,7 @@ import {
   TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP, TID_VALIDATION_MESSAGE,
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
-  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE,
+  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION, APPOINTMENT_TYPE, STARTING_TIME, ENDING_TIME,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
@@ -462,4 +462,21 @@ export const appointmentSchema = yup.object({
   secondaryInsurance: yup.string(),
   scheduleEndDateTime: yup.string(),
   scheduleStartDateTime: yup.string(),
+})
+
+export const doctorScheduleSchema = yup.object({
+  day: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(requiredMessage(DAY)),
+  locationId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(requiredMessage(LOCATION)),
+  servicesIds: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).required(requiredMessage(APPOINTMENT_TYPE)),
+  startAt: yup.string().required(requiredMessage(STARTING_TIME)),
+  endAt: yup.string().required(requiredMessage(ENDING_TIME)),
 })

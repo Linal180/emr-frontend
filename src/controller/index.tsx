@@ -14,7 +14,7 @@ const InputController: FC<CustomInputControlProps> = ({
 }): JSX.Element => {
   const { control } = useFormContext()
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
-
+  
   const handleClickShowPassword = () => {
     if (passwordType === PASSWORD) {
       setPasswordType(TEXT);
@@ -22,7 +22,7 @@ const InputController: FC<CustomInputControlProps> = ({
       setPasswordType(PASSWORD);
     }
   };
-
+  
   return (
     <Controller
       name={controllerName}
@@ -33,7 +33,7 @@ const InputController: FC<CustomInputControlProps> = ({
           <InputLabel shrink htmlFor={controllerName}>
             {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
           </InputLabel>
-
+          
           <TextField
             fullWidth
             error={invalid}

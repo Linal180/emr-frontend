@@ -5,7 +5,6 @@ export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
-      overflowY: 'auto',
     },
 
     profileCard: {

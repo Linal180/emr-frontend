@@ -1,13 +1,13 @@
 // packages block
-import { FC, useEffect, useContext, ChangeEvent, useState } from 'react';
+import { FC, useEffect, useContext, ChangeEvent, useState, useCallback } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel, Grid } from "@material-ui/core";
 // components block
 import Alert from '../../../../common/Alert';
-import ServiceController from '../controller';
 import Selector from '../../../../common/Selector';
+import InputController from '../../../../../controller';
 import CardComponent from '../../../../common/CardComponent';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
@@ -23,7 +23,7 @@ import {
   ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
   PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
-  FACILITIES_ROUTE, FACILITY,
+  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION,
 } from "../../../../../constants";
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
@@ -53,14 +53,13 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
         if (service && status && status === 200) {
           const { name, isActive, price, facilityId, duration } = service || {}
-          const selectedFacility =  facilityList?.filter(facility => facility?.id === facilityId)[0]
 
-          facilityId && selectedFacility && setValue('facilityId', setRecord(facilityId, selectedFacility.name))
+          facilityId && setCurrentFacility(facilityId)
           name && setValue('name', name)
           price && setValue('price', price)
           duration && setValue('duration', duration)
-          isActive && setValue('isActive', isActive)
-          isActive && setChecked(isActive)
+          isActive && setValue('isActive', isActive as boolean)
+          isActive && setChecked(isActive as boolean)
         }
       }
     }
@@ -106,17 +105,23 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     }
   });
 
+  const setCurrentFacility = useCallback((id: string) => {
+    const selectedFacility = facilityList?.filter(facility => facility?.id === id)[0]
+
+    id && selectedFacility && setValue('facilityId', setRecord(id, selectedFacility.name))
+  }, [facilityList, setValue]);
+
   useEffect(() => {
     if (isEdit) {
       if (id) {
         getService({
-          variables: {
-            getService: { id }
-          }
+          variables: { getService: { id } }
         })
       } else Alert.error(SERVICE_NOT_FOUND)
+    } else {
+      setCurrentFacility(currentFacility || '')
     }
-  }, [getService, id, isEdit])
+  }, [currentFacility, getService, id, isEdit, setCurrentFacility])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -124,23 +129,21 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
   const onSubmit: SubmitHandler<extendedServiceInput> = async ({ duration, facilityId, name, price }) => {
     const { id: selectedFacilityId } = facilityId
+    const serviceInput = {
+      name: name || '', duration: duration || "", isActive: checked,
+      price: price || "", facilityId: selectedFacilityId || "",
+    };
 
     if (isEdit) {
       await updateService({
         variables: {
-          updateServiceInput: {
-            id: id || '', name: name || '', duration: duration || "", isActive: checked,
-            price: price || "", facilityId: selectedFacilityId || "",
-          }
+          updateServiceInput: { id: id || '', ...serviceInput }
         }
       })
     } else {
       await createService({
         variables: {
-          createServiceInput: {
-            name: name || "", duration: duration || "", facilityId: selectedFacilityId || "",
-            price: price || "", isActive: checked
-          }
+          createServiceInput: { ...serviceInput }
         }
       })
     }
@@ -150,8 +153,8 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
   const {
     name: { message: nameError } = {},
-    facilityId: { id: facilityIdError } = {},
     price: { message: priceError } = {},
+    facilityId: { id: facilityIdError } = {},
     duration: { message: durationError } = {},
   } = errors;
 
@@ -166,14 +169,14 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                   <>
                     <Selector
                       isRequired
-                      value={{ id: "", name: "" }}
+                      value={EMPTY_OPTION}
                       label={FACILITY}
                       name="facilityId"
                       options={renderFacilities(facilityList)}
                       error={facilityIdError?.message}
                     />
 
-                    <ServiceController
+                    <InputController
                       isRequired
                       fieldType="text"
                       controllerName="name"
@@ -183,7 +186,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
                     <Grid container spacing={2}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <ServiceController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="duration"
@@ -193,7 +196,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <ServiceController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="price"

@@ -8,11 +8,11 @@ import CardComponent from "../../../common/CardComponent";
 // constants, history, styling block
 import history from "../../../../history";
 import { BLACK_TWO } from "../../../../theme";
+import { PROFILE_TOP_TABS } from "../../../../constants";
+import { formatPhone, getDate, getFormattedDate } from "../../../../utils";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
-import { PROFILE_TOP_TABS } from "../../../../constants";
-import { formatPhone } from "../../../../utils";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -61,11 +61,11 @@ const PatientDetailsComponent = (): JSX.Element => {
   const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
 
-  const PATIENT_AGE = moment().diff(dob, 'years');
+  const PATIENT_AGE = moment().diff(getDate(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
-
+  
   if (selfContact && selfContact[0]) {
     const { phone, email, country, state } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || "--"
@@ -93,7 +93,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   ]
 
   let providerName = ""
-  let providerDateAdded = createdAt ? moment.unix(parseInt(createdAt)).format("MMM. DD, YYYY") : '--'
+  let providerDateAdded = createdAt ? getFormattedDate(createdAt || '') : '--'
 
   if (doctorPatients) {
     const currentDoctor = doctorPatients.map(doctorPatient => {
