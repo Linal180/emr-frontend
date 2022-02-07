@@ -10,7 +10,7 @@ import ViewDataLoader from "../../../common/ViewDataLoader";
 import DoctorScheduleBox from "../../../common/DoctorScheduleBox";
 // interfaces, graphql, constants block
 import { getDaySchedules } from "../../../../utils";
-import { AddSlotIcon, EditIcon } from '../../../../assets/svgs';
+import { AddSlotIcon } from '../../../../assets/svgs';
 import { useDoctorScheduleStyles } from '../../../../styles/doctorSchedule';
 import { DaySchedule, DoctorScheduleSlotProps, ParamsType } from "../../../../interfacesTypes";
 import {
@@ -62,13 +62,6 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     dispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
   };
 
-  const handleEdit = (id: string) => {
-    if (id) {
-      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
-      dispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: id })
-    }
-  };
-
   useEffect(() => {
     if (id) {
       getDoctorSchedules()
@@ -91,17 +84,11 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                       return slots && slots.length > 0
                         && (
                           <Box className={classes.viewSlots} mb={3}>
-                            <Box display="flex" flexDirection="row" justifyContent="space-between">
-                              <Typography className={classes.heading}>
-                                {day}
-                              </Typography>
+                            <Typography className={classes.heading}>
+                              {day}
+                            </Typography>
 
-                              <Box className={classes.iconsBackground} onClick={() => handleEdit(id)}>
-                                <EditIcon />
-                              </Box>
-                            </Box>
-
-                            {slots.map(slot => slot && <DoctorScheduleBox schedule={slot} />)}
+                            {slots.map(slot => slot && <DoctorScheduleBox schedule={slot} dispatcher={dispatch} />)}
                           </Box>
                         )
                     })}
@@ -113,21 +100,21 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                     <Typography>
                       {ADD_MORE_RECORDS_TEXT}
                     </Typography>
-
-                    <DoctorScheduleModal
-                      id={scheduleId}
-                      isEdit={isEdit}
-                      isOpen={scheduleOpenModal}
-                      doctorDispatcher={dispatch}
-                      reload={getDoctorSchedules}
-                      doctorFacilityId={doctorFacilityId}
-                    />
                   </Box>
                 </Grid>
               </Grid>
             )}
         </CardComponent>
       </Grid>
+
+      <DoctorScheduleModal
+        id={scheduleId}
+        isEdit={isEdit}
+        isOpen={scheduleOpenModal}
+        doctorDispatcher={dispatch}
+        reload={getDoctorSchedules}
+        doctorFacilityId={doctorFacilityId}
+      />
     </Grid>
   );
 };

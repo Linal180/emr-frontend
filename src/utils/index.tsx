@@ -241,13 +241,19 @@ export const getTimeFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getISOTime = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toISOString()
+};
+
 export const getStandardTime = (timestamp: string) => {
   if (!timestamp) return "";
 
   return new Date(parseInt(timestamp)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
 };
 
-const getDayFromTimestamps = (timestamp: string) => {
+export const getDayFromTimestamps = (timestamp: string) => {
   if (!timestamp) return "";
 
   return new Date(parseInt(timestamp)).toLocaleString('en-us', { weekday: 'long' })

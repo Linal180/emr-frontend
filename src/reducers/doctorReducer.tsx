@@ -50,7 +50,6 @@ export enum ActionType {
   SET_DOCTOR_SCHEDULES = 'setDoctorSchedules',
   SET_DOCTOR_FACILITY_ID = 'setDoctorFacilityId',
   SET_SCHEDULE_OPEN_MODAL = 'setScheduleOpenModal',
-
 }
 
 export type Action =

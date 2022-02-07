@@ -729,5 +729,6 @@ export interface DaySchedule {
 }
 
 export interface DoctorScheduleProps {
-  schedule: Schedule
+  schedule: Schedule;
+  dispatcher: Dispatch<DoctorAction>;
 }

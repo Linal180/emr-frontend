@@ -28,7 +28,8 @@ import {
   getTimeFromTimestamps, requiredMessage, setRecord, getStandardTime
 } from "../../../../utils";
 import {
-  PaymentType, SchedulesPayload, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
+  PaymentType, SchedulesPayload, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
+   useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -359,6 +360,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       />
                     </MuiPickersUtilsProvider>
                   </Box>
+
                   {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
                     <ul className={classes.timeSlots}>
                       {!!availableSchedules?.length && availableSchedules.map(schedule => {

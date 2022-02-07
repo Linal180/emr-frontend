@@ -30,7 +30,6 @@ query GetSchedule($getSchedule: GetSchedule!){
       id
       startAt
       endAt
-      recurringEndDate
       createdAt
       updatedAt
       
@@ -39,10 +38,22 @@ query GetSchedule($getSchedule: GetSchedule!){
         firstName
         lastName
       }
+
+      location {
+        id
+        name
+      }
+      
+      scheduleServices {
+        id
+        service {
+          id
+          name
+        }
+      }
     }
   }
 }
-
 
 query FindAllSchedules($scheduleInput: ScheduleInput!){
   findAllSchedules(scheduleInput: $scheduleInput){

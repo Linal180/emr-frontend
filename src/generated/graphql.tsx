@@ -2255,7 +2255,7 @@ export type GetScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, schedule?: { __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetScheduleQuery = { __typename?: 'Query', getSchedule: { __typename?: 'SchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, schedule?: { __typename?: 'Schedule', id: string, startAt: string, endAt: string, createdAt: string, updatedAt: string, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, location?: { __typename?: 'Contact', id: string, name?: string | null | undefined } | null | undefined, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, service?: { __typename?: 'Service', id: string, name: string } | null | undefined }> | null | undefined } | null | undefined } };
 
 export type FindAllSchedulesQueryVariables = Exact<{
   scheduleInput: ScheduleInput;
@@ -4933,13 +4933,23 @@ export const GetScheduleDocument = gql`
       id
       startAt
       endAt
-      recurringEndDate
       createdAt
       updatedAt
       doctor {
         id
         firstName
         lastName
+      }
+      location {
+        id
+        name
+      }
+      scheduleServices {
+        id
+        service {
+          id
+          name
+        }
       }
     }
   }
