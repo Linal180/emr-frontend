@@ -33,9 +33,9 @@ export enum ActionType {
 export type Action =
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
-  | { type: ActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN, isEditModalOpen: boolean }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
   | { type: ActionType.SET_ATTACHMENTS; attachments: Attachment[] }
+  | { type: ActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN, isEditModalOpen: boolean }
 
 export const mediaReducer = (state: State, action: Action): State => {
   switch (action.type) {

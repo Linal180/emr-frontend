@@ -4,9 +4,12 @@ import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
-import { SelectorOption, TableAlignType } from "../interfacesTypes";
-import { Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload } from "../generated/graphql"
+import { DAYS, LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
+import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
+import {
+  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule
+} from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -121,6 +124,10 @@ export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
 };
 
+export const getFormattedDate = (date: string) => {
+  return moment(date, "x").format("ddd MMM. DD, YYYY")
+};
+
 export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
@@ -145,12 +152,58 @@ export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
   return data;
 }
 
+export const renderServices = (services: ServicesPayload['services']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!services) {
+    for (let service of services) {
+      if (service) {
+        const { id, name, duration } = service;
+
+        data.push({ id, name: `${name} \t (duration: ${duration} minutes)` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderLocations = (locations: ContactsPayload['contacts']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!locations) {
+    for (let location of locations) {
+      if (location) {
+        const { id, name } = location;
+
+        data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
   const data: SelectorOption[] = [];
   if (!!doctors) {
     for (let doctor of doctors) {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
+        data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderPatient = (patients: PatientsPayload['patients']) => {
+  const data: SelectorOption[] = [];
+  if (!!patients) {
+    for (let patient of patients) {
+      if (patient) {
+        const { id, firstName, lastName } = patient;
         data.push({ id, name: `${firstName} ${lastName}` })
       }
     }
@@ -169,15 +222,64 @@ export const setRecord = (id: string, name: string): SelectorOption => {
 };
 
 export const formatPhone = (phone: string): string => {
-  return (phone && phone) ? `(${phone.substring(0,3)})  ${phone.substring(3,6 )}-${phone.substring(6,11)}` : ''
+  return (phone && phone) ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : ''
 };
 
 export const dateValidation = (endDate: string, startDate: string): boolean => {
-  if(startDate && endDate){
+  if (startDate && endDate) {
     return new Date(endDate) >= new Date(startDate)
   } else return true;
 };
 
 export const dateValidationMessage = (endDateName: string, startDateName: string): string => {
   return `${endDateName} should be greater than ${startDateName}`
+};
+
+export const getTimeFromTimestamps = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toISOString()
+};
+
+export const getISOTime = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toISOString()
+};
+
+export const getStandardTime = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+};
+
+export const getDayFromTimestamps = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toLocaleString('en-us', { weekday: 'long' })
+}
+
+export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySchedule[] => {
+  const daySchedules: DaySchedule[] = [
+    { day: DAYS.Monday, slots: [] },
+    { day: DAYS.Tuesday, slots: [] },
+    { day: DAYS.Wednesday, slots: [] },
+    { day: DAYS.Thursday, slots: [] },
+    { day: DAYS.Friday, slots: [] },
+    { day: DAYS.Saturday, slots: [] },
+    { day: DAYS.Sunday, slots: [] }
+  ]
+
+  if (schedules && schedules.length > 0) {
+    schedules.map(schedule => {
+      const { startAt } = schedule || {};
+      const day = getDayFromTimestamps(startAt || '')
+      const dayIndex = daySchedules.findIndex(slot => slot.day.toString() === day);
+
+      dayIndex !== -1 && daySchedules[dayIndex].slots.push(schedule as Schedule)
+      return ''
+    })
+  }
+
+  return daySchedules;
 };

@@ -136,16 +136,17 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     firstName, lastName, email, username, phone, mobile, dob, gender, password,
     facilityId, roleType
   }) => {
+    const { id: staffGender } = gender
+    const { id: facilityID } = facilityId
+
     if (isEdit) {
       if (id) {
-        const { id: facilityID } = facilityId
-        const { id: genderId } = gender
 
         await updateStaff({
           variables: {
             updateStaffInput: {
               id, firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
-              gender: genderId as Gender, facilityId: facilityID, username
+              gender: staffGender as Gender, facilityId: facilityID, username
             }
           }
         })
@@ -155,9 +156,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     } else {
       if (user) {
         const { id } = user
-        const { id: facilityID } = facilityId
         const { id: role } = roleType
-        const { id: staffGender } = gender
 
         await createStaff({
           variables: {

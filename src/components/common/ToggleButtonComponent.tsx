@@ -9,7 +9,7 @@ import { AntSwitch, toggleButtonComponent } from "../../styles/publicAppointment
 
 const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
   const classes = toggleButtonComponent()
-  const { control, setValue,  } = useFormContext()
+  const { control, setValue } = useFormContext()
   const [isChecked, setIsChecked] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -23,11 +23,10 @@ const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
       name={name}
       control={control}
       defaultValue=""
-      render={({ field, }) => (
+      render={() => (
         <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-          <InputLabel shrink>
-            {label}
-          </InputLabel>
+          <InputLabel shrink>{label}</InputLabel>
+
           <label className="toggle-main">
             <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
             <AntSwitch checked={isChecked} onChange={handleChange} name={`${name}-toggle`} />

@@ -1,4 +1,4 @@
-import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, BLUE_SIX } from './../../../theme/colors';
+import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, GRAY_TWO, BLUE_SIX } from './../../../theme/colors';
 import { createStyles, makeStyles, StepConnector, Switch, withStyles } from "@material-ui/core";
 
 export const CustomConnector = withStyles({
@@ -140,6 +140,33 @@ export const toggleButtonComponent = makeStyles({
 
     "& .MuiToggleButtonGroup-root": {
       marginTop: 10,
+    },
+
+    "& .MuiToggleButton-root.Mui-selected": {
+      color: WHITE,
+      backgroundColor: BLUE_ONE,
+      padding: "9px 30px",
+      borderRadius: 6,
+    },
+
+    "& .MuiToggleButtonGroup-groupedHorizontal:not(:first-child)": {
+      borderTopRightRadius: "6px",
+      borderBottomRightRadius: "6px",
+    },
+
+    "& .MuiToggleButtonGroup-groupedHorizontal:not(:last-child)": {
+      borderTopLeftRadius: "6px",
+      borderBottomLeftRadius: "6px",
+    }
+  },
+
+  buttonToggleContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+
+    "& .MuiFormLabel-root": {
+      color: GRAY_TWO
     },
 
     "& .MuiToggleButton-root.Mui-selected": {

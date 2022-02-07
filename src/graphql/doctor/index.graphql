@@ -75,7 +75,7 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
         state
         country
         userId
-        serviceCode
+        primaryContact
         createdAt
         updatedAt
       }
@@ -161,6 +161,7 @@ query GetDoctor($getDoctor: GetDoctor!) {
       speciality
       dob
       taxId
+      facilityId
       ssn
       taxonomyCode
       deaNumber
@@ -221,7 +222,7 @@ query GetDoctor($getDoctor: GetDoctor!) {
         state
         country
         userId
-        serviceCode
+        primaryContact
         createdAt
         updatedAt
       }
