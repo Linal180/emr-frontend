@@ -1,38 +1,27 @@
 // packages block
 import { FC } from "react";
-import { Box, CssBaseline, Paper } from "@material-ui/core";
+import { Box, CssBaseline } from "@material-ui/core";
 // components block
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import CopyRight from "./CopyRight";
 // interfaces/types and main layout styles block
-import { Children } from "../../interfacesTypes";
-import { useMainLayoutStyles } from "../../styles/mainLayoutStyles";
+import { MainLayoutProps } from "../../interfacesTypes";
 
-const MainLayout: FC<Children> = ({ children }): JSX.Element => {
-  const classes = useMainLayoutStyles();
+const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => (
+  <>
+    <CssBaseline />
+    <Header />
 
-  return (
-    <Box className={classes.root}>
-      <CssBaseline />
-      <Header />
+    <Box display="flex" padding="102px 30px 0px" position="relative">
       <Sidebar />
 
-      <Box component="main" className={classes.content}>
-        <Box className={classes.appBarSpacer} />
-
-        <Box p={3}>
-          <Box minHeight="calc(100vh - 230px)">
-            <Paper className={classes.paper}>{children}</Paper>
-          </Box>
-
-          <Box pt={4}>
-            <CopyRight />
-          </Box>
+      <Box component="main" flex={1} paddingLeft={3.75} maxWidth="calc(100% - 300px)">
+        <Box minHeight="calc(100vh - 170px)" paddingBottom={3}>
+          {children}
         </Box>
       </Box>
     </Box>
-  );
-};
+  </>
+);
 
 export default MainLayout;

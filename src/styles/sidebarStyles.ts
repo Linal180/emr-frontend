@@ -1,39 +1,34 @@
 import { makeStyles } from "@material-ui/core";
-
+import { BLACK, WHITE_ONE } from "../theme";
 import { DRAWER_WIDTH } from "../constants";
 
-export const useSidebarStyles = makeStyles((theme) => ({
-  toolbarIcon: {
-    display: "flex",
-    alignItems: "center",
-    padding: "0 16px",
-    ...theme.mixins.toolbar,
-  },
-
+export const useSidebarStyles = makeStyles(() => ({
   drawerPaper: {
-    position: "relative",
-    whiteSpace: "nowrap",
+    backgroundColor: WHITE_ONE,
     width: DRAWER_WIDTH,
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
+    borderRadius: 24,
+    position: 'relative',
+    height: 'calc(100vh - 120px)',
+    borderRight: 'none',
+    overflowY: 'hidden',
 
-  drawerPaperClose: {
-    overflowX: "hidden",
-
-    "& .MuiListItem-gutters": {
-      paddingLeft: 22,
+    "& .MuiButton-root": {
+      minWidth: 40
     },
 
-    transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    width: theme.spacing(7),
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9),
-    },
+    "& .MuiButton-label": {
+      color: BLACK,
+      justifyContent: 'flex-start',
+    }
   },
+
+  appMenuContainer: {
+    height: "calc(100% - 50px)",
+
+    "& .MuiList-root": {
+      height: '100%',
+      overflowY: "auto",
+    },
+
+  }
 }));

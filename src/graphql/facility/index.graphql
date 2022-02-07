@@ -1,0 +1,317 @@
+query FindAllFacilities($facilityInput: FacilityInput!) {
+    findAllFacility(facilityInput: $facilityInput) {
+    facility {
+      id
+      name
+      practiceType
+      code
+      cliaIdNumber
+      federalTaxId
+      isPrivate
+      revenueCode
+      tamxonomyCode
+      insurancePlanType
+      mammographyCertificationNumber
+      npi
+      timeZone
+      serviceCode
+      createdAt
+      updatedAt
+      
+      contacts {
+        id
+        email
+        mobile
+        phone
+        pager
+        fax
+        address
+        address2
+        zipCode
+        serviceCode
+        city
+        state
+        serviceCode
+        country
+        userId
+        createdAt
+        updatedAt
+      }
+      staff {
+        id
+        firstName
+        lastName
+        email
+        username
+        dob
+        phone
+        mobile
+        gender
+        createdAt
+        updatedAt
+        
+        user {
+          id
+          email
+          token
+          status
+          userId
+          userType
+          inviteSentAt
+          emailVerified
+          inviteAcceptedAt
+          createdAt
+          updatedAt
+        }
+      }
+    }
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    response {
+      name
+      error
+      status
+            message
+    }
+  }
+}
+query GetFacility($getFacility: GetFacility!){
+    getFacility(getFacility: $getFacility){
+    facility{
+      id
+      name
+      practiceType
+      code
+      cliaIdNumber
+      federalTaxId
+      isPrivate
+      revenueCode
+      tamxonomyCode
+      timeZone
+      insurancePlanType
+      mammographyCertificationNumber
+      npi
+      serviceCode
+      createdAt
+      updatedAt
+      
+      contacts {
+        id
+        email
+        phone
+        mobile
+        fax
+        address
+        address2
+        zipCode
+        serviceCode
+        city
+        state
+        serviceCode
+        country
+        userId
+        createdAt
+        updatedAt
+      }
+      billingAddress {
+        id
+        email
+        mobile
+        phone
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
+      staff {
+        id
+        firstName
+        lastName
+        email
+        username
+        dob
+        phone
+        mobile
+        gender
+        createdAt
+        updatedAt
+        user {
+          id
+          email
+          token
+          status
+          userId
+          userType
+          inviteSentAt
+          emailVerified
+          inviteAcceptedAt
+          createdAt
+          updatedAt
+        }
+      }
+    }
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+mutation RemoveFacility($removeFacility: RemoveFacility!){
+    removeFacility(removeFacility: $removeFacility){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
+  updateFacility(updateFacilityInput: $updateFacilityInput){
+    facility{
+      id
+      name
+      practiceType
+      code
+      cliaIdNumber
+      federalTaxId
+      isPrivate
+      revenueCode
+      tamxonomyCode
+      timeZone
+      insurancePlanType
+      mammographyCertificationNumber
+      npi
+      serviceCode
+      
+      contacts {
+        id
+        email
+        phone
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        serviceCode
+        city
+        serviceCode
+        state
+        country
+        userId
+      }
+      staff {
+        id
+        firstName
+        lastName
+        email
+        username
+        dob
+        phone
+        mobile
+        gender
+        user {
+          id
+          email
+          token
+          status
+          userId
+          userType
+          inviteSentAt
+          emailVerified
+          inviteAcceptedAt
+        }
+      }
+    }
+
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
+  createFacility(createFacilityInput: $createFacilityInput){
+    facility {
+      id
+      name
+      practiceType
+      code
+      cliaIdNumber
+      federalTaxId
+      isPrivate
+      revenueCode
+      tamxonomyCode
+      insurancePlanType
+      timeZone
+      mammographyCertificationNumber
+      npi
+      serviceCode
+      createdAt
+      updatedAt
+      
+      contacts {
+        id
+        email
+        mobile
+        phone
+        pager
+        fax
+        address
+        address2
+        serviceCode
+        zipCode
+        serviceCode
+        city
+        state
+        country
+        userId
+        createdAt
+        updatedAt
+      }
+      staff {
+        id
+        firstName
+        lastName
+        email
+        username
+        dob
+        phone
+        mobile
+        gender
+        createdAt
+        updatedAt
+        user {
+          id
+          email
+          token
+          status
+          userId
+          userType
+          inviteSentAt
+          emailVerified
+          inviteAcceptedAt
+          createdAt
+          updatedAt
+        }
+      }
+    }
+    response{
+      name
+      status
+      message
+    }
+  }
+}

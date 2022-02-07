@@ -112,7 +112,7 @@ const EmailVerification: FC = (): JSX.Element => {
               }
             </Box>
 
-            <Typography variant="h4" className={classes.subHeading} align="center">
+            <Typography variant="h4" align="center">
               {error ? EXPIRE_TOKEN_MESSAGE : VERIFICATION_MESSAGE}
             </Typography>
           </Box>

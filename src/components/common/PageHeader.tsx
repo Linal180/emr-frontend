@@ -1,30 +1,42 @@
 // packages block
 import { FC } from "react";
 import { Link } from "react-router-dom";
-import { Add } from "@material-ui/icons";
 import { Box, Typography, Button } from "@material-ui/core";
+// components block
+import Breadcrumb from "./Breadcrumb";
 // interfaces/types block
-import { IPageHeader } from "../../interfacesTypes";
+import { PageHeaderProps } from "../../interfacesTypes";
+import { BLACK_TWO } from "../../theme";
 
-const PageHeader: FC<IPageHeader> = ({ setOpen, isOpen, title, buttonText, hasComponent, linkToPage, noAdd }): JSX.Element => {
+const PageHeader: FC<PageHeaderProps> = ({ title, subTitle, buttonText, hasComponent, linkToPage, noAdd, path, openModal }): JSX.Element => {
   return (
-    <Box display="flex" alignItems="center" justifyContent="space-between" pb={2}>
-      <Typography component="h4" variant="h4">
-        {title}
-      </Typography>
-      {!noAdd && <>
-        {hasComponent ? (
-          <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
-            <Add />
-            {buttonText || ""}
-          </Button>
-        ) : (
-          <Button color="primary" variant="contained" onClick={() => setOpen && setOpen(!isOpen)}>
-            <Add />
-            {buttonText}
-          </Button>
-        )}
-      </>}
+    <Box display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
+      <Box>
+        <Typography component="h4" variant="h4">{title}</Typography>
+
+        {path && <Breadcrumb path={path} />}
+
+        {subTitle &&
+          <Box color={BLACK_TWO} pt={0.1}>
+            <Typography color="inherit" variant="body1">{subTitle}</Typography>
+          </Box>
+        }
+      </Box>
+
+      {!noAdd &&
+        <>
+          {hasComponent ?
+            <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
+              {buttonText || ""}
+            </Button>
+            :
+            (buttonText &&
+              <Button color="primary" variant="contained" onClick={openModal}>
+                {buttonText}
+              </Button>
+            )}
+        </>
+      }
     </Box>
   );
 };

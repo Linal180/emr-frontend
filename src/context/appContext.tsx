@@ -1,7 +1,6 @@
 // packages block
 import { createContext, FC, useState } from "react";
 // components block
-// graphql, interfaces/types and constants block
 import { AppContextProps } from "../interfacesTypes";
 
 export const AppContext = createContext<AppContextProps>({

@@ -1,5 +1,5 @@
-import { withStyles, Theme, Tooltip, makeStyles, colors } from "@material-ui/core";
-import { PRIMARY_COLOR } from "../theme";
+import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
+import { GRAY_FIVE, WHITE, WHITE_THREE } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -12,22 +12,45 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
   },
 }))(Tooltip);
 
-export const useUserTableStyles = makeStyles((theme: Theme) => ({
-  active: {
-    height: 19,
-    width: 19,
-    color: PRIMARY_COLOR
+export const useTableStyles = makeStyles(() => ({
+  tablesSearchIcon: {
+    backgroundColor: GRAY_FIVE,
+    borderRadius: 6,
+    maxWidth: 265
   },
 
-  deActive: {
-    height: 19,
-    width: 19,
-    color: colors.red["500"]
+  mainTableContainer: {
+    background: WHITE,
+    borderRadius: 12,
+    overflow: "auto"
   },
 
-  disable: {
-    height: 19,
-    width: 19,
-    color: "rgba(0, 0, 0, 0.16)"
+  searchContainer: {
+    padding: "15px 30px",
+    borderBottom: `1px solid ${WHITE_THREE}`
+  },
+
+  status: {
+    fontWeight: 'bold',
+    fontSize: '0.75rem',
+    borderRadius: 8,
+    padding: '8px 15px',
+    display: 'inline-block',
+  },
+
+  iconsBackground: {
+    background: WHITE_THREE,
+    height:32,
+    width:32,
+    display:'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginLeft:6,
+    cursor: 'pointer',
+    
+    "& svg": {
+      maxWidth: 16
+    }
   },
 }))

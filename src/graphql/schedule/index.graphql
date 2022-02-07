@@ -1,0 +1,144 @@
+mutation CreateSchedule($createScheduleInput: CreateScheduleInput!){
+  createSchedule(createScheduleInput: $createScheduleInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateSchedule($updateScheduleInput: UpdateScheduleInput!){
+  updateSchedule(updateScheduleInput: $updateScheduleInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query GetSchedule($getSchedule: GetSchedule!){
+  getSchedule(getSchedule: $getSchedule){
+    response {
+      error
+      status
+      message
+    }
+    
+    schedule {
+      id
+      startAt
+      endAt
+      createdAt
+      updatedAt
+      
+      doctor {
+        id
+        firstName
+        lastName
+      }
+
+      location {
+        id
+        name
+      }
+      
+      scheduleServices {
+        id
+        service {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+query FindAllSchedules($scheduleInput: ScheduleInput!){
+  findAllSchedules(scheduleInput: $scheduleInput){
+    response {
+      error
+      status
+      message
+    }
+
+    pagination {
+    	page
+      limit
+      totalPages
+    }
+    
+    schedules {
+      id
+      startAt
+      endAt
+      recurringEndDate
+      createdAt
+      updatedAt
+      
+      doctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
+query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!){
+  getDoctorSchedules(getDoctorSchedule: $getDoctorSchedule){
+    response {
+      error
+      status
+      message
+    }
+
+    pagination {
+    	page
+      limit
+      totalPages
+    }
+    
+    schedules {
+      id
+      startAt
+      endAt
+      recurringEndDate
+      createdAt
+      updatedAt
+
+      location {
+        id
+        name
+      }
+
+      scheduleServices {
+        id
+        serviceId
+
+        service {
+          id
+          name
+        }
+        
+      }
+
+      doctor {
+        id
+        firstName
+        lastName
+      }
+    }
+  }
+}
+
+mutation RemoveSchedule($removeSchedule: RemoveSchedule!){
+  removeSchedule(removeSchedule: $removeSchedule){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

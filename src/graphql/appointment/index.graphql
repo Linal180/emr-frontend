@@ -1,0 +1,123 @@
+query FindAllAppointments($appointmentInput: AppointmentInput!){
+  findAllAppointments(appointmentInput: $appointmentInput){
+    response {
+      error
+      status
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+    
+    appointments {
+      id
+      scheduleStartDateTime
+      scheduleEndDateTime
+      createdAt
+      updatedAt
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        firstName
+        lastName
+      }
+      
+      facility {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetAppointment($getAppointment: GetAppointment!){
+  getAppointment(getAppointment: $getAppointment){
+    response {
+      error
+      status
+      message
+    }
+    
+    appointment {
+      id
+      notes
+      reason
+      employment
+      autoAccident
+      otherAccident
+      scheduleStartDateTime
+      scheduleEndDateTime
+      primaryInsurance
+      secondaryInsurance
+      createdAt
+      updatedAt
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        firstName
+        lastName
+      }
+      
+      facility {
+        id
+        name
+      }
+    }
+  }
+}
+
+mutation RemoveAppointment($removeAppointment: RemoveAppointment!){
+  removeAppointment(removeAppointment: $removeAppointment){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation CreateAppointment($createAppointmentInput: CreateAppointmentInput!){
+  createAppointment(createAppointmentInput: $createAppointmentInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
+  updateAppointment(updateAppointmentInput: $updateAppointmentInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

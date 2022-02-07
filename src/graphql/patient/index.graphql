@@ -1,0 +1,235 @@
+query FindAllPatient($patientInput: PatientInput!) {
+  findAllPatient(patientInput: $patientInput) {
+    pagination {
+      page
+      totalCount
+      totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+
+    patients {
+      id
+      dob
+      email
+      gender
+      lastName
+      firstName
+      createdAt
+      updatedAt
+      
+      contacts {
+        id
+        fax
+        ssn
+        city
+        email
+        pager
+        phone
+        mobile
+        address
+        address2
+        state
+        zipCode
+        country
+        name
+        suffix
+        firstName
+        primaryContact
+        middleName
+        lastName
+        serviceCode
+        employerName
+        relationship
+        contactType
+        createdAt
+        updatedAt
+      }
+
+      employer {
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        npi
+        name
+        code
+        practiceType
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        serviceCode
+        mammographyCertificationNumber
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+
+query GetPatient($getPatient: GetPatient!) {
+  getPatient(getPatient: $getPatient) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    patient {
+      id
+      firstName
+      middleName
+      lastName
+      suffix
+      firstNameUsed
+      prefferedName
+      previousFirstName
+      previouslastName
+      motherMaidenName
+      ssn
+      gender
+      dob
+      registrationDepartment
+      primaryDepartment
+      registrationDate
+      deceasedDate
+      privacyNotice
+      releaseOfInfoBill
+      callToConsent
+      medicationHistoryAuthority
+      patientNote
+      language
+      race
+      ethnicity
+      maritialStatus
+      sexualOrientation
+      genderIdentity
+      sexAtBirth
+      pronouns
+      homeBound
+      holdStatement
+      statementDelivereOnline
+      statementNote
+      statementNoteDateFrom
+      statementNoteDateTo
+      createdAt
+      updatedAt
+      
+      contacts {
+        id
+        email
+        name
+        suffix
+        firstName
+        middleName
+        lastName
+        phone
+        serviceCode
+        primaryContact
+        mobile
+        pager
+        fax
+        address
+        address2
+        zipCode
+        city
+        state
+        country
+        ssn
+        employerName
+        relationship
+        contactType
+      }
+
+      employer {
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        practiceType
+        code
+        cliaIdNumber
+        federalTaxId
+        isPrivate
+        revenueCode
+        tamxonomyCode
+        insurancePlanType
+        mammographyCertificationNumber
+        npi
+        serviceCode
+        updatedAt
+      }
+      
+      doctorPatients {
+        id
+        doctorId
+        currentProvider
+        
+        doctor {
+          id
+          firstName
+          lastName
+          createdAt
+          updatedAt
+        }
+      }
+    }
+  }
+}
+
+mutation RemovePatient($removePatient: RemovePatient!){
+	removePatient(removePatient: $removePatient){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
+
+mutation CreatePatient($createPatientInput: CreatePatientInput!){
+  createPatient(createPatientInput: $createPatientInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdatePatient($updatePatientInput: UpdatePatientInput!){
+  updatePatient(updatePatientInput: $updatePatientInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

@@ -1,70 +1,33 @@
 // packages block
-import { ReactNode } from "react";
 import moment from "moment";
-import states from "states-us";
-import { Typography, Box, Chip, TableCell, Grid, colors } from "@material-ui/core";
+import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { OptionType, RecordType, multiOptionType, TableAlignType, notificationType } from "../interfacesTypes";
-import { Maybe, UserRole, TagsPayload, FeaturesPayload, LocationsPayload, LocationPayload, RequestStatus, UserStatus, Role, RoleStates } from "../generated/graphql"
-import { ADMIN, BOCA_ADMIN_NOTIFICATIONS, INVESTOR, MAPPED_ROLES, OWNER, PROPERTY_MANAGER, RELATIONSHIP_MANAGER, STAFF, SUPER_ADMIN, TOKEN, USER_EMAIL } from "../constants";
+import { DAYS, LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
+import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
+import {
+  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule
+} from "../generated/graphql"
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
   localStorage.removeItem(USER_EMAIL);
-  history.push("/login");
+  history.push(LOGIN_ROUTE);
   client.clearStore();
 };
 
-export const firstLatterUppercase = (value: string) => {
+export const upperToNormal = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
-export const stateNames = () => {
-  return states.map((state) => state.name);
+export const formatValue = (value: string) => {
+  let formatted = ''
+  value.split("_").map(term => formatted = formatted + term.charAt(0).toUpperCase() + term.slice(1).toLowerCase() + ' ')
+
+  return formatted;
 };
-
-export const getStatesWithName = (Data: TagsPayload["tags"] | FeaturesPayload["features"]): string[] => {
-  const data: string[] = [];
-
-  if (!!Data) {
-    for (let item of Data) {
-      if (item && item.name) {
-        data.push(item.name)
-      }
-    }
-  }
-
-  return data
-}
-
-export const renderMultiSelectOptions = (Data: TagsPayload["tags"] | FeaturesPayload["features"]): OptionType[] => {
-  const data: OptionType[] = [];
-
-  if (!!Data) {
-    for (let item of Data) {
-      if (item && item.name) {
-        data.push({ value: item.name, label: item.name })
-      }
-    }
-  }
-
-  return data
-}
-
-export const renderItem = (
-  name: string,
-  value: Maybe<string> | number | ReactNode | undefined,
-  noWrap?: boolean,
-) => (
-  <>
-    <Typography variant="body2">{name}</Typography>
-    <Typography component="h5" variant="h5" noWrap={noWrap}>
-      {value}
-    </Typography>
-  </>
-);
 
 export const renderTh = (text: string, align?: TableAlignType) => (
   <TableCell component="th" align={align}>
@@ -72,24 +35,6 @@ export const renderTh = (text: string, align?: TableAlignType) => (
       {text}
     </Typography>
   </TableCell>
-);
-
-export const renderItems = (
-  name: string,
-  value: string[]
-) => (
-  <>
-    <Typography variant="body2">{name}</Typography>
-    <Grid container>
-      {value.map(item => (
-        <Grid item key={`${item}-index`}>
-          <Box pt={1} pr={1}>
-            <Chip label={item} variant="outlined" />
-          </Box>
-        </Grid>
-      ))}
-    </Grid>
-  </>
 );
 
 export const requiredLabel = (label: string) => {
@@ -102,233 +47,6 @@ export const requiredLabel = (label: string) => {
       </Box>
     </Box>
   )
-}
-
-export const renderLocationOption = (locationData: LocationsPayload["locations"]) => {
-  const data: RecordType[] = [];
-
-  if (!!locationData) {
-    for (let location of locationData) {
-      if (location && location.name && location.id) {
-        data.push({ id: location.id, name: location.name })
-      }
-    }
-  }
-
-  return data
-}
-
-export const renderLocationSelectedOption = (location: LocationPayload["location"]) => {
-  if (!!location) {
-    const { id, name } = location;
-
-    if (id && name) return { id, name }
-  }
-
-  return { id: "", name: "" }
-}
-
-export const getTagsAndFeatures = (data: multiOptionType[]): string[] => data.map(item => item.value)
-
-export const getRolesEnum = (roles: string): UserRole[] => {
-  const userRoles: UserRole[] = []
-
-  if (!!roles) {
-    switch (roles) {
-      case ADMIN:
-        userRoles.push(UserRole.Admin)
-        break;
-      case OWNER:
-        userRoles.push(UserRole.Owner)
-        break;
-      case STAFF:
-        userRoles.push(UserRole.Staff)
-        break;
-      case INVESTOR:
-        userRoles.push(UserRole.Investor)
-        break;
-      case SUPER_ADMIN:
-        userRoles.push(UserRole.SuperAdmin)
-        break;
-      case PROPERTY_MANAGER:
-        userRoles.push(UserRole.PropertyManager)
-        break;
-      case RELATIONSHIP_MANAGER:
-        userRoles.push(UserRole.RelationshipManager)
-        break;
-    }
-
-    return userRoles;
-  }
-
-  return [];
-};
-
-export const getUserRolesOptions = (userRole: string): multiOptionType => {
-  if (!!userRole) {
-    return { value: userRole, label: userRole }
-  }
-
-  return { value: "", label: "" }
-};
-
-export const dateFormat = (date: string): string => {
-  return date
-    ? moment(date, "x").format("DD/MM/YYYY")
-    : "N/A";
-};
-
-export const renderItemColor = (status: string): string => {
-  switch (status) {
-    case RequestStatus.InProgress:
-      return colors.yellow[700]
-
-    case RequestStatus.Declined:
-      return colors.red[700]
-
-    case RequestStatus.UpdateNeed:
-      return colors.lightBlue[700]
-
-    case RequestStatus.Approved:
-      return colors.green[700]
-
-    case RequestStatus.UpdateDone:
-      return colors.purple[500]
-
-    default:
-      return colors.grey[700]
-  }
-}
-
-
-export const renderUserStatusColor = (status: UserStatus | undefined): string => {
-  switch (status) {
-    case UserStatus.Deactivated:
-      return colors.red[700]
-
-    case UserStatus.Active:
-      return colors.green[700]
-
-    default:
-      return colors.grey[700]
-  }
-}
-
-export const renderEmailVerifiedStatusColor = (status: boolean): string => {
-  switch (status) {
-    case false:
-      return colors.red[700]
-
-    case true:
-      return colors.green[700]
-
-    default:
-      return colors.grey[700]
-  }
-}
-
-export const renderUserRoleColor = (role: UserRole | undefined): string => {
-  switch (role) {
-    case UserRole.SuperAdmin:
-      return colors.orange[400]
-
-    case UserRole.Admin:
-      return colors.green[400]
-
-    case UserRole.Investor:
-      return colors.yellow[700]
-
-    case UserRole.Owner:
-      return colors.blue[400]
-
-    case UserRole.PropertyManager:
-      return colors.grey[500]
-
-    default:
-      return colors.grey[700]
-  }
-}
-
-export const returnRequestOption = (requestStatus: string): RequestStatus => {
-  switch (requestStatus) {
-    case "Declined":
-    case "declined": {
-      return RequestStatus.Declined
-    }
-
-    case "Request Initiated":
-    case "request-initiated": {
-      return RequestStatus.RequestInitiated
-    }
-
-    case "In Progress":
-    case "in-progress": {
-      return RequestStatus.InProgress
-    }
-
-    case "Approved":
-    case "approved": {
-      return RequestStatus.Approved
-    }
-
-    case "Update Needed":
-    case "update-needed": {
-      return RequestStatus.UpdateNeed
-    }
-
-    case "Update Done":
-    case "update-done": {
-      return RequestStatus.UpdateDone
-    }
-
-    default:
-      return RequestStatus.InProgress
-  }
-}
-
-export const returnRequestStatus = (requestStatus: RequestStatus): string => {
-  switch (requestStatus) {
-    case RequestStatus.Declined:
-      return "Declined"
-
-    case RequestStatus.RequestInitiated:
-      return "Request Initiated"
-
-    case RequestStatus.InProgress:
-      return "In Progress"
-
-    case RequestStatus.Approved:
-      return "Approved"
-
-    case RequestStatus.UpdateNeed:
-      return "Update Needed"
-
-    case RequestStatus.UpdateDone:
-      return "Update Done"
-
-    default:
-      return ""
-  }
-}
-
-export const RequestStatusOptions = ["Declined", "Approved", "Update Needed"];
-export const RequestStatusFilterOptions = ["Request Initiated", "Update Needed", "Update Done", "In Progress", "Declined", "Approved"];
-
-export const setNotificationsInLocalStorage = (data: notificationType[]): void => {
-  localStorage.setItem(BOCA_ADMIN_NOTIFICATIONS, JSON.stringify(data))
-}
-
-export const getNotifications = () => {
-  const notifications = localStorage.getItem(BOCA_ADMIN_NOTIFICATIONS);
-  return notifications && JSON.parse(notifications) as notificationType[]
-}
-
-export const underScoreToSpaces = (text: UserRole | RequestStatus | Maybe<string>): string => {
-  return text ? text.toLowerCase().split("_").join(" ").toUpperCase() : ""
-}
-
-export const numberWithCommas = (number: string) => {
-  return number.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 export const isCurrentUserCanMakeAdmin = (currentUserRole: Maybe<Maybe<Role>[]> | undefined) => {
@@ -382,67 +100,207 @@ export const getToken = () => {
   return localStorage.getItem(TOKEN);
 };
 
-export const capitalizeFirstLetter = (item: string) => item.charAt(0).toUpperCase() + item.toLowerCase().slice(1);
 
-export const RequiredMessage = (fieldName: string) => `${fieldName} is required`;
+export const requiredMessage = (fieldName: string) => `${fieldName} is required`;
 
-export const mapRole = (role: UserRole): string => {
-  switch (role) {
-    case UserRole.SuperAdmin:
-      return MAPPED_ROLES.SuperAdmin;
-
-    case UserRole.Admin:
-      return MAPPED_ROLES.Admin;
-
-    case UserRole.Investor:
-      return MAPPED_ROLES.Investor;
-
-    case UserRole.Owner:
-      return MAPPED_ROLES.Owner;
-
-    case UserRole.PropertyManager:
-      return MAPPED_ROLES.PropertyManager;
-
-    case UserRole.RelationshipManager:
-      return MAPPED_ROLES.RelationshipManager;
-
-    case UserRole.Staff:
-      return MAPPED_ROLES.Staff;
-
+export const getPracticeType = (type: PracticeType): string => {
+  switch (type) {
+    case PracticeType.Hospital:
+      return 'Hospital'
+    case PracticeType.Clinic:
+      return 'Clinic'
+    case PracticeType.Lab:
+      return 'Lab'
     default:
-      return "N/A"
+      return 'Hospital'
   }
 };
 
-export const renderNextRole = (roles: Maybe<Maybe<RoleStates>[]> | undefined) => {
-  return roles?.map(role => ({ value: role?.role as string, label: mapRole(role?.role || UserRole.Investor) }))
+export const getTimestamps = (date: string): string => {
+  return date ? moment(date).format().toString() : moment().format().toString()
+};
+
+export const getDate = (date: string) => {
+  return moment(date, "x").format("YYYY-MM-DD")
+};
+
+export const getFormattedDate = (date: string) => {
+  return moment(date, "x").format("ddd MMM. DD, YYYY")
+};
+
+export const deleteRecordTitle = (recordType: string) => {
+  return `Delete ${recordType} Record`;
 }
 
-export const roleOptions = (role: UserRole) => {
-  switch (role) {
-    case UserRole.SuperAdmin:
-      return [{ value: UserRole.SuperAdmin, label: MAPPED_ROLES.SuperAdmin }]
+export const aboutToDelete = (recordType: string) => {
+  return `You are about to delete ${recordType.toLowerCase()} record`;
+}
 
-    case UserRole.Admin:
-      return [{ value: UserRole.Admin, label: MAPPED_ROLES.Admin }]
+export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
+  const data: SelectorOption[] = [];
 
-    case UserRole.Investor:
-      return [
-        { value: UserRole.Owner, label: MAPPED_ROLES.Owner },
-        { value: UserRole.Investor, label: MAPPED_ROLES.Investor }
-      ]
+  if (!!facilities) {
+    for (let facility of facilities) {
+      if (facility) {
+        const { id, name } = facility;
 
-    case UserRole.Owner:
-      return [{ value: UserRole.Owner, label: MAPPED_ROLES.Owner }]
-
-    case UserRole.PropertyManager:
-    case UserRole.RelationshipManager:
-    case UserRole.Staff:
-      return [
-        { value: UserRole.Admin, label: MAPPED_ROLES.Admin },
-        { value: UserRole.Staff, label: MAPPED_ROLES.Staff },
-        { value: UserRole.PropertyManager, label: MAPPED_ROLES.PropertyManager },
-        { value: UserRole.RelationshipManager, label: MAPPED_ROLES.RelationshipManager }
-      ];
+        data.push({ id, name })
+      }
+    }
   }
+
+  return data;
+}
+
+export const renderServices = (services: ServicesPayload['services']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!services) {
+    for (let service of services) {
+      if (service) {
+        const { id, name, duration } = service;
+
+        data.push({ id, name: `${name} \t (duration: ${duration} minutes)` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderLocations = (locations: ContactsPayload['contacts']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!locations) {
+    for (let location of locations) {
+      if (location) {
+        const { id, name } = location;
+
+        data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
+  const data: SelectorOption[] = [];
+  if (!!doctors) {
+    for (let doctor of doctors) {
+      if (doctor) {
+        const { id, firstName, lastName } = doctor;
+        data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderPatient = (patients: PatientsPayload['patients']) => {
+  const data: SelectorOption[] = [];
+  if (!!patients) {
+    for (let patient of patients) {
+      if (patient) {
+        const { id, firstName, lastName } = patient;
+        data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const setRecord = (id: string, name: string): SelectorOption => {
+  let value = ''
+  if (name) {
+    value = formatValue(name)
+  }
+
+  return { id, name: value };
+};
+
+export const formatPhone = (phone: string): string => {
+  return (phone && phone) ? `(${phone.substring(0, 3)})  ${phone.substring(3, 6)}-${phone.substring(6, 11)}` : ''
+};
+
+export const dateValidation = (endDate: string, startDate: string): boolean => {
+  if (startDate && endDate) {
+    return new Date(endDate) >= new Date(startDate)
+  } else return true;
+};
+
+export const dateValidationMessage = (endDateName: string, startDateName: string): string => {
+  return `${endDateName} should be greater than ${startDateName}`
+};
+
+export const getTimeFromTimestamps = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toISOString()
+};
+
+export const getISOTime = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toISOString()
+};
+
+export const getStandardTime = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+};
+
+export const getDayFromTimestamps = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toLocaleString('en-us', { weekday: 'long' })
+}
+
+export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySchedule[] => {
+  const daySchedules: DaySchedule[] = [
+    { day: DAYS.Monday, slots: [] },
+    { day: DAYS.Tuesday, slots: [] },
+    { day: DAYS.Wednesday, slots: [] },
+    { day: DAYS.Thursday, slots: [] },
+    { day: DAYS.Friday, slots: [] },
+    { day: DAYS.Saturday, slots: [] },
+    { day: DAYS.Sunday, slots: [] }
+  ]
+
+  if (schedules && schedules.length > 0) {
+    schedules.map(schedule => {
+      const { startAt } = schedule || {};
+      const day = getDayFromTimestamps(startAt || '')
+      const dayIndex = daySchedules.findIndex(slot => slot.day.toString() === day);
+
+      dayIndex !== -1 && daySchedules[dayIndex].slots.push(schedule as Schedule)
+      return ''
+    })
+  }
+
+  return daySchedules;
+};
+
+export const setTimeDay = (time: string, day: string): string => {
+  const date = new Date(time)
+  const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
+  const selectedDay = days.findIndex(weekDay => weekDay === day);
+  const currentDay = new Date(time).getDay()
+  let x = 0
+  let result = moment(date).format().toString();
+
+  if (selectedDay > currentDay) {
+    x = selectedDay - currentDay
+
+    result = moment(date.setDate(date.getDate() + x)).format().toString()
+  } else if (currentDay > selectedDay) {
+    x = currentDay - selectedDay
+
+    result =  moment(date.setDate(date.getDate() - (x % 7))).format().toString()
+  }
+
+  return result
 };

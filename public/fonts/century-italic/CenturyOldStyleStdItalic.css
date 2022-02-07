@@ -1,8 +1,0 @@
-@font-face {
-  font-family: 'CenturyOldStyleStdItalic';
-  src: url('./fonts/CenturyOldStyleStd-Italic.woff2') format('woff2'),
-       url('./fonts/CenturyOldStyleStd-Italic.woff') format('woff');
-  font-weight: normal;
-  font-style: italic;
-  font-display: swap;
-}

@@ -1,18 +1,18 @@
 //packages block
 import { FC, useState } from "react";
 import { Controller } from "react-hook-form";
-import { TextField } from "@material-ui/core";
+import { Box, FormControl, InputLabel, TextField, Typography } from "@material-ui/core";
 // components block
 import ShowPassword from "../../common/ShowPassword";
 //styles and interfaceTypes
-import { PASSWORD, TEXT } from "../../../constants";
 import { useLoginStyles } from "../../../styles/loginStyles";
+import { FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD, PASSWORD, TEXT } from "../../../constants";
 import { LoginInputControlProps, PasswordType } from "../../../interfacesTypes";
+import { Link } from "react-router-dom";
 
 const LoginController: FC<LoginInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, isPassword }): JSX.Element => {
-  const classes = useLoginStyles();
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
-
+  const classes = useLoginStyles();
   const handleClickShowPassword = () => {
     if (passwordType === PASSWORD) {
       setPasswordType(TEXT);
@@ -27,26 +27,32 @@ const LoginController: FC<LoginInputControlProps> = ({ control, controllerName, 
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid } }) => (
-        <TextField
-          type={fieldType === "password" ? passwordType : fieldType}
-          variant="outlined"
-          margin="normal"
-          error={invalid}
-          label={controllerLabel}
-          fullWidth
-          helperText={error && error}
-          {...field}
-          InputLabelProps={{
-            className: classes.labelText,
-          }}
-          InputProps={isPassword ? {
-            endAdornment: <ShowPassword
-              isPassword={isPassword}
-              passwordType={passwordType}
-              handleShowPassword={handleClickShowPassword}
-            />,
-          } : undefined}
-        />
+        <FormControl fullWidth margin="normal">
+          <Box position="relative">
+            <InputLabel shrink htmlFor={controllerName}>
+              {controllerLabel}
+            </InputLabel>
+            {isPassword && <Box>
+              <Typography component={Link} to={FORGET_PASSWORD_ROUTE} className={classes.forgotPassword} >{FORGOT_PASSWORD}</Typography>
+            </Box>}
+          </Box>
+          <TextField
+            type={fieldType === "password" ? passwordType : fieldType}
+            id={controllerName}
+            variant="outlined"
+            error={invalid}
+            fullWidth
+            helperText={error && error}
+            {...field}
+            InputProps={isPassword ? {
+              endAdornment: <ShowPassword
+                isPassword={isPassword}
+                passwordType={passwordType}
+                handleShowPassword={handleClickShowPassword}
+              />,
+            } : undefined}
+          />
+        </FormControl>
       )}
     />
   );

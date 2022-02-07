@@ -1,89 +1,83 @@
 import { makeStyles } from "@material-ui/core/styles";
-
-import { CENTURY, CENTURY_BOLD, PRIMARY_COLOR, SECONDARY_COLOR, WHITE } from "../theme";
+import { BLUE_ONE, BLUE_SEVEN, WHITE } from "../theme";
 
 export const useLoginStyles = makeStyles((theme) => ({
   root: {
-    background:
-      "linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.3) 100%),url(/images/cover.jpg) center no-repeat",
-    backgroundSize: "cover",
     display: "flex",
     minHeight: "100vh",
-    padding: "0 20px",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  loginFormContainer: {
-    padding: 56,
-    maxWidth: 650,
-    width: '100%',
-    background: WHITE,
-    borderLeft: `8px solid ${SECONDARY_COLOR}`,
-
     [theme.breakpoints.down("md")]: {
-      padding: "40px 20px",
+      flexDirection: 'column',
     },
   },
 
-  form: {
+  loginFormImageContainer: {
+    minWidth: 600,
     alignItems: "center",
-    alignContent: "center",
+    display: "flex",
+    flexDirection: 'column',
+    justifyContent: "space-between",
+    textAlign: 'center',
+    paddingBottom: 40,
+  },
+
+  loginDescription: {
+    color: "#7E8299",
+    fontSize: 18,
+    fontWeight: 600,
+    maxWidth:380,
+    margin: '16px auto 0',
+  },
+
+  sideLoginImage: {
+
+    [theme.breakpoints.down("md")]: {
+      display: 'none',
+    },
+  },
+
+  loginFormLoginContainer: {
+    background: '#F3F5F9',
+    display: "flex",
+    flexDirection: 'column',
+    alignItems: "center",
+    flex: 1,
     justifyContent: "center",
+
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: WHITE,
+      minHeight: 48,
+    },
+
+    "& .MuiOutlinedInput-input": {
+      minHeight: 48,
+    },
+
+    "& .MuiButton-contained": {
+      backgroundColor: BLUE_SEVEN,
+      color: WHITE,
+      minHeight:48,
+    },
+
   },
 
-  textFeild: {
-    boxShadow: "0px 0px 24px rgba(0, 0, 0, 0.15)",
-  },
+  loginFormContainer: {
+    width: '100%',
+    maxWidth: 440,
+    borderRadius: 12,
 
-  labelText: {
-    fontSize: 16,
-  },
-
-  heading: {
-    fontSize: 36,
-    lineHeight: 1.167,
-    fontWeight: "normal",
-    fontFamily: CENTURY_BOLD,
-  },
-
-  body: {
-    fontSize: 18,
-    lineHeight: 1.43,
-    fontFamily: CENTURY,
-    fontWeight: "normal",
-  },
-
-  subHeading: {
-    fontSize: 18,
-    marginBottom: 10,
-    color: PRIMARY_COLOR,
-    textDecoration: "none",
-  },
-
-  title: {
-    padding: "8px 0",
+    [theme.breakpoints.down("md")]: {
+      padding: "35px 20px 56px",
+    },
   },
 
   passwordIcon: {
-    color: SECONDARY_COLOR
+    color: BLUE_ONE
   },
 
-  buttonText: {
-    width: "100%",
-    letterSpacing: 8,
-    padding: "8px 20px",
-    textTransform: "uppercase",
-  },
-
-  button: {
-    minHeight: 50,
-  },
-
-  signinLink: {
-    color: PRIMARY_COLOR,
-    padding: "5px",
-    textDecorationLine: 'none',
-    fontSize: 18,
-  },
+  forgotPassword: {
+    position:'absolute',
+    right:0,
+    width: 140,
+    top: '-25px',
+  }
 }));

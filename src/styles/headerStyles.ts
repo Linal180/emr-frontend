@@ -1,85 +1,37 @@
 import { makeStyles } from "@material-ui/core";
-
 import { DRAWER_WIDTH } from "../constants";
+import { WHITE } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
-  toolbar: {
-    paddingRight: 24,
-  },
-
   appBar: {
+    marginLeft: DRAWER_WIDTH,
+    width: "100%",
     zIndex: theme.zIndex.drawer + 1,
+    background: "linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.3) 100%),url(/images/header.jpg) center no-repeat",
+    backgroundSize: "cover",
+
     transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-  },
 
-  appBarShift: {
-    marginLeft: DRAWER_WIDTH,
-    width: `calc(100% - ${DRAWER_WIDTH}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
+    "& input": {
+      color: WHITE,
+    },
 
-  menuButton: {
-    marginRight: 36,
-  },
-
-  menuButtonHidden: {
-    display: "none",
-  },
-
-  title: {
-    flexGrow: 1,
-    fontSize: 20,
-    letterSpacing: 1
-  },
-
-  dropdown: {
-    position: "relative",
-    display: 'inline-block',
-    "&:focus-within div": {
-      display: 'block',
-      transition: `all .3s ease-in`,
+    "& .MuiFormControl-root.MuiTextField-root": {
+      minWidth: 240,
     }
   },
 
-  dropdownContent: {
-    display: "none",
-    position: "absolute",
-    right: 15,
-    top: 33,
-    backgroundColor: '#f9f9f9',
-    minWidth: 350,
-    maxHeight: 400,
-    overflow: "auto",
-    boxShadow: '0px 8px 16px 0px rgba(0, 0, 0, 0.2)',
-    borderRadius: 4,
-    fontSize: '.8125rem',
-    cursor: 'pointer',
+  menuButton: {
+    borderRadius: 6,
+    padding: 9,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    transition: 'all .3s ease-in',
 
-    "& a:last-child .MuiTypography-h6": {
-      borderBottom: "none",
-    },
-
-    '& .MuiTypography-h6': {
-      padding: 15,
-      textTransform: "capitalize",
-      borderBottom: "1px solid rgb(224, 224, 224)",
-    },
-
-    '& .MuiTypography-h6:hover': {
-      backgroundColor: '#E3EEFA',
-    },
+    "&:hover": {
+      backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    }
   },
-  link: {
-    fontsize: 16,
-    textAlign: 'left',
-    color: "black",
-    fontWeight: 'bold',
-  },
-
 }));

@@ -11,7 +11,7 @@ import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from } from "@apollo
 import Alert from "../components/common/Alert";
 // utils and constants block
 import { handleLogout } from "../utils";
-import { INVALID_OR_EXPIRED_TOKEN_MESSAGE, NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, REQUEST_NOT_FOUND, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND, UNAUTHORIZED } from "../constants";
+import { FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, REQUEST_NOT_FOUND, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND, UNAUTHORIZED } from "../constants";
 dotenv.config()
 
 const authMiddleware = new ApolloLink((operation: any, forward: any) => {
@@ -52,7 +52,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
               if (errorResponse) {
                 const { error: responseError, message } = errorResponse;
 
-                if (message && message !== REQUEST_NOT_FOUND && message !== NOT_FOUND_EXCEPTION) {
+                if (message && message !== REQUEST_NOT_FOUND && message !== NOT_FOUND_EXCEPTION && message !== FORBIDDEN_EXCEPTION) {
                   Alert.error(message)
                 } else if (responseError && responseError !== REQUEST_NOT_FOUND && responseError !== NOT_FOUND_EXCEPTION && responseError === PRECONDITION_FAILED_EXCEPTION) {
                   Alert.error(responseError)
@@ -71,7 +71,10 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (message === UNAUTHORIZED || message === TOKEN_INVALID) handleLogout();
   }
 
-  if (networkError) Alert.error(networkError.message);
+  if (networkError) {
+    Alert.error(networkError.message)
+    client.clearStore()
+  }
 });
 
 const client = new ApolloClient({
