@@ -64,8 +64,8 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
           endAt && setValue('endAt', getISOTime(endAt || ''))
           startAt && setValue('startAt', getISOTime(startAt || ''))
           serviceId && serviceName && setValue('servicesIds', setRecord(serviceId, serviceName || ''))
-          locationId && locationName && setValue('locationId', setRecord(locationId || '', locationName || ''))
           setValue('day', setRecord(getDayFromTimestamps(startAt || ''), getDayFromTimestamps(startAt || '')))
+          locationId && locationName && setValue('locationId', setRecord(locationId || '', locationName || ''))
         }
       }
     }
@@ -180,7 +180,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
             <Grid container spacing={3}>
               <Grid item md={12} sm={12} xs={12}>
                 {getScheduleLoading ?
-                  <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
+                  <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
                     <>
                       <Selector
                         isRequired
