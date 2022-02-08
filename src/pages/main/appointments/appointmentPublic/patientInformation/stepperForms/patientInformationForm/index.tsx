@@ -16,10 +16,10 @@ import {
 import { usePatientInformation } from "../../../../../../../styles/publicAppointment/patientInformation";
 import {
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
-  ADDRESS_2, APARTMENT, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE, EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, PATIENT_NOT_FOUND
+  ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE, EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, PATIENT_NOT_FOUND, ADDRESS
 } from "../../../../../../../constants";
 import ToggleButtonComponent from "../../../../../../../components/common/ToggleButtonComponent";
-import { ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useGetPatientLazyQuery, useUpdatePatientMutation } from "../../../../../../../generated/graphql";
+import { Communicationtype, ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useGetPatientLazyQuery, useUpdatePatientMutation } from "../../../../../../../generated/graphql";
 import Alert from "../../../../../../../components/common/Alert";
 import { PatientInputProps } from "../../../../../../../interfacesTypes";
 
@@ -195,7 +195,7 @@ const PatientInformation = () => {
       registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent,
       patientNote, language, race, ethnicity, maritialStatus, sexualOrientation, genderIdentity,
       pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
-      statementNoteDateTo, facilityId, usualProviderId, medicationHistoryAuthority, sexAtBirth,
+      statementNoteDateTo, facilityId, usualProviderId, medicationHistoryAuthority, sexAtBirth, preferredCommunicationMethod, voiceCallPermission, phonePermission,
 
       basicEmail, basicPhone, basicMobile, basicAddress, basicAddress2, basicZipCode, basicCity,
       basicState, basicCountry,
@@ -243,7 +243,8 @@ const PatientInformation = () => {
       statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
       primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,
       registrationDepartment: selectedRegistrationDepartment as RegDepartment || RegDepartment.Hospital,
-      race: selectedRace as Race || Race.White, email: basicEmail || '',
+      race: selectedRace as Race || Race.White, email: basicEmail || '', voiceCallPermission: voiceCallPermission || false,
+      preferredCommunicationMethod: preferredCommunicationMethod as Communicationtype || Communicationtype.Email, phonePermission: phonePermission || false,
     };
 
     const contactInput = {
@@ -319,7 +320,7 @@ const PatientInformation = () => {
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="streetAddress"
+                    controllerName="address"
                     controllerLabel={STREET_ADDRESS}
                   />
                 </Grid>
@@ -401,7 +402,7 @@ const PatientInformation = () => {
                     isRequired
                     value={EMPTY_OPTION}
                     label={PREFERRED_LANGUAGE}
-                    name="preferredLanguage"
+                    name="language"
                     options={renderDoctors(doctorList)}
                   />
                 </Grid>
@@ -435,7 +436,7 @@ const PatientInformation = () => {
                     isRequired
                     value={EMPTY_OPTION}
                     label={MARITAL_STATUS}
-                    name="maritalStatus"
+                    name="maritialStatus"
                     options={renderDoctors(doctorList)}
                   />
                 </Grid>
@@ -448,7 +449,7 @@ const PatientInformation = () => {
               <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   fieldType="text"
-                  controllerName="emergencyContactFirstName"
+                  controllerName="emergencyName"
                   controllerLabel={EMERGENCY_CONTACT_NAME}
                 />
               </Grid>
@@ -459,7 +460,7 @@ const PatientInformation = () => {
                     isRequired
                     value={EMPTY_OPTION}
                     label={EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT}
-                    name="emergencyContactRelationshipToPatient"
+                    name="emergencyRelationship"
                     options={renderDoctors(doctorList)}
                   />
                 </Grid>
@@ -467,7 +468,7 @@ const PatientInformation = () => {
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="emergencyContactPhone"
+                    controllerName="emergencyPhone"
                     controllerLabel={EMERGENCY_CONTACT_PHONE}
                   />
                 </Grid>
@@ -483,16 +484,16 @@ const PatientInformation = () => {
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="streetAddress"
-                    controllerLabel={STREET_ADDRESS}
+                    controllerName="basicAddress"
+                    controllerLabel={ADDRESS}
                   />
                 </Grid>
 
                 <Grid item md={6} sm={12} xs={12}>
                   <InputController
                     fieldType="text"
-                    controllerName="apartment"
-                    controllerLabel={APARTMENT}
+                    controllerName="basicAddress2"
+                    controllerLabel={ADDRESS_2}
                   />
                 </Grid>
               </Grid>

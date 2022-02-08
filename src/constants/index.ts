@@ -5,6 +5,7 @@ import { formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
+  Communicationtype,
   Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
   RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
 } from "../generated/graphql";
@@ -814,6 +815,13 @@ export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
 export const MAPPED_PAYMENT_METHOD: SelectorOption[] = [
   { id: PaymentType.Self, name: formatValue(PaymentType.Self) },
   { id: PaymentType.Insurance, name: formatValue(PaymentType.Insurance) },
+];
+
+export const MAPPED_COMMUNICATION_METHOD: SelectorOption[] = [
+  { id: Communicationtype.Email, name: formatValue(Communicationtype.Email) },
+  { id: Communicationtype.Message, name: formatValue(Communicationtype.Message) },
+  { id: Communicationtype.Phone, name: formatValue(Communicationtype.Phone) },
+  { id: Communicationtype.VoiceMessage, name: formatValue(Communicationtype.VoiceMessage) },
 ];
 
 export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [

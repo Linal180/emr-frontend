@@ -111,6 +111,34 @@ export const usePatientInformation = makeStyles({
       fontWeight: 500,
     },
   },
+
+  agreementContainer: {
+    "& h3": {
+      fontSize: 26,
+    },
+
+    "& li": {
+      padding: "12px 5px",
+      color: GRAY_TWO,
+    },
+
+    "& .MuiCheckbox-root .MuiSvgIcon-root": {
+      width: 24,
+      height: 24,
+    }
+  },
+
+  agreementPointsContainer: {
+    maxHeight: "calc(100vh - 344px)",
+    overflowY: "auto",
+  },
+
+  verticalContainer: {
+    "& .MuiCard-root": {
+      height: "calc(100vh - 130px)",
+      overflowY: "auto",
+    },
+  }
 });
 
 export const toggleButtonComponent = makeStyles({
