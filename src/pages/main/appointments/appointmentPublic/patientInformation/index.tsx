@@ -10,8 +10,7 @@ import Selector from '../../../../../components/common/Selector';
 import CardComponent from '../../../../../components/common/CardComponent';
 import ToggleButtonComponent from "../../../../../components/common/ToggleButtonComponent";
 import Alert from "../../../../../components/common/Alert";
-import DropZoneContainer from './components/DropZoneContainer';
-import { Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race, useGetPatientLazyQuery, useUpdatePatientMutation } from "../../../../../generated/graphql";
+import { AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race, useGetPatientLazyQuery, useUpdatePatientMutation } from "../../../../../generated/graphql";
 
 // themes / constants / utils
 import {
@@ -29,6 +28,7 @@ import {
   PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE,
 } from "../../../../../constants";
 import { PatientInputProps } from "../../../../../interfacesTypes";
+import MediaCards from '../../../../../components/common/AddMedia/MediaCards';
 
 const Index: FC = (): JSX.Element => {
   const [activeStep, setActiveStep] = useState<number>(0);
@@ -563,17 +563,17 @@ const Index: FC = (): JSX.Element => {
                   </Box>
                 </Box>
               ) : activeStep === 1 ? (
-                <Box className={classes.verticalContainer}>
+                <Box>
                   <CardComponent cardTitle="Document Verification">
                     <Box py={2}>
                       <Typography component="h4" variant="h4">Driving License</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <DropZoneContainer imageSide="Front Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Front Side" />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <DropZoneContainer imageSide="Back Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Back Side" />
                         </Grid>
                       </Grid>
                     </Box>
@@ -582,26 +582,28 @@ const Index: FC = (): JSX.Element => {
                       <Typography component="h4" variant="h4">Insurance Card</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <DropZoneContainer imageSide="Front Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Front Side" />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <DropZoneContainer imageSide="Back Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Back Side" />
                         </Grid>
                       </Grid>
                     </Box>
 
                     <Box py={2}>
                       <Typography component="h4" variant="h4">Insurance Card <Box display="inline" color={GRAY_TWO}>(Secondary)</Box></Typography>
-                      <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
-                          <DropZoneContainer imageSide="Front Side" />
-                        </Grid>
+                      <Box pb={6}>
+                        <Grid container spacing={3}>
+                          <Grid item md={6} sm={12} xs={12}>
+                            <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Front Side" />
+                          </Grid>
 
-                        <Grid item md={6} sm={12} xs={12}>
-                          <DropZoneContainer imageSide="Back Side" />
+                          <Grid item md={6} sm={12} xs={12}>
+                            <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Back Side" />
+                          </Grid>
                         </Grid>
-                      </Grid>
+                      </Box>
                     </Box>
                   </CardComponent>
                 </Box>
