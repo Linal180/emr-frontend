@@ -231,6 +231,24 @@ export const dateValidation = (endDate: string, startDate: string): boolean => {
   } else return true;
 };
 
+export const timeValidation = (endTime: string, startTime: string): boolean => {
+  if (endTime && startTime) {
+    const start = new Date(getTimestamps(startTime))
+    const end = new Date(getTimestamps(endTime))
+    const startHour = start.getHours()
+    const startMinutes = start.getMinutes()
+    const endHour = end.getHours()
+    const endMinutes = end.getMinutes()
+
+    if (endHour > startHour) {
+      return true
+    } else if (endHour === startHour) {
+      return endMinutes > startMinutes
+    } else
+      return false
+  } else return false;
+};
+
 export const dateValidationMessage = (endDateName: string, startDateName: string): string => {
   return `${endDateName} should be greater than ${startDateName}`
 };
@@ -299,7 +317,7 @@ export const setTimeDay = (time: string, day: string): string => {
   } else if (currentDay > selectedDay) {
     x = currentDay - selectedDay
 
-    result =  moment(date.setDate(date.getDate() - (x % 7))).format().toString()
+    result = moment(date.setDate(date.getDate() - (x % 7))).format().toString()
   }
 
   return result

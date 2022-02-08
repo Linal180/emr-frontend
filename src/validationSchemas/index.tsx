@@ -2,7 +2,7 @@
 import * as yup from "yup";
 import moment from "moment";
 // utils and constants block
-import { dateValidation, requiredMessage } from "../utils";
+import { dateValidation, requiredMessage, timeValidation } from "../utils";
 import {
   ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL,
   FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, MaxLength, MinLength,
@@ -14,7 +14,8 @@ import {
   TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP, TID_VALIDATION_MESSAGE,
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
-  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION, APPOINTMENT_TYPE, STARTING_TIME, ENDING_TIME,
+  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION,
+   APPOINTMENT_TYPE,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
@@ -174,6 +175,15 @@ const licenseDateSchema = {
     if (!value) return true
 
     return dateValidation(value, licenseActiveDate)
+  })
+}
+
+const scheduleTimeSchema = {
+  startAt: yup.string().test(value => !!value),
+
+  endAt: yup.string().test((value, { parent: { startAt } }) => {
+    if (!value) return false
+    return timeValidation(value, startAt)
   })
 }
 
@@ -465,6 +475,7 @@ export const appointmentSchema = yup.object({
 })
 
 export const doctorScheduleSchema = yup.object({
+  ...scheduleTimeSchema,
   day: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -477,6 +488,6 @@ export const doctorScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).required(requiredMessage(APPOINTMENT_TYPE)),
-  startAt: yup.string().required(requiredMessage(STARTING_TIME)),
-  endAt: yup.string().required(requiredMessage(ENDING_TIME)),
+  // startAt: yup.string().required(requiredMessage(STARTING_TIME)),
+  // endAt: yup.string().required(requiredMessage(ENDING_TIME)),
 })
