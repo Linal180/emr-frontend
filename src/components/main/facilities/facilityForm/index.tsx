@@ -5,9 +5,9 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import FacilityController from '../controllers';
 import Selector from '../../../common/Selector';
 import PhoneField from '../../../common/PhoneInput';
+import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
@@ -287,7 +287,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
                 {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <FacilityController
+                    <InputController
                       isRequired
                       fieldType="text"
                       controllerName="name"
@@ -308,7 +308,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6}>
-                        <FacilityController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="code"
@@ -339,7 +339,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="cliaIdNumber"
                           controllerLabel={CLIA_ID_NUMBER}
@@ -348,7 +348,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="federalTaxId"
                           controllerLabel={FEDERAL_TAX_ID}
@@ -359,7 +359,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="tamxonomyCode"
                           controllerLabel={TAXONOMY_CODE}
@@ -368,7 +368,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="revenueCode"
                           controllerLabel={REVENUE_CODE}
@@ -377,7 +377,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
                     </Grid>
 
-                    <FacilityController
+                    <InputController
                       fieldType="text"
                       controllerName="insurancePlanType"
                       controllerLabel={INSURANCE_PLAN_TYPE}
@@ -386,7 +386,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="mammographyCertificationNumber"
                           controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
@@ -395,7 +395,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="npi"
                           controllerLabel={NPI}
@@ -423,7 +423,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={8}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="billingEmail"
                           controllerLabel={EMAIL}
@@ -432,7 +432,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="billingZipCode"
                           controllerLabel={ZIP}
@@ -451,14 +451,14 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
                     </Grid>
 
-                    <FacilityController
+                    <InputController
                       fieldType="text"
                       controllerName="billingAddress"
                       controllerLabel={ADDRESS}
                       error={billingAddressError}
                     />
 
-                    <FacilityController
+                    <InputController
                       fieldType="text"
                       controllerName="billingAddress2"
                       controllerLabel={ADDRESS_2}
@@ -467,7 +467,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={4}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="billingCity"
                           controllerLabel={CITY}
@@ -476,7 +476,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="billingState"
                           controllerLabel={STATE}
@@ -485,7 +485,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="billingCountry"
                           controllerLabel={COUNTRY}
@@ -504,7 +504,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={8}>
-                        <FacilityController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="email"
@@ -514,7 +514,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="zipCode"
                           controllerLabel={ZIP}
@@ -533,14 +533,14 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
                     </Grid>
 
-                    <FacilityController
+                    <InputController
                       fieldType="text"
                       controllerName="address"
                       controllerLabel={ADDRESS}
                       error={addressError}
                     />
 
-                    <FacilityController
+                    <InputController
                       fieldType="text"
                       controllerName="address2"
                       controllerLabel={ADDRESS_2}
@@ -549,7 +549,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={4}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="city"
                           controllerLabel={CITY}
@@ -558,7 +558,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="state"
                           controllerLabel={STATE}
@@ -567,7 +567,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <FacilityController
+                        <InputController
                           fieldType="text"
                           controllerName="country"
                           controllerLabel={COUNTRY}

@@ -716,8 +716,10 @@ export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patien
   "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
   & { serviceId: SelectorOption } & { providerId: SelectorOption };
 
-export type ExtendedExternalAppointmentInputProps = Omit<CreateExternalAppointmentItemInput, "serviceId" | "providerId">
-  & { serviceId: SelectorOption } & { providerId: SelectorOption } & Omit<CreatePatientItemInput, "sexAtBirth"> & { sexAtBirth: SelectorOption } & GuardianContactControlInputs;
+export type ExtendedExternalAppointmentInputProps = Omit<CreateExternalAppointmentItemInput, "serviceId"
+  | "providerId" | "paymentType"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
+  & Omit<CreatePatientItemInput, "sexAtBirth"> & { paymentType: SelectorOption } &
+{ sexAtBirth: SelectorOption } & GuardianContactControlInputs;
 
 type Days = | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
 

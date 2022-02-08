@@ -489,3 +489,11 @@ export const doctorScheduleSchema = yup.object({
     id: yup.string().required()
   }).required(requiredMessage(APPOINTMENT_TYPE)),
 })
+
+export const externalAppointmentSchema = yup.object({
+  ...dobSchema,
+  ...emailSchema,
+  ...serviceIdSchema,
+  ...providerIdSchema,
+  ...firstLastNameSchema,
+})

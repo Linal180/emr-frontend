@@ -43,7 +43,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
   const { facilityList, serviceList, doctorList, patientList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { providerId, availableSchedules } = state;
+  const { availableSchedules } = state;
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -98,10 +98,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   });
 
   const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
-    variables: {
-      getDoctorSchedule: { id: providerId }
-    },
-
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
