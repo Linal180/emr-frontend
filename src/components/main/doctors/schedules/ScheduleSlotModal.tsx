@@ -12,15 +12,20 @@ import TimePicker from "../../../common/TimePicker";
 import { FacilityContext } from '../../../../context';
 import { ActionType } from "../../../../reducers/doctorReducer";
 import { doctorScheduleSchema } from "../../../../validationSchemas";
-import { getTimestamps, renderLocations, renderServices } from "../../../../utils";
-import { useCreateScheduleMutation, useUpdateScheduleMutation } from "../../../../generated/graphql";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
+import {
+  getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
+} from "../../../../utils";
+import {
+  useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
+} from "../../../../generated/graphql";
 import {
   CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, APPOINTMENT_TYPE,
   LOCATIONS_TEXT, START_DATE, END_DATE, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE,
   CREATE_SCHEDULE, SCHEDULE_NOT_FOUND
 } from "../../../../constants";
+import ViewDataLoader from "../../../common/ViewDataLoader";
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
@@ -31,7 +36,39 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     mode: "all",
     resolver: yupResolver(doctorScheduleSchema)
   });
-  const { reset, handleSubmit, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue, formState: { errors } } = methods;
+
+  const [getSchedule, { loading: getScheduleLoading }] = useGetScheduleLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { getSchedule: { response, schedule } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (schedule && status && status === 200) {
+
+          const { startAt, endAt, location, scheduleServices } = schedule || {};
+          const { id: locationId, name: locationName } = location || {}
+          const { service } = (scheduleServices && scheduleServices[0]) || {}
+          const { id: serviceId, name: serviceName } = (service && service) || {}
+
+          endAt && setValue('endAt', getISOTime(endAt || ''))
+          startAt && setValue('startAt', getISOTime(startAt || ''))
+          serviceId && serviceName && setValue('servicesIds', setRecord(serviceId, serviceName || ''))
+          setValue('day', setRecord(getDayFromTimestamps(startAt || ''), getDayFromTimestamps(startAt || '')))
+          locationId && locationName && setValue('locationId', setRecord(locationId || '', locationName || ''))
+        }
+      }
+    }
+  });
 
   const [createSchedule, { loading: createScheduleLoading }] = useCreateScheduleMutation({
     onError({ message }) {
@@ -84,16 +121,22 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   useEffect(() => {
     fetchAllServicesList(doctorFacilityId)
     fetchAllLocationList(doctorFacilityId)
-  }, [doctorFacilityId, fetchAllLocationList, fetchAllServicesList])
+
+    if (isEdit && id) {
+      getSchedule({
+        variables: { getSchedule: { id } }
+      })
+    }
+  }, [doctorFacilityId, fetchAllLocationList, fetchAllServicesList, getSchedule, id, isEdit])
 
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, servicesIds, startAt, day }) => {
     const { id: selectedLocation } = locationId || {}
     const { id: selectedService } = servicesIds || {}
-    // const { id: selectedDay } = day || {}
+    const { id: dayName } = day || {}
 
     const scheduleInput = {
       doctorId, locationId: selectedLocation || '', servicesIds: [selectedService] || [],
-      startAt: getTimestamps(startAt || ''), endAt: getTimestamps(endAt || ''),
+      startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
 
     if (doctorId) {
@@ -136,52 +179,57 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
           <Box ml={3} mr={3} pt={3}>
             <Grid container spacing={3}>
               <Grid item md={12} sm={12} xs={12}>
-                <Selector
-                  isRequired
-                  value={EMPTY_OPTION}
-                  label={PICK_DAY_TEXT}
-                  name="day"
-                  error={dayError?.message}
-                  options={WEEK_DAYS}
-                />
+                {getScheduleLoading ?
+                  <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
+                    <>
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={PICK_DAY_TEXT}
+                        name="day"
+                        error={dayError?.message}
+                        options={WEEK_DAYS}
+                      />
 
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <TimePicker
-                      isRequired
-                      label={START_DATE}
-                      name="startAt"
-                      error={startAtError || ''}
-                    />
-                  </Grid>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <TimePicker
+                            isRequired
+                            label={START_DATE}
+                            name="startAt"
+                            error={startAtError || ''}
+                          />
+                        </Grid>
 
-                  <Grid item md={6} sm={12} xs={12}>
-                    <TimePicker
-                      isRequired
-                      label={END_DATE}
-                      name="endAt"
-                      error={endAtError || ''}
-                    />
-                  </Grid>
-                </Grid>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <TimePicker
+                            isRequired
+                            label={END_DATE}
+                            name="endAt"
+                            error={endAtError || ''}
+                          />
+                        </Grid>
+                      </Grid>
 
-                <Selector
-                  isRequired
-                  value={EMPTY_OPTION}
-                  label={LOCATIONS_TEXT}
-                  name="locationId"
-                  error={locationError?.message}
-                  options={renderLocations(locationList)}
-                />
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={LOCATIONS_TEXT}
+                        name="locationId"
+                        error={locationError?.message}
+                        options={renderLocations(locationList)}
+                      />
 
-                <Selector
-                  isRequired
-                  value={EMPTY_OPTION}
-                  label={APPOINTMENT_TYPE}
-                  name="servicesIds"
-                  error={serviceError?.message}
-                  options={renderServices(serviceList)}
-                />
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={APPOINTMENT_TYPE}
+                        name="servicesIds"
+                        error={serviceError?.message}
+                        options={renderServices(serviceList)}
+                      />
+                    </>
+                  )}
 
                 <DialogActions>
                   <Box pr={1}>

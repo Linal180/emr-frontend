@@ -68,7 +68,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
       Alert.error(CANT_DELETE_DOCTOR)
-      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+      dispatch({ type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: false })
     },
 
     onCompleted(data) {
@@ -80,7 +80,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           findAllDoctor()
           fetchAllDoctorList();
-          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          dispatch({ type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: false })
         }
       }
     }
