@@ -1,13 +1,17 @@
+// packages block
 import { FC, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Box, Button, Card } from '@material-ui/core';
-import { WHITE_TWO } from '../../../../../theme';
+// components
+import Stepper from './components/stepper';
+import ConsentAgreement from './stepperForms/consentAgreement';
 import PatientInformationForm from './stepperForms/patientInformationForm';
 import DocumentVerificationForm from './stepperForms/documentVerificationForm';
-import { usePatientInformation } from '../../../../../styles/publicAppointment/patientInformation';
-import ConsentAgreement from './stepperForms/consentAgreement';
-import Stepper from './components/stepper';
-import { Link } from 'react-router-dom';
+
+// themes / constants / utils
+import { WHITE_TWO } from '../../../../../theme';
 import { PATIENT_APPOINTMENT_SUCCESS } from '../../../../../constants';
+import { usePatientInformation } from '../../../../../styles/publicAppointment/patientInformation';
 
 const Index: FC = (): JSX.Element => {
   const [activeStep, setActiveStep] = useState<number>(0);
