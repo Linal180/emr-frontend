@@ -29,7 +29,7 @@ import {
 } from "../../../../utils";
 import {
   PaymentType, SchedulesPayload, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
-   useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
+  useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -48,8 +48,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     mode: "all",
     resolver: yupResolver(appointmentSchema)
   });
-  const { reset, setValue, handleSubmit, getValues, formState: { errors } } = methods;
-  const { providerId: { id: selectedProvider } = {} } = getValues()
+  const { reset, setValue, handleSubmit, watch, formState: { errors } } = methods;
+  const { providerId: selectedProvider } = watch();
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
@@ -176,13 +176,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => {
     if (selectedProvider) {
+      const { id } = selectedProvider;
       getDoctorSchedules({
         variables: {
-          getDoctorSchedule: { id: selectedProvider }
+          getDoctorSchedule: { id }
         }
       })
     }
-  }, [getDoctorSchedules, selectedProvider])
+  }, [getDoctorSchedules, selectedProvider, watch])
 
   const onSubmit: SubmitHandler<ExtendedAppointmentInputProps> = async (inputs) => {
     const {
@@ -229,9 +230,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     reason: { message: reasonError } = {},
     providerId: { id: providerError } = {},
     facilityId: { id: facilityError } = {},
-    scheduleEndDateTime: { message: scheduleEndError } = {},
+    // scheduleEndDateTime: { message: scheduleEndError } = {},
     primaryInsurance: { message: primaryInsuranceError } = {},
-    scheduleStartDateTime: { message: scheduleStartError } = {},
+    // scheduleStartDateTime: { message: scheduleStartError } = {},
     secondaryInsurance: { message: secondaryInsuranceError } = {},
   } = errors;
 
@@ -243,16 +244,30 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             <Grid md={6} item>
               <CardComponent cardTitle={APPOINTMENT}>
                 {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Selector
-                      isRequired
-                      value={EMPTY_OPTION}
-                      label={APPOINTMENT_TYPE}
-                      name="serviceId"
-                      options={renderServices(serviceList)}
-                      error={serviceError?.message && requiredMessage(APPOINTMENT_TYPE)}
-                    />
-                  </>
+                  <Grid container spacing={3}>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={FACILITY}
+                        name="facilityId"
+                        options={renderFacilities(facilityList)}
+                        error={facilityError?.message && requiredMessage(FACILITY)}
+                      />
+                    </Grid>
+
+                    <Grid item md={6} sm={12} xs={12}>
+
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={APPOINTMENT_TYPE}
+                        name="serviceId"
+                        options={renderServices(serviceList)}
+                        error={serviceError?.message && requiredMessage(APPOINTMENT_TYPE)}
+                      />
+                    </Grid>
+                  </Grid>
                 )}
               </CardComponent>
 
@@ -266,10 +281,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
-                          label={FACILITY}
-                          name="facilityId"
-                          options={renderFacilities(facilityList)}
-                          error={facilityError?.message && requiredMessage(FACILITY)}
+                          label={PROVIDER}
+                          name="providerId"
+                          options={renderDoctors(doctorList)}
+                          error={providerError?.message && requiredMessage(PROVIDER)}
                         />
                       </Grid>
 
@@ -277,24 +292,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
-                          label={PROVIDER}
-                          name="providerId"
-                          options={renderDoctors(doctorList)}
-                          error={providerError?.message && requiredMessage(PROVIDER)}
+                          label={PATIENT}
+                          name="patientId"
+                          options={renderPatient(patientList)}
+                          error={patientError?.message && requiredMessage(PROVIDER)}
                         />
                       </Grid>
                     </Grid>
 
-                    <Selector
-                      isRequired
-                      value={EMPTY_OPTION}
-                      label={PATIENT}
-                      name="patientId"
-                      options={renderPatient(patientList)}
-                      error={patientError?.message && requiredMessage(PROVIDER)}
-                    />
-
-                    <Grid container spacing={3}>
+                    {/* <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <TimePicker
                           label={SCHEDULE_START}
@@ -310,7 +316,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           name="scheduleEndDateTime"
                         />
                       </Grid>
-                    </Grid>
+                    </Grid> */}
 
                     <InputController
                       fieldType="text"

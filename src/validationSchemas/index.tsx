@@ -470,8 +470,8 @@ export const appointmentSchema = yup.object({
   otherAccident: yup.boolean(),
   primaryInsurance: yup.string(),
   secondaryInsurance: yup.string(),
-  scheduleEndDateTime: yup.string(),
-  scheduleStartDateTime: yup.string(),
+  // scheduleEndDateTime: yup.string(),
+  // scheduleStartDateTime: yup.string(),
 })
 
 export const doctorScheduleSchema = yup.object({
