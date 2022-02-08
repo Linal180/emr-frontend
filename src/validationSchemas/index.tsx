@@ -488,6 +488,4 @@ export const doctorScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).required(requiredMessage(APPOINTMENT_TYPE)),
-  // startAt: yup.string().required(requiredMessage(STARTING_TIME)),
-  // endAt: yup.string().required(requiredMessage(ENDING_TIME)),
 })
