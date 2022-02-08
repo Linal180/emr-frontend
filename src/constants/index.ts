@@ -118,7 +118,7 @@ export const PREFIX = "Prefix";
 export const SUFFIX = "Suffix";
 export const PROVIDER_INITIALS = "Provider Initials";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
-export const SPECIALITY = "Speciality";
+export const SPECIALTY = "Specialty";
 export const DOB = "Date of Birth";
 export const DECEASED_DATE = "Deceased Date";
 export const DOCTOR_ID = "doctor id";
@@ -288,11 +288,11 @@ export const DELETE_RECORD = "Delete Record";
 export const UPDATE_SERVICE = "Update Service";
 export const DELETE_PATIENT = "Delete Patient";
 export const DELETE_FACILITY = "Delete Facility";
-export const ADD_FACILITY_SERVICE = "Add Facility Service";
-export const UPDATE_FACILITY_SERVICE = "Update Facility Service";
-export const ADD_LOCATION = "Add Facility Location";
-export const EDIT_LOCATION = "Edit Facility Location";
-export const UPDATE_LOCATION = "Update Facility Location";
+export const ADD_FACILITY_SERVICE = "Add Service";
+export const UPDATE_FACILITY_SERVICE = "Update Service";
+export const ADD_LOCATION = "Add Location";
+export const EDIT_LOCATION = "Edit Location";
+export const UPDATE_LOCATION = "Update Location";
 export const LOCATION = "Location";
 export const VIEW_FACILITY = "View Facility";
 export const PHONE_NUMBER = "Phone number";
@@ -715,7 +715,7 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
 ]
 
 export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezone => {
-  return { id: timezone, name: timezone }
+  return { id: timezone, name: formatValue(timezone) }
 })
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
