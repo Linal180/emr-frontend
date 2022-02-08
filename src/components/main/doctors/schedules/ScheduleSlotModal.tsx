@@ -14,6 +14,7 @@ import { ActionType } from "../../../../reducers/doctorReducer";
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
+  dateValidationMessage,
   getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
 } from "../../../../utils";
 import {
@@ -21,7 +22,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, APPOINTMENT_TYPE,
-  LOCATIONS_TEXT, START_DATE, END_DATE, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
+  LOCATIONS_TEXT, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE,
   CREATE_SCHEDULE, SCHEDULE_NOT_FOUND
 } from "../../../../constants";
@@ -195,7 +196,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                         <Grid item md={6} sm={12} xs={12}>
                           <TimePicker
                             isRequired
-                            label={START_DATE}
+                            label={START_TIME}
                             name="startAt"
                             error={startAtError || ''}
                           />
@@ -204,9 +205,9 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                         <Grid item md={6} sm={12} xs={12}>
                           <TimePicker
                             isRequired
-                            label={END_DATE}
+                            label={END_TIME}
                             name="endAt"
-                            error={endAtError || ''}
+                            error={(endAtError && dateValidationMessage(END_TIME, START_TIME)) || ''}
                           />
                         </Grid>
                       </Grid>
