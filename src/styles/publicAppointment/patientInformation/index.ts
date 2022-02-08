@@ -132,13 +132,6 @@ export const usePatientInformation = makeStyles({
     maxHeight: "calc(100vh - 344px)",
     overflowY: "auto",
   },
-
-  verticalContainer: {
-    "& .MuiCard-root": {
-      height: "calc(100vh - 130px)",
-      overflowY: "auto",
-    },
-  }
 });
 
 export const toggleButtonComponent = makeStyles({

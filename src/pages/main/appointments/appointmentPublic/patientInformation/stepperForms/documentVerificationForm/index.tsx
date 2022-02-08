@@ -10,7 +10,7 @@ const index = () => {
   const classes = verificationFormStyles()
 
   return (
-    <Box className={classes.verticalContainer}>
+    <Box>
       <CardComponent cardTitle="Document Verification">
         <Box py={2}>
           <Typography component="h4" variant="h4">Driving License</Typography>
