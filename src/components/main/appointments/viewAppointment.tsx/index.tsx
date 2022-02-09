@@ -5,7 +5,7 @@ import AppointmentForm from "../appointmentForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
 import {
-  VIEW_APPOINTMENTS_BREAD, APPOINTMENT_NEW_BREAD, APPOINTMENTS_BREAD, EDIT_APPOINTMENT
+  VIEW_APPOINTMENTS_BREAD, APPOINTMENTS_BREAD, EDIT_APPOINTMENT, APPOINTMENT_EDIT_BREAD
 } from '../../../../constants';
 import { useParams } from 'react-router';
 import { ParamsType } from '../../../../interfacesTypes';
@@ -17,7 +17,7 @@ const VIewAppointmentComponent: FC = () => {
     <>
       <PageHeader
         title={EDIT_APPOINTMENT}
-        path={[APPOINTMENTS_BREAD, VIEW_APPOINTMENTS_BREAD, APPOINTMENT_NEW_BREAD]}
+        path={[APPOINTMENTS_BREAD, VIEW_APPOINTMENTS_BREAD, APPOINTMENT_EDIT_BREAD]}
       />
 
       <AppointmentForm isEdit id={id} />

@@ -17,7 +17,7 @@ import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  dateValidationMessage, getDate, getTimestamps, renderFacilities,
+  dateValidationMessage, getDate, getTimestamps, invalidMessage, renderFacilities,
   requiredMessage, setRecord
 } from "../../../../utils";
 import {
@@ -33,7 +33,7 @@ import {
   MAMMOGRAPHY_CERT_NUMBER, CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
-  LANGUAGE_SPOKEN, SPECIALITY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
+  LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   TAXONOMY_CODE, EMPTY_OPTION, DOCTOR_DOB_VALIDATION_MESSAGE,
 } from "../../../../constants";
@@ -373,10 +373,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
-                          label={SPECIALITY}
+                          label={SPECIALTY}
                           name="speciality"
                           options={MAPPED_SPECIALTIES}
-                          error={specialtyError?.message && requiredMessage(SPECIALITY)}
+                          error={specialtyError?.message && requiredMessage(SPECIALTY)}
                         />
                       </Grid>
                     </Grid>
@@ -504,7 +504,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE}
-                          error={deaActiveDateError || ''}
+                          error={(deaActiveDateError && invalidMessage(DEA_ACTIVE_DATE)) || ''}
                         />
                       </Grid>
 
@@ -873,7 +873,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE}
-                          error={licenseActiveDateError || ''}
+                          error={(licenseActiveDateError && invalidMessage(LICENSE_ACTIVE_DATE)) || ''}
                         />
                       </Grid>
 

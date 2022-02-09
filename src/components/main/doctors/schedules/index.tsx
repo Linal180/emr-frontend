@@ -94,6 +94,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   const handleSlotCard = () => {
     dispatch({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: true })
     dispatch({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
+    dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
   };
 
   useEffect(() => {
@@ -128,7 +129,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                     })}
                   </Box>
 
-                  <Box display="flex" justifyContent="flex-end" onClick={handleSlotCard} className={classes.addSlot} my={2}>
+                  <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
                     <AddSlotIcon />
 
                     <Typography>

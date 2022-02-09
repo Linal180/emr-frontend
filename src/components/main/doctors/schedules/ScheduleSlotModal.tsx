@@ -15,7 +15,7 @@ import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
   dateValidationMessage,
-  getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
+  getDayFromTimestamps, getISOTime, renderLocations, renderServices, requiredMessage, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
@@ -24,9 +24,10 @@ import {
   CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, APPOINTMENT_TYPE,
   LOCATIONS_TEXT, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE,
-  CREATE_SCHEDULE, SCHEDULE_NOT_FOUND
+  CREATE_SCHEDULE, SCHEDULE_NOT_FOUND, DOCTOR_SCHEDULE
 } from "../../../../constants";
 import ViewDataLoader from "../../../common/ViewDataLoader";
+import CardComponent from "../../../common/CardComponent";
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
@@ -177,80 +178,82 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     >
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box ml={3} mr={3} pt={3}>
-            <Grid container spacing={3}>
-              <Grid item md={12} sm={12} xs={12}>
-                {getScheduleLoading ?
-                  <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
-                    <>
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={PICK_DAY_TEXT}
-                        name="day"
-                        error={dayError?.message}
-                        options={WEEK_DAYS}
-                      />
+          <CardComponent cardTitle={DOCTOR_SCHEDULE}>
+            <Box ml={3} mr={3} pt={3}>
+              <Grid container spacing={3}>
+                <Grid item md={12} sm={12} xs={12}>
+                  {getScheduleLoading ?
+                    <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
+                      <>
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={PICK_DAY_TEXT}
+                          name="day"
+                          error={dayError?.message}
+                          options={WEEK_DAYS}
+                        />
 
-                      <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
-                          <TimePicker
-                            isRequired
-                            label={START_TIME}
-                            name="startAt"
-                            error={startAtError || ''}
-                          />
+                        <Grid container spacing={3}>
+                          <Grid item md={6} sm={12} xs={12}>
+                            <TimePicker
+                              isRequired
+                              label={START_TIME}
+                              name="startAt"
+                              error={(startAtError && requiredMessage(START_TIME)) || ''}
+                            />
+                          </Grid>
+
+                          <Grid item md={6} sm={12} xs={12}>
+                            <TimePicker
+                              isRequired
+                              label={END_TIME}
+                              name="endAt"
+                              error={(endAtError && dateValidationMessage(END_TIME, START_TIME)) || ''}
+                            />
+                          </Grid>
                         </Grid>
 
-                        <Grid item md={6} sm={12} xs={12}>
-                          <TimePicker
-                            isRequired
-                            label={END_TIME}
-                            name="endAt"
-                            error={(endAtError && dateValidationMessage(END_TIME, START_TIME)) || ''}
-                          />
-                        </Grid>
-                      </Grid>
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={LOCATIONS_TEXT}
+                          name="locationId"
+                          error={locationError?.message}
+                          options={renderLocations(locationList)}
+                        />
 
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={LOCATIONS_TEXT}
-                        name="locationId"
-                        error={locationError?.message}
-                        options={renderLocations(locationList)}
-                      />
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={APPOINTMENT_TYPE}
+                          name="servicesIds"
+                          error={serviceError?.message}
+                          options={renderServices(serviceList)}
+                        />
+                      </>
+                    )}
 
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={APPOINTMENT_TYPE}
-                        name="servicesIds"
-                        error={serviceError?.message}
-                        options={renderServices(serviceList)}
-                      />
-                    </>
-                  )}
+                  <DialogActions>
+                    <Box pr={1}>
+                      <Button onClick={handleClose} color="default">
+                        {CANCEL}
+                      </Button>
+                    </Box>
 
-                <DialogActions>
-                  <Box pr={1}>
-                    <Button onClick={handleClose} color="default">
-                      {CANCEL}
+                    <Button type="submit" variant="contained" color="primary"
+                      disabled={disableSubmit}
+                    >
+                      {isEdit ? UPDATE_SCHEDULE : CREATE_SCHEDULE}
+
+                      {disableSubmit && <CircularProgress size={20} color="inherit" />}
                     </Button>
-                  </Box>
-
-                  <Button type="submit" variant="contained" color="primary"
-                    disabled={disableSubmit}
-                  >
-                    {isEdit ? UPDATE_SCHEDULE : CREATE_SCHEDULE}
-
-                    {disableSubmit && <CircularProgress size={20} color="inherit" />}
-                  </Button>
-                </DialogActions>
+                  </DialogActions>
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
-        </form >
+            </Box>
+          </CardComponent>
+        </form>
       </FormProvider>
     </Dialog>
   );

@@ -43,6 +43,8 @@ import { ViewLocation } from "../pages/main/facilities/locations/viewLocation";
 import { ScheduleAppointments } from "../pages/main/appointments/scheduleAppointments";
 import SlotConfirmation from "../pages/main/appointments/appointmentPublic/slotConfirmation";
 import AppointmentSuccess from "../pages/main/appointments/appointmentPublic/appointmentSuccess";
+import AppointmentFail from "../pages/main/appointments/appointmentPublic/appointmentFail";
+import AppointmentCancel from "../pages/main/appointments/appointmentPublic/appointmentCancel";
 import PatientInformation from "../pages/main/appointments/appointmentPublic/patientInformation";
 // constants
 import { AuthContext } from "../context";
@@ -51,7 +53,8 @@ import {
   STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE,
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
-  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE
+  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, 
+  PATIENT_APPOINTMENT_CANCEL
 } from "../constants";
 import DetailDoctor from "../pages/main/doctors/detailDoctor";
 
@@ -64,10 +67,12 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
       <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
       <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
-      <PublicRoute path={PUBLIC_APPOINTMENT_ROUTE} component={AppointmentPublic} exact />
-      <PublicRoute path={PATIENT_INFORMATION} component={PatientInformation} exact />
-      <PublicRoute path={SLOT_CONFIRMATION} component={SlotConfirmation} exact />
+      <PublicRoute path={`${PATIENT_INFORMATION}/:id`} component={PatientInformation} exact />
+      <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={SlotConfirmation} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_SUCCESS} component={AppointmentSuccess} exact />
+      <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
+      <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
+      <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={AppointmentPublic} exact />
       <Route exact path="/">
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>

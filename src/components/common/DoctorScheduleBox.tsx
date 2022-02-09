@@ -7,7 +7,7 @@ import { getStandardTime } from "../../utils";
 import { ActionType } from "../../reducers/doctorReducer";
 import { DoctorScheduleProps } from "../../interfacesTypes";
 import { useDoctorScheduleStyles } from "../../styles/doctorSchedule";
-import { FORM_TEXT, TO_TEXT, LOCATION, APPOINTMENT_TYPE } from "../../constants";
+import { TO_TEXT, LOCATION, APPOINTMENT_TYPE, FROM_TEXT } from "../../constants";
 
 const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
   id, startAt, endAt, location, scheduleServices
@@ -45,7 +45,7 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
           <Typography className={classes.subHeading}>
-            {FORM_TEXT}
+            {FROM_TEXT}
           </Typography>
 
           <Typography className={classes.heading}>

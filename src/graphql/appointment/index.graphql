@@ -13,6 +13,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
     
     appointments {
       id
+      status
       scheduleStartDateTime
       scheduleEndDateTime
       createdAt
@@ -32,6 +33,12 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       
       patient {
         id
+        phonePermission
+        preferredCommunicationMethod
+        pharmacy
+        medicationHistoryAuthority
+        releaseOfInfoBill
+        voiceCallPermission  
         firstName
         lastName
       }
@@ -56,6 +63,8 @@ query GetAppointment($getAppointment: GetAppointment!){
       id
       notes
       reason
+      token
+      status
       employment
       autoAccident
       otherAccident
@@ -63,30 +72,115 @@ query GetAppointment($getAppointment: GetAppointment!){
       scheduleEndDateTime
       primaryInsurance
       secondaryInsurance
+      paymentType
+      patientId
       createdAt
       updatedAt
       
       appointmentType {
         id
         name
+        price
         duration
+        serviceType
       }
       
       provider {
         id
-        firstName
+        ssn
+        dob
+        npi
+        upin
+        email
+        taxId
+        taxId
+        prefix
+        suffix
+        ssnType
         lastName
+        firstName
+        deaNumber
+        middleName
+        middleName
+        speciality
+        taxIdStuff
+        stateLicense
+        dpsCtpNumber
+        taxonomyCode
+        emcProviderId
+        providerIntials
+        languagesSpoken
+        blueShildNumber
+        billingFacility
+        campusGrpNumber
+        licenseTermDate
+        degreeCredentials
+        anesthesiaLicense
+        specialityLicense
+        medicareGrpNumber
+        prescriptiveAuthNumber
+        prescriptiveAuthNumber
+        licenseActiveDate
+        meammographyCertNumber
+        medicaidGrpNumber
+        deaActiveDate
+        deaTermDate
+        createdAt
+        updatedAt
       }
       
       patient {
         id
         firstName
+        middleName
         lastName
+        suffix
+        firstNameUsed
+        prefferedName
+        previousFirstName
+        previouslastName
+        motherMaidenName
+        ssn
+        gender
+        preferredCommunicationMethod
+        dob
+        phonePermission
+        pharmacy
+        medicationHistoryAuthority
+        releaseOfInfoBill
+        voiceCallPermission
+        registrationDepartment
+        primaryDepartment
+        registrationDate
+        deceasedDate
+        privacyNotice
+        releaseOfInfoBill
+        callToConsent
+        medicationHistoryAuthority
+        patientNote
+        language
+        race
+        ethnicity
+        maritialStatus
+        sexualOrientation
+        genderIdentity
+        sexAtBirth
+        pronouns
+        homeBound
+        holdStatement
+        statementDelivereOnline
+        statementNote
+        statementNoteDateFrom
+        statementNoteDateTo
+        createdAt
+        updatedAt
       }
       
       facility {
         id
         name
+        practiceType
+        serviceCode
       }
     }
   }
@@ -118,6 +212,30 @@ mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
       error
       status
       message
+    }
+  }
+}
+
+mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExternalAppointmentInput!){
+  createExternalAppointment(createExternalAppointmentInput: $createExternalAppointmentInput){
+    response {
+      error
+      status
+      message
+    }
+
+    appointment {
+      id
+    }
+  }
+}
+
+mutation CancelAppointment($cancelAppointment: CancelAppointment!){
+  cancelAppointment(cancelAppointment: $cancelAppointment){
+    response {
+      status
+      message
+      error
     }
   }
 }

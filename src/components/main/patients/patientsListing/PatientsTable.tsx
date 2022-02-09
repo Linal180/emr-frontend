@@ -1,5 +1,5 @@
 // packages block
-import { FC, ChangeEvent, useState, useEffect } from "react";
+import { FC, ChangeEvent, useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
@@ -9,14 +9,21 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { ListContext } from "../../../../context";
 import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
-import { useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, COUNTRY, PATIENT } from "../../../../constants";
+import {
+  useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation
+} from "../../../../generated/graphql";
+import {
+  ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION,
+  PATIENTS_ROUTE, NAME, CITY, COUNTRY, PATIENT
+} from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { fetchAllPatientList } = useContext(ListContext)
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -57,6 +64,9 @@ const PatientsTable: FC = (): JSX.Element => {
   });
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+    
     onError() {
       Alert.error(CANT_DELETE_PATIENT)
       setOpenDelete(false)
@@ -71,6 +81,7 @@ const PatientsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           setOpenDelete(false)
           findAllPatient();
+          fetchAllPatientList();
         }
       }
     }
@@ -147,7 +158,8 @@ const PatientsTable: FC = (): JSX.Element => {
             ) : (
               patients?.map((record: PatientPayload['patient'], index: number) => {
                 const { id, firstName, lastName, email, contacts } = record || {};
-                const patientContact = contacts && contacts[0];
+                
+                const patientContact = contacts && contacts.filter(contact => contact.primaryContact)[0];
                 const { phone, city, country } = patientContact || {};
 
                 return (
