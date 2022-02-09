@@ -127,7 +127,8 @@ const SlotConfirmation: FC = (): JSX.Element => {
               <Button type="submit" variant="contained" onClick={() => handleCancelAppointment()}>
                 Cancel Booking
               </Button>
-              <Button type="submit" variant="contained" className='blue-button'>
+
+              <Button type="submit" variant="contained" className='blue-button' disabled={!!!patientId}>
                 <Link to={`${PATIENT_INFORMATION}/${patientId}`}>
                   <Typography>
                     Continue
