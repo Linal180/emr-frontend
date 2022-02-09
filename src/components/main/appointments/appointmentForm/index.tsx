@@ -366,6 +366,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         value={date}
                         onChange={currentDate => currentDate && setDate(currentDate)}
                         autoOk
+                        disablePast
                         fullWidth
                         disableToolbar
                       />
