@@ -167,10 +167,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           variables: { getAppointment: { id } }
         })
       } else Alert.error(APPOINTMENT_NOT_FOUND)
+    } else {
+      setValue('employment', false)
+      setValue('autoAccident', false)
+      setValue('otherAccident', false)
     }
-    setValue('employment', false)
-    setValue('autoAccident', false)
-    setValue('otherAccident', false)
   }, [getAppointment, id, isEdit, setValue])
 
   useEffect(() => {
