@@ -10,7 +10,7 @@ import {
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment,
   Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, ServicesPayload,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe,
-  UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput, Schedule
+  UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput, Schedule, CreateExternalAppointmentItemInput
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -528,6 +528,8 @@ interface GuardianContactControlInputs {
   guardianMiddleName: string;
   guardianLastName: string;
   guardianSuffix: string;
+  guardianName: string;
+  guardianRelationship: SelectorOption;
 }
 
 type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName"
@@ -689,6 +691,7 @@ export interface MediaCardsType {
   hasCollage?: boolean;
   attachmentsData?: Maybe<Attachment[]> | undefined
   hasHighlights?: boolean
+  imageSide: string;
 }
 
 export interface IMediaControl extends IFieldTypes {
@@ -708,11 +711,17 @@ export interface MediaCardComponentType {
   isEdit: boolean;
   attachments?: Attachment[];
   allAttachments: Attachment[];
+  imageSide: string;
 }
 
 export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
   "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
   & { serviceId: SelectorOption } & { providerId: SelectorOption };
+
+export type ExtendedExternalAppointmentInputProps = Omit<CreateExternalAppointmentItemInput, "serviceId"
+  | "providerId" | "paymentType"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
+  & Omit<CreatePatientItemInput, "sexAtBirth"> & { paymentType: SelectorOption } &
+{ sexAtBirth: SelectorOption } & GuardianContactControlInputs;
 
 type Days = | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
 

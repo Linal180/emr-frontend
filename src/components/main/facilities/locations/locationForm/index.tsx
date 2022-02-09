@@ -11,7 +11,7 @@ import CardComponent from '../../../../common/CardComponent';
 // utils, interfaces and graphql block
 import history from "../../../../../history";
 import { ListContext } from '../../../../../context';
-import { renderFacilities, setRecord } from '../../../../../utils';
+import { renderFacilities, requiredMessage, setRecord } from '../../../../../utils';
 import { extendedContactSchema } from '../../../../../validationSchemas';
 import { extendedContactInput, GeneralFormProps, ParamsType } from '../../../../../interfacesTypes';
 import {
@@ -20,7 +20,7 @@ import {
 } from "../../../../../generated/graphql";
 import {
   ADDRESS, ADDRESS_2, ASSOCIATED_FACILITY, CITY, CONTACT, COUNTRY, CREATE_LOCATION,
-  EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, FACILITY_LOCATIONS_ROUTE, FAX, LOCATION_CREATED, LOCATION_INFO,
+  EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, FACILITY, FACILITY_LOCATIONS_ROUTE, FAX, LOCATION_CREATED, LOCATION_INFO,
   LOCATION_NOT_FOUND, LOCATION_UPDATED, MAPPED_SERVICE_CODES, NAME, PHONE, POS, STATE, UPDATE_LOCATION,
   ZIP_CODE
 } from "../../../../../constants";
@@ -199,7 +199,7 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                           name="facilityId"
                           value={EMPTY_OPTION}
                           label={ASSOCIATED_FACILITY}
-                          error={facilityError?.message}
+                          error={(facilityError && requiredMessage(FACILITY))}
                           options={renderFacilities(facilityList)}
                         />
                       </Grid>

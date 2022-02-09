@@ -1,19 +1,22 @@
 // packages block
 import { FC, useState } from "react";
-import { Add } from "@material-ui/icons";
-import { Box, Button, Card, CardActions, CardMedia, Grid } from "@material-ui/core";
+import { Box, Button, Card, CardActions, CardMedia, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../Alert";
-import CardComponent from "../CardComponent";
 import ConfirmationModal from "../ConfirmationModal";
 // graphql, constants and interfaces/types block
 import { MediaCardComponentType } from "../../../interfacesTypes";
 import { DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION } from "../../../constants";
 import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
+import { documentVerificationForm } from "../../../styles/publicAppointment/documentVerification";
+import { FileIcon } from "../../../assets/svgs";
+import { BLUE_ONE } from "../../../theme";
 
-const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, setAttachment, setAttachments, attachments, allAttachments }): JSX.Element => {
+const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, setAttachment, setAttachments, attachments, allAttachments, imageSide }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
+  const classes = documentVerificationForm()
+
 
   const [removeAttachmentData, { loading }] = useRemoveAttachmentDataMutation({
     onError({ message }) {
@@ -69,7 +72,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
 
   return (
     <>
-      <CardComponent cardTitle="image">
+      <Box ml={2} mr={2} mb={2} mt={2}>
         <Grid container spacing={3}>
           {attachments &&
             attachments.map((attachment: Attachment) => {
@@ -90,20 +93,28 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
               );
             })}
 
-          <Grid item md={4} xs={12}>
-            <Button color="primary" variant="outlined" className="big-add-button" onClick={handleAddMedia}>
-              <Box fontSize={100}>
-                <Add fontSize="inherit" />
+          <Grid md={12} xs={12}>
+            <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
+              <Box>
+                <FileIcon />
+                <Typography component="p" variant="body2">{imageSide}</Typography>
               </Box>
-            </Button>
+
+              <Box ml={2}>
+                <Typography component="h4" variant="h4">Drop your image here, <Box display="inline" color={BLUE_ONE}>or browse</Box></Typography>
+                <Typography component="h6" variant="body1">Supports: JPG,JPEG2000,PNG</Typography>
+              </Box>
+            </Box>
           </Grid>
 
         </Grid>
-      </CardComponent>
+      </Box>
 
-      {isDeleteOpen && (
-        <ConfirmationModal setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia} isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION} />
-      )}
+      {
+        isDeleteOpen && (
+          <ConfirmationModal setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia} isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION} />
+        )
+      }
     </>
   );
 };

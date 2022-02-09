@@ -10,7 +10,7 @@ import { Attachment } from "../../../generated/graphql";
 import { Action, ActionType, initialState, mediaReducer, State } from '../../../reducers/mediaReducer'
 import MediaCardComponent from "./MediaCardComponent";
 
-const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData }): JSX.Element => {
+const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, imageSide }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { isOpen, attachments, attachment, isEdit, isEditModalOpen } = state
 
@@ -26,6 +26,7 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData })
     return (
       <MediaCardComponent
         title={title}
+        imageSide={imageSide}
         setOpen={(isOpen: boolean) => {
           dispatch({
             type: ActionType.SET_IS_OPEN,

@@ -63,6 +63,7 @@ query GetAppointment($getAppointment: GetAppointment!){
       scheduleEndDateTime
       primaryInsurance
       secondaryInsurance
+      paymentType
       createdAt
       updatedAt
       
@@ -114,6 +115,16 @@ mutation CreateAppointment($createAppointmentInput: CreateAppointmentInput!){
 
 mutation UpdateAppointment($updateAppointmentInput: UpdateAppointmentInput!){
   updateAppointment(updateAppointmentInput: $updateAppointmentInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExternalAppointmentInput!){
+  createExternalAppointment(createExternalAppointmentInput: $createExternalAppointmentInput){
     response {
       error
       status

@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, renderTh, upperToNormal } from "../../../../utils";
+import { formatPhone, formatValue, renderTh } from "../../../../utils";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
 import {
@@ -21,7 +21,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
-  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALITY
+  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY
 } from "../../../../constants";
 
 const DoctorsTable: FC = (): JSX.Element => {
@@ -67,8 +67,8 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
       Alert.error(CANT_DELETE_DOCTOR)
-      dispatch({ type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: false })
     },
 
     onCompleted(data) {
@@ -80,7 +80,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           findAllDoctor()
           fetchAllDoctorList();
-          dispatch({ type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: false })
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
     }
@@ -144,7 +144,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(SPECIALITY)}
+              {renderTh(SPECIALTY)}
               {renderTh(FACILITY)}
               {renderTh(ACTION, "center")}
             </TableRow >
@@ -174,7 +174,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{upperToNormal(speciality as string)}</TableCell>
+                    <TableCell scope="row">{formatValue(speciality as string)}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
