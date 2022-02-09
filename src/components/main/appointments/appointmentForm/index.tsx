@@ -167,11 +167,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           variables: { getAppointment: { id } }
         })
       } else Alert.error(APPOINTMENT_NOT_FOUND)
-    } else {
-      setValue('employment', false)
-      setValue('autoAccident', false)
-      setValue('otherAccident', false)
     }
+    setValue('employment', false)
+    setValue('autoAccident', false)
+    setValue('otherAccident', false)
   }, [getAppointment, id, isEdit, setValue])
 
   useEffect(() => {
@@ -237,6 +236,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   return (
     <FormProvider {...methods}>
+      {JSON.stringify(errors)}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
