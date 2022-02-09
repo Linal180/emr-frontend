@@ -3,7 +3,7 @@ import { useEffect, FC, useContext, useState, Reducer, useReducer } from 'react'
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
+import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 // components block
@@ -35,7 +35,7 @@ import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
-  AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED
+  AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -212,12 +212,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       const { id: selectedFacility } = facilityId || {};
 
       const appointmentInput = {
-        reason: reason || '', scheduleStartDateTime: getTimestamps(scheduleStartDateTime || ''),
-        scheduleEndDateTime: getTimestamps(scheduleEndDateTime || ''), paymentType: PaymentType.Self,
+        reason: reason || '', 
+        scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
+        scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString()),
         autoAccident: autoAccident || false, otherAccident: otherAccident || false,
         primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
         notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
         serviceId: selectedService, providerId: selectedProvider, employment: employment || false,
+        paymentType: PaymentType.Self,
       };
 
       if (isEdit) {
@@ -372,10 +374,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                   {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
                     <ul className={classes.timeSlots}>
-                      {!!availableSchedules?.length && availableSchedules.map((schedule, index: number) => {
+                      {!!availableSchedules?.length ? availableSchedules.map((schedule, index: number) => {
                         const { startAt, endAt } = schedule || {}
 
                         return (
+
                           <li onClick={() => setSchedule(schedule)}>
                             <div>
                               <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
@@ -385,7 +388,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             </div>
                           </li>
                         )
-                      })}
+                      }) : (
+                        <Typography>{NO_SLOT_AVAILABLE}</Typography>
+                      )}
                     </ul>
                   )}
                 </CardComponent>
