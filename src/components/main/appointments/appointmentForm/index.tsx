@@ -233,6 +233,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   return (
     <FormProvider {...methods}>
+      {JSON.stringify(errors)}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
@@ -294,24 +295,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         />
                       </Grid>
                     </Grid>
-
-                    {/* <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <TimePicker
-                          label={SCHEDULE_START}
-                          error={scheduleStartError || ''}
-                          name="scheduleStartDateTime"
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <TimePicker
-                          label={SCHEDULE_END}
-                          error={scheduleEndError || ''}
-                          name="scheduleEndDateTime"
-                        />
-                      </Grid>
-                    </Grid> */}
 
                     <InputController
                       fieldType="text"
