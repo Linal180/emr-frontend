@@ -16,6 +16,7 @@ const AppointmentDatePicker = (): JSX.Element => {
         onChange={currentDate => currentDate && setDate(currentDate)}
         autoOk
         fullWidth
+        disablePast
         disableToolbar
       />
     </MuiPickersUtilsProvider>

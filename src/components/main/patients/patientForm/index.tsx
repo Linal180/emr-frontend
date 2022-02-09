@@ -231,7 +231,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             }
           }
 
-          if (employer) {
+          if (employer && employer.length) {
             const { id: employerId, name, email, phone, industry, usualOccupation } = employer[0];
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })

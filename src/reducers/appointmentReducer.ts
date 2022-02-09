@@ -1,4 +1,4 @@
-import { AppointmentsPayload, FacilityPayload, SchedulesPayload } from "../generated/graphql"
+import { AppointmentPayload, AppointmentsPayload, FacilityPayload, SchedulesPayload } from "../generated/graphql"
 
 export interface State {
   page: number;
@@ -9,8 +9,9 @@ export interface State {
   isInsurance: boolean;
   appointmentId: string;
   deleteAppointmentId: string;
-  facility: FacilityPayload['facility'],
-  availableSchedules: SchedulesPayload['schedules']
+  facility: FacilityPayload['facility'];
+  appointment: AppointmentPayload['appointment'];
+  availableSchedules: SchedulesPayload['schedules'];
   appointments: AppointmentsPayload['appointments'];
 }
 
@@ -23,6 +24,7 @@ export const initialState: State = {
   appointments: [],
   openDelete: false,
   appointmentId: '',
+  appointment: null,
   isInsurance: false,
   availableSchedules: [],
   deleteAppointmentId: '',
@@ -34,6 +36,7 @@ export enum ActionType {
   SET_PROVIDER_ID = 'setProviderId',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_TOTAL_PAGES = 'setTotalPages',
+  SET_APPOINTMENT = 'setAppointment',
   SET_SEARCH_QUERY = 'setSearchQuery',
   SET_IS_INSURANCE = 'setIsInsurance',
   SET_APPOINTMENTS = 'setAppointments',
@@ -52,6 +55,7 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENT_ID; appointmentId: string }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
+  | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
   | { type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: SchedulesPayload['schedules'] }
 
@@ -63,11 +67,11 @@ export const appointmentReducer = (state: State, action: Action): State => {
         page: action.page
       }
 
-      case ActionType.SET_IS_INSURANCE:
-        return {
-          ...state,
-          isInsurance: action.isInsurance
-        }
+    case ActionType.SET_IS_INSURANCE:
+      return {
+        ...state,
+        isInsurance: action.isInsurance
+      }
 
     case ActionType.SET_FACILITY:
       return {
@@ -109,6 +113,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         openDelete: action.openDelete
+      }
+
+    case ActionType.SET_APPOINTMENT:
+      return {
+        ...state,
+        appointment: action.appointment
       }
 
     case ActionType.SET_APPOINTMENTS:

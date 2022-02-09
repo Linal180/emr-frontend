@@ -9,7 +9,6 @@ import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
-import TimePicker from '../../../common/TimePicker';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
@@ -36,7 +35,7 @@ import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
-  AUTO_ACCIDENT, OTHER_ACCIDENT, SCHEDULE_START, SCHEDULE_END, VIEW_APPOINTMENTS_ROUTE
+  AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {

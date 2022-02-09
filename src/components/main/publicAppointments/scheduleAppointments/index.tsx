@@ -24,7 +24,8 @@ import {
   formatValue, getStandardTime, getTimestamps, renderDoctors, renderServices, requiredMessage
 } from "../../../../utils";
 import {
-  ContactType, Genderidentity, PaymentType, RelationshipType, SchedulePayload, SchedulesPayload,
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, SchedulePayload, SchedulesPayload,
+  Sexualorientation,
   useCreateExternalAppointmentMutation, useGetDoctorScheduleLazyQuery, useGetFacilityLazyQuery
 } from "../../../../generated/graphql";
 import {
@@ -97,15 +98,16 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { createExternalAppointment: { response } } = data;
+      const { createExternalAppointment: { response, appointment } } = data;
 
-      if (response) {
+      if (response && appointment) {
         const { status } = response
+        const { id } = appointment
 
-        if (status && status === 200) {
+        if (id && status && status === 200) {
           Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
           reset()
-          history.push(SLOT_CONFIRMATION)
+          history.push(`${SLOT_CONFIRMATION}/${id}`)
         }
       }
     }
@@ -138,7 +140,12 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const {
-      patientId, providerId, serviceId, dob, email, firstName, lastName, sexAtBirth,
+      suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
+      previouslastName, motherMaidenName, ssn, dob, email,
+      registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent,
+      patientNote, language, serviceId,
+      homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
+      statementNoteDateTo, medicationHistoryAuthority, sexAtBirth,
       scheduleStartDateTime, scheduleEndDateTime, membershipID, paymentType, guardianName, guardianRelationship
     } = inputs;
 
@@ -154,15 +161,32 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
         variables: {
           createExternalAppointmentInput: {
             createExternalAppointmentItemInput: {
-              serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID, 
-              paymentType: selectedPaymentType as PaymentType || PaymentType.Self, patientId,
-              scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()), 
+              serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
+              paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
+              scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
               scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString())
             },
 
             createPatientItemInput: {
-              firstName: firstName || "", lastName: lastName || "", facilityId, dob,
-              sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None, email: email || ""
+              suffix: suffix || '', firstName: firstName || '', middleName: middleName || '',
+              lastName: lastName || '', firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '',
+              previousFirstName: previousFirstName || '', previouslastName: previouslastName || '',
+              motherMaidenName: motherMaidenName || '', ssn: ssn || '', dob: getTimestamps(dob || ''),
+              registrationDate: getTimestamps(registrationDate || ''),
+              deceasedDate: getTimestamps(deceasedDate || ''),
+              privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false,
+              callToConsent: callToConsent || false, usualProviderId: selectedProvider || '',
+              medicationHistoryAuthority: medicationHistoryAuthority || false,
+              patientNote: patientNote || '', language: language || '',
+              statementNoteDateTo: getTimestamps(statementNoteDateTo || ''),
+              homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
+              statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
+              pronouns: Pronouns.None, ethnicity: Ethnicity.None, facilityId, gender: Genderidentity.None,
+              sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
+              genderIdentity: Genderidentity.None, maritialStatus: Maritialstatus.Single,
+              sexualOrientation: Sexualorientation.None, race: Race.Other, email: email || '',
+              statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
+              primaryDepartment: PrimaryDepartment.Hospital, registrationDepartment: RegDepartment.Hospital,
             },
 
             createGuardianContactInput: {
