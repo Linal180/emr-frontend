@@ -29,7 +29,7 @@ import {
 } from "../../../../utils";
 import {
   PaymentType, SchedulesPayload, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
-   useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
+  useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -237,6 +237,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   return (
     <FormProvider {...methods}>
+      {JSON.stringify(errors)}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
@@ -291,7 +292,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       label={PATIENT}
                       name="patientId"
                       options={renderPatient(patientList)}
-                      error={patientError?.message && requiredMessage(PROVIDER)}
+                      error={patientError?.message && requiredMessage(PATIENT)}
                     />
 
                     <Grid container spacing={3}>
