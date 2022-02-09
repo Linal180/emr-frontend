@@ -1,6 +1,7 @@
 // packages block
 import { Reducer, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
+import { Link } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
@@ -33,7 +34,7 @@ import {
   MAPPED_GENDER_IDENTITY, MAPPED_RELATIONSHIP_TYPE, PATIENT_DETAILS, PHONE, SELECT_SERVICES,
   SEX_AT_BIRTH, SLOT_CONFIRMATION, SELECT_PROVIDER, PAYMENT_TYPE, MAPPED_PAYMENT_METHOD,
   INSURANCE_COMPANY, MEMBERSHIP_ID, BOOK_APPOINTMENT, PATIENT_FIRST_NAME, PATIENT_LAST_NAME,
-  RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE
+  RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE, PATIENT_APPOINTMENT_CANCEL
 } from "../../../../constants";
 
 const ScheduleAppointmentsPublic = (): JSX.Element => {
@@ -394,9 +395,11 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
 
           <Grid item md={12}>
             <Box pt={4} display="flex" justifyContent="center" gridGap={20}>
-              <Button type="submit" variant="contained">
-                {CANCEL}
-              </Button>
+              <Link to={PATIENT_APPOINTMENT_CANCEL}>
+                <Button variant="contained">
+                  {CANCEL}
+                </Button>
+              </Link>
 
               <Button type="submit" variant="contained" className={disableSubmit ? '' : 'blue-button'}
                 disabled={disableSubmit}
