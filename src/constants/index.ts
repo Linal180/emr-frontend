@@ -540,6 +540,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const SLOT_ALREADY_BOOKED = "This slot is already booked.";
 export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully"

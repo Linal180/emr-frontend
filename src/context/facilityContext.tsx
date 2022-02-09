@@ -42,20 +42,22 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     },
 
     onCompleted(data) {
-      if (data) {
-        const { findAllDoctor: { doctors, pagination } } = data
+      try {
+        if (data) {
+          const { findAllDoctor: { doctors, pagination } } = data
 
-        if (pagination) {
-          const { totalPages } = pagination;
+          if (pagination) {
+            const { totalPages } = pagination;
 
-          if (totalPages ? doctorPages !== totalPages : false) {
-            setDoctorPages(doctorPages + 1)
+            if (totalPages ? doctorPages !== totalPages : false) {
+              setDoctorPages(doctorPages + 1)
+            }
           }
-        }
 
-        !!doctors && !!doctorList &&
-          setDoctorList([...doctorList, ...doctors] as AllDoctorPayload['doctors'])
-      }
+          !!doctors && !!doctorList &&
+            setDoctorList([...doctorList, ...doctors] as AllDoctorPayload['doctors'])
+        }
+      } catch (error) { }
     }
   })
 
@@ -68,20 +70,22 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     },
 
     onCompleted(data) {
-      if (data) {
-        const { findAllPatient: { patients, pagination } } = data
+      try {
+        if (data) {
+          const { findAllPatient: { patients, pagination } } = data
 
-        if (pagination) {
-          const { totalPages } = pagination;
+          if (pagination) {
+            const { totalPages } = pagination;
 
-          if (totalPages ? patientPages !== totalPages : false) {
-            setPatientPages(patientPages + 1)
+            if (totalPages ? patientPages !== totalPages : false) {
+              setPatientPages(patientPages + 1)
+            }
           }
-        }
 
-        !!patients && !!patientList &&
-          setPatientList([...patientList, ...patients] as PatientsPayload['patients'])
-      }
+          !!patients && !!patientList &&
+            setPatientList([...patientList, ...patients] as PatientsPayload['patients'])
+        }
+      } catch (error) { }
     }
   })
 
@@ -94,20 +98,22 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     },
 
     onCompleted(data) {
-      if (data) {
-        const { findAllServices: { services, pagination } } = data
+      try {
+        if (data) {
+          const { findAllServices: { services, pagination } } = data
 
-        if (pagination) {
-          const { totalPages } = pagination;
+          if (pagination) {
+            const { totalPages } = pagination;
 
-          if (totalPages ? servicePages !== totalPages : false) {
-            setServicePages(servicePages + 1)
+            if (totalPages ? servicePages !== totalPages : false) {
+              setServicePages(servicePages + 1)
+            }
           }
-        }
 
-        !!services && !!serviceList &&
-          setServicesList([...serviceList, ...services] as ServicesPayload['services'])
-      }
+          !!services && !!serviceList &&
+            setServicesList([...serviceList, ...services] as ServicesPayload['services'])
+        }
+      } catch (error) { }
     }
   })
 
@@ -120,20 +126,22 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     },
 
     onCompleted(data) {
-      if (data) {
-        const { findAllContacts: { contacts, pagination } } = data
+      try {
+        if (data) {
+          const { findAllContacts: { contacts, pagination } } = data
 
-        if (pagination) {
-          const { totalPages } = pagination;
+          if (pagination) {
+            const { totalPages } = pagination;
 
-          if (totalPages ? locationPages !== totalPages : false) {
-            setLocationPages(locationPages + 1)
+            if (totalPages ? locationPages !== totalPages : false) {
+              setLocationPages(locationPages + 1)
+            }
           }
-        }
 
-        !!contacts && !!locationList &&
-          setLocationList([...locationList, ...contacts] as ContactsPayload['contacts'])
-      }
+          !!contacts && !!locationList &&
+            setLocationList([...locationList, ...contacts] as ContactsPayload['contacts'])
+        }
+      } catch (error) { }
     }
   })
 
