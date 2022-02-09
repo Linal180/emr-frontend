@@ -1,33 +1,30 @@
 // packages block
-import { FC, MouseEvent, Reducer, useEffect, useReducer, useState } from "react";
-import { ArrowDropDown } from "@material-ui/icons";
+import { FC, Reducer, useEffect, useReducer } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Box, Button, Card, Menu, Typography } from '@material-ui/core';
+import { Box, Button, Card, Typography } from '@material-ui/core';
 // components block
 import Alert from "../../../../../components/common/Alert";
+// components block
+import Backdrop from "../../../../../components/common/Backdrop";
 // utils, styles  block, constants
+import history from "../../../../../history";
 import { WHITE_TWO } from '../../../../../theme';
 import { ParamsType } from "../../../../../interfacesTypes";
+import { getFormattedDate, getStandardTime } from "../../../../../utils";
 import { useGetAppointmentLazyQuery } from "../../../../../generated/graphql";
 import { slotConfirmationStyles } from "../../../../../styles/publicAppointment/slotConfirmation";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../../../../reducers/appointmentReducer";
 import {
-  APPOINTMENT_NOT_FOUND, SLOT_CONFIRMATION_SUB_HEADING_TWO,
-  PATIENT_INFORMATION, SLOT_CONFIRMATION_HEADING_TWO, SLOT_CONFIRMATION_SUB_HEADING, PATIENT_APPOINTMENT_FAIL,
+  appointmentReducer, Action, initialState, State, ActionType
+} from "../../../../../reducers/appointmentReducer";
+import {
+  APPOINTMENT_NOT_FOUND, SLOT_CONFIRMATION_SUB_HEADING_TWO, PATIENT_APPOINTMENT_FAIL,
+  PATIENT_INFORMATION, SLOT_CONFIRMATION_HEADING_TWO, SLOT_CONFIRMATION_SUB_HEADING,
 } from '../../../../../constants';
-import history from "../../../../../history";
-import Backdrop from "../../../../../components/common/Backdrop";
-import { getFormattedDate, getStandardTime } from "../../../../../utils";
 
 const SlotConfirmation: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = slotConfirmationStyles();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const isMenuOpen = Boolean(anchorEl);
-  const menuId = "slot-menu";
-  const handleMenuClose = () => setAnchorEl(null);
   const [{ appointment }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const handleSlotMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
     fetchPolicy: "network-only",
@@ -57,34 +54,11 @@ const SlotConfirmation: FC = (): JSX.Element => {
       getAppointment({
         variables: { getAppointment: { id } }
       })
-    } else Alert.error(APPOINTMENT_NOT_FOUND)
+    } else {
+      Alert.error(APPOINTMENT_NOT_FOUND)
+      history.push(PATIENT_APPOINTMENT_FAIL)
+    }
   }, [getAppointment, id])
-
-  const renderMenu = (
-    <Menu
-      getContentAnchorEl={null}
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: "top", horizontal: "left" }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <Box display="flex" flexDirection="column" pl={2} pr={2}>
-        <Button>
-          Yes, Confirm it!
-        </Button>
-        <Link to={PATIENT_INFORMATION}>
-          <Button>
-            Not now, Maybe Later!
-          </Button>
-        </Link>
-
-      </Box>
-
-    </Menu>
-  );
 
   const { scheduleStartDateTime } = appointment || {}
 
@@ -111,13 +85,14 @@ const SlotConfirmation: FC = (): JSX.Element => {
               <Button type="submit" variant="contained">
                 Cancel Booking
               </Button>
-              <Button type="submit" variant="contained" className='blue-button' onClick={handleSlotMenuOpen}>
-                <Typography>
-                  Continue
-                </Typography>  <ArrowDropDown />
+              <Button type="submit" variant="contained" className='blue-button'>
+                <Link to={PATIENT_INFORMATION} >
+                  <Typography>
+                    Continue
+                  </Typography>
+                </Link>
               </Button>
             </Box>
-            {renderMenu}
           </Box>
         </Card>
       )}
