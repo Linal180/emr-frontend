@@ -491,7 +491,7 @@ export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
-export const PATIENT_APPOINTMENT_FAIL = `${PATIENT_INFORMATION}/fail`;
+export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 

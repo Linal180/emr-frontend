@@ -10,7 +10,10 @@ import Selector from '../../../../../components/common/Selector';
 import CardComponent from '../../../../../components/common/CardComponent';
 import ToggleButtonComponent from "../../../../../components/common/ToggleButtonComponent";
 import Alert from "../../../../../components/common/Alert";
-import { AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race, useGetPatientLazyQuery, useUpdatePatientMutation } from "../../../../../generated/graphql";
+import {
+  AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race,
+  useGetPatientLazyQuery, useUpdatePatientMutation
+} from "../../../../../generated/graphql";
 
 // themes / constants / utils
 import {
@@ -25,7 +28,7 @@ import {
   EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED,
   ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS,
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
-  PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE, PATIENT_INFORMATION,
+  PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE,
 } from "../../../../../constants";
 import { ParamsType, PatientInputProps } from "../../../../../interfacesTypes";
 import MediaCards from '../../../../../components/common/AddMedia/MediaCards';
@@ -47,7 +50,7 @@ const Index: FC = (): JSX.Element => {
   });
   const { handleSubmit, setValue } = methods;
 
-  const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
+  const [getPatient] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -59,7 +62,7 @@ const Index: FC = (): JSX.Element => {
     onCompleted(data) {
       if (data) {
         const { getPatient: { patient } } = data
-        console.log(patient, "-----")
+        
         if (patient) {
           const { suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
             previouslastName, motherMaidenName, ssn, dob, gender, registrationDepartment, primaryDepartment,
