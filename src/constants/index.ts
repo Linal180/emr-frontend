@@ -492,6 +492,7 @@ export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const PATIENT_APPOINTMENT_FAIL = `${PATIENT_INFORMATION}/fail`;
+export const PATIENT_APPOINTMENT_CANCEL = `${PATIENT_INFORMATION}/appointment-cancel`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 
 // stepper arrays
@@ -559,6 +560,7 @@ export const INVALID_EMAIL = "Invalid email address";
 export const SCHEDULE_START = "Schedule Start Time";
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
+export const APPOINTMENT_CANCEL = "Your appointment is cancel successfully";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const STAFF_CREATED = "Staff created successfully!";
