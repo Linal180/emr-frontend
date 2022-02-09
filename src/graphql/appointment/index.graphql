@@ -63,6 +63,7 @@ query GetAppointment($getAppointment: GetAppointment!){
       id
       notes
       reason
+      token
       status
       employment
       autoAccident
@@ -224,6 +225,16 @@ mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExtern
 
     appointment {
       id
+    }
+  }
+}
+
+mutation CancelAppointment($cancelAppointment: CancelAppointment!){
+  cancelAppointment(cancelAppointment: $cancelAppointment){
+    response {
+      status
+      message
+      error
     }
   }
 }

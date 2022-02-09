@@ -11,7 +11,10 @@ import { ApolloClient, InMemoryCache, ApolloLink, HttpLink, from } from "@apollo
 import Alert from "../components/common/Alert";
 // utils and constants block
 import { handleLogout } from "../utils";
-import { FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, NOT_FOUND_EXCEPTION, PRECONDITION_FAILED_EXCEPTION, REQUEST_NOT_FOUND, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND, UNAUTHORIZED } from "../constants";
+import {
+  FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, NOT_FOUND_EXCEPTION,
+  PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND, UNAUTHORIZED
+} from "../constants";
 dotenv.config()
 
 const authMiddleware = new ApolloLink((operation: any, forward: any) => {
@@ -42,7 +45,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
             if (response) {
               const { error, response: errorResponse } = response
 
-              if (error && error !== REQUEST_NOT_FOUND && error !== NOT_FOUND_EXCEPTION) {
+              if (error && error !== NOT_FOUND_EXCEPTION) {
                 if (error === TOKEN_NOT_FOUND) {
                   Alert.error(INVALID_OR_EXPIRED_TOKEN_MESSAGE)
                 } else
@@ -52,9 +55,9 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
               if (errorResponse) {
                 const { error: responseError, message } = errorResponse;
 
-                if (message && message !== REQUEST_NOT_FOUND && message !== NOT_FOUND_EXCEPTION && message !== FORBIDDEN_EXCEPTION) {
+                if (message && message !== NOT_FOUND_EXCEPTION && message !== FORBIDDEN_EXCEPTION) {
                   Alert.error(message)
-                } else if (responseError && responseError !== REQUEST_NOT_FOUND && responseError !== NOT_FOUND_EXCEPTION && responseError === PRECONDITION_FAILED_EXCEPTION) {
+                } else if (responseError && responseError !== NOT_FOUND_EXCEPTION && responseError === PRECONDITION_FAILED_EXCEPTION) {
                   Alert.error(responseError)
                 }
               }
@@ -62,7 +65,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
           }
         }
 
-        return null
+        return null;
       }
     );
 

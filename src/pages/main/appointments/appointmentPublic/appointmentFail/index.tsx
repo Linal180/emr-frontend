@@ -1,5 +1,5 @@
 // packages block
-import { Box, Button, Card, Typography } from '@material-ui/core';
+import { Box, Card, Typography } from '@material-ui/core';
 // styles and theme block
 import { WHITE_TWO } from '../../../../../theme';
 import { appointmentFailStyles } from '../../../../../styles/publicAppointment/appointmentFail';
@@ -20,13 +20,13 @@ const index = () => {
       <Card>
         <Box minHeight="580px" className={classes.container}>
           <Box maxWidth="700px">
-            <Typography component="h3" variant="h3" >This facility is not available. Please connect with your administrator</Typography>
-          </Box>
-
-          <Box display="flex" gridGap={20} mt={3}>
-            <Button type="submit" variant="contained">
-              Cancel Booking
-            </Button>
+            <Typography component="h3" variant="h3">
+              Could not book your appointment right now. Your facility may be unavailable.
+              Please try again later or contact to facility administrator for more information.
+              <br />
+              <br />
+              Thank you!
+            </Typography>
           </Box>
         </Box>
       </Card>

@@ -11,39 +11,62 @@ import history from "../../../../../history";
 import { WHITE_TWO } from '../../../../../theme';
 import { ParamsType } from "../../../../../interfacesTypes";
 import { getFormattedDate, getStandardTime } from "../../../../../utils";
-import { useGetAppointmentLazyQuery } from "../../../../../generated/graphql";
+import { useCancelAppointmentMutation, useGetAppointmentLazyQuery } from "../../../../../generated/graphql";
 import { slotConfirmationStyles } from "../../../../../styles/publicAppointment/slotConfirmation";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
 import {
   APPOINTMENT_NOT_FOUND, SLOT_CONFIRMATION_SUB_HEADING_TWO, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_INFORMATION, SLOT_CONFIRMATION_HEADING_TWO, SLOT_CONFIRMATION_SUB_HEADING,
+  PATIENT_INFORMATION, SLOT_CONFIRMATION_HEADING_TWO, SLOT_CONFIRMATION_SUB_HEADING, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, PATIENT_CANCELLED_APPOINTMENT,
 } from '../../../../../constants';
+import ConfirmationModal from "../../../../../components/common/ConfirmationModal";
 
 const SlotConfirmation: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = slotConfirmationStyles();
-  const [{ appointment }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const [{ appointment, openDelete }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const { scheduleStartDateTime, token } = appointment || {}
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
     fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
+    nextFetchPolicy: "cache-and-network",
 
     onError() {
-      Alert.error(APPOINTMENT_NOT_FOUND)
       history.push(PATIENT_APPOINTMENT_FAIL)
     },
 
     onCompleted(data) {
-      const { getAppointment: { response, appointment } } = data;
+      try {
+        const { getAppointment: { response, appointment } } = data;
 
-      if (response) {
-        const { status } = response
+        if (response) {
+          const { status } = response
 
-        if (appointment && status && status === 200) {
-          dispatch({ type: ActionType.SET_APPOINTMENT, appointment })
+          if (appointment && status && status === 200) {
+            dispatch({ type: ActionType.SET_APPOINTMENT, appointment })
+          }
+        }
+      } catch (error) { }
+    }
+  });
+
+  const [cancelAppointment, { loading: cancelAppointmentLoading }] = useCancelAppointmentMutation({
+    onError() {
+      Alert.error(CANT_CANCELLED_APPOINTMENT)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { cancelAppointment: { response } } = data
+
+        if (response) {
+          const { message } = response
+
+          message && Alert.success(message);
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
     }
@@ -60,7 +83,19 @@ const SlotConfirmation: FC = (): JSX.Element => {
     }
   }, [getAppointment, id])
 
-  const { scheduleStartDateTime } = appointment || {}
+  const handleCancelAppointment = () => {
+    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+  };
+
+  const removeAppointment = async () => {
+    if (token) {
+      await cancelAppointment({
+        variables: { cancelAppointment: { token, reason: PATIENT_CANCELLED_APPOINTMENT } }
+      })
+    } else {
+      Alert.error(TOKEN_NOT_FOUND)
+    }
+  };
 
   return (
     <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75}
@@ -82,7 +117,7 @@ const SlotConfirmation: FC = (): JSX.Element => {
             </Box>
 
             <Box display="flex" gridGap={20} mt={3}>
-              <Button type="submit" variant="contained">
+              <Button type="submit" variant="contained" onClick={() => handleCancelAppointment()}>
                 Cancel Booking
               </Button>
               <Button type="submit" variant="contained" className='blue-button'>
@@ -96,6 +131,17 @@ const SlotConfirmation: FC = (): JSX.Element => {
           </Box>
         </Card>
       )}
+
+      <ConfirmationModal
+        title={APPOINTMENT}
+        isOpen={openDelete}
+        isLoading={cancelAppointmentLoading}
+        description={DELETE_APPOINTMENT_DESCRIPTION}
+        handleDelete={removeAppointment}
+        setOpen={(open: boolean) => dispatch({
+          type: ActionType.SET_OPEN_DELETE, openDelete: open
+        })}
+      />
     </Box>
   );
 };

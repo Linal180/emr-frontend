@@ -457,6 +457,7 @@ export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation mess
 export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
+export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
 
 // Roles
 export const STAFF = "STAFF";
@@ -589,7 +590,7 @@ export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
-export const REQUEST_NOT_FOUND = "Requests not found for current user";
+export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
