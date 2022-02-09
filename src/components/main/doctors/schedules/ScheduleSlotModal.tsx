@@ -15,7 +15,7 @@ import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
   dateValidationMessage,
-  getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
+  getDayFromTimestamps, getISOTime, renderLocations, renderServices, requiredMessage, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
@@ -200,7 +200,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                               isRequired
                               label={START_TIME}
                               name="startAt"
-                              error={startAtError || ''}
+                              error={(startAtError && requiredMessage(START_TIME)) || ''}
                             />
                           </Grid>
 
