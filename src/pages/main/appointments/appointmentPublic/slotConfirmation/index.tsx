@@ -26,7 +26,7 @@ const SlotConfirmation: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = slotConfirmationStyles();
   const [{ appointment, openDelete }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { scheduleStartDateTime, token } = appointment || {}
+  const { scheduleStartDateTime, token, patientId } = appointment || {}
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
     fetchPolicy: "network-only",
@@ -110,7 +110,7 @@ const SlotConfirmation: FC = (): JSX.Element => {
       justifyContent="center"
       alignItems="center"
     >
-      {getAppointmentLoading ? <Backdrop loading={true} /> : (
+      {(getAppointmentLoading || !appointment) ? <Backdrop loading={true} /> : (
         <Card>
           <Box minHeight="580px" className={classes.container}>
             <Box maxWidth="700px">
@@ -128,7 +128,7 @@ const SlotConfirmation: FC = (): JSX.Element => {
                 Cancel Booking
               </Button>
               <Button type="submit" variant="contained" className='blue-button'>
-                <Link to={PATIENT_INFORMATION}>
+                <Link to={`${PATIENT_INFORMATION}/${patientId}`}>
                   <Typography>
                     Continue
                   </Typography>

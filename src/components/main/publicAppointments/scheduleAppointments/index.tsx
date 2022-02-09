@@ -2,7 +2,7 @@
 import { Reducer, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, Button, Grid } from "@material-ui/core";
+import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 // components block
 import Alert from "../../../common/Alert";
@@ -24,16 +24,16 @@ import {
   formatValue, getStandardTime, getTimestamps, renderDoctors, renderServices, requiredMessage
 } from "../../../../utils";
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, SchedulePayload, SchedulesPayload,
-  Sexualorientation,
-  useCreateExternalAppointmentMutation, useGetDoctorScheduleLazyQuery, useGetFacilityLazyQuery
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
+  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, SchedulePayload, SchedulesPayload,
+  Sexualorientation, useCreateExternalAppointmentMutation, useGetDoctorScheduleLazyQuery, useGetFacilityLazyQuery
 } from "../../../../generated/graphql";
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL, DOB, EMAIL, EMPTY_OPTION,
   MAPPED_GENDER_IDENTITY, MAPPED_RELATIONSHIP_TYPE, PATIENT_DETAILS, PHONE, SELECT_SERVICES,
   SEX_AT_BIRTH, SLOT_CONFIRMATION, SELECT_PROVIDER, PAYMENT_TYPE, MAPPED_PAYMENT_METHOD,
   INSURANCE_COMPANY, MEMBERSHIP_ID, BOOK_APPOINTMENT, PATIENT_FIRST_NAME, PATIENT_LAST_NAME,
-  RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND,
+  RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE
 } from "../../../../constants";
 
 const ScheduleAppointmentsPublic = (): JSX.Element => {
@@ -54,21 +54,24 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    onError({ message }) {
-      Alert.error(message)
+    onError() {
+      history.push(PATIENT_APPOINTMENT_FAIL)
     },
 
     onCompleted(data) {
-      const { getFacility: { response, facility } } = data;
-      if (response) {
-        const { status } = response
+      try {
+        const { getFacility: { response, facility } } = data;
 
-        if (facility && status && status === 200) {
-          dispatch({ type: ActionType.SET_FACILITY, facility })
-          fetchAllDoctorList(facilityId);
-          fetchAllServicesList(facilityId)
+        if (response) {
+          const { status } = response
+
+          if (facility && status && status === 200) {
+            dispatch({ type: ActionType.SET_FACILITY, facility })
+            fetchAllDoctorList(facilityId);
+            fetchAllServicesList(facilityId)
+          }
         }
-      }
+      } catch (error) { }
     }
   });
 
@@ -118,7 +121,8 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
       getFacility({
         variables: { getFacility: { id: facilityId } }
       })
-    }
+    } else
+      history.push(PATIENT_APPOINTMENT_FAIL)
   }, [facilityId, getFacility])
 
   useEffect(() => {
@@ -149,55 +153,59 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
       scheduleStartDateTime, scheduleEndDateTime, membershipID, paymentType, guardianName, guardianRelationship
     } = inputs;
 
-    if (facility) {
-      const { id: facilityId } = facility
-      const { id: selectedService } = serviceId || {};
-      const { id: selectedProvider } = providerId || {};
-      const { id: selectedSexAtBirth } = sexAtBirth || {};
-      const { id: selectedPaymentType } = paymentType || {};
-      const { id: selectedGuardianRelationship } = guardianRelationship || {};
+    if (!scheduleStartDateTime || !scheduleEndDateTime) {
+      Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
+    } else {
+      if (facility) {
+        const { id: facilityId } = facility
+        const { id: selectedService } = serviceId || {};
+        const { id: selectedProvider } = providerId || {};
+        const { id: selectedSexAtBirth } = sexAtBirth || {};
+        const { id: selectedPaymentType } = paymentType || {};
+        const { id: selectedGuardianRelationship } = guardianRelationship || {};
 
-      await createExternalAppointment({
-        variables: {
-          createExternalAppointmentInput: {
-            createExternalAppointmentItemInput: {
-              serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
-              paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
-              scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
-              scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString())
-            },
+        await createExternalAppointment({
+          variables: {
+            createExternalAppointmentInput: {
+              createExternalAppointmentItemInput: {
+                serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
+                paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
+                scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
+                scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString())
+              },
 
-            createPatientItemInput: {
-              suffix: suffix || '', firstName: firstName || '', middleName: middleName || '',
-              lastName: lastName || '', firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '',
-              previousFirstName: previousFirstName || '', previouslastName: previouslastName || '',
-              motherMaidenName: motherMaidenName || '', ssn: ssn || '', dob: getTimestamps(dob || ''),
-              registrationDate: getTimestamps(registrationDate || ''),
-              deceasedDate: getTimestamps(deceasedDate || ''),
-              privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false,
-              callToConsent: callToConsent || false, usualProviderId: selectedProvider || '',
-              medicationHistoryAuthority: medicationHistoryAuthority || false,
-              patientNote: patientNote || '', language: language || '',
-              statementNoteDateTo: getTimestamps(statementNoteDateTo || ''),
-              homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
-              statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
-              pronouns: Pronouns.None, ethnicity: Ethnicity.None, facilityId, gender: Genderidentity.None,
-              sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
-              genderIdentity: Genderidentity.None, maritialStatus: Maritialstatus.Single,
-              sexualOrientation: Sexualorientation.None, race: Race.Other, email: email || '',
-              statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
-              primaryDepartment: PrimaryDepartment.Hospital, registrationDepartment: RegDepartment.Hospital,
-            },
+              createPatientItemInput: {
+                suffix: suffix || '', firstName: firstName || '', middleName: middleName || '',
+                lastName: lastName || '', firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '',
+                previousFirstName: previousFirstName || '', previouslastName: previouslastName || '',
+                motherMaidenName: motherMaidenName || '', ssn: ssn || '', dob: getTimestamps(dob || ''),
+                registrationDate: getTimestamps(registrationDate || ''),
+                deceasedDate: getTimestamps(deceasedDate || ''),
+                privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false,
+                callToConsent: callToConsent || false, usualProviderId: selectedProvider || '',
+                medicationHistoryAuthority: medicationHistoryAuthority || false,
+                patientNote: patientNote || '', language: language || '',
+                statementNoteDateTo: getTimestamps(statementNoteDateTo || ''),
+                homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
+                statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
+                pronouns: Pronouns.None, ethnicity: Ethnicity.None, facilityId, gender: Genderidentity.None,
+                sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
+                genderIdentity: Genderidentity.None, maritialStatus: Maritialstatus.Single,
+                sexualOrientation: Sexualorientation.None, race: Race.Other, email: email || '',
+                statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
+                primaryDepartment: PrimaryDepartment.Hospital, registrationDepartment: RegDepartment.Hospital,
+              },
 
-            createGuardianContactInput: {
-              name: guardianName, contactType: ContactType.Guardian,
-              relationship: selectedGuardianRelationship as RelationshipType || RelationshipType.Other,
+              createGuardianContactInput: {
+                name: guardianName, contactType: ContactType.Guardian,
+                relationship: selectedGuardianRelationship as RelationshipType || RelationshipType.Other,
+              }
             }
           }
-        }
-      })
-    } else
-      Alert.error(FACILITY_NOT_FOUND)
+        })
+      } else
+        Alert.error(FACILITY_NOT_FOUND)
+    }
   }
 
   const setSchedule = (schedule: SchedulePayload['schedule']) => {
@@ -361,7 +369,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
 
               {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
                 <ul className={classes.timeSlots}>
-                  {!!availableSchedules?.length && availableSchedules.map((schedule, index) => {
+                  {!!availableSchedules?.length ? availableSchedules.map((schedule, index) => {
                     const { startAt, endAt } = schedule || {}
 
                     return (
@@ -375,9 +383,12 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
                         </div>
                       </li>
                     )
-                  })}
+                  }) : (
+                    <Typography>{NO_SLOT_AVAILABLE}</Typography>
+                  )}
                 </ul>
               )}
+
             </CardComponent>
           </Grid>
 

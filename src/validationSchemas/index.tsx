@@ -494,6 +494,4 @@ export const externalAppointmentSchema = yup.object({
   ...serviceIdSchema,
   ...providerIdSchema,
   ...firstLastNameSchema,
-  scheduleEndDateTime: yup.string().required(),
-  scheduleStartDateTime: yup.string().required(),
 })

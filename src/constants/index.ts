@@ -458,7 +458,7 @@ export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the 
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
-
+export const NO_SLOT_AVAILABLE = "No Slot available"
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
@@ -540,6 +540,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully"
 export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully"

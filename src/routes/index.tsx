@@ -67,12 +67,12 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
       <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
       <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
-      <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={AppointmentPublic} exact />
-      <PublicRoute path={PATIENT_INFORMATION} component={PatientInformation} exact />
+      <PublicRoute path={`${PATIENT_INFORMATION}/:id`} component={PatientInformation} exact />
       <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={SlotConfirmation} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_SUCCESS} component={AppointmentSuccess} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
+      <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={AppointmentPublic} exact />
       <Route exact path="/">
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>

@@ -4,7 +4,7 @@ import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel } from 
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 // components
 import Stepper from './components/stepper';
-import { ListContext } from '../../../../../context';
+import { FacilityContext } from '../../../../../context';
 import InputController from '../../../../../controller';
 import Selector from '../../../../../components/common/Selector';
 import CardComponent from '../../../../../components/common/CardComponent';
@@ -25,26 +25,29 @@ import {
   EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED,
   ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS,
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
-  PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE,
+  PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE, PATIENT_INFORMATION,
 } from "../../../../../constants";
-import { PatientInputProps } from "../../../../../interfacesTypes";
+import { ParamsType, PatientInputProps } from "../../../../../interfacesTypes";
 import MediaCards from '../../../../../components/common/AddMedia/MediaCards';
+import { useParams } from 'react-router';
 
 const Index: FC = (): JSX.Element => {
-  const [activeStep, setActiveStep] = useState<number>(0);
+  const { id } = useParams<ParamsType>();
   const classes = usePatientInformation();
-  const { doctorList } = useContext(ListContext)
+  const { doctorList } = useContext(FacilityContext)
+  const [activeStep, setActiveStep] = useState<number>(0);
 
-  const [{
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, patientId,
     guarantorContactId, employerId
-  }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  } = state
   const methods = useForm<PatientInputProps>({
     mode: "all",
   });
   const { handleSubmit, setValue } = methods;
 
-  const [getPatient,] = useGetPatientLazyQuery({
+  const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -56,7 +59,7 @@ const Index: FC = (): JSX.Element => {
     onCompleted(data) {
       if (data) {
         const { getPatient: { patient } } = data
-
+        console.log(patient, "-----")
         if (patient) {
           const { suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
             previouslastName, motherMaidenName, ssn, dob, gender, registrationDepartment, primaryDepartment,
@@ -288,14 +291,14 @@ const Index: FC = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (patientId) {
+    if (id) {
       getPatient({
         variables: {
-          getPatient: { id: patientId }
+          getPatient: { id }
         },
       })
     } else Alert.error(PATIENT_NOT_FOUND)
-  }, [getPatient, patientId])
+  }, [getPatient, id])
 
   const handleNextStep = () => {
     setActiveStep(activeStep + 1)
@@ -320,7 +323,7 @@ const Index: FC = (): JSX.Element => {
               {activeStep === 0 ? (
                 <Box className={classes.mainGridContainer}>
                   <Box mb={2} mr={2}>
-                    <CardComponent cardTitle="Document Verification">
+                    <CardComponent cardTitle="Patient Information">
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
@@ -607,7 +610,7 @@ const Index: FC = (): JSX.Element => {
                     </Box>
                   </CardComponent>
                 </Box>
-              ) : activeStep === 2 ? (
+              ) : activeStep === 2 && (
                 <CardComponent cardTitle="Document Verification">
                   <Box className={classes.agreementContainer}>
                     <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>
@@ -627,7 +630,7 @@ const Index: FC = (): JSX.Element => {
                     </Box>
                   </Box>
                 </CardComponent>
-              ) : (<></>)}
+              )}
             </Box>
           </Box>
 
