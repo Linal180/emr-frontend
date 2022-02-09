@@ -11,14 +11,14 @@ import history from "../../../../../history";
 import { WHITE_TWO } from '../../../../../theme';
 import { ParamsType } from "../../../../../interfacesTypes";
 import { getFormattedDate, getStandardTime } from "../../../../../utils";
-import { useCancelAppointmentMutation, useGetAppointmentLazyQuery } from "../../../../../generated/graphql";
+import { Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery } from "../../../../../generated/graphql";
 import { slotConfirmationStyles } from "../../../../../styles/publicAppointment/slotConfirmation";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
 import {
   APPOINTMENT_NOT_FOUND, SLOT_CONFIRMATION_SUB_HEADING_TWO, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_INFORMATION, SLOT_CONFIRMATION_HEADING_TWO, SLOT_CONFIRMATION_SUB_HEADING, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, PATIENT_CANCELLED_APPOINTMENT,
+  PATIENT_INFORMATION, SLOT_CONFIRMATION_HEADING_TWO, SLOT_CONFIRMATION_SUB_HEADING, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, PATIENT_CANCELLED_APPOINTMENT, PATIENT_APPOINTMENT_CANCEL,
 } from '../../../../../constants';
 import ConfirmationModal from "../../../../../components/common/ConfirmationModal";
 
@@ -45,6 +45,12 @@ const SlotConfirmation: FC = (): JSX.Element => {
           const { status } = response
 
           if (appointment && status && status === 200) {
+            const { status } = appointment
+
+            if (status === Appointmentstatus.Cancelled) {
+              history.push(PATIENT_APPOINTMENT_CANCEL)
+            }
+
             dispatch({ type: ActionType.SET_APPOINTMENT, appointment })
           }
         }
@@ -67,6 +73,7 @@ const SlotConfirmation: FC = (): JSX.Element => {
 
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          history.push(PATIENT_APPOINTMENT_CANCEL)
         }
       }
     }
@@ -107,8 +114,8 @@ const SlotConfirmation: FC = (): JSX.Element => {
         <Card>
           <Box minHeight="580px" className={classes.container}>
             <Box maxWidth="700px">
-              <Typography component="h3" variant="h3" >Thank you! Your visit at {getStandardTime(scheduleStartDateTime || '')} on {getFormattedDate(scheduleStartDateTime || '')} has been confirmed.</Typography>
-              <Typography component="h3" variant="h3" >{SLOT_CONFIRMATION_HEADING_TWO}</Typography>
+              <Typography component="h3" variant="h3">Thank you! Your visit at {getStandardTime(scheduleStartDateTime || '')} on {getFormattedDate(scheduleStartDateTime || '')} has been confirmed.</Typography>
+              <Typography component="h3" variant="h3">{SLOT_CONFIRMATION_HEADING_TWO}</Typography>
             </Box>
 
             <Box pt={3}>
@@ -121,7 +128,7 @@ const SlotConfirmation: FC = (): JSX.Element => {
                 Cancel Booking
               </Button>
               <Button type="submit" variant="contained" className='blue-button'>
-                <Link to={PATIENT_INFORMATION} >
+                <Link to={PATIENT_INFORMATION}>
                   <Typography>
                     Continue
                   </Typography>

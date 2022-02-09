@@ -225,15 +225,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     reason: { message: reasonError } = {},
     providerId: { id: providerError } = {},
     facilityId: { id: facilityError } = {},
-    // scheduleEndDateTime: { message: scheduleEndError } = {},
     primaryInsurance: { message: primaryInsuranceError } = {},
-    // scheduleStartDateTime: { message: scheduleStartError } = {},
     secondaryInsurance: { message: secondaryInsuranceError } = {},
   } = errors;
 
   return (
     <FormProvider {...methods}>
-      {JSON.stringify(errors)}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
@@ -405,7 +402,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           </Button>
         </Box>
       </form>
-    </FormProvider >
+    </FormProvider>
   );
 };
 

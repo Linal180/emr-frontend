@@ -147,8 +147,8 @@ const DoctorsTable: FC = (): JSX.Element => {
               {renderTh(SPECIALTY)}
               {renderTh(FACILITY)}
               {renderTh(ACTION, "center")}
-            </TableRow >
-          </TableHead >
+            </TableRow>
+          </TableHead>
 
           <TableBody>
             {loading ? (
@@ -194,7 +194,7 @@ const DoctorsTable: FC = (): JSX.Element => {
               })
             )}
           </TableBody>
-        </Table >
+        </Table>
 
         {((!loading && doctors?.length === 0) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
@@ -225,8 +225,8 @@ const DoctorsTable: FC = (): JSX.Element => {
             type: ActionType.SET_OPEN_DELETE, openDelete: open
           })}
         />
-      </Box >
-    </Box >
+      </Box>
+    </Box>
   );
 };
 
