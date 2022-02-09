@@ -253,7 +253,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
               </Grid>
             </Box>
           </CardComponent>
-        </form >
+        </form>
       </FormProvider>
     </Dialog>
   );

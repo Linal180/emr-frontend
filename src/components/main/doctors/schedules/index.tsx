@@ -129,7 +129,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                     })}
                   </Box>
 
-                  <Box display="flex" justifyContent="flex-end" onClick={handleSlotCard} className={classes.addSlot} my={2}>
+                  <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
                     <AddSlotIcon />
 
                     <Typography>

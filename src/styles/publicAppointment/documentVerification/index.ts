@@ -6,9 +6,10 @@ export const documentVerificationForm = makeStyles({
     marginTop: 24,
     padding: 30,
     borderRadius: 8,
-    border: `1px dashed ${BLUE_SIX}`,
+    border: `3px dashed ${BLUE_SIX}`,
     display: "flex",
     alignItems: "center",
+    cursor: 'pointer',
     position: "relative",
 
     "& h4": {

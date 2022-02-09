@@ -17,6 +17,12 @@ query FindAllPatient($patientInput: PatientInput!) {
       dob
       email
       gender
+      phonePermission
+      pharmacy
+      medicationHistoryAuthority
+      preferredCommunicationMethod
+      releaseOfInfoBill
+      voiceCallPermission
       lastName
       firstName
       createdAt
@@ -79,6 +85,16 @@ query FindAllPatient($patientInput: PatientInput!) {
         createdAt
         updatedAt
       }
+
+       attachments {
+        id
+        type
+        typeId
+        key
+        url
+        createdAt
+        updatedAt
+      }
     }
   }
 }
@@ -106,6 +122,11 @@ query GetPatient($getPatient: GetPatient!) {
       ssn
       gender
       dob
+      phonePermission
+      pharmacy
+      medicationHistoryAuthority
+      releaseOfInfoBill
+      voiceCallPermission
       registrationDepartment
       primaryDepartment
       registrationDate
@@ -114,6 +135,7 @@ query GetPatient($getPatient: GetPatient!) {
       releaseOfInfoBill
       callToConsent
       medicationHistoryAuthority
+      preferredCommunicationMethod
       patientNote
       language
       race
@@ -199,6 +221,16 @@ query GetPatient($getPatient: GetPatient!) {
           createdAt
           updatedAt
         }
+      }
+
+      attachments {
+        id
+        type
+        typeId
+        key
+        url
+        createdAt
+        updatedAt
       }
     }
   }

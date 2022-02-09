@@ -6,26 +6,30 @@ import {
   Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell
 } from "@material-ui/core";
 // components block
-import Alert from "../../../common/Alert";
-import TableLoader from "../../../common/TableLoader";
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import Alert from "./Alert";
+import TableLoader from "./TableLoader";
+import ConfirmationModal from "./ConfirmationModal";
+import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { getFormattedDate, renderTh } from "../../../../utils";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import { EditIcon, TablesSearchIcon, TrashIcon } from '../../../../assets/svgs'
+import { getFormattedDate, renderTh } from "../../utils";
+import { useTableStyles } from "../../styles/tableStyles";
+import { EditIcon, TablesSearchIcon, TrashIcon } from "../../assets/svgs"
 import {
   appointmentReducer, Action, initialState, State, ActionType
-} from '../../../../reducers/appointmentReducer';
+} from "../../reducers/appointmentReducer";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation
-} from "../../../../generated/graphql";
+} from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES
-} from "../../../../constants";
+} from "../../constants";
 
-const AppointmentsTable: FC = (): JSX.Element => {
+interface AppointmentsTableProps {
+  doctorId?: string;
+}
+
+const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
@@ -145,7 +149,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
           <TableHead>
             <TableRow>
               {renderTh(TYPE)}
-              {renderTh(DOCTOR)}
+              {!doctorId && renderTh(DOCTOR)}
               {renderTh(PATIENT)}
               {renderTh(DATE)}
               {renderTh(DURATION)}
@@ -173,7 +177,7 @@ const AppointmentsTable: FC = (): JSX.Element => {
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{type}</TableCell>
-                    <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>
+                    {!doctorId && <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>}
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
                     <TableCell scope="row">
                       {getFormattedDate(scheduleStartDateTime || '')}

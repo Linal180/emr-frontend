@@ -372,6 +372,7 @@ export type CreateEmployerInput = {
 
 export type CreateExternalAppointmentInput = {
   createExternalAppointmentItemInput: CreateExternalAppointmentItemInput;
+  createGuardianContactInput: CreateContactInput;
   createPatientItemInput: CreatePatientItemInput;
 };
 
@@ -444,6 +445,7 @@ export type CreatePatientItemInput = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
@@ -1085,6 +1087,7 @@ export type Patient = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission: Scalars['Boolean'];
   preferredCommunicationMethod: Communicationtype;
@@ -1836,6 +1839,7 @@ export type UpdatePatientItemInput = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
@@ -1991,14 +1995,14 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, scheduleStartDateTime: string, scheduleEndDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleStartDateTime: string, scheduleEndDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, phonePermission: boolean, preferredCommunicationMethod: Communicationtype, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, employment?: boolean | null | undefined, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, scheduleStartDateTime: string, scheduleEndDateTime: string, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, token?: string | null | undefined, status: Appointmentstatus, employment?: boolean | null | undefined, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, scheduleStartDateTime: string, scheduleEndDateTime: string, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, paymentType: PaymentType, patientId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null | undefined, provider?: { __typename?: 'Doctor', id: string, ssn?: string | null | undefined, dob?: string | null | undefined, npi?: string | null | undefined, upin?: string | null | undefined, email?: string | null | undefined, taxId?: string | null | undefined, prefix?: string | null | undefined, suffix?: string | null | undefined, ssnType?: SsnType | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, deaNumber?: string | null | undefined, middleName?: string | null | undefined, speciality?: Speciality | null | undefined, taxIdStuff?: string | null | undefined, stateLicense?: string | null | undefined, dpsCtpNumber?: string | null | undefined, taxonomyCode?: string | null | undefined, emcProviderId?: string | null | undefined, providerIntials?: string | null | undefined, languagesSpoken?: string | null | undefined, blueShildNumber?: string | null | undefined, billingFacility?: string | null | undefined, campusGrpNumber?: string | null | undefined, licenseTermDate?: string | null | undefined, degreeCredentials?: string | null | undefined, anesthesiaLicense?: string | null | undefined, specialityLicense?: string | null | undefined, medicareGrpNumber?: string | null | undefined, prescriptiveAuthNumber?: string | null | undefined, licenseActiveDate?: string | null | undefined, meammographyCertNumber?: string | null | undefined, medicaidGrpNumber?: string | null | undefined, deaActiveDate: string, deaTermDate: string, createdAt: string, updatedAt: string } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, preferredCommunicationMethod: Communicationtype, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, callToConsent: boolean, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, serviceCode: ServiceCode } | null | undefined } | null | undefined } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -2020,6 +2024,20 @@ export type UpdateAppointmentMutationVariables = Exact<{
 
 
 export type UpdateAppointmentMutation = { __typename?: 'Mutation', updateAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type CreateExternalAppointmentMutationVariables = Exact<{
+  createExternalAppointmentInput: CreateExternalAppointmentInput;
+}>;
+
+
+export type CreateExternalAppointmentMutation = { __typename?: 'Mutation', createExternalAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string } | null | undefined } };
+
+export type CancelAppointmentMutationVariables = Exact<{
+  cancelAppointment: CancelAppointment;
+}>;
+
+
+export type CancelAppointmentMutation = { __typename?: 'Mutation', cancelAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined } };
 
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
@@ -2206,14 +2224,14 @@ export type FindAllPatientQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, dob?: string | null | undefined, email?: string | null | undefined, gender: Genderidentity, lastName?: string | null | undefined, firstName?: string | null | undefined, createdAt: string, updatedAt: string, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: Array<{ __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, npi?: string | null | undefined, name: string, code?: string | null | undefined, practiceType: PracticeType, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, revenueCode?: string | null | undefined, tamxonomyCode?: string | null | undefined, insurancePlanType?: string | null | undefined, serviceCode: ServiceCode, mammographyCertificationNumber?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, dob?: string | null | undefined, email?: string | null | undefined, gender: Genderidentity, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, preferredCommunicationMethod: Communicationtype, releaseOfInfoBill: boolean, voiceCallPermission: boolean, lastName?: string | null | undefined, firstName?: string | null | undefined, createdAt: string, updatedAt: string, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: Array<{ __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, npi?: string | null | undefined, name: string, code?: string | null | undefined, practiceType: PracticeType, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, revenueCode?: string | null | undefined, tamxonomyCode?: string | null | undefined, insurancePlanType?: string | null | undefined, serviceCode: ServiceCode, mammographyCertificationNumber?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, type: AttachmentType, typeId: string, key?: string | null | undefined, url?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientQueryVariables = Exact<{
   getPatient: GetPatient;
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, releaseOfInfoBill: boolean, callToConsent: boolean, medicationHistoryAuthority: boolean, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, phone?: string | null | undefined, serviceCode: ServiceCodes, primaryContact?: boolean | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, ssn?: string | null | undefined, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined }> | null | undefined, employer?: Array<{ __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: string | null | undefined, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, revenueCode?: string | null | undefined, tamxonomyCode?: string | null | undefined, insurancePlanType?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined } | null | undefined } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, phone?: string | null | undefined, serviceCode: ServiceCodes, primaryContact?: boolean | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, ssn?: string | null | undefined, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined }> | null | undefined, employer?: Array<{ __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceType: PracticeType, code?: string | null | undefined, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, revenueCode?: string | null | undefined, tamxonomyCode?: string | null | undefined, insurancePlanType?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, type: AttachmentType, typeId: string, key?: string | null | undefined, url?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -2370,6 +2388,7 @@ export const FindAllAppointmentsDocument = gql`
     }
     appointments {
       id
+      status
       scheduleStartDateTime
       scheduleEndDateTime
       createdAt
@@ -2386,6 +2405,12 @@ export const FindAllAppointmentsDocument = gql`
       }
       patient {
         id
+        phonePermission
+        preferredCommunicationMethod
+        pharmacy
+        medicationHistoryAuthority
+        releaseOfInfoBill
+        voiceCallPermission
         firstName
         lastName
       }
@@ -2437,6 +2462,8 @@ export const GetAppointmentDocument = gql`
       id
       notes
       reason
+      token
+      status
       employment
       autoAccident
       otherAccident
@@ -2444,26 +2471,111 @@ export const GetAppointmentDocument = gql`
       scheduleEndDateTime
       primaryInsurance
       secondaryInsurance
+      paymentType
+      patientId
       createdAt
       updatedAt
       appointmentType {
         id
         name
+        price
         duration
+        serviceType
       }
       provider {
         id
-        firstName
+        ssn
+        dob
+        npi
+        upin
+        email
+        taxId
+        taxId
+        prefix
+        suffix
+        ssnType
         lastName
+        firstName
+        deaNumber
+        middleName
+        middleName
+        speciality
+        taxIdStuff
+        stateLicense
+        dpsCtpNumber
+        taxonomyCode
+        emcProviderId
+        providerIntials
+        languagesSpoken
+        blueShildNumber
+        billingFacility
+        campusGrpNumber
+        licenseTermDate
+        degreeCredentials
+        anesthesiaLicense
+        specialityLicense
+        medicareGrpNumber
+        prescriptiveAuthNumber
+        prescriptiveAuthNumber
+        licenseActiveDate
+        meammographyCertNumber
+        medicaidGrpNumber
+        deaActiveDate
+        deaTermDate
+        createdAt
+        updatedAt
       }
       patient {
         id
         firstName
+        middleName
         lastName
+        suffix
+        firstNameUsed
+        prefferedName
+        previousFirstName
+        previouslastName
+        motherMaidenName
+        ssn
+        gender
+        preferredCommunicationMethod
+        dob
+        phonePermission
+        pharmacy
+        medicationHistoryAuthority
+        releaseOfInfoBill
+        voiceCallPermission
+        registrationDepartment
+        primaryDepartment
+        registrationDate
+        deceasedDate
+        privacyNotice
+        releaseOfInfoBill
+        callToConsent
+        medicationHistoryAuthority
+        patientNote
+        language
+        race
+        ethnicity
+        maritialStatus
+        sexualOrientation
+        genderIdentity
+        sexAtBirth
+        pronouns
+        homeBound
+        holdStatement
+        statementDelivereOnline
+        statementNote
+        statementNoteDateFrom
+        statementNoteDateTo
+        createdAt
+        updatedAt
       }
       facility {
         id
         name
+        practiceType
+        serviceCode
       }
     }
   }
@@ -2608,6 +2720,85 @@ export function useUpdateAppointmentMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateAppointmentMutationHookResult = ReturnType<typeof useUpdateAppointmentMutation>;
 export type UpdateAppointmentMutationResult = Apollo.MutationResult<UpdateAppointmentMutation>;
 export type UpdateAppointmentMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentMutation, UpdateAppointmentMutationVariables>;
+export const CreateExternalAppointmentDocument = gql`
+    mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExternalAppointmentInput!) {
+  createExternalAppointment(
+    createExternalAppointmentInput: $createExternalAppointmentInput
+  ) {
+    response {
+      error
+      status
+      message
+    }
+    appointment {
+      id
+    }
+  }
+}
+    `;
+export type CreateExternalAppointmentMutationFn = Apollo.MutationFunction<CreateExternalAppointmentMutation, CreateExternalAppointmentMutationVariables>;
+
+/**
+ * __useCreateExternalAppointmentMutation__
+ *
+ * To run a mutation, you first call `useCreateExternalAppointmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateExternalAppointmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createExternalAppointmentMutation, { data, loading, error }] = useCreateExternalAppointmentMutation({
+ *   variables: {
+ *      createExternalAppointmentInput: // value for 'createExternalAppointmentInput'
+ *   },
+ * });
+ */
+export function useCreateExternalAppointmentMutation(baseOptions?: Apollo.MutationHookOptions<CreateExternalAppointmentMutation, CreateExternalAppointmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateExternalAppointmentMutation, CreateExternalAppointmentMutationVariables>(CreateExternalAppointmentDocument, options);
+      }
+export type CreateExternalAppointmentMutationHookResult = ReturnType<typeof useCreateExternalAppointmentMutation>;
+export type CreateExternalAppointmentMutationResult = Apollo.MutationResult<CreateExternalAppointmentMutation>;
+export type CreateExternalAppointmentMutationOptions = Apollo.BaseMutationOptions<CreateExternalAppointmentMutation, CreateExternalAppointmentMutationVariables>;
+export const CancelAppointmentDocument = gql`
+    mutation CancelAppointment($cancelAppointment: CancelAppointment!) {
+  cancelAppointment(cancelAppointment: $cancelAppointment) {
+    response {
+      status
+      message
+      error
+    }
+  }
+}
+    `;
+export type CancelAppointmentMutationFn = Apollo.MutationFunction<CancelAppointmentMutation, CancelAppointmentMutationVariables>;
+
+/**
+ * __useCancelAppointmentMutation__
+ *
+ * To run a mutation, you first call `useCancelAppointmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelAppointmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelAppointmentMutation, { data, loading, error }] = useCancelAppointmentMutation({
+ *   variables: {
+ *      cancelAppointment: // value for 'cancelAppointment'
+ *   },
+ * });
+ */
+export function useCancelAppointmentMutation(baseOptions?: Apollo.MutationHookOptions<CancelAppointmentMutation, CancelAppointmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CancelAppointmentMutation, CancelAppointmentMutationVariables>(CancelAppointmentDocument, options);
+      }
+export type CancelAppointmentMutationHookResult = ReturnType<typeof useCancelAppointmentMutation>;
+export type CancelAppointmentMutationResult = Apollo.MutationResult<CancelAppointmentMutation>;
+export type CancelAppointmentMutationOptions = Apollo.BaseMutationOptions<CancelAppointmentMutation, CancelAppointmentMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
@@ -4508,6 +4699,12 @@ export const FindAllPatientDocument = gql`
       dob
       email
       gender
+      phonePermission
+      pharmacy
+      medicationHistoryAuthority
+      preferredCommunicationMethod
+      releaseOfInfoBill
+      voiceCallPermission
       lastName
       firstName
       createdAt
@@ -4567,6 +4764,15 @@ export const FindAllPatientDocument = gql`
         createdAt
         updatedAt
       }
+      attachments {
+        id
+        type
+        typeId
+        key
+        url
+        createdAt
+        updatedAt
+      }
     }
   }
 }
@@ -4622,6 +4828,11 @@ export const GetPatientDocument = gql`
       ssn
       gender
       dob
+      phonePermission
+      pharmacy
+      medicationHistoryAuthority
+      releaseOfInfoBill
+      voiceCallPermission
       registrationDepartment
       primaryDepartment
       registrationDate
@@ -4630,6 +4841,7 @@ export const GetPatientDocument = gql`
       releaseOfInfoBill
       callToConsent
       medicationHistoryAuthority
+      preferredCommunicationMethod
       patientNote
       language
       race
@@ -4710,6 +4922,15 @@ export const GetPatientDocument = gql`
           createdAt
           updatedAt
         }
+      }
+      attachments {
+        id
+        type
+        typeId
+        key
+        url
+        createdAt
+        updatedAt
       }
     }
   }

@@ -15,7 +15,7 @@ import {
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
   ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION,
-   APPOINTMENT_TYPE,
+  APPOINTMENT_TYPE,
 } from "../constants";
 
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
@@ -470,8 +470,6 @@ export const appointmentSchema = yup.object({
   otherAccident: yup.boolean(),
   primaryInsurance: yup.string(),
   secondaryInsurance: yup.string(),
-  scheduleEndDateTime: yup.string(),
-  scheduleStartDateTime: yup.string(),
 })
 
 export const doctorScheduleSchema = yup.object({
@@ -488,4 +486,12 @@ export const doctorScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).required(requiredMessage(APPOINTMENT_TYPE)),
+})
+
+export const externalAppointmentSchema = yup.object({
+  ...dobSchema,
+  ...emailSchema,
+  ...serviceIdSchema,
+  ...providerIdSchema,
+  ...firstLastNameSchema,
 })

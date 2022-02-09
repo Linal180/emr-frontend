@@ -18,6 +18,7 @@ import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../ass
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/doctorReducer';
+import AppointmentsTable from "../../../common/AppointmentsTable";
 
 const DoctorDetailComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -120,7 +121,7 @@ const DoctorDetailComponent = (): JSX.Element => {
           ))}
         </TabList>
 
-        <Box className={classes.profileDetailsContainer}>
+        <Box className={`${classes.profileDetailsContainer} overflowY-auto`} maxHeight="calc(100vh - 248px)">
           <Box className={classes.profileCard}>
             <Box pr={3.75}>
               <Avatar variant="square" src="" className={classes.profileImage}></Avatar>
@@ -157,7 +158,7 @@ const DoctorDetailComponent = (): JSX.Element => {
 
           <TabPanel value="1">
             <Grid container spacing={3}>
-              {/* APPOINTMENT LIST FOR CURRENT DOCTOR */}
+
             </Grid>
           </TabPanel>
 
@@ -166,6 +167,12 @@ const DoctorDetailComponent = (): JSX.Element => {
               <DoctorScheduleForm
                 doctorFacilityId={doctorFacilityId}
               />
+            </Grid>
+          </TabPanel>
+
+          <TabPanel value="3">
+            <Grid>
+                <AppointmentsTable doctorId={id} />
             </Grid>
           </TabPanel>
         </Box>

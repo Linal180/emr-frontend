@@ -2,7 +2,7 @@
 import { FC } from "react";
 // components block
 import PageHeader from "../../../common/PageHeader";
-import AppointmentsTable from "./AppointmentsTable";
+import AppointmentsTable from "../../../common/AppointmentsTable";
 // constants block
 import {
   ADD_APPOINTMENT, VIEW_APPOINTMENTS_BREAD, APPOINTMENTS_ROUTE, APPOINTMENT_TEXT,

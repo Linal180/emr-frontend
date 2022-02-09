@@ -1,5 +1,5 @@
 import { Box, Typography } from '@material-ui/core';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { FormVerification } from '../../../../../../interfacesTypes';
 import { documentVerificationForm } from '../../../../../../styles/publicAppointment/documentVerification';
 import { BLUE_ONE } from '../../../../../../theme';
