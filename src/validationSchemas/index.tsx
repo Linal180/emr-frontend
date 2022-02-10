@@ -47,11 +47,11 @@ const facilityCodeSchema = {
 }
 
 const dobSchema = {
-  dob: yup.string().test(value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
+  dob: yup.string().test(value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 150)
 }
 
 const doctorDobSchema = {
-  dob: yup.string().test(value => moment().diff(moment(value), 'years') > 20 && moment().diff(moment(value), 'years') < 100)
+  dob: yup.string().test(value => moment().diff(moment(value), 'years') > 20 && moment().diff(moment(value), 'years') < 150)
 }
 
 const mammographySchema = {
