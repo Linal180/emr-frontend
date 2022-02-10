@@ -6,7 +6,7 @@ import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
   Communicationtype,
-  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
+  Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
   RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
 } from "../generated/graphql";
 
@@ -707,12 +707,6 @@ export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
   { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
 ];
-
-export const MAPPED_GENDER: SelectorOption[] = [
-  { id: Gender.Male, name: formatValue(Gender.Male) },
-  { id: Gender.Female, name: formatValue(Gender.Female) },
-  { id: Gender.Other, name: formatValue(Gender.Other) },
-]
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },

@@ -23,9 +23,9 @@ import {
 } from "../../../../generated/graphql";
 import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
-  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER,
+  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES,
   STAFF_NOT_FOUND, CANT_UPDATE_STAFF, CANT_CREATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER_IDENTITY
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -248,7 +248,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={GENDER}
                           value={EMPTY_OPTION}
                           error={genderError?.message || ""}
-                          options={MAPPED_GENDER}
+                          options={MAPPED_GENDER_IDENTITY}
                         />
                       </Grid>
 
