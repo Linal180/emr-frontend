@@ -212,8 +212,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address && setValue("guarantorAddress", address)
               address2 && setValue("guarantorAddress2", address2)
               country && setValue("guarantorCountry", country)
-              lastName && setValue("guarantorFirstName", lastName)
-              firstName && setValue("guarantorLastName", firstName)
+              lastName && setValue("guarantorLastName", lastName)
+              firstName && setValue("guarantorFirstName", firstName)
               middleName && setValue("guarantorMiddleName", middleName)
               employerName && setValue("guarantorEmployerName", employerName)
             }
