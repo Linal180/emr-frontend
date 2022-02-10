@@ -19,7 +19,8 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
-  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useGetDoctorAppointmentsLazyQuery, useRemoveAppointmentMutation
+  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useGetDoctorAppointmentsLazyQuery,
+  useRemoveAppointmentMutation
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT,
@@ -68,7 +69,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
-  const [getDoctorAppointment, { loading: getDoctorAppointmentLoading, error: doctorAppointmentError }] = useGetDoctorAppointmentsLazyQuery({
+  const [getDoctorAppointment, { loading: getDoctorAppointmentLoading }] = useGetDoctorAppointmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,

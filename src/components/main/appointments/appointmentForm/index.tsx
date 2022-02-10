@@ -28,7 +28,7 @@ import {
 } from "../../../../utils";
 import {
   DoctorSchedulePayload,
-  PaymentType, SchedulePayload, SchedulesPayload, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
+  PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
   useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
@@ -47,7 +47,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList,
     fetchAllPatientList
   } = useContext(FacilityContext)
-  const [{ availableSlots }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const { availableSlots, serviceId, offset, currentDate } = state
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -186,7 +187,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         }
       })
     }
-  }, [getDoctorSchedules, selectedProvider, watch])
+  }, [currentDate, getDoctorSchedules, offset, selectedProvider, serviceId, watch])
 
   useEffect(() => {
     if (selectedFacility) {

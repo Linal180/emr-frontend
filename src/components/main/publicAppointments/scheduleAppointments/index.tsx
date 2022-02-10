@@ -26,15 +26,16 @@ import {
 } from "../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
-  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, SchedulePayload, SchedulesPayload,
-  Sexualorientation, useCreateExternalAppointmentMutation, useGetDoctorScheduleLazyQuery, useGetFacilityLazyQuery
+  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery,
+  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorScheduleLazyQuery,
 } from "../../../../generated/graphql";
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL, DOB, EMAIL, EMPTY_OPTION,
   MAPPED_GENDER_IDENTITY, MAPPED_RELATIONSHIP_TYPE, PATIENT_DETAILS, PHONE, SELECT_SERVICES,
   SEX_AT_BIRTH, SLOT_CONFIRMATION, SELECT_PROVIDER, PAYMENT_TYPE, MAPPED_PAYMENT_METHOD,
   INSURANCE_COMPANY, MEMBERSHIP_ID, BOOK_APPOINTMENT, PATIENT_FIRST_NAME, PATIENT_LAST_NAME,
-  RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE, PATIENT_APPOINTMENT_CANCEL
+  RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL,
+  APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE, PATIENT_APPOINTMENT_CANCEL
 } from "../../../../constants";
 
 const ScheduleAppointmentsPublic = (): JSX.Element => {
@@ -42,7 +43,7 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
   const { id: facilityId } = useParams<ParamsType>();
   const { serviceList, doctorList, fetchAllDoctorList, fetchAllServicesList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { facility, isInsurance, availableSchedules } = state;
+  const { facility, isInsurance, availableSlots, currentDate, serviceId, offset } = state;
   const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(externalAppointmentSchema)
@@ -82,14 +83,14 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError() {
-      dispatch({ type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: [] })
+      dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] })
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules: { schedules } } = data || {};
+      const { getDoctorSchedules: { slots } } = data || {};
 
-      schedules && dispatch({
-        type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: schedules as SchedulesPayload['schedules']
+      slots && dispatch({
+        type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots
       });
     }
   });
@@ -138,10 +139,10 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
     const { id: selectedProvider } = providerId || {}
     if (selectedProvider) {
       getDoctorSchedules({
-        variables: { getDoctorSchedule: { id: selectedProvider } }
+        variables: { getDoctorSchedule: { id: selectedProvider, currentDate, serviceId, offset } }
       })
     }
-  }, [watch, providerId, getDoctorSchedules])
+  }, [watch, providerId, getDoctorSchedules, currentDate, serviceId, offset])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const {
@@ -209,11 +210,11 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
     }
   }
 
-  const setSchedule = (schedule: SchedulePayload['schedule']) => {
-    if (schedule) {
-      const { startAt, endAt } = schedule;
-      startAt && setValue('scheduleStartDateTime', startAt)
-      endAt && setValue('scheduleEndDateTime', endAt)
+  const handleSlot = (slot: Slots) => {
+    if (slot) {
+      const { startTime, endTime } = slot;
+      startTime && setValue('scheduleStartDateTime', startTime)
+      endTime && setValue('scheduleEndDateTime', endTime)
     }
   };
 
@@ -370,16 +371,16 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
 
               {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
                 <ul className={classes.timeSlots}>
-                  {!!availableSchedules?.length ? availableSchedules.map((schedule, index) => {
-                    const { startAt, endAt } = schedule || {}
+                  {!!availableSlots?.length ? availableSlots.map((slot, index) => {
+                    const { startTime, endTime } = slot || {}
 
                     return (
-                      <li onClick={() => setSchedule(schedule)}>
+                      <li onClick={() => handleSlot(slot)}>
                         <div>
                           <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
 
                           <label htmlFor={`timeSlot-${index}`}>
-                            {getStandardTime(startAt || '')} - {getStandardTime(endAt || '')}
+                            {getStandardTime(startTime || '')} - {getStandardTime(endTime || '')}
                           </label>
                         </div>
                       </li>

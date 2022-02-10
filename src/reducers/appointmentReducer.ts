@@ -1,4 +1,4 @@
-import { AppointmentPayload, AppointmentsPayload, DoctorSchedulePayload, FacilityPayload, SchedulesPayload } from "../generated/graphql"
+import { AppointmentPayload, AppointmentsPayload, DoctorSchedulePayload, FacilityPayload } from "../generated/graphql"
 
 export interface State {
   page: number;

@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { Box, Grid, Typography } from "@material-ui/core";
 // components block
@@ -18,7 +18,7 @@ import {
   doctorReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/doctorReducer';
 import {
-  SchedulesPayload, useGetDoctorScheduleLazyQuery, useRemoveScheduleMutation
+  SchedulesPayload, useFindAllSchedulesLazyQuery, useRemoveScheduleMutation
 } from "../../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_DOCTOR_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
@@ -29,13 +29,9 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   const classes = useDoctorScheduleStyles();
   const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { scheduleOpenModal, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
+  const { scheduleOpenModal,page, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
 
-  const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
-    variables: {
-      getDoctorSchedule: { id }
-    },
-
+  const [findAllSchedules, { loading: getSchedulesLoading }] = useFindAllSchedulesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -44,7 +40,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules: { schedules } } = data || {};
+      const { findAllSchedules: { schedules } } = data || {};
 
       if (schedules && schedules.length > 0) {
         dispatch({
@@ -72,7 +68,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          getDoctorSchedules();
+          fetchDoctorSchedules()
           dispatch({ type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: false })
         }
       }
@@ -97,12 +93,20 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
   };
 
+  const fetchDoctorSchedules = useCallback(() => {
+    findAllSchedules({
+      variables: { scheduleInput: { facilityId: '', paginationOptions: {
+        page, limit: 100 
+      }}}
+    })
+  }, [findAllSchedules, page]);
+
   useEffect(() => {
     if (id) {
-      getDoctorSchedules()
+      fetchDoctorSchedules()
     } else
       Alert.error(DOCTOR_NOT_FOUND)
-  }, [getDoctorSchedules, id])
+  }, [fetchDoctorSchedules, id])
 
   return (
     <Grid container spacing={3}>
@@ -147,7 +151,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
         isEdit={isEdit}
         isOpen={scheduleOpenModal}
         doctorDispatcher={dispatch}
-        reload={getDoctorSchedules}
+        reload={fetchDoctorSchedules}
         doctorFacilityId={doctorFacilityId}
       />
 
