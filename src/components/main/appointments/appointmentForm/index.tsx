@@ -3,9 +3,9 @@ import { useEffect, FC, useContext, useState, Reducer, useReducer } from 'react'
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
@@ -27,7 +27,8 @@ import {
   getTimeFromTimestamps, requiredMessage, setRecord, getStandardTime
 } from "../../../../utils";
 import {
-  PaymentType, SchedulePayload, SchedulesPayload, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
+  DoctorSchedulePayload,
+  PaymentType, SchedulePayload, SchedulesPayload, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
   useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
@@ -35,7 +36,8 @@ import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
-  AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE
+  AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
+  SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -45,8 +47,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList,
     fetchAllPatientList
   } = useContext(FacilityContext)
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { availableSchedules } = state;
+  const [{ availableSlots }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -105,23 +106,23 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     fetchPolicy: "network-only",
 
     onError() {
-      dispatch({ type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: [] })
+      dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] })
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules: { schedules } } = data || {};
+      const { getDoctorSchedules: { slots } } = data || {};
 
-      schedules && dispatch({
-        type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: schedules as SchedulesPayload['schedules']
+      slots && dispatch({
+        type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSchedulePayload['slots']
       });
     }
   });
 
   const [createAppointment, { loading: CreateAppointmentLoading }] = useCreateAppointmentMutation({
     onError({ message }) {
-      if(message === CONFLICT_EXCEPTION){
+      if (message === CONFLICT_EXCEPTION) {
         Alert.error(SLOT_ALREADY_BOOKED)
-      }else 
+      } else
         Alert.error(message || CANT_BOOK_APPOINTMENT)
     },
 
@@ -181,7 +182,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       const { id } = selectedProvider;
       getDoctorSchedules({
         variables: {
-          getDoctorSchedule: { id }
+          getDoctorSchedule: { id, offset, currentDate, serviceId }
         }
       })
     }
@@ -212,7 +213,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       const { id: selectedFacility } = facilityId || {};
 
       const appointmentInput = {
-        reason: reason || '', 
+        reason: reason || '',
         scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
         scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString()),
         autoAccident: autoAccident || false, otherAccident: otherAccident || false,
@@ -240,11 +241,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   };
 
-  const setSchedule = (schedule: SchedulePayload['schedule']) => {
-    if (schedule) {
-      const { startAt, endAt } = schedule;
-      startAt && setValue('scheduleStartDateTime', startAt)
-      endAt && setValue('scheduleEndDateTime', endAt)
+  const handleSlot = (slot: Slots) => {
+    if (slot) {
+      const { startTime, endTime } = slot;
+      endTime && setValue('scheduleEndDateTime', endTime)
+      startTime && setValue('scheduleStartDateTime', startTime)
     }
   };
 
@@ -375,16 +376,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                   {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
                     <ul className={classes.timeSlots}>
-                      {!!availableSchedules?.length ? availableSchedules.map((schedule, index: number) => {
-                        const { startAt, endAt } = schedule || {}
+                      {!!availableSlots?.length ? availableSlots.map((slot, index: number) => {
+                        const { startTime, endTime } = slot || {}
 
                         return (
 
-                          <li onClick={() => setSchedule(schedule)}>
+                          <li onClick={() => handleSlot(slot)}>
                             <div>
                               <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
                               <label htmlFor={`timeSlot-${index}`}>
-                                {getStandardTime(startAt || '')} - {getStandardTime(endAt || '')}
+                                {getStandardTime(startTime || '')} - {getStandardTime(endTime || '')}
                               </label>
                             </div>
                           </li>

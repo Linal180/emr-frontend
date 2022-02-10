@@ -164,15 +164,13 @@ const DoctorDetailComponent = (): JSX.Element => {
 
           <TabPanel value="2">
             <Grid spacing={3}>
-              <DoctorScheduleForm
-                doctorFacilityId={doctorFacilityId}
-              />
+              <DoctorScheduleForm doctorFacilityId={doctorFacilityId} />
             </Grid>
           </TabPanel>
 
           <TabPanel value="3">
             <Grid>
-                <AppointmentsTable doctorId={id} />
+              <AppointmentsTable doctorId={id} />
             </Grid>
           </TabPanel>
         </Box>

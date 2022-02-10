@@ -1,9 +1,12 @@
-import { AppointmentPayload, AppointmentsPayload, FacilityPayload, SchedulesPayload } from "../generated/graphql"
+import { AppointmentPayload, AppointmentsPayload, DoctorSchedulePayload, FacilityPayload, SchedulesPayload } from "../generated/graphql"
 
 export interface State {
   page: number;
-  providerId: string;
+  offset: number;
+  serviceId: string;
   totalPages: number;
+  providerId: string;
+  currentDate: string;
   openDelete: boolean;
   searchQuery: string;
   isInsurance: boolean;
@@ -11,53 +14,62 @@ export interface State {
   deleteAppointmentId: string;
   facility: FacilityPayload['facility'];
   appointment: AppointmentPayload['appointment'];
-  availableSchedules: SchedulesPayload['schedules'];
+  availableSlots: DoctorSchedulePayload['slots'];
   appointments: AppointmentsPayload['appointments'];
 }
 
 export const initialState: State = {
   page: 1,
-  providerId: '',
+  offset: 0,
+  serviceId: '',
   totalPages: 0,
+  providerId: '',
   facility: null,
   searchQuery: '',
+  currentDate: '',
   appointments: [],
   openDelete: false,
   appointmentId: '',
   appointment: null,
   isInsurance: false,
-  availableSchedules: [],
+  availableSlots: [],
   deleteAppointmentId: '',
 }
 
 export enum ActionType {
   SET_PAGE = 'setPage',
+  SET_OFFSET = 'setOffset',
   SET_FACILITY = 'setFacility',
+  SET_SERVICE_ID = 'setServiceId',
   SET_PROVIDER_ID = 'setProviderId',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_APPOINTMENT = 'setAppointment',
   SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_CURRENT_DATE = 'setCurrentDate',
   SET_IS_INSURANCE = 'setIsInsurance',
   SET_APPOINTMENTS = 'setAppointments',
   SET_APPOINTMENT_ID = 'setAppointmentId',
-  SET_AVAILABLE_SCHEDULES = 'setAvailableSchedules',
+  SET_AVAILABLE_SLOTS = 'setAvailableSlots',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
 }
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
+  | { type: ActionType.SET_OFFSET, offset: number }
+  | { type: ActionType.SET_SERVICE_ID, serviceId: string }
   | { type: ActionType.SET_PROVIDER_ID, providerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
+  | { type: ActionType.SET_CURRENT_DATE, currentDate: string }
   | { type: ActionType.SET_IS_INSURANCE; isInsurance: boolean }
   | { type: ActionType.SET_APPOINTMENT_ID; appointmentId: string }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
-  | { type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: SchedulesPayload['schedules'] }
+  | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: DoctorSchedulePayload['slots'] }
 
 export const appointmentReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -65,6 +77,24 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         page: action.page
+      }
+
+    case ActionType.SET_OFFSET:
+      return {
+        ...state,
+        offset: action.offset
+      }
+
+    case ActionType.SET_CURRENT_DATE:
+      return {
+        ...state,
+        currentDate: action.currentDate
+      }
+
+    case ActionType.SET_SERVICE_ID:
+      return {
+        ...state,
+        serviceId: action.serviceId
       }
 
     case ActionType.SET_IS_INSURANCE:
@@ -79,10 +109,10 @@ export const appointmentReducer = (state: State, action: Action): State => {
         facility: action.facility
       }
 
-    case ActionType.SET_AVAILABLE_SCHEDULES:
+    case ActionType.SET_AVAILABLE_SLOTS:
       return {
         ...state,
-        availableSchedules: action.availableSchedules
+        availableSlots: action.availableSlots
       }
 
     case ActionType.SET_PROVIDER_ID:

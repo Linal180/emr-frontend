@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useEffect, useReducer } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import {
@@ -13,21 +13,18 @@ import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { getFormattedDate, renderTh } from "../../utils";
 import { useTableStyles } from "../../styles/tableStyles";
+import { AppointmentsTableProps } from "../../interfacesTypes";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../assets/svgs"
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
-  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation
+  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useGetDoctorAppointmentsLazyQuery, useRemoveAppointmentMutation
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES
 } from "../../constants";
-
-interface AppointmentsTableProps {
-  doctorId?: string;
-}
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
@@ -71,6 +68,34 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
+  const [getDoctorAppointment, { loading: getDoctorAppointmentLoading, error: doctorAppointmentError }] = useGetDoctorAppointmentsLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {
+      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+    },
+
+    onCompleted(data) {
+      const { getDoctorAppointment } = data || {};
+
+      if (getDoctorAppointment) {
+        const { appointments, pagination } = getDoctorAppointment
+
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
+          dispatch({
+            type: ActionType.SET_APPOINTMENTS,
+            appointments: appointments as AppointmentsPayload['appointments']
+          });
+        }
+      }
+    }
+  });
+
   const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
     onError() {
       Alert.error(CANT_CANCELLED_APPOINTMENT)
@@ -92,11 +117,20 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
+  const fetchAppointments = useCallback(() => {
+    doctorId ?
+      getDoctorAppointment({
+        variables: { getDoctorAppointment: { doctorId } }
+      })
+      :
+      findAllAppointments()
+  }, [doctorId, findAllAppointments, getDoctorAppointment])
+
   useEffect(() => {
     if (!searchQuery) {
-      findAllAppointments()
+      fetchAppointments();
     }
-  }, [page, findAllAppointments, searchQuery]);
+  }, [page, findAllAppointments, searchQuery, doctorId, getDoctorAppointment, fetchAppointments]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -158,7 +192,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </TableRow>
           </TableHead>
           <TableBody>
-            {loading ? (
+            {(loading || getDoctorAppointmentLoading) ? (
               <TableRow>
                 <TableCell colSpan={10}>
                   <TableLoader numberOfRows={10} numberOfColumns={5} />
@@ -204,7 +238,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           </TableBody>
         </Table>
 
-        {((!loading && appointments?.length === 0) || error) && (
+        {((!loading && !getDoctorAppointmentLoading && appointments?.length === 0) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

@@ -189,6 +189,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   });
 
+  useEffect(() => { }, [user])
   useEffect(() => {
     if (isEdit) {
       if (id) {

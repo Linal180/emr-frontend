@@ -481,6 +481,7 @@ export type CreateScheduleInput = {
 };
 
 export type CreateServiceInput = {
+  color: Scalars['String'];
   duration: Scalars['String'];
   facilityId: Scalars['String'];
   isActive?: Maybe<Scalars['Boolean']>;
@@ -585,6 +586,12 @@ export type DoctorPayload = {
   __typename?: 'DoctorPayload';
   doctor?: Maybe<Doctor>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type DoctorSchedulePayload = {
+  __typename?: 'DoctorSchedulePayload';
+  response?: Maybe<ResponsePayload>;
+  slots?: Maybe<Array<Slots>>;
 };
 
 /** The patient's ethnicity type assigned */
@@ -694,8 +701,15 @@ export type GetDoctor = {
   id: Scalars['String'];
 };
 
+export type GetDoctorAppointment = {
+  doctorId: Scalars['String'];
+};
+
 export type GetDoctorSchedule = {
+  currentDate: Scalars['String'];
   id: Scalars['String'];
+  offset: Scalars['Float'];
+  serviceId: Scalars['String'];
 };
 
 export type GetFacility = {
@@ -1190,7 +1204,8 @@ export type Query = {
   getAttachments: AttachmentsPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
-  getDoctorSchedules: SchedulesPayload;
+  getDoctorAppointment: AppointmentsPayload;
+  getDoctorSchedules: DoctorSchedulePayload;
   getFacility: FacilityPayload;
   getPatient: PatientPayload;
   getSchedule: SchedulePayload;
@@ -1269,6 +1284,11 @@ export type QueryGetContactArgs = {
 
 export type QueryGetDoctorArgs = {
   getDoctor: GetDoctor;
+};
+
+
+export type QueryGetDoctorAppointmentArgs = {
+  getDoctorAppointment: GetDoctorAppointment;
 };
 
 
@@ -1491,6 +1511,7 @@ export type SchedulesPayload = {
 
 export type Service = {
   __typename?: 'Service';
+  color?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   duration: Scalars['String'];
   facility?: Maybe<Facility>;
@@ -1572,6 +1593,12 @@ export type ServicesPayload = {
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   services?: Maybe<Array<Maybe<Service>>>;
+};
+
+export type Slots = {
+  __typename?: 'Slots';
+  endTime?: Maybe<Scalars['String']>;
+  startTime?: Maybe<Scalars['String']>;
 };
 
 /** The doctor's speciality */
@@ -1886,6 +1913,7 @@ export type UpdateScheduleInput = {
 };
 
 export type UpdateServiceInput = {
+  color?: Maybe<Scalars['String']>;
   duration?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
@@ -2038,6 +2066,13 @@ export type CancelAppointmentMutationVariables = Exact<{
 
 
 export type CancelAppointmentMutation = { __typename?: 'Mutation', cancelAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined } };
+
+export type GetDoctorAppointmentsQueryVariables = Exact<{
+  getDoctorAppointment: GetDoctorAppointment;
+}>;
+
+
+export type GetDoctorAppointmentsQuery = { __typename?: 'Query', getDoctorAppointment: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined, totalCount?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleStartDateTime: string, scheduleEndDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, phonePermission: boolean, preferredCommunicationMethod: Communicationtype, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
@@ -2287,7 +2322,7 @@ export type GetDoctorScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorScheduleQuery = { __typename?: 'Query', getDoctorSchedules: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, recurringEndDate?: any | null | undefined, createdAt: string, updatedAt: string, location?: { __typename?: 'Contact', id: string, name?: string | null | undefined } | null | undefined, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, serviceId?: string | null | undefined, service?: { __typename?: 'Service', id: string, name: string } | null | undefined }> | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type GetDoctorScheduleQuery = { __typename?: 'Query', getDoctorSchedules: { __typename?: 'DoctorSchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, slots?: Array<{ __typename?: 'Slots', startTime?: string | null | undefined, endTime?: string | null | undefined }> | null | undefined } };
 
 export type RemoveScheduleMutationVariables = Exact<{
   removeSchedule: RemoveSchedule;
@@ -2799,6 +2834,83 @@ export function useCancelAppointmentMutation(baseOptions?: Apollo.MutationHookOp
 export type CancelAppointmentMutationHookResult = ReturnType<typeof useCancelAppointmentMutation>;
 export type CancelAppointmentMutationResult = Apollo.MutationResult<CancelAppointmentMutation>;
 export type CancelAppointmentMutationOptions = Apollo.BaseMutationOptions<CancelAppointmentMutation, CancelAppointmentMutationVariables>;
+export const GetDoctorAppointmentsDocument = gql`
+    query GetDoctorAppointments($getDoctorAppointment: GetDoctorAppointment!) {
+  getDoctorAppointment(getDoctorAppointment: $getDoctorAppointment) {
+    response {
+      error
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+      totalCount
+    }
+    appointments {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      createdAt
+      updatedAt
+      appointmentType {
+        id
+        name
+        duration
+      }
+      provider {
+        id
+        firstName
+        lastName
+      }
+      patient {
+        id
+        phonePermission
+        preferredCommunicationMethod
+        pharmacy
+        medicationHistoryAuthority
+        releaseOfInfoBill
+        voiceCallPermission
+        firstName
+        lastName
+      }
+      facility {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDoctorAppointmentsQuery__
+ *
+ * To run a query within a React component, call `useGetDoctorAppointmentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDoctorAppointmentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDoctorAppointmentsQuery({
+ *   variables: {
+ *      getDoctorAppointment: // value for 'getDoctorAppointment'
+ *   },
+ * });
+ */
+export function useGetDoctorAppointmentsQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorAppointmentsQuery, GetDoctorAppointmentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDoctorAppointmentsQuery, GetDoctorAppointmentsQueryVariables>(GetDoctorAppointmentsDocument, options);
+      }
+export function useGetDoctorAppointmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDoctorAppointmentsQuery, GetDoctorAppointmentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDoctorAppointmentsQuery, GetDoctorAppointmentsQueryVariables>(GetDoctorAppointmentsDocument, options);
+        }
+export type GetDoctorAppointmentsQueryHookResult = ReturnType<typeof useGetDoctorAppointmentsQuery>;
+export type GetDoctorAppointmentsLazyQueryHookResult = ReturnType<typeof useGetDoctorAppointmentsLazyQuery>;
+export type GetDoctorAppointmentsQueryResult = Apollo.QueryResult<GetDoctorAppointmentsQuery, GetDoctorAppointmentsQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
@@ -5276,35 +5388,9 @@ export const GetDoctorScheduleDocument = gql`
       status
       message
     }
-    pagination {
-      page
-      limit
-      totalPages
-    }
-    schedules {
-      id
-      startAt
-      endAt
-      recurringEndDate
-      createdAt
-      updatedAt
-      location {
-        id
-        name
-      }
-      scheduleServices {
-        id
-        serviceId
-        service {
-          id
-          name
-        }
-      }
-      doctor {
-        id
-        firstName
-        lastName
-      }
+    slots {
+      startTime
+      endTime
     }
   }
 }

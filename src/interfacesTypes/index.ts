@@ -741,3 +741,7 @@ export interface DoctorScheduleProps {
   schedule: Schedule;
   dispatcher: Dispatch<DoctorAction>;
 }
+
+export interface AppointmentsTableProps {
+  doctorId?: string;
+}
