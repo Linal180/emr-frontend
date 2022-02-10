@@ -119,9 +119,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   const [createAppointment, { loading: CreateAppointmentLoading }] = useCreateAppointmentMutation({
     onError({ message }) {
-      if(message === CONFLICT_EXCEPTION){
+      if (message === CONFLICT_EXCEPTION) {
         Alert.error(SLOT_ALREADY_BOOKED)
-      }else 
+      } else
         Alert.error(message || CANT_BOOK_APPOINTMENT)
     },
 
@@ -212,7 +212,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       const { id: selectedFacility } = facilityId || {};
 
       const appointmentInput = {
-        reason: reason || '', 
+        reason: reason || '',
         scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
         scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString()),
         autoAccident: autoAccident || false, otherAccident: otherAccident || false,
@@ -318,7 +318,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={PATIENT}
                           name="patientId"
                           options={renderPatient(patientList)}
-                          error={patientError?.message && requiredMessage(PROVIDER)}
+                          error={patientError?.message && requiredMessage(PATIENT)}
                         />
                       </Grid>
                     </Grid>
