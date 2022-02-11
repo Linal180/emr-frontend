@@ -1,8 +1,8 @@
 import { StepIconProps } from "@material-ui/core";
-import { useColorLibStepIconStyles } from "../../../../../../../../../styles/publicAppointment/patientInformation";
+import { useColorLibStepIconStyles } from "../../../../../../../../styles/publicAppointment/patientInformation";
 import clsx from "clsx"
 import CheckIcon from '@material-ui/icons/Check';
-import { StepperIcons } from "../../../../../../../../../constants";
+import { StepperIcons } from "../../../../../../../../constants";
 
 const CustomStepIcon = ({ active, completed, icon }: StepIconProps): JSX.Element => {
   const classes = useColorLibStepIconStyles();

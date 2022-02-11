@@ -2,9 +2,9 @@
 import { FC } from "react";
 import { Box, Card, Typography } from '@material-ui/core';
 // utils, styles  block, constants
-import { WHITE_TWO } from '../../../../../theme';
-import { APPOINTMENT_CANCEL } from "../../../../../constants";
-import { slotConfirmationStyles } from "../../../../../styles/publicAppointment/slotConfirmation"
+import { WHITE_TWO } from '../../../../theme';
+import { APPOINTMENT_CANCEL } from "../../../../constants";
+import { slotConfirmationStyles } from "../../../../styles/publicAppointment/slotConfirmation"
 
 const AppointmentCancel: FC = (): JSX.Element => {
   const classes = slotConfirmationStyles();

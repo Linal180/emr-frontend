@@ -3,24 +3,24 @@ import { FC, Reducer, useEffect, useReducer } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Box, Button, Card, Typography } from '@material-ui/core';
 // components block
-import Alert from "../../../../../components/common/Alert";
+import Alert from "../../../../components/common/Alert";
 // components block
-import Backdrop from "../../../../../components/common/Backdrop";
+import Backdrop from "../../../../components/common/Backdrop";
 // utils, styles  block, constants
-import history from "../../../../../history";
-import { WHITE_TWO } from '../../../../../theme';
-import { ParamsType } from "../../../../../interfacesTypes";
-import { getFormattedDate, getStandardTime } from "../../../../../utils";
-import { Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery } from "../../../../../generated/graphql";
-import { slotConfirmationStyles } from "../../../../../styles/publicAppointment/slotConfirmation";
+import history from "../../../../history";
+import { WHITE_TWO } from '../../../../theme';
+import { ParamsType } from "../../../../interfacesTypes";
+import { getFormattedDate, getStandardTime } from "../../../../utils";
+import { Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery } from "../../../../generated/graphql";
+import { slotConfirmationStyles } from "../../../../styles/publicAppointment/slotConfirmation";
 import {
   appointmentReducer, Action, initialState, State, ActionType
-} from "../../../../../reducers/appointmentReducer";
+} from "../../../../reducers/appointmentReducer";
 import {
   APPOINTMENT_NOT_FOUND, SLOT_CONFIRMATION_SUB_HEADING_TWO, PATIENT_APPOINTMENT_FAIL,
   PATIENT_INFORMATION, SLOT_CONFIRMATION_HEADING_TWO, SLOT_CONFIRMATION_SUB_HEADING, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, PATIENT_CANCELLED_APPOINTMENT, PATIENT_APPOINTMENT_CANCEL,
-} from '../../../../../constants';
-import ConfirmationModal from "../../../../../components/common/ConfirmationModal";
+} from '../../../../constants';
+import ConfirmationModal from "../../../../components/common/ConfirmationModal";
 
 const SlotConfirmation: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();

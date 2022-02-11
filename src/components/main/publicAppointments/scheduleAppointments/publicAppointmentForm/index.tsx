@@ -6,29 +6,29 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 // components block
-import Alert from "../../../common/Alert";
-import Selector from "../../../common/Selector";
-import PhoneField from '../../../common/PhoneInput';
-import DatePicker from "../../../common/DatePicker";
-import InputController from "../../../../controller";
-import CardComponent from "../../../common/CardComponent";
-import AppointmentDatePicker from "./AppointmentDatePicker";
-import ViewDataLoader from "../../../common/ViewDataLoader";
+import Alert from "../../../../common/Alert";
+import Selector from "../../../../common/Selector";
+import PhoneField from '../../../../common/PhoneInput';
+import DatePicker from "../../../../common/DatePicker";
+import InputController from "../../../../../controller";
+import CardComponent from "../../../../common/CardComponent";
+import AppointmentDatePicker from "../AppointmentDatePicker";
+import ViewDataLoader from "../../../../common/ViewDataLoader";
 // constants block
-import history from "../../../../history";
-import { FacilityContext } from '../../../../context';
-import { externalAppointmentSchema } from "../../../../validationSchemas";
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
-import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../interfacesTypes";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../../../reducers/appointmentReducer";
+import history from "../../../../../history";
+import { FacilityContext } from '../../../../../context';
+import { externalAppointmentSchema } from "../../../../../validationSchemas";
+import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointment";
+import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../../interfacesTypes";
+import { appointmentReducer, Action, initialState, State, ActionType } from "../../../../../reducers/appointmentReducer";
 import {
   formatValue, getStandardTime, getTimestamps, renderDoctors, renderServices, requiredMessage
-} from "../../../../utils";
+} from "../../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
   PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery,
   Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorScheduleLazyQuery,
-} from "../../../../generated/graphql";
+} from "../../../../../generated/graphql";
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL, DOB, EMAIL, EMPTY_OPTION,
   MAPPED_GENDER_IDENTITY, MAPPED_RELATIONSHIP_TYPE, PATIENT_DETAILS, PHONE, SELECT_SERVICES,
@@ -36,9 +36,9 @@ import {
   INSURANCE_COMPANY, MEMBERSHIP_ID, BOOK_APPOINTMENT, PATIENT_FIRST_NAME, PATIENT_LAST_NAME,
   RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL,
   APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE, PATIENT_APPOINTMENT_CANCEL
-} from "../../../../constants";
+} from "../../../../../constants";
 
-const ScheduleAppointmentsPublic = (): JSX.Element => {
+const PublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
   const { id: facilityId } = useParams<ParamsType>();
   const { serviceList, doctorList, fetchAllDoctorList, fetchAllServicesList } = useContext(FacilityContext)
@@ -50,6 +50,11 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
   });
   const { reset, setValue, handleSubmit, watch, formState: { errors } } = methods;
   const { paymentType, providerId } = watch();
+  const {
+    serviceId: { id: selectedService } = {},
+    providerId: { id: selectedProvider } = {},
+    paymentType: { name: selectedtPaymentType } = {},
+  } = watch();
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
@@ -87,11 +92,15 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules: { slots } } = data || {};
+      const { getDoctorSchedules } = data || {}
 
-      slots && dispatch({
-        type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots
-      });
+      if (getDoctorSchedules) {
+        const { slots } = getDoctorSchedules;
+
+        slots && dispatch({
+          type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots
+        });
+      }
     }
   });
 
@@ -136,23 +145,23 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
   }, [paymentType, watch])
 
   useEffect(() => {
-    const { id: selectedProvider } = providerId || {}
-    if (selectedProvider) {
+    if (selectedProvider && selectedService) {
       getDoctorSchedules({
-        variables: { getDoctorSchedule: { id: selectedProvider, currentDate, serviceId, offset } }
+        variables: {
+          getDoctorSchedule: { id: selectedProvider, offset, currentDate, serviceId: selectedService }
+        }
       })
     }
-  }, [watch, providerId, getDoctorSchedules, currentDate, serviceId, offset])
+  }, [currentDate, getDoctorSchedules, offset, selectedProvider, selectedService, watch])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const {
       suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-      previouslastName, motherMaidenName, ssn, dob, email,
-      registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent,
-      patientNote, language, serviceId,
+      previouslastName, motherMaidenName, ssn, dob, email, registrationDate, deceasedDate,
+      privacyNotice, releaseOfInfoBill, callToConsent, patientNote, language, serviceId,
       homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
-      statementNoteDateTo, medicationHistoryAuthority, sexAtBirth,
-      scheduleStartDateTime, scheduleEndDateTime, membershipID, paymentType, guardianName, guardianRelationship
+      statementNoteDateTo, medicationHistoryAuthority, sexAtBirth, scheduleStartDateTime,
+      scheduleEndDateTime, membershipID, paymentType, guardianName, guardianRelationship
     } = inputs;
 
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
@@ -415,4 +424,4 @@ const ScheduleAppointmentsPublic = (): JSX.Element => {
   )
 }
 
-export default ScheduleAppointmentsPublic;
+export default PublicAppointmentForm;

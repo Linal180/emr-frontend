@@ -1,6 +1,6 @@
 import { FormControl, InputLabel, TextField } from '@material-ui/core';
 import { Controller } from 'react-hook-form';
-import { RenderInputFieldProps } from '../../../../../../interfacesTypes';
+import { RenderInputFieldProps } from '../../../../../interfacesTypes';
 
 
 const RenderInputField = ({ name, label, control }: RenderInputFieldProps) => {

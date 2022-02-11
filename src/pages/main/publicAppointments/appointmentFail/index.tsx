@@ -1,10 +1,10 @@
 // packages block
 import { Box, Card, Typography } from '@material-ui/core';
 // styles and theme block
-import { WHITE_TWO } from '../../../../../theme';
-import { appointmentFailStyles } from '../../../../../styles/publicAppointment/appointmentFail';
+import { WHITE_TWO } from '../../../../theme';
+import { appointmentFailStyles } from '../../../../styles/publicAppointment/appointmentFail';
 
-const index = () => {
+const AppointmentFail = () => {
   const classes = appointmentFailStyles();
 
   return (
@@ -34,4 +34,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default AppointmentFail;

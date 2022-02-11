@@ -1,9 +1,9 @@
 import { Box, Checkbox, FormControlLabel, Typography } from '@material-ui/core';
 
-import CardComponent from '../../../../../../../components/common/CardComponent';
-import { agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL } from '../../../../../../../constants';
-import { consentAgreement } from '../../../../../../../styles/publicAppointment/consentAgreement';
-import { WHITE_SIX } from '../../../../../../../theme';
+import CardComponent from '../../../../../../components/common/CardComponent';
+import { agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL } from '../../../../../../constants';
+import { consentAgreement } from '../../../../../../styles/publicAppointment/consentAgreement';
+import { WHITE_SIX } from '../../../../../../theme';
 
 const index = () => {
   const classes = consentAgreement()

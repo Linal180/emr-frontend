@@ -1,14 +1,9 @@
 import { Box, Grid, Typography } from '@material-ui/core';
-import React from 'react';
-import CardComponent from '../../../../../../../components/common/CardComponent';
-import { verificationFormStyles } from '../../../../../../../styles/publicAppointment/patientInformation';
-import { GRAY_TWO } from '../../../../../../../theme';
+import CardComponent from '../../../../../../components/common/CardComponent';
+import { GRAY_TWO } from '../../../../../../theme';
 import DropZoneContainer from '../../components/DropZoneContainer';
 
-
-const index = () => {
-  const classes = verificationFormStyles()
-
+const DocumentVerificationForm = () => {
   return (
     <Box>
       <CardComponent cardTitle="Document Verification">
@@ -55,4 +50,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default DocumentVerificationForm;

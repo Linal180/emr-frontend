@@ -1,7 +1,7 @@
 import { Stepper, Step, StepLabel, Typography, useMediaQuery } from '@material-ui/core';
-import { getSteps } from '../../../../../../../constants';
-import { StepperComponentProps } from '../../../../../../../interfacesTypes';
-import { CustomConnector, usePatientInformation } from '../../../../../../../styles/publicAppointment/patientInformation';
+import { getSteps } from '../../../../../../constants';
+import { StepperComponentProps } from '../../../../../../interfacesTypes';
+import { CustomConnector, usePatientInformation } from '../../../../../../styles/publicAppointment/patientInformation';
 import CustomStepIcon from './components/customStepIcon';
 
 const Index = ({ activeStep }: StepperComponentProps) => {

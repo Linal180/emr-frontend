@@ -1,10 +1,10 @@
 import { Box, Typography } from '@material-ui/core';
 import { FC } from 'react';
-import { FormVerification } from '../../../../../../interfacesTypes';
-import { documentVerificationForm } from '../../../../../../styles/publicAppointment/documentVerification';
-import { BLUE_ONE } from '../../../../../../theme';
+import { FormVerification } from '../../../../../interfacesTypes';
+import { documentVerificationForm } from '../../../../../styles/publicAppointment/documentVerification';
+import { BLUE_ONE } from '../../../../../theme';
 import { DropzoneArea } from 'material-ui-dropzone';
-import { FileIcon } from '../../../../../../assets/svgs';
+import { FileIcon } from '../../../../../assets/svgs';
 
 const DropZoneContainer: FC<FormVerification> = ({ imageSide }) => {
   const classes = documentVerificationForm()

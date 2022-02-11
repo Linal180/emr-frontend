@@ -1,7 +1,7 @@
 
 import { Box, Button, Card, Typography } from '@material-ui/core';
-import { appointmentSuccessStyles } from '../../../../../styles/publicAppointment/appointmentSuccess';
-import { WHITE_TWO } from '../../../../../theme';
+import { appointmentSuccessStyles } from '../../../../styles/publicAppointment/appointmentSuccess';
+import { WHITE_TWO } from '../../../../theme';
 
 const index = () => {
   const classes = appointmentSuccessStyles();

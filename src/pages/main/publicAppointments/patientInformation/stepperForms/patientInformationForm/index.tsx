@@ -3,25 +3,25 @@ import { useContext, Reducer, useReducer, useEffect } from "react";
 import { Box, Grid } from '@material-ui/core';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 // Components block
-import { ListContext } from '../../../../../../../context';
-import InputController from '../../../../../../../controller';
-import Selector from '../../../../../../../components/common/Selector';
-import CardComponent from '../../../../../../../components/common/CardComponent';
+import { ListContext } from '../../../../../../context';
+import InputController from '../../../../../../controller';
+import Selector from '../../../../../../components/common/Selector';
+import CardComponent from '../../../../../../components/common/CardComponent';
 // themes / constants / utils
-import { getDate, getTimestamps, renderDoctors, setRecord } from '../../../../../../../utils';
+import { getDate, getTimestamps, renderDoctors, setRecord } from '../../../../../../utils';
 
 import {
   patientReducer, Action, initialState, State, ActionType
-} from "../../../../../../../reducers/patientReducer"
-import { usePatientInformation } from "../../../../../../../styles/publicAppointment/patientInformation";
+} from "../../../../../../reducers/patientReducer"
+import { usePatientInformation } from "../../../../../../styles/publicAppointment/patientInformation";
 import {
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
   ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE, EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, PATIENT_NOT_FOUND, ADDRESS
-} from "../../../../../../../constants";
-import ToggleButtonComponent from "../../../../../../../components/common/ToggleButtonComponent";
-import { Communicationtype, ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useGetPatientLazyQuery, useUpdatePatientMutation } from "../../../../../../../generated/graphql";
-import Alert from "../../../../../../../components/common/Alert";
-import { PatientInputProps } from "../../../../../../../interfacesTypes";
+} from "../../../../../../constants";
+import ToggleButtonComponent from "../../../../../../components/common/ToggleButtonComponent";
+import { Communicationtype, ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useGetPatientLazyQuery, useUpdatePatientMutation } from "../../../../../../generated/graphql";
+import Alert from "../../../../../../components/common/Alert";
+import { PatientInputProps } from "../../../../../../interfacesTypes";
 
 const PatientInformation = () => {
   const classes = usePatientInformation()

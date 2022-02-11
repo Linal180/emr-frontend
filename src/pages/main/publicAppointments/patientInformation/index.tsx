@@ -4,24 +4,24 @@ import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel } from 
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
 // components
 import Stepper from './components/stepper';
-import { FacilityContext } from '../../../../../context';
-import InputController from '../../../../../controller';
-import Selector from '../../../../../components/common/Selector';
-import CardComponent from '../../../../../components/common/CardComponent';
-import ToggleButtonComponent from "../../../../../components/common/ToggleButtonComponent";
-import Alert from "../../../../../components/common/Alert";
+import { FacilityContext } from '../../../../context';
+import InputController from '../../../../controller';
+import Selector from '../../../../components/common/Selector';
+import CardComponent from '../../../../components/common/CardComponent';
+import ToggleButtonComponent from "../../../../components/common/ToggleButtonComponent";
+import Alert from "../../../../components/common/Alert";
 import {
   AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race,
   useGetPatientLazyQuery, useUpdatePatientMutation
-} from "../../../../../generated/graphql";
+} from "../../../../generated/graphql";
 
 // themes / constants / utils
 import {
   patientReducer, Action, initialState, State, ActionType
-} from "../../../../../reducers/patientReducer"
-import { getDate, getTimestamps, renderDoctors, setRecord } from '../../../../../utils';
-import { WHITE_TWO, GRAY_TWO, WHITE_SIX } from '../../../../../theme';
-import { usePatientInformation } from '../../../../../styles/publicAppointment/patientInformation';
+} from "../../../../reducers/patientReducer"
+import { getDate, getTimestamps, renderDoctors, setRecord } from '../../../../utils';
+import { WHITE_TWO, GRAY_TWO, WHITE_SIX } from '../../../../theme';
+import { usePatientInformation } from '../../../../styles/publicAppointment/patientInformation';
 import {
   MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD,
   PATIENT_NOT_FOUND, ADDRESS, agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL,
@@ -29,9 +29,9 @@ import {
   ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS,
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
   PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE,
-} from "../../../../../constants";
-import { ParamsType, PatientInputProps } from "../../../../../interfacesTypes";
-import MediaCards from '../../../../../components/common/AddMedia/MediaCards';
+} from "../../../../constants";
+import { ParamsType, PatientInputProps } from "../../../../interfacesTypes";
+import MediaCards from '../../../../components/common/AddMedia/MediaCards';
 import { useParams } from 'react-router';
 
 const Index: FC = (): JSX.Element => {
