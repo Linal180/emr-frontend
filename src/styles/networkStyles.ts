@@ -1,10 +1,9 @@
 // packages block
 import { makeStyles } from "@material-ui/core/styles";
-import { POPPINS } from "../theme";
+import { BLUE_THREE, GRAY_EIGHT, POPPINS, WHITE } from "../theme";
 
 export const useNetworkStyles = makeStyles((theme) => ({
   root: {
-    background: 'rgba(0,86,177,0.3)',
     minHeight: "100vh",
     display: "flex",
     alignItems: "center",
@@ -20,13 +19,24 @@ export const useNetworkStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("md")]: {
       padding: "40px 20px",
     },
+
+    "& .MuiButton-contained": {
+      backgroundColor: BLUE_THREE,
+      color: WHITE
+    },
+
+    "& .MuiTypography-body2": {
+      color: GRAY_EIGHT,
+      fontSize: 22,
+      fontWeight: 500
+    }
   },
 
   pageNotFoundText: {
-    fontSize: 382,
-    opacity: 0.1,
+    fontSize: 600,
+    opacity: 0.03,
     fontFamily: POPPINS,
-    fontWeight: 900,
+    fontWeight: 100,
     lineHeight: '186px'
   },
 
