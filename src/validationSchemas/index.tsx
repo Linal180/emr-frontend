@@ -18,28 +18,28 @@ import {
   APPOINTMENT_TYPE,
 } from "../constants";
 
+const notRequiredMatches = (message: string, regex: RegExp) => {
+  return yup.string()
+    .test(
+      '', message, value => {
+        if (!value) {
+          return true
+        }
+
+        return regex.test(value)
+      })
+}
+
+const npiSchema = { npi: notRequiredMatches(NPI_VALIDATION_MESSAGE, NPI_REGEX) }
+const ssnSchema = { ssn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX) }
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
-const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)) };
-const npiSchema = { npi: yup.string().matches(NPI_REGEX, NPI_VALIDATION_MESSAGE) }
-const cliaIdNumberSchema = {
-  cliaIdNumber: yup.string().matches(CLIA_REGEX, CLIA_VALIDATION_MESSAGE)
-}
-
-const federalTaxIdSchema = {
-  federalTaxId: yup.string().matches(TID_REGEX, TID_VALIDATION_MESSAGE),
-}
-
-const revenueCodeSchema = {
-  revenueCode: yup.string().matches(REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE).notRequired()
-}
-
-const taxonomyCodeSchema = {
-  taxonomyCode: yup.string().matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE)
-}
-
-const ssnSchema = {
-  ssn: yup.string().matches(SSN_REGEX, SSN_VALIDATION_MESSAGE)
-}
+const emailSchema = { email: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)) }
+const federalTaxIdSchema = { federalTaxId: notRequiredMatches(TID_VALIDATION_MESSAGE, TID_REGEX) }
+const cliaIdNumberSchema = { cliaIdNumber: notRequiredMatches(CLIA_VALIDATION_MESSAGE, CLIA_REGEX) }
+const taxonomyCodeSchema = { taxonomyCode: notRequiredMatches(TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX) }
+const revenueCodeSchema = { revenueCode: notRequiredMatches(REVENUE_CODE_VALIDATION_MESSAGE, REVENUE_CODE_REGEX) }
+const tamxonomyCodeSchema = { tamxonomyCode: notRequiredMatches(TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX) }
+const mammographySchema = { mammographyCertificationNumber: notRequiredMatches(MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX) }
 
 const facilityCodeSchema = {
   code: yup.string().matches(FACILITY_CODE_REGEX, FACILITY_CODE_VALIDATION_MESSAGE)
@@ -53,11 +53,6 @@ const dobSchema = {
 const doctorDobSchema = {
   dob: yup.string().test(value => moment().diff(moment(value), 'years') > 20 && moment().diff(moment(value), 'years') < 100)
 }
-
-const mammographySchema = {
-  mammographyCertificationNumber: yup.string().notRequired()
-    .matches(MAMMOGRAPHY_CERT_NUMBER_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE),
-};
 
 const roleTypeSchema = {
   roleType: yup.object().shape({
@@ -300,10 +295,11 @@ export const facilitySchema = yup.object({
   ...cliaIdNumberSchema,
   ...practiceTypeSchema,
   ...federalTaxIdSchema,
+  ...tamxonomyCodeSchema,
   ...billingAddressSchema,
   insurancePlanType: yup.string(),
   name: yup.string().required(requiredMessage(NAME)),
-  tamxonomyCode: yup.string().matches(TAXONOMY_CODE_REGEX, TAXONOMY_VALIDATION_MESSAGE),
+
 })
 
 export const basicDoctorSchema = {

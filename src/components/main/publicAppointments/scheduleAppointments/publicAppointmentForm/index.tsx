@@ -16,11 +16,14 @@ import AppointmentDatePicker from "../AppointmentDatePicker";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // constants block
 import history from "../../../../../history";
+import { WHITE_TWO } from "../../../../../theme";
 import { FacilityContext } from '../../../../../context';
 import { externalAppointmentSchema } from "../../../../../validationSchemas";
 import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
 import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../../interfacesTypes";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../../../../reducers/appointmentReducer";
+import {
+  appointmentReducer, Action, initialState, State, ActionType
+} from "../../../../../reducers/appointmentReducer";
 import {
   formatValue, getStandardTime, getTimestamps, renderDoctors, renderServices, requiredMessage
 } from "../../../../../utils";
@@ -37,7 +40,6 @@ import {
   RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL,
   APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE, PATIENT_APPOINTMENT_CANCEL
 } from "../../../../../constants";
-import { WHITE_TWO } from "../../../../../theme";
 
 const PublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
@@ -68,7 +70,7 @@ const PublicAppointmentForm = (): JSX.Element => {
     onCompleted(data) {
       try {
         const { getFacility: { response, facility } } = data;
-
+        
         if (response) {
           const { status } = response
 
