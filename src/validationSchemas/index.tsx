@@ -4,10 +4,10 @@ import moment from "moment";
 // utils and constants block
 import { dateValidation, requiredMessage, timeValidation } from "../utils";
 import {
-  ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL,
-  FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, MaxLength, MinLength,
-  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
-  PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE, MIDDLE_NAME,
+  ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL, MaxLength, MinLength,
+  FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
+  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, DOB_VALIDATION_MESSAGE, APPOINTMENT_TYPE,
+  PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE,
   DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, USUAL_PROVIDER_ID,
   NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE,
   REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX,
@@ -15,8 +15,6 @@ import {
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
   ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION,
-  APPOINTMENT_TYPE,
-  DOB_VALIDATION_MESSAGE,
   DOCTOR_DOB_VALIDATION_MESSAGE,
 } from "../constants";
 
@@ -41,7 +39,9 @@ const cliaIdNumberSchema = { cliaIdNumber: notRequiredMatches(CLIA_VALIDATION_ME
 const taxonomyCodeSchema = { taxonomyCode: notRequiredMatches(TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX) }
 const revenueCodeSchema = { revenueCode: notRequiredMatches(REVENUE_CODE_VALIDATION_MESSAGE, REVENUE_CODE_REGEX) }
 const tamxonomyCodeSchema = { tamxonomyCode: notRequiredMatches(TAXONOMY_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX) }
-const mammographySchema = { mammographyCertificationNumber: notRequiredMatches(MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX) }
+const mammographySchema = {
+  mammographyCertificationNumber: notRequiredMatches(MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX)
+}
 
 const facilityCodeSchema = {
   code: yup.string().matches(FACILITY_CODE_REGEX, FACILITY_CODE_VALIDATION_MESSAGE)
@@ -337,7 +337,7 @@ export const basicDoctorSchema = {
   medicaidGrpNumber: yup.string(),
   prescriptiveAuthNumber: yup.string(),
   meammographyCertNumber: yup.string(),
-  middleName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(MIDDLE_NAME)).min(3, MinLength(MIDDLE_NAME, 3)).max(26, MaxLength(MIDDLE_NAME, 26)),
+  middleName: yup.string(),
 };
 
 export const doctorSchema = yup.object({
