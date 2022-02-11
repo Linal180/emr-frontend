@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext, useState, Reducer, useReducer } from 'react';
+import { useEffect, FC, useContext, useState, Reducer, useReducer, useCallback } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -54,7 +54,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     resolver: yupResolver(appointmentSchema)
   });
   const { reset, setValue, handleSubmit, watch, formState: { errors } } = methods;
-  const { providerId: selectedProvider, facilityId: selectedFacility } = watch();
+  const {
+    serviceId: { id: selectedService } = {},
+    providerId: { id: selectedProvider } = {},
+    facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
+  } = watch();
+
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
@@ -111,11 +116,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules: { slots } } = data || {};
+      const { getDoctorSchedules } = data || {}
 
-      slots && dispatch({
-        type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSchedulePayload['slots']
-      });
+      if (getDoctorSchedules) {
+        const { slots } = getDoctorSchedules;
+
+        slots && dispatch({
+          type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSchedulePayload['slots']
+        });
+      }
     }
   });
 
@@ -179,32 +188,40 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [getAppointment, id, isEdit, setValue])
 
   useEffect(() => {
-    if (selectedProvider) {
-      const { id } = selectedProvider;
+    if (selectedFacility && selectedProvider && selectedService) {
       getDoctorSchedules({
         variables: {
-          getDoctorSchedule: { id, offset, currentDate, serviceId }
+          getDoctorSchedule: { id: selectedProvider, offset, currentDate, serviceId: selectedService }
         }
       })
     }
-  }, [currentDate, getDoctorSchedules, offset, selectedProvider, serviceId, watch])
+  }, [currentDate, getDoctorSchedules, id, offset, selectedFacility, selectedProvider, selectedService, serviceId, watch])
 
-  useEffect(() => {
-    if (selectedFacility) {
-      const { id } = selectedFacility;
+  const fetchList = useCallback((id: string, name: string) => {
+    reset({
+      serviceId: EMPTY_OPTION,
+      patientId: EMPTY_OPTION,
+      providerId: EMPTY_OPTION,
+      facilityId: { id, name }
+    });
 
+    if (id) {
       fetchAllDoctorList(id);
       fetchAllPatientList(id);
       fetchAllServicesList(id);
     }
-  }, [fetchAllDoctorList, fetchAllPatientList, fetchAllServicesList, selectedFacility, watch])
+  }, [fetchAllDoctorList, fetchAllPatientList, fetchAllServicesList, reset]);
+
+  useEffect(() => {
+    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
+  }, [fetchList, selectedFacility, selectedFacilityName, watch])
 
   const onSubmit: SubmitHandler<ExtendedAppointmentInputProps> = async (inputs) => {
     const {
-      reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance,
-      secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId,
-      providerId, patientId
+      reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, patientId,
+      secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId, providerId,
     } = inputs;
+
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
@@ -366,11 +383,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         variant="static"
                         openTo="date"
                         value={date}
-                        onChange={currentDate => currentDate && setDate(currentDate)}
                         autoOk
                         disablePast
                         fullWidth
                         disableToolbar
+                        onChange={currentDate => currentDate && setDate(currentDate)}
                       />
                     </MuiPickersUtilsProvider>
                   </Box>
@@ -381,7 +398,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         const { startTime, endTime } = slot || {}
 
                         return (
-
                           <li onClick={() => handleSlot(slot)}>
                             <div>
                               <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />

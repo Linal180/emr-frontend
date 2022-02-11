@@ -26,7 +26,7 @@ export const initialState: State = {
   providerId: '',
   facility: null,
   searchQuery: '',
-  currentDate: '',
+  currentDate: new Date().toDateString(),
   appointments: [],
   openDelete: false,
   appointmentId: '',

@@ -29,7 +29,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   const classes = useDoctorScheduleStyles();
   const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { scheduleOpenModal,page, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
+  const { scheduleOpenModal, page, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
 
   const [findAllSchedules, { loading: getSchedulesLoading }] = useFindAllSchedulesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -40,17 +40,23 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     },
 
     onCompleted(data) {
-      const { findAllSchedules: { schedules } } = data || {};
+      const { findAllSchedules } = data || {};
 
-      if (schedules && schedules.length > 0) {
-        dispatch({
-          type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
-        });
+      if (findAllSchedules) {
+        const { schedules, response } = findAllSchedules
+        
+        if (response?.status && response?.status === 200 && schedules) {
+          if (schedules.length > 0) {
+            dispatch({
+              type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
+            });
 
-        dispatch({
-          type: ActionType.SET_BY_DAY_SCHEDULES,
-          byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
-        })
+            dispatch({
+              type: ActionType.SET_BY_DAY_SCHEDULES,
+              byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
+            })
+          }
+        }
       }
     }
   });
@@ -95,9 +101,14 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
 
   const fetchDoctorSchedules = useCallback(() => {
     findAllSchedules({
-      variables: { scheduleInput: { facilityId: '', paginationOptions: {
-        page, limit: 100 
-      }}}
+      variables: {
+        scheduleInput: {
+          facilityId: '', 
+          paginationOptions: {
+            page, limit: 100
+          }
+        }
+      }
     })
   }, [findAllSchedules, page]);
 
