@@ -6,22 +6,25 @@ import { getToken } from "../utils";
 import { AuthContext } from "../context";
 import { LOGIN_ROUTE } from "../constants";
 import { PrivateRouteProps } from "../interfacesTypes";
+import MainLayout from "../components/common/MainLayout";
 
 const PrivateRoute: FC<PrivateRouteProps> = ({ component: Component, ...rest }): JSX.Element => {
   const { user } = useContext(AuthContext);
   const { pathname } = useLocation();
 
   return (
-    <Route
-      {...rest}
-      render={(props) =>
-        user || getToken() ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to={{ pathname: LOGIN_ROUTE, state: pathname }} />
-        )
-      }
-    />
+    <MainLayout>
+      <Route
+        {...rest}
+        render={(props) =>
+          user || getToken() ? (
+            <Component {...props} />
+          ) : (
+            <Redirect to={{ pathname: LOGIN_ROUTE, state: pathname }} />
+          )
+        }
+      />
+    </MainLayout>
   );
 };
 
