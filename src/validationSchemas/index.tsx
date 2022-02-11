@@ -16,6 +16,8 @@ import {
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
   ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION,
   APPOINTMENT_TYPE,
+  DOB_VALIDATION_MESSAGE,
+  DOCTOR_DOB_VALIDATION_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -47,11 +49,13 @@ const facilityCodeSchema = {
 }
 
 const dobSchema = {
-  dob: yup.string().test(value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
+  dob: yup.string().test('', DOB_VALIDATION_MESSAGE,
+    value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
 }
 
 const doctorDobSchema = {
-  dob: yup.string().test(value => moment().diff(moment(value), 'years') > 20 && moment().diff(moment(value), 'years') < 100)
+  dob: yup.string().test('', DOCTOR_DOB_VALIDATION_MESSAGE,
+    value => moment().diff(moment(value), 'years') > 20 && moment().diff(moment(value), 'years') < 100)
 }
 
 const roleTypeSchema = {

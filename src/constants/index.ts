@@ -520,6 +520,7 @@ export const DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 2
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const ZIP_VALIDATION_MESSAGE = "Valid zip code is 5-digit long";
+export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const REQUIRED_MESSAGE = "This field is required";
