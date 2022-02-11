@@ -24,27 +24,28 @@ import ViewPatient from "../pages/main/patients/viewPatient";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import LabResults from "../pages/main/reports/labResultsListing";
-import AppointmentPublic from "../pages/main/publicAppointments";
 import ViewFacility from "../pages/main/facilities/viewFacility";
 import PatientDetails from "../pages/main/patients/patientDetails";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 import { StartProject } from "../pages/main/dashboard/startProject";
+import { PublicAppointment } from "../pages/main/publicAppointments";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
+import { AppointmentFail } from "../pages/main/publicAppointments/fail";
 import { AddService } from "../pages/main/facilities/services/addService";
 import { AddAppointment } from "../pages/main/appointments/addAppointment";
 import Locations from "../pages/main/facilities/locations/locationListing";
 import { Services } from "../pages/main/facilities/services/serviceListing";
+import { AppointmentCancel } from "../pages/main/publicAppointments/cancel";
 import { ViewService } from "../pages/main/facilities/services/viewService";
 import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
 import { AddLocation } from "../pages/main/facilities/locations/addLocation";
 import { Appointments } from "../pages/main/appointments/appointmentsListing";
+import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { ViewLocation } from "../pages/main/facilities/locations/viewLocation";
-import AppointmentFail from "../pages/main/publicAppointments/appointmentFail";
-import SlotConfirmation from "../pages/main/publicAppointments/slotConfirmation";
-import AppointmentCancel from "../pages/main/publicAppointments/appointmentCancel";
-import AppointmentSuccess from "../pages/main/publicAppointments/appointmentSuccess";
-import PatientInformation from "../pages/main/publicAppointments/patientInformation";
+import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
 import { ScheduleAppointments } from "../pages/main/appointments/scheduleAppointments";
+import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
+
 // constants
 import { AuthContext } from "../context";
 import {
@@ -66,12 +67,12 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
       <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
       <PublicRoute path={VERIFY_EMAIL_ROUTE} component={EmailVerification} exact />
-      <PublicRoute path={`${PATIENT_INFORMATION}/:id`} component={PatientInformation} exact />
-      <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={SlotConfirmation} exact />
+      <PublicRoute path={`${PATIENT_INFORMATION}/:id`} component={PatientForm} exact />
+      <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={AppointmentConfirmation} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_SUCCESS} component={AppointmentSuccess} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
-      <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={AppointmentPublic} exact />
+      <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={PublicAppointment} exact />
       <Route exact path="/">
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>

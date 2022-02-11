@@ -17,7 +17,7 @@ import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
 import history from "../../../../history";
 import { appointmentSchema } from '../../../../validationSchemas';
 import { FacilityContext, ListContext } from '../../../../context';
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { ExtendedAppointmentInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
   appointmentReducer, Action, initialState, State, ActionType
