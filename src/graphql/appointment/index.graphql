@@ -239,3 +239,57 @@ mutation CancelAppointment($cancelAppointment: CancelAppointment!){
     }
   }
 }
+
+query GetDoctorAppointments($getDoctorAppointment: GetDoctorAppointment!){
+  getDoctorAppointment(getDoctorAppointment: $getDoctorAppointment){
+    response {
+      error
+      status
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
+      totalCount
+    }
+    
+		 appointments {
+      id
+      status
+      scheduleStartDateTime
+      scheduleEndDateTime
+      createdAt
+      updatedAt
+      
+      appointmentType {
+        id
+        name
+        duration
+      }
+      
+      provider {
+        id
+        firstName
+        lastName
+      }
+      
+      patient {
+        id
+        phonePermission
+        preferredCommunicationMethod
+        pharmacy
+        medicationHistoryAuthority
+        releaseOfInfoBill
+        voiceCallPermission  
+        firstName
+        lastName
+      }
+      
+      facility {
+        id
+        name
+      }
+    }
+  }
+}

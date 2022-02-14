@@ -1,11 +1,11 @@
 // packages block
-import { useEffect, FC, useContext, useState, Reducer, useReducer } from 'react';
+import { useEffect, FC, useContext, useState, Reducer, useReducer, useCallback } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
@@ -17,7 +17,7 @@ import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
 import history from "../../../../history";
 import { appointmentSchema } from '../../../../validationSchemas';
 import { FacilityContext, ListContext } from '../../../../context';
-import { usePublicAppointmentStyles } from "../../../../styles/publicAppointment";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { ExtendedAppointmentInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
   appointmentReducer, Action, initialState, State, ActionType
@@ -27,15 +27,17 @@ import {
   getTimeFromTimestamps, requiredMessage, setRecord, getStandardTime
 } from "../../../../utils";
 import {
-  PaymentType, SchedulePayload, SchedulesPayload, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
-  useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
+  DoctorSlotsPayload,
+  PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
+  useGetDoctorSlotsLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
-  AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION, SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE
+  AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
+  SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -46,13 +48,18 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { availableSchedules } = state;
+  const { availableSlots, serviceId, offset, currentDate } = state
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
   });
   const { reset, setValue, handleSubmit, watch, formState: { errors } } = methods;
-  const { providerId: selectedProvider, facilityId: selectedFacility } = watch();
+  const {
+    serviceId: { id: selectedService } = {},
+    providerId: { id: selectedProvider } = {},
+    facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
+  } = watch();
+
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
@@ -73,8 +80,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility,
-            provider, patient,
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient,
           } = appointment || {}
 
           const { id: facilityId, name: facilityName } = facility || {};
@@ -89,8 +95,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           otherAccident && setValue('otherAccident', otherAccident)
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
-          serviceId && setValue('serviceId', setRecord(serviceId, serviceName || ''))
           facilityId && setValue('facilityId', setRecord(facilityId, facilityName || ''))
+          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
           patientId && setValue('patientId', setRecord(patientId, `${patientFN} ${patientLN}` || ''))
           providerId && setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}` || ''))
           scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime || ''))
@@ -100,28 +106,32 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
+  const [getDoctorSlots, { loading: getSlotsLoading }] = useGetDoctorSlotsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      dispatch({ type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: [] })
+      dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] })
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules: { schedules } } = data || {};
+      const { getDoctorSlots } = data || {}
 
-      schedules && dispatch({
-        type: ActionType.SET_AVAILABLE_SCHEDULES, availableSchedules: schedules as SchedulesPayload['schedules']
-      });
+      if (getDoctorSlots) {
+        const { slots } = getDoctorSlots;
+
+        slots && dispatch({
+          type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSlotsPayload['slots']
+        });
+      }
     }
   });
 
   const [createAppointment, { loading: CreateAppointmentLoading }] = useCreateAppointmentMutation({
     onError({ message }) {
-      if(message === CONFLICT_EXCEPTION){
+      if (message === CONFLICT_EXCEPTION) {
         Alert.error(SLOT_ALREADY_BOOKED)
-      }else 
+      } else
         Alert.error(message || CANT_BOOK_APPOINTMENT)
     },
 
@@ -177,32 +187,40 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [getAppointment, id, isEdit, setValue])
 
   useEffect(() => {
-    if (selectedProvider) {
-      const { id } = selectedProvider;
-      getDoctorSchedules({
+    if (selectedFacility && selectedProvider && selectedService && date) {
+      getDoctorSlots({
         variables: {
-          getDoctorSchedule: { id }
+          getDoctorSlots: { id: selectedProvider, offset, currentDate: date.toString(), serviceId: selectedService }
         }
       })
     }
-  }, [getDoctorSchedules, selectedProvider, watch])
+  }, [currentDate, getDoctorSlots, id, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch])
 
-  useEffect(() => {
-    if (selectedFacility) {
-      const { id } = selectedFacility;
+  const fetchList = useCallback((id: string, name: string) => {
+    reset({
+      serviceId: EMPTY_OPTION,
+      patientId: EMPTY_OPTION,
+      providerId: EMPTY_OPTION,
+      facilityId: { id, name }
+    });
 
+    if (id) {
       fetchAllDoctorList(id);
       fetchAllPatientList(id);
       fetchAllServicesList(id);
     }
-  }, [fetchAllDoctorList, fetchAllPatientList, fetchAllServicesList, selectedFacility, watch])
+  }, [fetchAllDoctorList, fetchAllPatientList, fetchAllServicesList, reset]);
+
+  useEffect(() => {
+    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
+  }, [fetchList, selectedFacility, selectedFacilityName, watch])
 
   const onSubmit: SubmitHandler<ExtendedAppointmentInputProps> = async (inputs) => {
     const {
-      reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance,
-      secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId,
-      providerId, patientId
+      reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, patientId,
+      secondaryInsurance, employment, autoAccident, otherAccident, serviceId, facilityId, providerId,
     } = inputs;
+
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
@@ -212,14 +230,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       const { id: selectedFacility } = facilityId || {};
 
       const appointmentInput = {
-        reason: reason || '', 
+        reason: reason || '',
         scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
         scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString()),
         autoAccident: autoAccident || false, otherAccident: otherAccident || false,
         primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
         notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
         serviceId: selectedService, providerId: selectedProvider, employment: employment || false,
-        paymentType: PaymentType.Self,
+        paymentType: PaymentType.Self
       };
 
       if (isEdit) {
@@ -240,11 +258,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   };
 
-  const setSchedule = (schedule: SchedulePayload['schedule']) => {
-    if (schedule) {
-      const { startAt, endAt } = schedule;
-      startAt && setValue('scheduleStartDateTime', startAt)
-      endAt && setValue('scheduleEndDateTime', endAt)
+  const handleSlot = (slot: Slots) => {
+    if (slot) {
+      const { startTime, endTime } = slot;
+      endTime && setValue('scheduleEndDateTime', endTime)
+      startTime && setValue('scheduleStartDateTime', startTime)
     }
   };
 
@@ -354,7 +372,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 )}
               </CardComponent>
             </Grid>
-
             <Grid md={6} item>
               <Grid item md={12} sm={12} className="custom-calendar">
                 <CardComponent cardTitle="Available Slots">
@@ -364,27 +381,26 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         variant="static"
                         openTo="date"
                         value={date}
-                        onChange={currentDate => currentDate && setDate(currentDate)}
                         autoOk
                         disablePast
                         fullWidth
                         disableToolbar
+                        onChange={currentDate => currentDate && setDate(currentDate)}
                       />
                     </MuiPickersUtilsProvider>
                   </Box>
 
-                  {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+                  {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
                     <ul className={classes.timeSlots}>
-                      {!!availableSchedules?.length ? availableSchedules.map((schedule, index: number) => {
-                        const { startAt, endAt } = schedule || {}
+                      {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
+                        const { startTime, endTime } = slot || {}
 
                         return (
-
-                          <li onClick={() => setSchedule(schedule)}>
+                          <li onClick={() => handleSlot(slot)}>
                             <div>
                               <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
                               <label htmlFor={`timeSlot-${index}`}>
-                                {getStandardTime(startAt || '')} - {getStandardTime(endAt || '')}
+                                {getStandardTime(startTime || '')} - {getStandardTime(endTime || '')}
                               </label>
                             </div>
                           </li>

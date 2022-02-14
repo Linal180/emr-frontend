@@ -8,14 +8,14 @@ import ConfirmationModal from "../ConfirmationModal";
 import { MediaCardComponentType } from "../../../interfacesTypes";
 import { DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION } from "../../../constants";
 import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
-import { documentVerificationForm } from "../../../styles/publicAppointment/documentVerification";
+import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
 import { FileIcon } from "../../../assets/svgs";
 import { BLUE_ONE } from "../../../theme";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, setAttachment, setAttachments, attachments, allAttachments, imageSide }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
-  const classes = documentVerificationForm()
+  const classes = documentVerificationFormStyles()
 
 
   const [removeAttachmentData, { loading }] = useRemoveAttachmentDataMutation({
