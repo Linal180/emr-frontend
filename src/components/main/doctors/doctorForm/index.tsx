@@ -639,7 +639,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="phone" error={phoneError} label={PHONE} />
+                        <PhoneField isRequired name="phone" error={phoneError} label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
@@ -649,21 +649,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="pager"
-                          error={pagerError}
-                          controllerLabel={PAGER}
-                        />
+                        <PhoneField name="pager" error={pagerError} label={PAGER} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="fax"
-                          error={faxError}
-                          controllerLabel={FAX}
-                        />
+                        <PhoneField name="fax" error={faxError} label={FAX} />
                       </Grid>
                     </Grid>
 

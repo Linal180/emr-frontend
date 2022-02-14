@@ -10,7 +10,7 @@ import DoctorScheduleForm from "../schedules";
 // constants, history, styling block
 import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
-import { formatPhone, getDate, getFormattedDate } from "../../../../utils";
+import { formatPhone, getFormattedDate, getTimestamps } from "../../../../utils";
 import { useGetDoctorLazyQuery } from "../../../../generated/graphql";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { DOCTORS_ROUTE, DOCTOR_NOT_FOUND, DOCTOR_TOP_TABS } from "../../../../constants";
@@ -64,8 +64,8 @@ const DoctorDetailComponent = (): JSX.Element => {
 
   const { firstName, lastName, dob, contacts, createdAt } = doctor || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
-  const DOCTOR_AGE = moment().diff(getDate(dob || ''), 'years');
-
+  const DOCTOR_AGE = moment().diff(getTimestamps(dob || ''), 'years');
+  
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""

@@ -11,10 +11,11 @@ import {
 } from "../generated/graphql";
 
 // regex
+export const ZIP_REGEX = /^\d{5}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
-export const ZIP_REGEX = /^\d{5}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
+export const STRING_REGEX = /^[A-Za-b]/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
@@ -400,6 +401,7 @@ export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
 export const USUAL_INDUSTRY = "Usual Industry";
+export const INDUSTRY = "Industry";
 export const STATEMENT_DELIVERED_ONLINE = "Statement delivered online only";
 export const STATEMENT_NOTE = "Statement note";
 export const ID_NUMBER = "ID Number";

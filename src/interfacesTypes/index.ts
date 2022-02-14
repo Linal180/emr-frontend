@@ -640,7 +640,7 @@ export interface GeneralFormProps {
 
 type PhoneInputTypes = | "phone" | "fax" | "mobile" | "basicPhone" | "basicMobile" | "basicFax"
   | "billingPhone" | "billingFax" | "billingMobile" | "emergencyPhone" | "emergencyMobile"
-  | "kinPhone" | "kinMobile" | "employerPhone" | "guarantorPhone"
+  | "kinPhone" | "kinMobile" | "employerPhone" | "guarantorPhone" | "pager"
 
 export interface PhoneInputProps {
   label: string
