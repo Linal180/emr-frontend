@@ -180,7 +180,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         })
       } else Alert.error(APPOINTMENT_NOT_FOUND)
     } else {
-      setValue('employment', true)
+      setValue('employment', false)
       setValue('autoAccident', false)
       setValue('otherAccident', false)
     }
