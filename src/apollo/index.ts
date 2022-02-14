@@ -76,7 +76,8 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
   if (networkError) {
     Alert.error(networkError.message)
-    client.clearStore()
+    client.clearStore().then(response => console.log(response))
+      .catch(error => console.log(error))
   }
 });
 

@@ -87,7 +87,40 @@ query FindAllSchedules($scheduleInput: ScheduleInput!){
 }
 
 query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!){
-  getDoctorSchedules(getDoctorSchedule: $getDoctorSchedule){
+  getDoctorSchedule(getDoctorSchedule: $getDoctorSchedule){
+    response {
+      error
+      status
+      message
+    }
+    
+		schedules {
+      id
+      startAt
+      endAt
+      createdAt
+      updatedAt
+      
+      location {
+        id
+        name
+      }
+      
+      scheduleServices {
+        id
+        
+        service{
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+
+query GetDoctorSlots($getDoctorSlots: GetDoctorSlots!){
+  getDoctorSlots(getDoctorSlots: $getDoctorSlots){
     response {
       error
       status

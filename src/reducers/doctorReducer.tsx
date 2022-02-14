@@ -1,4 +1,4 @@
-import { AllDoctorPayload, DoctorPayload, DoctorSchedulePayload, SchedulesPayload } from "../generated/graphql"
+import { AllDoctorPayload, DoctorPayload, DoctorSlotsPayload, SchedulesPayload } from "../generated/graphql"
 import { DaySchedule } from "../interfacesTypes";
 
 export interface State {
@@ -19,7 +19,7 @@ export interface State {
   byDaySchedules: DaySchedule[];
   doctor: DoctorPayload['doctor'];
   doctors: AllDoctorPayload['doctors'];
-  doctorSlots: DoctorSchedulePayload['slots'];
+  doctorSlots: DoctorSlotsPayload['slots'];
   doctorSchedules: SchedulesPayload['schedules'];
 }
 
@@ -57,9 +57,9 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_CURRENT_DATE = 'setCurrentDate',
   SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_DOCTOR_SLOTS = 'setDoctorSlots',
   SET_BY_DAY_SCHEDULES = 'setByDaySchedules',
   SET_DELETE_DOCTOR_ID = 'setDeleteDoctorId',
-  SET_DOCTOR_SLOTS = 'setDoctorSlots',
   SET_DOCTOR_SCHEDULES = 'setDoctorSchedules',
   SET_DOCTOR_FACILITY_ID = 'setDoctorFacilityId',
   SET_DELETE_SCHEDULE_ID = 'setDeleteScheduleId',
@@ -85,7 +85,7 @@ export type Action =
   | { type: ActionType.SET_BY_DAY_SCHEDULES; byDaySchedules: DaySchedule[] }
   | { type: ActionType.SET_SCHEDULE_OPEN_MODAL; scheduleOpenModal: boolean }
   | { type: ActionType.SET_OPEN_SCHEDULE_DELETE; openScheduleDelete: boolean }
-  | { type: ActionType.SET_DOCTOR_SLOTS; doctorSlots: DoctorSchedulePayload['slots'] }
+  | { type: ActionType.SET_DOCTOR_SLOTS; doctorSlots: DoctorSlotsPayload['slots'] }
   | { type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: SchedulesPayload['schedules'] }
 
 export const doctorReducer = (state: State, action: Action): State => {

@@ -588,8 +588,8 @@ export type DoctorPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
-export type DoctorSchedulePayload = {
-  __typename?: 'DoctorSchedulePayload';
+export type DoctorSlotsPayload = {
+  __typename?: 'DoctorSlotsPayload';
   response?: Maybe<ResponsePayload>;
   slots?: Maybe<Array<Slots>>;
 };
@@ -706,6 +706,10 @@ export type GetDoctorAppointment = {
 };
 
 export type GetDoctorSchedule = {
+  id: Scalars['String'];
+};
+
+export type GetDoctorSlots = {
   currentDate: Scalars['String'];
   id: Scalars['String'];
   offset: Scalars['Float'];
@@ -1205,7 +1209,8 @@ export type Query = {
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getDoctorAppointment: AppointmentsPayload;
-  getDoctorSchedules: DoctorSchedulePayload;
+  getDoctorSchedule: SchedulesPayload;
+  getDoctorSlots: DoctorSlotsPayload;
   getFacility: FacilityPayload;
   getPatient: PatientPayload;
   getSchedule: SchedulePayload;
@@ -1292,8 +1297,13 @@ export type QueryGetDoctorAppointmentArgs = {
 };
 
 
-export type QueryGetDoctorSchedulesArgs = {
+export type QueryGetDoctorScheduleArgs = {
   getDoctorSchedule: GetDoctorSchedule;
+};
+
+
+export type QueryGetDoctorSlotsArgs = {
+  getDoctorSlots: GetDoctorSlots;
 };
 
 
@@ -2322,7 +2332,14 @@ export type GetDoctorScheduleQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorScheduleQuery = { __typename?: 'Query', getDoctorSchedules: { __typename?: 'DoctorSchedulePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, slots?: Array<{ __typename?: 'Slots', startTime?: string | null | undefined, endTime?: string | null | undefined }> | null | undefined } };
+export type GetDoctorScheduleQuery = { __typename?: 'Query', getDoctorSchedule: { __typename?: 'SchedulesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, schedules?: Array<{ __typename?: 'Schedule', id: string, startAt: string, endAt: string, createdAt: string, updatedAt: string, location?: { __typename?: 'Contact', id: string, name?: string | null | undefined } | null | undefined, scheduleServices?: Array<{ __typename?: 'ScheduleServices', id: string, service?: { __typename?: 'Service', id: string, name: string } | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+
+export type GetDoctorSlotsQueryVariables = Exact<{
+  getDoctorSlots: GetDoctorSlots;
+}>;
+
+
+export type GetDoctorSlotsQuery = { __typename?: 'Query', getDoctorSlots: { __typename?: 'DoctorSlotsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, slots?: Array<{ __typename?: 'Slots', startTime?: string | null | undefined, endTime?: string | null | undefined }> | null | undefined } };
 
 export type RemoveScheduleMutationVariables = Exact<{
   removeSchedule: RemoveSchedule;
@@ -5382,15 +5399,29 @@ export type FindAllSchedulesLazyQueryHookResult = ReturnType<typeof useFindAllSc
 export type FindAllSchedulesQueryResult = Apollo.QueryResult<FindAllSchedulesQuery, FindAllSchedulesQueryVariables>;
 export const GetDoctorScheduleDocument = gql`
     query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!) {
-  getDoctorSchedules(getDoctorSchedule: $getDoctorSchedule) {
+  getDoctorSchedule(getDoctorSchedule: $getDoctorSchedule) {
     response {
       error
       status
       message
     }
-    slots {
-      startTime
-      endTime
+    schedules {
+      id
+      startAt
+      endAt
+      createdAt
+      updatedAt
+      location {
+        id
+        name
+      }
+      scheduleServices {
+        id
+        service {
+          id
+          name
+        }
+      }
     }
   }
 }
@@ -5423,6 +5454,49 @@ export function useGetDoctorScheduleLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetDoctorScheduleQueryHookResult = ReturnType<typeof useGetDoctorScheduleQuery>;
 export type GetDoctorScheduleLazyQueryHookResult = ReturnType<typeof useGetDoctorScheduleLazyQuery>;
 export type GetDoctorScheduleQueryResult = Apollo.QueryResult<GetDoctorScheduleQuery, GetDoctorScheduleQueryVariables>;
+export const GetDoctorSlotsDocument = gql`
+    query GetDoctorSlots($getDoctorSlots: GetDoctorSlots!) {
+  getDoctorSlots(getDoctorSlots: $getDoctorSlots) {
+    response {
+      error
+      status
+      message
+    }
+    slots {
+      startTime
+      endTime
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDoctorSlotsQuery__
+ *
+ * To run a query within a React component, call `useGetDoctorSlotsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDoctorSlotsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDoctorSlotsQuery({
+ *   variables: {
+ *      getDoctorSlots: // value for 'getDoctorSlots'
+ *   },
+ * });
+ */
+export function useGetDoctorSlotsQuery(baseOptions: Apollo.QueryHookOptions<GetDoctorSlotsQuery, GetDoctorSlotsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDoctorSlotsQuery, GetDoctorSlotsQueryVariables>(GetDoctorSlotsDocument, options);
+      }
+export function useGetDoctorSlotsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDoctorSlotsQuery, GetDoctorSlotsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDoctorSlotsQuery, GetDoctorSlotsQueryVariables>(GetDoctorSlotsDocument, options);
+        }
+export type GetDoctorSlotsQueryHookResult = ReturnType<typeof useGetDoctorSlotsQuery>;
+export type GetDoctorSlotsLazyQueryHookResult = ReturnType<typeof useGetDoctorSlotsLazyQuery>;
+export type GetDoctorSlotsQueryResult = Apollo.QueryResult<GetDoctorSlotsQuery, GetDoctorSlotsQueryVariables>;
 export const RemoveScheduleDocument = gql`
     mutation RemoveSchedule($removeSchedule: RemoveSchedule!) {
   removeSchedule(removeSchedule: $removeSchedule) {

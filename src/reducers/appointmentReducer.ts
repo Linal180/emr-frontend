@@ -1,4 +1,5 @@
-import { AppointmentPayload, AppointmentsPayload, DoctorSchedulePayload, FacilityPayload } from "../generated/graphql"
+import moment from "moment";
+import { AppointmentPayload, AppointmentsPayload, DoctorSlotsPayload, FacilityPayload } from "../generated/graphql"
 
 export interface State {
   page: number;
@@ -13,20 +14,18 @@ export interface State {
   appointmentId: string;
   deleteAppointmentId: string;
   facility: FacilityPayload['facility'];
+  availableSlots: DoctorSlotsPayload['slots'];
   appointment: AppointmentPayload['appointment'];
-  availableSlots: DoctorSchedulePayload['slots'];
   appointments: AppointmentsPayload['appointments'];
 }
 
 export const initialState: State = {
   page: 1,
-  offset: 0,
   serviceId: '',
   totalPages: 0,
   providerId: '',
   facility: null,
   searchQuery: '',
-  currentDate: new Date().toDateString(),
   appointments: [],
   openDelete: false,
   appointmentId: '',
@@ -34,11 +33,12 @@ export const initialState: State = {
   isInsurance: false,
   availableSlots: [],
   deleteAppointmentId: '',
+  offset: moment.tz().zone(),
+  currentDate: new Date().toDateString(),
 }
 
 export enum ActionType {
   SET_PAGE = 'setPage',
-  SET_OFFSET = 'setOffset',
   SET_FACILITY = 'setFacility',
   SET_SERVICE_ID = 'setServiceId',
   SET_PROVIDER_ID = 'setProviderId',
@@ -56,7 +56,7 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
-  | { type: ActionType.SET_OFFSET, offset: number }
+  // | { type: ActionType.SET_OFFSET, offset: number }
   | { type: ActionType.SET_SERVICE_ID, serviceId: string }
   | { type: ActionType.SET_PROVIDER_ID, providerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
@@ -68,8 +68,8 @@ export type Action =
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
+  | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: DoctorSlotsPayload['slots'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
-  | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: DoctorSchedulePayload['slots'] }
 
 export const appointmentReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -77,12 +77,6 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         page: action.page
-      }
-
-    case ActionType.SET_OFFSET:
-      return {
-        ...state,
-        offset: action.offset
       }
 
     case ActionType.SET_CURRENT_DATE:

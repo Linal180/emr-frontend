@@ -18,7 +18,7 @@ import {
   doctorReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/doctorReducer';
 import {
-  SchedulesPayload, useFindAllSchedulesLazyQuery, useRemoveScheduleMutation
+  SchedulesPayload, useGetDoctorScheduleLazyQuery, useRemoveScheduleMutation
 } from "../../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_DOCTOR_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
@@ -29,9 +29,9 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   const classes = useDoctorScheduleStyles();
   const { id } = useParams<ParamsType>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
-  const { scheduleOpenModal, page, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
+  const { scheduleOpenModal, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
 
-  const [findAllSchedules, { loading: getSchedulesLoading }] = useFindAllSchedulesLazyQuery({
+  const [getDoctorSchedule, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -40,21 +40,25 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     },
 
     onCompleted(data) {
-      const { findAllSchedules } = data || {};
+      const { getDoctorSchedule } = data || {};
 
-      if (findAllSchedules) {
-        const { schedules, response } = findAllSchedules
-        
-        if (response?.status && response?.status === 200 && schedules) {
-          if (schedules.length > 0) {
-            dispatch({
-              type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
-            });
+      if (getDoctorSchedule) {
+        const { schedules, response } = getDoctorSchedule
 
-            dispatch({
-              type: ActionType.SET_BY_DAY_SCHEDULES,
-              byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
-            })
+        if (schedules && response) {
+          const { status } = response || {}
+          
+          if (status && status === 200 && schedules) {
+            if (schedules.length > 0) {
+              dispatch({
+                type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
+              });
+
+              dispatch({
+                type: ActionType.SET_BY_DAY_SCHEDULES,
+                byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
+              })
+            }
           }
         }
       }
@@ -100,17 +104,12 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   };
 
   const fetchDoctorSchedules = useCallback(() => {
-    findAllSchedules({
-      variables: {
-        scheduleInput: {
-          facilityId: '', 
-          paginationOptions: {
-            page, limit: 100
-          }
-        }
-      }
-    })
-  }, [findAllSchedules, page]);
+    if (id) {
+      getDoctorSchedule({
+        variables: { getDoctorSchedule: { id } }
+      })
+    } else Alert.error(DOCTOR_NOT_FOUND)
+  }, [getDoctorSchedule, id]);
 
   useEffect(() => {
     if (id) {

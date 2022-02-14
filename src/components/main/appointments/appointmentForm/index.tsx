@@ -27,9 +27,9 @@ import {
   getTimeFromTimestamps, requiredMessage, setRecord, getStandardTime
 } from "../../../../utils";
 import {
-  DoctorSchedulePayload,
+  DoctorSlotsPayload,
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
-  useGetDoctorScheduleLazyQuery, useUpdateAppointmentMutation
+  useGetDoctorSlotsLazyQuery, useUpdateAppointmentMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -107,7 +107,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
+  const [getDoctorSlots, { loading: getSlotsLoading }] = useGetDoctorSlotsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -116,13 +116,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules } = data || {}
+      const { getDoctorSlots } = data || {}
 
-      if (getDoctorSchedules) {
-        const { slots } = getDoctorSchedules;
+      if (getDoctorSlots) {
+        const { slots } = getDoctorSlots;
 
         slots && dispatch({
-          type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSchedulePayload['slots']
+          type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSlotsPayload['slots']
         });
       }
     }
@@ -188,14 +188,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [getAppointment, id, isEdit, setValue])
 
   useEffect(() => {
-    if (selectedFacility && selectedProvider && selectedService) {
-      getDoctorSchedules({
+    if (selectedFacility && selectedProvider && selectedService && date) {
+      getDoctorSlots({
         variables: {
-          getDoctorSchedule: { id: selectedProvider, offset, currentDate, serviceId: selectedService }
+          getDoctorSlots: { id: selectedProvider, offset, currentDate: date.toString(), serviceId: selectedService }
         }
       })
     }
-  }, [currentDate, getDoctorSchedules, id, offset, selectedFacility, selectedProvider, selectedService, serviceId, watch])
+  }, [currentDate, getDoctorSlots, id, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -373,7 +373,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 )}
               </CardComponent>
             </Grid>
-
             <Grid md={6} item>
               <Grid item md={12} sm={12} className="custom-calendar">
                 <CardComponent cardTitle="Available Slots">
@@ -392,9 +391,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     </MuiPickersUtilsProvider>
                   </Box>
 
-                  {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+                  {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
                     <ul className={classes.timeSlots}>
-                      {!!availableSlots?.length ? availableSlots.map((slot, index: number) => {
+                      {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                         const { startTime, endTime } = slot || {}
 
                         return (

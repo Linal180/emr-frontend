@@ -1,10 +1,11 @@
 // packages block
-import { Reducer, useContext, useEffect, useReducer } from "react";
+import { Reducer, useContext, useEffect, useState, useReducer } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
@@ -30,7 +31,7 @@ import {
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
   PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery,
-  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorScheduleLazyQuery,
+  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL, DOB, EMAIL, EMPTY_OPTION,
@@ -47,6 +48,7 @@ const PublicAppointmentForm = (): JSX.Element => {
   const { serviceList, doctorList, fetchAllDoctorList, fetchAllServicesList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { facility, isInsurance, availableSlots, currentDate, offset } = state;
+  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(externalAppointmentSchema)
@@ -70,7 +72,7 @@ const PublicAppointmentForm = (): JSX.Element => {
     onCompleted(data) {
       try {
         const { getFacility: { response, facility } } = data;
-        
+
         if (response) {
           const { status } = response
 
@@ -84,7 +86,7 @@ const PublicAppointmentForm = (): JSX.Element => {
     }
   });
 
-  const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
+  const [getDoctorSlots, { loading: getSlotsLoading }] = useGetDoctorSlotsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -94,14 +96,12 @@ const PublicAppointmentForm = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules } = data || {}
+      const { getDoctorSlots } = data || {}
 
-      if (getDoctorSchedules) {
-        const { slots } = getDoctorSchedules;
+      if (getDoctorSlots) {
+        const { slots } = getDoctorSlots;
 
-        slots && dispatch({
-          type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots
-        });
+        slots && dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots });
       }
     }
   });
@@ -147,14 +147,14 @@ const PublicAppointmentForm = (): JSX.Element => {
   }, [selectedPaymentType, watch])
 
   useEffect(() => {
-    if (selectedProvider && selectedService) {
-      getDoctorSchedules({
+    if (selectedProvider && selectedService && date) {
+      getDoctorSlots({
         variables: {
-          getDoctorSchedule: { id: selectedProvider, offset, currentDate, serviceId: selectedService }
+          getDoctorSlots: { id: selectedProvider, offset, currentDate: date.toString(), serviceId: selectedService }
         }
       })
     }
-  }, [currentDate, getDoctorSchedules, offset, selectedProvider, selectedService, watch])
+  }, [currentDate, getDoctorSlots, offset, selectedProvider, date, selectedService, watch])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const {
@@ -230,7 +230,7 @@ const PublicAppointmentForm = (): JSX.Element => {
     }
   };
 
-  const disableSubmit = createExternalAppointmentLoading || getSchedulesLoading || getFacilityLoading
+  const disableSubmit = createExternalAppointmentLoading || getSlotsLoading || getFacilityLoading
   const {
     dob: { message: dobError } = {},
     email: { message: emailError } = {},
@@ -380,11 +380,11 @@ const PublicAppointmentForm = (): JSX.Element => {
 
             <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
               <CardComponent cardTitle="Available Slots">
-                <AppointmentDatePicker />
+                <AppointmentDatePicker date={date} setDate={setDate} />
 
-                {getSchedulesLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+                {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
                   <ul className={classes.timeSlots}>
-                    {!!availableSlots?.length ? availableSlots.map((slot, index) => {
+                    {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
                       const { startTime, endTime } = slot || {}
 
                       return (
