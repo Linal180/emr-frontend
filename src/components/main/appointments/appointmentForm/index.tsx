@@ -80,8 +80,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility,
-            provider, patient,
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient,
           } = appointment || {}
 
           const { id: facilityId, name: facilityName } = facility || {};
@@ -96,8 +95,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           otherAccident && setValue('otherAccident', otherAccident)
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
-          serviceId && setValue('serviceId', setRecord(serviceId, serviceName || ''))
           facilityId && setValue('facilityId', setRecord(facilityId, facilityName || ''))
+          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
           patientId && setValue('patientId', setRecord(patientId, `${patientFN} ${patientLN}` || ''))
           providerId && setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}` || ''))
           scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime || ''))
@@ -181,7 +180,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         })
       } else Alert.error(APPOINTMENT_NOT_FOUND)
     } else {
-      setValue('employment', false)
+      setValue('employment', true)
       setValue('autoAccident', false)
       setValue('otherAccident', false)
     }
@@ -238,7 +237,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
         notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
         serviceId: selectedService, providerId: selectedProvider, employment: employment || false,
-        paymentType: PaymentType.Self,
+        paymentType: PaymentType.Self
       };
 
       if (isEdit) {

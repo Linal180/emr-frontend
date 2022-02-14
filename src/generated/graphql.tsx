@@ -1583,6 +1583,7 @@ export enum ServiceCodes {
 
 export type ServiceInput = {
   facilityId?: Maybe<Scalars['String']>;
+  isActive?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
 };
 
