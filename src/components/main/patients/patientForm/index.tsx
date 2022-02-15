@@ -41,7 +41,7 @@ import {
   MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
   SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
-  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX, SEX_AT_BIRTH,
+  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT,
   CREATE_PATIENT, EMPTY_OPTION, NOT_FOUND_EXCEPTION,
@@ -215,8 +215,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address && setValue("guarantorAddress", address)
               address2 && setValue("guarantorAddress2", address2)
               country && setValue("guarantorCountry", country)
-              lastName && setValue("guarantorFirstName", lastName)
-              firstName && setValue("guarantorLastName", firstName)
+              lastName && setValue("guarantorLastName", lastName)
+              firstName && setValue("guarantorFirstName", firstName)
               middleName && setValue("guarantorMiddleName", middleName)
               employerName && setValue("guarantorEmployerName", employerName)
             }
@@ -653,7 +653,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           error={genderError?.message || ""}
                           label={LEGAL_SEX}
                           value={EMPTY_OPTION}
-                          options={MAPPED_GENDER}
+                          options={MAPPED_GENDER_IDENTITY}
                         />
                       </Grid>
 

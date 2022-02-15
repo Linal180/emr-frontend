@@ -339,7 +339,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={PATIENT}
                           name="patientId"
                           options={renderPatient(patientList)}
-                          error={patientError?.message && requiredMessage(PROVIDER)}
+                          error={patientError?.message && requiredMessage(PATIENT)}
                         />
                       </Grid>
                     </Grid>

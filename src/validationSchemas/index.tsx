@@ -15,9 +15,10 @@ import {
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
   ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION,
-  DOCTOR_DOB_VALIDATION_MESSAGE, STRING_REGEX, MIDDLE_NAME, PREFERRED_NAME, PREVIOUS_FIRST_NAME,
+  STRING_REGEX, MIDDLE_NAME, PREFERRED_NAME, PREVIOUS_FIRST_NAME,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
-  PRIMARY_INSURANCE, SECONDARY_INSURANCE, INSURANCE_PLAN_TYPE, FAX, PHONE, MOBILE,
+  PRIMARY_INSURANCE, SECONDARY_INSURANCE, INSURANCE_PLAN_TYPE, FAX, PHONE, MOBILE, 
+  MAX_DOCTOR_DOB_VALIDATION_MESSAGE, MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -88,8 +89,11 @@ const dobSchema = {
 }
 
 const doctorDobSchema = {
-  dob: yup.string().test('', DOCTOR_DOB_VALIDATION_MESSAGE,
-    value => moment().diff(moment(value), 'years') > 20 && moment().diff(moment(value), 'years') < 100)
+  dob: yup.string()
+    .test('', MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
+      value => moment().diff(moment(value), 'years') >= 20 && moment().diff(moment(value), 'years') < 150)
+    .test('', MAX_DOCTOR_DOB_VALIDATION_MESSAGE,
+      value => moment().diff(moment(value), 'years') >= 20 && moment().diff(moment(value), 'years') < 150)
 }
 
 const roleTypeSchema = {

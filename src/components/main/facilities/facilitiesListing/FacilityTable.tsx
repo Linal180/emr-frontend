@@ -190,7 +190,7 @@ const FacilityTable: FC = (): JSX.Element => {
 
                           <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
                             <Box className={classes.iconsBackground}>
-                              <RemoveRedEye color="primary" />
+                              <RemoveRedEye />
                             </Box>
                           </Link>
 
