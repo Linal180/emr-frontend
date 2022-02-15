@@ -3,14 +3,15 @@ import moment from "moment";
 import { useState } from "react";
 import { Avatar, Box, Button, Grid, InputAdornment, TextField } from "@material-ui/core";
 // components block
+import PatientChartCards from "./patientChartCards";
 // constants, history, styling block
+import { Search } from "@material-ui/icons";
 import { getDate } from "../../../../../utils";
-import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
+import { GRAY, WHITE } from "../../../../../theme";
 import { Patient } from "../../../../../generated/graphql";
 import { ProfileUserIcon } from "../../../../../assets/svgs";
-import { Search } from "@material-ui/icons";
 import { SEARCH_PLACEHOLDER } from "../../../../../constants";
-import { GRAY, WHITE } from "../../../../../theme";
+import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
 
 const PatientDetailsComponent = (): JSX.Element => {
     const classes = useProfileDetailsStyles()
@@ -54,7 +55,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
     return (
         <Box>
-
             <Box className={classes.profileDetailsContainer}>
                 <Box className={classes.profileCard}>
                     <Box display="flex" alignItems="center">
@@ -82,9 +82,9 @@ const PatientDetailsComponent = (): JSX.Element => {
                                 </Box>
 
                             </Box>
-                            <Box display="flex" pt={3}>
+                            <Box display="flex" pr={3}>
                                 {ProfileAdditionalDetails.map((item, index) => (
-                                    <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
+                                    <Box key={`${item.title}-${index}`}>
                                         <Box className={classes.profileInfoHeading}>{item.title}</Box>
                                         <Box>{item.description}</Box>
                                     </Box>
@@ -120,7 +120,8 @@ const PatientDetailsComponent = (): JSX.Element => {
                         </Grid>
                     </Box>
                 </Grid>
-
+                <Box pb={3} />
+                <PatientChartCards />
             </Box>
         </Box>
     )

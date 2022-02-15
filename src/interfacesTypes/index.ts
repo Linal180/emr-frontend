@@ -164,6 +164,16 @@ export interface CardComponentType extends Children {
   requestLink?: string
 }
 
+export interface ChartingCardComponentType extends Children {
+  link?: string;
+  hasAdd?: boolean;
+  cardTitle: string;
+  requestLink?: string
+  hideSaveIcon?: boolean;
+  onAddClick?: () => void;
+  disableAddIcon?: boolean;
+}
+
 export interface PageHeaderProps {
   isOpen?: boolean;
   setOpen?: Function;
