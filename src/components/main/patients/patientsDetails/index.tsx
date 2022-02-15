@@ -1,74 +1,104 @@
 // packages block
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect } from 'react';
 import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
-import { ChangeEvent, useState, MouseEvent } from "react";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
 // constants, history, styling block
 import history from "../../../../history";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
+import {
+  patientReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/patientReducer";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
+import { Attachment, AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useGetPatientQuery } from "../../../../generated/graphql";
 import { ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT } from "../../../../constants";
 import { AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import { ParamsType } from "../../../../interfacesTypes";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import Selector from "../../../common/Selector";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import MediaCards from "../../../common/AddMedia/MediaCards";
+import Alert from "../../../common/Alert";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const { id } = useParams<ParamsType>();
-  const [value, setValue] = useState('1');
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [patientData, setPatientData] = useState<Patient | null>();
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [{
+    anchorEl, attachmentUrl, attachmentsData, openDelete, patientData, tabValue,
+  }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const isMenuOpen = Boolean(anchorEl);
   const widgetId = "widget-menu";
-  const handleMenuClose = () => setAnchorEl(null);
-  const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
+  const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
   const { location: { pathname } } = history
   const getPatientIdArray = pathname.split("/")
   const getPatientId = getPatientIdArray[getPatientIdArray.length - 2]
+
   const methods = useForm<any>({
     mode: "all",
   });
 
   const { handleSubmit } = methods;
 
-  const handleChange = (event: ChangeEvent<{}>, newValue: string) => {
-    setValue(newValue);
-  };
+  const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
+    dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
-  const { loading } = useGetPatientQuery({
+  const [getPatient, { loading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    variables: {
-      getPatient: {
-        id: getPatientId,
-      }
-    },
-
     onError() {
-      setPatientData(null);
+      dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: null })
     },
 
     onCompleted(data) {
       if (data) {
-        const { getPatient: { patient } } = data
+        const { getPatient } = data;
 
-        if (patient && !loading) {
-          setPatientData(patient as Patient)
+        if (getPatient) {
+          const { patient } = getPatient;
+          dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
+
         }
       }
     },
   });
 
-  if (!patientData || loading) {
+  const [getAttachmentUrl] = useGetAttachmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { getAttachment } = data || {};
+
+      if (getAttachment) {
+        const { preSignedUrl } = getAttachment
+        console.log(preSignedUrl)
+        preSignedUrl && window.open(preSignedUrl, '_blank');
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (id) {
+      getPatient({
+        variables: {
+          getPatient: { id }
+        },
+      })
+    }
+  }, [getPatient, id])
+
+  if (!patientData) {
     return (
       <Box>Loading...</Box>
     )
@@ -168,8 +198,22 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
+
+  const handleAttachmentClick = (id: string) => {
+    if (id) {
+      getAttachmentUrl({
+        variables: {
+          getMedia: {
+            id
+          }
+        }
+      })
+    } else Alert.error("Attachment not found!")
+  }
+
   const onDeleteClick = () => {
-    setOpenDelete(true)
+    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+
   };
 
   const handleDeleteWidget = () => {
@@ -178,9 +222,13 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<any> = async (inputs) => { }
 
+  const { attachments } = patientData || {}
+  const { url, id: attachmentId } = attachments && attachments[0] || {}
+  dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: url || '' })
+
   return (
     <Box>
-      <TabContext value={value}>
+      <TabContext value={tabValue}>
         <Box display="flex" justifyContent="space-between">
           <TabList onChange={handleChange} aria-label="Profile top tabs">
             {PROFILE_TOP_TABS.map(item => (
@@ -197,10 +245,11 @@ const PatientDetailsComponent = (): JSX.Element => {
 
         <Box className={classes.profileDetailsContainer}>
           <Box className={classes.profileCard}>
-            <Box display="flex" alignItems="center">
-              <Box pl={1}>
-                <Box pr={3.75}>
-                  <Avatar variant="square" src='' className={classes.profileImage} />
+            <Box key={attachmentId} display="flex" alignItems="center">
+              <Box pl={1} onClick={() => handleAttachmentClick(attachmentId || "")} >
+                <Box pr={3.75} position="relative">
+                  <Avatar variant="square" src={attachmentUrl || ''} className={classes.profileImage} />
+                  <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="" notDescription={true} />
                 </Box>
               </Box>
             </Box>
@@ -302,7 +351,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         isOpen={openDelete}
         description={DELETE_WIDGET_DESCRIPTION}
         handleDelete={handleDeleteWidget}
-        setOpen={(open: boolean) => setOpenDelete(open)}
+        setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
     </Box>
   )

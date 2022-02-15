@@ -706,6 +706,7 @@ export interface MediaCardsType {
   attachmentsData?: Maybe<Attachment[]> | undefined
   hasHighlights?: boolean
   imageSide: string;
+  notDescription?: boolean;
 }
 
 export interface IMediaControl extends IFieldTypes {
@@ -726,6 +727,7 @@ export interface MediaCardComponentType {
   attachments?: Attachment[];
   allAttachments: Attachment[];
   imageSide: string;
+  notDescription?: boolean;
 }
 
 export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
