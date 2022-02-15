@@ -91,9 +91,9 @@ const dobSchema = {
 const doctorDobSchema = {
   dob: yup.string()
     .test('', MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
-      value => moment().diff(moment(value), 'years') >= 20 && moment().diff(moment(value), 'years') < 150)
+      value => moment().diff(moment(value), 'years') >= 20)
     .test('', MAX_DOCTOR_DOB_VALIDATION_MESSAGE,
-      value => moment().diff(moment(value), 'years') >= 20 && moment().diff(moment(value), 'years') < 150)
+      value => moment().diff(moment(value), 'years') < 100)
 }
 
 const roleTypeSchema = {
