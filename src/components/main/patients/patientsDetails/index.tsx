@@ -249,27 +249,26 @@ const PatientDetailsComponent = (): JSX.Element => {
               </Box>
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <Box p={8}>
-                    <Menu
-                      getContentAnchorEl={null}
-                      anchorEl={anchorEl}
-                      anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                      id={widgetId}
-                      keepMounted
-                      transformOrigin={{ vertical: "bottom", horizontal: "center" }}
-                      open={isMenuOpen}
-                      onClose={handleMenuClose}
-                    >
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={ADD_WIDGET_TEXT}
-                        name="addWidget"
-                        options={MAPPED_WIDGETS}
-                        isMultiple
-                      />
-                    </Menu>
-                  </Box>
+                  <Menu
+                    getContentAnchorEl={null}
+                    anchorEl={anchorEl}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                    id={widgetId}
+                    keepMounted
+                    transformOrigin={{ vertical: "top", horizontal: "right" }}
+                    open={isMenuOpen}
+                    onClose={handleMenuClose}
+                    className={classes.dropdown}
+                  >
+                    <Selector
+                      isRequired
+                      value={EMPTY_OPTION}
+                      label={ADD_WIDGET_TEXT}
+                      name="addWidget"
+                      options={MAPPED_WIDGETS}
+                      isMultiple
+                    />
+                  </Menu>
                 </form>
               </FormProvider>
             </Grid>

@@ -87,6 +87,17 @@ export const useProfileDetailsStyles = makeStyles(() =>
 
     deleteWidget: {
       cursor: 'pointer'
+    },
+
+    dropdown: {
+      "& .MuiMenu-paper": {
+        padding: 20
+
+      },
+
+      "& .MuiPopover-paper": {
+        minHeight: 300
+      }
     }
   })
 );
