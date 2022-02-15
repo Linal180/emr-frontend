@@ -184,6 +184,7 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
       variables: {
         serviceInput: {
           facilityId,
+          isActive: true,
           paginationOptions: {
             page,
             limit: LIST_PAGE_LIMIT

@@ -1,6 +1,8 @@
 // packages block
 import { FC, useContext } from "react";
 import { Route, Redirect, useLocation } from "react-router-dom";
+// packages block
+import MainLayout from "../components/common/MainLayout";
 // context, interfaces/types and constants block
 import { getToken } from "../utils";
 import { AuthContext } from "../context";
@@ -12,16 +14,18 @@ const PrivateRoute: FC<PrivateRouteProps> = ({ component: Component, ...rest }):
   const { pathname } = useLocation();
 
   return (
-    <Route
-      {...rest}
-      render={(props) =>
-        user || getToken() ? (
-          <Component {...props} />
-        ) : (
-          <Redirect to={{ pathname: LOGIN_ROUTE, state: pathname }} />
-        )
-      }
-    />
+    <MainLayout>
+      <Route
+        {...rest}
+        render={(props) =>
+          user || getToken() ? (
+            <Component {...props} />
+          ) : (
+            <Redirect to={{ pathname: LOGIN_ROUTE, state: pathname }} />
+          )
+        }
+      />
+    </MainLayout>
   );
 };
 

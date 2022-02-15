@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { Box, Grid, Typography } from "@material-ui/core";
 // components block
@@ -31,11 +31,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { scheduleOpenModal, byDaySchedules, isEdit, scheduleId, deleteScheduleId, openScheduleDelete } = state;
 
-  const [getDoctorSchedules, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
-    variables: {
-      getDoctorSchedule: { id }
-    },
-
+  const [getDoctorSchedule, { loading: getSchedulesLoading }] = useGetDoctorScheduleLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -44,17 +40,27 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     },
 
     onCompleted(data) {
-      const { getDoctorSchedules: { schedules } } = data || {};
+      const { getDoctorSchedule } = data || {};
 
-      if (schedules && schedules.length > 0) {
-        dispatch({
-          type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
-        });
+      if (getDoctorSchedule) {
+        const { schedules, response } = getDoctorSchedule
 
-        dispatch({
-          type: ActionType.SET_BY_DAY_SCHEDULES,
-          byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
-        })
+        if (schedules && response) {
+          const { status } = response || {}
+          
+          if (status && status === 200 && schedules) {
+            if (schedules.length > 0) {
+              dispatch({
+                type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
+              });
+
+              dispatch({
+                type: ActionType.SET_BY_DAY_SCHEDULES,
+                byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
+              })
+            }
+          }
+        }
       }
     }
   });
@@ -72,7 +78,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          getDoctorSchedules();
+          fetchDoctorSchedules()
           dispatch({ type: ActionType.SET_OPEN_SCHEDULE_DELETE, openScheduleDelete: false })
         }
       }
@@ -97,12 +103,20 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
   };
 
+  const fetchDoctorSchedules = useCallback(() => {
+    if (id) {
+      getDoctorSchedule({
+        variables: { getDoctorSchedule: { id } }
+      })
+    } else Alert.error(DOCTOR_NOT_FOUND)
+  }, [getDoctorSchedule, id]);
+
   useEffect(() => {
     if (id) {
-      getDoctorSchedules()
+      fetchDoctorSchedules()
     } else
       Alert.error(DOCTOR_NOT_FOUND)
-  }, [getDoctorSchedules, id])
+  }, [fetchDoctorSchedules, id])
 
   return (
     <Grid container spacing={3}>
@@ -147,7 +161,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
         isEdit={isEdit}
         isOpen={scheduleOpenModal}
         doctorDispatcher={dispatch}
-        reload={getDoctorSchedules}
+        reload={fetchDoctorSchedules}
         doctorFacilityId={doctorFacilityId}
       />
 
