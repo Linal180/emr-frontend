@@ -11,10 +11,11 @@ import {
 } from "../generated/graphql";
 
 // regex
+export const ZIP_REGEX = /^\d{5}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
-export const ZIP_REGEX = /^\d{5}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
+export const STRING_REGEX = /^[A-Za-b]/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
@@ -405,6 +406,7 @@ export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
 export const USUAL_INDUSTRY = "Usual Industry";
+export const INDUSTRY = "Industry";
 export const STATEMENT_DELIVERED_ONLINE = "Statement delivered online only";
 export const STATEMENT_NOTE = "Statement note";
 export const ID_NUMBER = "ID Number";
@@ -526,6 +528,7 @@ export const DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 2
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const ZIP_VALIDATION_MESSAGE = "Valid zip code is 5-digit long";
+export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const REQUIRED_MESSAGE = "This field is required";

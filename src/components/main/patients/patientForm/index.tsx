@@ -1304,7 +1304,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid item md={12} sm={12} xs={12}>
                       <PatientController
                         isRequired
-                        disabled={isEdit}
                         fieldType="email"
                         controllerName="guarantorEmail"
                         controllerLabel={EMAIL}

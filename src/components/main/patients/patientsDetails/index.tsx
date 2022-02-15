@@ -8,7 +8,7 @@ import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/c
 // constants, history, styling block
 import history from "../../../../history";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
-import { formatPhone, getDate, getFormattedDate } from "../../../../utils";
+import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
 import { ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT } from "../../../../constants";
@@ -77,7 +77,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
 
-  const PATIENT_AGE = moment().diff(getDate(dob || ''), 'years');
+  const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""

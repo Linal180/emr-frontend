@@ -35,7 +35,7 @@ import {
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  TAXONOMY_CODE, EMPTY_OPTION, DOCTOR_DOB_VALIDATION_MESSAGE,
+  TAXONOMY_CODE, EMPTY_OPTION,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -189,6 +189,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   });
 
+  useEffect(() => { }, [user])
   useEffect(() => {
     if (isEdit) {
       if (id) {
@@ -417,7 +418,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={6}>
                         <DatePicker isRequired name="dob" label={DOB}
-                          error={(dobError && DOCTOR_DOB_VALIDATION_MESSAGE) || ''}
+                          error={dobError || ''}
                         />
                       </Grid>
                     </Grid>
@@ -638,7 +639,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="phone" error={phoneError} label={PHONE} />
+                        <PhoneField isRequired name="phone" error={phoneError} label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
@@ -648,21 +649,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="pager"
-                          error={pagerError}
-                          controllerLabel={PAGER}
-                        />
+                        <PhoneField name="pager" error={pagerError} label={PAGER} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="fax"
-                          error={faxError}
-                          controllerLabel={FAX}
-                        />
+                        <PhoneField name="fax" error={faxError} label={FAX} />
                       </Grid>
                     </Grid>
 

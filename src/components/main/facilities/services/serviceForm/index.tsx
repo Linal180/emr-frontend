@@ -127,11 +127,11 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     setChecked(event.target.checked);
   };
 
-  const onSubmit: SubmitHandler<extendedServiceInput> = async ({ duration, facilityId, name, price }) => {
+  const onSubmit: SubmitHandler<extendedServiceInput> = async ({ duration, facilityId, name, price, color }) => {
     const { id: selectedFacilityId } = facilityId
     const serviceInput = {
       name: name || '', duration: duration || "", isActive: checked,
-      price: price || "", facilityId: selectedFacilityId || "",
+      price: price || "", facilityId: selectedFacilityId || "", color: color || ''
     };
 
     if (isEdit) {

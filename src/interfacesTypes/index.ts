@@ -1,5 +1,5 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode, ElementType } from "react";
+import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule, FieldValues } from "react-hook-form";
@@ -15,6 +15,7 @@ import {
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -642,7 +643,7 @@ export interface GeneralFormProps {
 
 type PhoneInputTypes = | "phone" | "fax" | "mobile" | "basicPhone" | "basicMobile" | "basicFax"
   | "billingPhone" | "billingFax" | "billingMobile" | "emergencyPhone" | "emergencyMobile"
-  | "kinPhone" | "kinMobile" | "employerPhone" | "guarantorPhone"
+  | "kinPhone" | "kinMobile" | "employerPhone" | "guarantorPhone" | "pager"
 
 export interface PhoneInputProps {
   label: string
@@ -743,4 +744,13 @@ export interface DaySchedule {
 export interface DoctorScheduleProps {
   schedule: Schedule;
   dispatcher: Dispatch<DoctorAction>;
+}
+
+export interface AppointmentsTableProps {
+  doctorId?: string;
+}
+
+export interface AppointmentDatePickerProps {
+  date: MaterialUiPickersDate,
+  setDate: Dispatch<SetStateAction<MaterialUiPickersDate>>
 }

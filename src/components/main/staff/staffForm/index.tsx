@@ -14,7 +14,7 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { AuthContext, ListContext } from '../../../../context';
-import { getTimestamps, renderFacilities, setRecord } from "../../../../utils";
+import { getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
 import { addStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
@@ -201,7 +201,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
-                          error={facilityError?.message || ""}
+                          error={facilityError?.message && requiredMessage(FACILITY)}
                           options={renderFacilities(facilityList)}
                         />
                       </Grid>
@@ -213,7 +213,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           name="roleType"
                           value={EMPTY_OPTION}
                           options={MAPPED_ROLES}
-                          error={roleError?.message || ""}
+                          error={roleError?.message && requiredMessage(ROLE)}
                         />
                       </Grid>
                     </Grid>
@@ -247,7 +247,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           name="gender"
                           label={GENDER}
                           value={EMPTY_OPTION}
-                          error={genderError?.message || ""}
+                          error={genderError?.message && requiredMessage(GENDER)}
                           options={MAPPED_GENDER}
                         />
                       </Grid>

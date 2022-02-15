@@ -5,7 +5,7 @@ import { Box, FormControl, InputLabel } from "@material-ui/core";
 // theme, interface/type and theme block
 import { GRAY_TWO, WHITE } from "../../theme";
 import { RenderInputFieldProps } from "../../interfacesTypes";
-import { AntSwitch, toggleButtonComponent } from "../../styles/publicAppointment/patientInformation";
+import { AntSwitch, toggleButtonComponent } from "../../styles/publicAppointmentStyles/externalPatientStyles";
 
 const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
   const classes = toggleButtonComponent()
