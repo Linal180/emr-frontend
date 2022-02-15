@@ -23,12 +23,13 @@ import {
   ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
   PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
-  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION,
+  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION, NOT_FOUND_EXCEPTION,
 } from "../../../../../constants";
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
   const [checked, setChecked] = useState(false);
+  const { facilityId } = useParams<ParamsType>()
   const { facilityList } = useContext(ListContext)
   const methods = useForm<extendedServiceInput>({
     mode: "all",
@@ -42,24 +43,29 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      Alert.error(message)
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}`)
     },
 
     onCompleted(data) {
-      const { getService: { response, service } } = data;
+      const { getService } = data || {};
 
-      if (response) {
-        const { status } = response
+      if (getService) {
+        const { response, service } = getService
 
-        if (service && status && status === 200) {
-          const { name, isActive, price, facilityId, duration } = service || {}
+        if (response) {
+          const { status } = response
 
-          facilityId && setCurrentFacility(facilityId)
-          name && setValue('name', name)
-          price && setValue('price', price)
-          duration && setValue('duration', duration)
-          isActive && setValue('isActive', isActive as boolean)
-          isActive && setChecked(isActive as boolean)
+          if (service && status && status === 200) {
+            const { name, isActive, price, facilityId, duration } = service || {}
+
+            facilityId && setCurrentFacility(facilityId)
+            name && setValue('name', name)
+            price && setValue('price', price)
+            duration && setValue('duration', duration)
+            isActive && setValue('isActive', isActive as boolean)
+            isActive && setChecked(isActive as boolean)
+          }
         }
       }
     }

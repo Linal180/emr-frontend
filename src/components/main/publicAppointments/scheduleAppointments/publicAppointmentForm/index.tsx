@@ -184,8 +184,8 @@ const PublicAppointmentForm = (): JSX.Element => {
               createExternalAppointmentItemInput: {
                 serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
                 paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
-                scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
-                scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString())
+                scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
+                scheduleEndDateTime: getTimestamps(scheduleEndDateTime)
               },
 
               createPatientItemInput: {
@@ -392,7 +392,7 @@ const PublicAppointmentForm = (): JSX.Element => {
                           <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
 
                           <label htmlFor={`timeSlot-${index}`}>
-                            {getStandardTime(startTime || '')} - {getStandardTime(endTime || '')}
+                          {getStandardTime(new Date(startTime || '').getTime().toString())} - {getStandardTime(new Date(endTime || '').getTime().toString())}
                           </label>
                         </li>
                       )

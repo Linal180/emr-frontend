@@ -41,7 +41,7 @@ export enum DAYS {
 };
 export const ALL_STAFF = "Staff";
 export const MINUTES = "minutes";
-export const CALENDER = "Calender";
+export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
@@ -70,6 +70,7 @@ export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const EMERGENCY_CONTACT_NAME = "Emergency Contact Name";
 export const ADD_STAFF = "Add Staff";
+export const EDIT_STAFF = "Edit Staff";
 export const CANT_UPDATE_STAFF = "Staff cant be updated";
 export const CANT_CREATE_STAFF = "Can't create staff";
 export const CANT_UPDATE_SCHEDULE = "Schedule cant be updated";
@@ -241,6 +242,7 @@ export const INACTIVE = "Inactive";
 export const VERIFIED = "Verified";
 export const USER_NAME = "Username";
 export const CLIA_ID_NUMBER = "CLIA ID Number";
+export const SERVICES = "Services";
 export const FACILITY = "Facility";
 export const SERVICE = "Service";
 export const FACILITY_ID = "Facility ID";
@@ -283,6 +285,7 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
+export const EDIT_FACILITY = "Edit Facility";
 export const EDIT_SERVICE = "Edit Service";
 export const ADD_SERVICE = "Add Service";
 export const DELETE_RECORD = "Delete Record";
@@ -543,7 +546,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
-export const SLOT_ALREADY_BOOKED = "This slot is already booked.";
+export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";
 export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully"
@@ -888,10 +891,10 @@ export const agreementPoints = [
 ]
 
 // Breadcrumb links
-export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
+export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE }
 export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
-export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
+export const FACILITY_EDIT_BREAD = { text: EDIT_FACILITY, link: '' }
 export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_LOCATION_NEW_BREAD = { text: ADD_LOCATION, link: '' }
 export const FACILITY_LOCATION_EDIT_BREAD = { text: EDIT_LOCATION, link: '' }
@@ -909,7 +912,7 @@ export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: '' }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
-export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }
+export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: '' }
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }
 export const USERS_BREAD = { text: USERS_TEXT, link: '' }
 export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: '' }

@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, useState, useContext } from 'react';
+import { FC, useEffect, useContext, Reducer, useReducer } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
@@ -17,17 +17,18 @@ import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import {
-  FacilityPayload, PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery,
-  useUpdateFacilityMutation
+  facilityReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/facilityReducer";
+import {
+  PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID,
-  CLIA_ID_NUMBER, CODE, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO,
-  TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS,
-  FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME, NPI, REVENUE_CODE,
-  MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND,
-  TIME_ZONE_TEXT, MAPPED_TIME_ZONES, CREATE_FACILITY, EMPTY_OPTION, 
-  EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_CREATED, FORBIDDEN_EXCEPTION
+  ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, CLIA_ID_NUMBER, CODE,
+  TIME_ZONE_TEXT, MAPPED_TIME_ZONES, CREATE_FACILITY, EMPTY_OPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY,
+  EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME,
+  NPI, REVENUE_CODE, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND,
+  FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -37,7 +38,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     resolver: yupResolver(facilitySchema)
   });
   const { reset, handleSubmit, setValue, formState: { errors } } = methods;
-  const [facility, setFacility] = useState<FacilityPayload['facility']>()
+  const [{ facility }, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
@@ -45,63 +46,70 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      Alert.error(message)
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(FACILITIES_ROUTE)
     },
 
     onCompleted(data) {
-      const { getFacility: { response, facility } } = data;
-      if (response) {
-        const { status } = response
+      const { getFacility } = data || {};
 
-        if (facility && status && status === 200) {
-          const {
-            name, cliaIdNumber, federalTaxId, insurancePlanType, mammographyCertificationNumber,
-            npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode, timeZone,
-            contacts, billingAddress,
-          } = facility
+      if (getFacility) {
+        const { response, facility } = getFacility
 
-          setFacility(facility)
+        if (response) {
+          const { status } = response
 
-          npi && setValue('npi', npi)
-          name && setValue('name', name)
-          code && setValue('code', code)
-          revenueCode && setValue('revenueCode', revenueCode)
-          cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
-          federalTaxId && setValue('federalTaxId', federalTaxId)
-          tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
-          timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
-          insurancePlanType && setValue('insurancePlanType', insurancePlanType)
-          serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
-          practiceType && setValue('practiceType', setRecord(practiceType, practiceType))
-          mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
+          if (facility && status && status === 200) {
+            const {
+              name, cliaIdNumber, federalTaxId, insurancePlanType, mammographyCertificationNumber,
+              npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode, timeZone,
+              contacts, billingAddress,
+            } = facility
 
-          if (contacts) {
-            const { email, phone, zipCode, mobile, fax, address, address2, city, state, country } = contacts[0]
+            dispatch({ type: ActionType.SET_FACILITY, facility })
 
-            fax && setValue('fax', fax)
-            city && setValue('city', city)
-            email && setValue('email', email)
-            state && setValue('state', state)
-            phone && setValue('phone', phone)
-            mobile && setValue('mobile', mobile)
-            zipCode && setValue('zipCode', zipCode)
-            address && setValue('address', address)
-            country && setValue('country', country)
-            address2 && setValue('address2', address2)
-          }
+            npi && setValue('npi', npi)
+            name && setValue('name', name)
+            code && setValue('code', code)
+            revenueCode && setValue('revenueCode', revenueCode)
+            cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
+            federalTaxId && setValue('federalTaxId', federalTaxId)
+            tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
+            timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
+            insurancePlanType && setValue('insurancePlanType', insurancePlanType)
+            serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
+            practiceType && setValue('practiceType', setRecord(practiceType, practiceType))
+            mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
-          if (billingAddress) {
-            const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+            if (contacts) {
+              const primaryContact = contacts.filter(item => item.primaryContact)[0]
+              const { email, phone, zipCode, mobile, fax, address, address2, city, state, country } = primaryContact || {}
 
-            fax && setValue('billingFax', fax)
-            city && setValue('billingCity', city)
-            email && setValue('billingEmail', email)
-            state && setValue('billingState', state)
-            phone && setValue('billingPhone', phone)
-            address && setValue('billingAddress', address)
-            country && setValue('billingCountry', country)
-            zipCode && setValue('billingZipCode', zipCode)
-            address2 && setValue('billingAddress2', address2)
+              fax && setValue('fax', fax)
+              city && setValue('city', city)
+              email && setValue('email', email)
+              state && setValue('state', state)
+              phone && setValue('phone', phone)
+              mobile && setValue('mobile', mobile)
+              zipCode && setValue('zipCode', zipCode)
+              address && setValue('address', address)
+              country && setValue('country', country)
+              address2 && setValue('address2', address2)
+            }
+
+            if (billingAddress) {
+              const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+
+              fax && setValue('billingFax', fax)
+              city && setValue('billingCity', city)
+              email && setValue('billingEmail', email)
+              state && setValue('billingState', state)
+              phone && setValue('billingPhone', phone)
+              address && setValue('billingAddress', address)
+              country && setValue('billingCountry', country)
+              zipCode && setValue('billingZipCode', zipCode)
+              address2 && setValue('billingAddress2', address2)
+            }
           }
         }
       }
@@ -157,9 +165,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     if (isEdit) {
       if (id) {
         getFacility({
-          variables: {
-            getFacility: { id }
-          }
+          variables: { getFacility: { id } }
         })
       } else {
         Alert.error(FACILITY_NOT_FOUND)
@@ -180,37 +186,41 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const { id: selectedServiceCode } = serviceCode;
     const { id: selectedPracticeType } = practiceType;
 
+    const facilityInput = {
+      name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
+      insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
+      timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '',
+      practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
+      serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24,
+      mammographyCertificationNumber: mammographyCertificationNumber || '',
+      revenueCode: revenueCode || '',
+    }
+
+    const contactInput = {
+      phone: phone || '', email: email || '', fax: fax || '', city: city || '',
+      state: state || '', country: country || '', zipCode: zipCode || '', address: address || '',
+      address2: address2 || '', primaryContact: true
+    }
+
+    const billingAddressInput = {
+      phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '',
+      state: billingState || '', country: billingCountry || '', zipCode: billingZipCode || '',
+      city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || ''
+    }
+
     if (isEdit) {
       const { contacts, billingAddress: billing } = facility || {};
 
       if (id && contacts && billing) {
-        const { id: contactId } = contacts[0]
+        const { id: contactId } = contacts.filter(item => item.primaryContact)[0] || contacts[0]
         const { id: billingId } = billing[0]
 
         await updateFacility({
           variables: {
             updateFacilityInput: {
-              updateFacilityItemInput: {
-                id, name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
-                insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
-                timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '',
-                practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
-                serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24,
-                mammographyCertificationNumber: mammographyCertificationNumber || '',
-                revenueCode: revenueCode || '',
-              },
-
-              updateContactInput: {
-                id: contactId, phone: phone || '', email: email || '', fax: fax || '',
-                city: city || '', state: state || '', country: country || '', zipCode: zipCode || '',
-                address: address || '', address2: address2 || ''
-              },
-
-              updateBillingAddressInput: {
-                id: billingId, phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '',
-                state: billingState || '', country: billingCountry || '', zipCode: billingZipCode || '',
-                city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || ''
-              },
+              updateFacilityItemInput: { id, ...facilityInput },
+              updateContactInput: { id: contactId, ...contactInput },
+              updateBillingAddressInput: { id: billingId, ...billingAddressInput },
             }
           }
         })
@@ -219,26 +229,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       await createFacility({
         variables: {
           createFacilityInput: {
-            createFacilityItemInput: {
-              name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
-              insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
-              timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '', revenueCode: revenueCode || '',
-              practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
-              serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24,
-              mammographyCertificationNumber: mammographyCertificationNumber || '',
-            },
-
-            createContactInput: {
-              phone: phone || '', email: email || '', fax: fax || '', city: city || '',
-              state: state || '', country: country || '', zipCode: zipCode || '', address: address || '',
-              address2: address2 || ''
-            },
-
-            createBillingAddressInput: {
-              phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', city: billingCity || '',
-              state: billingState || '', country: billingCountry || '', zipCode: billingZipCode || '',
-              address: billingAddress || '', address2: billingAddress2 || ''
-            },
+            createFacilityItemInput: { ...facilityInput },
+            createContactInput: { ...contactInput },
+            createBillingAddressInput: { ...billingAddressInput },
           }
         }
       })
