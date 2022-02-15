@@ -218,6 +218,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     findAllServices({
       variables: {
         serviceInput: {
+          isActive: true,
           paginationOptions: {
             page,
             limit: LIST_PAGE_LIMIT

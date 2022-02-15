@@ -1,8 +1,10 @@
-import { AllDoctorPayload, DoctorPayload, SchedulesPayload } from "../generated/graphql"
+import { AllDoctorPayload, DoctorPayload, DoctorSlotsPayload, SchedulesPayload } from "../generated/graphql"
 import { DaySchedule } from "../interfacesTypes";
 
 export interface State {
   page: number;
+  serviceId: string,
+  currentDate: string,
   isEdit: boolean;
   scheduleId: string;
   currentTab: string;
@@ -17,11 +19,14 @@ export interface State {
   byDaySchedules: DaySchedule[];
   doctor: DoctorPayload['doctor'];
   doctors: AllDoctorPayload['doctors'];
+  doctorSlots: DoctorSlotsPayload['slots'];
   doctorSchedules: SchedulesPayload['schedules'];
 }
 
 export const initialState: State = {
   page: 1,
+  serviceId: '',
+  currentDate: '',
   doctors: [],
   doctor: null,
   totalPages: 0,
@@ -31,8 +36,9 @@ export const initialState: State = {
   searchQuery: "",
   openDelete: false,
   byDaySchedules: [],
-  deleteDoctorId: "",
   doctorSchedules: [],
+  deleteDoctorId: "",
+  doctorSlots: [],
   deleteScheduleId: "",
   doctorFacilityId: "",
   scheduleOpenModal: false,
@@ -44,11 +50,14 @@ export enum ActionType {
   SET_DOCTOR = 'setDoctor',
   SET_IS_EDIT = 'setIsEdit',
   SET_DOCTORS = 'setDoctors',
+  SET_SERVICE_ID = 'setServiceId',
   SET_SCHEDULE_ID = 'setScheduleId',
   SET_CURRENT_TAB = 'setCurrentTab',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_OPEN_DELETE = 'setOpenDelete',
+  SET_CURRENT_DATE = 'setCurrentDate',
   SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_DOCTOR_SLOTS = 'setDoctorSlots',
   SET_BY_DAY_SCHEDULES = 'setByDaySchedules',
   SET_DELETE_DOCTOR_ID = 'setDeleteDoctorId',
   SET_DOCTOR_SCHEDULES = 'setDoctorSchedules',
@@ -60,6 +69,8 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
+  | { type: ActionType.SET_SERVICE_ID, serviceId: string }
+  | { type: ActionType.SET_CURRENT_DATE, currentDate: string }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_SCHEDULE_ID, scheduleId: string }
   | { type: ActionType.SET_CURRENT_TAB; currentTab: string }
@@ -74,7 +85,8 @@ export type Action =
   | { type: ActionType.SET_BY_DAY_SCHEDULES; byDaySchedules: DaySchedule[] }
   | { type: ActionType.SET_SCHEDULE_OPEN_MODAL; scheduleOpenModal: boolean }
   | { type: ActionType.SET_OPEN_SCHEDULE_DELETE; openScheduleDelete: boolean }
-  | { type: ActionType.SET_DOCTOR_SCHEDULES; doctorSchedules: SchedulesPayload['schedules'] }
+  | { type: ActionType.SET_DOCTOR_SLOTS; doctorSlots: DoctorSlotsPayload['slots'] }
+  | { type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: SchedulesPayload['schedules'] }
 
 export const doctorReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -168,10 +180,28 @@ export const doctorReducer = (state: State, action: Action): State => {
         doctorFacilityId: action.doctorFacilityId
       }
 
+    case ActionType.SET_DOCTOR_SLOTS:
+      return {
+        ...state,
+        doctorSlots: action.doctorSlots
+      }
+
     case ActionType.SET_DOCTOR_SCHEDULES:
       return {
         ...state,
         doctorSchedules: action.doctorSchedules
+      }
+
+    case ActionType.SET_CURRENT_DATE:
+      return {
+        ...state,
+        currentDate: action.currentDate
+      }
+
+    case ActionType.SET_SERVICE_ID:
+      return {
+        ...state,
+        serviceId: action.serviceId
       }
   };
 }

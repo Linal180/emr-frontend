@@ -7,12 +7,12 @@ import PageHeader from '../../../../common/PageHeader';
 // constants block / generated
 import { ParamsType } from '../../../../../interfacesTypes';
 import {
-  ADD_SERVICE, FACILITIES_ROUTE, FACILITY_SERVICES_BREAD, FACILITY_SERVICES_ROUTE,
-  FACILITY_SERVICES_TEXT
+  ADD_SERVICE, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITY_SERVICES_ROUTE, FACILITY_SERVICES_TEXT, SERVICES
 } from "../../../../../constants";
 
 const FacilityServicesComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
+  const servicesBreadcrumb = { text: SERVICES, link: '' }
 
   return (
     <>
@@ -20,7 +20,7 @@ const FacilityServicesComponent: FC = (): JSX.Element => {
         hasComponent
         buttonText={ADD_SERVICE}
         title={FACILITY_SERVICES_TEXT}
-        path={[FACILITY_SERVICES_BREAD]}
+        path={[FACILITIES_BREAD, servicesBreadcrumb]}
         linkToPage={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}/new`}
       />
 

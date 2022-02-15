@@ -1,26 +1,22 @@
 // packages block
-import { useState } from "react";
+import { FC } from "react";
 import DateFnsUtils from '@date-io/date-fns';
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { MuiPickersUtilsProvider, DatePicker } from "@material-ui/pickers";
+// interfaces block
+import { AppointmentDatePickerProps } from "../../../../interfacesTypes";
 
-const AppointmentDatePicker = (): JSX.Element => {
-  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
-
-  return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <DatePicker
-        variant="static"
-        openTo="date"
-        value={date}
-        onChange={currentDate => currentDate && setDate(currentDate)}
-        autoOk
-        fullWidth
-        disablePast
-        disableToolbar
-      />
-    </MuiPickersUtilsProvider>
-  )
-}
+const AppointmentDatePicker: FC<AppointmentDatePickerProps> = ({ date, setDate }): JSX.Element =>
+  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    <DatePicker
+      variant="static"
+      openTo="date"
+      value={date}
+      autoOk
+      fullWidth
+      disablePast
+      disableToolbar
+      onChange={currentDate => currentDate && setDate(currentDate)}
+    />
+  </MuiPickersUtilsProvider>
 
 export default AppointmentDatePicker;

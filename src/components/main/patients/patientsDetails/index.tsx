@@ -9,9 +9,9 @@ import CardComponent from "../../../common/CardComponent";
 import history from "../../../../history";
 import { BLACK_TWO } from "../../../../theme";
 import { PROFILE_TOP_TABS } from "../../../../constants";
-import { formatPhone, getDate, getFormattedDate } from "../../../../utils";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { Patient, useGetPatientQuery } from "../../../../generated/graphql";
+import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -22,7 +22,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const getPatientIdArray = pathname.split("/")
   const getPatientId = getPatientIdArray[getPatientIdArray.length - 2]
   
-  const handleChange = (event: ChangeEvent<{}>, newValue: string) => {
+  const handleChange = (_: ChangeEvent<{}>, newValue: string) => {
     setValue(newValue);
   };
 
@@ -61,7 +61,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
 
-  const PATIENT_AGE = moment().diff(getDate(dob || ''), 'years');
+  const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
