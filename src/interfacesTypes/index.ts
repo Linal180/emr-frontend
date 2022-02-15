@@ -177,6 +177,8 @@ export interface PageHeaderProps {
   openModal?: () => void;
   setTableData?: Function;
   tableData?: ServicesPayload['services'];
+  isIcon?: boolean;
+  id?: string;
 }
 
 export interface FacilityServicesProps {
@@ -263,6 +265,7 @@ export interface SelectorProps {
   isRequired?: boolean
   value?: SelectorOption
   options: SelectorOption[]
+  isMultiple?: boolean
 }
 
 export type notificationType = { url: string, type: string, message: string, channelName: string }

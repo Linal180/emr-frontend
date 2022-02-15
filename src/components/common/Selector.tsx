@@ -8,8 +8,8 @@ import { SelectorProps } from "../../interfacesTypes";
 import { requiredLabel } from "../../utils";
 
 const Selector: FC<SelectorProps> = ({
-  name, label, error, options, disabled, isRequired
- }): JSX.Element => {
+  name, label, error, options, disabled, isRequired, isMultiple
+}): JSX.Element => {
   const { control } = useFormContext()
 
   return (
@@ -25,6 +25,7 @@ const Selector: FC<SelectorProps> = ({
             disableClearable
             value={field.value}
             disabled={disabled}
+            // multiple={isMultiple ? true : false}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (

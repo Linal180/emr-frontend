@@ -33,6 +33,7 @@ export const BLUE_FOUR = "#1BC5BD"
 export const BLUE_FIVE = "#C9F7F5"
 export const BLUE_SIX = "#009EF7";
 export const BLUE_SEVEN = "#3699FF";
+export const BLUE_EIGHT = "#204ECF";
 
 export const ORANGE = "#FFF9F4";
 export const ORANGE_ONE = "#F89C47";

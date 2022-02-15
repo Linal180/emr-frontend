@@ -23,6 +23,8 @@ import Doctors from "../pages/main/doctors/doctorsListing";
 import Invoices from "../pages/main/billing/invoicesListing";
 import ViewPatient from "../pages/main/patients/viewPatient";
 import Patients from "../pages/main/patients/patientsListing";
+import DetailDoctor from "../pages/main/doctors/detailDoctor";
+import PatientChart from "../pages/main/patients/patientDetails/patientChart";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import LabResults from "../pages/main/reports/labResultsListing";
 import ViewFacility from "../pages/main/facilities/viewFacility";
@@ -53,10 +55,10 @@ import {
   STAFF_ROUTE, DOCTORS_ROUTE, VERIFY_EMAIL_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE,
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
-  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, 
-  PATIENT_APPOINTMENT_CANCEL
+  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL,
+  PATIENT_APPOINTMENT_CANCEL,
+  PATIENTS_CHART
 } from "../constants";
-import DetailDoctor from "../pages/main/doctors/detailDoctor";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -88,6 +90,7 @@ const Routes: FC = (): JSX.Element => {
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />
           <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details`} component={PatientDetails} />
+          <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details${PATIENTS_CHART}`} component={PatientChart} />
           <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
           <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
           <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
