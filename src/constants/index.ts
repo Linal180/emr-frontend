@@ -31,6 +31,7 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 // constants
 export const NOTES = "Notes";
 export const EMPTY_OPTION = { id: "", name: "" };
+export const EMPTY_WIDGETS = [];
 export enum DAYS {
   Monday = "Monday",
   Tuesday = "Tuesday",
@@ -110,8 +111,23 @@ export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
+export const VITALS_TEXT = "Vitals";
+export const VACCINE_TEXT = "Vaccine";
+export const PROBLEMS_TEXT = "Problems";
+export const ALLERGIES_TEXT = "Allergies";
+export const CARE_PLAN_TEXT = "Care Plan";
+export const MEDICATIONS_TEXT = "Medications";
+export const SOCIAL_HISTORY_TEXT = "Social History";
+export const FAMILY_HISTORY_TEXT = "Family History";
+export const SURGICAL_HISTORY_TEXT = "Surgical History";
+export const MEDICAL_HISTORY_TEXT = "Past Medical History";
+export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records"
+export const ADD_WIDGET_TEXT = "Add Widget"
+export const DELETE_WIDGET_DESCRIPTION = " Are you sure you want to remove this widget?"
+export const DELETE_WIDGET_TEXT = "Delete Widget"
+export const VIEW_CHART_TEXT = "View Chart"
 export const NON_AVAILABILITY_TEXT = "Non-Availability";
 export const ADDITIONAL_INFO = "Additional Info";
 export const AVAILABILITY_STATUS = "Set your availability status";
@@ -491,6 +507,7 @@ export const STAFF_ROUTE = "/staff";
 export const DOCTORS_ROUTE = "/doctors";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
+export const PATIENTS_CHART = "/chart";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
@@ -715,6 +732,12 @@ export const APP_MENU_ITEMS = [
     ],
   },
 ];
+
+export const MAPPED_WIDGETS: SelectorOption[] = [
+  { id: 'one', name: 'one' },
+  { id: 'two', name: 'two' },
+  { id: 'three', name: 'three' },
+  { id: 'four', name: 'four' }]
 
 export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Admin, name: formatValue(UserRole.Admin) },

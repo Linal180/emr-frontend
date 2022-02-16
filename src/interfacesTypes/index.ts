@@ -164,6 +164,16 @@ export interface CardComponentType extends Children {
   requestLink?: string
 }
 
+export interface ChartingCardComponentType extends Children {
+  link?: string;
+  hasAdd?: boolean;
+  cardTitle: string;
+  requestLink?: string
+  hideSaveIcon?: boolean;
+  onAddClick?: () => void;
+  disableAddIcon?: boolean;
+}
+
 export interface PageHeaderProps {
   isOpen?: boolean;
   setOpen?: Function;
@@ -178,6 +188,8 @@ export interface PageHeaderProps {
   openModal?: () => void;
   setTableData?: Function;
   tableData?: ServicesPayload['services'];
+  isIcon?: boolean;
+  id?: string;
 }
 
 export interface FacilityServicesProps {
@@ -264,6 +276,7 @@ export interface SelectorProps {
   isRequired?: boolean
   value?: SelectorOption
   options: SelectorOption[]
+  isMultiple?: boolean
 }
 
 export type notificationType = { url: string, type: string, message: string, channelName: string }
@@ -683,9 +696,10 @@ export interface MediaCardsType {
   itemId: string;
   moduleType: AttachmentType;
   hasCollage?: boolean;
-  attachmentsData?: Maybe<Attachment[]> | undefined
+  attachmentsData?: Attachment[]
   hasHighlights?: boolean
   imageSide: string;
+  notDescription?: boolean;
 }
 
 export interface IMediaControl extends IFieldTypes {
@@ -706,6 +720,7 @@ export interface MediaCardComponentType {
   attachments?: Attachment[];
   allAttachments: Attachment[];
   imageSide: string;
+  notDescription?: boolean;
 }
 
 export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
