@@ -6,14 +6,13 @@ import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
 // constants, history, styling block
-import history from "../../../../history";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { Attachment, AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useGetPatientQuery } from "../../../../generated/graphql";
+import { Attachment, AttachmentType, Patient, useGetAttachmentQuery, useGetPatientLazyQuery } from "../../../../generated/graphql";
 import { ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT } from "../../../../constants";
 import { AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import { ParamsType } from "../../../../interfacesTypes";
@@ -21,21 +20,17 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import Selector from "../../../common/Selector";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import MediaCards from "../../../common/AddMedia/MediaCards";
-import Alert from "../../../common/Alert";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const { id } = useParams<ParamsType>();
   const [{
-    anchorEl, attachmentUrl, attachmentsData, openDelete, patientData, tabValue,
+    anchorEl, attachmentUrl, attachmentsData, openDelete, patientData, tabValue, attachmentId
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const isMenuOpen = Boolean(anchorEl);
   const widgetId = "widget-menu";
   const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
   const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
-  const { location: { pathname } } = history
-  const getPatientIdArray = pathname.split("/")
-  const getPatientId = getPatientIdArray[getPatientIdArray.length - 2]
 
   const methods = useForm<any>({
     mode: "all",
@@ -46,7 +41,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
-  const [getPatient, { loading }] = useGetPatientLazyQuery({
+  const [getPatient,] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -61,6 +56,10 @@ const PatientDetailsComponent = (): JSX.Element => {
 
         if (getPatient) {
           const { patient } = getPatient;
+          const { attachments } = patient || {}
+          const { url, id: attachmentId } = (attachments && attachments[0]) || {}
+          dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: url || '' })
+          dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: attachmentId || '' })
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
 
         }
@@ -68,27 +67,34 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   });
 
-  const [getAttachmentUrl] = useGetAttachmentLazyQuery({
+  const { loading } = useGetAttachmentQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    onError({ message }) {
-      Alert.error(message)
+    variables: {
+      getMedia: {
+        id: attachmentId
+      }
+    },
+
+    onError() {
     },
 
     onCompleted(data) {
+
       const { getAttachment } = data || {};
 
       if (getAttachment) {
         const { preSignedUrl } = getAttachment
-        console.log(preSignedUrl)
-        preSignedUrl && window.open(preSignedUrl, '_blank');
+        dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl || '' })
+        dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: attachmentId })
       }
     },
   });
 
   useEffect(() => {
+
     if (id) {
       getPatient({
         variables: {
@@ -98,7 +104,7 @@ const PatientDetailsComponent = (): JSX.Element => {
     }
   }, [getPatient, id])
 
-  if (!patientData) {
+  if (!patientData && loading) {
     return (
       <Box>Loading...</Box>
     )
@@ -151,7 +157,7 @@ const PatientDetailsComponent = (): JSX.Element => {
     })[0];
 
     if (currentDoctor) {
-      const { firstName, lastName } = currentDoctor || {};
+      const { firstName, lastName, } = currentDoctor || {};
       providerName = `${firstName} ${lastName}` || "--"
     }
   }
@@ -198,33 +204,15 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-
-  const handleAttachmentClick = (id: string) => {
-    if (id) {
-      getAttachmentUrl({
-        variables: {
-          getMedia: {
-            id
-          }
-        }
-      })
-    } else Alert.error("Attachment not found!")
-  }
-
   const onDeleteClick = () => {
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
   };
 
   const handleDeleteWidget = () => {
-    console.log("=====")
   };
 
   const onSubmit: SubmitHandler<any> = async (inputs) => { }
-
-  const { attachments } = patientData || {}
-  const { url, id: attachmentId } = attachments && attachments[0] || {}
-  dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: url || '' })
 
   return (
     <Box>
@@ -246,10 +234,12 @@ const PatientDetailsComponent = (): JSX.Element => {
         <Box className={classes.profileDetailsContainer}>
           <Box className={classes.profileCard}>
             <Box key={attachmentId} display="flex" alignItems="center">
-              <Box pl={1} onClick={() => handleAttachmentClick(attachmentId || "")} >
+              <Box pl={1}>
                 <Box pr={3.75} position="relative">
-                  <Avatar variant="square" src={attachmentUrl || ''} className={classes.profileImage} />
-                  <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="" notDescription={true} />
+                  <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+                  {attachmentsData &&
+                    <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="" attachmentsData={attachmentsData as Attachment[]} notDescription={true} />
+                  }
                 </Box>
               </Box>
             </Box>
@@ -288,43 +278,44 @@ const PatientDetailsComponent = (): JSX.Element => {
           </Box>
 
           <TabPanel value="1">
-            <Grid container item spacing={2} md={4}>
-              <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
-                <AddWidgetIcon />
-
-                <Typography component='h1' variant="h4">
-                  {ADD_WIDGET_TEXT}
-                </Typography>
-              </Box>
-              <FormProvider {...methods}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <Menu
-                    getContentAnchorEl={null}
-                    anchorEl={anchorEl}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    id={widgetId}
-                    keepMounted
-                    transformOrigin={{ vertical: "top", horizontal: "right" }}
-                    open={isMenuOpen}
-                    onClose={handleMenuClose}
-                    className={classes.dropdown}
-                  >
-                    <Selector
-                      isRequired
-                      value={EMPTY_OPTION}
-                      label={ADD_WIDGET_TEXT}
-                      name="addWidget"
-                      options={MAPPED_WIDGETS}
-                      isMultiple
-                    />
-                  </Menu>
-                </form>
-              </FormProvider>
-            </Grid>
-
             <Grid container spacing={3}>
               {ProfileDetailedData.map((item, index) => (
                 <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
+                  {item && item.title === "Allergies" && <>
+                    <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
+                      <AddWidgetIcon />
+
+                      <Typography component='h1' variant="h4">
+                        {ADD_WIDGET_TEXT}
+                      </Typography>
+                    </Box>
+
+                    <FormProvider {...methods}>
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <Menu
+                          getContentAnchorEl={null}
+                          anchorEl={anchorEl}
+                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                          id={widgetId}
+                          keepMounted
+                          transformOrigin={{ vertical: "top", horizontal: "right" }}
+                          open={isMenuOpen}
+                          onClose={handleMenuClose}
+                          className={classes.dropdown}
+                        >
+                          <Selector
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={ADD_WIDGET_TEXT}
+                            name="addWidget"
+                            options={MAPPED_WIDGETS}
+                            isMultiple
+                          />
+                        </Menu>
+                      </form>
+                    </FormProvider>
+                  </>
+                  }
                   <Box bgcolor={WHITE} p={4}>
                     <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
                       <Box className={classes.profileInfoHeading}>
@@ -346,6 +337,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
         </Box>
       </TabContext>
+
       <ConfirmationModal
         title={DELETE_WIDGET_TEXT}
         isOpen={openDelete}

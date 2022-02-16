@@ -1,4 +1,4 @@
-import { AttachmentsPayload, Patient, PatientsPayload } from "../generated/graphql"
+import { AttachmentsPayload, PatientPayload, PatientsPayload } from "../generated/graphql"
 
 export interface State {
   page: number;
@@ -18,8 +18,9 @@ export interface State {
   attachmentUrl: string;
   attachmentsData: AttachmentsPayload['attachments'];
   tabValue: string;
-  patientData: Patient | null;
+  patientData: PatientPayload['patient']
   anchorEl: HTMLElement | null;
+  attachmentId: string | undefined;
 }
 
 export const initialState: State = {
@@ -40,8 +41,9 @@ export const initialState: State = {
   attachmentUrl: '',
   attachmentsData: [],
   tabValue: '1',
-  patientData: null,
-  anchorEl: null
+  patientData: undefined,
+  anchorEl: null,
+  attachmentId: '',
 }
 
 export enum ActionType {
@@ -64,6 +66,7 @@ export enum ActionType {
   SET_TAB_VALUE = 'setTabValue',
   SET_PATIENT_DATA = 'setPatientData',
   SET_ANCHOR_EL = 'setAnchorEl',
+  SET_ATTACHMENT_ID = 'setAttachmentId',
 }
 
 export type Action =
@@ -84,8 +87,10 @@ export type Action =
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
   | { type: ActionType.SET_TAB_VALUE; tabValue: string }
-  | { type: ActionType.SET_PATIENT_DATA; patientData: Patient | null }
+  | { type: ActionType.SET_PATIENT_DATA; patientData: PatientPayload['patient'] }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
+  | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
+
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -201,6 +206,11 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         anchorEl: action.anchorEl
+      }
+    case ActionType.SET_ATTACHMENT_ID:
+      return {
+        ...state,
+        attachmentId: action.attachmentId
       }
   }
 };

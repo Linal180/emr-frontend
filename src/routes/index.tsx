@@ -26,7 +26,6 @@ import Invoices from "../pages/main/billing/invoicesListing";
 import ViewPatient from "../pages/main/patients/viewPatient";
 import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import Patients from "../pages/main/patients/patientsListing";
-import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import LabResults from "../pages/main/reports/labResultsListing";
 import ViewFacility from "../pages/main/facilities/viewFacility";

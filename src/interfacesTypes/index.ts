@@ -696,7 +696,7 @@ export interface MediaCardsType {
   itemId: string;
   moduleType: AttachmentType;
   hasCollage?: boolean;
-  attachmentsData?: Maybe<Attachment[]> | undefined
+  attachmentsData?: Attachment[]
   hasHighlights?: boolean
   imageSide: string;
   notDescription?: boolean;
