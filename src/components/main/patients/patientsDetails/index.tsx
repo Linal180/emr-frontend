@@ -278,6 +278,65 @@ const PatientDetailsComponent = (): JSX.Element => {
           </Box>
 
           <TabPanel value="1">
+            <Box className={classes.profileCardMasonry}>
+              {ProfileDetailedData.map((item, index) => (
+                <Box className={classes.profileCardItemMasonry} key={`${item.title}-${index}`}>
+                    {item && item.title === "Allergies" && <>
+                      <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
+                        <AddWidgetIcon />
+
+                        <Typography component='h1' variant="h4">
+                          {ADD_WIDGET_TEXT}
+                        </Typography>
+                      </Box>
+
+                      <FormProvider {...methods}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                          <Menu
+                            getContentAnchorEl={null}
+                            anchorEl={anchorEl}
+                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                            id={widgetId}
+                            keepMounted
+                            transformOrigin={{ vertical: "top", horizontal: "right" }}
+                            open={isMenuOpen}
+                            onClose={handleMenuClose}
+                            className={classes.dropdown}
+                          >
+                            <Selector
+                              isRequired
+                              value={EMPTY_OPTION}
+                              label={ADD_WIDGET_TEXT}
+                              name="addWidget"
+                              options={MAPPED_WIDGETS}
+                              isMultiple
+                            />
+                          </Menu>
+                        </form>
+                      </FormProvider>
+                    </>
+                    }
+                    <Box bgcolor={WHITE} p={4}>
+                      <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
+                        <Box className={classes.profileInfoHeading}>
+                          {item.title}
+                        </Box>
+
+                        <Box onClick={onDeleteClick} className={classes.deleteWidget}>
+                          <DeleteWidgetIcon />
+                        </Box>
+                      </Box>
+
+                      <Box fontSize={16} color={BLACK_TWO} pb={3.75} pt={2}>
+                        <Typography color="inherit">{item.description}</Typography>
+                      </Box>
+                    </Box>
+                </Box>
+              ))}
+            </Box>
+          </TabPanel>
+
+          {/* <TabPanel value="1">
             <Grid container spacing={3}>
               {ProfileDetailedData.map((item, index) => (
                 <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
@@ -334,7 +393,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                 </Grid>
               ))}
             </Grid>
-          </TabPanel>
+          </TabPanel> */}
         </Box>
       </TabContext>
 
