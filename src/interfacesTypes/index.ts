@@ -268,6 +268,11 @@ export interface SelectorOption {
   name: string | undefined | null
 }
 
+export interface DropDownOption {
+  name: string
+  link: string
+}
+
 export interface SelectorProps {
   name: string
   label: string
@@ -700,6 +705,12 @@ export interface MediaCardsType {
   hasHighlights?: boolean
   imageSide: string;
   notDescription?: boolean;
+}
+
+export interface DropDownItems {
+  itemName?: string;
+  menuItem: DropDownOption[];
+  avatarIcon?: boolean;
 }
 
 export interface IMediaControl extends IFieldTypes {

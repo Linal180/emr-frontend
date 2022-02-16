@@ -1,39 +1,47 @@
 // packages block
 import { FC, MouseEvent, useState } from "react";
-import { AppBar, Typography, Box, Menu, MenuItem, Fade, Link } from '@material-ui/core';
+import { Link } from "react-router-dom";
+import { Typography, Box, Menu, MenuItem, Fade } from '@material-ui/core';
 
 // utils and header styles block
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { DownArrowIcon } from "../../assets/svgs";
-import { SCHEDULE_TEXT, PROFILE_TEXT, MYACCOUNT_TEXT, LOGOUT_TEXT  } from "../../constants";
+import { handleLogout } from "../../utils";
+import { DropDownItems } from "../../interfacesTypes";
+import { DownArrowIcon, NewAvatarIcon } from "../../assets/svgs";
+import { LOGOUT_TEXT } from "../../constants";
 
-const DropdownMenu: FC = (): JSX.Element => {
+const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon }): JSX.Element => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const classes = useHeaderStyles();
     const open = Boolean(anchorEl);
     const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
     const handleClose = () => setAnchorEl(null);
 
-    return(
+    return (
         <>
-            <Box className={classes.newMenuItem} onClick={(event) => handleClick(event)} aria-label="dropdown menu" aria-controls="menu-appbar" aria-haspopup="true" color="inherit" >
-                <Typography> {SCHEDULE_TEXT} </Typography>
-                <Box pl={2} display="inline"><DownArrowIcon /></Box>
+            <Box className={classes.menuItem} onClick={(event) => handleClick(event)} aria-label="dropdown menu" aria-controls="menu-appbar" aria-haspopup="true" color="inherit" >
+                {!avatarIcon && <>
+                    <Typography> {itemName} </Typography>
+                    <Box pl={2} display="inline"><DownArrowIcon /></Box>
+                </>}
+                {avatarIcon && <NewAvatarIcon />}
             </Box>
             <Menu
-                id="menu-appbar"
+                id="menu-appBar"
                 anchorEl={anchorEl}
-                keepMounted 
+                keepMounted
                 open={open}
                 onClose={handleClose}
                 TransitionComponent={Fade}
                 getContentAnchorEl={null}
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                transformOrigin={{ vertical: "top", horizontal: "center" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
             >
-                <MenuItem onClick={handleClose}>{PROFILE_TEXT}</MenuItem>
-                <MenuItem onClick={handleClose}>{MYACCOUNT_TEXT}</MenuItem>
-                <MenuItem onClick={handleClose}>{LOGOUT_TEXT}</MenuItem>
+                {menuItem && menuItem.map((item) => (<Link to={item.link} className={classes.menuLink}>
+                    <MenuItem onClick={handleClose}>{item.name}</MenuItem>
+                </Link>
+                ))}
+                {avatarIcon && <MenuItem onClick={handleLogout}>{LOGOUT_TEXT}</MenuItem>}
             </Menu>
         </>
     );

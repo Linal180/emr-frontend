@@ -2,9 +2,7 @@
 import { FC } from "react";
 import { Box, CssBaseline } from "@material-ui/core";
 // components block
-import Header from "./Header";
 import HeaderNew from "./HeaderNew";
-import Sidebar from "./Sidebar";
 // interfaces/types and main layout styles block
 import { MainLayoutProps } from "../../interfacesTypes";
 

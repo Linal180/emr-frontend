@@ -467,6 +467,12 @@ export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this 
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT = "Emergency Contact Relationship To Patient";
 export const YOUR_NAME = "Your Name"
+export const SCHEDULE_TEXT = "Schedule";
+export const HOME_TEXT = "Home";
+export const HELLO_TEXT = "Hello";
+export const RICHARD_TEXT = "Richard";
+export const PROFILE_TEXT = "Profile";
+export const MY_ACCOUNT_TEXT = "My Account";
 export const SKIP_NOW_TEXT = "Skip for now"
 export const PATIENT_DETAILS = "Patient Details"
 export const SELECT_SERVICES = "Select Services"
@@ -730,6 +736,54 @@ export const APP_MENU_ITEMS = [
         link: CLAIMS_ROUTE,
       },
     ],
+  },
+];
+
+export const USER_MENU_ITEMS = [
+  {
+    name: DOCTORS_TEXT,
+    link: DOCTORS_ROUTE
+  },
+  {
+    name: PATIENTS_TEXT,
+    link: PATIENTS_ROUTE
+  },
+  {
+    name: STAFF_TEXT,
+    link: STAFF_ROUTE
+  },
+];
+
+export const APPOINTMENT_MENU_ITEMS = [
+  {
+    name: VIEW_APPOINTMENTS_TEXT,
+    link: VIEW_APPOINTMENTS_ROUTE
+  },
+  {
+    name: SCHEDULE_APPOINTMENTS_TEXT,
+    link: SCHEDULE_APPOINTMENTS_ROUTE
+  },
+];
+
+export const Profile_MENU_ITEMS = [
+  {
+    name: PROFILE_TEXT,
+    link: "/",
+  },
+  {
+    name: MY_ACCOUNT_TEXT,
+    link: "/",
+  },
+];
+
+export const BILLING_MENU_ITEMS = [
+  {
+    name: INVOICES_TEXT,
+    link: INVOICES_ROUTE,
+  },
+  {
+    name: INSURANCE_CLAIMS_TEXT,
+    link: CLAIMS_ROUTE,
   },
 ];
 
@@ -1010,9 +1064,3 @@ export const WEEK_DAYS: SelectorOption[] = [
 
 // NEWAPPBAR-Menu
 
-export const SCHEDULE_TEXT = "Schedule";
-export const HOME_TEXT = "Home";
-export const HELLO_TEXT = "Hello";
-export const RICHARD_TEXT = "Richard";
-export const PROFILE_TEXT = "Profile";
-export const MYACCOUNT_TEXT = "My Account";

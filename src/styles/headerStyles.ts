@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import { DRAWER_WIDTH } from "../constants";
-import { WHITE } from "../theme";
+import { BLACK, BLACK_SEVEN, WHITE, WHITE_FIVE, WHITE_FOUR } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   appBar: {
@@ -35,11 +35,11 @@ export const useHeaderStyles = makeStyles((theme) => ({
     }
   },
 
-  // New-Appbar-Styling
-  
+  // New-AppBar-Styling
+
   newAppBar: {
     backgroundColor: WHITE,
-    borderBottom: '1px solid #E4E6EF',
+    borderBottom: `1px solid ${WHITE_FOUR}`,
     boxShadow: 'none',
     width: '100%',
     height: '80px',
@@ -53,12 +53,12 @@ export const useHeaderStyles = makeStyles((theme) => ({
     alignItems: 'center'
   },
 
-  newMenuItem: {
+  menuItem: {
     minWidth: 120,
     fontSize: 14,
     fontWeight: 400,
     textAlign: 'center',
-    color: '#262D3D',
+    color: BLACK_SEVEN,
     cursor: 'pointer',
     textTransform: 'capitalize',
     display: 'flex',
@@ -74,10 +74,10 @@ export const useHeaderStyles = makeStyles((theme) => ({
     },
   },
 
-  newMenuItem1: {
+  profileItem: {
     fontSize: 14,
     fontWeight: 400,
-    color: '#262D3D',
+    color: BLACK_SEVEN,
     textTransform: 'capitalize',
     display: 'flex',
     flexDirection: 'column',
@@ -90,5 +90,19 @@ export const useHeaderStyles = makeStyles((theme) => ({
     paddingLeft: '10px',
     marginTop: '-5px',
   },
+
+  toolBar: {
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  profileItemName: {
+    color: WHITE_FIVE,
+    textAlign: 'right',
+  },
+
+  menuLink: {
+    color: BLACK
+  }
 
 }));
