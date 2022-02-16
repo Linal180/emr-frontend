@@ -42,22 +42,21 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     },
 
     onCompleted(data) {
-      try {
-        if (data) {
-          const { findAllDoctor: { doctors, pagination } } = data
+      if (data) {
+        console.log("findAllDoctor", data)
+        const { findAllDoctor: { doctors, pagination } } = data
 
-          if (pagination) {
-            const { totalPages } = pagination;
+        if (pagination) {
+          const { totalPages } = pagination;
 
-            if (totalPages ? doctorPages !== totalPages : false) {
-              setDoctorPages(doctorPages + 1)
-            }
+          if (totalPages ? doctorPages !== totalPages : false) {
+            setDoctorPages(doctorPages + 1)
           }
-
-          !!doctors && !!doctorList &&
-            setDoctorList([...doctorList, ...doctors] as AllDoctorPayload['doctors'])
         }
-      } catch (error) { }
+
+        !!doctors && !!doctorList &&
+          setDoctorList([...doctorList, ...doctors] as AllDoctorPayload['doctors'])
+      }
     }
   })
 
@@ -145,69 +144,78 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     }
   })
 
-  const fetchAllDoctorList = useCallback((facilityId, page = 1) => {
+  const fetchAllDoctorList = useCallback(async (facilityId, page = 1) => {
     dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: [] })
 
-    findAllDoctor({
-      variables: {
-        doctorInput: {
-          facilityId,
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+    try {
+      await findAllDoctor({
+        variables: {
+          doctorInput: {
+            facilityId,
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } catch { }
   }, [findAllDoctor])
 
-  const fetchAllPatientList = useCallback((facilityId, page = 1) => {
+  const fetchAllPatientList = useCallback(async (facilityId, page = 1) => {
     dispatch({ type: ActionType.SET_PATIENT_LIST, patientList: [] })
 
-    findAllPatient({
-      variables: {
-        patientInput: {
-          facilityId,
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+    try {
+      await findAllPatient({
+        variables: {
+          patientInput: {
+            facilityId,
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+
+    } catch  { }
   }, [findAllPatient])
 
-  const fetchAllServicesList = useCallback((facilityId, page = 1) => {
+  const fetchAllServicesList = useCallback(async (facilityId, page = 1) => {
     dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: [] })
 
-    findAllServices({
-      variables: {
-        serviceInput: {
-          facilityId,
-          isActive: true,
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+    try {
+      await findAllServices({
+        variables: {
+          serviceInput: {
+            facilityId,
+            isActive: true,
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } catch { }
   }, [findAllServices])
 
-  const fetchAllLocationList = useCallback((facilityId, page = 1) => {
+  const fetchAllLocationList = useCallback(async (facilityId, page = 1) => {
     dispatch({ type: ActionType.SET_LOCATION_LIST, locationList: [] })
 
-    findAllContacts({
-      variables: {
-        contactInput: {
-          facilityId,
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+    try {
+      await findAllContacts({
+        variables: {
+          contactInput: {
+            facilityId,
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } catch { }
   }, [findAllContacts])
 
   const setDoctorList = (doctors: AllDoctorPayload['doctors']) => dispatch({

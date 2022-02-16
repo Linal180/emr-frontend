@@ -6,19 +6,18 @@ import { dateValidation, invalidMessage, requiredMessage, timeValidation } from 
 import {
   ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL, MaxLength, MinLength,
   FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
-  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, DOB_VALIDATION_MESSAGE, APPOINTMENT_TYPE,
-  PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE,
+  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, DOB_VALIDATION_MESSAGE, APPOINTMENT_TYPE, FAX,
+  PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE, TAXONOMY_CODE_REGEX,
   DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, USUAL_PROVIDER_ID,
-  NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE,
-  REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX,
-  TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP, TID_VALIDATION_MESSAGE,
-  TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
+  NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE, RELATIONSHIP,
+  REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TIME_ZONE_TEXT, PREFERRED_NAME,
+  TAXONOMY_VALIDATION_MESSAGE, TID_VALIDATION_MESSAGE, MAX_DOCTOR_DOB_VALIDATION_MESSAGE,
+  TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX, PHONE, MOBILE,
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
   ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION,
-  STRING_REGEX, MIDDLE_NAME, PREFERRED_NAME, PREVIOUS_FIRST_NAME,
+  STRING_REGEX, MIDDLE_NAME, PREVIOUS_FIRST_NAME, MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
-  PRIMARY_INSURANCE, SECONDARY_INSURANCE, INSURANCE_PLAN_TYPE, FAX, PHONE, MOBILE, 
-  MAX_DOCTOR_DOB_VALIDATION_MESSAGE, MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
+  PRIMARY_INSURANCE, SECONDARY_INSURANCE, INSURANCE_PLAN_TYPE, ADDRESS_2, PREFERRED_PHARMACY, PREFERRED_LANGUAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -27,6 +26,18 @@ const notRequiredMatches = (message: string, regex: RegExp) => {
       '', message, value => {
         if (!value) {
           return true
+        }
+
+        return regex.test(value)
+      })
+}
+
+const requiredMatches = (message: string, regex: RegExp) => {
+  return yup.string()
+    .test(
+      '', message, value => {
+        if (!value) {
+          return false
         }
 
         return regex.test(value)
@@ -541,4 +552,25 @@ export const externalAppointmentSchema = yup.object({
   ...serviceIdSchema,
   ...providerIdSchema,
   ...firstLastNameSchema,
+})
+
+export const externalPatientSchema = yup.object({
+  ...ssnSchema,
+  ...providerIdSchema,
+  city: requiredStringOnly(CITY, 2, 20),
+  state: requiredStringOnly(STATE, 2, 20),
+  country: requiredStringOnly(COUNTRY, 2, 20),
+  address: requiredStringOnly(ADDRESS, 5, 50),
+  address2: notRequiredStringOnly(ADDRESS_2),
+  language: notRequiredStringOnly(PREFERRED_LANGUAGE),
+  zipCode: requiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
+  preferredPharmacy: notRequiredStringOnly(PREFERRED_PHARMACY),
+  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
+  emergencyPhone: notRequiredPhone(PHONE),
+  emergencyName: notRequiredStringOnly(invalidMessage(NAME)),
+  emergencyAddress: notRequiredStringOnly(ADDRESS),
+  emergencyAddress2: notRequiredStringOnly(ADDRESS_2),
+  emergencyCity: notRequiredStringOnly(CITY),
+  emergencyState: notRequiredStringOnly(STATE),
+  emergencyCountry: notRequiredStringOnly(COUNTRY),
 })

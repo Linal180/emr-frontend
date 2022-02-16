@@ -501,7 +501,13 @@ type EmergencyContactControlTypes = | "emergencyName" | "emergencyRelationship" 
 interface EmergencyContactControlInputs {
   emergencyName: string;
   emergencyPhone: string;
+  emergencyCity?: string;
   emergencyMobile: string;
+  emergencyState?: string;
+  emergencyCountry?: string;
+  emergencyAddress?: string;
+  emergencyZipCode?: string;
+  emergencyAddress2?: string;
   emergencyRelationship: SelectorOption;
 }
 
@@ -595,6 +601,13 @@ export type PatientInputProps =
   & GuardianContactControlInputs & GuarantorContactControlInputs
   & EmployerControlInputs & RegisterUserInputs;
 
+export type ExternalPatientInputProps =
+  { preferredCommunicationMethod: SelectorOption } & { voiceCallPermission: boolean } & { phonePermission: boolean } &
+  { dob: string } & { language: string } & { callToConsent: boolean } & { ssn: string } & { ssn: string } & 
+  { providerId: SelectorOption } & { race: SelectorOption } & { ethnicity: SelectorOption }
+  & { providerId: SelectorOption } & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
+  & CreateContactInput
+  & EmergencyContactControlInputs
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
   & { facilityId: SelectorOption };

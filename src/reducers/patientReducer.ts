@@ -6,6 +6,7 @@ export interface State {
   selection: string;
   employerId: string;
   totalPages: number;
+  activeStep: number;
   openDelete: boolean;
   searchQuery: string;
   kinContactId: string;
@@ -21,6 +22,7 @@ export const initialState: State = {
   page: 1,
   patients: [],
   totalPages: 0,
+  activeStep: 0,
   patientId: '',
   employerId: '',
   selection: 'NO',
@@ -35,10 +37,11 @@ export const initialState: State = {
 }
 
 export enum ActionType {
-  SET_PAGE = 'SetPage',
+  SET_PAGE = 'setPage',
   SET_PATIENTS = 'setPatients',
   SET_SELECTION = 'setSelection',
   SET_PATIENT_ID = 'setPatientId',
+  SET_ACTIVE_STEP = 'setActiveStep',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_EMPLOYER_ID = 'setEmployerId',
   SET_TOTAL_PAGES = 'setTotalPages',
@@ -57,6 +60,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_ID; patientId: string }
   | { type: ActionType.SET_EMPLOYER_ID; employerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
+  | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
@@ -73,6 +77,12 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         page: action.page
+      }
+
+    case ActionType.SET_ACTIVE_STEP:
+      return {
+        ...state,
+        activeStep: action.activeStep
       }
 
     case ActionType.SET_SELECTION:

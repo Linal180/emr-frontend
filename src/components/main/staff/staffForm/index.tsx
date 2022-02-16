@@ -181,14 +181,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     dob: { message: dobError } = {},
     gender: { id: genderError } = {},
     roleType: { id: roleError } = {},
-    email: { message: emailError } = {},
     phone: { message: phoneError } = {},
     mobile: { message: mobileError } = {},
     facilityId: { id: facilityError } = {},
-    username: { message: usernameError } = {},
-    lastName: { message: lastNameError } = {},
-    password: { message: passwordError } = {},
-    firstName: { message: firstNameError } = {},
   } = errors;
 
   return (
@@ -230,7 +225,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           isRequired
                           fieldType="text"
                           controllerName="firstName"
-                          error={firstNameError}
                           controllerLabel={FIRST_NAME}
                         />
                       </Grid>
@@ -240,7 +234,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           isRequired
                           fieldType="text"
                           controllerName="lastName"
-                          error={lastNameError}
                           controllerLabel={LAST_NAME}
                         />
                       </Grid>
@@ -286,7 +279,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       disabled={isEdit}
                       fieldType="email"
                       controllerName="email"
-                      error={emailError}
                       controllerLabel={EMAIL}
                     />
 
@@ -295,7 +287,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         <InputController
                           fieldType="text"
                           controllerName="username"
-                          error={usernameError}
                           controllerLabel={PROVIDER}
                         />
                       </Grid>
@@ -307,7 +298,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             isPassword
                             fieldType="password"
                             controllerName="password"
-                            error={passwordError}
                             controllerLabel={PASSWORD_LABEL}
                           />
                         </Grid>

@@ -1,10 +1,9 @@
 // packages block
-import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer } from 'react';
+import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel,
-  FormGroup, Checkbox,
+  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox,
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -17,9 +16,8 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { AuthContext } from '../../../../context';
-import { ListContext } from '../../../../context/listContext';
 import { extendedPatientSchema } from '../../../../validationSchemas';
+import { AuthContext, ListContext, FacilityContext } from '../../../../context';
 import { GeneralFormProps, PatientInputProps } from '../../../../interfacesTypes';
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -38,18 +36,19 @@ import {
   MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE,
   EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
   LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS,
-  MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
+  MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY, EMPTY_OPTION,
   SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
-  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH,
+  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT,
-  CREATE_PATIENT, EMPTY_OPTION, NOT_FOUND_EXCEPTION,
+  CREATE_PATIENT,
 } from "../../../../constants";
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { doctorList, facilityList, fetchAllPatientList } = useContext(ListContext)
+  const { facilityList, fetchAllPatientList } = useContext(ListContext)
+  const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
     basicContactId, emergencyContactId, kinContactId, guardianContactId,
     guarantorContactId, employerId
@@ -65,7 +64,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(extendedPatientSchema)
   });
-  const { handleSubmit, setValue, formState: { errors } } = methods;
+  const { handleSubmit, setValue, watch, reset, formState: { errors } } = methods;
+  const {
+    facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
+  } = watch();
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -92,25 +94,27 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             statementNoteDateTo, facility, contacts, employer, medicationHistoryAuthority, doctorPatients
           } = patient;
 
+          if (facility) {
+            const { id: facilityId, name } = facility;
+
+            if (facilityId) {
+              fetchAllDoctorList(facilityId)
+              name && setValue("facilityId", setRecord(facilityId, name))
+            }
+          }
+
           if (doctorPatients) {
             const currentDoctor = doctorPatients.map(doctorPatient => {
-              if (doctorPatient.currentProvider) {
-                return doctorPatient.doctor
-              }
-
-              return null
+              const { currentProvider, doctor } = doctorPatient
+              
+              return currentProvider ? doctor : null
             })[0];
 
             if (currentDoctor) {
               const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
-              usualProviderId && setValue("usualProviderId", setRecord(usualProviderId,
-                `${firstName} ${lastName}` || ''))
+              usualProviderId &&
+                setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}`))
             }
-          }
-
-          if (facility) {
-            const { id: facilityId, name } = facility;
-            facilityId && setValue("facilityId", setRecord(facilityId, name || ''))
           }
 
           dob && setValue("dob", dob)
@@ -166,7 +170,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               relationship && setValue("emergencyRelationship", setRecord(relationship || '', relationship || ''))
             }
 
-            const basicContact = contacts.filter(contact => contact.contactType === ContactType.Self)[0]
+            const basicContact = contacts.filter(contact => contact.primaryContact)[0]
 
             if (basicContact) {
               const { id: basicContactId, email, address, address2, zipCode, city, state,
@@ -309,20 +313,14 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       patientNote, language, race, ethnicity, maritialStatus, sexualOrientation, genderIdentity,
       pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
       statementNoteDateTo, facilityId, usualProviderId, medicationHistoryAuthority, sexAtBirth,
-
       basicEmail, basicPhone, basicMobile, basicAddress, basicAddress2, basicZipCode, basicCity,
       basicState, basicCountry,
-
       emergencyName, emergencyRelationship, emergencyPhone, emergencyMobile,
-
       kinName, kinRelationship, kinMobile, kinPhone,
-
       guardianFirstName, guardianMiddleName, guardianLastName, guardianSuffix,
-
       guarantorFirstName, guarantorMiddleName, guarantorLastName, guarantorEmail, guarantorRelationship,
       guarantorPhone, guarantorSuffix, guarantorAddress, guarantorAddress2, guarantorZipCode, guarantorCity,
       guarantorState, guarantorCountry, guarantorEmployerName, guarantorSsn,
-
       employerName, employerEmail, employerPhone, employerIndustry, employerUsualOccupation,
     } = inputs;
 
@@ -371,7 +369,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       };
 
       const contactInput = {
-        contactType: ContactType.Self, country: basicCountry || '',
+        contactType: ContactType.Self, country: basicCountry || '', primaryContact: true,
         email: basicEmail || '', city: basicCity || '', zipCode: basicZipCode || '',
         state: basicState || '', facilityId: selectedFacility || '', phone: basicPhone || '',
         mobile: basicMobile || '', address2: basicAddress2 || '', address: basicAddress || '',
@@ -412,16 +410,23 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       };
 
       if (isEdit && id) {
+        const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
+        const contactIdInput = basicContactId ? { id: basicContactId, ...contactInput } : { ...contactInput }
+        const kinContactIdInput = kinContactId ? { id: kinContactId, ...nextOfKinContactInput } : { ...nextOfKinContactInput }
+        const guardianIdInput = guardianContactId ? { id: guardianContactId, ...guardianContactInput } : { ...guardianContactInput }
+        const emergencyIdInput = emergencyContactId ? { id: emergencyContactId, ...emergencyContactInput } : { ...emergencyContactInput }
+        const guarantorIdInput = guarantorContactId ? { id: guarantorContactId, ...guarantorContactInput } : { ...guarantorContactInput }
+
         await updatePatient({
           variables: {
             updatePatientInput: {
               updatePatientItemInput: { id, ...patientItemInput },
-              updateContactInput: { id: basicContactId, ...contactInput },
-              updateEmergencyContactInput: { id: emergencyContactId, ...emergencyContactInput },
-              updateGuarantorContactInput: { id: guarantorContactId, ...guarantorContactInput },
-              updateGuardianContactInput: { id: guardianContactId, ...guardianContactInput },
-              updateNextOfKinContactInput: { id: kinContactId, ...nextOfKinContactInput },
-              updateEmployerInput: { id: employerId, ...employerInput },
+              updateContactInput: { ...contactIdInput },
+              updateEmployerInput: { ...employerIdInput },
+              updateGuardianContactInput: { ...guardianIdInput },
+              updateEmergencyContactInput: { ...emergencyIdInput },
+              updateGuarantorContactInput: { ...guarantorIdInput },
+              updateNextOfKinContactInput: { ...kinContactIdInput },
             }
           }
         })
@@ -431,11 +436,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             createPatientInput: {
               createPatientItemInput: { ...patientItemInput },
               createContactInput: { ...contactInput },
+              createEmployerInput: { ...employerInput },
+              createGuardianContactInput: { ...guardianContactInput },
               createEmergencyContactInput: { ...emergencyContactInput },
               createGuarantorContactInput: { ...guarantorContactInput },
-              createGuardianContactInput: { ...guardianContactInput },
               createNextOfKinContactInput: { ...nextOfKinContactInput },
-              createEmployerInput: { ...employerInput },
             }
           }
         })
@@ -455,6 +460,21 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       } else Alert.error(PATIENT_NOT_FOUND)
     }
   }, [getPatient, id, isEdit])
+
+  const fetchList = useCallback((id: string, name: string) => {
+    reset({
+      usualProviderId: EMPTY_OPTION,
+      facilityId: { id, name }
+    });
+
+    if (id) {
+      fetchAllDoctorList(id);
+    }
+  }, [fetchAllDoctorList, reset]);
+
+  useEffect(() => {
+    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
+  }, [fetchList, selectedFacility, selectedFacilityName, watch])
 
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;
 
@@ -988,7 +1008,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <Grid item md={6} sm={12} xs={12}>
                         <Selector
                           isRequired
-                          disabled={isEdit}
                           value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
@@ -1000,7 +1019,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <Grid item md={6} sm={12} xs={12}>
                         <Selector
                           isRequired
-                          disabled={isEdit}
                           value={EMPTY_OPTION}
                           label={USUAL_PROVIDER_ID}
                           name="usualProviderId"
