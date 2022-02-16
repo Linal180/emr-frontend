@@ -41,10 +41,10 @@ import {
   MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY,
   SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
-  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, MAPPED_GENDER, LEGAL_SEX, SEX_AT_BIRTH,
+  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT,
-  CREATE_PATIENT, EMPTY_OPTION,
+  CREATE_PATIENT, EMPTY_OPTION, NOT_FOUND_EXCEPTION,
 } from "../../../../constants";
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -73,12 +73,15 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      Alert.error(message)
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(PATIENTS_ROUTE)
     },
 
     onCompleted(data) {
-      if (data) {
-        const { getPatient: { patient } } = data
+      const { getPatient } = data || {}
+
+      if (getPatient) {
+        const { patient } = getPatient
 
         if (patient) {
           const { suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
@@ -212,8 +215,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address && setValue("guarantorAddress", address)
               address2 && setValue("guarantorAddress2", address2)
               country && setValue("guarantorCountry", country)
-              lastName && setValue("guarantorFirstName", lastName)
-              firstName && setValue("guarantorLastName", firstName)
+              lastName && setValue("guarantorLastName", lastName)
+              firstName && setValue("guarantorFirstName", firstName)
               middleName && setValue("guarantorMiddleName", middleName)
               employerName && setValue("guarantorEmployerName", employerName)
             }
@@ -243,7 +246,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           }
         }
       }
-    },
+    }
   });
 
   const [createPatient, { loading: createPatientLoading }] = useCreatePatientMutation({
@@ -346,13 +349,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         lastName: lastName || '', firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '',
         previousFirstName: previousFirstName || '', previouslastName: previouslastName || '',
         motherMaidenName: motherMaidenName || '', ssn: ssn || '', dob: getTimestamps(dob || ''),
-        registrationDate: getTimestamps(registrationDate || ''),
+        registrationDate: getTimestamps(registrationDate || ''), language: language || '',
         deceasedDate: getTimestamps(deceasedDate || ''), adminId: userId || '',
         privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false,
         callToConsent: callToConsent || false, usualProviderId: selectedUsualProvider || '',
-        medicationHistoryAuthority: medicationHistoryAuthority || false,
-        patientNote: patientNote || '', language: language || '',
-        statementNoteDateTo: getTimestamps(statementNoteDateTo || ''),
+        medicationHistoryAuthority: medicationHistoryAuthority || false, patientNote: patientNote || '',
+        statementNoteDateTo: getTimestamps(statementNoteDateTo || ''), email: basicEmail || '',
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
         pronouns: selectedPronouns as Pronouns || Pronouns.None,
@@ -365,7 +367,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
         primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,
         registrationDepartment: selectedRegistrationDepartment as RegDepartment || RegDepartment.Hospital,
-        race: selectedRace as Race || Race.White, email: basicEmail || '',
+        race: selectedRace as Race || Race.White,
       };
 
       const contactInput = {
@@ -651,7 +653,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           error={genderError?.message || ""}
                           label={LEGAL_SEX}
                           value={EMPTY_OPTION}
-                          options={MAPPED_GENDER}
+                          options={MAPPED_GENDER_IDENTITY}
                         />
                       </Grid>
 

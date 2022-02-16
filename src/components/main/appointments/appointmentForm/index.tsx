@@ -24,7 +24,7 @@ import {
 } from '../../../../reducers/appointmentReducer';
 import {
   getTimestamps, renderDoctors, renderFacilities, renderPatient, renderServices,
-  getTimeFromTimestamps, requiredMessage, setRecord, getStandardTime
+  getTimeFromTimestamps, requiredMessage, setRecord, getStandardTime,
 } from "../../../../utils";
 import {
   DoctorSlotsPayload,
@@ -33,11 +33,10 @@ import {
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
-  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
-  SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -101,6 +100,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           providerId && setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}` || ''))
           scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime || ''))
           scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime || ''))
+          setDate(new Date(getTimeFromTimestamps(scheduleStartDateTime || '')) as MaterialUiPickersDate)
         }
       }
     }
@@ -119,10 +119,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       if (getDoctorSlots) {
         const { slots } = getDoctorSlots;
-
-        slots && dispatch({
-          type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSlotsPayload['slots']
-        });
+        if (slots) {
+          dispatch({
+            type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSlotsPayload['slots']
+          });
+        } else {
+          dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
+        }
       }
     }
   });
@@ -231,8 +234,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       const appointmentInput = {
         reason: reason || '',
-        scheduleStartDateTime: getTimestamps(new Date(parseInt(scheduleStartDateTime)).toString()),
-        scheduleEndDateTime: getTimestamps(new Date(parseInt(scheduleEndDateTime)).toString()),
+        scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
+        scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
         autoAccident: autoAccident || false, otherAccident: otherAccident || false,
         primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
         notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
@@ -336,7 +339,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={PATIENT}
                           name="patientId"
                           options={renderPatient(patientList)}
-                          error={patientError?.message && requiredMessage(PROVIDER)}
+                          error={patientError?.message && requiredMessage(PATIENT)}
                         />
                       </Grid>
                     </Grid>
@@ -400,7 +403,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             <div>
                               <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
                               <label htmlFor={`timeSlot-${index}`}>
-                                {getStandardTime(startTime || '')} - {getStandardTime(endTime || '')}
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                                {getStandardTime(new Date(endTime || '').getTime().toString())}
                               </label>
                             </div>
                           </li>

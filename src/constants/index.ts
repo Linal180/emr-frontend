@@ -6,7 +6,7 @@ import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
   Communicationtype,
-  Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
+  Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
   RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
 } from "../generated/graphql";
 
@@ -42,7 +42,7 @@ export enum DAYS {
 };
 export const ALL_STAFF = "Staff";
 export const MINUTES = "minutes";
-export const CALENDER = "Calender";
+export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
@@ -71,6 +71,7 @@ export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const EMERGENCY_CONTACT_NAME = "Emergency Contact Name";
 export const ADD_STAFF = "Add Staff";
+export const EDIT_STAFF = "Edit Staff";
 export const CANT_UPDATE_STAFF = "Staff cant be updated";
 export const CANT_CREATE_STAFF = "Can't create staff";
 export const CANT_UPDATE_SCHEDULE = "Schedule cant be updated";
@@ -257,6 +258,7 @@ export const INACTIVE = "Inactive";
 export const VERIFIED = "Verified";
 export const USER_NAME = "Username";
 export const CLIA_ID_NUMBER = "CLIA ID Number";
+export const SERVICES = "Services";
 export const FACILITY = "Facility";
 export const SERVICE = "Service";
 export const FACILITY_ID = "Facility ID";
@@ -299,6 +301,7 @@ export const LOCATIONS_TEXT = "Locations";
 export const DASHBOARD_TEXT = "Dashboard";
 export const USER_ROLE = "boca_admin_role";
 export const ADD_FACILITY = "Add Facility";
+export const EDIT_FACILITY = "Edit Facility";
 export const EDIT_SERVICE = "Edit Service";
 export const ADD_SERVICE = "Add Service";
 export const DELETE_RECORD = "Delete Record";
@@ -327,7 +330,7 @@ export const TOKEN_INVALID = "Token Invalid";
 export const RESET_FILTERS = "Reset Filters";
 export const NO_DATA_FOUND = "No data found";
 export const LAB_RESULTS_TEXT = "Lab Results";
-export const BACK_TO_HOME = "Back to homepage";
+export const BACK_TO_HOME = "Return Home";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const EXCEPTION = "Forbidden exception";
 export const DELETE_REQUEST = "Delete Request";
@@ -462,21 +465,28 @@ export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this me
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
 export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
 export const EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT = "Emergency Contact Relationship To Patient";
-export const LOOKS_LIKE_EMPTY = "Looks like an empty space. You can go back to homepage by clicking the button below";
-export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
-export const SELECT_SERVICES = "Select Services"
-export const PATIENT_FIRST_NAME = "Patient First Name"
-export const PATIENT_LAST_NAME = "Patient Last Name"
 export const YOUR_NAME = "Your Name"
+export const SKIP_NOW_TEXT = "Skip for now"
 export const PATIENT_DETAILS = "Patient Details"
+export const SELECT_SERVICES = "Select Services"
 export const BOOK_APPOINTMENT = "Book Appointment"
+export const NO_SLOT_AVAILABLE = "No Slot available"
+export const PATIENT_LAST_NAME = "Patient Last Name"
+export const PATIENT_FIRST_NAME = "Patient First Name"
+export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
+export const NOTHING_HERE_TEXT = "Seems there is nothing here";
+export const MAINTENANCE_IN_PROGRESS = "Maintenance in progress";
+export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
 export const AGREEMENT_HEADING = "User data privacy & TOS agreement."
+export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
+export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
 export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
 export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
-export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+export const VERIFY_EMAIL_TEXT = "We have sent an email to example@emr.com please follow a link to verify your email";
+export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account and start a new project";
+export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
-export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
-export const NO_SLOT_AVAILABLE = "No Slot available"
+export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
@@ -535,7 +545,8 @@ export const toolbarOptions = {
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
-export const DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
+export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
+export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be less that 100-years";
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const ZIP_VALIDATION_MESSAGE = "Valid zip code is 5-digit long";
@@ -560,7 +571,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
-export const SLOT_ALREADY_BOOKED = "This slot is already booked.";
+export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";
 export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully"
@@ -734,12 +745,6 @@ export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
 ];
 
-export const MAPPED_GENDER: SelectorOption[] = [
-  { id: Gender.Male, name: formatValue(Gender.Male) },
-  { id: Gender.Female, name: formatValue(Gender.Female) },
-  { id: Gender.Other, name: formatValue(Gender.Other) },
-]
-
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
   { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
@@ -911,10 +916,10 @@ export const agreementPoints = [
 ]
 
 // Breadcrumb links
-export const FACILITIES_BREAD = { text: FACILITIES_TEXT, link: FACILITIES_ROUTE }
+export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE }
 export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
 export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
-export const FACILITY_EDIT_BREAD = { text: VIEW_FACILITY, link: '' }
+export const FACILITY_EDIT_BREAD = { text: EDIT_FACILITY, link: '' }
 export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
 export const FACILITY_LOCATION_NEW_BREAD = { text: ADD_LOCATION, link: '' }
 export const FACILITY_LOCATION_EDIT_BREAD = { text: EDIT_LOCATION, link: '' }
@@ -932,7 +937,7 @@ export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
 export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: '' }
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
-export const STAFF_EDIT_BREAD = { text: VIEW_STAFF, link: '' }
+export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: '' }
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }
 export const USERS_BREAD = { text: USERS_TEXT, link: '' }
 export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: '' }

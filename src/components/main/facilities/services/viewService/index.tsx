@@ -7,17 +7,18 @@ import PageHeader from '../../../../common/PageHeader';
 // constants block
 import { ParamsType } from '../../../../../interfacesTypes';
 import {
-  EDIT_SERVICE, FACILITIES_BREAD, FACILITY_EDIT_BREAD, FACILITY_SERVICES_BREAD,
+  EDIT_SERVICE, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITY_EDIT_BREAD, FACILITY_SERVICES_ROUTE, SERVICES,
 } from '../../../../../constants';
 
 const AddFacilityServiceComponent: FC = (): JSX.Element => {
-  const { id } = useParams<ParamsType>();
+  const { id, facilityId } = useParams<ParamsType>();
+  const servicesBreadcrumb = { text: SERVICES, link: `${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}` }
 
   return (
     <>
       <PageHeader
         title={EDIT_SERVICE}
-        path={[FACILITIES_BREAD, FACILITY_SERVICES_BREAD, FACILITY_EDIT_BREAD]}
+        path={[FACILITIES_BREAD, servicesBreadcrumb, FACILITY_EDIT_BREAD]}
       />
 
       <ServiceForm isEdit id={id} />

@@ -360,9 +360,6 @@ export interface TimePickerProps {
   fieldType: string;
 }
 
-type StaffControlTypes = "firstName" | "lastName" | "email" | "username" | "password"
-  | "phone" | "mobile" | "dob" | "gender" | "roleType" | "adminId" | "facilityId";
-
 export interface MappedGenderidentityInterface {
   value: Genderidentity;
   label: string;
@@ -419,10 +416,6 @@ export type ParamsType = {
 
 export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender">
   & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
-
-export interface StaffInputControlProps extends IControlLabel {
-  controllerName: StaffControlTypes;
-}
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "locationId" | "servicesIds">
   & { locationId: SelectorOption } & { servicesIds: SelectorOption } & { day: SelectorOption };

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Box, Button, Typography } from "@material-ui/core";
 // svgs block
 import { EMRIcon } from "../../../assets/svgs";
-import { CALENDER, DASHBOARD_ROUTE } from "../../../constants";
+import { CALENDAR, DASHBOARD_ROUTE } from "../../../constants";
 import DASHBOARD_IMAGE from "../../../assets/images/dashboard-image.svg"
 
 const DashboardComponent: FC = (): JSX.Element => (
@@ -20,7 +20,7 @@ const DashboardComponent: FC = (): JSX.Element => (
     <Box className="subHeading">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dolor interdum et risus. Accumsan.</Box>
 
     <Link to={`${DASHBOARD_ROUTE}/start-project`}>
-      <Button color="primary" variant="contained" className="blue-button">{CALENDER}</Button>
+      <Button color="primary" variant="contained" className="blue-button">{CALENDAR}</Button>
     </Link>
 
     <Box position="absolute" right={150} bottom={40}>

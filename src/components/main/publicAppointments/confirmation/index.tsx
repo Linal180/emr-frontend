@@ -117,7 +117,10 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
         <Card>
           <Box minHeight="580px" className={classes.container}>
             <Box maxWidth="700px">
-              <Typography component="h3" variant="h3">Thank you! Your visit at {getStandardTime(scheduleStartDateTime || '')} on {getFormattedDate(scheduleStartDateTime || '')} has been confirmed.</Typography>
+              <Typography component="h3" variant="h3">
+                Thank you! Your visit at {getStandardTime(scheduleStartDateTime || '')} on {getFormattedDate(scheduleStartDateTime || '')} has been confirmed.
+              </Typography>
+
               <Typography component="h3" variant="h3">{SLOT_CONFIRMATION_HEADING_TWO}</Typography>
             </Box>
 
