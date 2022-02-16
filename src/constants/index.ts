@@ -9,6 +9,7 @@ import {
   Ethnicity, Gender, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
   RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
 } from "../generated/graphql";
+// import { Menu } from '@material-ui/core';
 
 // regex
 export const ZIP_REGEX = /^\d{5}$/;
@@ -978,3 +979,12 @@ export const WEEK_DAYS: SelectorOption[] = [
   { id: DAYS.Saturday, name: DAYS.Saturday, },
   { id: DAYS.Sunday, name: DAYS.Sunday, },
 ]
+
+// NEWAPPBAR-Menu
+
+export const SCHEDULE_TEXT = "Schedule";
+export const HOME_TEXT = "Home";
+export const HELLO_TEXT = "Hello";
+export const RICHARD_TEXT = "Richard";
+export const PROFILE_TEXT = "Profile";
+export const MYACCOUNT_TEXT = "My Account";

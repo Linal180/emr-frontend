@@ -34,4 +34,61 @@ export const useHeaderStyles = makeStyles((theme) => ({
       backgroundColor: 'rgba(255, 255, 255, 0.3)',
     }
   },
+
+  // New-Appbar-Styling
+  
+  newAppBar: {
+    backgroundColor: WHITE,
+    borderBottom: '1px solid #E4E6EF',
+    boxShadow: 'none',
+    width: '100%',
+    height: '80px',
+    padding: '0.5rem 2rem',
+  },
+
+  newMenuBar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+
+  newMenuItem: {
+    minWidth: 120,
+    fontSize: 14,
+    fontWeight: 400,
+    textAlign: 'center',
+    color: '#262D3D',
+    cursor: 'pointer',
+    textTransform: 'capitalize',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '0 10px',
+    [theme.breakpoints.down("sm")]: {
+      display: 'none',
+
+      "&:hover": {
+        textDecoration: 'underline'
+      }
+    },
+  },
+
+  newMenuItem1: {
+    fontSize: 14,
+    fontWeight: 400,
+    color: '#262D3D',
+    textTransform: 'capitalize',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'right',
+  },
+
+  downArrowIcon: {
+    display: 'inline-block',
+    paddingLeft: '10px',
+    marginTop: '-5px',
+  },
+
 }));
