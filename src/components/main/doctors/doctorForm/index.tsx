@@ -35,7 +35,7 @@ import {
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  TAXONOMY_CODE, EMPTY_OPTION,
+  TAXONOMY_CODE, EMPTY_OPTION, NOT_FOUND_EXCEPTION,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -54,90 +54,95 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      Alert.error(message)
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(DOCTORS_ROUTE)
     },
 
     onCompleted(data) {
-      const { getDoctor: { response, doctor } } = data;
+      const { getDoctor } = data || {};
 
-      if (response) {
-        const { status } = response
+      if (getDoctor) {
+        const { response, doctor } = getDoctor
 
-        if (doctor && status && status === 200) {
-          const { dob, ssn, prefix, suffix, ssnType, lastName, firstName, speciality, middleName, providerIntials,
-            degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
-            upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
-            blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
-            dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber,
-          } = doctor
+        if (response) {
+          const { status } = response
 
-          const { id: facilityId, name } = facility || {}
+          if (doctor && status && status === 200) {
+            const { dob, ssn, prefix, suffix, ssnType, lastName, firstName, speciality, middleName, providerIntials,
+              degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
+              upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
+              blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
+              dpsCtpNumber, stateLicense, licenseActiveDate, licenseTermDate, prescriptiveAuthNumber,
+            } = doctor
 
-          dob && setValue('dob', dob)
-          npi && setValue('npi', npi)
-          ssn && setValue('ssn', ssn)
-          upin && setValue('upin', upin)
-          taxId && setValue('taxId', taxId)
-          prefix && setValue('prefix', prefix)
-          suffix && setValue('suffix', suffix)
-          lastName && setValue('lastName', lastName)
-          deaNumber && setValue('deaNumber', deaNumber)
-          firstName && setValue('firstName', firstName)
-          middleName && setValue('middleName', middleName)
-          taxIdStuff && setValue('taxIdStuff', taxIdStuff)
-          taxonomyCode && setValue('taxonomyCode', taxonomyCode)
-          dpsCtpNumber && setValue('dpsCtpNumber', dpsCtpNumber)
-          stateLicense && setValue('stateLicense', stateLicense)
-          emcProviderId && setValue('emcProviderId', emcProviderId)
-          ssnType && setValue('ssnType', setRecord(ssnType, ssnType))
-          deaTermDate && setValue('deaTermDate', getDate(deaTermDate))
-          blueShildNumber && setValue('blueShildNumber', blueShildNumber)
-          campusGrpNumber && setValue('campusGrpNumber', campusGrpNumber)
-          providerIntials && setValue('providerIntials', providerIntials)
-          languagesSpoken && setValue('languagesSpoken', languagesSpoken)
-          deaActiveDate && setValue('deaActiveDate', getDate(deaActiveDate))
-          specialityLicense && setValue('specialityLicense', specialityLicense)
-          anesthesiaLicense && setValue('anesthesiaLicense', anesthesiaLicense)
-          medicareGrpNumber && setValue('medicareGrpNumber', medicareGrpNumber)
-          medicaidGrpNumber && setValue('medicaidGrpNumber', medicaidGrpNumber)
-          degreeCredentials && setValue('degreeCredentials', degreeCredentials)
-          speciality && setValue('speciality', setRecord(speciality, speciality))
-          licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
-          facilityId && setValue('facilityId', setRecord(facilityId || '', name || ''))
-          licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
-          meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
-          prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
+            const { id: facilityId, name } = facility || {}
 
-          setDoctor(doctor)
+            dob && setValue('dob', dob)
+            npi && setValue('npi', npi)
+            ssn && setValue('ssn', ssn)
+            upin && setValue('upin', upin)
+            taxId && setValue('taxId', taxId)
+            prefix && setValue('prefix', prefix)
+            suffix && setValue('suffix', suffix)
+            lastName && setValue('lastName', lastName)
+            deaNumber && setValue('deaNumber', deaNumber)
+            firstName && setValue('firstName', firstName)
+            middleName && setValue('middleName', middleName)
+            taxIdStuff && setValue('taxIdStuff', taxIdStuff)
+            taxonomyCode && setValue('taxonomyCode', taxonomyCode)
+            dpsCtpNumber && setValue('dpsCtpNumber', dpsCtpNumber)
+            stateLicense && setValue('stateLicense', stateLicense)
+            emcProviderId && setValue('emcProviderId', emcProviderId)
+            ssnType && setValue('ssnType', setRecord(ssnType, ssnType))
+            deaTermDate && setValue('deaTermDate', getDate(deaTermDate))
+            blueShildNumber && setValue('blueShildNumber', blueShildNumber)
+            campusGrpNumber && setValue('campusGrpNumber', campusGrpNumber)
+            providerIntials && setValue('providerIntials', providerIntials)
+            languagesSpoken && setValue('languagesSpoken', languagesSpoken)
+            deaActiveDate && setValue('deaActiveDate', getDate(deaActiveDate))
+            specialityLicense && setValue('specialityLicense', specialityLicense)
+            anesthesiaLicense && setValue('anesthesiaLicense', anesthesiaLicense)
+            medicareGrpNumber && setValue('medicareGrpNumber', medicareGrpNumber)
+            medicaidGrpNumber && setValue('medicaidGrpNumber', medicaidGrpNumber)
+            degreeCredentials && setValue('degreeCredentials', degreeCredentials)
+            speciality && setValue('speciality', setRecord(speciality, speciality))
+            licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
+            facilityId && setValue('facilityId', setRecord(facilityId || '', name || ''))
+            licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
+            meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
+            prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
 
-          if (contacts) {
-            const { email, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = contacts[0]
+            setDoctor(doctor)
 
-            fax && setValue('fax', fax)
-            city && setValue('city', city)
-            email && setValue('email', email)
-            state && setValue('state', state)
-            phone && setValue('phone', phone)
-            mobile && setValue('mobile', mobile)
-            zipCode && setValue('zipCode', zipCode)
-            address && setValue('address', address)
-            country && setValue('country', country)
-            address2 && setValue('address2', address2)
-            pager && setValue('pager', pager)
-          }
+            if (contacts) {
+              const { email, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = contacts[0]
 
-          if (billingAddress) {
-            const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+              fax && setValue('fax', fax)
+              city && setValue('city', city)
+              email && setValue('email', email)
+              state && setValue('state', state)
+              phone && setValue('phone', phone)
+              mobile && setValue('mobile', mobile)
+              zipCode && setValue('zipCode', zipCode)
+              address && setValue('address', address)
+              country && setValue('country', country)
+              address2 && setValue('address2', address2)
+              pager && setValue('pager', pager)
+            }
 
-            fax && setValue('billingFax', fax)
-            city && setValue('billingCity', city)
-            email && setValue('billingEmail', email)
-            state && setValue('billingState', state)
-            phone && setValue('billingPhone', phone)
-            address && setValue('billingAddress', address)
-            country && setValue('billingCountry', country)
-            zipCode && setValue('billingZipCode', zipCode)
-            address2 && setValue('billingAddress2', address2)
+            if (billingAddress) {
+              const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+
+              fax && setValue('billingFax', fax)
+              city && setValue('billingCity', city)
+              email && setValue('billingEmail', email)
+              state && setValue('billingState', state)
+              phone && setValue('billingPhone', phone)
+              address && setValue('billingAddress', address)
+              country && setValue('billingCountry', country)
+              zipCode && setValue('billingZipCode', zipCode)
+              address2 && setValue('billingAddress2', address2)
+            }
           }
         }
       }
@@ -194,9 +199,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     if (isEdit) {
       if (id) {
         getDoctor({
-          variables: {
-            getDoctor: { id }
-          }
+          variables: { getDoctor: { id } }
         })
       } else Alert.error(DOCTOR_NOT_FOUND)
     }

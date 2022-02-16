@@ -11,7 +11,7 @@ import { PickerProps } from "../../interfacesTypes";
 const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control } = useFormContext()
-  
+
   return (
     <Controller
       name={name}
@@ -41,6 +41,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.El
               helperText={error}
               autoOk
               clearable
+              maxDate="2100-01-31"
             />
           </MuiPickersUtilsProvider>
         </FormControl>
