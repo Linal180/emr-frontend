@@ -6,7 +6,7 @@ import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
 // utils and header styles block
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { EMRLogo } from "../../assets/svgs";
-import { BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, RICHARD_TEXT, USER_MENU_ITEMS, APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, Profile_MENU_ITEMS } from "../../constants";
+import { BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, RICHARD_TEXT, USER_MENU_ITEMS, APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, Profile_MENU_ITEMS, FACILITIES_TEXT, FACILITIES_ROUTE } from "../../constants";
 import DropdownMenu from "./DropdownMenu";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -29,6 +29,12 @@ const HeaderNew: FC = (): JSX.Element => {
                     <DropdownMenu itemName={USERS_TEXT} menuItem={USER_MENU_ITEMS} />
 
                     <DropdownMenu itemName={BILLING_TEXT} menuItem={BILLING_MENU_ITEMS} />
+
+                    <Link to={FACILITIES_ROUTE}>
+                        <Typography className={classes.menuItem}>
+                            {FACILITIES_TEXT}
+                        </Typography>
+                    </Link>
 
                     <Link to={LAB_RESULTS_ROUTE}>
                         <Typography className={classes.menuItem}>
