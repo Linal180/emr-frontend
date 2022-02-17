@@ -153,6 +153,8 @@ export const DEA_TERM_DATE = "DEA Term Date";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
 export const EMAIL = "Email";
+export const GROWTH_CHART = "Growth Chart";
+export const PDF_TEXT = "PDF";
 export const PHONE = "Phone";
 export const FAX = "Fax";
 export const ZIP_CODE = "Zip code";
@@ -1067,3 +1069,95 @@ export const WEEK_DAYS: SelectorOption[] = [
 
 // NEWAPPBAR-Menu
 
+export const dummyVitalsChartingList = [
+  {
+    id: 1,
+    firstName: "Smith",
+    lastName: "John",
+    email: "john60@alxtel.com",
+    phone: +14842634724,
+    specialty: "Physician Assistant",
+    code: 45025,
+  },
+  {
+    id: 2,
+    firstName: "Helmet",
+    lastName: "Smith",
+    email: "smith0@alxtel.com",
+    phone: +16102458096,
+    specialty: "Pharmacist",
+    code: 65065,
+  },
+  {
+    id: 3,
+    firstName: "Ala",
+    lastName: "Dude",
+    email: "dude34@alxtel.com",
+    phone: +14844493827,
+    specialty: "Periodontics",
+    code: 25525,
+  },
+  {
+    id: 4,
+    firstName: "Harry",
+    lastName: "Steve",
+    email: "harry45@alxtel.com",
+    phone: +14845219734,
+    specialty: "Pediatric Dentist",
+    code: 88025,
+  },
+  {
+    id: 5,
+    firstName: "Chris",
+    lastName: "Handle",
+    email: "dakeve00@alxtel.com",
+    phone: +18143519562,
+    specialty: "Pediatric Dermatology",
+    code: 12025,
+  },
+  {
+    id: 6,
+    firstName: "Bolt",
+    lastName: "Tick",
+    email: "bolt@alxtel.com",
+    phone: +14845219734,
+    specialty: "Neurology",
+    code: 67025,
+  },
+  {
+    id: 7,
+    firstName: "Lara",
+    lastName: "Bell",
+    email: "lara@alxtel.com",
+    phone: +14842989327,
+    specialty: "Gastroenterology",
+    code: 33325,
+  },
+  {
+    id: 8,
+    firstName: "Hymen",
+    lastName: "Stoke",
+    email: "stoke@alxtel.com",
+    phone: +16102458766,
+    specialty: "Neurology",
+    code: 19825,
+  },
+  {
+    id: 9,
+    firstName: "Black",
+    lastName: "Pointer",
+    email: "pointer@alxtel.com",
+    phone: +15854380126,
+    specialty: "Physician Assistant",
+    code: 45025,
+  },
+  {
+    id: 10,
+    firstName: "Mira",
+    lastName: "Khan",
+    email: "khan39@alxtel.com",
+    phone: +16102458766,
+    specialty: "Pediatric Dentist",
+    code: 89025,
+  },
+]

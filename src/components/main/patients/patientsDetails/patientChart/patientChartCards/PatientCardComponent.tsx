@@ -10,11 +10,10 @@ import {
 import { AddChartingIcon } from "../../../../../../assets/svgs";
 import { ChartingCardComponentType } from "../../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../../styles/patientCharting";
-import { EMPTY_OPTION, MAPPED_WIDGETS } from "../../../../../../constants";
 import history from "../../../../../../history";
 import PatientCardForm from "./PatientCardForm";
 
-const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon, vitalsCard }): JSX.Element => {
+const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon, vitalsCard }): JSX.Element => {
   const classes = usePatientChartingStyles()
   const [{ anchorEl }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const isMenuOpen = Boolean(anchorEl);
@@ -90,4 +89,4 @@ const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData,
 }
 
 
-export default PatientCardComponent;
+export default VitalCardComponent;

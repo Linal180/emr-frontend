@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, Box, Typography, Grid, FormControlLabel,
 import Selector from "../../../../../common/Selector";
 import { ListContext } from "../../../../../../context";
 import { renderFacilities } from "../../../../../../utils";
-import { DOB,  STATUS } from "../../../../../../constants";
+import { DOB, STATUS } from "../../../../../../constants";
 import DatePicker from "../../../../../common/DatePicker";
 import InputController from "../../../../../../controller";
 import ToggleButtonComponent from "../../../../../common/ToggleButtonComponent";
@@ -31,7 +31,7 @@ const PatientCardForm = (): JSX.Element => {
 
 
   return (
-    <Box maxWidth={"calc(100vh - 700px)"} maxHeight="calc(100vh - 300px)" className = "overflowY-auto" >
+    <Box maxHeight="calc(100vh - 300px)" className="overflowY-auto" >
       <FormProvider {...methods}>
         <form>
           <Card>
@@ -65,42 +65,42 @@ const PatientCardForm = (): JSX.Element => {
                 </Grid>
               </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    label={''}
-                    name=""
-                    options={renderFacilities(facilityList)}
-                  />
-                </Grid>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    label={''}
-                    name=""
-                    options={renderFacilities(facilityList)}
-                  />
-                </Grid>
+              <Grid item md={12} sm={12} xs={12}>
+                <Selector
+                  label={''}
+                  name=""
+                  options={renderFacilities(facilityList)}
+                />
+              </Grid>
+              <Grid item md={12} sm={12} xs={12}>
+                <Selector
+                  label={''}
+                  name=""
+                  options={renderFacilities(facilityList)}
+                />
+              </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="how_many_days"
-                    controllerLabel="For how many days?"
-                  />
-                </Grid>
-                <Grid item md={12} sm={12} xs={12}>
-                  <DatePicker isRequired name="dob" label={DOB} error={''} />
-                </Grid>
+              <Grid item md={12} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="how_many_days"
+                  controllerLabel="For how many days?"
+                />
+              </Grid>
+              <Grid item md={12} sm={12} xs={12}>
+                <DatePicker isRequired name="dob" label={DOB} error={''} />
+              </Grid>
 
-                <Grid item md={12} sm={12} xs={12}>
-                  <ToggleButtonComponent name="homeBound" label={STATUS} />
-                </Grid>
-                <Grid item md={12} sm={12} xs={12}>
-                  <InputController
-                    fieldType="text"
-                    controllerName="note"
-                    controllerLabel="Note"
-                  />
-                </Grid>
+              <Grid item md={12} sm={12} xs={12}>
+                <ToggleButtonComponent name="homeBound" label={STATUS} />
+              </Grid>
+              <Grid item md={12} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  controllerName="note"
+                  controllerLabel="Note"
+                />
+              </Grid>
 
               <Box display="flex" justifyContent="flex-end">
                 <Button type="submit" variant="contained" color="primary">Add</Button>
