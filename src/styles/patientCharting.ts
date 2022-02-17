@@ -24,7 +24,11 @@ export const usePatientChartingStyles = makeStyles(() =>
 
     dropdown: {
       "& .MuiMenu-paper": {
-        padding: 20
+        padding: 20,
+
+        "& .MuiCardContent-root": {
+            padding:0,
+        }
 
       },
 

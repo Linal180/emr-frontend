@@ -176,6 +176,7 @@ export interface ChartingCardComponentType {
   vitalsCard?: boolean;
 }
 
+
 export interface PageHeaderProps {
   isOpen?: boolean;
   setOpen?: Function;

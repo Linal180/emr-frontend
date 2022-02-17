@@ -3,7 +3,6 @@ import { FC, Reducer, useReducer, MouseEvent } from "react";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Card, CardContent, CardHeader, IconButton, Box, Typography, Menu } from "@material-ui/core";
 // components block
-import CardSelector from "../../../../../common/CardSelector";
 // interfaces/types block
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -13,6 +12,7 @@ import { ChartingCardComponentType } from "../../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../../styles/patientCharting";
 import { EMPTY_OPTION, MAPPED_WIDGETS } from "../../../../../../constants";
 import history from "../../../../../../history";
+import PatientCardForm from "./PatientCardForm";
 
 const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon, vitalsCard }): JSX.Element => {
   const classes = usePatientChartingStyles()
@@ -53,11 +53,12 @@ const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData,
                     onClose={handleMenuClose}
                     className={classes.dropdown}
                   >
-                    <CardSelector
+                    {/* <CardSelector
                       value={EMPTY_OPTION}
                       name="addWidget"
                       options={MAPPED_WIDGETS}
-                    />
+                    /> */}
+                    <PatientCardForm />
                   </Menu>
                 </Box>
               )
@@ -71,7 +72,7 @@ const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData,
               return (
                 <Box pb={2}>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography className={classes.cardContentHeading} key={`${item}-${index}`}>{title}</Typography>
+                    <Typography className={classes.cardContentHeading} key={`${item}-${index}`} >{title}</Typography>
                     <Typography className={classes.cardContentDate}>{date}</Typography>
                   </Box>
 
