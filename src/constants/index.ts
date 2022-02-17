@@ -112,6 +112,7 @@ export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
 export const VITALS_TEXT = "Vitals";
+export const VITALS_ROUTE = "/vitals";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const ALLERGIES_TEXT = "Allergies";

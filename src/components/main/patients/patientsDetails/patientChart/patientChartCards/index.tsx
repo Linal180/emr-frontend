@@ -1,5 +1,5 @@
 // packages block
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { Box, Grid } from "@material-ui/core";
 // components block
 import PatientCardComponent from "./PatientCardComponent";
@@ -11,6 +11,7 @@ import {
 } from "../../../../../../constants";
 
 const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+  const [isVitals,] = useState<boolean>(true)
 
   const PatientChartingData = [
     {
@@ -44,7 +45,7 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
     <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
       <Grid container spacing={3}>
         <Grid md={8} item>
-          <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={PatientChartingData} />
+          <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={PatientChartingData} vitalsCard={isVitals} />
 
           <Box pb={3} />
 

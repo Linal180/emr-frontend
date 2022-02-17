@@ -172,7 +172,8 @@ export interface ChartingCardComponentType {
   hideSaveIcon?: boolean;
   onAddClick?: () => void;
   disableAddIcon?: boolean;
-  cardChartingData: CardChartingOption[]
+  cardChartingData: CardChartingOption[];
+  vitalsCard?: boolean;
 }
 
 export interface PageHeaderProps {
