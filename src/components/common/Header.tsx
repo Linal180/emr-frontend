@@ -1,77 +1,66 @@
 // packages block
-import { FC, useContext, useState, } from "react";
+import { FC } from "react";
 import { Link } from "react-router-dom";
-import { Box, IconButton, Menu, MenuItem, Toolbar, Typography, AppBar, TextField, Badge, InputAdornment } from "@material-ui/core";
-// history, app context, auth context, utils and header styles block
-import { EMR, ROOT_ROUTE } from "../../constants";
-import { handleLogout } from "../../utils";
-import { BellIcon, HeaderSearchIcon, HelpIcon } from "../../assets/svgs";
-import { AuthContext } from "../../context";
+import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
+// components block
+import DropdownMenu from "./DropdownMenu";
+// utils and header styles block
+import { EMRLogo } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
+import {
+	BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, RICHARD_TEXT, USER_MENU_ITEMS,
+	APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, PROFILE_MENU_ITEMS, FACILITIES_TEXT,
+	FACILITIES_ROUTE
+} from "../../constants";
 
-const Header: FC = (): JSX.Element => {
-  const classes = useHeaderStyles();
-  const { setIsLoggedIn, setUser } = useContext(AuthContext);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const handleMenuClose = () => setAnchorEl(null);
+const HeaderNew: FC = (): JSX.Element => {
+	const classes = useHeaderStyles();
 
-  const handleLogoutButton = () => {
-    handleMenuClose();
-    setUser(null);
-    handleLogout();
-    setIsLoggedIn(false);
-  };
+	return (
+		<AppBar className={classes.newAppBar}>
+			<Toolbar className={classes.toolBar}>
+				<EMRLogo />
 
-  const isMenuOpen = Boolean(anchorEl);
-  const menuId = "header-profile-menu";
+				<Box className={classes.newMenuBar}>
+					<Link to='/'>
+						<Typography className={classes.menuItem}>
+							{HOME_TEXT}
+						</Typography>
+					</Link>
 
-  const renderMenu = (
-    <Menu getContentAnchorEl={null} anchorEl={anchorEl} anchorOrigin={{ vertical: "bottom", horizontal: "center" }} id={menuId}
-      transformOrigin={{ vertical: "top", horizontal: "center" }} open={isMenuOpen} onClose={handleMenuClose} keepMounted
-    >
-      <MenuItem onClick={handleLogoutButton}>
-        Logout
-      </MenuItem>
-    </Menu>
-  );
+					<DropdownMenu itemName={SCHEDULE_TEXT} menuItem={APPOINTMENT_MENU_ITEMS} />
 
-  return (
-    <AppBar position="absolute" className={classes.appBar}>
-      <Toolbar>
-        <Typography variant="h4" color="inherit" noWrap component={Link} to={ROOT_ROUTE}>
-          {EMR}
-        </Typography>
+					<DropdownMenu itemName={USERS_TEXT} menuItem={USER_MENU_ITEMS} />
 
-        <Box flex={1} alignItems="center" display="flex" justifyContent="flex-end">
-          <Box mr={1.25}>
-            <TextField variant="outlined" placeholder="Global Search"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <HeaderSearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Box>
+					<DropdownMenu itemName={BILLING_TEXT} menuItem={BILLING_MENU_ITEMS} />
 
-          <Box mr={1.25}>
-            <Badge color="primary" variant="dot" anchorOrigin={{ vertical: 'top', horizontal: 'left' }}>
-              <IconButton color="inherit" size="medium" className={classes.menuButton}>
-                <BellIcon />
-              </IconButton>
-            </Badge>
-          </Box>
+					<Link to={FACILITIES_ROUTE}>
+						<Typography className={classes.menuItem}>
+							{FACILITIES_TEXT}
+						</Typography>
+					</Link>
 
-          <IconButton color="inherit" className={classes.menuButton}>
-            <HelpIcon />
-          </IconButton>
+					<Link to={LAB_RESULTS_ROUTE}>
+						<Typography className={classes.menuItem}>
+							{REPORTS}
+						</Typography>
+					</Link>
+				</Box>
 
-          {renderMenu}
-        </Box>
-      </Toolbar>
-    </AppBar>
-  );
+				<Box display="flex" alignItems="center">
+					<Box className={classes.profileItem}>
+						<Typography className={classes.profileItemName}>
+							{HELLO_TEXT}
+						</Typography>
+
+						<Typography variant="h6">{RICHARD_TEXT}</Typography>
+					</Box>
+
+					<DropdownMenu menuItem={PROFILE_MENU_ITEMS} avatarIcon={true} />
+				</Box>
+			</Toolbar>
+		</AppBar>
+	);
 };
 
-export default Header;
+export default HeaderNew;

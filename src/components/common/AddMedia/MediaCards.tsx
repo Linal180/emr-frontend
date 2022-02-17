@@ -10,7 +10,7 @@ import { Attachment } from "../../../generated/graphql";
 import { Action, ActionType, initialState, mediaReducer, State } from '../../../reducers/mediaReducer'
 import MediaCardComponent from "./MediaCardComponent";
 
-const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, imageSide, notDescription }): JSX.Element => {
+const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, imageSide, notDescription, isProfile }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { isOpen, attachments, attachment, isEdit, isEditModalOpen } = state
 
@@ -34,22 +34,26 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, i
             isOpen: isOpen
           })
         }}
+
         setAttachments={(AttachmentsArray: Attachment[]) => {
           dispatch({
             type: ActionType.SET_ATTACHMENTS,
             attachments: AttachmentsArray
           })
         }}
+
         setEdit={(editable: boolean) => {
           dispatch({
             type: ActionType.SET_IS_EDIT,
             isEdit: editable,
           })
+
           dispatch({
             type: ActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN,
             isEditModalOpen: editable
           })
         }}
+
         isEdit={isEdit}
         isOpen={isOpen}
         imageModuleType={moduleType}
@@ -69,12 +73,14 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, i
             isOpen: isOpen
           })
         }}
+
         setEdit={(edit: boolean) => {
           dispatch({
             type: ActionType.SET_IS_EDIT,
             isEdit: edit,
           })
         }}
+
         isEdit={isEdit}
         isOpen={isOpen}
         itemId={itemId}
@@ -84,6 +90,7 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, i
             attachments: AttachmentsArray
           })
         }}
+
         attachment={attachment}
       />
 
@@ -95,12 +102,14 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, i
             isEditModalOpen: isOpen
           })
         }}
+
         setEdit={(edit: boolean) => {
           dispatch({
             type: ActionType.SET_IS_EDIT,
             isEdit: edit,
           })
         }}
+
         isOpen={isEditModalOpen}
         itemId={itemId}
         setAttachments={(AttachmentsArray: Attachment[]) => {
@@ -109,6 +118,7 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, i
             attachments: AttachmentsArray
           })
         }}
+        
         attachment={attachment}
         attachments={attachments}
       />

@@ -38,7 +38,6 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      console.log("Error")
       return null;
     },
 

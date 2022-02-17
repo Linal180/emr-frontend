@@ -5,8 +5,10 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton } from "@material-ui/core";
 import dotenv from 'dotenv';
 // components block
-import DropzoneImage from "..//DropZoneImage";
 import Alert from "../Alert";
+import DropzoneImage from "..//DropZoneImage";
+// constants and interfaces block
+import { ADD } from "../../../constants";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { CreateAttachmentInput, useCreateAttachmentDataMutation } from "../../../generated/graphql";
 dotenv.config()
@@ -14,18 +16,15 @@ dotenv.config()
 const AddImageModal: FC<MediaModalTypes> = ({ imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment }): JSX.Element => {
   const [fileUrl, setFileUrl] = useState<string>('');
   const [, setAttachmentData] = useState<Pick<CreateAttachmentInput, "description" | "title" | "subTitle">>();
-  const [activeStep, setActiveStep] = useState<number>(0);
   const [attachmentId, setAttachmentId] = useState<string>('');
 
   const { handleSubmit, reset } = useForm<ICreateMediaInput>();
-
 
   const handleClose = () => {
     setOpen && setOpen(!isOpen);
     setEdit(false);
     reset();
     setFileUrl('');
-    setActiveStep(0)
   };
 
   const [createAttachmentData, { loading: attachmentLoading }] = useCreateAttachmentDataMutation({
@@ -52,26 +51,15 @@ const AddImageModal: FC<MediaModalTypes> = ({ imageModuleType, itemId, isOpen, s
 
   const handleMediaSubmit = async (mediaData: Pick<CreateAttachmentInput, "description" | "title" | "subTitle">) => {
     const { description, title, subTitle } = mediaData
-    setAttachmentData({
-      description,
-      title,
-      subTitle
-    })
-    setActiveStep(activeStep + 1)
-    if (activeStep === 1) {
-      await createAttachmentData({
-        variables: {
-          createAttachmentInput: {
-            description,
-            subTitle,
-            title,
-            url: "",
-            type: imageModuleType,
-            typeId: itemId,
-          },
+    setAttachmentData({ description, title, subTitle })
+
+    await createAttachmentData({
+      variables: {
+        createAttachmentInput: {
+          description, subTitle, title, url: "", type: imageModuleType, typeId: itemId,
         },
-      });
-    }
+      },
+    });
   };
 
   return (
@@ -93,7 +81,7 @@ const AddImageModal: FC<MediaModalTypes> = ({ imageModuleType, itemId, isOpen, s
                 </Box>
               </Box>
               :
-              <DropzoneImage reset={reset} setActiveStep={setActiveStep} setAttachments={setAttachments} isEdit={isEdit} imageModuleType={imageModuleType} attachmentId={attachmentId} itemId={itemId} handleClose={handleClose} />
+              <DropzoneImage reset={reset}  setAttachments={setAttachments} isEdit={isEdit} imageModuleType={imageModuleType} attachmentId={attachmentId} itemId={itemId} handleClose={handleClose} />
             }
           </Box>
         </DialogContent>
@@ -105,7 +93,7 @@ const AddImageModal: FC<MediaModalTypes> = ({ imageModuleType, itemId, isOpen, s
                 {attachmentLoading && (
                   <CircularProgress size={20} />
                 )}
-                ADD
+                {ADD}
               </Button>
             </Box>
           </Box>

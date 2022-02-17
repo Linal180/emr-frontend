@@ -9,7 +9,7 @@ import {
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment,
   Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, ServicesPayload,
-  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, Maybe,
+  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient,
   UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput, Schedule, CreateExternalAppointmentItemInput
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
@@ -729,6 +729,7 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
+  isProfile?: boolean;
   moduleType: AttachmentType;
   hasCollage?: boolean;
   attachmentsData?: Attachment[]

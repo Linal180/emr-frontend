@@ -42,6 +42,7 @@ export enum DAYS {
   Sunday = "Sunday",
 };
 export const ALL_STAFF = "Staff";
+export const ADD = "Add";
 export const MINUTES = "minutes";
 export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
@@ -767,7 +768,7 @@ export const APPOINTMENT_MENU_ITEMS = [
   },
 ];
 
-export const Profile_MENU_ITEMS = [
+export const PROFILE_MENU_ITEMS = [
   {
     name: PROFILE_TEXT,
     link: "/",
