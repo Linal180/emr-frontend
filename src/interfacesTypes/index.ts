@@ -175,6 +175,7 @@ export interface ChartingCardComponentType {
   cardChartingData: CardChartingOption[]
 }
 
+
 export interface PageHeaderProps {
   isOpen?: boolean;
   setOpen?: Function;

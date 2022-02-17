@@ -4,7 +4,7 @@ import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Menu, Tab, Typography } from "@material-ui/core";
 // constants, history, styling block
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import {
