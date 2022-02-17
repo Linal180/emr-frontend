@@ -9,7 +9,7 @@ import { requiredLabel } from "../../utils";
 
 const Selector: FC<SelectorProps> = ({
   name, label, error, options, disabled, isRequired
- }): JSX.Element => {
+}): JSX.Element => {
   const { control } = useFormContext()
 
   return (
@@ -18,7 +18,7 @@ const Selector: FC<SelectorProps> = ({
       name={name}
       control={control}
       defaultValue={options && options[0]}
-      render={({ field, fieldState: { invalid } }) => {
+      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
             options={options.length ? options : []}
@@ -28,7 +28,7 @@ const Selector: FC<SelectorProps> = ({
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(error)}>
+              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
                 <InputLabel id={`${name}-autocomplete`} shrink>
                   {isRequired ? requiredLabel(label) : label}
                 </InputLabel>
@@ -39,7 +39,7 @@ const Selector: FC<SelectorProps> = ({
                   error={invalid}
                 />
 
-                <FormHelperText>{error}</FormHelperText>
+                <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
             onChange={(_, data) => field.onChange(data)}

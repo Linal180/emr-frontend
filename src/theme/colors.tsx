@@ -42,3 +42,4 @@ export const PINK = "#F1416C";
 
 export const RED = "#F64E60";
 export const RED_ONE = "#FFE2E5";
+export const RED_THREE = "#f44336";
