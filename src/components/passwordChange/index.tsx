@@ -3,8 +3,9 @@ import { FC } from 'react';
 import { Box, Typography, Button, Container } from "@material-ui/core";
 // styles, context, history
 import { useNetworkStyles } from "../../styles/networkStyles";
-import { EMAIL_NOT_RECEIVE_TEXT, PASSWORD_CHANGE_HEADING_TEXT, PASSWORD_CHANGE_TEXT, SIGN_IN } from '../../constants';
+import { EMAIL_NOT_RECEIVE_TEXT, LOGIN_ROUTE, PASSWORD_CHANGE_HEADING_TEXT, PASSWORD_CHANGE_TEXT, SIGN_IN } from '../../constants';
 import { PasswordChangeIcon } from '../../assets/svgs';
+import { Link } from 'react-router-dom';
 
 const PasswordChange: FC = (): JSX.Element => {
   const classes = useNetworkStyles();
@@ -21,9 +22,12 @@ const PasswordChange: FC = (): JSX.Element => {
               <Typography variant='body2' align='center'>{PASSWORD_CHANGE_TEXT}</Typography>
             </Box>
 
-            <Button variant="contained">
-              {SIGN_IN}
-            </Button>
+            <Link to={LOGIN_ROUTE}>
+              <Button variant="contained">
+                {SIGN_IN}
+              </Button>
+            </Link>
+
             <Box maxWidth={500} pt={2} pb={4}>
               <Typography variant='h6' align='center'>{EMAIL_NOT_RECEIVE_TEXT}</Typography>
             </Box>
