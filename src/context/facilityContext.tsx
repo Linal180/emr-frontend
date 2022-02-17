@@ -38,12 +38,12 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
+      console.log("Error")
       return null;
     },
 
     onCompleted(data) {
       if (data) {
-        console.log("findAllDoctor", data)
         const { findAllDoctor: { doctors, pagination } } = data
 
         if (pagination) {

@@ -602,12 +602,14 @@ export type PatientInputProps =
   & EmployerControlInputs & RegisterUserInputs;
 
 export type ExternalPatientInputProps =
-  { preferredCommunicationMethod: SelectorOption } & { voiceCallPermission: boolean } & { phonePermission: boolean } &
-  { dob: string } & { language: string } & { callToConsent: boolean } & { ssn: string } & { ssn: string } & 
-  { providerId: SelectorOption } & { race: SelectorOption } & { ethnicity: SelectorOption }
-  & { providerId: SelectorOption } & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
-  & CreateContactInput
-  & EmergencyContactControlInputs
+  { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption } & { race: SelectorOption }
+  & { ethnicity: SelectorOption } & { providerId: SelectorOption } & { genderIdentity: SelectorOption }
+  & { maritialStatus: SelectorOption }
+  & Pick<CreatePatientItemInput, 'dob' | 'pharmacy' | 'voiceCallPermission'
+    | 'phonePermission' | 'language' | 'callToConsent'>
+  & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'state' | 'zipCode' | 'country' | 'ssn'>
+  & Pick<EmergencyContactControlInputs, 'emergencyName' | 'emergencyRelationship' | 'emergencyPhone' | 'emergencyCity'
+    | 'emergencyState' | 'emergencyCountry' | 'emergencyZipCode' | 'emergencyAddress' | 'emergencyAddress2'>
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
   & { facilityId: SelectorOption };

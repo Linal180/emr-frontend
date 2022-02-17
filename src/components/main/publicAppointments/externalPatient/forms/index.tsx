@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, useContext, Reducer, useReducer, useEffect } from 'react';
+import { FC,  useContext, Reducer, useReducer, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
@@ -7,6 +7,7 @@ import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, Circul
 // components
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
+import PhoneField from '../../../../common/PhoneInput';
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
 import PatientStepper from '../../../../common/PatientStepper';
@@ -43,7 +44,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, patientId, guarantorContactId, employerId,
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
     activeStep
   } = state
   const methods = useForm<ExternalPatientInputProps>({
@@ -61,7 +62,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
       Alert.error(message)
     },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       if (data) {
         const { getPatient } = data
 
@@ -69,13 +70,14 @@ const PatientFormComponent: FC = (): JSX.Element => {
           const { getPatient: { patient } } = data
 
           if (patient) {
-            const { suffix, firstName, middleName, lastName, ssn, dob, callToConsent, language, race, ethnicity,
-              maritialStatus, genderIdentity, contacts, doctorPatients, facility
+            const { ssn, dob, callToConsent, language, race, ethnicity, maritialStatus, genderIdentity, contacts,
+              doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission, preferredCommunicationMethod
             } = patient;
 
             if (facility) {
               const { id: facilityId } = facility
-              facilityId && fetchAllDoctorList(facilityId)
+
+              facilityId && await fetchAllDoctorList(facilityId)
             }
 
             if (doctorPatients) {
@@ -96,24 +98,25 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
             dob && setValue("dob", dob)
             ssn && setValue("ssn", ssn)
-            suffix && setValue("suffix", suffix)
-            lastName && setValue("lastName", lastName)
+            pharmacy && setValue("pharmacy", pharmacy)
             language && setValue("language", language)
-            firstName && setValue("firstName", firstName)
-            middleName && setValue("middleName", middleName)
             callToConsent && setValue("callToConsent", callToConsent)
+            phonePermission && setValue("phonePermission", phonePermission)
+            voiceCallPermission && setValue("voiceCallPermission", voiceCallPermission)
 
-            race && setValue("race", setRecord(race || '', race || ''))
-            ethnicity && setValue("ethnicity", setRecord(ethnicity || '', ethnicity || ''))
-            maritialStatus && setValue("maritialStatus", setRecord(maritialStatus || '', maritialStatus || ''))
-            genderIdentity && setValue("genderIdentity", setRecord(genderIdentity || '', genderIdentity || ''))
+            race && setValue("race", setRecord(race, race))
+            ethnicity && setValue("ethnicity", setRecord(ethnicity, ethnicity))
+            maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
+            genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
+            preferredCommunicationMethod &&
+              setValue("preferredCommunicationMethod", setRecord(preferredCommunicationMethod, preferredCommunicationMethod))
 
             if (contacts) {
               const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
 
               if (emergencyContact) {
                 const {
-                  id: emergencyContactId, name, relationship, phone, city, state, country, zipCode
+                  id: emergencyContactId, name, relationship, address2, address, phone, city, state, country, zipCode
                 } = emergencyContact;
 
                 dispatch({ type: ActionType.SET_EMERGENCY_CONTACT_ID, emergencyContactId })
@@ -123,17 +126,20 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 phone && setValue("emergencyPhone", phone)
                 country && setValue("emergencyCountry", country)
                 zipCode && setValue("emergencyZipCode", zipCode)
+                address && setValue("emergencyAddress", address)
+                address2 && setValue("emergencyAddress2", address2)
                 relationship && setValue("emergencyRelationship", setRecord(relationship || '', relationship || ''))
               }
 
               const basicContact = contacts.filter(contact => contact.primaryContact)[0]
 
               if (basicContact) {
-                const { id: basicContactId, address, address2, city, state, country } = basicContact;
+                const { id: basicContactId, address, address2, city, state, country, zipCode } = basicContact;
 
                 dispatch({ type: ActionType.SET_BASIC_CONTACT_ID, basicContactId })
                 city && setValue("city", city)
                 state && setValue("state", state)
+                zipCode && setValue("zipCode", zipCode)
                 address && setValue("address", address)
                 country && setValue("country", country)
                 address2 && setValue("address2", address2)
@@ -169,10 +175,10 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<ExternalPatientInputProps> = async (inputs) => {
     const {
-      suffix, firstName, middleName, lastName, ssn, dob, callToConsent, language, race, ethnicity,
+      ssn, dob, callToConsent, language, race, ethnicity, pharmacy,
       preferredCommunicationMethod, voiceCallPermission, phonePermission, emergencyName, emergencyPhone,
       emergencyState, emergencyCity, emergencyAddress, emergencyAddress2, emergencyCountry, emergencyZipCode,
-      email, emergencyRelationship, address, address2, state, city, country, zipCode
+      emergencyRelationship, address, address2, state, city, country, zipCode
     } = inputs;
 
     const { id: selectedRace } = race
@@ -181,19 +187,20 @@ const PatientFormComponent: FC = (): JSX.Element => {
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
     const patientItemInput = {
-      suffix, firstName: firstName || '', middleName: middleName || '', lastName: lastName || '', firstNameUsed: '',
-      prefferedName: '', previousFirstName: '', previouslastName: '', registrationDate: getTimestamps(''), language: language || '',
+      suffix: '', firstName: '', middleName: '', lastName: '', firstNameUsed: '', prefferedName: '',
+      previousFirstName: '', previouslastName: '', registrationDate: getTimestamps(''), language: language || '',
       motherMaidenName: '', ssn: ssn || '', dob: getTimestamps(dob || ''), privacyNotice: false,
       releaseOfInfoBill: false, deceasedDate: getTimestamps(''), callToConsent: callToConsent || false, patientNote: '',
       statementNoteDateTo: getTimestamps(''), medicationHistoryAuthority: false, phonePermission: phonePermission || false,
-      homeBound: Homebound.No, holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: email || '',
+      homeBound: Homebound.No, holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '',
       ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, voiceCallPermission: voiceCallPermission || false,
       statementDelivereOnline: false, statementNote: '', race: selectedRace as Race || Race.White,
       preferredCommunicationMethod: selectedCommunicationMethod as Communicationtype || Communicationtype.Email,
+      pharmacy: pharmacy || ''
     };
 
     const contactInput = {
-      contactType: ContactType.Self, country: country || '', email: email || '', city: city || '', mobile: '',
+      contactType: ContactType.Self, country: country || '', email: '', city: city || '', mobile: '',
       zipCode: zipCode || '', state: state || '', phone: '', address: address || '', address2: address2 || '',
     };
 
@@ -359,7 +366,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
-                              controllerName="preferredPharmacy"
+                              controllerName="pharmacy"
                               controllerLabel={PREFERRED_PHARMACY}
                             />
                           </Grid>
@@ -432,11 +439,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="emergencyPhone"
-                              controllerLabel={EMERGENCY_CONTACT_PHONE}
-                            />
+                            <PhoneField label={EMERGENCY_CONTACT_PHONE} name='emergencyPhone' />
                           </Grid>
                         </Grid>
 
@@ -544,11 +547,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Typography component="h4" variant="h4">Driving License</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Front Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Front Side" />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Back Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Back Side" />
                         </Grid>
                       </Grid>
                     </Box>
@@ -557,11 +560,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Typography component="h4" variant="h4">Insurance Card</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Front Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Front Side" />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Back Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Back Side" />
                         </Grid>
                       </Grid>
                     </Box>
@@ -576,11 +579,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Box pb={6}>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
-                            <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Front Side" />
+                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Front Side" />
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            <MediaCards moduleType={AttachmentType.Patient} itemId={patientId} imageSide="Back Side" />
+                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Back Side" />
                           </Grid>
                         </Grid>
                       </Box>
