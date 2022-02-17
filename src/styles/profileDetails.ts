@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_ONE, BLUE_SEVEN, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
+import { BLACK, BLACK_ONE, BLUE_SEVEN, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
@@ -38,7 +38,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileInfoItem: {
-      width: "33.3333%",
+      width: "25%",
       alignItems: 'center',
       color: GRAY_TWO,
       marginBottom: 8,
@@ -71,6 +71,33 @@ export const useProfileDetailsStyles = makeStyles(() =>
       borderRadius: 6,
       background: WHITE_SIX,
       color: BLUE_SEVEN,
+    },
+
+    addSlot: {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      border: `1px dashed ${BLACK}`,
+      padding: 20,
+      background: 'transparent',
+      borderRadius: 6,
+      cursor: 'pointer',
+    },
+
+    deleteWidget: {
+      cursor: 'pointer'
+    },
+
+    dropdown: {
+      "& .MuiMenu-paper": {
+        padding: 20
+
+      },
+
+      "& .MuiPopover-paper": {
+        minHeight: 300
+      }
     }
   })
 );

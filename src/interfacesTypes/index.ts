@@ -164,6 +164,17 @@ export interface CardComponentType extends Children {
   requestLink?: string
 }
 
+export interface ChartingCardComponentType {
+  link?: string;
+  hasAdd?: boolean;
+  cardTitle: string;
+  requestLink?: string
+  hideSaveIcon?: boolean;
+  onAddClick?: () => void;
+  disableAddIcon?: boolean;
+  cardChartingData: CardChartingOption[]
+}
+
 export interface PageHeaderProps {
   isOpen?: boolean;
   setOpen?: Function;
@@ -178,6 +189,8 @@ export interface PageHeaderProps {
   openModal?: () => void;
   setTableData?: Function;
   tableData?: ServicesPayload['services'];
+  isIcon?: boolean;
+  id?: string;
 }
 
 export interface FacilityServicesProps {
@@ -256,12 +269,32 @@ export interface SelectorOption {
   name: string | undefined | null
 }
 
+export interface DropDownOption {
+  name: string
+  link: string
+}
+
+export interface CardChartingOption {
+  title: string
+  description: string
+  date: string
+}
+
 export interface SelectorProps {
   name: string
   label: string
   error?: string
   disabled?: boolean
   isRequired?: boolean
+  value?: SelectorOption
+  options: SelectorOption[]
+  isMultiple?: boolean
+}
+
+export interface CardSelectorProps {
+  name: string
+  error?: string
+  disabled?: boolean
   value?: SelectorOption
   options: SelectorOption[]
 }
@@ -698,9 +731,16 @@ export interface MediaCardsType {
   itemId: string;
   moduleType: AttachmentType;
   hasCollage?: boolean;
-  attachmentsData?: Maybe<Attachment[]> | undefined
+  attachmentsData?: Attachment[]
   hasHighlights?: boolean
   imageSide: string;
+  notDescription?: boolean;
+}
+
+export interface DropDownItems {
+  itemName?: string;
+  menuItem: DropDownOption[];
+  avatarIcon?: boolean;
 }
 
 export interface IMediaControl extends IFieldTypes {
@@ -721,6 +761,7 @@ export interface MediaCardComponentType {
   attachments?: Attachment[];
   allAttachments: Attachment[];
   imageSide: string;
+  notDescription?: boolean;
 }
 
 export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |

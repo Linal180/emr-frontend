@@ -2,13 +2,12 @@
 import { FC } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
+import { TextField, FormControl, FormHelperText } from "@material-ui/core";
 // utils and interfaces/types block
-import { SelectorProps } from "../../interfacesTypes";
-import { requiredLabel } from "../../utils";
+import { CardSelectorProps } from "../../interfacesTypes";
 
-const Selector: FC<SelectorProps> = ({
-  name, label, error, options, disabled, isRequired, isMultiple
+const CardSelector: FC<CardSelectorProps> = ({
+  name, error, options, disabled,
 }): JSX.Element => {
   const { control } = useFormContext()
 
@@ -30,9 +29,6 @@ const Selector: FC<SelectorProps> = ({
             renderOption={(option) => option.name}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(error)}>
-                <InputLabel id={`${name}-autocomplete`} shrink>
-                  {isRequired ? requiredLabel(label) : label}
-                </InputLabel>
 
                 <TextField
                   {...params}
@@ -51,4 +47,4 @@ const Selector: FC<SelectorProps> = ({
   );
 };
 
-export default Selector;
+export default CardSelector;

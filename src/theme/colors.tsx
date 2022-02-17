@@ -15,6 +15,7 @@ export const BLACK_THREE = "#4A4B68";
 export const BLACK_FOUR = "#181C32";
 export const BLACK_FIVE = "#333333";
 export const BLACK_SIX = "#6C7293";
+export const BLACK_SEVEN = "#262D3D";
 
 export const WHITE = "#FFFFFF";
 export const WHITE_ONE = "#F2F3F5";
@@ -34,6 +35,7 @@ export const BLUE_FOUR = "#1BC5BD"
 export const BLUE_FIVE = "#C9F7F5"
 export const BLUE_SIX = "#009EF7";
 export const BLUE_SEVEN = "#3699FF";
+export const BLUE_EIGHT = "#204ECF";
 
 export const ORANGE = "#FFF9F4";
 export const ORANGE_ONE = "#F89C47";
