@@ -14,11 +14,11 @@ import {
   TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP, TID_VALIDATION_MESSAGE,
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
   FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
-  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION,
+  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, DAY, LOCATION,
   STRING_REGEX, MIDDLE_NAME, PREFERRED_NAME, PREVIOUS_FIRST_NAME,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, INSURANCE_PLAN_TYPE, FAX, PHONE, MOBILE,
-  MAX_DOCTOR_DOB_VALIDATION_MESSAGE, MIN_DOCTOR_DOB_VALIDATION_MESSAGE, ISSUE_DATE, REGISTRATION_DATE, DECEASED_DATE, EXPIRATION_DATE,
+  MAX_DOCTOR_DOB_VALIDATION_MESSAGE, MIN_DOCTOR_DOB_VALIDATION_MESSAGE, ISSUE_DATE, REGISTRATION_DATE, DECEASED_DATE, EXPIRATION_DATE, APPOINTMENT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -107,7 +107,9 @@ const patientIdSchema = {
   patientId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(PATIENT))
+  }).test(
+    '', requiredMessage(PATIENT), ({ id }) => !!id
+  )
 }
 
 const serviceCodeSchema = {
@@ -151,7 +153,9 @@ const providerIdSchema = {
   providerId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(PROVIDER))
+  }).test(
+    '', requiredMessage(PROVIDER), ({ id }) => !!id
+  )
 }
 
 const facilityIdSchema = {
@@ -181,7 +185,9 @@ const serviceIdSchema = {
   serviceId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(SERVICE)),
+  }).test(
+    '', requiredMessage(APPOINTMENT), ({ id }) => !!id
+  )
 }
 
 const passwordAndRepeatPasswordSchema = {
