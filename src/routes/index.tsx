@@ -47,6 +47,7 @@ import { Appointments } from "../pages/main/appointments/appointmentsListing";
 import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { ViewLocation } from "../pages/main/facilities/locations/viewLocation";
 import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
+import { PatientChart } from "../pages/main/patients/patientDetails/patientChart";
 import { ScheduleAppointments } from "../pages/main/appointments/scheduleAppointments";
 import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
 
@@ -58,7 +59,7 @@ import {
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
   FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_APPOINTMENT_CANCEL
+  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -83,38 +84,41 @@ const Routes: FC = (): JSX.Element => {
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>
 
-      <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
-      <PrivateRoute exact path={`${DASHBOARD_ROUTE}/start-project`} component={StartProject} />
-      <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
-      <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} />
-      <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
-      <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
-      <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
-      <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />
-      <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details`} component={PatientDetails} />
-      <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
-      <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
-      <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
-      <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />
-      <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id`} component={ViewAppointment} />
-      <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
-      <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
-      <PrivateRoute exact path={CLAIMS_ROUTE} component={ClaimFeed} />
-      <PrivateRoute exact path={`${CLAIMS_ROUTE}/new`} component={AddBill} />
-      <PrivateRoute exact path={INVOICES_ROUTE} component={Invoices} />
-      <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
-      <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
-      <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
-      <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_LOCATIONS_ROUTE}`} component={Locations} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_LOCATIONS_ROUTE}/new`} component={AddLocation} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_LOCATIONS_ROUTE}/:id`} component={ViewLocation} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_SERVICES_ROUTE}`} component={Services} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
-      <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
+      <Switch>
+        <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
+        <PrivateRoute exact path={`${DASHBOARD_ROUTE}/start-project`} component={StartProject} />
+        <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
+        <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} />
+        <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
+        <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
+        <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
+        <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />
+        <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details`} component={PatientDetails} />
+        <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details${PATIENTS_CHART}`} component={PatientChart} />
+        <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
+        <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
+        <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
+        <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />
+        <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id`} component={ViewAppointment} />
+        <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
+        <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
+        <PrivateRoute exact path={CLAIMS_ROUTE} component={ClaimFeed} />
+        <PrivateRoute exact path={`${CLAIMS_ROUTE}/new`} component={AddBill} />
+        <PrivateRoute exact path={INVOICES_ROUTE} component={Invoices} />
+        <PrivateRoute exact path={STAFF_ROUTE} component={Staff} />
+        <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
+        <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
+        <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_LOCATIONS_ROUTE}`} component={Locations} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_LOCATIONS_ROUTE}/new`} component={AddLocation} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_LOCATIONS_ROUTE}/:id`} component={ViewLocation} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_SERVICES_ROUTE}`} component={Services} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />
+        <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
+        <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
+      </Switch>
 
       <Route component={PageNotFound} />
     </Switch>
