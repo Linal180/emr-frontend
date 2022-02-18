@@ -6,19 +6,18 @@ import { dateValidation, invalidMessage, requiredMessage, timeValidation } from 
 import {
   ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL, MaxLength, MinLength,
   FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
-  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, DOB_VALIDATION_MESSAGE, APPOINTMENT_TYPE,
-  PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE,
+  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, DOB_VALIDATION_MESSAGE, EXPIRATION_DATE, APPOINTMENT,
+  PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE, DECEASED_DATE,
   DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, USUAL_PROVIDER_ID,
-  NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE,
-  REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX,
-  TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, RELATIONSHIP, TID_VALIDATION_MESSAGE,
-  TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX,
-  FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX, SSN_VALIDATION_MESSAGE,
-  ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, SERVICE, DAY, LOCATION,
-  STRING_REGEX, MIDDLE_NAME, PREFERRED_NAME, PREVIOUS_FIRST_NAME,
+  NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE, TID_VALIDATION_MESSAGE,
+  REVENUE_CODE_REGEX, REVENUE_CODE_VALIDATION_MESSAGE, TAXONOMY_CODE_REGEX, RELATIONSHIP,
+  TAXONOMY_VALIDATION_MESSAGE, TIME_ZONE_TEXT, TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE,
+  MAMMOGRAPHY_CERT_NUMBER_REGEX, FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX, CODE, SSN_REGEX,
+  SSN_VALIDATION_MESSAGE, ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, DAY, LOCATION,
+  STRING_REGEX, MIDDLE_NAME, PREFERRED_NAME, PREVIOUS_FIRST_NAME, INSURANCE_PLAN_TYPE, FAX, PHONE, MOBILE,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
-  PRIMARY_INSURANCE, SECONDARY_INSURANCE, INSURANCE_PLAN_TYPE, FAX, PHONE, MOBILE, 
-  MAX_DOCTOR_DOB_VALIDATION_MESSAGE, MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
+  PRIMARY_INSURANCE, SECONDARY_INSURANCE, MAX_DOCTOR_DOB_VALIDATION_MESSAGE, MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
+  ISSUE_DATE, REGISTRATION_DATE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -107,7 +106,9 @@ const patientIdSchema = {
   patientId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(PATIENT))
+  }).test(
+    '', requiredMessage(PATIENT), ({ id }) => !!id
+  )
 }
 
 const serviceCodeSchema = {
@@ -142,21 +143,27 @@ const usualProviderSchema = {
   usualProviderId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(USUAL_PROVIDER_ID))
+  }).test(
+    '', requiredMessage(USUAL_PROVIDER_ID), ({ id }) => !!id
+  )
 }
 
 const providerIdSchema = {
   providerId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(PROVIDER))
+  }).test(
+    '', requiredMessage(PROVIDER), ({ id }) => !!id
+  )
 }
 
 const facilityIdSchema = {
   facilityId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(FACILITY))
+  }).test(
+    '', requiredMessage(FACILITY), ({ id }) => !!id
+  )
 }
 
 const ssnTypeSchema = {
@@ -177,7 +184,9 @@ const serviceIdSchema = {
   serviceId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(SERVICE)),
+  }).test(
+    '', requiredMessage(APPOINTMENT), ({ id }) => !!id
+  )
 }
 
 const passwordAndRepeatPasswordSchema = {
@@ -227,13 +236,13 @@ const scheduleTimeSchema = {
 }
 
 const patientRegisterDateSchema = {
-  registrationDate: yup.string().test(value => {
+  registrationDate: yup.string().test('', invalidMessage(REGISTRATION_DATE), value => {
     if (!value) return true
 
     return new Date(value || '') <= new Date()
   }),
 
-  deceasedDate: yup.string().test((value, { parent: { registrationDate } }) => {
+  deceasedDate: yup.string().test('', invalidMessage(DECEASED_DATE), (value, { parent: { registrationDate } }) => {
     if (!value) return true
 
     return dateValidation(value, registrationDate)
@@ -241,13 +250,13 @@ const patientRegisterDateSchema = {
 }
 
 const patientStatementDateSchema = {
-  statementNoteDateFrom: yup.string().test(value => {
+  statementNoteDateFrom: yup.string().test('', invalidMessage(ISSUE_DATE), value => {
     if (!value) return true
 
     return new Date(value || '') <= new Date()
   }),
 
-  statementNoteDateTo: yup.string().test((value, ctx) => {
+  statementNoteDateTo: yup.string().test('', invalidMessage(EXPIRATION_DATE), (value, ctx) => {
     if (!value) return true
 
     return new Date(value || '') >= new Date(ctx.parent.statementNoteDateFrom)
@@ -423,27 +432,27 @@ export const PatientSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).required(requiredMessage(SEX_AT_BIRTH)),
-  suffix: notRequiredStringOnly(invalidMessage(SUFFIX)),
-  middleName: notRequiredStringOnly(invalidMessage(MIDDLE_NAME)),
-  language: notRequiredStringOnly(invalidMessage(LANGUAGE_SPOKEN)),
-  prefferedName: notRequiredStringOnly(invalidMessage(PREFERRED_NAME)),
-  previouslastName: notRequiredStringOnly(invalidMessage(PREVIOUS_LAST_NAME)),
-  motherMaidenName: notRequiredStringOnly(invalidMessage(MOTHERS_MAIDEN_NAME)),
-  previousFirstName: notRequiredStringOnly(invalidMessage(PREVIOUS_FIRST_NAME)),
+  suffix: notRequiredStringOnly(SUFFIX),
+  middleName: notRequiredStringOnly(MIDDLE_NAME),
+  language: notRequiredStringOnly(LANGUAGE_SPOKEN),
+  prefferedName: notRequiredStringOnly(PREFERRED_NAME),
+  previouslastName: notRequiredStringOnly(PREVIOUS_LAST_NAME),
+  motherMaidenName: notRequiredStringOnly(MOTHERS_MAIDEN_NAME),
+  previousFirstName: notRequiredStringOnly(PREVIOUS_FIRST_NAME),
 };
 
 export const emergencyPatientSchema = {
   emergencyPhone: notRequiredPhone(PHONE),
   emergencyMobile: notRequiredPhone(MOBILE_NUMBER),
-  emergencyName: notRequiredStringOnly(invalidMessage(NAME)),
+  emergencyName: notRequiredStringOnly(NAME),
   employerUsualOccupation: notRequiredStringOnly(USUAL_OCCUPATION),
-  employerIndustry: notRequiredStringOnly(invalidMessage(INDUSTRY)),
+  employerIndustry: notRequiredStringOnly(INDUSTRY),
 };
 
 export const kinPatientSchema = {
   kinPhone: notRequiredPhone(PHONE),
   kinMobile: notRequiredPhone(MOBILE),
-  kinName: notRequiredStringOnly(invalidMessage(NAME)),
+  kinName: notRequiredStringOnly(NAME),
   kinRelationship: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -462,12 +471,12 @@ export const guarantorPatientSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).required(requiredMessage(RELATIONSHIP)),
-  guarantorSuffix: notRequiredStringOnly(invalidMessage(SUFFIX)),
-  guarantorCountry: notRequiredStringOnly(invalidMessage(COUNTRY)),
-  guarantorAddress2: notRequiredStringOnly(invalidMessage(ADDRESS)),
-  guarantorEmployerName: notRequiredStringOnly(invalidMessage(NAME)),
+  guarantorSuffix: notRequiredStringOnly(SUFFIX),
+  guarantorCountry: notRequiredStringOnly(COUNTRY),
+  guarantorAddress2: notRequiredStringOnly(ADDRESS),
+  guarantorEmployerName: notRequiredStringOnly(NAME),
   guarantorSsn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX),
-  guarantorMiddleName: notRequiredStringOnly(invalidMessage(MIDDLE_NAME)),
+  guarantorMiddleName: notRequiredStringOnly(MIDDLE_NAME),
   guarantorEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   guarantorAddress: yup.string().matches(STRING_REGEX, ValidMessage(ADDRESS)).required(requiredMessage(ADDRESS)),
   guarantorPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11))
@@ -486,9 +495,9 @@ export const guarantorPatientSchema = {
 
 export const employerPatientSchema = {
   employerPhone: notRequiredPhone(PHONE),
-  employerName: notRequiredStringOnly(invalidMessage(NAME)),
-  employerIndustry: notRequiredStringOnly(invalidMessage(INDUSTRY)),
-  employerUsualOccupation: notRequiredStringOnly(invalidMessage(USUAL_OCCUPATION)),
+  employerName: notRequiredStringOnly(NAME),
+  employerIndustry: notRequiredStringOnly(INDUSTRY),
+  employerUsualOccupation: notRequiredStringOnly(USUAL_OCCUPATION),
 };
 
 export const extendedPatientSchema = yup.object({
@@ -515,8 +524,8 @@ export const appointmentSchema = yup.object({
   ...providerIdSchema,
   ...facilityIdSchema,
   notes: yup.string(),
-  primaryInsurance: notRequiredStringOnly(invalidMessage(PRIMARY_INSURANCE)),
-  secondaryInsurance: notRequiredStringOnly(invalidMessage(SECONDARY_INSURANCE)),
+  primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
+  secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
 })
 
 export const doctorScheduleSchema = yup.object({
@@ -529,10 +538,7 @@ export const doctorScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).required(requiredMessage(LOCATION)),
-  servicesIds: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(requiredMessage(APPOINTMENT_TYPE)),
+  ...serviceIdSchema,
 })
 
 export const externalAppointmentSchema = yup.object({
