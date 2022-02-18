@@ -1,14 +1,16 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
-// color-constants and font-family block
+// constants block
 import {
-  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE,
-  GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, BLUE_SEVEN, RED_THREE,
+  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE,
+  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, BLUE_SEVEN,
+  RED_THREE,
 } from ".";
 
 const breakpoints = createBreakpoints({})
 const customTheme = createTheme()
+
 export const theme = createTheme({
   palette: {
     primary: {
@@ -297,6 +299,7 @@ export const theme = createTheme({
 
       formControl: {
         top: -20,
+
         [breakpoints.between(1280, 1441)]: {
           top: -30,
         },
