@@ -6,9 +6,7 @@ import { TextField, FormControl, FormHelperText } from "@material-ui/core";
 // utils and interfaces/types block
 import { CardSelectorProps } from "../../interfacesTypes";
 
-const CardSelector: FC<CardSelectorProps> = ({
-  name, error, options, disabled,
-}): JSX.Element => {
+const CardSelector: FC<CardSelectorProps> = ({ name, error, options, disabled }): JSX.Element => {
   const { control } = useFormContext()
 
   return (
@@ -24,7 +22,6 @@ const CardSelector: FC<CardSelectorProps> = ({
             disableClearable
             value={field.value}
             disabled={disabled}
-            // multiple={isMultiple ? true : false}
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
