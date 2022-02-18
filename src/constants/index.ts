@@ -41,6 +41,7 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 };
+export const VIEW = "View";
 export const ALL_STAFF = "Staff";
 export const MINUTES = "minutes";
 export const CALENDAR = "Calendar";
@@ -56,6 +57,7 @@ export const UPDATE_SCHEDULE = "Update Schedule";
 export const CREATE_SERVICE = "Create Service";
 export const CREATE_FACILITY = "Create facility";
 export const CREATE_LOCATION = "Create location";
+export const BASIC_CALENDAR = "Basic Calendar";
 export const APPOINTMENT_TYPE = "Appointment Type";
 export const DOCTOR_NOT_FOUND = "Doctor not found!";
 export const PATIENT_CONDITION = "Patient Condition";
@@ -229,6 +231,7 @@ export const LAST_APPOINTMENT = "Last Appointment";
 export const RESET = "Reset";
 export const REASON = "Reason";
 export const APPOINTMENT = "Appointment";
+export const ALL_APPOINTMENTS = "All Appointments";
 export const DAY = "Day";
 export const STARTING_TIME = "Starting time";
 export const ENDING_TIME = "Ending time";
@@ -1159,5 +1162,26 @@ export const dummyVitalsChartingList = [
     phone: +16102458766,
     specialty: "Pediatric Dentist",
     code: 89025,
+  },
+]
+
+export const dummyAppointmentData = [
+  {
+    appTime: "16:30 - 17:00",
+    timeVariant: "PM",
+    patientName: "John Doe",
+    patientDOB: "12-01-1990",
+    patientTel: "(333)123-4567",
+    patientStatus: "Status",
+    patientElg: "Eligibility Issue",
+  },
+  {
+    appTime: "18:30 - 19:00",
+    timeVariant: "PM",
+    patientName: "John Doe",
+    patientDOB: "12-01-1990",
+    patientTel: "(333)123-4567",
+    patientStatus: "Ready for Staff",
+    patientElg: "Eligibility Issue",
   },
 ]

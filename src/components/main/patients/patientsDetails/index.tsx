@@ -14,7 +14,7 @@ import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils"
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { Attachment, AttachmentType, Patient, useGetAttachmentQuery, useGetPatientLazyQuery } from "../../../../generated/graphql";
 import { ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT } from "../../../../constants";
-import { AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
+import { AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileStarIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import { ParamsType } from "../../../../interfacesTypes";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import Selector from "../../../common/Selector";
@@ -249,6 +249,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                 <Box flex={1}>
                   <Box display="flex" alignItems="center" className={classes.userName}>
                     {`${firstName} ${lastName}`}
+                    <ProfileStarIcon />
                   </Box>
 
                   <Box display="flex" width="100%" pt={1} flexWrap="wrap">
