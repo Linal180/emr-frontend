@@ -4,22 +4,30 @@ import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Avatar, Box, Button, Menu, Tab, Typography } from "@material-ui/core";
+// components block
+import Selector from "../../../common/Selector";
+import MediaCards from "../../../common/AddMedia/MediaCards";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 // constants, history, styling block
+import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
-import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { Attachment, AttachmentType, Patient, useGetAttachmentQuery, useGetPatientLazyQuery } from "../../../../generated/graphql";
-import { ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT } from "../../../../constants";
-import { AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
-import { ParamsType } from "../../../../interfacesTypes";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import Selector from "../../../common/Selector";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import MediaCards from "../../../common/AddMedia/MediaCards";
+import {
+  Attachment, AttachmentType, Patient, useGetAttachmentQuery, useGetPatientLazyQuery
+} from "../../../../generated/graphql";
+import {
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
+} from "../../../../assets/svgs";
+import {
+  ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART,
+  PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
+} from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -30,7 +38,8 @@ const PatientDetailsComponent = (): JSX.Element => {
   const isMenuOpen = Boolean(anchorEl);
   const widgetId = "widget-menu";
   const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
-  const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
+  const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) =>
+    dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
 
   const methods = useForm<any>({
     mode: "all",
@@ -204,13 +213,10 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-  const onDeleteClick = () => {
+  const onDeleteClick = () =>
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
-  };
-
-  const handleDeleteWidget = () => {
-  };
+  const handleDeleteWidget = () => { };
 
   const onSubmit: SubmitHandler<any> = async (inputs) => { }
 
@@ -335,65 +341,6 @@ const PatientDetailsComponent = (): JSX.Element => {
               ))}
             </Box>
           </TabPanel>
-
-          {/* <TabPanel value="1">
-            <Grid container spacing={3}>
-              {ProfileDetailedData.map((item, index) => (
-                <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
-                  {item && item.title === "Allergies" && <>
-                    <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
-                      <AddWidgetIcon />
-
-                      <Typography component='h1' variant="h4">
-                        {ADD_WIDGET_TEXT}
-                      </Typography>
-                    </Box>
-
-                    <FormProvider {...methods}>
-                      <form onSubmit={handleSubmit(onSubmit)}>
-                        <Menu
-                          getContentAnchorEl={null}
-                          anchorEl={anchorEl}
-                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                          id={widgetId}
-                          keepMounted
-                          transformOrigin={{ vertical: "top", horizontal: "right" }}
-                          open={isMenuOpen}
-                          onClose={handleMenuClose}
-                          className={classes.dropdown}
-                        >
-                          <Selector
-                            isRequired
-                            value={EMPTY_OPTION}
-                            label={ADD_WIDGET_TEXT}
-                            name="addWidget"
-                            options={MAPPED_WIDGETS}
-                            isMultiple
-                          />
-                        </Menu>
-                      </form>
-                    </FormProvider>
-                  </>
-                  }
-                  <Box bgcolor={WHITE} p={4}>
-                    <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
-                      <Box className={classes.profileInfoHeading}>
-                        {item.title}
-                      </Box>
-
-                      <Box onClick={onDeleteClick} className={classes.deleteWidget}>
-                        <DeleteWidgetIcon />
-                      </Box>
-                    </Box>
-
-                    <Box fontSize={16} color={BLACK_TWO} pb={3.75} pt={2}>
-                      <Typography color="inherit">{item.description}</Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
-          </TabPanel> */}
         </Box>
       </TabContext>
 

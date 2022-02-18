@@ -17,7 +17,7 @@ const PatientController: FC<PatientInputControlProps> = ({
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" error={Boolean(error)}>
           <InputLabel shrink htmlFor={controllerName}>
             {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
           </InputLabel>

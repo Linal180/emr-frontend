@@ -7,12 +7,12 @@ import PatientCardComponent from "./PatientCardComponent";
 import { GeneralFormProps } from '../../../../../../interfacesTypes';
 import {
   ALLERGIES_TEXT, CARE_PLAN_TEXT, FAMILY_HISTORY_TEXT, IMPLANT_HISTORY_TEXT, LAB_RESULTS_TEXT,
-  MEDICAL_HISTORY_TEXT, MEDICATIONS_TEXT, PROBLEMS_TEXT, SOCIAL_HISTORY_TEXT, SURGICAL_HISTORY_TEXT, VACCINE_TEXT, VITALS_TEXT,
+  MEDICAL_HISTORY_TEXT, MEDICATIONS_TEXT, PROBLEMS_TEXT, SOCIAL_HISTORY_TEXT, SURGICAL_HISTORY_TEXT,
+  VACCINE_TEXT, VITALS_TEXT,
 } from "../../../../../../constants";
 
 const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const [isVitals,] = useState<boolean>(true)
-
   const PatientChartingData = [
     {
       title: "Allergies",
@@ -54,7 +54,6 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
               <PatientCardComponent cardTitle={ALLERGIES_TEXT} hasAdd cardChartingData={PatientChartingData} />
 
               <Box pb={3} />
-
               <PatientCardComponent cardTitle={FAMILY_HISTORY_TEXT} hasAdd cardChartingData={PatientChartingData} />
 
               <Box pb={3} />
@@ -99,5 +98,4 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
     </Box>
   );
 };
-
 export default PatientChartCards;
