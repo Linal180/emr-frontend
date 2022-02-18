@@ -20,9 +20,7 @@ import { useProfileDetailsStyles } from "../../../../../../../styles/profileDeta
 const VitalsChartingTable: FC = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const [patientData] = useState<Patient | null>();
-
   const { firstName, lastName, dob, doctorPatients } = patientData || {}
-
   const PATIENT_AGE = moment().diff(getDate(dob || ''), 'years');
 
   const ProfileDetails = [
@@ -61,7 +59,6 @@ const VitalsChartingTable: FC = (): JSX.Element => {
   });
   const { handleSubmit } = methods;
   const onSubmit: SubmitHandler<any> = () => { }
-
 
   return (
     <>
@@ -102,8 +99,6 @@ const VitalsChartingTable: FC = (): JSX.Element => {
 
             <Button color="primary" variant="contained" className="blue-button">Schedule Appointment</Button>
           </Box>
-
-
         </Box>
       </Box>
 
@@ -121,6 +116,7 @@ const VitalsChartingTable: FC = (): JSX.Element => {
           </Button>
         </Box>
       </Box>
+
       <Box>
         <Box className="table-overflow">
           <Table aria-label="customized table">
@@ -136,30 +132,29 @@ const VitalsChartingTable: FC = (): JSX.Element => {
             </TableHead>
 
             <TableBody>
-              {
-                dummyVitalsChartingList?.map((item) => {
-                  const { id, firstName, lastName, email, phone, specialty, code } = item || {};
+              {dummyVitalsChartingList?.map((item) => {
+                const { id, firstName, lastName, email, phone, specialty, code } = item || {};
 
-                  return (
-                    <TableRow key={id}><TableCell scope="row">{`${firstName} ${lastName}`}</TableCell>
-                      <TableCell scope="row">
-                        <FormProvider {...methods}>
-                          <form onSubmit={handleSubmit(onSubmit)}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="reason"
-                              controllerLabel={''}
-                            />
-                          </form>
-                        </FormProvider>
-                      </TableCell>
-                      <TableCell scope="row">{email}</TableCell>
-                      <TableCell scope="row">{phone}</TableCell>
-                      <TableCell scope="row">{specialty}</TableCell>
-                      <TableCell scope="row">{code}</TableCell>
-                    </TableRow>
-                  )
-                })}
+                return (
+                  <TableRow key={id}><TableCell scope="row">{`${firstName} ${lastName}`}</TableCell>
+                    <TableCell scope="row">
+                      <FormProvider {...methods}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="reason"
+                            controllerLabel={''}
+                          />
+                        </form>
+                      </FormProvider>
+                    </TableCell>
+                    <TableCell scope="row">{email}</TableCell>
+                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row">{specialty}</TableCell>
+                    <TableCell scope="row">{code}</TableCell>
+                  </TableRow>
+                )
+              })}
             </TableBody>
           </Table>
         </Box>
