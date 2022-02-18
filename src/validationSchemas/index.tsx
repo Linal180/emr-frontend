@@ -6,7 +6,7 @@ import { dateValidation, invalidMessage, requiredMessage, timeValidation } from 
 import {
   ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL, MaxLength, MinLength,
   FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
-  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, DOB_VALIDATION_MESSAGE, APPOINTMENT_TYPE,
+  MOBILE_NUMBER, NAME, NUMBER_REGEX, PASSWORD, DOB_VALIDATION_MESSAGE,
   PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE,
   DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, USUAL_PROVIDER_ID,
   NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE,
@@ -539,10 +539,7 @@ export const doctorScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).required(requiredMessage(LOCATION)),
-  servicesIds: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).required(requiredMessage(APPOINTMENT_TYPE)),
+  ...serviceIdSchema,
 })
 
 export const externalAppointmentSchema = yup.object({
