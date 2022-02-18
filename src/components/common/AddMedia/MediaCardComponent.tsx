@@ -9,8 +9,9 @@ import { MediaCardComponentType } from "../../../interfacesTypes";
 import { DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION } from "../../../constants";
 import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
-import { CameraIcon, FileIcon } from "../../../assets/svgs";
+import { FileIcon } from "../../../assets/svgs";
 import { BLUE_ONE } from "../../../theme";
+import { CameraAlt, CameraAltOutlined } from "@material-ui/icons";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, setAttachment, setAttachments, attachments, allAttachments, imageSide, notDescription }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
@@ -95,9 +96,9 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
 
           <Grid md={12} xs={12}>
             {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
-              <CameraIcon />
+              <CameraAlt color="inherit" />
             </Typography>}
-
+            
             {!notDescription && <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
               <Box>
                 <FileIcon />

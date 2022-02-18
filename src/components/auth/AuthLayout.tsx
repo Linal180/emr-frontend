@@ -5,7 +5,7 @@ import { Box, Typography } from "@material-ui/core";
 import { useLoginStyles } from "../../styles/loginStyles";
 import { ADMIN_PORTAL_NEW_MESSAGE, FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD_TEXT, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, RESET_PASSWORD_TEXT, SIGN_IN } from "../../constants";
 import { Children } from "../../interfacesTypes";
-import { EMRIcon, LoginSideImage } from "../../assets/svgs";
+import { EMRLogo, LoginSideImage } from "../../assets/svgs";
 import history from "../../history";
 
 const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
@@ -26,7 +26,7 @@ const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
       <Box className={classes.loginFormImageContainer}>
         <Box pb={3} pt={10}>
           <Box>
-            <EMRIcon />
+            <EMRLogo />
             <Typography variant="body1" className={classes.loginDescription}>{ADMIN_PORTAL_NEW_MESSAGE}</Typography>
           </Box>
         </Box>

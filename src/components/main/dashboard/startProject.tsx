@@ -1,5 +1,5 @@
 // packages block
-import { Box, Button, Card, Typography } from "@material-ui/core";
+import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
 import { Add, FilterList } from '@material-ui/icons';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
@@ -12,6 +12,10 @@ import PageHeader from "../../common/PageHeader";
 import { DASHBOARD_TEXT } from "../../../constants";
 import { GRAY_SIX } from "../../../theme";
 import { useState } from "react";
+import AppointmentCard from "./AppointmentCard";
+import CardComponent from "../../common/CardComponent";
+import { Skeleton } from "@material-ui/lab";
+import ViewAppointmentLoader from "../../common/ViewAppointmentLoader";
 
 const appointments = [
   {
@@ -152,34 +156,43 @@ const StartProjectComponent = (): JSX.Element => {
     <Box>
       <PageHeader title={DASHBOARD_TEXT} subTitle="Molestie imperdiet purus neque neque." />
 
-      <Card>
-        <Box display="flex" alignItems="center" justifyContent="space-between" px={3} py={2} borderBottom={`1px solid ${GRAY_SIX}`}>
-          <Typography variant="body1">Basic Calendar</Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={8}>
+          <Card>
+            <Box display="flex" alignItems="center" justifyContent="space-between" px={3} py={1.4} borderBottom={`1px solid ${GRAY_SIX}`}>
+              <Typography variant="h4">Basic Calendar</Typography>
 
-          <Box display="flex" gridGap={16}>
-            <Button color="default" variant="outlined" startIcon={<FilterList />}>Filter</Button>
-            <Button color="primary" variant="contained" startIcon={<Add />}>Add New</Button>
-          </Box>
-        </Box>
+              <Box display="flex" gridGap={16}>
+                <Button color="default" variant="outlined" startIcon={<FilterList />}>Filter</Button>
+                <Button color="primary" variant="contained" startIcon={<Add />}>Add New</Button>
+              </Box>
+            </Box>
 
-        <Box>
-          <Scheduler data={appointments}>
-            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
-            <MonthView />
-            <WeekView />
-            <DayView />
-            <Toolbar />
-            <ViewSwitcher />
-            <DateNavigator />
-            <TodayButton />
-            <Appointments />
-            <AppointmentTooltip
-              showCloseButton
-              showOpenButton
-            />
-          </Scheduler>
-        </Box>
-      </Card>
+            <Box>
+              <Scheduler data={appointments}>
+                <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+                <MonthView />
+                <WeekView />
+                <DayView />
+                <Toolbar />
+                <ViewSwitcher />
+                <DateNavigator />
+                <TodayButton />
+                <Appointments />
+                <AppointmentTooltip
+                  showCloseButton
+                  showOpenButton
+                />
+              </Scheduler>
+            </Box>
+          </Card>
+        </Grid>
+
+        <Grid item xs={4}>
+          <AppointmentCard />
+          <ViewAppointmentLoader rows={0} hasMedia={false} columns={"auto"} />
+        </Grid>
+      </Grid>
     </Box>
   )
 };

@@ -22,7 +22,7 @@ import {
   Attachment, AttachmentType, Patient, useGetAttachmentQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
-  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileStarIcon, ProfileUserIcon
 } from "../../../../assets/svgs";
 import {
   ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART,
@@ -70,7 +70,6 @@ const PatientDetailsComponent = (): JSX.Element => {
           dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: url || '' })
           dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: attachmentId || '' })
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
-
         }
       }
     },
@@ -87,11 +86,9 @@ const PatientDetailsComponent = (): JSX.Element => {
       }
     },
 
-    onError() {
-    },
+    onError() {},
 
     onCompleted(data) {
-
       const { getAttachment } = data || {};
 
       if (getAttachment) {
@@ -103,7 +100,6 @@ const PatientDetailsComponent = (): JSX.Element => {
   });
 
   useEffect(() => {
-
     if (id) {
       getPatient({
         variables: {
@@ -255,6 +251,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                 <Box flex={1}>
                   <Box display="flex" alignItems="center" className={classes.userName}>
                     {`${firstName} ${lastName}`}
+                    <ProfileStarIcon />
                   </Box>
 
                   <Box display="flex" width="100%" pt={1} flexWrap="wrap">
