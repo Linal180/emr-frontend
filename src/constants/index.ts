@@ -416,6 +416,7 @@ export const SEXUAL_ORIENTATION = "Sexual Orientation"
 export const USUAL_PROVIDER_ID = "Usual Provider"
 export const PRONOUNS = "pronouns"
 export const RACE = "Race"
+export const RELOAD = "Reload Page"
 export const RELATIONSHIP = "Relationship"
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor"
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
@@ -509,30 +510,31 @@ export const RELATIONSHIP_MANAGER = "RELATIONSHIP_MANAGER";
 // routes paths
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
-export const DASHBOARD_ROUTE = "/dashboard";
-export const FACILITIES_ROUTE = "/list-facilities";
-export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const STAFF_ROUTE = "/staff";
+export const PATIENTS_CHART = "/chart";
 export const DOCTORS_ROUTE = "/doctors";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
-export const PATIENTS_CHART = "/chart";
-export const APPOINTMENTS_ROUTE = "/appointments";
-export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
-export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
+export const INVOICES_ROUTE = "/invoices";
+export const DASHBOARD_ROUTE = "/dashboard";
+export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
-export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
+export const APPOINTMENTS_ROUTE = "/appointments";
+export const FACILITIES_ROUTE = "/list-facilities";
+export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
-export const FACILITY_LOCATIONS_ROUTE = "/locations";
-export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
-export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
+export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
+export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
+export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
+export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
-export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
+export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
+export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -581,6 +583,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const MAINTENANCE_ALERT = "Maintenance is in progress";
 export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";
 export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."

@@ -2,11 +2,12 @@ import { FC, useContext } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 // components
 import Login from "../pages/auth/login";
-import PageNotFound from "../pages/404";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
+import { PageNotFound } from "../pages/404";
 import Settings from "../pages/main/settings";
 import Dashboard from "../pages/main/dashboard";
+import { Maintenance } from "../pages/maintenance";
 import AddStaff from "../pages/main/staff/addStaff";
 import AddBill from "../pages/main/billing/addBill";
 import Staff from "../pages/main/staff/staffListing";
@@ -56,7 +57,7 @@ import {
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
   FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART
+  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, MAINTENANCE_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -112,7 +113,10 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
+      <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
 
+      <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
+      
       <Route component={PageNotFound} />
     </Switch>
   );
