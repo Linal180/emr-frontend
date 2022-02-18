@@ -43,11 +43,11 @@ import { AppointmentCancel } from "../pages/main/publicAppointments/cancel";
 import { ViewService } from "../pages/main/facilities/services/viewService";
 import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
 import { AddLocation } from "../pages/main/facilities/locations/addLocation";
-import PatientChart from "../pages/main/patients/patientDetails/patientChart";
 import { Appointments } from "../pages/main/appointments/appointmentsListing";
 import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { ViewLocation } from "../pages/main/facilities/locations/viewLocation";
 import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
+import { PatientChart } from "../pages/main/patients/patientDetails/patientChart";
 import { ScheduleAppointments } from "../pages/main/appointments/scheduleAppointments";
 import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
 

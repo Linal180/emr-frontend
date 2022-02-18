@@ -1,8 +1,8 @@
 // packages block
 import { FC } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Box, Grid, Typography } from "@material-ui/core";
+import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 // components block
 import PatientCardComponent from "./PatientCardComponent";
 // interfaces, graphql, constants block /styles
@@ -11,7 +11,8 @@ import { usePatientChartingStyles } from '../../../../../../styles/patientCharti
 import { GeneralFormProps, PatientInputProps } from '../../../../../../interfacesTypes';
 import {
   ALLERGIES_TEXT, CARE_PLAN_TEXT, FAMILY_HISTORY_TEXT, IMPLANT_HISTORY_TEXT, LAB_RESULTS_TEXT,
-  MEDICAL_HISTORY_TEXT, MEDICATIONS_TEXT, PROBLEMS_TEXT, SOCIAL_HISTORY_TEXT, SURGICAL_HISTORY_TEXT, VACCINE_TEXT, VITALS_TEXT,
+  MEDICAL_HISTORY_TEXT, MEDICATIONS_TEXT, PROBLEMS_TEXT, SOCIAL_HISTORY_TEXT, SURGICAL_HISTORY_TEXT,
+  VACCINE_TEXT, VITALS_TEXT,
 } from "../../../../../../constants";
 
 const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -58,7 +59,6 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
           <Grid container spacing={3}>
             <Grid md={8} item>
               <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd>
-
               </PatientCardComponent>
 
               <Box pb={3} />
@@ -122,7 +122,6 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
                       )
                     })}
                   </PatientCardComponent>
-
                 </Grid>
 
                 <Grid md={6} item>
@@ -203,10 +202,8 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
                       )
                     })}
                   </PatientCardComponent>
-
                 </Grid>
               </Grid>
-
             </Grid>
 
             <Grid md={4} item>
@@ -247,7 +244,6 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
                   )
                 })}
               </PatientCardComponent>
-
 
               <Box pb={3} />
 

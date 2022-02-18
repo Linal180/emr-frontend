@@ -4,22 +4,30 @@ import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
+// components block
+import Selector from "../../../common/Selector";
+import MediaCards from "../../../common/AddMedia/MediaCards";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 // constants, history, styling block
+import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
-import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { Attachment, AttachmentType, Patient, useGetAttachmentQuery, useGetPatientLazyQuery } from "../../../../generated/graphql";
-import { ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT } from "../../../../constants";
-import { AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
-import { ParamsType } from "../../../../interfacesTypes";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import Selector from "../../../common/Selector";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import MediaCards from "../../../common/AddMedia/MediaCards";
+import {
+  Attachment, AttachmentType, Patient, useGetAttachmentQuery, useGetPatientLazyQuery
+} from "../../../../generated/graphql";
+import {
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
+} from "../../../../assets/svgs";
+import {
+  ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART,
+  PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
+} from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -30,7 +38,8 @@ const PatientDetailsComponent = (): JSX.Element => {
   const isMenuOpen = Boolean(anchorEl);
   const widgetId = "widget-menu";
   const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
-  const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
+  const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) =>
+    dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
 
   const methods = useForm<any>({
     mode: "all",
@@ -204,13 +213,10 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-  const onDeleteClick = () => {
+  const onDeleteClick = () =>
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
-  };
-
-  const handleDeleteWidget = () => {
-  };
+  const handleDeleteWidget = () => { };
 
   const onSubmit: SubmitHandler<any> = async (inputs) => { }
 
