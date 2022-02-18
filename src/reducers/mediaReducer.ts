@@ -4,11 +4,11 @@ export interface State {
   meta: string
   isOpen: boolean
   isEdit: boolean
+  isEditModalOpen: boolean
   attachments: Attachment[]
   bannerAttachments: Attachment[]
   collageAttachments: Attachment[]
   attachment: Attachment | undefined
-  isEditModalOpen: boolean
 }
 
 export const initialState: State = {
@@ -24,10 +24,10 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_IS_OPEN = 'setIsOpen',
-  SET_IS_EDIT_MEDIA_MODAL_OPEN = 'setIsEditMediaModalOpen',
   SET_IS_EDIT = 'setIsEdit',
-  SET_ATTACHMENTS = 'setAttachments',
   SET_ATTACHMENT = 'setAttachment',
+  SET_ATTACHMENTS = 'setAttachments',
+  SET_IS_EDIT_MEDIA_MODAL_OPEN = 'setIsEditMediaModalOpen',
 }
 
 export type Action =

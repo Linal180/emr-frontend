@@ -10,17 +10,17 @@ import { Attachment } from "../../../generated/graphql";
 import { Action, ActionType, initialState, mediaReducer, State } from '../../../reducers/mediaReducer'
 import MediaCardComponent from "./MediaCardComponent";
 
-const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, imageSide, notDescription, isProfile }): JSX.Element => {
+const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentData, imageSide, notDescription, isProfile }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { isOpen, attachments, attachment, isEdit, isEditModalOpen } = state
 
   useEffect(() => {
-    attachmentsData &&
+    attachmentData &&
       dispatch({
-        type: ActionType.SET_ATTACHMENTS,
-        attachments: attachmentsData
+        type: ActionType.SET_ATTACHMENT,
+        attachment: attachmentData
       })
-  }, [attachmentsData])
+  }, [attachmentData])
 
   const renderCard = (title: string, allAttachments: Attachment[]) => {
     return (
@@ -64,8 +64,10 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, i
 
   return (
     <Box>
-      {renderCard('Upload banner media', attachments)}
+      {renderCard('Upload records', attachments)}
+
       <AddImageModal
+        isProfile={isProfile}
         imageModuleType={moduleType}
         setOpen={(isOpen: boolean) => {
           dispatch({
@@ -81,17 +83,18 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, i
           })
         }}
 
-        isEdit={isEdit}
+        isEdit={!!attachment}
         isOpen={isOpen}
         itemId={itemId}
-        setAttachments={(AttachmentsArray: Attachment[]) => {
+        setAttachments={(attachment: Attachment) => {
           dispatch({
-            type: ActionType.SET_ATTACHMENTS,
-            attachments: AttachmentsArray
+            type: ActionType.SET_ATTACHMENT,
+            attachment: attachment
           })
         }}
 
         attachment={attachment}
+        preSignedUrl={imageSide}
       />
 
       <EditMediaModal
@@ -112,13 +115,13 @@ const MediaCards: FC<MediaCardsType> = ({ moduleType, itemId, attachmentsData, i
 
         isOpen={isEditModalOpen}
         itemId={itemId}
-        setAttachments={(AttachmentsArray: Attachment[]) => {
+        setAttachments={(attachment: Attachment) => {
           dispatch({
-            type: ActionType.SET_ATTACHMENTS,
-            attachments: AttachmentsArray
+            type: ActionType.SET_ATTACHMENT,
+            attachment: attachment
           })
         }}
-        
+
         attachment={attachment}
         attachments={attachments}
       />

@@ -252,6 +252,7 @@ export type CreateAppointmentInput = {
 
 export type CreateAttachmentInput = {
   description?: Maybe<Scalars['String']>;
+  isProfile?: Maybe<Scalars['Boolean']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -1686,6 +1687,7 @@ export type UpdateAppointmentInput = {
 export type UpdateAttachmentInput = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
+  isProfile?: Maybe<Scalars['Boolean']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */

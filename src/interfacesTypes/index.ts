@@ -693,6 +693,7 @@ export interface PhoneInputProps {
 export interface DropzoneImageType {
   imageModuleType: AttachmentType;
   isEdit?: boolean;
+  isProfile?: boolean;
   attachmentId: string;
   itemId: string;
   isDisabled?: boolean;
@@ -722,8 +723,10 @@ export interface MediaModalTypes extends DialogTypes {
   imageModuleType: AttachmentType;
   itemId: string;
   setEdit: Function
+  isProfile?: boolean;
   setAttachments: Function;
   attachment?: Attachment;
+  preSignedUrl?: string;
   attachments?: Attachment[]
 }
 
@@ -732,7 +735,7 @@ export interface MediaCardsType {
   isProfile?: boolean;
   moduleType: AttachmentType;
   hasCollage?: boolean;
-  attachmentsData?: Attachment[]
+  attachmentData?: Attachment
   hasHighlights?: boolean
   imageSide: string;
   notDescription?: boolean;

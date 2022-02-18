@@ -498,14 +498,11 @@ export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Plea
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
-export const OWNER = "OWNER";
-export const INVESTOR = "INVESTOR";
 export const SUPER_ADMIN = "SUPER_ADMIN";
-export const PROPERTY_MANAGER = "PROPERTY_MANAGER";
-export const RELATIONSHIP_MANAGER = "RELATIONSHIP_MANAGER";
 
 // routes paths
 export const ROOT_ROUTE = "/";
@@ -536,24 +533,6 @@ export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 
-// stepper arrays
-export const getTagSteps = () => ["Tag Details", "Review"];
-export const getMediaSteps = () => ["Add details", "Review", "Upload image"];
-export const getStateSteps = () => ["State Details", "Review", "Upload images"];
-export const getPropertySteps = () => [
-  "Property Details",
-  "Add Features and Tags",
-  "Review",
-  "Upload images",
-];
-
-// toolbar options for rich text editor
-export const toolbarOptions = {
-  options: ["inline", "link", "list", "blockType"],
-  inline: {
-    options: ["bold", "italic", "underline"],
-  },
-};
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;

@@ -33,7 +33,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useProfileDetailsStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { anchorEl, attachmentUrl, attachmentsData, openDelete, patientData, tabValue, attachmentId } = state
+  const { anchorEl, attachmentUrl, attachmentData, openDelete, patientData, tabValue, attachmentId } = state
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
   const { handleSubmit } = methods;
@@ -64,6 +64,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
       if (getAttachment) {
         const { preSignedUrl } = getAttachment
+        console.log(preSignedUrl, "----")
         preSignedUrl && dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
       }
     },
@@ -90,6 +91,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
           attachmentId && dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
+          dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
         }
       }
     },
@@ -240,9 +242,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                 <Box pl={1}>
                   <Box pr={3.75} position="relative">
                     <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-                    {attachmentsData &&
-                      <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="" attachmentsData={attachmentsData as Attachment[]} notDescription={true} />
-                    }
+                    <MediaCards isProfile={true} moduleType={AttachmentType.Patient} itemId={id} imageSide={attachmentUrl} attachmentData={attachmentData || undefined} notDescription={true} />
                   </Box>
                 </Box>
               </Box>
