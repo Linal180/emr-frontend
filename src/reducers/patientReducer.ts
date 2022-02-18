@@ -21,6 +21,7 @@ export interface State {
   patientData: PatientPayload['patient']
   anchorEl: HTMLElement | null;
   attachmentId: string | undefined;
+  isEditCard: boolean;
 }
 
 export const initialState: State = {
@@ -44,6 +45,7 @@ export const initialState: State = {
   patientData: undefined,
   anchorEl: null,
   attachmentId: '',
+  isEditCard: false,
 }
 
 export enum ActionType {
@@ -67,6 +69,7 @@ export enum ActionType {
   SET_PATIENT_DATA = 'setPatientData',
   SET_ANCHOR_EL = 'setAnchorEl',
   SET_ATTACHMENT_ID = 'setAttachmentId',
+  SET_IS_EDIT_CARD = 'setIsEditCard',
 }
 
 export type Action =
@@ -90,6 +93,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_DATA; patientData: PatientPayload['patient'] }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
+  | { type: ActionType.SET_IS_EDIT_CARD; isEditCard: boolean }
 
 
 export const patientReducer = (state: State, action: Action): State => {
@@ -211,6 +215,11 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         attachmentId: action.attachmentId
+      }
+      case ActionType.SET_IS_EDIT_CARD:
+      return {
+        ...state,
+        isEditCard: action.isEditCard
       }
   }
 };

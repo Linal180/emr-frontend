@@ -20,6 +20,21 @@ export const usePatientChartingStyles = makeStyles(() =>
       fontWeight: 500,
       fontSize: 14,
       color: GRAY_TWO
+    },
+
+    dropdown: {
+      "& .MuiMenu-paper": {
+        padding: 20,
+
+        "& .MuiCardContent-root": {
+            padding:0,
+        }
+
+      },
+
+      "& .MuiPopover-paper": {
+        minHeight: 300
+      }
     }
   })
 );

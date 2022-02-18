@@ -5,7 +5,7 @@ import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Menu, Tab, Typography } from "@material-ui/core";
 // components block
 import Selector from "../../../common/Selector";
 import MediaCards from "../../../common/AddMedia/MediaCards";
@@ -284,62 +284,62 @@ const PatientDetailsComponent = (): JSX.Element => {
           </Box>
 
           <TabPanel value="1">
-            <Grid container spacing={3}>
+            <Box className={classes.profileCardMasonry}>
               {ProfileDetailedData.map((item, index) => (
-                <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
-                  {item && item.title === "Allergies" && <>
-                    <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
-                      <AddWidgetIcon />
+                <Box className={classes.profileCardItemMasonry} key={`${item.title}-${index}`}>
+                    {item && item.title === "Allergies" && <>
+                      <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
+                        <AddWidgetIcon />
 
-                      <Typography component='h1' variant="h4">
-                        {ADD_WIDGET_TEXT}
-                      </Typography>
-                    </Box>
-
-                    <FormProvider {...methods}>
-                      <form onSubmit={handleSubmit(onSubmit)}>
-                        <Menu
-                          getContentAnchorEl={null}
-                          anchorEl={anchorEl}
-                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                          id={widgetId}
-                          keepMounted
-                          transformOrigin={{ vertical: "top", horizontal: "right" }}
-                          open={isMenuOpen}
-                          onClose={handleMenuClose}
-                          className={classes.dropdown}
-                        >
-                          <Selector
-                            isRequired
-                            value={EMPTY_OPTION}
-                            label={ADD_WIDGET_TEXT}
-                            name="addWidget"
-                            options={MAPPED_WIDGETS}
-                            isMultiple
-                          />
-                        </Menu>
-                      </form>
-                    </FormProvider>
-                  </>
-                  }
-                  <Box bgcolor={WHITE} p={4}>
-                    <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
-                      <Box className={classes.profileInfoHeading}>
-                        {item.title}
+                        <Typography component='h1' variant="h4">
+                          {ADD_WIDGET_TEXT}
+                        </Typography>
                       </Box>
 
-                      <Box onClick={onDeleteClick} className={classes.deleteWidget}>
-                        <DeleteWidgetIcon />
+                      <FormProvider {...methods}>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                          <Menu
+                            getContentAnchorEl={null}
+                            anchorEl={anchorEl}
+                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                            id={widgetId}
+                            keepMounted
+                            transformOrigin={{ vertical: "top", horizontal: "right" }}
+                            open={isMenuOpen}
+                            onClose={handleMenuClose}
+                            className={classes.dropdown}
+                          >
+                            <Selector
+                              isRequired
+                              value={EMPTY_OPTION}
+                              label={ADD_WIDGET_TEXT}
+                              name="addWidget"
+                              options={MAPPED_WIDGETS}
+                              isMultiple
+                            />
+                          </Menu>
+                        </form>
+                      </FormProvider>
+                    </>
+                    }
+                    <Box bgcolor={WHITE} p={4}>
+                      <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
+                        <Box className={classes.profileInfoHeading}>
+                          {item.title}
+                        </Box>
+
+                        <Box onClick={onDeleteClick} className={classes.deleteWidget}>
+                          <DeleteWidgetIcon />
+                        </Box>
+                      </Box>
+
+                      <Box fontSize={16} color={BLACK_TWO} pb={3.75} pt={2}>
+                        <Typography color="inherit">{item.description}</Typography>
                       </Box>
                     </Box>
-
-                    <Box fontSize={16} color={BLACK_TWO} pb={3.75} pt={2}>
-                      <Typography color="inherit">{item.description}</Typography>
-                    </Box>
-                  </Box>
-                </Grid>
+                </Box>
               ))}
-            </Grid>
+            </Box>
           </TabPanel>
         </Box>
       </TabContext>
