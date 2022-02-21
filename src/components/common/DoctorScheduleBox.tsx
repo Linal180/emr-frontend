@@ -71,6 +71,8 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
               {LOCATION}:
             </Typography>
 
+            <Box pr={1} />
+
             <Typography className={classes.heading}>
               {name}
             </Typography>
@@ -80,6 +82,8 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
             <Typography className={classes.subHeading}>
               {APPOINTMENT_TYPE}
             </Typography>
+
+            <Box pr={1} />
 
             <Typography className={classes.heading}>
               {scheduleServices?.map(scheduleService => {

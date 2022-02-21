@@ -32,10 +32,16 @@ const LoginController: FC<LoginInputControlProps> = ({ control, controllerName, 
             <InputLabel shrink htmlFor={controllerName}>
               {controllerLabel}
             </InputLabel>
-            {isPassword && <Box>
-              <Typography component={Link} to={FORGET_PASSWORD_ROUTE} className={classes.forgotPassword} >{FORGOT_PASSWORD}</Typography>
-            </Box>}
+
+            {isPassword &&
+              <Box>
+                <Typography component={Link} to={FORGET_PASSWORD_ROUTE} className={classes.forgotPassword}>
+                  {FORGOT_PASSWORD}
+                </Typography>
+              </Box>
+            }
           </Box>
+
           <TextField
             type={fieldType === "password" ? passwordType : fieldType}
             id={controllerName}

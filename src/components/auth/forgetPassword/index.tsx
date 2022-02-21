@@ -82,7 +82,7 @@ const ForgetPasswordComponent = (): JSX.Element => {
         </Typography>
 
         <Box ml={0.5}>
-          <Typography component={Link} variant="body2" to={ROOT_ROUTE}>{SIGN_IN}</Typography>
+          <Typography component={Link} to={ROOT_ROUTE}>{SIGN_IN}</Typography>
         </Box>
       </Box>
     </AuthLayout>

@@ -2,12 +2,11 @@
 import { FC } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
+import { TextField, FormControl, FormHelperText } from "@material-ui/core";
 // utils and interfaces/types block
-import { SelectorProps } from "../../interfacesTypes";
-import { requiredLabel } from "../../utils";
+import { CardSelectorProps } from "../../interfacesTypes";
 
-const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, }): JSX.Element => {
+const CardSelector: FC<CardSelectorProps> = ({ name, error, options, disabled }): JSX.Element => {
   const { control } = useFormContext()
 
   return (
@@ -16,7 +15,7 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
       name={name}
       control={control}
       defaultValue={options && options[0]}
-      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+      render={({ field, fieldState: { invalid } }) => {
         return (
           <Autocomplete
             options={options.length ? options : []}
@@ -26,10 +25,7 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <InputLabel id={`${name}-autocomplete`} shrink>
-                  {isRequired ? requiredLabel(label) : label}
-                </InputLabel>
+              <FormControl fullWidth margin='normal' error={Boolean(error)}>
 
                 <TextField
                   {...params}
@@ -37,7 +33,7 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
                   error={invalid}
                 />
 
-                <FormHelperText>{message}</FormHelperText>
+                <FormHelperText>{error}</FormHelperText>
               </FormControl>
             )}
             onChange={(_, data) => field.onChange(data)}
@@ -48,4 +44,4 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
   );
 };
 
-export default Selector;
+export default CardSelector;
