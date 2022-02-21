@@ -18,7 +18,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.El
       control={control}
       defaultValue=''
       render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" error={Boolean(error)}>
           <InputLabel shrink htmlFor={`${name}-dialog`}>
             {isRequired ? requiredLabel(label) : label}
           </InputLabel>

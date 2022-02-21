@@ -9,7 +9,6 @@ import Settings from "../pages/main/settings";
 import Dashboard from "../pages/main/dashboard";
 import AddStaff from "../pages/main/staff/addStaff";
 import AddBill from "../pages/main/billing/addBill";
-import VerifyEmail from "../components/verifyEmail";
 import Staff from "../pages/main/staff/staffListing";
 import ViewStaff from "../pages/main/staff/viewStaff";
 import MaintenancePage from "../components/maintenance";
@@ -17,7 +16,6 @@ import AddResult from "../pages/main/reports/addResult";
 import AddDoctor from "../pages/main/doctors/addDoctor";
 import ResetPassword from "../pages/auth/resetPassword";
 import ViewDoctor from "../pages/main/doctors/viewDoctor";
-import PasswordChange from "../components/passwordChange";
 import ForgetPassword from "../pages/auth/forgetPassword";
 import EmailVerification from "../pages/auth/verifyEmail";
 import AddPatient from "../pages/main/patients/addPatient";
@@ -47,8 +45,10 @@ import { Appointments } from "../pages/main/appointments/appointmentsListing";
 import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { ViewLocation } from "../pages/main/facilities/locations/viewLocation";
 import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
+import { PatientChart } from "../pages/main/patients/patientDetails/patientChart";
 import { ScheduleAppointments } from "../pages/main/appointments/scheduleAppointments";
 import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
+import VitalsCards from "../components/main/patients/patientsDetails/patientChart/patientChartCards/vitalsCard";
 
 // constants
 import { AuthContext } from "../context";
@@ -58,7 +58,7 @@ import {
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
   FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_APPOINTMENT_CANCEL
+  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -77,12 +77,9 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
       <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={PublicAppointment} exact />
       <PublicRoute path="/maintenance" component={MaintenancePage} exact />
-      <PublicRoute path="/passwordChange" component={PasswordChange} exact />
-      <PublicRoute path="/verifyEmail" component={VerifyEmail} exact />
       <Route exact path="/">
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>
-
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
       <PrivateRoute exact path={`${DASHBOARD_ROUTE}/start-project`} component={StartProject} />
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
@@ -92,6 +89,8 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details`} component={PatientDetails} />
+      <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details${PATIENTS_CHART}`} component={PatientChart} />
+      <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details${PATIENTS_CHART}${VITALS_ROUTE}`} component={VitalsCards} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
       <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
       <PrivateRoute exact path={SCHEDULE_APPOINTMENTS_ROUTE} component={ScheduleAppointments} />
@@ -115,7 +114,6 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
-
       <Route component={PageNotFound} />
     </Switch>
   );

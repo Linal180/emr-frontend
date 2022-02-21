@@ -1,4 +1,4 @@
-import { PatientsPayload } from "../generated/graphql"
+import { AttachmentsPayload, PatientPayload, PatientsPayload } from "../generated/graphql"
 
 export interface State {
   page: number;
@@ -15,6 +15,13 @@ export interface State {
   guarantorContactId: string;
   emergencyContactId: string;
   patients: PatientsPayload['patients'];
+  attachmentUrl: string;
+  attachmentsData: AttachmentsPayload['attachments'];
+  tabValue: string;
+  patientData: PatientPayload['patient']
+  anchorEl: HTMLElement | null;
+  attachmentId: string | undefined;
+  isEditCard: boolean;
 }
 
 export const initialState: State = {
@@ -32,6 +39,13 @@ export const initialState: State = {
   guardianContactId: '',
   emergencyContactId: '',
   guarantorContactId: '',
+  attachmentUrl: '',
+  attachmentsData: [],
+  tabValue: '1',
+  patientData: undefined,
+  anchorEl: null,
+  attachmentId: '',
+  isEditCard: false,
 }
 
 export enum ActionType {
@@ -49,6 +63,13 @@ export enum ActionType {
   SET_GUARDIAN_CONTACT_ID = 'setGuardianContactID',
   SET_GUARANTOR_CONTACT_ID = 'setGuarantorContactId',
   SET_EMERGENCY_CONTACT_ID = 'setEmergencyContactID',
+  SET_ATTACHMENT_URL = 'setAttachmentUrl',
+  SET_ATTACHMENTS_DATA = 'setAttachmentsData',
+  SET_TAB_VALUE = 'setTabValue',
+  SET_PATIENT_DATA = 'setPatientData',
+  SET_ANCHOR_EL = 'setAnchorEl',
+  SET_ATTACHMENT_ID = 'setAttachmentId',
+  SET_IS_EDIT_CARD = 'setIsEditCard',
 }
 
 export type Action =
@@ -66,6 +87,14 @@ export type Action =
   | { type: ActionType.SET_PATIENTS, patients: PatientsPayload['patients'] }
   | { type: ActionType.SET_EMERGENCY_CONTACT_ID; emergencyContactId: string }
   | { type: ActionType.SET_GUARANTOR_CONTACT_ID; guarantorContactId: string }
+  | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
+  | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
+  | { type: ActionType.SET_TAB_VALUE; tabValue: string }
+  | { type: ActionType.SET_PATIENT_DATA; patientData: PatientPayload['patient'] }
+  | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
+  | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
+  | { type: ActionType.SET_IS_EDIT_CARD; isEditCard: boolean }
+
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -151,6 +180,46 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         emergencyContactId: action.emergencyContactId
+      }
+
+    case ActionType.SET_ATTACHMENT_URL:
+      return {
+        ...state,
+        attachmentUrl: action.attachmentUrl
+      }
+
+    case ActionType.SET_ATTACHMENTS_DATA:
+      return {
+        ...state,
+        attachmentsData: action.attachmentsData
+      }
+
+    case ActionType.SET_TAB_VALUE:
+      return {
+        ...state,
+        tabValue: action.tabValue
+      }
+
+    case ActionType.SET_PATIENT_DATA:
+      return {
+        ...state,
+        patientData: action.patientData
+      }
+
+    case ActionType.SET_ANCHOR_EL:
+      return {
+        ...state,
+        anchorEl: action.anchorEl
+      }
+    case ActionType.SET_ATTACHMENT_ID:
+      return {
+        ...state,
+        attachmentId: action.attachmentId
+      }
+      case ActionType.SET_IS_EDIT_CARD:
+      return {
+        ...state,
+        isEditCard: action.isEditCard
       }
   }
 };
