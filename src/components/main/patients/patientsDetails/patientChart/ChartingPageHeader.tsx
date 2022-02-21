@@ -19,11 +19,12 @@ const ChartingPageHeader: FC<PageHeaderProps> = ({ title, path, id }): JSX.Eleme
             <PageBackIcon />
           </Link>
         </Box>
+
         <Box>
           <Typography component="h4" variant="h4">{title}</Typography>
+
           {path && <Breadcrumb path={path} />}
         </Box>
-
       </Box>
     </Box>
   );

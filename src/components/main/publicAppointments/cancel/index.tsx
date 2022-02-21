@@ -18,7 +18,7 @@ const AppointmentCancelComponent: FC = (): JSX.Element => {
       <Card>
         <Box minHeight="580px" className={classes.container}>
           <Box maxWidth="700px">
-            <Typography component="h3" variant="h3" >{APPOINTMENT_CANCEL}</Typography>
+            <Typography component="h3" variant="h3">{APPOINTMENT_CANCEL}</Typography>
           </Box>
         </Box>
       </Card>

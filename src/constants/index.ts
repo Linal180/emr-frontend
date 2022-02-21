@@ -1185,3 +1185,31 @@ export const dummyAppointmentData = [
     patientElg: "Eligibility Issue",
   },
 ]
+
+export const PATIENT_CHARTING_DATA = [
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+]
