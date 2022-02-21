@@ -17,7 +17,7 @@ import {
   STRING_REGEX, MIDDLE_NAME, PREFERRED_NAME, PREVIOUS_FIRST_NAME, INSURANCE_PLAN_TYPE, FAX, PHONE, MOBILE,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, MAX_DOCTOR_DOB_VALIDATION_MESSAGE, MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
-  ISSUE_DATE, REGISTRATION_DATE,
+  ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -226,9 +226,9 @@ const licenseDateSchema = {
 }
 
 const scheduleTimeSchema = {
-  startAt: yup.string().test(value => !!value),
+  startAt: yup.string().test('', invalidMessage(START_TIME), value => !!value),
 
-  endAt: yup.string().test((value, { parent: { startAt } }) => {
+  endAt: yup.string().test('', invalidMessage(END_TIME), (value, { parent: { startAt } }) => {
     if (!value) return false
 
     return timeValidation(value, startAt)
@@ -529,16 +529,20 @@ export const appointmentSchema = yup.object({
 })
 
 export const doctorScheduleSchema = yup.object({
+  ...serviceIdSchema,
   ...scheduleTimeSchema,
   day: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(DAY)),
+  }).test(
+    '', requiredMessage(DAY), ({ id }) => !!id
+  ),
   locationId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(LOCATION)),
-  ...serviceIdSchema,
+  }).test(
+    '', requiredMessage(LOCATION), ({ id }) => !!id
+  ),
 })
 
 export const externalAppointmentSchema = yup.object({

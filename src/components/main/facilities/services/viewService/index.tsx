@@ -7,7 +7,7 @@ import PageHeader from '../../../../common/PageHeader';
 // constants block
 import { ParamsType } from '../../../../../interfacesTypes';
 import {
-  EDIT_SERVICE, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITY_EDIT_BREAD, FACILITY_SERVICES_ROUTE, SERVICES,
+  EDIT_SERVICE, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITY_SERVICES_ROUTE, FACILITY_SERVICE_EDIT_BREAD, SERVICES,
 } from '../../../../../constants';
 
 const AddFacilityServiceComponent: FC = (): JSX.Element => {
@@ -18,7 +18,7 @@ const AddFacilityServiceComponent: FC = (): JSX.Element => {
     <>
       <PageHeader
         title={EDIT_SERVICE}
-        path={[FACILITIES_BREAD, servicesBreadcrumb, FACILITY_EDIT_BREAD]}
+        path={[FACILITIES_BREAD, servicesBreadcrumb, FACILITY_SERVICE_EDIT_BREAD]}
       />
 
       <ServiceForm isEdit id={id} />

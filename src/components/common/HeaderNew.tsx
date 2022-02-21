@@ -19,7 +19,9 @@ const HeaderNew: FC = (): JSX.Element => {
   return (
     <AppBar className={classes.newAppBar}>
       <Toolbar className={classes.toolBar}>
-        <EMRLogo />
+        <Link to={ROOT_ROUTE}>
+          <EMRLogo />
+        </Link>
 
         <Box className={classes.newMenuBar}>
           <Link to={ROOT_ROUTE}>

@@ -1,6 +1,6 @@
 // packages block
-import { FC, useContext, useEffect } from "react";
 import { useParams } from "react-router";
+import { FC, useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Button, Dialog, DialogActions, Box, Grid, CircularProgress } from "@material-ui/core";
@@ -8,14 +8,15 @@ import { Button, Dialog, DialogActions, Box, Grid, CircularProgress } from "@mat
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import TimePicker from "../../../common/TimePicker";
+import CardComponent from "../../../common/CardComponent";
+import ViewDataLoader from "../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
 import { FacilityContext } from '../../../../context';
 import { ActionType } from "../../../../reducers/doctorReducer";
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
-  dateValidationMessage,
-  getDayFromTimestamps, getISOTime, renderLocations, renderServices, requiredMessage, setRecord, setTimeDay
+  getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
@@ -26,8 +27,6 @@ import {
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE,
   CREATE_SCHEDULE, SCHEDULE_NOT_FOUND, DOCTOR_SCHEDULE
 } from "../../../../constants";
-import ViewDataLoader from "../../../common/ViewDataLoader";
-import CardComponent from "../../../common/CardComponent";
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
@@ -38,7 +37,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     mode: "all",
     resolver: yupResolver(doctorScheduleSchema)
   });
-  const { reset, handleSubmit, setValue, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue } = methods;
 
   const [getSchedule, { loading: getScheduleLoading }] = useGetScheduleLazyQuery({
     fetchPolicy: "network-only",
@@ -64,7 +63,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
           endAt && setValue('endAt', getISOTime(endAt || ''))
           startAt && setValue('startAt', getISOTime(startAt || ''))
-          serviceId && serviceName && setValue('servicesIds', setRecord(serviceId, serviceName || ''))
+          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName || ''))
           setValue('day', setRecord(getDayFromTimestamps(startAt || ''), getDayFromTimestamps(startAt || '')))
           locationId && locationName && setValue('locationId', setRecord(locationId || '', locationName || ''))
         }
@@ -131,9 +130,9 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     }
   }, [doctorFacilityId, fetchAllLocationList, fetchAllServicesList, getSchedule, id, isEdit])
 
-  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, servicesIds, startAt, day }) => {
+  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, serviceId, startAt, day }) => {
     const { id: selectedLocation } = locationId || {}
-    const { id: selectedService } = servicesIds || {}
+    const { id: selectedService } = serviceId || {}
     const { id: dayName } = day || {}
 
     const scheduleInput = {
@@ -162,14 +161,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
       Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
   };
 
-  const {
-    day: { id: dayError } = {},
-    endAt: { message: endAtError } = {},
-    servicesIds: { id: serviceError } = {},
-    locationId: { id: locationError } = {},
-    startAt: { message: startAtError } = {},
-  } = errors;
-
   const disableSubmit = createScheduleLoading || updateScheduleLoading
 
   return (
@@ -190,7 +181,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                           value={EMPTY_OPTION}
                           label={PICK_DAY_TEXT}
                           name="day"
-                          error={dayError?.message}
                           options={WEEK_DAYS}
                         />
 
@@ -200,7 +190,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                               isRequired
                               label={START_TIME}
                               name="startAt"
-                              error={(startAtError && requiredMessage(START_TIME)) || ''}
                             />
                           </Grid>
 
@@ -209,7 +198,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                               isRequired
                               label={END_TIME}
                               name="endAt"
-                              error={(endAtError && dateValidationMessage(END_TIME, START_TIME)) || ''}
                             />
                           </Grid>
                         </Grid>
@@ -219,7 +207,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                           value={EMPTY_OPTION}
                           label={LOCATIONS_TEXT}
                           name="locationId"
-                          error={locationError?.message}
                           options={renderLocations(locationList)}
                         />
 
@@ -227,8 +214,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                           isRequired
                           value={EMPTY_OPTION}
                           label={APPOINTMENT_TYPE}
-                          name="servicesIds"
-                          error={serviceError?.message}
+                          name="serviceId"
                           options={renderServices(serviceList)}
                         />
                       </>
