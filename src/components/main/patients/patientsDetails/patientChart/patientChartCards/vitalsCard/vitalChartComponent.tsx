@@ -86,8 +86,8 @@ const VitalsChartingTable: FC = (): JSX.Element => {
                   </Box>
                 ))}
               </Box>
-
             </Box>
+
             <Box display="flex" pr={3}>
               {ProfileAdditionalDetails.map((item, index) => (
                 <Box key={`${item.title}-${index}`}>
@@ -102,15 +102,14 @@ const VitalsChartingTable: FC = (): JSX.Element => {
         </Box>
       </Box>
 
-      <Box pb={3} />
-      <Box pb={2} pl={3} display='flex'>
-        <Box pr={1} >
+      <Box pt={3} pb={2} pl={3} display='flex'>
+        <Box pr={1}>
           <Button color="secondary" variant="contained">
             {GROWTH_CHART}
           </Button>
         </Box>
 
-        <Box pr={1} >
+        <Box>
           <Button color="secondary" variant="contained">
             {PDF_TEXT}
           </Button>

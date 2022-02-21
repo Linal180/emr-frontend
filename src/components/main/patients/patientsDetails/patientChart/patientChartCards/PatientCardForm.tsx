@@ -11,15 +11,8 @@ import InputController from "../../../../../../controller";
 import ToggleButtonComponent from "../../../../../common/ToggleButtonComponent";
 
 const PatientCardForm = (): JSX.Element => {
-
-  const methods = useForm<any>({
-    mode: "all",
-  });
-
-  const [state, setState] = useState({
-    one: false,
-  })
-
+  const methods = useForm<any>({ mode: "all", });
+  const [state, setState] = useState({ one: false, })
   const { facilityList } = useContext(ListContext)
 
   const handleChange = (name: string) => (
@@ -28,10 +21,8 @@ const PatientCardForm = (): JSX.Element => {
     setState({ ...state, [name]: event.target.checked });
   };
 
-
-
   return (
-    <Box maxHeight="calc(100vh - 300px)" className="overflowY-auto" >
+    <Box maxHeight="calc(100vh - 300px)" className="overflowY-auto">
       <FormProvider {...methods}>
         <form>
           <Card>
@@ -72,6 +63,7 @@ const PatientCardForm = (): JSX.Element => {
                   options={renderFacilities(facilityList)}
                 />
               </Grid>
+
               <Grid item md={12} sm={12} xs={12}>
                 <Selector
                   label={''}
@@ -87,6 +79,7 @@ const PatientCardForm = (): JSX.Element => {
                   controllerLabel="For how many days?"
                 />
               </Grid>
+
               <Grid item md={12} sm={12} xs={12}>
                 <DatePicker isRequired name="dob" label={DOB} error={''} />
               </Grid>
@@ -109,7 +102,7 @@ const PatientCardForm = (): JSX.Element => {
           </Card>
         </form>
       </FormProvider>
-    </Box >
+    </Box>
   );
 };
 

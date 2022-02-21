@@ -71,7 +71,7 @@ const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, c
               return (
                 <Box pb={2}>
                   <Box display="flex" justifyContent="space-between">
-                    <Typography className={classes.cardContentHeading} key={`${item}-${index}`} >{title}</Typography>
+                    <Typography className={classes.cardContentHeading} key={`${item}-${index}`}>{title}</Typography>
                     <Typography className={classes.cardContentDate}>{date}</Typography>
                   </Box>
 

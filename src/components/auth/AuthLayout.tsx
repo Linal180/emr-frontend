@@ -8,7 +8,7 @@ import { useLoginStyles } from "../../styles/loginStyles";
 import { EMRLogo, LoginSideImage } from "../../assets/svgs";
 import {
   ADMIN_PORTAL_NEW_MESSAGE, FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD_TEXT, LOGIN_ROUTE, RESET_PASSWORD_ROUTE,
-  RESET_PASSWORD_TEXT, SIGN_IN
+  RESET_PASSWORD_TEXT, ROOT_ROUTE, SIGN_IN
 } from "../../constants";
 
 const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
@@ -18,7 +18,7 @@ const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
 
   if (pathname === RESET_PASSWORD_ROUTE) {
     title = RESET_PASSWORD_TEXT
-  } else if (pathname === LOGIN_ROUTE) {
+  } else if (pathname === LOGIN_ROUTE || pathname === ROOT_ROUTE) {
     title = SIGN_IN
   } else if (pathname === FORGET_PASSWORD_ROUTE) {
     title = FORGOT_PASSWORD_TEXT
