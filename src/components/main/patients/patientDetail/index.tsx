@@ -64,7 +64,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
       if (getAttachment) {
         const { preSignedUrl } = getAttachment
-        console.log(preSignedUrl, "----")
         preSignedUrl && dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
       }
     },

@@ -60,7 +60,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
   const handleMediaSubmit = async (mediaData: Pick<CreateAttachmentInput, "description" | "title" | "subTitle">) => {
     const { description, title, subTitle } = mediaData
     setAttachmentData({ description, title, subTitle })
-    console.log("------------CREATE-------------")
+
     await createAttachmentData({
       variables: {
         createAttachmentInput: {

@@ -62,7 +62,6 @@ const EditMediaModel: FC<MediaModalTypes> = (props): JSX.Element => {
 
   const handleMediaSubmit = async (mediaData: ICreateMediaInput) => {
     setLoading(true)
-    console.log("------------UPDATE-------------")
 
     await updateAttachmentData({
       variables: {
@@ -73,6 +72,7 @@ const EditMediaModel: FC<MediaModalTypes> = (props): JSX.Element => {
         }
       }
     })
+
     setLoading(false)
   }
 
