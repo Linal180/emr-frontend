@@ -1,14 +1,14 @@
 // packages block
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { Box, Grid, Typography } from "@material-ui/core";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 // components block
 import Alert from "../../../common/Alert";
 import DoctorScheduleModal from "./ScheduleSlotModal";
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from "../../../common/ViewDataLoader";
-import DoctorScheduleBox from "../../../common/DoctorScheduleBox";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import DoctorScheduleBox from "../../../common/DoctorScheduleBox";
 // interfaces, graphql, constants block
 import { getDaySchedules } from "../../../../utils";
 import { AddSlotIcon } from '../../../../assets/svgs';
@@ -47,7 +47,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
 
         if (schedules && response) {
           const { status } = response || {}
-          
+
           if (status && status === 200 && schedules) {
             if (schedules.length > 0) {
               dispatch({
