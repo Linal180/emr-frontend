@@ -1,5 +1,6 @@
 // packages block
-import { Box, Button, Card, colors, Grid, Typography } from "@material-ui/core";
+import { useState } from "react";
+import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
 import { Add, FilterList } from '@material-ui/icons';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
@@ -7,15 +8,12 @@ import {
   DayView, WeekView, AppointmentTooltip
 } from '@devexpress/dx-react-scheduler-material-ui';
 // components block
-import PageHeader from "../../common/PageHeader";
-// constants block
-import { DASHBOARD_TEXT } from "../../../constants";
-import { GRAY_SIX } from "../../../theme";
-import { useState } from "react";
 import AppointmentCard from "./AppointmentCard";
-import CardComponent from "../../common/CardComponent";
-import { Skeleton } from "@material-ui/lab";
+import PageHeader from "../../common/PageHeader";
 import ViewAppointmentLoader from "../../common/ViewAppointmentLoader";
+// constants block
+import { GRAY_SIX } from "../../../theme";
+import { DASHBOARD_TEXT } from "../../../constants";
 
 const appointments = [
   {

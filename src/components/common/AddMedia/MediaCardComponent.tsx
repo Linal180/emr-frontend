@@ -11,7 +11,7 @@ import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/
 import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
 import { FileIcon } from "../../../assets/svgs";
 import { BLUE_ONE } from "../../../theme";
-import { CameraAlt, CameraAltOutlined } from "@material-ui/icons";
+import { CameraAlt } from "@material-ui/icons";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, setAttachment, setAttachments, attachments, allAttachments, imageSide, notDescription }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)

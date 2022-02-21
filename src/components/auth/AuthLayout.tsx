@@ -2,15 +2,18 @@
 import { FC } from "react";
 import { Box, Typography } from "@material-ui/core";
 // constants, login styles and interfaces block
-import { useLoginStyles } from "../../styles/loginStyles";
-import { ADMIN_PORTAL_NEW_MESSAGE, FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD_TEXT, LOGIN_ROUTE, RESET_PASSWORD_ROUTE, RESET_PASSWORD_TEXT, SIGN_IN } from "../../constants";
-import { Children } from "../../interfacesTypes";
-import { EMRLogo, LoginSideImage } from "../../assets/svgs";
 import history from "../../history";
+import { Children } from "../../interfacesTypes";
+import { useLoginStyles } from "../../styles/loginStyles";
+import { EMRLogo, LoginSideImage } from "../../assets/svgs";
+import {
+  ADMIN_PORTAL_NEW_MESSAGE, FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD_TEXT, LOGIN_ROUTE, RESET_PASSWORD_ROUTE,
+  RESET_PASSWORD_TEXT, SIGN_IN
+} from "../../constants";
 
 const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
   const classes = useLoginStyles();
-  const pathname = history.location.pathname
+  const { location: { pathname } } = history;
   let title = ''
 
   if (pathname === RESET_PASSWORD_ROUTE) {
@@ -30,6 +33,7 @@ const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
             <Typography variant="body1" className={classes.loginDescription}>{ADMIN_PORTAL_NEW_MESSAGE}</Typography>
           </Box>
         </Box>
+
         <Box className={classes.sideLoginImage}>
           <LoginSideImage />
         </Box>
