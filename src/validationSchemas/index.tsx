@@ -17,8 +17,8 @@ import {
   ZIP_REGEX, ZIP_VALIDATION_MESSAGE, SEX_AT_BIRTH, PATIENT, PROVIDER, DAY, LOCATION,
   STRING_REGEX, MIDDLE_NAME, PREVIOUS_FIRST_NAME, MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
-  PRIMARY_INSURANCE, SECONDARY_INSURANCE, INSURANCE_PLAN_TYPE, ADDRESS_2, PREFERRED_PHARMACY,
-  APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, ISSUE_DATE, REGISTRATION_DATE,
+  PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, ADDRESS_2,
+  APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, INSURANCE_PLAN_TYPE, PREFERRED_PHARMACY,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -233,9 +233,9 @@ const licenseDateSchema = {
 }
 
 const scheduleTimeSchema = {
-  startAt: yup.string().test(value => !!value),
+  startAt: yup.string().test('', invalidMessage(START_TIME), value => !!value),
 
-  endAt: yup.string().test((value, { parent: { startAt } }) => {
+  endAt: yup.string().test('', invalidMessage(END_TIME), (value, { parent: { startAt } }) => {
     if (!value) return false
 
     return timeValidation(value, startAt)
@@ -536,16 +536,20 @@ export const appointmentSchema = yup.object({
 })
 
 export const doctorScheduleSchema = yup.object({
+  ...serviceIdSchema,
   ...scheduleTimeSchema,
   day: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(DAY)),
+  }).test(
+    '', requiredMessage(DAY), ({ id }) => !!id
+  ),
   locationId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(LOCATION)),
-  ...serviceIdSchema,
+  }).test(
+    '', requiredMessage(LOCATION), ({ id }) => !!id
+  ),
 })
 
 export const externalAppointmentSchema = yup.object({

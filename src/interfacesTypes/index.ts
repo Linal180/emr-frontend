@@ -10,7 +10,8 @@ import {
   CreatePatientItemInput, Ethnicity, Genderidentity, Homebound, Maritialstatus, PrimaryDepartment,
   Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, ServicesPayload,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient,
-  UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload, CreateScheduleInput, Schedule, CreateExternalAppointmentItemInput
+  UpdateFacilityTimeZoneInput, CreateAppointmentInput, ContactsPayload, PatientsPayload,
+  CreateScheduleInput, Schedule, CreateExternalAppointmentItemInput
 } from "../generated/graphql";
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -440,7 +441,7 @@ export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "rol
   & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "locationId" | "servicesIds">
-  & { locationId: SelectorOption } & { servicesIds: SelectorOption } & { day: SelectorOption };
+  & { locationId: SelectorOption } & { serviceId: SelectorOption } & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingEmail: string;
