@@ -24,7 +24,7 @@ const PatientStepper = ({ activeStep }: StepperComponentProps) => {
       {steps.map(({ title, subTitle }, index) => {
         return (
           <Step key={index}>
-            <StepLabel StepIconComponent={CustomStepIcon} >
+            <StepLabel StepIconComponent={CustomStepIcon}>
               <Typography variant="h5" component="h5">
                 {title}
               </Typography>

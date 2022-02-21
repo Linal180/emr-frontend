@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK, BLACK_ONE, BLUE_SEVEN, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
+import { BLACK, BLACK_ONE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
@@ -98,6 +98,23 @@ export const useProfileDetailsStyles = makeStyles(() =>
       "& .MuiPopover-paper": {
         minHeight: 300
       }
+    },
+
+    profileCardMasonry: {
+      columnMinWidth: '30%',
+      columnCount: 3,
+
+      [theme.breakpoints.down('md')]: {
+        columnCount: 2,
+      },
+      [theme.breakpoints.down('sm')]: {
+        columnCount: 1,
+      },
+    },
+
+    profileCardItemMasonry: {
+      breakInside: 'avoid',
+      margin: '24px 5px'
     }
   })
 );

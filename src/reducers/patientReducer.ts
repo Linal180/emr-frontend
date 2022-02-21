@@ -10,6 +10,7 @@ export interface State {
   activeStep: number;
   openDelete: boolean;
   searchQuery: string;
+  isEditCard: boolean;
   kinContactId: string;
   attachmentUrl: string;
   basicContactId: string;
@@ -38,6 +39,7 @@ export const initialState: State = {
   searchQuery: '',
   attachmentId: '',
   kinContactId: '',
+  isEditCard: false,
   attachmentUrl: '',
   openDelete: false,
   basicContactId: '',
@@ -61,13 +63,14 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_EMPLOYER_ID = 'setEmployerId',
   SET_TOTAL_PAGES = 'setTotalPages',
+  SET_IS_EDIT_CARD = 'setIsEditCard',
   SET_SEARCH_QUERY = 'setSearchQuery',
   SET_PATIENT_DATA = 'setPatientData',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_KIN_CONTACT_ID = 'setKinContactID',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
-  SET_BASIC_CONTACT_ID = 'setBasicContactID',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
+  SET_BASIC_CONTACT_ID = 'setBasicContactID',
   SET_ATTACHMENTS_DATA = 'setAttachmentsData',
   SET_DELETE_PATIENT_ID = 'setDeletePatientId',
   SET_GUARDIAN_CONTACT_ID = 'setGuardianContactID',
@@ -84,14 +87,17 @@ export type Action =
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
+  | { type: ActionType.SET_IS_EDIT_CARD; isEditCard: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
+  | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_BASIC_CONTACT_ID; basicContactId: string }
   | { type: ActionType.SET_DELETE_PATIENT_ID; deletePatientId: string }
   | { type: ActionType.SET_GUARDIAN_CONTACT_ID; guardianContactId: string }
   | { type: ActionType.SET_PATIENTS, patients: PatientsPayload['patients'] }
+  | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string | undefined }
   | { type: ActionType.SET_EMERGENCY_CONTACT_ID; emergencyContactId: string }
   | { type: ActionType.SET_GUARANTOR_CONTACT_ID; guarantorContactId: string }
@@ -231,6 +237,11 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         attachmentId: action.attachmentId
+      }
+      case ActionType.SET_IS_EDIT_CARD:
+      return {
+        ...state,
+        isEditCard: action.isEditCard
       }
   }
 };

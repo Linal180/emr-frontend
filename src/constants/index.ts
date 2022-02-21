@@ -41,6 +41,7 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 };
+export const VIEW = "View";
 export const ALL_STAFF = "Staff";
 export const ADD = "Add";
 export const MINUTES = "minutes";
@@ -57,6 +58,7 @@ export const UPDATE_SCHEDULE = "Update Schedule";
 export const CREATE_SERVICE = "Create Service";
 export const CREATE_FACILITY = "Create facility";
 export const CREATE_LOCATION = "Create location";
+export const BASIC_CALENDAR = "Basic Calendar";
 export const APPOINTMENT_TYPE = "Appointment Type";
 export const DOCTOR_NOT_FOUND = "Doctor not found!";
 export const PATIENT_CONDITION = "Patient Condition";
@@ -113,6 +115,7 @@ export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
 export const VITALS_TEXT = "Vitals";
+export const VITALS_ROUTE = "/vitals";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const ALLERGIES_TEXT = "Allergies";
@@ -153,6 +156,8 @@ export const DEA_TERM_DATE = "DEA Term Date";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
 export const EMAIL = "Email";
+export const GROWTH_CHART = "Growth Chart";
+export const PDF_TEXT = "PDF";
 export const PHONE = "Phone";
 export const FAX = "Fax";
 export const ZIP_CODE = "Zip code";
@@ -227,6 +232,7 @@ export const LAST_APPOINTMENT = "Last Appointment";
 export const RESET = "Reset";
 export const REASON = "Reason";
 export const APPOINTMENT = "Appointment";
+export const ALL_APPOINTMENTS = "All Appointments";
 export const DAY = "Day";
 export const STARTING_TIME = "Starting time";
 export const ENDING_TIME = "Ending time";
@@ -389,7 +395,7 @@ export const FIRST_NAME_USED = "First Name Used";
 export const PREFERRED_NAME = "Preferred Name";
 export const PREVIOUS_FIRST_NAME = "Previous First Name";
 export const PREVIOUS_LAST_NAME = "Previous Last Name";
-export const MOTHERS_MAIDEN_NAME = "Mothers Maiden Name";
+export const MOTHERS_MAIDEN_NAME = "Mother's Maiden Name";
 export const LEGAL_SEX = "Legal Sex";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const ADDRESS_CTA = "Address (CTA)";
@@ -414,7 +420,7 @@ export const MARITAL_STATUS = "Marital Status"
 export const SEX_AT_BIRTH = "Sex At Birth"
 export const SEXUAL_ORIENTATION = "Sexual Orientation"
 export const USUAL_PROVIDER_ID = "Usual Provider"
-export const PRONOUNS = "pronouns"
+export const PRONOUNS = "Pronouns"
 export const RACE = "Race"
 export const RELOAD = "Reload Page"
 export const RELATIONSHIP = "Relationship"
@@ -1049,3 +1055,144 @@ export const WEEK_DAYS: SelectorOption[] = [
 
 // NEWAPPBAR-Menu
 
+export const dummyVitalsChartingList = [
+  {
+    id: 1,
+    firstName: "Smith",
+    lastName: "John",
+    email: "john60@alxtel.com",
+    phone: +14842634724,
+    specialty: "Physician Assistant",
+    code: 45025,
+  },
+  {
+    id: 2,
+    firstName: "Helmet",
+    lastName: "Smith",
+    email: "smith0@alxtel.com",
+    phone: +16102458096,
+    specialty: "Pharmacist",
+    code: 65065,
+  },
+  {
+    id: 3,
+    firstName: "Ala",
+    lastName: "Dude",
+    email: "dude34@alxtel.com",
+    phone: +14844493827,
+    specialty: "Periodontics",
+    code: 25525,
+  },
+  {
+    id: 4,
+    firstName: "Harry",
+    lastName: "Steve",
+    email: "harry45@alxtel.com",
+    phone: +14845219734,
+    specialty: "Pediatric Dentist",
+    code: 88025,
+  },
+  {
+    id: 5,
+    firstName: "Chris",
+    lastName: "Handle",
+    email: "dakeve00@alxtel.com",
+    phone: +18143519562,
+    specialty: "Pediatric Dermatology",
+    code: 12025,
+  },
+  {
+    id: 6,
+    firstName: "Bolt",
+    lastName: "Tick",
+    email: "bolt@alxtel.com",
+    phone: +14845219734,
+    specialty: "Neurology",
+    code: 67025,
+  },
+  {
+    id: 7,
+    firstName: "Lara",
+    lastName: "Bell",
+    email: "lara@alxtel.com",
+    phone: +14842989327,
+    specialty: "Gastroenterology",
+    code: 33325,
+  },
+  {
+    id: 8,
+    firstName: "Hymen",
+    lastName: "Stoke",
+    email: "stoke@alxtel.com",
+    phone: +16102458766,
+    specialty: "Neurology",
+    code: 19825,
+  },
+  {
+    id: 9,
+    firstName: "Black",
+    lastName: "Pointer",
+    email: "pointer@alxtel.com",
+    phone: +15854380126,
+    specialty: "Physician Assistant",
+    code: 45025,
+  },
+  {
+    id: 10,
+    firstName: "Mira",
+    lastName: "Khan",
+    email: "khan39@alxtel.com",
+    phone: +16102458766,
+    specialty: "Pediatric Dentist",
+    code: 89025,
+  },
+]
+
+export const dummyAppointmentData = [
+  {
+    appTime: "16:30 - 17:00",
+    timeVariant: "PM",
+    patientName: "John Doe",
+    patientDOB: "12-01-1990",
+    patientTel: "(333)123-4567",
+    patientStatus: "Status",
+    patientElg: "Eligibility Issue",
+  },
+  {
+    appTime: "18:30 - 19:00",
+    timeVariant: "PM",
+    patientName: "John Doe",
+    patientDOB: "12-01-1990",
+    patientTel: "(333)123-4567",
+    patientStatus: "Ready for Staff",
+    patientElg: "Eligibility Issue",
+  },
+]
+
+export const PATIENT_CHARTING_DATA = [
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+  {
+    title: "Allergies",
+    description: "Lorem ipsum",
+    date: "25-11-22"
+  },
+]

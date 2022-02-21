@@ -485,7 +485,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     gender: { id: genderError } = {},
     pronouns: { id: pronounsError } = {},
     suffix: { message: suffixError } = {},
-    facilityId: { id: facilityError } = {},
     ethnicity: { id: ethnicityError } = {},
     sexAtBirth: { id: sexAtBirthError } = {},
     language: { message: languageError } = {},
@@ -1011,7 +1010,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
-                          error={facilityError?.message || ""}
                           options={renderFacilities(facilityList)}
                         />
                       </Grid>

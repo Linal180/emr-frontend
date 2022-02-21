@@ -3,7 +3,6 @@ import { FC, Reducer, useReducer, MouseEvent } from "react";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Card, CardContent, CardHeader, IconButton, Box, Typography, Menu } from "@material-ui/core";
 // components block
-import CardSelector from "../../../../../common/CardSelector";
 // interfaces/types block
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -11,9 +10,10 @@ import {
 import { AddChartingIcon } from "../../../../../../assets/svgs";
 import { ChartingCardComponentType } from "../../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../../styles/patientCharting";
-import { EMPTY_OPTION, MAPPED_WIDGETS } from "../../../../../../constants";
+import history from "../../../../../../history";
+import PatientCardForm from "./PatientCardForm";
 
-const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon }): JSX.Element => {
+const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon, vitalsCard }): JSX.Element => {
   const classes = usePatientChartingStyles()
   const [{ anchorEl }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const isMenuOpen = Boolean(anchorEl);
@@ -25,6 +25,10 @@ const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData,
   const onSubmit: SubmitHandler<any> = () => { }
   const handleChartingCardsMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
   const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
+  const handleVitalsCard = () => {
+    history.push(`./chart/vitals`)
+  };
+
 
   return (
     <FormProvider {...methods}>
@@ -34,7 +38,7 @@ const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData,
             action={
               hasAdd && (
                 <Box display="flex" alignItems="center">
-                  <IconButton disabled={disableAddIcon} onClick={handleChartingCardsMenuOpen} aria-label="patient-charting">
+                  <IconButton disabled={disableAddIcon} onClick={vitalsCard ? handleVitalsCard : handleChartingCardsMenuOpen} aria-label="patient-charting">
                     <AddChartingIcon />
                   </IconButton>
                   <Menu
@@ -48,11 +52,12 @@ const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData,
                     onClose={handleMenuClose}
                     className={classes.dropdown}
                   >
-                    <CardSelector
+                    {/* <CardSelector
                       value={EMPTY_OPTION}
                       name="addWidget"
                       options={MAPPED_WIDGETS}
-                    />
+                    /> */}
+                    <PatientCardForm />
                   </Menu>
                 </Box>
               )
@@ -84,4 +89,4 @@ const PatientCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData,
 }
 
 
-export default PatientCardComponent;
+export default VitalCardComponent;
