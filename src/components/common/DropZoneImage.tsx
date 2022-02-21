@@ -13,7 +13,7 @@ import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { MediaPatientDataType, DropzoneImageType } from "../../interfacesTypes";
 
 const DropzoneImage: FC<DropzoneImageType> = ({
-  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reset
+  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reset, isProfile
 }): JSX.Element => {
   const classes = useDropzoneStyles();
   const [loading, setLoading] = useState<boolean>(false);
@@ -113,7 +113,6 @@ const DropzoneImage: FC<DropzoneImageType> = ({
           {isDisabled && <Box className={classes.disabledDropzone} />}
 
           <img src={attachment.url} alt="option icon" />
-
           {!isDisabled && (
             <Box className={classes.updateOverlay}>
               <Box>

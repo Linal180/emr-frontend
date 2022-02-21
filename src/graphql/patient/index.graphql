@@ -92,7 +92,7 @@ query FindAllPatient($patientInput: PatientInput!) {
         typeId
         key
         url
-        isProfile
+        title
         createdAt
         updatedAt
       }
@@ -230,7 +230,7 @@ query GetPatient($getPatient: GetPatient!) {
         typeId
         key
         url
-        isProfile
+        title
         createdAt
         updatedAt
       }

@@ -1,24 +1,27 @@
 // packages block
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useReducer, Reducer } from "react";
+import dotenv from 'dotenv';
 import { useForm } from "react-hook-form";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton } from "@material-ui/core";
-import dotenv from 'dotenv';
+import {
+  Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton
+} from "@material-ui/core";
 // components block
 import Alert from "../Alert";
 import DropzoneImage from "..//DropZoneImage";
 // constants and interfaces block
 import { ADD } from "../../../constants";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
-import { CreateAttachmentInput, useCreateAttachmentDataMutation } from "../../../generated/graphql";
+import { CreateAttachmentInput, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
+import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer"
+
 dotenv.config()
 
 const AddImageModal: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, isProfile, preSignedUrl
 }): JSX.Element => {
-  const [fileUrl, setFileUrl] = useState<string>('');
-  const [, setAttachmentData] = useState<Pick<CreateAttachmentInput, "description" | "title" | "subTitle">>();
-  const [attachmentId, setAttachmentId] = useState<string>('');
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  const { fileUrl, attachmentId } = state;
 
   const { handleSubmit, reset } = useForm<ICreateMediaInput>();
 
@@ -26,49 +29,50 @@ const AddImageModal: FC<MediaModalTypes> = ({
     setOpen && setOpen(!isOpen);
     setEdit(false);
     reset();
-    setFileUrl('');
+    dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
   };
 
   useEffect(() => {
-    if (isEdit && attachment) {
-      preSignedUrl && setFileUrl(preSignedUrl)
+    if (isEdit && attachment && preSignedUrl) {
+      dispatch({ type: ActionType.SET_FILE_URL, fileUrl: preSignedUrl })
     }
   }, [attachment, isEdit, preSignedUrl]);
 
-  const [createAttachmentData, { loading: attachmentLoading }] = useCreateAttachmentDataMutation({
+  const [removeAttachment, { loading: deleteAttachmentLoading }] = useRemoveAttachmentDataMutation({
     onError({ message }) {
-      Alert.error(message)
+      Alert.error(message);
     },
 
     onCompleted(data) {
-      if (data) {
-        const { createAttachmentData: { response, attachment } } = data;
+      const { removeAttachmentData } = data
+
+      if (removeAttachmentData) {
+        const { response } = removeAttachmentData || {}
+
         if (response) {
           const { status, message } = response
 
-          if (status && status === 200 && attachment && message) {
-            Alert.success(message);
-            setAttachmentId(attachment.id)
-          } else {
-            Alert.error(message || 'Something went wrong while creating location');
+          if (message && status && status === 200) {
+            Alert.success(message)
+            dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
           }
         }
       }
     }
   })
 
-  const handleMediaSubmit = async (mediaData: Pick<CreateAttachmentInput, "description" | "title" | "subTitle">) => {
-    const { description, title, subTitle } = mediaData
-    setAttachmentData({ description, title, subTitle })
-
-    await createAttachmentData({
-      variables: {
-        createAttachmentInput: {
-          description, subTitle, title, url: "", type: imageModuleType, typeId: itemId, isProfile
-        },
-      },
-    });
+  const handleMediaSubmit = async (mediaData: Pick<CreateAttachmentInput, "title">) => {
+    const { title } = mediaData
+    dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: { title } })
   };
+
+  const handleDelete = async () => {
+    const { id } = attachment || {}
+
+    id && await removeAttachment({
+      variables: { removeAttachment: { id } }
+    })
+  }
 
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="image-dialog-title" aria-describedby="image-dialog-description" maxWidth="sm" fullWidth>
@@ -83,7 +87,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
                 <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
                 <Box className="media-overlay">
-                  <IconButton aria-label="delete" color="secondary" onClick={() => setFileUrl('')}>
+                  <IconButton aria-label="delete" color="secondary" onClick={handleDelete}>
                     <DeleteIcon />
                   </IconButton>
                 </Box>
@@ -106,10 +110,11 @@ const AddImageModal: FC<MediaModalTypes> = ({
         <DialogActions>
           <Box px={2} py={1} display="flex" justifyContent="space-between" width="100%">
             <Box display="flex" flex={1} justifyContent="flex-end">
-              <Button variant="contained" color="primary" type="submit" disabled={attachmentLoading}>
-                {attachmentLoading && (
+              <Button variant="contained" color="primary" type="submit" disabled={deleteAttachmentLoading}>
+                {deleteAttachmentLoading &&
                   <CircularProgress size={20} />
-                )}
+                }
+
                 {ADD}
               </Button>
             </Box>

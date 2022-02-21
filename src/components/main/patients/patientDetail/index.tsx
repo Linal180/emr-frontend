@@ -24,8 +24,8 @@ import {
   AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
 } from "../../../../assets/svgs";
 import {
-  ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART,
-  PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
+  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS,
+  PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -85,7 +85,8 @@ const PatientDetailsComponent = (): JSX.Element => {
         if (getPatient) {
           const { patient } = getPatient;
           const { attachments } = patient || {}
-          const profilePicture = attachments && attachments.filter(attachment => attachment.isProfile)[0]
+          const profilePicture = attachments && attachments.filter(attachment =>
+            attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
           const { id: attachmentId, } = profilePicture || {}
 
           attachmentId && dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })

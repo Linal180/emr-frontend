@@ -33,16 +33,11 @@ const notRequiredMatches = (message: string, regex: RegExp) => {
       })
 }
 
-const requiredMatches = (message: string, regex: RegExp) => {
+const requiredMatches = (label: string, message: string, regex: RegExp) => {
   return yup.string()
+    .test('', requiredMessage(label), value => !!value)
     .test(
-      '', message, value => {
-        if (!value) {
-          return false
-        }
-
-        return regex.test(value)
-      })
+      '', message, value => regex.test(value || ''))
 }
 
 const notRequiredStringOnly = (label: string) => {
@@ -91,8 +86,7 @@ const mammographySchema = {
 }
 
 const facilityCodeSchema = {
-  code: yup.string().matches(FACILITY_CODE_REGEX, FACILITY_CODE_VALIDATION_MESSAGE)
-    .required(requiredMessage(CODE))
+  code: requiredMatches(CODE, FACILITY_CODE_VALIDATION_MESSAGE, FACILITY_CODE_REGEX)
 }
 
 const dobSchema = {
@@ -571,7 +565,7 @@ export const externalPatientSchema = yup.object({
   address: requiredStringOnly(ADDRESS, 5, 50),
   address2: notRequiredStringOnly(ADDRESS_2),
   language: notRequiredStringOnly(PREFERRED_LANGUAGE),
-  zipCode: requiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
+  zipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   preferredPharmacy: notRequiredStringOnly(PREFERRED_PHARMACY),
   phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
   emergencyPhone: notRequiredPhone(PHONE),

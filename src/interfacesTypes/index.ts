@@ -370,7 +370,7 @@ export interface MappedGenderInterface {
 export interface PickerProps {
   name: string;
   label: string;
-  error: string;
+  error?: string;
   isRequired?: boolean
 }
 

@@ -7,15 +7,15 @@ import {
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../../../../utils";
-import { getDate } from "../../../../../../../utils";
-import { Patient } from "../../../../../../../generated/graphql";
-import { ProfileUserIcon } from "../../../../../../../assets/svgs";
+import { renderTh } from "../../../../../../utils";
+import { getDate } from "../../../../../../utils";
+import { Patient } from "../../../../../../generated/graphql";
+import { ProfileUserIcon } from "../../../../../../assets/svgs";
 import {
   EMAIL, PHONE, NAME, SPECIALTY, FACILITY, dummyVitalsChartingList, GROWTH_CHART, PDF_TEXT
-} from "../../../../../../../constants";
-import InputController from "../../../../../../../controller";
-import { useProfileDetailsStyles } from "../../../../../../../styles/profileDetails";
+} from "../../../../../../constants";
+import InputController from "../../../../../../controller";
+import { useProfileDetailsStyles } from "../../../../../../styles/profileDetails";
 
 const VitalsChartingTable: FC = (): JSX.Element => {
   const classes = useProfileDetailsStyles()

@@ -3,11 +3,11 @@ import { FC } from "react";
 import { Link } from "react-router-dom";
 import { Box, Typography } from "@material-ui/core";
 // components block
-import Breadcrumb from "../../../../common/Breadcrumb";
+import Breadcrumb from "../../../common/Breadcrumb";
 // interfaces/types block
-import { PageBackIcon } from "../../../../../assets/svgs";
-import { PATIENTS_ROUTE } from "../../../../../constants";
-import { PageHeaderProps } from "../../../../../interfacesTypes";
+import { PageBackIcon } from "../../../../assets/svgs";
+import { PATIENTS_ROUTE } from "../../../../constants";
+import { PageHeaderProps } from "../../../../interfacesTypes";
 
 const ChartingPageHeader: FC<PageHeaderProps> = ({ title, path, id }): JSX.Element => {
   return (

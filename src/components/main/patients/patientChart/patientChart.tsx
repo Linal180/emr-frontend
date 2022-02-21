@@ -6,12 +6,12 @@ import { Avatar, Box, Button, Grid, InputAdornment, TextField } from "@material-
 import PatientChartCards from "./patientChartCards";
 // constants, history, styling block
 import { Search } from "@material-ui/icons";
-import { getDate } from "../../../../../utils";
-import { GRAY, WHITE } from "../../../../../theme";
-import { Patient } from "../../../../../generated/graphql";
-import { ProfileUserIcon } from "../../../../../assets/svgs";
-import { SEARCH_PLACEHOLDER } from "../../../../../constants";
-import { useProfileDetailsStyles } from "../../../../../styles/profileDetails";
+import { getDate } from "../../../../utils";
+import { GRAY, WHITE } from "../../../../theme";
+import { Patient } from "../../../../generated/graphql";
+import { ProfileUserIcon } from "../../../../assets/svgs";
+import { SEARCH_PLACEHOLDER } from "../../../../constants";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()

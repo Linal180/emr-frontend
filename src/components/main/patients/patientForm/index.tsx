@@ -7,10 +7,10 @@ import {
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import PatientController from "../controllers";
 import Selector from '../../../common/Selector';
-import PhoneField from '../../../common/PhoneInput';
 import DatePicker from "../../../common/DatePicker";
+import PhoneField from '../../../common/PhoneInput';
+import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
@@ -64,7 +64,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(extendedPatientSchema)
   });
-  const { handleSubmit, setValue, watch, reset, formState: { errors } } = methods;
+  const { handleSubmit, setValue, watch, reset } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
   } = watch();
@@ -106,7 +106,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           if (doctorPatients) {
             const currentDoctor = doctorPatients.map(doctorPatient => {
               const { currentProvider, doctor } = doctorPatient
-              
+
               return currentProvider ? doctor : null
             })[0];
 
@@ -478,81 +478,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;
 
-  const {
-    race: { id: raceError } = {},
-    ssn: { message: ssnError } = {},
-    dob: { message: dobError } = {},
-    gender: { id: genderError } = {},
-    pronouns: { id: pronounsError } = {},
-    suffix: { message: suffixError } = {},
-    ethnicity: { id: ethnicityError } = {},
-    sexAtBirth: { id: sexAtBirthError } = {},
-    language: { message: languageError } = {},
-    lastName: { message: lastNameError } = {},
-    firstName: { message: firstNameError } = {},
-    middleName: { message: middleNameError } = {},
-    maritialStatus: { id: maritalStatusError } = {},
-    genderIdentity: { id: genderIdentityError } = {},
-    deceasedDate: { message: deceasedDateError } = {},
-    prefferedName: { message: preferredNameError } = {},
-    firstNameUsed: { message: firstNameUsedError } = {},
-    sexualOrientation: { id: sexualOrientationError } = {},
-    primaryDepartment: { id: primaryDepartmentError } = {},
-    previouslastName: { message: previousLastNameError } = {},
-    registrationDate: { message: registrationDateError } = {},
-    motherMaidenName: { message: motherMaidenNameError } = {},
-    previousFirstName: { message: previousFirstNameError } = {},
-    guarantorRelationship: { id: guarantorRelationshipError } = {},
-    statementNoteDateTo: { message: statementNoteDateToError } = {},
-    registrationDepartment: { id: registrationDepartmentError } = {},
-    statementNoteDateFrom: { message: statementNoteDateFromError } = {},
-
-    basicCity: { message: basicCityError } = {},
-    basicState: { message: basicStateError } = {},
-    basicEmail: { message: basicEmailError } = {},
-    basicPhone: { message: basicPhoneError } = {},
-    basicMobile: { message: basicMobileError } = {},
-    basicZipCode: { message: basicZipCodeError } = {},
-    basicCountry: { message: basicCountryError } = {},
-    basicAddress: { message: basicAddressError } = {},
-    basicAddress2: { message: basicAddress2Error } = {},
-
-    guarantorSsn: { message: guarantorSsnError } = {},
-    guarantorCity: { message: guarantorCityError } = {},
-    guarantorState: { message: guarantorStateError } = {},
-    guarantorPhone: { message: guarantorPhoneError } = {},
-    guarantorEmail: { message: guarantorEmailError } = {},
-    guarantorSuffix: { message: guarantorSuffixError } = {},
-    guarantorZipCode: { message: guarantorZipCodeError } = {},
-    guarantorAddress: { message: guarantorAddressError } = {},
-    guarantorCountry: { message: guarantorCountryError } = {},
-    guarantorLastName: { message: guarantorLastNameError } = {},
-    guarantorAddress2: { message: guarantorAddress2Error } = {},
-    guarantorFirstName: { message: guarantorFirstNameError } = {},
-    guarantorMiddleName: { message: guarantorMiddleNameError } = {},
-    guarantorEmployerName: { message: guarantorEmployerNameError } = {},
-
-    emergencyName: { message: emergencyNameError } = {},
-    emergencyPhone: { message: emergencyPhoneError } = {},
-    emergencyMobile: { message: emergencyMobileError } = {},
-    emergencyRelationship: { id: emergencyRelationshipError } = {},
-
-    kinName: { message: kinNameError } = {},
-    kinPhone: { message: kinPhoneError } = {},
-    kinMobile: { message: kinMobileError } = {},
-    kinRelationship: { id: kinRelationshipError } = {},
-
-    employerName: { message: employerNameError } = {},
-    employerPhone: { message: employerPhoneError } = {},
-    employerIndustry: { message: employerIndustryError } = {},
-    employerUsualOccupation: { message: employerUsualOccupationError } = {},
-
-    guardianSuffix: { message: guardianSuffixError } = {},
-    guardianLastName: { message: guardianLastNameError } = {},
-    guardianFirstName: { message: guardianFirstNameError } = {},
-    guardianMiddleName: { message: guardianMiddleNameError } = {},
-  } = errors;
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -564,102 +489,92 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="suffix"
                           controllerLabel={SUFFIX}
-                          error={suffixError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="firstName"
                           controllerLabel={FIRST_NAME}
-                          error={firstNameError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="middleName"
                           controllerLabel={MIDDLE_NAME}
-                          error={middleNameError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="lastName"
                           controllerLabel={LAST_NAME}
-                          error={lastNameError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="firstNameUsed"
                           controllerLabel={FIRST_NAME_USED}
-                          error={firstNameUsedError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="prefferedName"
                           controllerLabel={PREFERRED_NAME}
-                          error={preferredNameError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="previousFirstName"
                           controllerLabel={PREVIOUS_FIRST_NAME}
-                          error={previousFirstNameError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="previouslastName"
                           controllerLabel={PREVIOUS_LAST_NAME}
-                          error={previousLastNameError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="motherMaidenName"
                           controllerLabel={MOTHERS_MAIDEN_NAME}
-                          error={motherMaidenNameError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="ssn"
                           controllerLabel={SSN}
-                          error={ssnError}
                         />
                       </Grid>
                     </Grid>
@@ -669,7 +584,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           isRequired
                           name="gender"
-                          error={genderError?.message || ""}
                           label={LEGAL_SEX}
                           value={EMPTY_OPTION}
                           options={MAPPED_GENDER_IDENTITY}
@@ -677,7 +591,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker isRequired name="dob" label={DOB} error={dobError || ''} />
+                        <DatePicker isRequired name="dob" label={DOB} />
                       </Grid>
                     </Grid>
                   </>
@@ -690,83 +604,76 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         isRequired
                         fieldType="text"
                         controllerName="basicZipCode"
                         controllerLabel={ZIP_CODE}
-                        error={basicZipCodeError}
                       />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         isRequired
                         fieldType="text"
                         controllerName="basicAddress"
                         controllerLabel={ADDRESS}
-                        error={basicAddressError}
                       />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         fieldType="text"
                         controllerName="basicAddress2"
                         controllerLabel={ADDRESS_2}
-                        error={basicAddress2Error}
                       />
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={4}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="basicCity"
                           controllerLabel={CITY}
-                          error={basicCityError}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="basicState"
                           controllerLabel={STATE}
-                          error={basicStateError}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="basicCountry"
                           controllerLabel={COUNTRY}
-                          error={basicCountryError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         isRequired
                         fieldType="text"
                         controllerName="basicEmail"
                         controllerLabel={EMAIL}
-                        error={basicEmailError}
                       />
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="basicPhone" error={basicPhoneError} label={HOME_PHONE} />
+                        <PhoneField isRequired name="basicPhone" label={HOME_PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="basicMobile" error={basicMobileError} label={MOBILE_PHONE} />
+                        <PhoneField name="basicMobile" label={MOBILE_PHONE} />
                       </Grid>
                     </Grid>
                   </>
@@ -780,11 +687,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="emergencyName"
                           controllerLabel={NAME}
-                          error={emergencyNameError}
                         />
                       </Grid>
 
@@ -792,7 +698,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="emergencyRelationship"
                           label={RELATIONSHIP}
-                          error={emergencyRelationshipError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_RELATIONSHIP_TYPE}
                         />
@@ -801,11 +706,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="emergencyPhone" error={emergencyPhoneError} label={HOME_PHONE} />
+                        <PhoneField name="emergencyPhone" label={HOME_PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="emergencyMobile" error={emergencyMobileError} label={MOBILE_PHONE} />
+                        <PhoneField name="emergencyMobile" label={MOBILE_PHONE} />
                       </Grid>
                     </Grid>
                   </>
@@ -819,11 +724,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="kinName"
                           controllerLabel={NAME}
-                          error={kinNameError}
                         />
                       </Grid>
 
@@ -831,7 +735,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="kinRelationship"
                           label={RELATIONSHIP}
-                          error={kinRelationshipError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_RELATIONSHIP_TYPE}
                         />
@@ -840,11 +743,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="kinPhone" error={kinPhoneError} label={HOME_PHONE} />
+                        <PhoneField name="kinPhone" label={HOME_PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="kinMobile" error={kinMobileError} label={MOBILE_PHONE} />
+                        <PhoneField name="kinMobile" label={MOBILE_PHONE} />
                       </Grid>
                     </Grid>
                   </>
@@ -858,40 +761,36 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="guardianFirstName"
                           controllerLabel={FIRST_NAME}
-                          error={guardianFirstNameError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="guardianMiddleName"
                           controllerLabel={MIDDLE_NAME}
-                          error={guardianMiddleNameError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="guardianLastName"
                           controllerLabel={LAST_NAME}
-                          error={guardianLastNameError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="guardianSuffix"
                           controllerLabel={SUFFIX}
-                          error={guardianSuffixError}
                         />
                       </Grid>
                     </Grid>
@@ -906,11 +805,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="language"
                           controllerLabel={LANGUAGE_SPOKEN}
-                          error={languageError}
                         />
                       </Grid>
 
@@ -918,7 +816,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="race"
                           label={RACE}
-                          error={raceError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_RACE}
                         />
@@ -930,7 +827,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="ethnicity"
                           label={ETHNICITY}
-                          error={ethnicityError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_ETHNICITY}
                         />
@@ -940,7 +836,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="maritialStatus"
                           label={MARITAL_STATUS}
-                          error={maritalStatusError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_MARITAL_STATUS}
                         />
@@ -952,7 +847,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="sexualOrientation"
                           label={SEXUAL_ORIENTATION}
-                          error={sexualOrientationError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_SEXUAL_ORIENTATION}
                         />
@@ -962,7 +856,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="genderIdentity"
                           label={GENDER_IDENTITY}
-                          error={genderIdentityError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_GENDER_IDENTITY}
                         />
@@ -974,7 +867,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="sexAtBirth"
                           label={SEX_AT_BIRTH}
-                          error={sexAtBirthError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_GENDER_IDENTITY}
                         />
@@ -984,7 +876,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <Selector
                           name="pronouns"
                           label={PRONOUNS}
-                          error={pronounsError?.message || ""}
                           value={EMPTY_OPTION}
                           options={MAPPED_PRONOUNS}
                         />
@@ -1032,7 +923,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           name="registrationDepartment"
                           value={EMPTY_OPTION}
                           label={REGISTRATION_DEPARTMENT}
-                          error={registrationDepartmentError?.message || ""}
                           options={MAPPED_REG_DEPARTMENT}
                         />
                       </Grid>
@@ -1043,7 +933,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           name="primaryDepartment"
                           value={EMPTY_OPTION}
                           label={PRIMARY_DEPARTMENT}
-                          error={primaryDepartmentError?.message || ""}
                           options={MAPPED_REG_DEPARTMENT}
                         />
                       </Grid>
@@ -1051,21 +940,21 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="registrationDate" label={REGISTRATION_DATE} error={registrationDateError || ''} />
+                        <DatePicker name="registrationDate" label={REGISTRATION_DATE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="deceasedDate" label={DECREASED_DATE} error={deceasedDateError || ''} />
+                        <DatePicker name="deceasedDate" label={DECREASED_DATE} />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="statementNoteDateFrom" label={ISSUE_DATE} error={statementNoteDateFromError || ''} />
+                        <DatePicker name="statementNoteDateFrom" label={ISSUE_DATE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="statementNoteDateTo" label={EXPIRATION_DATE} error={statementNoteDateToError || ''} />
+                        <DatePicker name="statementNoteDateTo" label={EXPIRATION_DATE} />
                       </Grid>
                     </Grid>
                   </>
@@ -1146,36 +1035,36 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="employerName"
                           controllerLabel={EMPLOYER_NAME}
-                          error={employerNameError}
+
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="employerPhone" error={employerPhoneError} label={EMPLOYER_PHONE} />
+                        <PhoneField name="employerPhone" label={EMPLOYER_PHONE} />
                       </Grid>
                     </Grid>
 
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="employerUsualOccupation"
                           controllerLabel={USUAL_OCCUPATION}
-                          error={employerUsualOccupationError}
+
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="employerIndustry"
                           controllerLabel={USUAL_INDUSTRY}
-                          error={employerIndustryError}
+
                         />
                       </Grid>
                     </Grid>
@@ -1193,7 +1082,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         isRequired
                         name="guarantorRelationship"
                         label={GUARANTOR_RELATION}
-                        error={guarantorRelationshipError?.message || ""}
                         value={EMPTY_OPTION}
                         options={MAPPED_RELATIONSHIP_TYPE}
                       />
@@ -1205,136 +1093,124 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="guarantorSuffix"
                           controllerLabel={SUFFIX}
-                          error={guarantorSuffixError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="guarantorFirstName"
                           controllerLabel={FIRST_NAME}
-                          error={guarantorFirstNameError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="guarantorMiddleName"
                           controllerLabel={MIDDLE_NAME}
-                          error={guarantorMiddleNameError}
                         />
                       </Grid>
+
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="guarantorLastName"
                           controllerLabel={LAST_NAME}
-                          error={guarantorLastNameError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         isRequired
                         fieldType="text"
                         controllerName="guarantorZipCode"
                         controllerLabel={ZIP_CODE}
-                        error={guarantorZipCodeError}
                       />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         isRequired
                         fieldType="text"
                         controllerName="guarantorAddress"
                         controllerLabel={ADDRESS}
-                        error={guarantorAddressError}
                       />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         fieldType="text"
                         controllerName="guarantorAddress2"
                         controllerLabel={ADDRESS_2}
-                        error={guarantorAddress2Error}
                       />
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={4}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="guarantorCity"
                           controllerLabel={CITY}
-                          error={guarantorCityError}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <PatientController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="guarantorState"
                           controllerLabel={STATE}
-                          error={guarantorStateError}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="guarantorCountry"
                           controllerLabel={COUNTRY}
-                          error={guarantorCountryError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PatientController
+                        <InputController
                           fieldType="text"
                           controllerName="guarantorSsn"
                           controllerLabel={SSN}
-                          error={guarantorSsnError}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="guarantorPhone" error={guarantorPhoneError} label={PHONE} />
+                        <PhoneField isRequired name="guarantorPhone" label={PHONE} />
                       </Grid>
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         isRequired
                         fieldType="email"
                         controllerName="guarantorEmail"
                         controllerLabel={EMAIL}
-                        error={guarantorEmailError}
                       />
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <PatientController
+                      <InputController
                         fieldType="text"
                         controllerName="guarantorEmployerName"
                         controllerLabel={EMPLOYER}
-                        error={guarantorEmployerNameError}
                       />
                     </Grid>
                   </>
