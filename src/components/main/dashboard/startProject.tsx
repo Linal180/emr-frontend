@@ -146,7 +146,7 @@ const appointments = [
 ]
 
 const StartProjectComponent = (): JSX.Element => {
-  const [currentDate, setCurrentDate] = useState("2018-07-27")
+  const [currentDate, setCurrentDate] = useState(new Date())
 
   const handleDateChange = () => {
     setCurrentDate(currentDate)
@@ -175,9 +175,9 @@ const StartProjectComponent = (): JSX.Element => {
                 <WeekView />
                 <DayView />
                 <Toolbar />
-                <ViewSwitcher />
-                <DateNavigator />
+                <ViewSwitcher  />
                 <TodayButton />
+                <DateNavigator  />
                 <Appointments />
                 <AppointmentTooltip
                   showCloseButton
