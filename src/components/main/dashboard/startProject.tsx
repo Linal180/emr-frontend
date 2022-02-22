@@ -1,19 +1,16 @@
 // packages block
 import { useState } from "react";
-import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
-import { Add, FilterList } from '@material-ui/icons';
+import { Box, Button, ButtonGroup, Card, Typography } from "@material-ui/core";
+import { Add } from '@material-ui/icons';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
-  Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, ViewSwitcher,
+  Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator,
   DayView, WeekView, AppointmentTooltip
 } from '@devexpress/dx-react-scheduler-material-ui';
-// components block
-import AppointmentCard from "./AppointmentCard";
-import PageHeader from "../../common/PageHeader";
-import ViewAppointmentLoader from "../../common/ViewAppointmentLoader";
+// calendar styles block
+import { useCalendarStyles } from "../../../styles/calendarStyles";
 // constants block
-import { GRAY_SIX } from "../../../theme";
-import { DASHBOARD_TEXT } from "../../../constants";
+import { APPOINTMENT_LIST, CREATE_NEW_APPOINTMENT } from "../../../constants";
 
 const appointments = [
   {
@@ -144,6 +141,7 @@ const appointments = [
 ]
 
 const StartProjectComponent = (): JSX.Element => {
+  const classes = useCalendarStyles();
   const [currentDate, setCurrentDate] = useState(new Date())
 
   const handleDateChange = () => {
@@ -152,45 +150,41 @@ const StartProjectComponent = (): JSX.Element => {
 
   return (
     <Box>
-      <PageHeader title={DASHBOARD_TEXT} subTitle="Molestie imperdiet purus neque neque." />
 
-      <Grid container spacing={3}>
-        <Grid item xs={8}>
-          <Card>
-            <Box display="flex" alignItems="center" justifyContent="space-between" px={3} py={1.4} borderBottom={`1px solid ${GRAY_SIX}`}>
-              <Typography variant="h4">Basic Calendar</Typography>
+      <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap="wrap" py={4}>
+        <Typography variant="h4">{APPOINTMENT_LIST}</Typography>
+        <Button color="primary" variant="contained" startIcon={<Add />}>
+          {CREATE_NEW_APPOINTMENT}
+        </Button>
+      </Box>
 
-              <Box display="flex" gridGap={16}>
-                <Button color="default" variant="outlined" startIcon={<FilterList />}>Filter</Button>
-                <Button color="primary" variant="contained" startIcon={<Add />}>Add New</Button>
-              </Box>
+      <Card>
+        <Box className={classes.appointmentCalendar} p={3}>
+          <Scheduler data={appointments}>
+            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+            <MonthView />
+            <WeekView />
+            <DayView />
+            <Toolbar />
+
+            <Box className={classes.buttonView}>
+              <ButtonGroup aria-label="primary button group">
+                <Button>Month</Button>
+                <Button>Week</Button>
+                <Button>Day</Button>
+              </ButtonGroup>
             </Box>
 
-            <Box>
-              <Scheduler data={appointments}>
-                <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
-                <MonthView />
-                <WeekView />
-                <DayView />
-                <Toolbar />
-                <ViewSwitcher  />
-                <TodayButton />
-                <DateNavigator  />
-                <Appointments />
-                <AppointmentTooltip
-                  showCloseButton
-                  showOpenButton
-                />
-              </Scheduler>
-            </Box>
-          </Card>
-        </Grid>
-
-        <Grid item xs={4}>
-          <AppointmentCard />
-          <ViewAppointmentLoader rows={0} hasMedia={false} columns={"auto"} />
-        </Grid>
-      </Grid>
+            <TodayButton />
+            <DateNavigator />
+            <Appointments />
+            <AppointmentTooltip
+              showCloseButton
+              showOpenButton
+            />
+          </Scheduler>
+        </Box>
+      </Card>
     </Box>
   )
 };

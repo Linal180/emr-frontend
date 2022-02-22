@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, BLACK_SEVEN, WHITE, WHITE_FIVE, WHITE_FOUR } from "../theme";
+import { BLACK, BLACK_SEVEN, BLUE_EIGHT, WHITE, WHITE_FOUR } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   
@@ -32,12 +32,15 @@ export const useHeaderStyles = makeStyles((theme) => ({
   menuBar: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    "& .active": {
+      borderBottom:`1.5px solid ${BLUE_EIGHT}`,
+    }
   },
 
   menuItem: {
-    [theme.breakpoints.down("sm")]: {
-      display: 'none',
+    "& .MuiIconButton-root": {
+      padding: '0 5px',
     }
   },
 
@@ -54,6 +57,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
   profileItemName: {
     "& .MuiTypography-root": {
       minWidth: 30,
+      margin: 0,
     }
   },
 

@@ -121,7 +121,7 @@ export const theme = createTheme({
 
       root: {
         "& .MuiTypography-root": {
-          minWidth: 120,
+          minWidth: 70,
           textAlign: 'center',
           color: BLACK_SEVEN,
           cursor: 'pointer',
@@ -129,7 +129,7 @@ export const theme = createTheme({
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          margin: '0 10px',
+          margin: '0 20px',
         }
       }
     },

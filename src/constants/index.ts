@@ -67,6 +67,8 @@ export const UPDATE_LOCATION_TEXT = "Update location";
 export const PREFERRED_LANGUAGE = "Preferred Language";
 export const PREFERRED_PHARMACY = "Preferred Pharmacy";
 export const CREATE_APPOINTMENT = "Create Appointment";
+export const CREATE_NEW_APPOINTMENT = "Create New Appointment";
+export const APPOINTMENT_LIST = "Appointment List";
 export const UPDATE_APPOINTMENT = "Update Appointment";
 export const SECONDARY_INSURANCE = "Secondary Insurance";
 export const EMERGENCY_CONTACT_PHONE = "Emergency Contact Phone";
@@ -502,6 +504,7 @@ export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Plea
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
