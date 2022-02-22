@@ -27,7 +27,9 @@ export const useTableStyles = makeStyles(() => ({
 
   searchContainer: {
     padding: "15px 30px",
-    borderBottom: `1px solid ${WHITE_THREE}`
+    borderBottom: `1px solid ${WHITE_THREE}`,
+    display: 'flex',
+    justifyContent: 'space-between',
   },
 
   status: {

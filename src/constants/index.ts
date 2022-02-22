@@ -43,6 +43,8 @@ export enum DAYS {
 };
 export const VIEW = "View";
 export const ALL_STAFF = "Staff";
+export const LINK_COPIED = "Link Copied";
+export const PUBLIC_LINK = "Public Appointment Link";
 export const ADD = "Add";
 export const MINUTES = "minutes";
 export const CALENDAR = "Calendar";

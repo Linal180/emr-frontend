@@ -33,6 +33,7 @@ query GetLoggedInUser {
       inviteSentAt
       emailVerified
       inviteAcceptedAt
+      facilityId
       createdAt
       updatedAt
 
