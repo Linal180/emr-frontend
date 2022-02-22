@@ -198,6 +198,7 @@ export const theme = createTheme({
             background: WHITE_THREE,
             zIndex: 9,
             borderRadius: 6,
+            border: `2px solid ${ORANGE_ONE}`,
           },
         },
 
