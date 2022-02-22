@@ -1,32 +1,30 @@
 // packages block
 import { FC, useEffect, useContext, useCallback } from 'react';
+import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from '../../../../common/Alert';
 import Selector from '../../../../common/Selector';
+import PhoneField from '../../../../common/PhoneInput';
 import InputController from '../../../../../controller';
 import CardComponent from '../../../../common/CardComponent';
+import ViewDataLoader from '../../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
 import history from "../../../../../history";
 import { ListContext } from '../../../../../context';
-import { renderFacilities, requiredMessage, setRecord } from '../../../../../utils';
+import { renderFacilities, renderStates, setRecord } from '../../../../../utils';
 import { extendedContactSchema } from '../../../../../validationSchemas';
 import { extendedContactInput, GeneralFormProps, ParamsType } from '../../../../../interfacesTypes';
 import {
-  ServiceCode, ServiceCodes, useCreateContactMutation, useFindContactLazyQuery,
-  useUpdateContactMutation
+  ServiceCode, ServiceCodes, useCreateContactMutation, useFindContactLazyQuery, useUpdateContactMutation
 } from "../../../../../generated/graphql";
 import {
-  ADDRESS, ADDRESS_2, ASSOCIATED_FACILITY, CITY, CONTACT, COUNTRY, CREATE_LOCATION,
-  EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, FACILITY, FACILITY_LOCATIONS_ROUTE, FAX, LOCATION_CREATED, LOCATION_INFO,
+  ADDRESS, ADDRESS_2, ASSOCIATED_FACILITY, CITY, CONTACT, COUNTRY, CREATE_LOCATION, ZIP_CODE,
+  EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, FACILITY_LOCATIONS_ROUTE, FAX, LOCATION_CREATED, LOCATION_INFO,
   LOCATION_NOT_FOUND, LOCATION_UPDATED, MAPPED_SERVICE_CODES, NAME, PHONE, POS, STATE, UPDATE_LOCATION,
-  ZIP_CODE
 } from "../../../../../constants";
-import { useParams } from 'react-router';
-import ViewDataLoader from '../../../../common/ViewDataLoader';
-import PhoneField from '../../../../common/PhoneInput';
 
 const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
@@ -35,7 +33,7 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(extendedContactSchema)
   });
-  const { handleSubmit, setValue, formState: { errors } } = methods;
+  const { handleSubmit, setValue } = methods;
 
   const [getContact, { loading: getContactLoading }] = useFindContactLazyQuery({
     fetchPolicy: "network-only",
@@ -61,13 +59,13 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           name && setValue('name', name)
           city && setValue('city', city)
           email && setValue('email', email)
-          state && setValue('state', state)
           phone && setValue('phone', phone)
           zipCode && setValue('zipCode', zipCode)
           address && setValue('address', address)
           country && setValue('country', country)
           address2 && setValue('address2', address2)
-          serviceCode && setValue('serviceCode', setRecord(serviceCode || '', serviceCode || ''))
+          state && setValue('state', setRecord(state, state))
+          serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
         }
       }
     }
@@ -119,11 +117,10 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
   useEffect(() => {
     if (isEdit) {
-      if (id) {
-        getContact({
-          variables: { getContact: { id } }
-        })
-      } else Alert.error(LOCATION_NOT_FOUND)
+      id ?
+        getContact({ variables: { getContact: { id } } })
+        :
+        Alert.error(LOCATION_NOT_FOUND)
     } else
       setCurrentFacility(currentFacility || '');
   }, [currentFacility, getContact, id, isEdit, setCurrentFacility])
@@ -134,23 +131,23 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   }) => {
 
     const { id: selectedFacility } = facilityId;
+    const { id: selectedState } = state;
     const { id: selectedServiceCode } = serviceCode || {};
     const contactInput = {
       name: name || '', email: email || '', phone: phone || '', fax: fax || '',
       zipCode: zipCode || '', address: address || '', address2: address2 || '', city: city || '',
-      state: state || '', country: country || '', primaryContact: false,
+      state: selectedState || '', country: country || '', primaryContact: false,
       serviceCode: selectedServiceCode as ServiceCodes || ServiceCode.Ambulance_24,
       facilityId: selectedFacility || '',
     };
 
     if (isEdit) {
-      if (id) {
+      id ?
         await updateContact({
-          variables: {
-            updateContactInput: { id, ...contactInput }
-          }
+          variables: { updateContactInput: { id, ...contactInput } }
         })
-      } else Alert.error(LOCATION_NOT_FOUND)
+        :
+        Alert.error(LOCATION_NOT_FOUND)
     } else {
       await createContact({
         variables: {
@@ -159,21 +156,6 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
       })
     }
   }
-
-  const {
-    fax: { message: faxError } = {},
-    city: { message: cityError } = {},
-    name: { message: nameError } = {},
-    phone: { message: phoneError } = {},
-    email: { message: emailError } = {},
-    state: { message: stateError } = {},
-    facilityId: { id: facilityError } = {},
-    country: { message: countryError } = {},
-    zipCode: { message: zipCodeError } = {},
-    address: { message: addressError } = {},
-    address2: { message: address2Error } = {},
-    serviceCode: { id: serviceCodeError } = {},
-  } = errors;
 
   return (
     <FormProvider {...methods}>
@@ -188,7 +170,6 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                       isRequired
                       fieldType="text"
                       controllerName="name"
-                      error={nameError}
                       controllerLabel={NAME}
                     />
 
@@ -199,7 +180,6 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                           name="facilityId"
                           value={EMPTY_OPTION}
                           label={ASSOCIATED_FACILITY}
-                          error={(facilityError && requiredMessage(FACILITY))}
                           options={renderFacilities(facilityList)}
                         />
                       </Grid>
@@ -210,7 +190,6 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                           name="serviceCode"
                           value={EMPTY_OPTION}
                           label={POS}
-                          error={serviceCodeError?.message}
                           options={MAPPED_SERVICE_CODES}
                         />
                       </Grid>
@@ -228,38 +207,34 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                       isRequired
                       fieldType="email"
                       controllerName="email"
-                      error={emailError}
                       controllerLabel={EMAIL}
                     />
 
                     <Grid container spacing={2}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="phone" error={phoneError} label={PHONE} />
+                        <PhoneField name="phone" label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="fax" error={faxError} label={FAX} />
+                        <PhoneField name="fax" label={FAX} />
                       </Grid>
                     </Grid>
 
                     <InputController
                       fieldType="text"
                       controllerName="zipCode"
-                      error={zipCodeError}
                       controllerLabel={ZIP_CODE}
                     />
 
                     <InputController
                       fieldType="text"
                       controllerName="address"
-                      error={addressError}
                       controllerLabel={ADDRESS}
                     />
 
                     <InputController
                       fieldType="text"
                       controllerName="address2"
-                      error={address2Error}
                       controllerLabel={ADDRESS_2}
                     />
 
@@ -269,16 +244,15 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                           fieldType="text"
                           controllerName="city"
                           controllerLabel={CITY}
-                          error={cityError}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="state"
-                          controllerLabel={STATE}
-                          error={stateError}
+                        <Selector
+                          value={EMPTY_OPTION}
+                          label={STATE}
+                          name="state"
+                          options={renderStates()}
                         />
                       </Grid>
 
@@ -287,7 +261,6 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                           fieldType="text"
                           controllerName="country"
                           controllerLabel={COUNTRY}
-                          error={countryError}
                         />
                       </Grid>
                     </Grid>

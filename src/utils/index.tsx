@@ -1,5 +1,6 @@
 // packages block
 import moment from "moment";
+import states from "states-us";
 import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
@@ -8,7 +9,7 @@ import { DAYS, LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload
 } from "../generated/graphql"
 
 export const handleLogout = () => {
@@ -63,7 +64,7 @@ export const isCurrentUserCanMakeAdmin = (currentUserRole: Maybe<Maybe<Role>[]> 
   return isSuperAdmin;
 }
 
-export const isUserAdmin = (currentUserRole: Maybe<Maybe<Role>[]> | undefined) => {
+export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
   let isAdmin: boolean = false
 
   if (currentUserRole) {
@@ -323,3 +324,6 @@ export const setTimeDay = (time: string, day: string): string => {
 
   return result
 };
+
+export const renderStates = (): SelectorOption[] =>
+  states.map(({name, abbreviation}) => ({ id: name, name: `${name} - ${abbreviation}` }));

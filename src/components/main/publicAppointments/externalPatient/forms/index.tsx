@@ -1,5 +1,5 @@
 // packages block
-import { FC,  useContext, Reducer, useReducer, useEffect } from 'react';
+import { FC, useContext, Reducer, useReducer, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
@@ -18,7 +18,7 @@ import { FacilityContext } from "../../../../../context";
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 import { WHITE_TWO, GRAY_TWO, WHITE_SIX } from "../../../../../theme";
 import { externalPatientSchema } from '../../../../../validationSchemas';
-import { getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
+import { getTimestamps, renderDoctors, renderStates, setRecord } from "../../../../../utils";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { useExternalPatientStyles } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
@@ -29,23 +29,21 @@ import {
   RelationshipType, useGetPatientLazyQuery, useUpdatePatientMutation
 } from "../../../../../generated/graphql";
 import {
-  MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD,
-  PATIENT_NOT_FOUND, ADDRESS, agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL,
-  EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED,
-  ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS,
+  MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
+  PATIENT_NOT_FOUND, ADDRESS, agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL, SELECT_PROVIDER,
+  EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN,
+  ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
-  PREFERRED_LANGUAGE, PREFERRED_PHARMACY, RACE, SELECT_PROVIDER, SSN, STATE, STREET_ADDRESS, ZIP_CODE,
+  PREFERRED_LANGUAGE,
 } from "../../../../../constants";
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useExternalPatientStyles();
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
-
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    activeStep
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep
   } = state
   const methods = useForm<ExternalPatientInputProps>({
     mode: "all",
@@ -122,13 +120,13 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 dispatch({ type: ActionType.SET_EMERGENCY_CONTACT_ID, emergencyContactId })
                 name && setValue("emergencyName", name)
                 city && setValue("emergencyCity", city)
-                state && setValue("emergencyState", state)
                 phone && setValue("emergencyPhone", phone)
                 country && setValue("emergencyCountry", country)
                 zipCode && setValue("emergencyZipCode", zipCode)
                 address && setValue("emergencyAddress", address)
                 address2 && setValue("emergencyAddress2", address2)
-                relationship && setValue("emergencyRelationship", setRecord(relationship || '', relationship || ''))
+                state && setValue("emergencyState", setRecord(state, state))
+                relationship && setValue("emergencyRelationship", setRecord(relationship, relationship))
               }
 
               const basicContact = contacts.filter(contact => contact.primaryContact)[0]
@@ -138,11 +136,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                 dispatch({ type: ActionType.SET_BASIC_CONTACT_ID, basicContactId })
                 city && setValue("city", city)
-                state && setValue("state", state)
                 zipCode && setValue("zipCode", zipCode)
                 address && setValue("address", address)
                 country && setValue("country", country)
                 address2 && setValue("address2", address2)
+                state && setValue("state", setRecord(state, state))
               }
             }
           }
@@ -182,8 +180,10 @@ const PatientFormComponent: FC = (): JSX.Element => {
     } = inputs;
 
     const { id: selectedRace } = race
+    const { id: selectedState } = state
     const { id: selectedEthnicity } = ethnicity
     const { id: selectedRelation } = emergencyRelationship
+    const { id: selectedEmergencyState } = emergencyState || {}
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
     const patientItemInput = {
@@ -201,13 +201,13 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
     const contactInput = {
       contactType: ContactType.Self, country: country || '', email: '', city: city || '', mobile: '',
-      zipCode: zipCode || '', state: state || '', phone: '', address: address || '', address2: address2 || '',
+      zipCode: zipCode || '', state: selectedState || '', phone: '', address: address || '', address2: address2 || '',
     };
 
     const emergencyContactInput = {
       contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '',
       mobile: '', primaryContact: false, relationship: selectedRelation as RelationshipType || RelationshipType.Ward,
-      city: emergencyCity, state: emergencyState, country: emergencyCountry, zipCode: emergencyZipCode || '',
+      city: emergencyCity, state: selectedEmergencyState, country: emergencyCountry, zipCode: emergencyZipCode || '',
       address: emergencyAddress, address2: emergencyAddress2,
     };
 
@@ -253,20 +253,18 @@ const PatientFormComponent: FC = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (id) {
-      getPatient({
-        variables: { getPatient: { id } }
-      })
-    } else Alert.error(PATIENT_NOT_FOUND)
+    id ?
+      getPatient({ variables: { getPatient: { id } } })
+      :
+      Alert.error(PATIENT_NOT_FOUND)
   }, [getPatient, id])
 
   const handleNextStep = () => {
     activeStep !== 0 && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
   };
 
-  const handleBackStep = () => {
-    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 })
-  };
+  const handleBackStep = () =>
+    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 });
 
   return (
     <FormProvider {...methods}>
@@ -315,11 +313,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
-                            <InputController
+                            <Selector
                               isRequired
-                              fieldType="text"
-                              controllerName="state"
-                              controllerLabel={STATE}
+                              value={EMPTY_OPTION}
+                              label={STATE}
+                              name="state"
+                              options={renderStates()}
                             />
                           </Grid>
 
@@ -480,10 +479,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="emergencyState"
-                              controllerLabel={STATE}
+                            <Selector
+                              isRequired
+                              value={EMPTY_OPTION}
+                              label={STATE}
+                              name="emergencyState"
+                              options={renderStates()}
                             />
                           </Grid>
 

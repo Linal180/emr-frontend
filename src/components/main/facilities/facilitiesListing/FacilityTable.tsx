@@ -1,37 +1,44 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer } from "react";
 import { Link } from "react-router-dom";
-import { RemoveRedEye } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
+import { RemoveRedEye, InsertLink } from "@material-ui/icons";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { formatPhone, renderTh } from "../../../../utils";
+import { AuthContext } from "../../../../context";
+import { formatPhone, isUserAdmin, renderTh } from "../../../../utils";
 import { ListContext } from "../../../../context/listContext";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import ConfirmationModal from "../../../common/ConfirmationModal";
+import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  FacilitiesPayload,
-  FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, State as AppointmentState,
+  ActionType as AppointmentActionType
+} from "../../../../reducers/appointmentReducer";
+import {
+  FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY,
-  CODE, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY,
-  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE
+  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, PUBLIC_APPOINTMENT_ROUTE,
+  CODE, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED,
+  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SERVICES, LOCATIONS_TEXT, PUBLIC_LINK,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { user } = useContext(AuthContext)
   const { fetchAllFacilityList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
+  const [{ copied }, appointmentDispatcher] =
+    useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
     variables: {
@@ -119,6 +126,19 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   };
 
+  const handleClipboard = (id: string) => {
+    if (id) {
+      navigator.clipboard.writeText(
+        `${process.env.REACT_APP_URL}${PUBLIC_APPOINTMENT_ROUTE}/${id}`
+      )
+
+      appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: true })
+    }
+  };
+
+  const { roles } = user || {}
+  const isAdmin = isUserAdmin(roles)
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -182,17 +202,29 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
-                            <Box className={classes.iconsBackground}>
-                              <ServiceIcon />
-                            </Box>
-                          </Link>
+                          {isAdmin &&
+                            <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                              <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                                <InsertLink />
+                              </Box>
+                            </DetailTooltip>
+                          }
 
-                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
-                            <Box className={classes.iconsBackground}>
-                              <RemoveRedEye />
-                            </Box>
-                          </Link>
+                          <DetailTooltip title={SERVICES}>
+                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
+                              <Box className={classes.iconsBackground}>
+                                <ServiceIcon />
+                              </Box>
+                            </Link>
+                          </DetailTooltip>
+
+                          <DetailTooltip title={LOCATIONS_TEXT}>
+                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
+                              <Box className={classes.iconsBackground}>
+                                <RemoveRedEye />
+                              </Box>
+                            </Link>
+                          </DetailTooltip>
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>

@@ -179,7 +179,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               dispatch({ type: ActionType.SET_BASIC_CONTACT_ID, basicContactId })
               city && setValue("basicCity", city)
-              state && setValue("basicState", state)
               email && setValue("basicEmail", email)
               phone && setValue("basicPhone", phone)
               mobile && setValue("basicMobile", mobile)
@@ -187,6 +186,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               zipCode && setValue("basicZipCode", zipCode)
               country && setValue("basicCountry", country)
               address2 && setValue("basicAddress2", address2)
+              state && setValue("basicState", setRecord(state, state))
             }
 
             const kinContact = contacts.filter(contact => contact.contactType === ContactType.NextOfKin)[0]
@@ -211,7 +211,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               dispatch({ type: ActionType.SET_GUARANTOR_CONTACT_ID, guarantorContactId })
               ssn && setValue("guarantorSsn", ssn)
               city && setValue("guarantorCity", city)
-              state && setValue("guarantorState", state)
               phone && setValue("guarantorPhone", phone)
               email && setValue("guarantorEmail", email)
               suffix && setValue("guarantorSuffix", suffix)
@@ -222,6 +221,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               lastName && setValue("guarantorLastName", lastName)
               firstName && setValue("guarantorFirstName", firstName)
               middleName && setValue("guarantorMiddleName", middleName)
+              state && setValue("guarantorState", setRecord(state, state))
               employerName && setValue("guarantorEmployerName", employerName)
             }
 
@@ -332,6 +332,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedFacility } = facilityId
       const { id: selectedEthnicity } = ethnicity
       const { id: selectedSexAtBirth } = sexAtBirth
+      const { id: selectedBasicState } = basicState
+      const { id: selectedGuarantorState } = guarantorState
       const { id: selectedMaritalStatus } = maritialStatus
       const { id: selectedGenderIdentity } = genderIdentity
       const { id: selectedUsualProvider } = usualProviderId
@@ -371,7 +373,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const contactInput = {
         contactType: ContactType.Self, country: basicCountry || '', primaryContact: true,
         email: basicEmail || '', city: basicCity || '', zipCode: basicZipCode || '',
-        state: basicState || '', facilityId: selectedFacility || '', phone: basicPhone || '',
+        state: selectedBasicState || '', facilityId: selectedFacility || '', phone: basicPhone || '',
         mobile: basicMobile || '', address2: basicAddress2 || '', address: basicAddress || '',
       };
 
@@ -386,7 +388,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         lastName: guarantorLastName || '', email: guarantorEmail || '', contactType: ContactType.Guarandor,
         relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
         employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '',
-        zipCode: guarantorZipCode || '', city: guarantorCity || '', state: guarantorState || '',
+        zipCode: guarantorZipCode || '', city: guarantorCity || '', state: selectedGuarantorState || '',
         phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '',
         userId: userId || '', ssn: guarantorSsn || '', primaryContact: false,
         address: guarantorAddress || '',
@@ -451,13 +453,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   useEffect(() => {
     if (isEdit) {
-      if (id) {
-        getPatient({
-          variables: {
-            getPatient: { id }
-          },
-        })
-      } else Alert.error(PATIENT_NOT_FOUND)
+      id ?
+        getPatient({ variables: { getPatient: { id } } })
+        :
+        Alert.error(PATIENT_NOT_FOUND)
     }
   }, [getPatient, id, isEdit])
 

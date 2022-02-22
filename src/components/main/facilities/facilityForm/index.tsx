@@ -12,7 +12,7 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
 import history from "../../../../history";
-import { setRecord } from '../../../../utils';
+import { renderStates, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
@@ -37,7 +37,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(facilitySchema)
   });
-  const { reset, handleSubmit, setValue, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue } = methods;
   const [{ facility }, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
@@ -88,13 +88,13 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               fax && setValue('fax', fax)
               city && setValue('city', city)
               email && setValue('email', email)
-              state && setValue('state', state)
               phone && setValue('phone', phone)
               mobile && setValue('mobile', mobile)
               zipCode && setValue('zipCode', zipCode)
               address && setValue('address', address)
               country && setValue('country', country)
               address2 && setValue('address2', address2)
+              state && setValue('state', setRecord(state, state))
             }
 
             if (billingAddress) {
@@ -103,12 +103,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
               email && setValue('billingEmail', email)
-              state && setValue('billingState', state)
               phone && setValue('billingPhone', phone)
               address && setValue('billingAddress', address)
               country && setValue('billingCountry', country)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
+              state && setValue('billingState', setRecord(state, state))
             }
           }
         }
@@ -163,13 +163,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   useEffect(() => {
     if (isEdit) {
-      if (id) {
-        getFacility({
-          variables: { getFacility: { id } }
-        })
-      } else {
+      id ?
+        getFacility({ variables: { getFacility: { id } } })
+        :
         Alert.error(FACILITY_NOT_FOUND)
-      }
     }
   }, [getFacility, isEdit, id])
 
@@ -184,6 +181,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     const { name: timeZoneName } = timeZone
     const { id: selectedServiceCode } = serviceCode;
+    const { id: selectedState } = state;
+    const { id: selectedBillingState } = billingState;
     const { id: selectedPracticeType } = practiceType;
 
     const facilityInput = {
@@ -198,13 +197,13 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     const contactInput = {
       phone: phone || '', email: email || '', fax: fax || '', city: city || '',
-      state: state || '', country: country || '', zipCode: zipCode || '', address: address || '',
+      state: selectedState || '', country: country || '', zipCode: zipCode || '', address: address || '',
       address2: address2 || '', primaryContact: true
     }
 
     const billingAddressInput = {
       phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '',
-      state: billingState || '', country: billingCountry || '', zipCode: billingZipCode || '',
+      state: selectedBillingState || '', country: billingCountry || '', zipCode: billingZipCode || '',
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || ''
     }
 
@@ -238,39 +237,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
-  const {
-    npi: { message: npiError } = {},
-    fax: { message: faxError } = {},
-    name: { message: nameError } = {},
-    code: { message: codeError } = {},
-    city: { message: cityError } = {},
-    state: { message: stateError } = {},
-    email: { message: emailError } = {},
-    phone: { message: phoneError } = {},
-    timeZone: { id: timeZoneError } = {},
-    country: { message: countryError } = {},
-    zipCode: { message: zipCodeError } = {},
-    address: { message: addressError } = {},
-    address2: { message: address2Error } = {},
-    serviceCode: { id: serviceCodeError } = {},
-    practiceType: { id: practiceTypeError } = {},
-    billingFax: { message: billingFaxError } = {},
-    revenueCode: { message: revenueCodeError } = {},
-    billingCity: { message: billingCityError } = {},
-    cliaIdNumber: { message: cliaIdNumberError } = {},
-    federalTaxId: { message: federalTaxIdError } = {},
-    billingPhone: { message: billingPhoneError } = {},
-    billingEmail: { message: billingEmailError } = {},
-    billingState: { message: billingStateError } = {},
-    tamxonomyCode: { message: tamxonomyCodeError } = {},
-    billingCountry: { message: billingCountryError } = {},
-    billingAddress: { message: billingAddressError } = {},
-    billingZipCode: { message: billingZipCodeError } = {},
-    billingAddress2: { message: billingAddress2Error } = {},
-    insurancePlanType: { message: insurancePlanTypeError } = {},
-    mammographyCertificationNumber: { message: mammographyCertificationNumberError } = {},
-  } = errors;
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -285,7 +251,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       fieldType="text"
                       controllerName="name"
                       controllerLabel={NAME}
-                      error={nameError}
                     />
 
                     <Grid container spacing={3}>
@@ -295,7 +260,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={PRACTICE_TYPE}
                           name="practiceType"
-                          error={practiceTypeError?.message}
                           options={MAPPED_PRACTICE_TYPES}
                         />
                       </Grid>
@@ -306,7 +270,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="code"
                           controllerLabel={CODE}
-                          error={codeError}
                         />
                       </Grid>
 
@@ -316,7 +279,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={TIME_ZONE_TEXT}
                           name="timeZone"
-                          error={timeZoneError?.message}
                           options={MAPPED_TIME_ZONES}
                         />
                       </Grid>
@@ -336,7 +298,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="cliaIdNumber"
                           controllerLabel={CLIA_ID_NUMBER}
-                          error={cliaIdNumberError}
                         />
                       </Grid>
 
@@ -345,7 +306,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="federalTaxId"
                           controllerLabel={FEDERAL_TAX_ID}
-                          error={federalTaxIdError}
                         />
                       </Grid>
                     </Grid>
@@ -356,7 +316,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="tamxonomyCode"
                           controllerLabel={TAXONOMY_CODE}
-                          error={tamxonomyCodeError}
                         />
                       </Grid>
 
@@ -365,7 +324,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="revenueCode"
                           controllerLabel={REVENUE_CODE}
-                          error={revenueCodeError}
                         />
                       </Grid>
                     </Grid>
@@ -374,7 +332,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       fieldType="text"
                       controllerName="insurancePlanType"
                       controllerLabel={INSURANCE_PLAN_TYPE}
-                      error={insurancePlanTypeError}
                     />
 
                     <Grid container spacing={3}>
@@ -383,7 +340,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="mammographyCertificationNumber"
                           controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
-                          error={mammographyCertificationNumberError}
                         />
                       </Grid>
 
@@ -392,7 +348,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="npi"
                           controllerLabel={NPI}
-                          error={npiError}
                         />
                       </Grid>
                     </Grid>
@@ -402,7 +357,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       value={EMPTY_OPTION}
                       label={SERVICE_CODE}
                       name="serviceCode"
-                      error={serviceCodeError?.message}
                       options={MAPPED_SERVICE_CODES}
                     />
                   </>
@@ -420,7 +374,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="billingEmail"
                           controllerLabel={EMAIL}
-                          error={billingEmailError}
                         />
                       </Grid>
 
@@ -429,18 +382,17 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="billingZipCode"
                           controllerLabel={ZIP}
-                          error={billingZipCodeError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="billingPhone" error={billingPhoneError} label={PHONE} />
+                        <PhoneField name="billingPhone" label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="billingFax" error={billingFaxError} label={FAX} />
+                        <PhoneField name="billingFax" label={FAX} />
                       </Grid>
                     </Grid>
 
@@ -448,14 +400,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       fieldType="text"
                       controllerName="billingAddress"
                       controllerLabel={ADDRESS}
-                      error={billingAddressError}
                     />
 
                     <InputController
                       fieldType="text"
                       controllerName="billingAddress2"
                       controllerLabel={ADDRESS_2}
-                      error={billingAddress2Error}
                     />
 
                     <Grid container spacing={3}>
@@ -464,16 +414,15 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="billingCity"
                           controllerLabel={CITY}
-                          error={billingCityError}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingState"
-                          controllerLabel={STATE}
-                          error={billingStateError}
+                        <Selector
+                          value={EMPTY_OPTION}
+                          label={STATE}
+                          name="billingState"
+                          options={renderStates()}
                         />
                       </Grid>
 
@@ -482,7 +431,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="billingCountry"
                           controllerLabel={COUNTRY}
-                          error={billingCountryError}
                         />
                       </Grid>
                     </Grid>
@@ -502,7 +450,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="email"
                           controllerLabel={EMAIL}
-                          error={emailError}
                         />
                       </Grid>
 
@@ -511,18 +458,17 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="zipCode"
                           controllerLabel={ZIP}
-                          error={zipCodeError}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="phone" error={phoneError} label={PHONE} />
+                        <PhoneField name="phone" label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="fax" error={faxError} label={FAX} />
+                        <PhoneField name="fax" label={FAX} />
                       </Grid>
                     </Grid>
 
@@ -530,14 +476,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       fieldType="text"
                       controllerName="address"
                       controllerLabel={ADDRESS}
-                      error={addressError}
                     />
 
                     <InputController
                       fieldType="text"
                       controllerName="address2"
                       controllerLabel={ADDRESS_2}
-                      error={address2Error}
                     />
 
                     <Grid container spacing={3}>
@@ -546,16 +490,15 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="city"
                           controllerLabel={CITY}
-                          error={cityError}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="state"
-                          controllerLabel={STATE}
-                          error={stateError}
+                        <Selector
+                          value={EMPTY_OPTION}
+                          label={STATE}
+                          name="state"
+                          options={renderStates()}
                         />
                       </Grid>
 
@@ -564,7 +507,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="country"
                           controllerLabel={COUNTRY}
-                          error={countryError}
                         />
                       </Grid>
                     </Grid>
