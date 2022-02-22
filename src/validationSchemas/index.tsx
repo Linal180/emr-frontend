@@ -588,7 +588,7 @@ export const externalPatientSchema = yup.object({
   language: notRequiredStringOnly(PREFERRED_LANGUAGE),
   emergencyAddress: addressValidation(ADDRESS, false),
   emergencyAddress2: addressValidation(ADDRESS, false),
-  emergencyName: notRequiredStringOnly(invalidMessage(NAME)),
+  emergencyName: notRequiredStringOnly(NAME),
   preferredPharmacy: notRequiredStringOnly(PREFERRED_PHARMACY),
   zipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
   phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),

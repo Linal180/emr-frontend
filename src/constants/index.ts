@@ -15,7 +15,7 @@ export const ZIP_REGEX = /^\d{5}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
-export const STRING_REGEX = /^[A-Za-z]+$/;
+export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
@@ -77,6 +77,14 @@ export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const EMERGENCY_CONTACT_NAME = "Emergency Contact Name";
 export const ADD_STAFF = "Add Staff";
+export const FRONT_SIDE = "Front Side";
+export const BACK_SIDE = "Back Side";
+export const PATIENT_INFORMATION_TEXT = "Patient Information";
+export const DOCUMENT_VERIFICATION = "Document Verification";
+export const CONTACT_METHOD = "How we can contact you?";
+export const RELEASE_BILLING_INFO_PERMISSIONS = "Can we release medical and billing information to this contact?";
+export const VOICE_MAIL_PERMISSIONS = "Is it okay for us to leave a voicemail?";
+export const APPOINTMENT_CONFIRMATION_PERMISSIONS = "May we phone, email, or send a text to you to confirm appointments?";
 export const EDIT_STAFF = "Edit Staff";
 export const CANT_UPDATE_STAFF = "Staff cant be updated";
 export const CANT_CREATE_STAFF = "Can't create staff";
@@ -944,7 +952,7 @@ export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 export const getSteps = (): StepLabelType[] => {
   return [
     { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
-    { title: 'Document Verification', subTitle: 'Verification information requested' },
+    // { title: 'Document Verification', subTitle: 'Verification information requested' },
     { title: 'Consent Agreement', subTitle: 'Provide basic Patient Information' },
   ];
 };
@@ -1054,8 +1062,6 @@ export const WEEK_DAYS: SelectorOption[] = [
   { id: DAYS.Saturday, name: DAYS.Saturday, },
   { id: DAYS.Sunday, name: DAYS.Sunday, },
 ]
-
-// NEWAPPBAR-Menu
 
 export const dummyVitalsChartingList = [
   {

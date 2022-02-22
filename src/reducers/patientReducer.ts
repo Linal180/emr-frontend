@@ -15,6 +15,7 @@ export interface State {
   attachmentUrl: string;
   basicContactId: string;
   deletePatientId: string;
+  consentAgreed: boolean;
   guardianContactId: string;
   guarantorContactId: string;
   emergencyContactId: string;
@@ -45,6 +46,7 @@ export const initialState: State = {
   basicContactId: '',
   attachmentsData: [],
   deletePatientId: '',
+  consentAgreed: false,
   attachmentData: null,
   guardianContactId: '',
   emergencyContactId: '',
@@ -69,6 +71,7 @@ export enum ActionType {
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_KIN_CONTACT_ID = 'setKinContactID',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
+  SET_CONSENT_AGREED = 'setConsentAgreed',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_BASIC_CONTACT_ID = 'setBasicContactID',
   SET_ATTACHMENTS_DATA = 'setAttachmentsData',
@@ -91,6 +94,7 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
+  | { type: ActionType.SET_CONSENT_AGREED, consentAgreed: boolean }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_BASIC_CONTACT_ID; basicContactId: string }
@@ -112,6 +116,12 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         page: action.page
+      }
+
+    case ActionType.SET_CONSENT_AGREED:
+      return {
+        ...state,
+        consentAgreed: action.consentAgreed
       }
 
     case ActionType.SET_ACTIVE_STEP:
@@ -238,7 +248,7 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         attachmentId: action.attachmentId
       }
-      case ActionType.SET_IS_EDIT_CARD:
+    case ActionType.SET_IS_EDIT_CARD:
       return {
         ...state,
         isEditCard: action.isEditCard

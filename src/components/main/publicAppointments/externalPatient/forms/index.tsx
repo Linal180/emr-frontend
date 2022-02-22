@@ -34,8 +34,10 @@ import {
   EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN,
   ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
-  PREFERRED_LANGUAGE,
+  PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
+  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
 } from "../../../../../constants";
+import history from '../../../../../history';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -43,7 +45,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
+    consentAgreed
   } = state
   const methods = useForm<ExternalPatientInputProps>({
     mode: "all",
@@ -178,7 +181,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
       emergencyState, emergencyCity, emergencyAddress, emergencyAddress2, emergencyCountry, emergencyZipCode,
       emergencyRelationship, address, address2, state, city, country, zipCode
     } = inputs;
-
     const { id: selectedRace } = race
     const { id: selectedState } = state
     const { id: selectedEthnicity } = ethnicity
@@ -266,6 +268,14 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const handleBackStep = () =>
     dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 });
 
+  const handleConsent = (checked: boolean) => {
+    dispatch({ type: ActionType.SET_CONSENT_AGREED, consentAgreed: checked })
+  };
+
+  const handleFinish = (e: any) => {
+    history.push(PATIENT_APPOINTMENT_SUCCESS)
+  };
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -281,7 +291,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
               {activeStep === 0 ? (
                 <Box className={classes.mainGridContainer}>
                   <Box mb={2} mr={2}>
-                    <CardComponent cardTitle="Patient Information">
+                    <CardComponent cardTitle={PATIENT_INFORMATION_TEXT}>
                       {getPatientLoading ? <ViewDataLoader columns={6} rows={7} hasMedia={false} /> : <>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
@@ -417,7 +427,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                   </Box>
 
                   <Box mb={2} mr={2}>
-                    <CardComponent cardTitle="Emergency Contact">
+                    <CardComponent cardTitle={EMERGENCY_CONTACT_NAME}>
                       {getPatientLoading ? <ViewDataLoader columns={6} rows={7} hasMedia={false} /> : <>
                         <Grid item md={6} sm={12} xs={12}>
                           <InputController
@@ -446,7 +456,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           <Grid item md={6} sm={12} xs={12}>
                             <ToggleButtonComponent
                               name="billingInfo"
-                              label="Can we release medical and billing information to this contact?"
+                              label={RELEASE_BILLING_INFO_PERMISSIONS}
                             />
                           </Grid>
                         </Grid>
@@ -510,7 +520,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                   </Box>
 
                   <Box mr={2}>
-                    <CardComponent cardTitle="How we can contact you?">
+                    <CardComponent cardTitle={CONTACT_METHOD}>
                       {getPatientLoading ? <ViewDataLoader columns={6} rows={2} hasMedia={false} /> : <>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
@@ -526,13 +536,13 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
-                            <ToggleButtonComponent name="voiceMail" label="Is it okay for us to leave a voicemail?" />
+                            <ToggleButtonComponent name="voiceMail" label={VOICE_MAIL_PERMISSIONS} />
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
                             <ToggleButtonComponent
                               name="confirmAppointment"
-                              label="May we phone, email, or send a text to you to confirm appointments?"
+                              label={APPOINTMENT_CONFIRMATION_PERMISSIONS}
                             />
                           </Grid>
                         </Grid>
@@ -541,18 +551,18 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </CardComponent>
                   </Box>
                 </Box>
-              ) : activeStep === 1 ? (
+              ) : activeStep === 5 ? ( // not reachable for now
                 <Box>
-                  <CardComponent cardTitle="Document Verification">
+                  <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                     <Box py={2}>
                       <Typography component="h4" variant="h4">Driving License</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Front Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Back Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
                         </Grid>
                       </Grid>
                     </Box>
@@ -561,11 +571,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Typography component="h4" variant="h4">Insurance Card</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Front Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Back Side" />
+                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
                         </Grid>
                       </Grid>
                     </Box>
@@ -580,19 +590,19 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Box pb={6}>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
-                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Front Side" />
+                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="Back Side" />
+                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
                           </Grid>
                         </Grid>
                       </Box>
                     </Box>
                   </CardComponent>
                 </Box>
-              ) : activeStep === 2 && (
-                <CardComponent cardTitle="Document Verification">
+              ) : activeStep === 1 && (
+                <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                   <Box className={classes.agreementContainer}>
                     <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>
 
@@ -608,7 +618,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                     <Box pb={2}>
                       <FormControlLabel
-                        control={<Checkbox color="primary" defaultChecked />}
+                        control={<Checkbox color="primary" onChange={({ target: { checked } }) => handleConsent(checked)} />}
                         label={CONSENT_AGREEMENT_LABEL}
                       />
                     </Box>
@@ -623,7 +633,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
               Back
             </Button>
 
-            {activeStep < 2 ?
+            {activeStep < 1 ?
               <Button
                 variant="contained"
                 type={activeStep === 0 ? 'submit' : 'button'}
@@ -635,7 +645,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 {updatePatientLoading && <CircularProgress size={20} color="inherit" />}
               </Button>
               :
-              <Button variant="contained" className="blue-button" type="submit">Finish</Button>
+              <Button variant="contained" className={consentAgreed ? "blue-button" : ''} type="button" onClick={handleFinish} disabled={!consentAgreed}>Finish</Button>
             }
           </Box>
         </Box>
