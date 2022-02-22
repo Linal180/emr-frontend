@@ -23,7 +23,7 @@ import {
   ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
   PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
-  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION, NOT_FOUND_EXCEPTION,
+  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT,
 } from "../../../../../constants";
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
@@ -57,7 +57,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           const { status } = response
 
           if (service && status && status === 200) {
-            const { name, isActive, price, facilityId, duration } = service || {}
+            const { name, isActive, price, facilityId, duration, color } = service || {}
 
             facilityId && setCurrentFacility(facilityId)
             name && setValue('name', name)
@@ -65,6 +65,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
             duration && setValue('duration', duration)
             isActive && setValue('isActive', isActive as boolean)
             isActive && setChecked(isActive as boolean)
+            color && setValue('color', color)
           }
         }
       }
@@ -210,6 +211,14 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                           error={priceError}
                         />
                       </Grid>
+                    </Grid>
+
+                    <Grid item md={3} sm={12} xs={12}>
+                      <InputController
+                        fieldType="color"
+                        controllerName="color"
+                        controllerLabel={SELECT_COLOR_TEXT}
+                      />
                     </Grid>
 
                     <Grid md={12} item>

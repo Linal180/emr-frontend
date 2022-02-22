@@ -38,6 +38,7 @@ query getService($getService: GetService!) {
       duration 
       price
       isActive
+      color
       facilityId
       createdAt
       updatedAt
@@ -70,6 +71,7 @@ mutation CreateService($createServiceInput: CreateServiceInput!) {
       duration
       price
       isActive
+      color
       facilityId
       createdAt
       updatedAt
@@ -90,6 +92,7 @@ mutation UpdateService($updateServiceInput: UpdateServiceInput!) {
       duration
       price
       isActive
+      color
       facilityId
       createdAt
       updatedAt

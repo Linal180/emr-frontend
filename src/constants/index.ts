@@ -193,6 +193,7 @@ export const CTP_NUMBER = "DPS / CTP Number";
 export const STATE_LICENSE = "State License";
 export const LICENSE_ACTIVE_DATE = "License Active Date";
 export const ACTIVE_TEXT = "Active";
+export const SELECT_COLOR_TEXT = "Select Color";
 export const SERVICE_NAME_TEXT = "Service Name";
 export const DURATION_TEXT = "Duration (In Minutes)";
 export const PRICE_TEXT = "Price (In USD)";
