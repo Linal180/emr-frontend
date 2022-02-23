@@ -439,8 +439,8 @@ export type ParamsType = {
 export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender">
   & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
-export type ScheduleInputProps = Omit<CreateScheduleInput, "locationId" | "servicesIds">
-  & { locationId: SelectorOption } & { serviceId: SelectorOption } & { day: SelectorOption };
+export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
+  & { serviceId: SelectorOption } & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingEmail: string;

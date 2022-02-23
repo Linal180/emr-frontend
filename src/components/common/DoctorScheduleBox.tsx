@@ -7,7 +7,7 @@ import { getStandardTime } from "../../utils";
 import { ActionType } from "../../reducers/doctorReducer";
 import { DoctorScheduleProps } from "../../interfacesTypes";
 import { useDoctorScheduleStyles } from "../../styles/doctorSchedule";
-import { TO_TEXT, LOCATION, APPOINTMENT_TYPE, FROM_TEXT } from "../../constants";
+import { TO_TEXT, APPOINTMENT_TYPE, FROM_TEXT } from "../../constants";
 
 const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
   id, startAt, endAt, scheduleServices
@@ -30,7 +30,7 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
   };
 
   return (
-    <Box display="flex" flexDirection="column" justifyContent="space-between">
+    <Box display="flex" pb={3} flexDirection="column" justifyContent="space-between">
       <Box display="flex" justifyContent="flex-end" mt={2}>
         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
           <TrashIcon />
@@ -56,18 +56,6 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
       <Box>
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
-          {/* TO-DO: Replace location with appropriate field */}
-            <Typography className={classes.subHeading}>
-              {LOCATION}:
-            </Typography>
-
-            <Box pr={1} />
-
-            <Typography className={classes.heading}>
-            </Typography>
-          </Box>
-
-          <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
             <Typography className={classes.subHeading}>
               {APPOINTMENT_TYPE}
             </Typography>
@@ -85,8 +73,6 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
           </Box>
         </Box>
       </Box>
-
-      <Box pb={3} />
     </Box>
   )
 };

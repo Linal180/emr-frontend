@@ -127,13 +127,12 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     }
   }, [doctorFacilityId, fetchAllLocationList, fetchAllServicesList, getSchedule, id, isEdit])
 
-  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, serviceId, startAt, day }) => {
-    const { id: selectedLocation } = locationId || {}
+  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day }) => {
     const { id: selectedService } = serviceId || {}
     const { id: dayName } = day || {}
 
     const scheduleInput = {
-      doctorId, locationId: selectedLocation || '', servicesIds: [selectedService] || [],
+      doctorId, servicesIds: [selectedService] || [],
       startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
 
