@@ -1,38 +1,44 @@
 // packages block
-import { ChangeEvent, FC, useEffect, useState, useContext } from "react";
+import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer } from "react";
 import { Link } from "react-router-dom";
-import { RemoveRedEye } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
+import { RemoveRedEye, InsertLink } from "@material-ui/icons";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { formatPhone, renderTh } from "../../../../utils";
+import { AuthContext } from "../../../../context";
+import { formatPhone, isUserAdmin, renderTh } from "../../../../utils";
 import { ListContext } from "../../../../context/listContext";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import ConfirmationModal from "../../../common/ConfirmationModal";
+import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TablesSearchIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
 import {
-  FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery,
-  useRemoveFacilityMutation
+  facilityReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/facilityReducer";
+import {
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, State as AppointmentState,
+  ActionType as AppointmentActionType
+} from "../../../../reducers/appointmentReducer";
+import {
+  FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY,
-  CODE, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY,
-  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE
+  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, PUBLIC_APPOINTMENT_ROUTE,
+  CODE, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED,
+  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SERVICES, LOCATIONS_TEXT, PUBLIC_LINK,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { user } = useContext(AuthContext)
   const { fetchAllFacilityList } = useContext(ListContext)
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [page, setPage] = useState<number>(1);
-  const [totalPage, setTotalPage] = useState<number>(0);
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [deleteFacilityId, setDeleteFacilityId] = useState<string>("");
-  const [facilities, setFacilities] = useState<FacilitiesPayload['facility']>([]);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
+  const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
+  const [{ copied }, appointmentDispatcher] =
+    useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
     variables: {
@@ -48,7 +54,7 @@ const FacilityTable: FC = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      setFacilities([])
+      dispatch({ type: ActionType.SET_FACILITIES, facilities: [] })
     },
 
     onCompleted(data) {
@@ -60,10 +66,12 @@ const FacilityTable: FC = (): JSX.Element => {
         if (!searchQuery) {
           if (pagination) {
             const { totalPages } = pagination
-            totalPages && setTotalPage(totalPages)
+            totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }
 
-          facility && setFacilities(facility as FacilitiesPayload['facility'])
+          facility && dispatch({
+            type: ActionType.SET_FACILITIES, facilities: facility as FacilitiesPayload['facility']
+          })
         }
       }
     }
@@ -72,7 +80,7 @@ const FacilityTable: FC = (): JSX.Element => {
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {
       Alert.error(CANT_DELETE_FACILITY)
-      setOpenDelete(false)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
     onCompleted(data) {
@@ -82,9 +90,9 @@ const FacilityTable: FC = (): JSX.Element => {
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          setOpenDelete(false)
           findAllFacility();
           fetchAllFacilityList();
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
     }
@@ -96,14 +104,15 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   }, [page, findAllFacility, searchQuery]);
 
-  const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
+  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
+    dispatch({ type: ActionType.SET_PAGE, page });
 
   const handleSearch = () => { }
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setDeleteFacilityId(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_DELETE_FACILITY_ID, deleteFacilityId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
@@ -111,13 +120,24 @@ const FacilityTable: FC = (): JSX.Element => {
     if (deleteFacilityId) {
       await removeFacility({
         variables: {
-          removeFacility: {
-            id: deleteFacilityId
-          }
+          removeFacility: { id: deleteFacilityId }
         }
       })
     }
   };
+
+  const handleClipboard = (id: string) => {
+    if (id) {
+      navigator.clipboard.writeText(
+        `${process.env.REACT_APP_URL}${PUBLIC_APPOINTMENT_ROUTE}/${id}`
+      )
+
+      appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: true })
+    }
+  };
+
+  const { roles } = user || {}
+  const isAdmin = isUserAdmin(roles)
 
   return (
     <>
@@ -126,7 +146,9 @@ const FacilityTable: FC = (): JSX.Element => {
           <TextField
             value={searchQuery}
             className={classes.tablesSearchIcon}
-            onChange={({ target: { value } }) => setSearchQuery(value)}
+            onChange={({ target: { value } }) =>
+              dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: value })
+            }
             onKeyPress={({ key }) => key === "Enter" && handleSearch()}
             name="searchQuery"
             variant="outlined"
@@ -166,7 +188,7 @@ const FacilityTable: FC = (): JSX.Element => {
               ) : (
                 facilities?.map((facility: FacilityPayload['facility']) => {
                   const { id, name, code, contacts } = facility || {};
-                  const facilityContact = contacts && contacts[0]
+                  const facilityContact = contacts && (contacts.filter(contact => contact.primaryContact)[0])
                   const { email, phone, zipCode, city, state } = facilityContact || {}
 
                   return (
@@ -180,17 +202,29 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
-                            <Box className={classes.iconsBackground}>
-                              <ServiceIcon />
-                            </Box>
-                          </Link>
+                          {isAdmin &&
+                            <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                              <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                                <InsertLink />
+                              </Box>
+                            </DetailTooltip>
+                          }
 
-                          <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
-                            <Box className={classes.iconsBackground}>
-                              <RemoveRedEye color="primary" />
-                            </Box>
-                          </Link>
+                          <DetailTooltip title={SERVICES}>
+                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
+                              <Box className={classes.iconsBackground}>
+                                <ServiceIcon />
+                              </Box>
+                            </Link>
+                          </DetailTooltip>
+
+                          <DetailTooltip title={LOCATIONS_TEXT}>
+                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
+                              <Box className={classes.iconsBackground}>
+                                <RemoveRedEye />
+                              </Box>
+                            </Link>
+                          </DetailTooltip>
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
@@ -222,15 +256,17 @@ const FacilityTable: FC = (): JSX.Element => {
             isLoading={deleteFacilityLoading}
             description={DELETE_FACILITY_DESCRIPTION}
             handleDelete={handleDeleteFacility}
-            setOpen={(open: boolean) => setOpenDelete(open)}
+            setOpen={(open: boolean) =>
+              dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
+            }
           />
         </Box>
       </Box>
 
-      {totalPage > 1 && (
+      {totalPages > 1 && (
         <Box display="flex" justifyContent="flex-end" pt={2.25}>
           <Pagination
-            count={totalPage}
+            count={totalPages}
             shape="rounded"
             page={page}
             onChange={handleChange}

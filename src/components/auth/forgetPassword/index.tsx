@@ -12,7 +12,7 @@ import { requiredLabel } from "../../../utils";
 import { ForgetPasswordInputs } from "../../../interfacesTypes";
 import { useForgetPasswordMutation } from "../../../generated/graphql";
 import { forgetPasswordValidationSchema } from "../../../validationSchemas";
-import { SEND_EMAIL, FORGET_PASSWORD_SUCCESS, SIGN_IN, BACK_TO, LOGIN_ROUTE, EMAIL, ROOT_ROUTE } from "../../../constants";
+import { SEND_EMAIL, FORGET_PASSWORD_SUCCESS, SIGN_IN, BACK_TO, LOGIN_ROUTE, EMAIL } from "../../../constants";
 
 const ForgetPasswordComponent = (): JSX.Element => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm<ForgetPasswordInputs>({
@@ -82,7 +82,7 @@ const ForgetPasswordComponent = (): JSX.Element => {
         </Typography>
 
         <Box ml={0.5}>
-          <Typography component={Link} variant="body2" to={ROOT_ROUTE}>{SIGN_IN}</Typography>
+          <Typography component={Link} to={LOGIN_ROUTE}>{SIGN_IN}</Typography>
         </Box>
       </Box>
     </AuthLayout>

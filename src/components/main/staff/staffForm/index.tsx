@@ -5,16 +5,16 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import StaffController from '../controller';
 import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
 import PhoneField from '../../../common/PhoneInput';
+import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { AuthContext, ListContext } from '../../../../context';
-import { getTimestamps, renderFacilities, setRecord } from "../../../../utils";
+import { getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
 import { addStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
@@ -23,9 +23,10 @@ import {
 } from "../../../../generated/graphql";
 import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
-  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES, MAPPED_GENDER,
+  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES,
   STAFF_NOT_FOUND, CANT_UPDATE_STAFF, CANT_CREATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER_IDENTITY, 
+  NOT_FOUND_EXCEPTION
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -44,34 +45,40 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      Alert.error(message)
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(STAFF_ROUTE)
     },
 
     onCompleted(data) {
-      const { getStaff: { response, staff } } = data;
+      const { getStaff } = data || {}
 
-      if (response) {
-        const { status } = response
+      if (getStaff) {
+        const { response, staff } = getStaff;
 
-        if (staff && status && status === 200) {
-          const {
-            firstName, lastName, username, email, phone, mobile, dob, gender,
-            facilityId, user, facility
-          } = staff || {}
-          const { roles } = user || {}
-          const { role } = (roles && roles[0]) || {}
-          const { name } = facility || {}
+        if (response) {
+          const { status } = response
 
-          dob && setValue('dob', dob)
-          email && setValue('email', email)
-          phone && setValue('phone', phone)
-          mobile && setValue('mobile', mobile)
-          lastName && setValue('lastName', lastName)
-          username && setValue('username', username)
-          firstName && setValue('firstName', firstName)
-          role && setValue('roleType', setRecord(role, role))
-          gender && setValue('gender', setRecord(gender, gender))
-          facilityId && setValue('facilityId', setRecord(facilityId, name || ''))
+          if (staff && status && status === 200) {
+            const {
+              firstName, lastName, username, email, phone, mobile, dob, gender,
+              facilityId, user, facility
+            } = staff || {}
+
+            const { roles } = user || {}
+            const { role } = (roles && roles[0]) || {}
+            const { name } = facility || {}
+
+            dob && setValue('dob', dob)
+            email && setValue('email', email)
+            phone && setValue('phone', phone)
+            mobile && setValue('mobile', mobile)
+            lastName && setValue('lastName', lastName)
+            username && setValue('username', username)
+            firstName && setValue('firstName', firstName)
+            role && setValue('roleType', setRecord(role, role))
+            gender && setValue('gender', setRecord(gender, gender))
+            facilityId && setValue('facilityId', setRecord(facilityId, name || ''))
+          }
         }
       }
     }
@@ -90,7 +97,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       if (response) {
         const { status } = response
-
         if (status && status === 200) {
           Alert.success(STAFF_CREATED);
           reset()
@@ -175,14 +181,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     dob: { message: dobError } = {},
     gender: { id: genderError } = {},
     roleType: { id: roleError } = {},
-    email: { message: emailError } = {},
     phone: { message: phoneError } = {},
     mobile: { message: mobileError } = {},
     facilityId: { id: facilityError } = {},
-    username: { message: usernameError } = {},
-    lastName: { message: lastNameError } = {},
-    password: { message: passwordError } = {},
-    firstName: { message: firstNameError } = {},
   } = errors;
 
   return (
@@ -201,7 +202,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
-                          error={facilityError?.message || ""}
+                          error={facilityError?.message && requiredMessage(FACILITY)}
                           options={renderFacilities(facilityList)}
                         />
                       </Grid>
@@ -213,28 +214,26 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           name="roleType"
                           value={EMPTY_OPTION}
                           options={MAPPED_ROLES}
-                          error={roleError?.message || ""}
+                          error={roleError?.message && requiredMessage(ROLE)}
                         />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <StaffController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="firstName"
-                          error={firstNameError}
                           controllerLabel={FIRST_NAME}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <StaffController
+                        <InputController
                           isRequired
                           fieldType="text"
                           controllerName="lastName"
-                          error={lastNameError}
                           controllerLabel={LAST_NAME}
                         />
                       </Grid>
@@ -247,8 +246,8 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           name="gender"
                           label={GENDER}
                           value={EMPTY_OPTION}
-                          error={genderError?.message || ""}
-                          options={MAPPED_GENDER}
+                          error={genderError?.message && requiredMessage(GENDER)}
+                          options={MAPPED_GENDER_IDENTITY}
                         />
                       </Grid>
 
@@ -275,33 +274,30 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <CardComponent cardTitle={ACCOUNT_INFO}>
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <StaffController
+                    <InputController
                       isRequired
                       disabled={isEdit}
                       fieldType="email"
                       controllerName="email"
-                      error={emailError}
                       controllerLabel={EMAIL}
                     />
 
                     <Grid container spacing={3}>
                       <Grid item md={isEdit ? 12 : 6} sm={12} xs={12}>
-                        <StaffController
+                        <InputController
                           fieldType="text"
                           controllerName="username"
-                          error={usernameError}
                           controllerLabel={PROVIDER}
                         />
                       </Grid>
 
                       {!isEdit &&
                         <Grid item md={6} sm={12} xs={12}>
-                          <StaffController
+                          <InputController
                             isRequired
                             isPassword
                             fieldType="password"
                             controllerName="password"
-                            error={passwordError}
                             controllerLabel={PASSWORD_LABEL}
                           />
                         </Grid>

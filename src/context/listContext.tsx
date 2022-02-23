@@ -32,10 +32,10 @@ export const ListContext = createContext<ListContextInterface>({
 export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(listContextReducer, initialState)
-  const { 
+  const {
     doctorPages, doctorList, facilityPages, facilityList, servicePages, locationPages,
-     serviceList, locationList, patientList, patientPages
-   } = state;
+    serviceList, locationList, patientList, patientPages
+  } = state;
 
   const [findAllFacility] = useFindAllFacilitiesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -167,80 +167,91 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     }
   })
 
-  const fetchAllFacilityList = useCallback((page = 1) => {
-    dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [] })
+  const fetchAllFacilityList = useCallback(async (page = 1) => {
+    try {
+      dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [] })
 
-    findAllFacility({
-      variables: {
-        facilityInput: {
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+      await findAllFacility({
+        variables: {
+          facilityInput: {
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } catch (error) { }
   }, [findAllFacility])
 
-  const fetchAllDoctorList = useCallback((page = 1) => {
-    dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: [] })
+  const fetchAllDoctorList = useCallback(async (page = 1) => {
+    try {
+      dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: [] })
 
-    findAllDoctor({
-      variables: {
-        doctorInput: {
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+      await findAllDoctor({
+        variables: {
+          doctorInput: {
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } catch (error) { }
   }, [findAllDoctor])
 
-  const fetchAllPatientList = useCallback((page = 1) => {
-    dispatch({ type: ActionType.SET_PATIENT_LIST, patientList: [] })
+  const fetchAllPatientList = useCallback(async (page = 1) => {
+    try {
+      dispatch({ type: ActionType.SET_PATIENT_LIST, patientList: [] })
 
-    findAllPatient({
-      variables: {
-        patientInput: {
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+      await findAllPatient({
+        variables: {
+          patientInput: {
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } catch (error) { }
   }, [findAllPatient])
 
-  const fetchAllServicesList = useCallback((page = 1) => {
-    dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: [] })
+  const fetchAllServicesList = useCallback(async (page = 1) => {
+    try {
+      dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: [] })
 
-    findAllServices({
-      variables: {
-        serviceInput: {
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+      await findAllServices({
+        variables: {
+          serviceInput: {
+            isActive: true,
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } catch (error) { }
   }, [findAllServices])
 
-  const fetchAllLocationList = useCallback((facilityId, page = 1) => {
-    dispatch({ type: ActionType.SET_LOCATION_LIST, locationList: [] })
+  const fetchAllLocationList = useCallback(async (facilityId, page = 1) => {
+    try {
+      dispatch({ type: ActionType.SET_LOCATION_LIST, locationList: [] })
 
-    findAllContacts({
-      variables: {
-        contactInput: {
-          facilityId,
-          paginationOptions: {
-            page,
-            limit: LIST_PAGE_LIMIT
+      await findAllContacts({
+        variables: {
+          contactInput: {
+            facilityId,
+            paginationOptions: {
+              page,
+              limit: LIST_PAGE_LIMIT
+            }
           }
-        }
-      },
-    });
+        },
+      });
+    } catch (error) { }
   }, [findAllContacts])
 
   useEffect(() => { hasToken && fetchAllFacilityList(facilityPages) }, [fetchAllFacilityList, hasToken, facilityPages])
@@ -258,7 +269,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const setLocationPages = (pageNumber: number) => dispatch({ type: ActionType.SET_LOCATION_PAGES, locationPages: pageNumber });
   const setServicePages = (pageNumber: number) => dispatch({ type: ActionType.SET_SERVICE_PAGES, servicePages: pageNumber });
   const setPatientPages = (pageNumber: number) => dispatch({ type: ActionType.SET_PATIENT_PAGES, patientPages: pageNumber });
-  
+
 
   return (
     <ListContext.Provider

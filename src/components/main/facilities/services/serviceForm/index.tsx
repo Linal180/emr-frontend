@@ -23,7 +23,7 @@ import {
   ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
   PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
-  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION,
+  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT,
 } from "../../../../../constants";
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
@@ -42,24 +42,30 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      Alert.error(message)
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(`${FACILITIES_ROUTE}/${currentFacility}${FACILITY_SERVICES_ROUTE}`)
     },
 
     onCompleted(data) {
-      const { getService: { response, service } } = data;
+      const { getService } = data || {};
 
-      if (response) {
-        const { status } = response
+      if (getService) {
+        const { response, service } = getService
 
-        if (service && status && status === 200) {
-          const { name, isActive, price, facilityId, duration } = service || {}
+        if (response) {
+          const { status } = response
 
-          facilityId && setCurrentFacility(facilityId)
-          name && setValue('name', name)
-          price && setValue('price', price)
-          duration && setValue('duration', duration)
-          isActive && setValue('isActive', isActive as boolean)
-          isActive && setChecked(isActive as boolean)
+          if (service && status && status === 200) {
+            const { name, isActive, price, facilityId, duration, color } = service || {}
+
+            facilityId && setCurrentFacility(facilityId)
+            name && setValue('name', name)
+            price && setValue('price', price)
+            duration && setValue('duration', duration)
+            isActive && setValue('isActive', isActive as boolean)
+            isActive && setChecked(isActive as boolean)
+            color && setValue('color', color)
+          }
         }
       }
     }
@@ -127,11 +133,11 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
     setChecked(event.target.checked);
   };
 
-  const onSubmit: SubmitHandler<extendedServiceInput> = async ({ duration, facilityId, name, price }) => {
+  const onSubmit: SubmitHandler<extendedServiceInput> = async ({ duration, facilityId, name, price, color }) => {
     const { id: selectedFacilityId } = facilityId
     const serviceInput = {
       name: name || '', duration: duration || "", isActive: checked,
-      price: price || "", facilityId: selectedFacilityId || "",
+      price: price || "", facilityId: selectedFacilityId || "", color: color || ''
     };
 
     if (isEdit) {
@@ -188,7 +194,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
                           isRequired
-                          fieldType="text"
+                          fieldType="number"
                           controllerName="duration"
                           controllerLabel={DURATION_TEXT}
                           error={durationError}
@@ -204,6 +210,14 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                           error={priceError}
                         />
                       </Grid>
+                    </Grid>
+
+                    <Grid item md={3} sm={12} xs={12}>
+                      <InputController
+                        fieldType="color"
+                        controllerName="color"
+                        controllerLabel={SELECT_COLOR_TEXT}
+                      />
                     </Grid>
 
                     <Grid md={12} item>

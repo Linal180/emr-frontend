@@ -7,11 +7,22 @@ import Breadcrumb from "./Breadcrumb";
 // interfaces/types block
 import { PageHeaderProps } from "../../interfacesTypes";
 import { BLACK_TWO } from "../../theme";
+import { PageBackIcon } from "../../assets/svgs";
+import { PATIENTS_ROUTE } from "../../constants";
 
-const PageHeader: FC<PageHeaderProps> = ({ title, subTitle, buttonText, hasComponent, linkToPage, noAdd, path, openModal }): JSX.Element => {
+const PageHeader: FC<PageHeaderProps> = ({ title, subTitle, buttonText, hasComponent, linkToPage, noAdd, path, openModal, isIcon, id }): JSX.Element => {
   return (
     <Box display="flex" alignItems="center" justifyContent="space-between" pb={2.25}>
+
       <Box>
+        {isIcon &&
+          (
+            <Box mr={2}>
+              <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
+                <PageBackIcon />
+              </Link>
+            </Box>
+          )}
         <Typography component="h4" variant="h4">{title}</Typography>
 
         {path && <Breadcrumb path={path} />}

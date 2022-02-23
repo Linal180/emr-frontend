@@ -8,14 +8,15 @@ import ConfirmationModal from "../ConfirmationModal";
 import { MediaCardComponentType } from "../../../interfacesTypes";
 import { DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION } from "../../../constants";
 import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
-import { documentVerificationForm } from "../../../styles/publicAppointment/documentVerification";
+import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
 import { FileIcon } from "../../../assets/svgs";
 import { BLUE_ONE } from "../../../theme";
+import { CameraAlt } from "@material-ui/icons";
 
-const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, setAttachment, setAttachments, attachments, allAttachments, imageSide }): JSX.Element => {
+const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, setAttachment, setAttachments, attachments, allAttachments, imageSide, notDescription }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
-  const classes = documentVerificationForm()
+  const classes = documentVerificationFormStyles()
 
 
   const [removeAttachmentData, { loading }] = useRemoveAttachmentDataMutation({
@@ -94,7 +95,11 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
             })}
 
           <Grid md={12} xs={12}>
-            <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
+            {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
+              <CameraAlt color="inherit" />
+            </Typography>}
+            
+            {!notDescription && <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
               <Box>
                 <FileIcon />
                 <Typography component="p" variant="body2">{imageSide}</Typography>
@@ -104,7 +109,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
                 <Typography component="h4" variant="h4">Drop your image here, <Box display="inline" color={BLUE_ONE}>or browse</Box></Typography>
                 <Typography component="h6" variant="body1">Supports: JPG,JPEG2000,PNG</Typography>
               </Box>
-            </Box>
+            </Box>}
           </Grid>
 
         </Grid>

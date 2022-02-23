@@ -1,29 +1,8 @@
 import { makeStyles } from "@material-ui/core";
-import { DRAWER_WIDTH } from "../constants";
-import { WHITE } from "../theme";
+import { BLACK, BLACK_SEVEN, BLUE_EIGHT, WHITE, WHITE_FOUR } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
-  appBar: {
-    marginLeft: DRAWER_WIDTH,
-    width: "100%",
-    zIndex: theme.zIndex.drawer + 1,
-    background: "linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0.3) 100%),url(/images/header.jpg) center no-repeat",
-    backgroundSize: "cover",
-
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-
-    "& input": {
-      color: WHITE,
-    },
-
-    "& .MuiFormControl-root.MuiTextField-root": {
-      minWidth: 240,
-    }
-  },
-
+  
   menuButton: {
     borderRadius: 6,
     padding: 9,
@@ -34,4 +13,58 @@ export const useHeaderStyles = makeStyles((theme) => ({
       backgroundColor: 'rgba(255, 255, 255, 0.3)',
     }
   },
+
+  appBar: {
+    backgroundColor: WHITE,
+    borderBottom: `1px solid ${WHITE_FOUR}`,
+    boxShadow: 'none',
+    padding: theme.spacing(0,4),
+    
+    [theme.breakpoints.down("sm")]: {
+      padding: 0,
+    }
+  },
+
+  toolBar: {
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+
+  menuBar: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+    "& .active": {
+      borderBottom:`1.5px solid ${BLUE_EIGHT}`,
+    },
+
+    [theme.breakpoints.down("sm")]: {
+      display: 'none',
+    },
+  },
+
+  menuItem: {
+    "& .MuiIconButton-root": {
+      padding: '0 5px',
+    }
+  },
+
+  menuLink: {
+    color: BLACK,
+  },
+
+  profileItem: {
+    color: BLACK_SEVEN,
+    textTransform: 'capitalize',
+    minWidth:'auto'
+  },
+
+  profileItemName: {
+    "& .MuiTypography-root": {
+      minWidth: 30,
+      margin: 0,
+    }
+  },
+
 }));

@@ -1,12 +1,15 @@
 // packages block
 import { createTheme } from "@material-ui/core/styles";
-// color-constants and font-family block
+import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
+// constants block
 import {
-  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE,
-  GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, BLUE_SEVEN,
+  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE,
+  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, BLACK_SEVEN,
 } from ".";
 
+const breakpoints = createBreakpoints({})
 const customTheme = createTheme()
+
 export const theme = createTheme({
   palette: {
     primary: {
@@ -114,6 +117,20 @@ export const theme = createTheme({
     MuiToolbar: {
       gutters: {
         padding: "15px 30px !important",
+      },
+
+      root: {
+        "& .MuiTypography-root": {
+          minWidth: 80,
+          textAlign: 'center',
+          color: BLACK_SEVEN,
+          cursor: 'pointer',
+          textTransform: 'capitalize',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          margin: '0 20px',
+        }
       }
     },
 
@@ -195,9 +212,9 @@ export const theme = createTheme({
             background: WHITE_THREE,
             zIndex: 9,
             borderRadius: 6,
+            border: `2px solid ${ORANGE_ONE}`,
           },
         },
-
 
         "& .MuiSvgIcon-root": {
           height: 32,
@@ -294,7 +311,11 @@ export const theme = createTheme({
       },
 
       formControl: {
-        top: -20
+        top: -20,
+
+        [breakpoints.between(1280, 1441)]: {
+          top: -30,
+        },
       }
     },
 
@@ -325,6 +346,10 @@ export const theme = createTheme({
         opacity: 0.8,
         color: GRAY_TWO,
         fontWeight: 500,
+      },
+
+      root: {
+        color: RED_THREE
       }
     },
 
@@ -508,14 +533,13 @@ export const theme = createTheme({
         minWidth: '0 !important',
         lineHeight: '19px',
         padding: '8px 15px',
-        fontSize: 13,
+        fontSize: 18,
         fontWeight: 500,
         minHeight: 0,
-        borderRadius: 4,
 
         "&.Mui-selected": {
-          background: `rgba(0, 158, 247, 0.1)`,
-          color: BLUE_SEVEN,
+          borderBottom: `5px solid ${BLUE_EIGHT}`,
+          color: BLUE_EIGHT,
         }
       },
 
@@ -531,6 +555,6 @@ export const theme = createTheme({
           color: GRAY_THREE
         }
       }
-    }
+    },
   },
 });
