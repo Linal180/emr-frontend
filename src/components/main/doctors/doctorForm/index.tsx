@@ -16,7 +16,7 @@ import history from '../../../../history';
 import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getDate, getTimestamps, renderFacilities, renderStates, setRecord } from "../../../../utils";
+import { getDate, getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import {
   DoctorPayload, Speciality, SsnType, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole,
   useUpdateDoctorMutation
@@ -31,7 +31,7 @@ import {
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, TAXONOMY_CODE,
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
-  FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_STATES,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -522,7 +522,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={STATE}
                           name="billingState"
-                          options={renderStates()}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 
@@ -611,7 +611,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={STATE}
                           name="state"
-                          options={renderStates()}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 

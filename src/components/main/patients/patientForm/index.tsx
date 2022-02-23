@@ -41,8 +41,7 @@ import {
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT,
-  CREATE_PATIENT,
+  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
 } from "../../../../constants";
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -639,11 +638,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
+                        <Selector
                           isRequired
-                          fieldType="text"
-                          controllerName="basicState"
-                          controllerLabel={STATE}
+                          name="basicState"
+                          label={STATE}
+                          value={EMPTY_OPTION}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 
@@ -1165,11 +1165,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
+                        <Selector
                           isRequired
-                          fieldType="text"
-                          controllerName="guarantorState"
-                          controllerLabel={STATE}
+                          name="guarantorState"
+                          label={STATE}
+                          value={EMPTY_OPTION}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 

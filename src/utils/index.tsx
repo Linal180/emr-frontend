@@ -331,9 +331,6 @@ export const setTimeDay = (time: string, day: string): string => {
   return result
 };
 
-export const renderStates = (): SelectorOption[] =>
-  states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
-
 export const activeClass = (pathname: string): string => {
   switch (pathname) {
     case DASHBOARD_ROUTE:

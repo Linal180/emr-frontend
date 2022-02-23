@@ -1,4 +1,5 @@
 //packages block
+import states from 'states-us';
 import moment from 'moment-timezone';
 // graphql and interfaces block
 import { formatValue } from '../utils';
@@ -820,6 +821,8 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
 export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezone => {
   return { id: timezone, name: formatValue(timezone) }
 })
+
+export const MAPPED_STATES: SelectorOption[] = states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
   { id: ServiceCode.Hospice_34, name: formatValue(ServiceCode.Hospice_34) },
