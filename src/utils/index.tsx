@@ -104,6 +104,8 @@ export const getToken = () => {
 
 export const requiredMessage = (fieldName: string) => `${fieldName} is required`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
+export const tooShort = (fieldName: string) => `${fieldName} is too short`;
+export const tooLong = (fieldName: string) => `${fieldName} is too long`;
 
 export const getPracticeType = (type: PracticeType): string => {
   switch (type) {

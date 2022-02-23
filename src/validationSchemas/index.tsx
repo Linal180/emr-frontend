@@ -2,7 +2,7 @@
 import * as yup from "yup";
 import moment from "moment";
 // utils and constants block
-import { dateValidation, invalidMessage, requiredMessage, timeValidation } from "../utils";
+import { dateValidation, invalidMessage, requiredMessage, timeValidation, tooLong, tooShort } from "../utils";
 import {
   ADDRESS, ALPHABETS_REGEX, CITY, CONFIRM_YOUR_PASSWORD, COUNTRY, EMAIL, MaxLength, MinLength,
   FACILITY, FIRST_NAME, GENDER, INVALID_EMAIL, LAST_NAME, PASSWORDS_MUST_MATCH, PASSWORD_LABEL,
@@ -435,8 +435,11 @@ export const facilityServicesSchema = {
   name: yup.string().required(requiredMessage(NAME)),
   price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(2, MinLength(PRICE, 2))
     .max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
-  duration: yup.string().matches(NUMBER_REGEX, ValidMessage(DURATION)).min(1, MinLength(DURATION, 1))
-    .max(3, MaxLength(DURATION, 3)).required(requiredMessage(DURATION)),
+  duration: yup.string()
+    .test('', requiredMessage(DURATION), value => !!value)
+    .test('', invalidMessage(DURATION), value => !(parseInt(value || '') < 0))
+    .test('', tooShort(DURATION), value => !(parseInt(value || '') < 5))
+    .test('', tooLong(DURATION), value => !(parseInt(value || '') >= 300))
 };
 
 export const serviceSchema = yup.object({
