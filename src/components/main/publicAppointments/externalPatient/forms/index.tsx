@@ -491,7 +491,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                           <Grid item md={3} sm={12} xs={12}>
                             <Selector
-                              isRequired
                               value={EMPTY_OPTION}
                               label={STATE}
                               name="emergencyState"
