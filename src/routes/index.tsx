@@ -31,7 +31,10 @@ import PatientDetails from "../pages/main/patients/patientDetails";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 import { StartProject } from "../pages/main/dashboard/startProject";
 import { PublicAppointment } from "../pages/main/publicAppointments";
+import AddPractice from "../pages/main/practiceManagement/addPractice";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
+import Practice from "../pages/main/practiceManagement/practiceListing";
+import ViewPractice from "../pages/main/practiceManagement/viewPractice";
 import { AppointmentFail } from "../pages/main/publicAppointments/fail";
 import { AddService } from "../pages/main/facilities/services/addService";
 import { AddAppointment } from "../pages/main/appointments/addAppointment";
@@ -58,7 +61,7 @@ import {
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
   FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE
+  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -85,6 +88,9 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
+      <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={Practice} />
+      <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} />
+      <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/:id`} component={ViewPractice} />
       <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />
