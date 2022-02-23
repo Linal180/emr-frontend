@@ -71,6 +71,7 @@ const EditMediaModel: FC<MediaModalTypes> = (props): JSX.Element => {
         }
       }
     })
+
     setLoading(false)
   }
 
@@ -89,7 +90,15 @@ const EditMediaModel: FC<MediaModalTypes> = (props): JSX.Element => {
                 </IconButton>
               </Box>
             </Box> :
-            <DropzoneImage reset={reset} setAttachments={setAttachments} isEdit={isEdit} imageModuleType={imageModuleType} attachmentId={attachmentId} itemId={itemId} handleClose={handleClose} />
+            <DropzoneImage
+              reset={reset}
+              itemId={itemId}
+              isEdit={isEdit}
+              handleClose={handleClose}
+              attachmentId={attachmentId}
+              setAttachments={setAttachments}
+              imageModuleType={imageModuleType}
+            />
           }
           <Box pt={3} />
         </DialogContent>
@@ -114,4 +123,5 @@ const EditMediaModel: FC<MediaModalTypes> = (props): JSX.Element => {
     </Dialog>
   )
 }
-export default EditMediaModel
+
+export default EditMediaModel;

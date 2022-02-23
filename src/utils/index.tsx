@@ -1,15 +1,20 @@
 // packages block
 import moment from "moment";
+import states from "states-us";
 import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { DAYS, LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload
 } from "../generated/graphql"
+import {
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
+  LOGIN_ROUTE, PATIENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, START_PROJECT_ROUTE, TOKEN,
+  USER_EMAIL, VIEW_APPOINTMENTS_ROUTE
+} from "../constants";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -63,7 +68,7 @@ export const isCurrentUserCanMakeAdmin = (currentUserRole: Maybe<Maybe<Role>[]> 
   return isSuperAdmin;
 }
 
-export const isUserAdmin = (currentUserRole: Maybe<Maybe<Role>[]> | undefined) => {
+export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
   let isAdmin: boolean = false
 
   if (currentUserRole) {
@@ -103,6 +108,8 @@ export const getToken = () => {
 
 export const requiredMessage = (fieldName: string) => `${fieldName} is required`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
+export const tooShort = (fieldName: string) => `${fieldName} is too short`;
+export const tooLong = (fieldName: string) => `${fieldName} is too long`;
 
 export const getPracticeType = (type: PracticeType): string => {
   switch (type) {
@@ -322,4 +329,37 @@ export const setTimeDay = (time: string, day: string): string => {
   }
 
   return result
+};
+
+export const renderStates = (): SelectorOption[] =>
+  states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
+
+export const activeClass = (pathname: string): string => {
+  switch (pathname) {
+    case DASHBOARD_ROUTE:
+      return 'inDashboard';
+
+    case VIEW_APPOINTMENTS_ROUTE:
+    case SCHEDULE_APPOINTMENTS_ROUTE:
+    case START_PROJECT_ROUTE:
+      return "inAppointment"
+
+    case DOCTORS_ROUTE:
+    case PATIENTS_ROUTE:
+    case STAFF_ROUTE:
+      return "inUser"
+
+    case FACILITIES_ROUTE:
+      return "inFacility"
+
+    case LAB_RESULTS_ROUTE:
+      return "inReport"
+
+    case INVOICES_ROUTE:
+    case CLAIMS_ROUTE:
+      return "inBilling"
+
+    default:
+      return ''
+  }
 };

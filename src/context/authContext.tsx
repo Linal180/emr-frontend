@@ -1,5 +1,5 @@
 // packages block
-import { createContext, FC, useEffect, useState } from "react";
+import { createContext, FC, useCallback, useEffect, useState } from "react";
 // graphql, interfaces/types and constants block
 import { TOKEN } from "../constants";
 import { AuthContextProps } from "../interfacesTypes";
@@ -25,12 +25,12 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const {
-          me: { user },
-        } = data;
+        const { me } = data
 
-        if (user) {
-          setUser(user as User);
+        if (me) {
+          const { user } = me;
+
+          user && setUser(user as User);
         }
       }
     },
@@ -40,10 +40,16 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   const hasToken = localStorage.getItem(TOKEN);
 
+  const getUser = useCallback( async () => {
+    try {
+      await fetchUser();
+    } catch (error) {}
+  }, [fetchUser]);
+
   useEffect(() => {
-    hasToken && setIsLoggedIn(true);
-    isLoggedIn && hasToken && fetchUser();
-  }, [isLoggedIn, hasToken, fetchUser, loading]);
+      hasToken && setIsLoggedIn(true);
+      isLoggedIn && hasToken && getUser();
+  }, [isLoggedIn, hasToken, loading, getUser]);
 
   return (
     <AuthContext.Provider

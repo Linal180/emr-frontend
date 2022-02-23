@@ -1,14 +1,15 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { GRAY_FIVE, WHITE, WHITE_THREE } from "../theme";
+import { BLACK_TWO, GRAY_FIVE, WHITE, WHITE_THREE } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
-    backgroundColor: theme.palette.common.white,
-    color: 'rgba(0, 0, 0, 0.87)',
+    backgroundColor: WHITE_THREE,
+    color: BLACK_TWO,
     boxShadow: theme.shadows[1],
     fontSize: 13,
     minWidth: 'auto',
     padding: 20,
+    borderRadius: 5,
   },
 }))(Tooltip);
 
@@ -27,7 +28,9 @@ export const useTableStyles = makeStyles(() => ({
 
   searchContainer: {
     padding: "15px 30px",
-    borderBottom: `1px solid ${WHITE_THREE}`
+    borderBottom: `1px solid ${WHITE_THREE}`,
+    display: 'flex',
+    justifyContent: 'space-between',
   },
 
   status: {

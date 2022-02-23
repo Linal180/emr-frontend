@@ -92,6 +92,7 @@ query FindAllPatient($patientInput: PatientInput!) {
         typeId
         key
         url
+        title
         createdAt
         updatedAt
       }
@@ -229,6 +230,7 @@ query GetPatient($getPatient: GetPatient!) {
         typeId
         key
         url
+        title
         createdAt
         updatedAt
       }

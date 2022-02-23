@@ -177,7 +177,6 @@ export interface ChartingCardComponentType {
   vitalsCard?: boolean;
 }
 
-
 export interface PageHeaderProps {
   isOpen?: boolean;
   setOpen?: Function;
@@ -452,27 +451,17 @@ interface CustomBillingAddressInputs {
   billingAddress: string;
   billingAddress2: string;
   billingCity: string;
-  billingState: string;
   billingCountry: string;
   billingPager: string;
   billingUserId: string;
   billingFacility: string;
+  billingState: SelectorOption;
 }
 
-type FacilityControlTypes = | "name" | "practiceType" | "code" | "email" | "phone" | "fax" | "zipCode" | "address"
-  | "address2" | "city" | "state" | "country" | "billingEmail" | "billingPhone" | "billingFax" | "billingZipCode"
-  | "billingAddress" | "billingAddress2" | "billingCity" | "billingState" | "billingCountry" | "billingBankAccount"
-  | "cliaIdNumber" | "federalTaxId" | "revenueCode" | "tamxonomyCode" | "insurancePlanType" | 'timeZone'
-  | "mammographyCertificationNumber" | "npi" | "merchantId" | "billingType" | "stateImmunizationId" | "locationId"
-  | "serviceCode" | "mobile" | "pager";
-
-export interface FacilityInputControlProps extends IControlLabel {
-  controllerName: FacilityControlTypes;
-}
-
-export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode">
+export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state">
   & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone"> & CustomBillingAddressInputs
-  & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption };
+  & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption }
+  & { state: SelectorOption };
 
 type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
 
@@ -484,8 +473,8 @@ export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZone
   & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType">
-  & Omit<CreateContactInput, "facilityId"> & CustomBillingAddressInputs & { facilityId: SelectorOption }
-  & { ssnType: SelectorOption } & { speciality: SelectorOption };
+  & Omit<CreateContactInput, "facilityId" | "state"> & CustomBillingAddressInputs & { facilityId: SelectorOption }
+  & { ssnType: SelectorOption } & { speciality: SelectorOption } & { state: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
 
@@ -508,18 +497,6 @@ export interface StepperComponentProps {
   activeStep: number
 }
 
-type PatientControlTypes = | "suffix" | "firstName" | "middleName" | "lastName" | "firstNameUsed"
-  | "prefferedName" | "previousFirstName" | "previouslastName" | "motherMaidenName" | "ssn" | "dob"
-  | "issueDate" | "expirationDate" | "registrationDepartment" | "primaryDepartment"
-  | "registrationDate" | "deceasedDate" | "privacyNotice" | "releaseOfInfoBill" | "callToConsent"
-  | "medicationHistoryAuthority" | "note" | "language" | "ethnicity" | "sexualOrientation"
-  | "sexAtBirth" | "pronouns" | "homeBound" | "holdStatement" | "statementDelivereOnline"
-  | "statementNote" | "statementNoteDateFrom" | "statementNoteDateTo" | "adminId" | "gender"
-  | "race" | "genderIdentity" | "maritialStatus" | "facilityId" | "usualProviderId"
-
-type BasicContactControlTypes = | "basicEmail" | "basicPhone" | "basicMobile" | "basicAddress"
-  | "basicAddress2" | "basicZipCode" | "basicCity" | "basicState" | "basicCountry"
-
 interface BasicContactControlInputs {
   basicEmail: string;
   basicPhone: string;
@@ -528,20 +505,22 @@ interface BasicContactControlInputs {
   basicAddress2: string;
   basicZipCode: string;
   basicCity: string;
-  basicState: string;
   basicCountry: string;
+  basicState: SelectorOption;
 }
-
-type EmergencyContactControlTypes = | "emergencyName" | "emergencyRelationship" | "emergencyPhone" | "emergencyMobile"
 
 interface EmergencyContactControlInputs {
   emergencyName: string;
   emergencyPhone: string;
+  emergencyCity?: string;
   emergencyMobile: string;
+  emergencyCountry?: string;
+  emergencyAddress?: string;
+  emergencyZipCode?: string;
+  emergencyAddress2?: string;
+  emergencyState?: SelectorOption;
   emergencyRelationship: SelectorOption;
 }
-
-type KinContactControlTypes = | "kinName" | "kinRelationship" | "kinPhone" | "kinMobile"
 
 interface KinContactControlInputs {
   kinName: string;
@@ -549,9 +528,6 @@ interface KinContactControlInputs {
   kinPhone: string;
   kinMobile: string;
 }
-
-type GuardianContactControlTypes = | "guardianFirstName" | "guardianMiddleName" | "guardianLastName"
-  | "guardianEmail" | "guardianSuffix"
 
 interface GuardianContactControlInputs {
   guardianFirstName: string;
@@ -561,12 +537,6 @@ interface GuardianContactControlInputs {
   guardianName: string;
   guardianRelationship: SelectorOption;
 }
-
-type GuarantorContactControlTypes = | "guarantorFirstName" | "guarantorMiddleName"
-  | "guarantorLastName" | "guarantorEmail" | "guarantorRelationship" | "guarantorDob"
-  | "guarantorPhone" | "guarantorSuffix" | "guarantorSsn" | "guarantorAddress"
-  | "guarantorAddress2" | "guarantorZipCode" | "guarantorCity" | "guarantorState"
-  | "guarantorCountry" | "guarantorEmployerName"
 
 interface GuarantorContactControlInputs {
   guarantorFirstName: string;
@@ -582,13 +552,10 @@ interface GuarantorContactControlInputs {
   guarantorAddress2: string;
   guarantorZipCode: string;
   guarantorCity: string;
-  guarantorState: string;
   guarantorCountry: string;
   guarantorEmployerName: string;
+  guarantorState: SelectorOption;
 }
-
-type EmployerControlTypes = | "employerName" | "employerEmail" | "employerPhone"
-  | "employerIndustry" | "employerUsualOccupation"
 
 interface EmployerControlInputs {
   employerName: string;
@@ -598,9 +565,6 @@ interface EmployerControlInputs {
   employerUsualOccupation: string;
 }
 
-type RegisterUserControlTypes = | "userFirstName" | "userLastName" | "userPassword" | "userEmail"
-  | "userPhone" | "userZipCode"
-
 interface RegisterUserInputs {
   userFirstName: string
   userLastName: string
@@ -608,12 +572,6 @@ interface RegisterUserInputs {
   userEmail: string
   userPhone: string
   userZipCode: string
-}
-
-export interface PatientInputControlProps extends IControlLabel {
-  controllerName: PatientControlTypes | RegisterUserControlTypes | BasicContactControlTypes
-  | EmployerControlTypes | KinContactControlTypes | GuarantorContactControlTypes
-  | GuardianContactControlTypes | EmergencyContactControlTypes
 }
 
 export type PatientInputProps =
@@ -631,6 +589,16 @@ export type PatientInputProps =
   & GuardianContactControlInputs & GuarantorContactControlInputs
   & EmployerControlInputs & RegisterUserInputs;
 
+export type ExternalPatientInputProps =
+  { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption } & { race: SelectorOption }
+  & { ethnicity: SelectorOption } & { providerId: SelectorOption } & { genderIdentity: SelectorOption }
+  & { state: SelectorOption } & { maritialStatus: SelectorOption }
+  & Pick<CreatePatientItemInput, 'dob' | 'pharmacy' | 'voiceCallPermission' | 'phonePermission' | 'language'
+    | 'callToConsent'>
+  & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'zipCode' | 'country' | 'ssn'>
+  & Pick<EmergencyContactControlInputs, 'emergencyName' | 'emergencyRelationship' | 'emergencyPhone' |
+    'emergencyCity' | 'emergencyState' | 'emergencyCountry' | 'emergencyZipCode' | 'emergencyAddress' |
+    'emergencyAddress2'>
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
   & { facilityId: SelectorOption };
@@ -649,8 +617,8 @@ export interface CustomInputControlProps extends IControlLabel {
   controllerName: string
 }
 
-export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode">
-  & { facilityId: SelectorOption } & { serviceCode: SelectorOption }
+export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode" | "state">
+  & { facilityId: SelectorOption } & { serviceCode: SelectorOption } & { state: SelectorOption }
 
 export interface LocationTableProps {
   openModal: boolean;
@@ -681,6 +649,7 @@ export interface PhoneInputProps {
 export interface DropzoneImageType {
   imageModuleType: AttachmentType;
   isEdit?: boolean;
+  isProfile?: boolean;
   attachmentId: string;
   itemId: string;
   isDisabled?: boolean;
@@ -710,16 +679,19 @@ export interface MediaModalTypes extends DialogTypes {
   imageModuleType: AttachmentType;
   itemId: string;
   setEdit: Function
+  isProfile?: boolean;
   setAttachments: Function;
   attachment?: Attachment;
+  preSignedUrl?: string;
   attachments?: Attachment[]
 }
 
 export interface MediaCardsType {
   itemId: string;
+  isProfile?: boolean;
   moduleType: AttachmentType;
   hasCollage?: boolean;
-  attachmentsData?: Attachment[]
+  attachmentData?: Attachment
   hasHighlights?: boolean
   imageSide: string;
   notDescription?: boolean;
@@ -727,6 +699,7 @@ export interface MediaCardsType {
 
 export interface DropDownItems {
   itemName?: string;
+  current?: boolean;
   menuItem: DropDownOption[];
   avatarIcon?: boolean;
 }

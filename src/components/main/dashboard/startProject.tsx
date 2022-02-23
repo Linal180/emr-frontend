@@ -1,150 +1,20 @@
 // packages block
 import { useState } from "react";
-import { Box, Button, Card, Grid, Typography } from "@material-ui/core";
-import { Add, FilterList } from '@material-ui/icons';
+import { Box, Button, ButtonGroup, Card, Typography } from "@material-ui/core";
+import { Add } from '@material-ui/icons';
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
-  Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, ViewSwitcher,
+  Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator,
   DayView, WeekView, AppointmentTooltip
 } from '@devexpress/dx-react-scheduler-material-ui';
-// components block
-import AppointmentCard from "./AppointmentCard";
-import PageHeader from "../../common/PageHeader";
-import ViewAppointmentLoader from "../../common/ViewAppointmentLoader";
-// constants block
-import { GRAY_SIX } from "../../../theme";
-import { DASHBOARD_TEXT } from "../../../constants";
+// styles, constants  block
+import { useCalendarStyles } from "../../../styles/calendarStyles";
+import { APPOINTMENT_LIST, CREATE_NEW_APPOINTMENT, DUMMY_APPOINTMENTS } from "../../../constants";
 
-const appointments = [
-  {
-    "title": "Website Re-Design Plan",
-    "startDate": "2018-07-23T04:30:00.000Z",
-    "endDate": "2018-07-23T06:30:00.000Z"
-  },
-  {
-    "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2018-07-23T07:00:00.000Z",
-    "endDate": "2018-07-23T08:00:00.000Z"
-  },
-  {
-    "title": "Install New Router in Dev Room",
-    "startDate": "2018-07-23T09:30:00.000Z",
-    "endDate": "2018-07-23T10:30:00.000Z"
-  },
-  {
-    "title": "Approve Personal Computer Upgrade Plan",
-    "startDate": "2018-07-24T05:00:00.000Z",
-    "endDate": "2018-07-24T06:00:00.000Z"
-  },
-  {
-    "title": "Final Budget Review",
-    "startDate": "2018-07-24T07:00:00.000Z",
-    "endDate": "2018-07-24T08:35:00.000Z"
-  },
-  {
-    "title": "New Brochures",
-    "startDate": "2018-07-24T09:30:00.000Z",
-    "endDate": "2018-07-24T10:45:00.000Z"
-  },
-  {
-    "title": "Install New Database",
-    "startDate": "2018-07-25T04:45:00.000Z",
-    "endDate": "2018-07-25T06:15:00.000Z"
-  },
-  {
-    "title": "Approve New Online Marketing Strategy",
-    "startDate": "2018-07-25T07:00:00.000Z",
-    "endDate": "2018-07-25T09:00:00.000Z"
-  },
-  {
-    "title": "Upgrade Personal Computers",
-    "startDate": "2018-07-25T10:15:00.000Z",
-    "endDate": "2018-07-25T11:30:00.000Z"
-  },
-  {
-    "title": "Customer Workshop",
-    "startDate": "2018-07-26T06:00:00.000Z",
-    "endDate": "2018-07-26T07:00:00.000Z"
-  },
-  {
-    "title": "Prepare 2015 Marketing Plan",
-    "startDate": "2018-07-26T06:00:00.000Z",
-    "endDate": "2018-07-26T08:30:00.000Z"
-  },
-  {
-    "title": "Brochure Design Review",
-    "startDate": "2018-07-26T09:00:00.000Z",
-    "endDate": "2018-07-26T10:30:00.000Z"
-  },
-  {
-    "title": "Create Icons for Website",
-    "startDate": "2018-07-27T05:00:00.000Z",
-    "endDate": "2018-07-27T06:30:00.000Z"
-  },
-  {
-    "title": "Upgrade Server Hardware",
-    "startDate": "2018-07-27T09:30:00.000Z",
-    "endDate": "2018-07-27T11:00:00.000Z"
-  },
-  {
-    "title": "Submit New Website Design",
-    "startDate": "2018-07-27T11:30:00.000Z",
-    "endDate": "2018-07-27T13:00:00.000Z"
-  },
-  {
-    "title": "Launch New Website",
-    "startDate": "2018-07-26T07:20:00.000Z",
-    "endDate": "2018-07-26T09:00:00.000Z"
-  },
-  {
-    "title": "Website Re-Design Plan",
-    "startDate": "2018-07-16T04:30:00.000Z",
-    "endDate": "2018-07-16T10:30:00.000Z"
-  },
-  {
-    "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2018-07-16T07:00:00.000Z",
-    "endDate": "2018-07-16T08:00:00.000Z"
-  },
-  {
-    "title": "Install New Database",
-    "startDate": "2018-07-17T10:45:00.000Z",
-    "endDate": "2018-07-18T07:15:00.000Z"
-  },
-  {
-    "title": "Approve New Online Marketing Strategy",
-    "startDate": "2018-07-18T07:35:00.000Z",
-    "endDate": "2018-07-18T09:15:00.000Z"
-  },
-  {
-    "title": "Upgrade Personal Computers",
-    "startDate": "2018-07-19T10:15:00.000Z",
-    "endDate": "2018-07-20T15:30:00.000Z"
-  },
-  {
-    "title": "Prepare 2015 Marketing Plan",
-    "startDate": "2018-07-20T15:00:00.000Z",
-    "endDate": "2018-07-20T08:30:00.000Z"
-  },
-  {
-    "title": "Brochure Design Review",
-    "startDate": "2018-07-20T09:10:00.000Z",
-    "endDate": "2018-07-20T10:30:00.000Z"
-  },
-  {
-    "title": "Vacation",
-    "startDate": "2018-06-21T19:00:00.000Z",
-    "endDate": "2018-06-30T19:00:00.000Z"
-  },
-  {
-    "title": "Vacation",
-    "startDate": "2018-07-27T19:00:00.000Z",
-    "endDate": "2018-08-06T19:00:00.000Z"
-  }
-]
 
 const StartProjectComponent = (): JSX.Element => {
-  const [currentDate, setCurrentDate] = useState("2018-07-27")
+  const classes = useCalendarStyles();
+  const [currentDate, setCurrentDate] = useState(new Date())
 
   const handleDateChange = () => {
     setCurrentDate(currentDate)
@@ -152,45 +22,41 @@ const StartProjectComponent = (): JSX.Element => {
 
   return (
     <Box>
-      <PageHeader title={DASHBOARD_TEXT} subTitle="Molestie imperdiet purus neque neque." />
+      <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap="wrap" py={4}>
+        <Typography variant="h4">{APPOINTMENT_LIST}</Typography>
+        
+        <Button color="primary" variant="contained" startIcon={<Add />}>
+          {CREATE_NEW_APPOINTMENT}
+        </Button>
+      </Box>
 
-      <Grid container spacing={3}>
-        <Grid item xs={8}>
-          <Card>
-            <Box display="flex" alignItems="center" justifyContent="space-between" px={3} py={1.4} borderBottom={`1px solid ${GRAY_SIX}`}>
-              <Typography variant="h4">Basic Calendar</Typography>
+      <Card>
+        <Box className={classes.appointmentCalendar} p={3}>
+          <Scheduler data={DUMMY_APPOINTMENTS}>
+            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+            <MonthView />
+            <WeekView />
+            <DayView />
+            <Toolbar />
 
-              <Box display="flex" gridGap={16}>
-                <Button color="default" variant="outlined" startIcon={<FilterList />}>Filter</Button>
-                <Button color="primary" variant="contained" startIcon={<Add />}>Add New</Button>
-              </Box>
+            <Box className={classes.buttonView}>
+              <ButtonGroup aria-label="primary button group">
+                <Button>Month</Button>
+                <Button>Week</Button>
+                <Button>Day</Button>
+              </ButtonGroup>
             </Box>
 
-            <Box>
-              <Scheduler data={appointments}>
-                <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
-                <MonthView />
-                <WeekView />
-                <DayView />
-                <Toolbar />
-                <ViewSwitcher />
-                <DateNavigator />
-                <TodayButton />
-                <Appointments />
-                <AppointmentTooltip
-                  showCloseButton
-                  showOpenButton
-                />
-              </Scheduler>
-            </Box>
-          </Card>
-        </Grid>
-
-        <Grid item xs={4}>
-          <AppointmentCard />
-          <ViewAppointmentLoader rows={0} hasMedia={false} columns={"auto"} />
-        </Grid>
-      </Grid>
+            <TodayButton />
+            <DateNavigator />
+            <Appointments />
+            <AppointmentTooltip
+              showCloseButton
+              showOpenButton
+            />
+          </Scheduler>
+        </Box>
+      </Card>
     </Box>
   )
 };

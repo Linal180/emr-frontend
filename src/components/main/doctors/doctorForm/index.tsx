@@ -16,26 +16,22 @@ import history from '../../../../history';
 import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import {
-  dateValidationMessage, getDate, getTimestamps, invalidMessage, renderFacilities,
-  requiredMessage, setRecord
-} from "../../../../utils";
+import { getDate, getTimestamps, renderFacilities, renderStates, setRecord } from "../../../../utils";
 import {
   DoctorPayload, Speciality, SsnType, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole,
   useUpdateDoctorMutation
 } from "../../../../generated/graphql";
 import {
-  MAPPED_SSN_TYPES, FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY,
-  CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME, UPDATE_DOCTOR,
+  MAPPED_SSN_TYPES, FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, NOT_FOUND_EXCEPTION,
+  CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME, UPDATE_DOCTOR, EMPTY_OPTION,
   PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER,
   DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS, ADDRESS_2,
   MOBILE, PAGER, TAX_ID, NPI, UPIN, EMC_PROVIDER_ID, MEDICARE_GRP_NUMBER, MEDICAID_GRP_NUMBER,
   MAMMOGRAPHY_CERT_NUMBER, CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
-  ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE,
+  ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, TAXONOMY_CODE,
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  TAXONOMY_CODE, EMPTY_OPTION, NOT_FOUND_EXCEPTION,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -46,7 +42,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(doctorSchema)
   });
-  const { reset, handleSubmit, setValue, formState: { errors } } = methods;
+  const { reset, handleSubmit, setValue } = methods;
 
   const [getDoctor, { loading: GetDoctorLoading }] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -120,14 +116,14 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               fax && setValue('fax', fax)
               city && setValue('city', city)
               email && setValue('email', email)
-              state && setValue('state', state)
               phone && setValue('phone', phone)
+              pager && setValue('pager', pager)
               mobile && setValue('mobile', mobile)
               zipCode && setValue('zipCode', zipCode)
               address && setValue('address', address)
               country && setValue('country', country)
               address2 && setValue('address2', address2)
-              pager && setValue('pager', pager)
+              state && setValue('state', setRecord(state, state))
             }
 
             if (billingAddress) {
@@ -136,12 +132,12 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
               email && setValue('billingEmail', email)
-              state && setValue('billingState', state)
               phone && setValue('billingPhone', phone)
               address && setValue('billingAddress', address)
               country && setValue('billingCountry', country)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
+              state && setValue('billingState', setRecord(state, state))
             }
           }
         }
@@ -195,23 +191,21 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   });
 
   useEffect(() => { }, [user])
+
   useEffect(() => {
     if (isEdit) {
-      if (id) {
-        getDoctor({
-          variables: { getDoctor: { id } }
-        })
-      } else Alert.error(DOCTOR_NOT_FOUND)
+      id ?
+        getDoctor({ variables: { getDoctor: { id } } })
+        :
+        Alert.error(DOCTOR_NOT_FOUND)
     }
   }, [getDoctor, id, isEdit])
 
   const onSubmit: SubmitHandler<DoctorInputProps> = async (inputs) => {
     const {
       email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country,
-
       billingEmail, billingPhone, billingFax, billingAddress: billingAddress1,
       billingAddress2, billingZipCode, billingCity, billingState, billingCountry, billingUserId,
-
       dob, ssn, prefix, suffix, ssnType, lastName, firstName, speciality, middleName,
       providerIntials, degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate,
       deaTermDate, taxId, npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber,
@@ -222,9 +216,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     if (user) {
       const { id: userId } = user;
+      const { id: selectedState } = state;
       const { id: selectedSsnType } = ssnType;
-      const { id: selectedSpecialty } = speciality;
       const { id: selectedFacility } = facilityId;
+      const { id: selectedSpecialty } = speciality;
+      const { id: selectedBillingState } = billingState;
 
       const doctorItemInput = {
         firstName: firstName || "", middleName: middleName || "", lastName: lastName || "",
@@ -249,14 +245,14 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const contactInput = {
         email: email || "", pager: pager || "", phone: phone || "",
         mobile: mobile || "", fax: fax || "", address: address || "", address2: address2 || "",
-        zipCode: zipCode || "", city: city || "", state: state || "", country: country || "",
+        zipCode: zipCode || "", city: city || "", state: selectedState || "", country: country || "",
         facilityId: selectedFacility || ""
       };
 
       const billingAddressInput = {
         email: billingEmail || "", phone: billingPhone || "",
         fax: billingFax || "", address: billingAddress1 || "", address2: billingAddress2 || "",
-        zipCode: billingZipCode || "", city: billingCity || "", state: billingState || "",
+        zipCode: billingZipCode || "", city: billingCity || "", state: selectedBillingState || "",
         country: billingCountry || "", userId: billingUserId || "", facilityId: selectedFacility || ""
       };
 
@@ -293,65 +289,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
-  const {
-    dob: { message: dobError } = {},
-    ssn: { message: ssnError } = {},
-    npi: { message: npiError } = {},
-    upin: { message: upinError } = {},
-    ssnType: { id: ssnTypeError } = {},
-    taxId: { message: taxIdError } = {},
-    prefix: { message: prefixError } = {},
-    suffix: { message: suffixError } = {},
-    facilityId: { id: facilityError } = {},
-    speciality: { id: specialtyError } = {},
-    lastName: { message: lastNameError } = {},
-    firstName: { message: firstNameError } = {},
-    deaNumber: { message: deaNumberError } = {},
-    taxIdStuff: { message: taxIdStuffError } = {},
-    middleName: { message: middleNameError } = {},
-    deaTermDate: { message: deaTermDateError } = {},
-    dpsCtpNumber: { message: dpsCtpNumberError } = {},
-    stateLicense: { message: stateLicenseError } = {},
-    taxonomyCode: { message: taxonomyCodeError } = {},
-    emcProviderId: { message: emcProviderIdError } = {},
-    deaActiveDate: { message: deaActiveDateError } = {},
-    licenseTermDate: { message: licenseTermDateError } = {},
-    languagesSpoken: { message: languagesSpokenError } = {},
-    campusGrpNumber: { message: campusGrpNumberError } = {},
-    blueShildNumber: { message: blueShieldNumberError } = {},
-    providerIntials: { message: providerInitialsError } = {},
-    specialityLicense: { message: specialtyLicenseError } = {},
-    medicareGrpNumber: { message: medicareGrpNumberError } = {},
-    degreeCredentials: { message: degreeCredentialsError } = {},
-    medicaidGrpNumber: { message: medicaidGrpNumberError } = {},
-    anesthesiaLicense: { message: anesthesiaLicenseError } = {},
-    licenseActiveDate: { message: licenseActiveDateError } = {},
-    prescriptiveAuthNumber: { message: prescriptiveAuthNumberError } = {},
-    meammographyCertNumber: { message: meammographyCertNumberError } = {},
-
-    fax: { message: faxError } = {},
-    city: { message: cityError } = {},
-    state: { message: stateError } = {},
-    email: { message: emailError } = {},
-    pager: { message: pagerError } = {},
-    phone: { message: phoneError } = {},
-    mobile: { message: mobileError } = {},
-    address: { message: addressError } = {},
-    zipCode: { message: zipCodeError } = {},
-    country: { message: countryError } = {},
-    address2: { message: address2Error } = {},
-
-    billingFax: { message: billingFaxError } = {},
-    billingCity: { message: billingCityError } = {},
-    billingState: { message: billingStateError } = {},
-    billingEmail: { message: billingEmailError } = {},
-    billingPhone: { message: billingPhoneError } = {},
-    billingAddress: { message: billingAddressError } = {},
-    billingZipCode: { message: billingZipCodeError } = {},
-    billingCountry: { message: billingCountryError } = {},
-    billingAddress2: { message: billingAddress2Error } = {},
-  } = errors;
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -369,7 +306,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={FACILITY}
                           name="facilityId"
                           options={renderFacilities(facilityList)}
-                          error={facilityError?.message && requiredMessage(FACILITY)}
                         />
                       </Grid>
 
@@ -380,7 +316,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={SPECIALTY}
                           name="speciality"
                           options={MAPPED_SPECIALTIES}
-                          error={specialtyError?.message && requiredMessage(SPECIALTY)}
                         />
                       </Grid>
                     </Grid>
@@ -393,7 +328,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={TYPE}
                           name="ssnType"
                           options={MAPPED_SSN_TYPES}
-                          error={ssnTypeError?.message && requiredMessage(TYPE)}
                         />
                       </Grid>
 
@@ -402,7 +336,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           isRequired
                           fieldType="text"
                           controllerName="firstName"
-                          error={firstNameError}
                           controllerLabel={FIRST_NAME}
                         />
                       </Grid>
@@ -414,15 +347,12 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           isRequired
                           fieldType="text"
                           controllerName="lastName"
-                          error={lastNameError}
                           controllerLabel={LAST_NAME}
                         />
                       </Grid>
 
                       <Grid item md={6}>
-                        <DatePicker isRequired name="dob" label={DOB}
-                          error={dobError || ''}
-                        />
+                        <DatePicker isRequired name="dob" label={DOB} />
                       </Grid>
                     </Grid>
 
@@ -431,7 +361,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="middleName"
-                          error={middleNameError}
                           controllerLabel={MIDDLE_NAME}
                         />
                       </Grid>
@@ -440,7 +369,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="prefix"
-                          error={prefixError}
                           controllerLabel={PREFIX}
                         />
                       </Grid>
@@ -451,7 +379,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="suffix"
-                          error={suffixError}
                           controllerLabel={SUFFIX}
                         />
                       </Grid>
@@ -460,7 +387,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="providerIntials"
-                          error={providerInitialsError}
                           controllerLabel={PROVIDER_INITIALS}
                         />
                       </Grid>
@@ -471,7 +397,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="degreeCredentials"
-                          error={degreeCredentialsError}
                           controllerLabel={DEGREE_CREDENTIALS}
                         />
                       </Grid>
@@ -490,7 +415,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="ssn"
-                          error={ssnError}
                           controllerLabel={SOCIAL_SECURITY_NUMBER}
                         />
                       </Grid>
@@ -499,7 +423,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="deaNumber"
-                          error={deaNumberError}
                           controllerLabel={DEA_NUMBER}
                         />
                       </Grid>
@@ -508,14 +431,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <DatePicker name="deaActiveDate" label={DEA_ACTIVE_DATE}
-                          error={(deaActiveDateError && invalidMessage(DEA_ACTIVE_DATE)) || ''}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="deaTermDate" label={DEA_TERM_DATE}
-                          error={(deaTermDateError && dateValidationMessage(DEA_TERM_DATE, DEA_ACTIVE_DATE)) || ''}
-                        />
+                        <DatePicker name="deaTermDate" label={DEA_TERM_DATE} />
                       </Grid>
                     </Grid>
 
@@ -524,7 +444,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="taxonomyCode"
-                          error={taxonomyCodeError}
                           controllerLabel={TAXONOMY_CODE}
                         />
                       </Grid>
@@ -533,7 +452,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="languagesSpoken"
-                          error={languagesSpokenError}
                           controllerLabel={LANGUAGE_SPOKEN}
                         />
                       </Grid>
@@ -551,18 +469,17 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="billingEmail"
-                        error={billingEmailError}
                         controllerLabel={EMAIL}
                       />
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="billingPhone" error={billingPhoneError} label={PHONE} />
+                        <PhoneField name="billingPhone" label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="billingFax" error={billingFaxError} label={FAX} />
+                        <PhoneField name="billingFax" label={FAX} />
                       </Grid>
                     </Grid>
 
@@ -570,7 +487,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="billingZipCode"
-                        error={billingZipCodeError}
                         controllerLabel={ZIP_CODE}
                       />
                     </Grid>
@@ -579,7 +495,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="billingAddress"
-                        error={billingAddressError}
                         controllerLabel={ADDRESS}
                       />
                     </Grid>
@@ -588,7 +503,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="billingAddress2"
-                        error={billingAddress2Error}
                         controllerLabel={ADDRESS_2}
                       />
                     </Grid>
@@ -598,17 +512,17 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="billingCity"
-                          error={billingCityError}
                           controllerLabel={CITY}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingState"
-                          error={billingStateError}
-                          controllerLabel={STATE}
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={STATE}
+                          name="billingState"
+                          options={renderStates()}
                         />
                       </Grid>
 
@@ -616,7 +530,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="billingCountry"
-                          error={billingCountryError}
                           controllerLabel={COUNTRY}
                         />
                       </Grid>
@@ -635,28 +548,27 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         isRequired
                         fieldType="text"
                         controllerName="email"
-                        error={emailError}
                         controllerLabel={EMAIL}
                       />
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField isRequired name="phone" error={phoneError} label={PHONE} />
+                        <PhoneField isRequired name="phone" label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="mobile" error={mobileError} label={MOBILE} />
+                        <PhoneField name="mobile" label={MOBILE} />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="pager" error={pagerError} label={PAGER} />
+                        <PhoneField name="pager" label={PAGER} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="fax" error={faxError} label={FAX} />
+                        <PhoneField name="fax" label={FAX} />
                       </Grid>
                     </Grid>
 
@@ -664,7 +576,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="zipCode"
-                        error={zipCodeError}
                         controllerLabel={ZIP_CODE}
                       />
                     </Grid>
@@ -673,7 +584,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="address"
-                        error={addressError}
                         controllerLabel={ADDRESS}
                       />
                     </Grid>
@@ -682,7 +592,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="address2"
-                        error={address2Error}
                         controllerLabel={ADDRESS_2}
                       />
                     </Grid>
@@ -692,17 +601,17 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="city"
-                          error={cityError}
                           controllerLabel={CITY}
                         />
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="state"
-                          error={stateError}
-                          controllerLabel={STATE}
+                      <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={STATE}
+                          name="state"
+                          options={renderStates()}
                         />
                       </Grid>
 
@@ -710,7 +619,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="country"
-                          error={countryError}
                           controllerLabel={COUNTRY}
                         />
                       </Grid>
@@ -729,7 +637,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="taxId"
-                          error={taxIdError}
                           controllerLabel={TAX_ID}
                         />
                       </Grid>
@@ -738,7 +645,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="npi"
-                          error={npiError}
                           controllerLabel={NPI}
                         />
                       </Grid>
@@ -749,7 +655,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="upin"
-                          error={upinError}
                           controllerLabel={UPIN}
                         />
                       </Grid>
@@ -758,7 +663,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="emcProviderId"
-                          error={emcProviderIdError}
                           controllerLabel={EMC_PROVIDER_ID}
                         />
                       </Grid>
@@ -769,7 +673,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="medicareGrpNumber"
-                          error={medicareGrpNumberError}
                           controllerLabel={MEDICARE_GRP_NUMBER}
                         />
                       </Grid>
@@ -778,7 +681,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="medicaidGrpNumber"
-                          error={medicaidGrpNumberError}
                           controllerLabel={MEDICAID_GRP_NUMBER}
                         />
                       </Grid>
@@ -789,7 +691,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="meammographyCertNumber"
-                          error={meammographyCertNumberError}
                           controllerLabel={MAMMOGRAPHY_CERT_NUMBER}
                         />
                       </Grid>
@@ -798,7 +699,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="campusGrpNumber"
-                          error={campusGrpNumberError}
                           controllerLabel={CHAMPUS_GRP_NUMBER}
                         />
                       </Grid>
@@ -809,7 +709,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="blueShildNumber"
-                          error={blueShieldNumberError}
                           controllerLabel={BLUE_SHIED_NUMBER}
                         />
                       </Grid>
@@ -818,7 +717,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="taxIdStuff"
-                          error={taxIdStuffError}
                           controllerLabel={TAX_ID_STUFF}
                         />
                       </Grid>
@@ -829,7 +727,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="specialityLicense"
-                          error={specialtyLicenseError}
                           controllerLabel={SPECIALTY_LICENSE}
                         />
                       </Grid>
@@ -838,7 +735,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="anesthesiaLicense"
-                          error={anesthesiaLicenseError}
                           controllerLabel={ANESTHESIA_LICENSE}
                         />
                       </Grid>
@@ -849,7 +745,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="dpsCtpNumber"
-                          error={dpsCtpNumberError}
                           controllerLabel={CTP_NUMBER}
                         />
                       </Grid>
@@ -858,7 +753,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <InputController
                           fieldType="text"
                           controllerName="stateLicense"
-                          error={stateLicenseError}
                           controllerLabel={STATE_LICENSE}
                         />
                       </Grid>
@@ -866,15 +760,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE}
-                          error={(licenseActiveDateError && invalidMessage(LICENSE_ACTIVE_DATE)) || ''}
-                        />
+                        <DatePicker name="licenseActiveDate" label={LICENSE_ACTIVE_DATE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE}
-                          error={(licenseTermDateError && dateValidationMessage(LICENSE_TERM_DATE, LICENSE_ACTIVE_DATE)) || ''}
-                        />
+                        <DatePicker name="licenseTermDate" label={LICENSE_TERM_DATE} />
                       </Grid>
                     </Grid>
 
@@ -882,7 +772,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="prescriptiveAuthNumber"
-                        error={prescriptiveAuthNumberError}
                         controllerLabel={PRESCRIPTIVE_AUTH_NUMBER}
                       />
                     </Grid>

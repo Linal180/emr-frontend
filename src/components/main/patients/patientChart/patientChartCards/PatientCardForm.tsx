@@ -2,13 +2,15 @@
 import { useState, useContext, ChangeEvent } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { Card, CardContent, CardHeader, Box, Typography, Grid, FormControlLabel, Checkbox, Button } from "@material-ui/core";
-import Selector from "../../../../../common/Selector";
-import { ListContext } from "../../../../../../context";
-import { renderFacilities } from "../../../../../../utils";
-import { DOB, STATUS } from "../../../../../../constants";
-import DatePicker from "../../../../../common/DatePicker";
-import InputController from "../../../../../../controller";
-import ToggleButtonComponent from "../../../../../common/ToggleButtonComponent";
+// components block
+import Selector from "../../../../common/Selector";
+import DatePicker from "../../../../common/DatePicker";
+import InputController from "../../../../../controller";
+import ToggleButtonComponent from "../../../../common/ToggleButtonComponent";
+// constants, utils block
+import { ListContext } from "../../../../../context";
+import { DOB, STATUS } from "../../../../../constants";
+import { renderFacilities } from "../../../../../utils";
 
 const PatientCardForm = (): JSX.Element => {
   const methods = useForm<any>({ mode: "all", });
@@ -87,6 +89,7 @@ const PatientCardForm = (): JSX.Element => {
               <Grid item md={12} sm={12} xs={12}>
                 <ToggleButtonComponent name="homeBound" label={STATUS} />
               </Grid>
+              
               <Grid item md={12} sm={12} xs={12}>
                 <InputController
                   fieldType="text"

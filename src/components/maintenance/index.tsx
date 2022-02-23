@@ -1,13 +1,17 @@
 // packages block
 import { FC } from 'react';
-import { Box, Typography, Container } from "@material-ui/core";
+import { Box, Typography, Container, Button } from "@material-ui/core";
 // styles, context, history
-import { useNetworkStyles } from "../../styles/networkStyles";
-import { MAINTENANCE_IN_PROGRESS } from '../../constants';
 import { EMR404Icon } from '../../assets/svgs';
+import { MAINTENANCE_IN_PROGRESS, RELOAD } from '../../constants';
+import { useNetworkStyles } from "../../styles/networkStyles";
 
-const MaintenancePage: FC = (): JSX.Element => {
+const MaintenanceComponent: FC = (): JSX.Element => {
   const classes = useNetworkStyles();
+
+  const handleReload = () => {
+    window.location.pathname = '/'
+  };
 
   return (
     <Box className={classes.root}>
@@ -20,6 +24,8 @@ const MaintenancePage: FC = (): JSX.Element => {
             <Box maxWidth={500} pt={8} pb={2}>
               <Typography variant='body2' align='center'>{MAINTENANCE_IN_PROGRESS}</Typography>
             </Box>
+
+            <Button variant='contained' onClick={handleReload}>{RELOAD}</Button>
           </Box>
         </Box>
       </Container>
@@ -27,4 +33,4 @@ const MaintenancePage: FC = (): JSX.Element => {
   )
 }
 
-export default MaintenancePage
+export default MaintenanceComponent;

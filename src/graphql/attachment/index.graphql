@@ -1,0 +1,10 @@
+mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
+  removeAttachmentData(removeAttachment: $removeAttachment) {
+    response {
+      name
+      status
+      message
+      error
+    }
+  }
+}

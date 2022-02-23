@@ -8,7 +8,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { requiredLabel } from '../../utils';
 import { PickerProps } from "../../interfacesTypes";
 
-const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.Element => {
+const DatePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control } = useFormContext()
 
@@ -17,8 +17,8 @@ const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.El
       name={name}
       control={control}
       defaultValue=''
-      render={({ field, fieldState: { invalid } }) => (
-        <FormControl fullWidth margin="normal" error={Boolean(error)}>
+      render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
+        <FormControl fullWidth margin="normal" error={invalid}>
           <InputLabel shrink htmlFor={`${name}-dialog`}>
             {isRequired ? requiredLabel(label) : label}
           </InputLabel>
@@ -38,7 +38,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, error, isRequired }): JSX.El
               onChange={field.onChange}
               onKeyDown={(e) => e.preventDefault()}
               error={invalid}
-              helperText={error}
+              helperText={invalid && message}
               autoOk
               clearable
               maxDate="2100-01-31"

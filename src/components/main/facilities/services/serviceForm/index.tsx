@@ -29,7 +29,6 @@ import {
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
   const [checked, setChecked] = useState(false);
-  const { facilityId } = useParams<ParamsType>()
   const { facilityList } = useContext(ListContext)
   const methods = useForm<extendedServiceInput>({
     mode: "all",
@@ -44,7 +43,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
 
     onError({ message }) {
       message !== NOT_FOUND_EXCEPTION && Alert.error(message)
-      history.push(`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}`)
+      history.push(`${FACILITIES_ROUTE}/${currentFacility}${FACILITY_SERVICES_ROUTE}`)
     },
 
     onCompleted(data) {
@@ -195,7 +194,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
                           isRequired
-                          fieldType="text"
+                          fieldType="number"
                           controllerName="duration"
                           controllerLabel={DURATION_TEXT}
                           error={durationError}

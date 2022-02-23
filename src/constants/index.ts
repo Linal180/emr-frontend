@@ -9,19 +9,19 @@ import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
   RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
 } from "../generated/graphql";
-// import { Menu } from '@material-ui/core';
 
 // regex
 export const ZIP_REGEX = /^\d{5}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
-export const STRING_REGEX = /^[A-Za-z]+$/;
+export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
 export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
 export const FACILITY_CODE_REGEX = /^[A-Z]{2,5}$/;
+export const ADDRESS_REGEX = /^[#.0-9a-zA-Z\s,-]+$/;
 export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
@@ -43,6 +43,9 @@ export enum DAYS {
 };
 export const VIEW = "View";
 export const ALL_STAFF = "Staff";
+export const LINK_COPIED = "Link Copied";
+export const PUBLIC_LINK = "Public Appointment Link";
+export const ADD = "Add";
 export const MINUTES = "minutes";
 export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
@@ -67,6 +70,8 @@ export const UPDATE_LOCATION_TEXT = "Update location";
 export const PREFERRED_LANGUAGE = "Preferred Language";
 export const PREFERRED_PHARMACY = "Preferred Pharmacy";
 export const CREATE_APPOINTMENT = "Create Appointment";
+export const CREATE_NEW_APPOINTMENT = "Create New Appointment";
+export const APPOINTMENT_LIST = "Appointment List";
 export const UPDATE_APPOINTMENT = "Update Appointment";
 export const SECONDARY_INSURANCE = "Secondary Insurance";
 export const EMERGENCY_CONTACT_PHONE = "Emergency Contact Phone";
@@ -74,6 +79,14 @@ export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const EMERGENCY_CONTACT_NAME = "Emergency Contact Name";
 export const ADD_STAFF = "Add Staff";
+export const FRONT_SIDE = "Front Side";
+export const BACK_SIDE = "Back Side";
+export const PATIENT_INFORMATION_TEXT = "Patient Information";
+export const DOCUMENT_VERIFICATION = "Document Verification";
+export const CONTACT_METHOD = "How we can contact you?";
+export const RELEASE_BILLING_INFO_PERMISSIONS = "Can we release medical and billing information to this contact?";
+export const VOICE_MAIL_PERMISSIONS = "Is it okay for us to leave a voicemail?";
+export const APPOINTMENT_CONFIRMATION_PERMISSIONS = "May we phone, email, or send a text to you to confirm appointments?";
 export const EDIT_STAFF = "Edit Staff";
 export const CANT_UPDATE_STAFF = "Staff cant be updated";
 export const CANT_CREATE_STAFF = "Can't create staff";
@@ -425,6 +438,7 @@ export const SEXUAL_ORIENTATION = "Sexual Orientation"
 export const USUAL_PROVIDER_ID = "Usual Provider"
 export const PRONOUNS = "Pronouns"
 export const RACE = "Race"
+export const RELOAD = "Reload Page"
 export const RELATIONSHIP = "Relationship"
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor"
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
@@ -453,6 +467,7 @@ export const NOT_FOUND_EXCEPTION_CAP = "NOT FOUND EXCEPTION";
 export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const REQUEST_MEMBERSHIP_PLAN = "Request Membership Plan";
 export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
+export const CALENDAR_VIEW_TEXT = "Calendar View";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
@@ -506,21 +521,15 @@ export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Plea
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
-export const OWNER = "OWNER";
-export const INVESTOR = "INVESTOR";
 export const SUPER_ADMIN = "SUPER_ADMIN";
-export const PROPERTY_MANAGER = "PROPERTY_MANAGER";
-export const RELATIONSHIP_MANAGER = "RELATIONSHIP_MANAGER";
 
 // routes paths
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
-export const DASHBOARD_ROUTE = "/dashboard";
-export const FACILITIES_ROUTE = "/list-facilities";
-export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const STAFF_ROUTE = "/staff";
 export const DOCTORS_ROUTE = "/doctors";
 export const SETTINGS_ROUTE = "/settings";
@@ -530,38 +539,25 @@ export const PATIENTS_CHART = "/chart";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
+export const INVOICES_ROUTE = "/invoices";
+export const DASHBOARD_ROUTE = "/dashboard";
+export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
-export const INVOICES_ROUTE = "/invoices";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
+export const FACILITIES_ROUTE = "/list-facilities";
+export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
-export const FACILITY_LOCATIONS_ROUTE = "/locations";
-export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
-export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
+export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
+export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
+export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
-export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
+export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
+export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 
-// stepper arrays
-export const getTagSteps = () => ["Tag Details", "Review"];
-export const getMediaSteps = () => ["Add details", "Review", "Upload image"];
-export const getStateSteps = () => ["State Details", "Review", "Upload images"];
-export const getPropertySteps = () => [
-  "Property Details",
-  "Add Features and Tags",
-  "Review",
-  "Upload images",
-];
-
-// toolbar options for rich text editor
-export const toolbarOptions = {
-  options: ["inline", "link", "list", "blockType"],
-  inline: {
-    options: ["bold", "italic", "underline"],
-  },
-};
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -591,6 +587,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const MAINTENANCE_ALERT = "Maintenance is in progress";
 export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";
 export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."
@@ -665,6 +662,7 @@ export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a ema
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
+export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 export const APP_MENU_ITEMS = [
   {
@@ -776,9 +774,13 @@ export const APPOINTMENT_MENU_ITEMS = [
     name: SCHEDULE_APPOINTMENTS_TEXT,
     link: SCHEDULE_APPOINTMENTS_ROUTE
   },
+  {
+    name: CALENDAR_VIEW_TEXT,
+    link: START_PROJECT_ROUTE
+  },
 ];
 
-export const Profile_MENU_ITEMS = [
+export const PROFILE_MENU_ITEMS = [
   {
     name: PROFILE_TEXT,
     link: "/",
@@ -964,7 +966,7 @@ export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 export const getSteps = (): StepLabelType[] => {
   return [
     { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
-    { title: 'Document Verification', subTitle: 'Verification information requested' },
+    // { title: 'Document Verification', subTitle: 'Verification information requested' },
     { title: 'Consent Agreement', subTitle: 'Provide basic Patient Information' },
   ];
 };
@@ -1074,8 +1076,6 @@ export const WEEK_DAYS: SelectorOption[] = [
   { id: DAYS.Saturday, name: DAYS.Saturday, },
   { id: DAYS.Sunday, name: DAYS.Sunday, },
 ]
-
-// NEWAPPBAR-Menu
 
 export const dummyVitalsChartingList = [
   {
@@ -1218,3 +1218,137 @@ export const PATIENT_CHARTING_DATA = [
     date: "25-11-22"
   },
 ]
+
+export const DUMMY_APPOINTMENTS = [
+  {
+    "title": "Website Re-Design Plan",
+    "startDate": "2018-07-23T04:30:00.000Z",
+    "endDate": "2018-07-23T06:30:00.000Z"
+  },
+  {
+    "title": "Book Flights to San Fran for Sales Trip",
+    "startDate": "2018-07-23T07:00:00.000Z",
+    "endDate": "2018-07-23T08:00:00.000Z"
+  },
+  {
+    "title": "Install New Router in Dev Room",
+    "startDate": "2018-07-23T09:30:00.000Z",
+    "endDate": "2018-07-23T10:30:00.000Z"
+  },
+  {
+    "title": "Approve Personal Computer Upgrade Plan",
+    "startDate": "2018-07-24T05:00:00.000Z",
+    "endDate": "2018-07-24T06:00:00.000Z"
+  },
+  {
+    "title": "Final Budget Review",
+    "startDate": "2018-07-24T07:00:00.000Z",
+    "endDate": "2018-07-24T08:35:00.000Z"
+  },
+  {
+    "title": "New Brochures",
+    "startDate": "2018-07-24T09:30:00.000Z",
+    "endDate": "2018-07-24T10:45:00.000Z"
+  },
+  {
+    "title": "Install New Database",
+    "startDate": "2018-07-25T04:45:00.000Z",
+    "endDate": "2018-07-25T06:15:00.000Z"
+  },
+  {
+    "title": "Approve New Online Marketing Strategy",
+    "startDate": "2018-07-25T07:00:00.000Z",
+    "endDate": "2018-07-25T09:00:00.000Z"
+  },
+  {
+    "title": "Upgrade Personal Computers",
+    "startDate": "2018-07-25T10:15:00.000Z",
+    "endDate": "2018-07-25T11:30:00.000Z"
+  },
+  {
+    "title": "Customer Workshop",
+    "startDate": "2018-07-26T06:00:00.000Z",
+    "endDate": "2018-07-26T07:00:00.000Z"
+  },
+  {
+    "title": "Prepare 2015 Marketing Plan",
+    "startDate": "2018-07-26T06:00:00.000Z",
+    "endDate": "2018-07-26T08:30:00.000Z"
+  },
+  {
+    "title": "Brochure Design Review",
+    "startDate": "2018-07-26T09:00:00.000Z",
+    "endDate": "2018-07-26T10:30:00.000Z"
+  },
+  {
+    "title": "Create Icons for Website",
+    "startDate": "2018-07-27T05:00:00.000Z",
+    "endDate": "2018-07-27T06:30:00.000Z"
+  },
+  {
+    "title": "Upgrade Server Hardware",
+    "startDate": "2018-07-27T09:30:00.000Z",
+    "endDate": "2018-07-27T11:00:00.000Z"
+  },
+  {
+    "title": "Submit New Website Design",
+    "startDate": "2018-07-27T11:30:00.000Z",
+    "endDate": "2018-07-27T13:00:00.000Z"
+  },
+  {
+    "title": "Launch New Website",
+    "startDate": "2018-07-26T07:20:00.000Z",
+    "endDate": "2018-07-26T09:00:00.000Z"
+  },
+  {
+    "title": "Website Re-Design Plan",
+    "startDate": "2018-07-16T04:30:00.000Z",
+    "endDate": "2018-07-16T10:30:00.000Z"
+  },
+  {
+    "title": "Book Flights to San Fran for Sales Trip",
+    "startDate": "2018-07-16T07:00:00.000Z",
+    "endDate": "2018-07-16T08:00:00.000Z"
+  },
+  {
+    "title": "Install New Database",
+    "startDate": "2018-07-17T10:45:00.000Z",
+    "endDate": "2018-07-18T07:15:00.000Z"
+  },
+  {
+    "title": "Approve New Online Marketing Strategy",
+    "startDate": "2018-07-18T07:35:00.000Z",
+    "endDate": "2018-07-18T09:15:00.000Z"
+  },
+  {
+    "title": "Upgrade Personal Computers",
+    "startDate": "2018-07-19T10:15:00.000Z",
+    "endDate": "2018-07-20T15:30:00.000Z"
+  },
+  {
+    "title": "Prepare 2015 Marketing Plan",
+    "startDate": "2018-07-20T15:00:00.000Z",
+    "endDate": "2018-07-20T08:30:00.000Z"
+  },
+  {
+    "title": "Brochure Design Review",
+    "startDate": "2018-07-20T09:10:00.000Z",
+    "endDate": "2018-07-20T10:30:00.000Z"
+  },
+  {
+    "title": "Vacation",
+    "startDate": "2018-06-21T19:00:00.000Z",
+    "endDate": "2018-06-30T19:00:00.000Z"
+  },
+  {
+    "title": "Vacation",
+    "startDate": "2018-07-27T19:00:00.000Z",
+    "endDate": "2018-08-06T19:00:00.000Z"
+  }
+];
+
+export enum ATTACHMENT_TITLES {
+  ProfilePicture = 'Profile Picture',
+  DrivingLicense = 'Driving License',
+  InsuranceCard = 'Insurance Card'
+}
