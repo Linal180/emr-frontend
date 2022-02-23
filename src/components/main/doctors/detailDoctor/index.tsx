@@ -2,7 +2,7 @@
 import { ChangeEvent, useEffect, Reducer, useReducer } from "react";
 import moment from "moment";
 import { useParams } from "react-router";
-import { Avatar, Box, Grid, Tab } from "@material-ui/core";
+import { Avatar, Box, Button, Grid, Tab } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 // components block
 import Alert from "../../../common/Alert";
@@ -13,7 +13,7 @@ import { ParamsType } from "../../../../interfacesTypes";
 import { formatPhone, getFormattedDate, getTimestamps } from "../../../../utils";
 import { useGetDoctorLazyQuery } from "../../../../generated/graphql";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { DOCTORS_ROUTE, DOCTOR_NOT_FOUND, DOCTOR_TOP_TABS } from "../../../../constants";
+import { DOCTORS_ROUTE, DOCTOR_NOT_FOUND, DOCTOR_TOP_TABS, EDIT_DOCTOR } from "../../../../constants";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import {
   doctorReducer, Action, initialState, State, ActionType
@@ -65,7 +65,7 @@ const DoctorDetailComponent = (): JSX.Element => {
   const { firstName, lastName, dob, contacts, createdAt } = doctor || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
   const DOCTOR_AGE = moment().diff(getTimestamps(dob || ''), 'years');
-  
+
   let selfPhoneNumber = "";
   let selfEmail = ""
   let selfCurrentLocation = ""
@@ -153,6 +153,12 @@ const DoctorDetailComponent = (): JSX.Element => {
                   </Box>
                 ))}
               </Box>
+            </Box>
+
+            <Box pr={1}>
+              <Button color="primary" variant="contained" onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
+                {EDIT_DOCTOR}
+              </Button>
             </Box>
           </Box>
 
