@@ -472,9 +472,9 @@ export interface UpdateFacilityTimeZoneControlProps extends IControlLabel {
 export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZoneInput, "timeZone">
   & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
-export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType">
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
   & Omit<CreateContactInput, "facilityId" | "state"> & CustomBillingAddressInputs & { facilityId: SelectorOption }
-  & { ssnType: SelectorOption } & { speciality: SelectorOption } & { state: SelectorOption };
+  & { speciality: SelectorOption } & { state: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
 

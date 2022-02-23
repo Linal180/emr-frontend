@@ -10,10 +10,9 @@ import { useDoctorScheduleStyles } from "../../styles/doctorSchedule";
 import { TO_TEXT, LOCATION, APPOINTMENT_TYPE, FROM_TEXT } from "../../constants";
 
 const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
-  id, startAt, endAt, location, scheduleServices
+  id, startAt, endAt, scheduleServices
 } }) => {
   const classes = useDoctorScheduleStyles();
-  const { name } = location || {}
 
   const handleEdit = (id: string) => {
     if (id) {
@@ -44,29 +43,20 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
 
       <Box display="flex" flexDirection="row" justifyContent="space-between">
         <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
-          <Typography className={classes.subHeading}>
-            {FROM_TEXT}
-          </Typography>
-
-          <Typography className={classes.heading}>
-            {getStandardTime(startAt)}
-          </Typography>
+          <Typography className={classes.subHeading}>{FROM_TEXT}</Typography>
+          <Typography className={classes.heading}>{getStandardTime(startAt)}</Typography>
         </Box>
 
         <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
-          <Typography className={classes.subHeading}>
-            {TO_TEXT}
-          </Typography>
-
-          <Typography className={classes.heading}>
-            {getStandardTime(endAt)}
-          </Typography>
+          <Typography className={classes.subHeading}>{TO_TEXT}</Typography>
+          <Typography className={classes.heading}>{getStandardTime(endAt)}</Typography>
         </Box>
       </Box>
 
       <Box>
         <Box display="flex" flexDirection="row" justifyContent="space-between">
           <Box display="flex" flexDirection="row" justifyContent="space-between" width={'50%'} padding={2}>
+          {/* TO-DO: Replace location with appropriate field */}
             <Typography className={classes.subHeading}>
               {LOCATION}:
             </Typography>
@@ -74,7 +64,6 @@ const DoctorScheduleBox: FC<DoctorScheduleProps> = ({ dispatcher, schedule: {
             <Box pr={1} />
 
             <Typography className={classes.heading}>
-              {name}
             </Typography>
           </Box>
 

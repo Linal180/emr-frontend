@@ -217,14 +217,15 @@ const FacilityTable: FC = (): JSX.Element => {
                               </Box>
                             </Link>
                           </DetailTooltip>
-
-                          <DetailTooltip title={LOCATIONS_TEXT}>
+                          
+                          {/* TO-DO: Replace Location with Facility */}
+                          {/* <DetailTooltip title={LOCATIONS_TEXT}>
                             <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
                               <Box className={classes.iconsBackground}>
                                 <RemoveRedEye />
                               </Box>
                             </Link>
-                          </DetailTooltip>
+                          </DetailTooltip> */}
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
