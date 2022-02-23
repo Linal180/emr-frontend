@@ -190,7 +190,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
     const patientItemInput = {
-      suffix: '', firstName: '', middleName: '', lastName: '', firstNameUsed: '', prefferedName: '',
+      suffix: '', firstNameUsed: '', prefferedName: '',
       previousFirstName: '', previouslastName: '', registrationDate: getTimestamps(''), language: language || '',
       motherMaidenName: '', ssn: ssn || '', dob: getTimestamps(dob || ''), privacyNotice: false,
       releaseOfInfoBill: false, deceasedDate: getTimestamps(''), callToConsent: callToConsent || false, patientNote: '',

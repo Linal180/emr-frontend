@@ -12,6 +12,7 @@ import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 // constants, history, styling block
+import history from '../../../../history';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
@@ -24,7 +25,7 @@ import {
   AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
 } from "../../../../assets/svgs";
 import {
-  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS,
+  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION, MAPPED_WIDGETS,
   PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
 } from "../../../../constants";
 
@@ -271,6 +272,12 @@ const PatientDetailsComponent = (): JSX.Element => {
                         </Box>
                       ))}
                     </Box>
+                  </Box>
+
+                  <Box pr={1}>
+                    <Button color="primary" variant="contained" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                      {EDIT_PATIENT}
+                    </Button>
                   </Box>
 
                   <Button color="primary" variant="contained" className="blue-button">
