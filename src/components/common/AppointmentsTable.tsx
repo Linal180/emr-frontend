@@ -22,7 +22,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
-  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useGetDoctorAppointmentsLazyQuery,
+  AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery, useGetDoctorAppointmentsLazyQuery,
   useRemoveAppointmentMutation
 } from "../../generated/graphql";
 import {
@@ -38,8 +38,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { user } = useContext(AuthContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, copied, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
-  const { facilityId } = user || {}
-
+  const { facility } = user || {}
+  const { id: facilityId } = (facility as FacilityPayload['facility']) || {}
+  
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     variables: {
       appointmentInput: {

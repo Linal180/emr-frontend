@@ -1450,6 +1450,7 @@ export type RegisterUserInput = {
   email: Scalars['String'];
   facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
+  isAdmin?: Maybe<Scalars['Boolean']>;
   lastName?: Maybe<Scalars['String']>;
   password: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
@@ -1642,11 +1643,26 @@ export enum ServiceCode {
   FederallyQualifiedHealthCenter_50 = 'FEDERALLY_QUALIFIED_HEALTH_CENTER_50',
   GroupHome_14 = 'GROUP_HOME_14',
   HomelessShelter_04 = 'HOMELESS_SHELTER_04',
+  Home_12 = 'HOME_12',
   Hospice_34 = 'HOSPICE_34',
   IndependentClinic_49 = 'INDEPENDENT_CLINIC_49',
   IndependentLaboratory_81 = 'INDEPENDENT_LABORATORY_81',
   IndianHealthServiceFreeStandingFacility_05 = 'INDIAN_HEALTH_SERVICE_FREE_STANDING_FACILITY_05',
-  IndianHealthServiceProviderBasedFacility_06 = 'INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06'
+  IndianHealthServiceProviderBasedFacility_06 = 'INDIAN_HEALTH_SERVICE_PROVIDER_BASED_FACILITY_06',
+  MobileUnit_15 = 'MOBILE_UNIT_15',
+  Office_11 = 'OFFICE_11',
+  Pharmacy_01 = 'PHARMACY_01',
+  PlaceOfEmployment_18 = 'PLACE_OF_EMPLOYMENT_18',
+  Prison_09 = 'PRISON_09',
+  Prison_10 = 'PRISON_10',
+  School_03 = 'SCHOOL_03',
+  Telehealth_02 = 'TELEHEALTH_02',
+  Telehealth_10 = 'TELEHEALTH_10',
+  TelehealthOtherThanPatientHome_02 = 'TELEHEALTH_OTHER_THAN_PATIENT_HOME_02',
+  TemporaryLoOgoing_16 = 'TEMPORARY_LoOGOING_16',
+  Tribal_07 = 'TRIBAL_07',
+  Tribal_08 = 'TRIBAL_08',
+  WalkInRetailHealthClinic = 'WALK_IN_RETAIL_HEALTH_CLINIC'
 }
 
 /** The facility service code type assigned */
@@ -2064,6 +2080,7 @@ export type UpdateUserInput = {
   facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isAdmin?: Maybe<Scalars['Boolean']>;
   lastName?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
@@ -2075,7 +2092,6 @@ export type User = {
   email: Scalars['String'];
   emailVerified: Scalars['Boolean'];
   facility?: Maybe<Array<Facility>>;
-  facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   inviteAcceptedAt: Scalars['String'];
   inviteSentAt: Scalars['String'];
@@ -2207,7 +2223,7 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Ac
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, facilityId?: string | null | undefined, createdAt: string, updatedAt: string, roles?: Array<{ __typename?: 'Role', id: string, role: UserRole, createdAt: string, updatedAt: string } | null | undefined> | null | undefined, facility?: Array<{ __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, code?: string | null | undefined, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, revenueCode?: string | null | undefined, tamxonomyCode?: string | null | undefined, insurancePlanType?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, serviceCode: ServiceCode, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, serviceCode: ServiceCodes, country?: string | null | undefined, userId?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, staff?: Array<{ __typename?: 'Staff', id: string, firstName: string, lastName: string, email: string, username: string, dob: string, phone?: string | null | undefined, mobile?: string | null | undefined, gender: Gender, createdAt: string, updatedAt: string }> | null | undefined }> | null | undefined } | null | undefined } };
+export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string, roles?: Array<{ __typename?: 'Role', id: string, role: UserRole, createdAt: string, updatedAt: string } | null | undefined> | null | undefined, facility?: Array<{ __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, code?: string | null | undefined, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, revenueCode?: string | null | undefined, tamxonomyCode?: string | null | undefined, insurancePlanType?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, serviceCode: ServiceCode, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, serviceCode: ServiceCodes, country?: string | null | undefined, userId?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, staff?: Array<{ __typename?: 'Staff', id: string, firstName: string, lastName: string, email: string, username: string, dob: string, phone?: string | null | undefined, mobile?: string | null | undefined, gender: Gender, createdAt: string, updatedAt: string }> | null | undefined }> | null | undefined } | null | undefined } };
 
 export type ForgetPasswordMutationVariables = Exact<{
   forgotPasswordInput: ForgotPasswordInput;
@@ -3133,7 +3149,6 @@ export const GetLoggedInUserDocument = gql`
       inviteSentAt
       emailVerified
       inviteAcceptedAt
-      facilityId
       createdAt
       updatedAt
       roles {
