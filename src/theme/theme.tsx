@@ -4,7 +4,7 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
   PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE,
-  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, BLACK_SEVEN,
+  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT,
 } from ".";
 
 const breakpoints = createBreakpoints({})
@@ -117,20 +117,6 @@ export const theme = createTheme({
     MuiToolbar: {
       gutters: {
         padding: "15px 30px !important",
-      },
-
-      root: {
-        "& .MuiTypography-root": {
-          minWidth: 80,
-          textAlign: 'center',
-          color: BLACK_SEVEN,
-          cursor: 'pointer',
-          textTransform: 'capitalize',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          margin: '0 20px',
-        }
       }
     },
 
