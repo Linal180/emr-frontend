@@ -1,6 +1,5 @@
 // packages block
 import moment from "moment";
-import states from "states-us";
 import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
