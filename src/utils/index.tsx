@@ -332,20 +332,12 @@ export const activeClass = (pathname: string): string => {
       return 'inDashboard';
 
     case VIEW_APPOINTMENTS_ROUTE:
-      return "inAppointment"
-
     case SCHEDULE_APPOINTMENTS_ROUTE:
-      return "inAppointment"
-
     case START_PROJECT_ROUTE:
       return "inAppointment"
 
     case DOCTORS_ROUTE:
-      return "inUser"
-
     case PATIENTS_ROUTE:
-      return "inUser"
-
     case STAFF_ROUTE:
       return "inUser"
 
@@ -356,8 +348,6 @@ export const activeClass = (pathname: string): string => {
       return "inReport"
 
     case INVOICES_ROUTE:
-      return "inBilling"
-
     case CLAIMS_ROUTE:
       return "inBilling"
 
