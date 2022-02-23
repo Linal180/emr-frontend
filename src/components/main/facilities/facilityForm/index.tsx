@@ -12,7 +12,7 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
 import history from "../../../../history";
-import { renderStates, setRecord } from '../../../../utils';
+import { setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
 import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
@@ -28,7 +28,7 @@ import {
   FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY,
   EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME,
   NPI, REVENUE_CODE, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND,
-  FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION,
+  FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -422,7 +422,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={STATE}
                           name="billingState"
-                          options={renderStates()}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 
@@ -498,7 +498,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={STATE}
                           name="state"
-                          options={renderStates()}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 
