@@ -11,7 +11,6 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
       taxId
       prefix
       suffix
-      ssnType
       lastName
       firstName
       deaNumber
@@ -155,7 +154,6 @@ query GetDoctor($getDoctor: GetDoctor!) {
       prefix
       suffix
       email
-      ssnType
       providerIntials
       degreeCredentials
       speciality

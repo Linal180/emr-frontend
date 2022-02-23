@@ -16,13 +16,13 @@ import history from '../../../../history';
 import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getDate, getTimestamps, renderFacilities, renderStates, setRecord } from "../../../../utils";
+import { getDate, getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import {
-  DoctorPayload, Speciality, SsnType, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole,
+  DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole,
   useUpdateDoctorMutation
 } from "../../../../generated/graphql";
 import {
-  MAPPED_SSN_TYPES, FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, NOT_FOUND_EXCEPTION,
+  FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, NOT_FOUND_EXCEPTION,
   CONTACT_INFORMATION, TAX_ID_DETAILS, IDENTIFICATION, MIDDLE_NAME, UPDATE_DOCTOR, EMPTY_OPTION,
   PREFIX, SUFFIX, PROVIDER_INITIALS, DEGREE_CREDENTIALS, DOB, SOCIAL_SECURITY_NUMBER,
   DEA_NUMBER, DEA_ACTIVE_DATE, DEA_TERM_DATE, EMAIL, PHONE, FAX, ZIP_CODE, ADDRESS, ADDRESS_2,
@@ -30,8 +30,8 @@ import {
   MAMMOGRAPHY_CERT_NUMBER, CHAMPUS_GRP_NUMBER, BLUE_SHIED_NUMBER, TAX_ID_STUFF, SPECIALTY_LICENSE,
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, TAXONOMY_CODE,
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
-  LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, TYPE, DOCTOR_NOT_FOUND,
-  FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
+  FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_STATES,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -64,7 +64,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           const { status } = response
 
           if (doctor && status && status === 200) {
-            const { dob, ssn, prefix, suffix, ssnType, lastName, firstName, speciality, middleName, providerIntials,
+            const { dob, ssn, prefix, suffix, lastName, firstName, speciality, middleName, providerIntials,
               degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, deaTermDate, taxId, npi,
               upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
               blueShildNumber, taxIdStuff, facility, contacts, billingAddress, specialityLicense, anesthesiaLicense,
@@ -89,7 +89,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             dpsCtpNumber && setValue('dpsCtpNumber', dpsCtpNumber)
             stateLicense && setValue('stateLicense', stateLicense)
             emcProviderId && setValue('emcProviderId', emcProviderId)
-            ssnType && setValue('ssnType', setRecord(ssnType, ssnType))
             deaTermDate && setValue('deaTermDate', getDate(deaTermDate))
             blueShildNumber && setValue('blueShildNumber', blueShildNumber)
             campusGrpNumber && setValue('campusGrpNumber', campusGrpNumber)
@@ -103,7 +102,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             degreeCredentials && setValue('degreeCredentials', degreeCredentials)
             speciality && setValue('speciality', setRecord(speciality, speciality))
             licenseTermDate && setValue('licenseTermDate', getDate(licenseTermDate))
-            facilityId && setValue('facilityId', setRecord(facilityId || '', name || ''))
+            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
             licenseActiveDate && setValue('licenseActiveDate', getDate(licenseActiveDate))
             meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
             prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
@@ -203,21 +202,19 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const onSubmit: SubmitHandler<DoctorInputProps> = async (inputs) => {
     const {
-      email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country,
-      billingEmail, billingPhone, billingFax, billingAddress: billingAddress1,
-      billingAddress2, billingZipCode, billingCity, billingState, billingCountry, billingUserId,
-      dob, ssn, prefix, suffix, ssnType, lastName, firstName, speciality, middleName,
-      providerIntials, degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate,
-      deaTermDate, taxId, npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber,
-      meammographyCertNumber, campusGrpNumber, blueShildNumber, taxIdStuff, facilityId,
-      specialityLicense, password, anesthesiaLicense, dpsCtpNumber, stateLicense, licenseActiveDate,
-      licenseTermDate, prescriptiveAuthNumber
+      email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country, facilityId,
+      billingEmail, billingPhone, billingFax, billingAddress: billingAddress1, blueShildNumber, taxIdStuff,
+      billingAddress2, billingZipCode, billingCity, billingState, billingCountry, billingUserId, taxId,
+      dob, ssn, prefix, suffix, lastName, firstName, speciality, middleName, campusGrpNumber, password,
+      providerIntials, degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, npi,
+      deaTermDate, emcProviderId, medicareGrpNumber, medicaidGrpNumber, prescriptiveAuthNumber,
+      specialityLicense, anesthesiaLicense, dpsCtpNumber, stateLicense, licenseActiveDate, upin,
+      meammographyCertNumber, licenseTermDate,
     } = inputs;
 
     if (user) {
       const { id: userId } = user;
       const { id: selectedState } = state;
-      const { id: selectedSsnType } = ssnType;
       const { id: selectedFacility } = facilityId;
       const { id: selectedSpecialty } = speciality;
       const { id: selectedBillingState } = billingState;
@@ -227,7 +224,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         prefix: prefix || "", suffix: suffix || "", email: email || "", password: password || "",
         facilityId: selectedFacility || "", providerIntials: providerIntials || "",
         degreeCredentials: degreeCredentials || "", roleType: UserRole.Doctor,
-        adminId: userId || "", ssnType: selectedSsnType as SsnType || SsnType.Medicare,
         speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology,
         dob: getTimestamps(dob || ''), ssn: ssn || "", languagesSpoken: languagesSpoken || "",
         taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
@@ -239,7 +235,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         specialityLicense: specialityLicense || "", anesthesiaLicense: anesthesiaLicense || "",
         stateLicense: stateLicense || "", licenseActiveDate: getTimestamps(licenseActiveDate || ""),
         licenseTermDate: getTimestamps(licenseTermDate || ""), dpsCtpNumber: dpsCtpNumber || "",
-        prescriptiveAuthNumber: prescriptiveAuthNumber || "",
+        prescriptiveAuthNumber: prescriptiveAuthNumber || "", adminId: userId || "",
       };
 
       const contactInput = {
@@ -322,16 +318,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={TYPE}
-                          name="ssnType"
-                          options={MAPPED_SSN_TYPES}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
                         <InputController
                           isRequired
                           fieldType="text"
@@ -339,15 +325,23 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           controllerLabel={FIRST_NAME}
                         />
                       </Grid>
-                    </Grid>
 
-                    <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
                           isRequired
                           fieldType="text"
                           controllerName="lastName"
                           controllerLabel={LAST_NAME}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container spacing={3}>
+                      <Grid item md={6} sm={12} xs={12}>
+                        <InputController
+                          fieldType="text"
+                          controllerName="middleName"
+                          controllerLabel={MIDDLE_NAME}
                         />
                       </Grid>
 
@@ -360,8 +354,8 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
                           fieldType="text"
-                          controllerName="middleName"
-                          controllerLabel={MIDDLE_NAME}
+                          controllerName="degreeCredentials"
+                          controllerLabel={DEGREE_CREDENTIALS}
                         />
                       </Grid>
 
@@ -388,16 +382,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="providerIntials"
                           controllerLabel={PROVIDER_INITIALS}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="degreeCredentials"
-                          controllerLabel={DEGREE_CREDENTIALS}
                         />
                       </Grid>
                     </Grid>
@@ -518,11 +502,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={4}>
                         <Selector
-                          isRequired
                           value={EMPTY_OPTION}
                           label={STATE}
                           name="billingState"
-                          options={renderStates()}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 
@@ -606,12 +589,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                      <Selector
-                          isRequired
+                        <Selector
                           value={EMPTY_OPTION}
                           label={STATE}
                           name="state"
-                          options={renderStates()}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 

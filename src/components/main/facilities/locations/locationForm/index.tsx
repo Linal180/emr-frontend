@@ -14,7 +14,7 @@ import ViewDataLoader from '../../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
 import history from "../../../../../history";
 import { ListContext } from '../../../../../context';
-import { renderFacilities, renderStates, setRecord } from '../../../../../utils';
+import { renderFacilities, setRecord } from '../../../../../utils';
 import { extendedContactSchema } from '../../../../../validationSchemas';
 import { extendedContactInput, GeneralFormProps, ParamsType } from '../../../../../interfacesTypes';
 import {
@@ -23,7 +23,7 @@ import {
 import {
   ADDRESS, ADDRESS_2, ASSOCIATED_FACILITY, CITY, CONTACT, COUNTRY, CREATE_LOCATION, ZIP_CODE,
   EMAIL, EMPTY_OPTION, FACILITIES_ROUTE, FACILITY_LOCATIONS_ROUTE, FAX, LOCATION_CREATED, LOCATION_INFO,
-  LOCATION_NOT_FOUND, LOCATION_UPDATED, MAPPED_SERVICE_CODES, NAME, PHONE, POS, STATE, UPDATE_LOCATION,
+  LOCATION_NOT_FOUND, LOCATION_UPDATED, MAPPED_SERVICE_CODES, NAME, PHONE, POS, STATE, UPDATE_LOCATION, MAPPED_STATES,
 } from "../../../../../constants";
 
 const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
@@ -252,7 +252,7 @@ const LocationForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
                           value={EMPTY_OPTION}
                           label={STATE}
                           name="state"
-                          options={renderStates()}
+                          options={MAPPED_STATES}
                         />
                       </Grid>
 

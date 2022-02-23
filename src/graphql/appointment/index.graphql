@@ -96,7 +96,6 @@ query GetAppointment($getAppointment: GetAppointment!){
         taxId
         prefix
         suffix
-        ssnType
         lastName
         firstName
         deaNumber

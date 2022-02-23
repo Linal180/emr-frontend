@@ -2,7 +2,7 @@
 import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { RemoveRedEye, InsertLink } from "@material-ui/icons";
+import { InsertLink } from "@material-ui/icons";
 import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -28,7 +28,7 @@ import {
 import {
   ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, PUBLIC_APPOINTMENT_ROUTE,
   CODE, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED,
-  FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SERVICES, LOCATIONS_TEXT, PUBLIC_LINK,
+  FACILITY_SERVICES_ROUTE, SERVICES, PUBLIC_LINK,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
@@ -218,13 +218,14 @@ const FacilityTable: FC = (): JSX.Element => {
                             </Link>
                           </DetailTooltip>
 
-                          <DetailTooltip title={LOCATIONS_TEXT}>
+                          {/* TO-DO: Replace Location with Facility */}
+                          {/* <DetailTooltip title={LOCATIONS_TEXT}>
                             <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
                               <Box className={classes.iconsBackground}>
                                 <RemoveRedEye />
                               </Box>
                             </Link>
-                          </DetailTooltip>
+                          </DetailTooltip> */}
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
