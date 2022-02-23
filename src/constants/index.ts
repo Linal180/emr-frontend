@@ -451,6 +451,7 @@ export const NOT_FOUND_EXCEPTION_CAP = "NOT FOUND EXCEPTION";
 export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const REQUEST_MEMBERSHIP_PLAN = "Request Membership Plan";
 export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
+export const CALENDAR_VIEW_TEXT = "Calendar View";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
@@ -541,6 +542,7 @@ export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
+export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -774,6 +776,10 @@ export const APPOINTMENT_MENU_ITEMS = [
   {
     name: SCHEDULE_APPOINTMENTS_TEXT,
     link: SCHEDULE_APPOINTMENTS_ROUTE
+  },
+  {
+    name: CALENDAR_VIEW_TEXT,
+    link: START_PROJECT_ROUTE
   },
 ];
 

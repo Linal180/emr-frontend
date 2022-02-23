@@ -121,7 +121,7 @@ export const theme = createTheme({
 
       root: {
         "& .MuiTypography-root": {
-          minWidth: 70,
+          minWidth: 80,
           textAlign: 'center',
           color: BLACK_SEVEN,
           cursor: 'pointer',
@@ -214,7 +214,6 @@ export const theme = createTheme({
             borderRadius: 6,
           },
         },
-
 
         "& .MuiSvgIcon-root": {
           height: 32,

@@ -150,9 +150,9 @@ const StartProjectComponent = (): JSX.Element => {
 
   return (
     <Box>
-
       <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap="wrap" py={4}>
         <Typography variant="h4">{APPOINTMENT_LIST}</Typography>
+        
         <Button color="primary" variant="contained" startIcon={<Add />}>
           {CREATE_NEW_APPOINTMENT}
         </Button>

@@ -19,6 +19,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${WHITE_FOUR}`,
     boxShadow: 'none',
     padding: theme.spacing(0,4),
+    
     [theme.breakpoints.down("sm")]: {
       padding: 0,
     }
@@ -33,9 +34,14 @@ export const useHeaderStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+
     "& .active": {
       borderBottom:`1.5px solid ${BLUE_EIGHT}`,
-    }
+    },
+
+    [theme.breakpoints.down("sm")]: {
+      display: 'none',
+    },
   },
 
   menuItem: {

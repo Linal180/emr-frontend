@@ -6,6 +6,7 @@ import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
 import DropdownMenu from "./DropdownMenu";
 // utils and header styles block
 import history from "../../history";
+import { activeClass } from "../../utils";
 import { EMRLogo } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import {
@@ -13,7 +14,6 @@ import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, Profile_MENU_ITEMS, FACILITIES_TEXT,
   FACILITIES_ROUTE, ROOT_ROUTE
 } from "../../constants";
-import { activeClass } from "../../utils";
 
 const HeaderNew: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
@@ -53,11 +53,19 @@ const HeaderNew: FC = (): JSX.Element => {
             current={currentRoute === 'inBilling'}
           />
 
-          <Typography component={Link} to={FACILITIES_ROUTE} className={currentRoute === 'inFacility' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}>
+          <Typography 
+            component={Link} 
+            to={FACILITIES_ROUTE} 
+            className={currentRoute === 'inFacility' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+          >
             {FACILITIES_TEXT}
           </Typography>
 
-          <Typography component={Link} to={LAB_RESULTS_ROUTE} className={currentRoute === 'inReport' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}>
+          <Typography 
+            component={Link} 
+            to={LAB_RESULTS_ROUTE} 
+            className={currentRoute === 'inReport' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+          >
             {REPORTS}
           </Typography>
         </Box>

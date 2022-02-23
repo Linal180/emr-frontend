@@ -4,7 +4,9 @@ import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, TOKEN, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE } from "../constants";
+import { 
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, 
+  SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, START_PROJECT_ROUTE, TOKEN, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE } from "../constants";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
@@ -335,6 +337,9 @@ export const activeClass = (pathname: string): string => {
     case SCHEDULE_APPOINTMENTS_ROUTE:
       return "inAppointment"
 
+    case START_PROJECT_ROUTE:
+      return "inAppointment"
+
     case DOCTORS_ROUTE:
       return "inUser"
 
@@ -353,8 +358,8 @@ export const activeClass = (pathname: string): string => {
     case INVOICES_ROUTE:
       return "inBilling"
 
-      case CLAIMS_ROUTE:
-        return "inBilling"
+    case CLAIMS_ROUTE:
+      return "inBilling"
 
     default:
       return ''
