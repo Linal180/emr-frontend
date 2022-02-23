@@ -4,7 +4,9 @@ import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { DAYS, LOGIN_ROUTE, TOKEN, USER_EMAIL } from "../constants";
+import { 
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, 
+  SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, START_PROJECT_ROUTE, TOKEN, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE } from "../constants";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
@@ -322,4 +324,34 @@ export const setTimeDay = (time: string, day: string): string => {
   }
 
   return result
+};
+
+export const activeClass = (pathname: string): string => {
+  switch (pathname) {
+    case DASHBOARD_ROUTE:
+      return 'inDashboard';
+
+    case VIEW_APPOINTMENTS_ROUTE:
+    case SCHEDULE_APPOINTMENTS_ROUTE:
+    case START_PROJECT_ROUTE:
+      return "inAppointment"
+
+    case DOCTORS_ROUTE:
+    case PATIENTS_ROUTE:
+    case STAFF_ROUTE:
+      return "inUser"
+
+    case FACILITIES_ROUTE:
+      return "inFacility"
+
+    case LAB_RESULTS_ROUTE:
+      return "inReport"
+
+    case INVOICES_ROUTE:
+    case CLAIMS_ROUTE:
+      return "inBilling"
+
+    default:
+      return ''
+  }
 };

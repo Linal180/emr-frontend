@@ -67,6 +67,8 @@ export const UPDATE_LOCATION_TEXT = "Update location";
 export const PREFERRED_LANGUAGE = "Preferred Language";
 export const PREFERRED_PHARMACY = "Preferred Pharmacy";
 export const CREATE_APPOINTMENT = "Create Appointment";
+export const CREATE_NEW_APPOINTMENT = "Create New Appointment";
+export const APPOINTMENT_LIST = "Appointment List";
 export const UPDATE_APPOINTMENT = "Update Appointment";
 export const SECONDARY_INSURANCE = "Secondary Insurance";
 export const EMERGENCY_CONTACT_PHONE = "Emergency Contact Phone";
@@ -450,6 +452,7 @@ export const NOT_FOUND_EXCEPTION_CAP = "NOT FOUND EXCEPTION";
 export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const REQUEST_MEMBERSHIP_PLAN = "Request Membership Plan";
 export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
+export const CALENDAR_VIEW_TEXT = "Calendar View";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
@@ -503,6 +506,7 @@ export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Plea
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
@@ -539,6 +543,7 @@ export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
+export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 
 // stepper arrays
 export const getTagSteps = () => ["Tag Details", "Review"];
@@ -661,6 +666,7 @@ export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a ema
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
+export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 export const APP_MENU_ITEMS = [
   {
@@ -771,6 +777,10 @@ export const APPOINTMENT_MENU_ITEMS = [
   {
     name: SCHEDULE_APPOINTMENTS_TEXT,
     link: SCHEDULE_APPOINTMENTS_ROUTE
+  },
+  {
+    name: CALENDAR_VIEW_TEXT,
+    link: START_PROJECT_ROUTE
   },
 ];
 
@@ -1070,8 +1080,6 @@ export const WEEK_DAYS: SelectorOption[] = [
   { id: DAYS.Saturday, name: DAYS.Saturday, },
   { id: DAYS.Sunday, name: DAYS.Sunday, },
 ]
-
-// NEWAPPBAR-Menu
 
 export const dummyVitalsChartingList = [
   {

@@ -11,7 +11,7 @@ const AppointmentCard = (): JSX.Element => {
       {dummyAppointmentData.map(({
         appTime, timeVariant, patientName, patientDOB, patientTel, patientStatus, patientElg
       }) =>
-        <Box px={2} my={3} display="flex" flexDirection="column" className="solidLeftBorder">
+        <Box px={2} my={3} className="solidLeftBorder">
           <Box display="flex" flexDirection="row">
             <Typography variant="h4">{appTime}</Typography>
             <Typography variant="body2">{timeVariant}</Typography>
