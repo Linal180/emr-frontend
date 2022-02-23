@@ -5,9 +5,10 @@ import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Avatar, Box, Button, Menu, Tab, Typography } from "@material-ui/core";
-// components block
+import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
+//components block
 import Selector from "../../../common/Selector";
+import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 // constants, history, styling block
@@ -15,42 +16,60 @@ import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
+import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  patientReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/patientReducer";
-import {
-  Attachment, AttachmentType, Patient, useGetAttachmentQuery, useGetPatientLazyQuery
+  AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
-  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileStarIcon, ProfileUserIcon
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
 } from "../../../../assets/svgs";
 import {
-  ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS, PATIENTS_CHART,
-  PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
+  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS,
+  PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
-  const classes = useProfileDetailsStyles()
-  const { id } = useParams<ParamsType>();
-  const [{
-    anchorEl, attachmentUrl, attachmentsData, openDelete, patientData, tabValue, attachmentId
-  }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const isMenuOpen = Boolean(anchorEl);
   const widgetId = "widget-menu";
+  const { id } = useParams<ParamsType>();
+  const classes = useProfileDetailsStyles()
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const { anchorEl, attachmentUrl, attachmentData, openDelete, patientData, tabValue, attachmentId } = state
+  const isMenuOpen = Boolean(anchorEl);
+  const methods = useForm<any>({ mode: "all", });
+  const { handleSubmit } = methods;
+
   const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
+
   const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) =>
     dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
-
-  const methods = useForm<any>({
-    mode: "all",
-  });
-
-  const { handleSubmit } = methods;
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
-  const [getPatient,] = useGetPatientLazyQuery({
+  const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    variables: {
+      getMedia: { id }
+    },
+
+    onError() {
+      return null
+    },
+
+    onCompleted(data) {
+      const { getAttachment } = data || {};
+
+      if (getAttachment) {
+        const { preSignedUrl } = getAttachment
+        preSignedUrl && dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
+      }
+    },
+  });
+
+  const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -66,35 +85,14 @@ const PatientDetailsComponent = (): JSX.Element => {
         if (getPatient) {
           const { patient } = getPatient;
           const { attachments } = patient || {}
-          const { url, id: attachmentId } = (attachments && attachments[0]) || {}
-          dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: url || '' })
-          dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: attachmentId || '' })
+          const profilePicture = attachments && attachments.filter(attachment =>
+            attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
+          const { id: attachmentId, } = profilePicture || {}
+
+          attachmentId && dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
+          dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
         }
-      }
-    },
-  });
-
-  const { loading } = useGetAttachmentQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    variables: {
-      getMedia: {
-        id: attachmentId
-      }
-    },
-
-    onError() {},
-
-    onCompleted(data) {
-      const { getAttachment } = data || {};
-
-      if (getAttachment) {
-        const { preSignedUrl } = getAttachment
-        dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl || '' })
-        dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: attachmentId })
       }
     },
   });
@@ -102,18 +100,20 @@ const PatientDetailsComponent = (): JSX.Element => {
   useEffect(() => {
     if (id) {
       getPatient({
-        variables: {
-          getPatient: { id }
-        },
+        variables: { getPatient: { id } }
       })
     }
   }, [getPatient, id])
 
-  if (!patientData && loading) {
-    return (
-      <Box>Loading...</Box>
-    )
-  }
+  useEffect(() => {
+    try {
+      attachmentId && getAttachment({
+        variables: {
+          getMedia: { id: attachmentId }
+        },
+      })
+    } catch (error) { }
+  }, [attachmentId, getAttachment])
 
   const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
@@ -216,74 +216,74 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<any> = async (inputs) => { }
 
+  const isLoading = getPatientLoading || getAttachmentLoading
+
   return (
     <Box>
-      <TabContext value={tabValue}>
-        <Box display="flex" justifyContent="space-between">
-          <TabList onChange={handleChange} aria-label="Profile top tabs">
-            {PROFILE_TOP_TABS.map(item => (
-              <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
-            ))}
-          </TabList>
+      {isLoading ? <Backdrop loading={true} /> : (
+        <TabContext value={tabValue}>
+          <Box display="flex" justifyContent="space-between">
+            <TabList onChange={handleChange} aria-label="Profile top tabs">
+              {PROFILE_TOP_TABS.map(item => (
+                <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+              ))}
+            </TabList>
 
-          <Box pr={2}>
-            <Link to={`${PATIENTS_ROUTE}/${id}/details${PATIENTS_CHART}`}>
-              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-            </Link>
+            <Box pr={2}>
+              <Link to={`${PATIENTS_ROUTE}/${id}/details${PATIENTS_CHART}`}>
+                <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+              </Link>
+            </Box>
           </Box>
-        </Box>
 
-        <Box className={classes.profileDetailsContainer}>
-          <Box className={classes.profileCard}>
-            <Box key={attachmentId} display="flex" alignItems="center">
-              <Box pl={1}>
-                <Box pr={3.75} position="relative">
-                  <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-                  {attachmentsData &&
-                    <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide="" attachmentsData={attachmentsData as Attachment[]} notDescription={true} />
-                  }
+          <Box className={classes.profileDetailsContainer}>
+            <Box className={classes.profileCard}>
+              <Box key={attachmentId} display="flex" alignItems="center">
+                <Box pl={1}>
+                  <Box pr={3.75} position="relative">
+                    <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+                    <MediaCards isProfile={true} moduleType={AttachmentType.Patient} itemId={id} imageSide={attachmentUrl} attachmentData={attachmentData || undefined} notDescription={true} />
+                  </Box>
+                </Box>
+              </Box>
+
+              <Box flex={1}>
+                <Box display="flex">
+                  <Box flex={1}>
+                    <Box display="flex" alignItems="center" className={classes.userName}>
+                      {`${firstName} ${lastName}`}
+                    </Box>
+
+                    <Box display="flex" width="100%" pt={1} flexWrap="wrap">
+                      {ProfileDetails.map((item, index) => (
+                        <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
+                          <Box>{item.icon}</Box>
+                          <Box>{item.description}</Box>
+                        </Box>
+                      ))}
+                    </Box>
+
+                    <Box display="flex" pt={3}>
+                      {ProfileAdditionalDetails.map((item, index) => (
+                        <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
+                          <Box className={classes.profileInfoHeading}>{item.title}</Box>
+                          <Box>{item.description}</Box>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+
+                  <Button color="primary" variant="contained" className="blue-button">
+                    {SCHEDULE_APPOINTMENTS_TEXT}
+                  </Button>
                 </Box>
               </Box>
             </Box>
 
-            <Box flex={1}>
-              <Box display="flex">
-                <Box flex={1}>
-                  <Box display="flex" alignItems="center" className={classes.userName}>
-                    {`${firstName} ${lastName}`}
-                    <ProfileStarIcon />
-                  </Box>
-
-                  <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                    {ProfileDetails.map((item, index) => (
-                      <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
-                        <Box>{item.icon}</Box>
-                        <Box>{item.description}</Box>
-                      </Box>
-                    ))}
-                  </Box>
-
-                  <Box display="flex" pt={3}>
-                    {ProfileAdditionalDetails.map((item, index) => (
-                      <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
-                        <Box className={classes.profileInfoHeading}>{item.title}</Box>
-                        <Box>{item.description}</Box>
-                      </Box>
-                    ))}
-                  </Box>
-                </Box>
-
-                <Button color="primary" variant="contained" className="blue-button">
-                  {SCHEDULE_APPOINTMENTS_TEXT}
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-
-          <TabPanel value="1">
-            <Box className={classes.profileCardMasonry}>
-              {ProfileDetailedData.map((item, index) => (
-                <Box className={classes.profileCardItemMasonry} key={`${item.title}-${index}`}>
+            <TabPanel value="1">
+              <Grid container spacing={3}>
+                {ProfileDetailedData.map((item, index) => (
+                  <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
                     {item && item.title === "Allergies" && <>
                       <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
                         <AddWidgetIcon />
@@ -334,12 +334,13 @@ const PatientDetailsComponent = (): JSX.Element => {
                         <Typography color="inherit">{item.description}</Typography>
                       </Box>
                     </Box>
-                </Box>
-              ))}
-            </Box>
-          </TabPanel>
-        </Box>
-      </TabContext>
+                  </Grid>
+                ))}
+              </Grid>
+            </TabPanel>
+          </Box>
+        </TabContext>
+      )}
 
       <ConfirmationModal
         title={DELETE_WIDGET_TEXT}

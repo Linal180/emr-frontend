@@ -1,5 +1,5 @@
 
-import { Box, Button, Card, Typography } from '@material-ui/core';
+import { Box, Card, Typography } from '@material-ui/core';
 import { successStyles } from '../../../../styles/publicAppointmentStyles/successStyles';
 import { WHITE_TWO } from '../../../../theme';
 
@@ -27,15 +27,6 @@ const AppointmentSuccessComponent = () => {
               <li><Typography component="h5" variant="h5">Please bring a valid photo ID and any insurance cards (if applicable).</Typography></li>
               <li><Typography component="h5" variant="h5">Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).</Typography></li>
             </ul>
-          </Box>
-
-          <Box display="flex" gridGap={20} mt={3}>
-            <Button type="submit" variant="contained">
-              Cancel Booking
-            </Button>
-            <Button type="submit" variant="contained" className='blue-button'>
-              Confirm it!
-            </Button>
           </Box>
         </Box>
       </Card>

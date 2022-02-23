@@ -6,11 +6,11 @@ import { Card, CardContent, CardHeader, IconButton, Box, Typography, Menu } from
 // interfaces/types block
 import {
   patientReducer, Action, initialState, State, ActionType
-} from "../../../../../../reducers/patientReducer";
-import { AddChartingIcon } from "../../../../../../assets/svgs";
-import { ChartingCardComponentType } from "../../../../../../interfacesTypes";
-import { usePatientChartingStyles } from "../../../../../../styles/patientCharting";
-import history from "../../../../../../history";
+} from "../../../../../reducers/patientReducer";
+import { AddChartingIcon } from "../../../../../assets/svgs";
+import { ChartingCardComponentType } from "../../../../../interfacesTypes";
+import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
+import history from "../../../../../history";
 import PatientCardForm from "./PatientCardForm";
 
 const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon, vitalsCard }): JSX.Element => {

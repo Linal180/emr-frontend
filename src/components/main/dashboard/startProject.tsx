@@ -7,138 +7,10 @@ import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator,
   DayView, WeekView, AppointmentTooltip
 } from '@devexpress/dx-react-scheduler-material-ui';
-// calendar styles block
+// styles, constants  block
 import { useCalendarStyles } from "../../../styles/calendarStyles";
-// constants block
-import { APPOINTMENT_LIST, CREATE_NEW_APPOINTMENT } from "../../../constants";
+import { APPOINTMENT_LIST, CREATE_NEW_APPOINTMENT, DUMMY_APPOINTMENTS } from "../../../constants";
 
-const appointments = [
-  {
-    "title": "Website Re-Design Plan",
-    "startDate": "2018-07-23T04:30:00.000Z",
-    "endDate": "2018-07-23T06:30:00.000Z"
-  },
-  {
-    "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2018-07-23T07:00:00.000Z",
-    "endDate": "2018-07-23T08:00:00.000Z"
-  },
-  {
-    "title": "Install New Router in Dev Room",
-    "startDate": "2018-07-23T09:30:00.000Z",
-    "endDate": "2018-07-23T10:30:00.000Z"
-  },
-  {
-    "title": "Approve Personal Computer Upgrade Plan",
-    "startDate": "2018-07-24T05:00:00.000Z",
-    "endDate": "2018-07-24T06:00:00.000Z"
-  },
-  {
-    "title": "Final Budget Review",
-    "startDate": "2018-07-24T07:00:00.000Z",
-    "endDate": "2018-07-24T08:35:00.000Z"
-  },
-  {
-    "title": "New Brochures",
-    "startDate": "2018-07-24T09:30:00.000Z",
-    "endDate": "2018-07-24T10:45:00.000Z"
-  },
-  {
-    "title": "Install New Database",
-    "startDate": "2018-07-25T04:45:00.000Z",
-    "endDate": "2018-07-25T06:15:00.000Z"
-  },
-  {
-    "title": "Approve New Online Marketing Strategy",
-    "startDate": "2018-07-25T07:00:00.000Z",
-    "endDate": "2018-07-25T09:00:00.000Z"
-  },
-  {
-    "title": "Upgrade Personal Computers",
-    "startDate": "2018-07-25T10:15:00.000Z",
-    "endDate": "2018-07-25T11:30:00.000Z"
-  },
-  {
-    "title": "Customer Workshop",
-    "startDate": "2018-07-26T06:00:00.000Z",
-    "endDate": "2018-07-26T07:00:00.000Z"
-  },
-  {
-    "title": "Prepare 2015 Marketing Plan",
-    "startDate": "2018-07-26T06:00:00.000Z",
-    "endDate": "2018-07-26T08:30:00.000Z"
-  },
-  {
-    "title": "Brochure Design Review",
-    "startDate": "2018-07-26T09:00:00.000Z",
-    "endDate": "2018-07-26T10:30:00.000Z"
-  },
-  {
-    "title": "Create Icons for Website",
-    "startDate": "2018-07-27T05:00:00.000Z",
-    "endDate": "2018-07-27T06:30:00.000Z"
-  },
-  {
-    "title": "Upgrade Server Hardware",
-    "startDate": "2018-07-27T09:30:00.000Z",
-    "endDate": "2018-07-27T11:00:00.000Z"
-  },
-  {
-    "title": "Submit New Website Design",
-    "startDate": "2018-07-27T11:30:00.000Z",
-    "endDate": "2018-07-27T13:00:00.000Z"
-  },
-  {
-    "title": "Launch New Website",
-    "startDate": "2018-07-26T07:20:00.000Z",
-    "endDate": "2018-07-26T09:00:00.000Z"
-  },
-  {
-    "title": "Website Re-Design Plan",
-    "startDate": "2018-07-16T04:30:00.000Z",
-    "endDate": "2018-07-16T10:30:00.000Z"
-  },
-  {
-    "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2018-07-16T07:00:00.000Z",
-    "endDate": "2018-07-16T08:00:00.000Z"
-  },
-  {
-    "title": "Install New Database",
-    "startDate": "2018-07-17T10:45:00.000Z",
-    "endDate": "2018-07-18T07:15:00.000Z"
-  },
-  {
-    "title": "Approve New Online Marketing Strategy",
-    "startDate": "2018-07-18T07:35:00.000Z",
-    "endDate": "2018-07-18T09:15:00.000Z"
-  },
-  {
-    "title": "Upgrade Personal Computers",
-    "startDate": "2018-07-19T10:15:00.000Z",
-    "endDate": "2018-07-20T15:30:00.000Z"
-  },
-  {
-    "title": "Prepare 2015 Marketing Plan",
-    "startDate": "2018-07-20T15:00:00.000Z",
-    "endDate": "2018-07-20T08:30:00.000Z"
-  },
-  {
-    "title": "Brochure Design Review",
-    "startDate": "2018-07-20T09:10:00.000Z",
-    "endDate": "2018-07-20T10:30:00.000Z"
-  },
-  {
-    "title": "Vacation",
-    "startDate": "2018-06-21T19:00:00.000Z",
-    "endDate": "2018-06-30T19:00:00.000Z"
-  },
-  {
-    "title": "Vacation",
-    "startDate": "2018-07-27T19:00:00.000Z",
-    "endDate": "2018-08-06T19:00:00.000Z"
-  }
-]
 
 const StartProjectComponent = (): JSX.Element => {
   const classes = useCalendarStyles();
@@ -160,7 +32,7 @@ const StartProjectComponent = (): JSX.Element => {
 
       <Card>
         <Box className={classes.appointmentCalendar} p={3}>
-          <Scheduler data={appointments}>
+          <Scheduler data={DUMMY_APPOINTMENTS}>
             <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
             <MonthView />
             <WeekView />

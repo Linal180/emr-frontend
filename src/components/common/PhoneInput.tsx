@@ -8,7 +8,7 @@ import 'react-phone-input-2/lib/style.css'
 import { requiredLabel } from '../../utils';
 import { PhoneInputProps } from '../../interfacesTypes';
 
-const PhoneField: FC<PhoneInputProps> = ({ name, label, error, isRequired }) => {
+const PhoneField: FC<PhoneInputProps> = ({ name, label, isRequired }) => {
   const { control } = useFormContext()
 
   return (
@@ -16,13 +16,15 @@ const PhoneField: FC<PhoneInputProps> = ({ name, label, error, isRequired }) => 
       rules={{ required: true }}
       name={name}
       control={control}
-      render={({ field, fieldState: { invalid } }) => {
-        return <FormControl fullWidth margin='normal' error={Boolean(error)}>
+      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
+        return <FormControl fullWidth margin='normal' error={invalid}>
           <InputLabel id={`${name}-autocomplete`} shrink>
             {isRequired ? requiredLabel(label) : label}
           </InputLabel>
 
           <PhoneInput
+            {...field}
+
             country={'us'}
             disableDropdown
             value={field.value}
@@ -30,7 +32,7 @@ const PhoneField: FC<PhoneInputProps> = ({ name, label, error, isRequired }) => 
             onChange={(phone: any) => field.onChange(phone)}
           />
 
-          <FormHelperText>{invalid && error}</FormHelperText>
+          <FormHelperText>{message}</FormHelperText>
         </FormControl>;
       }}
     />

@@ -1,9 +1,11 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
+import dotenv from 'dotenv';
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
+import { InsertLink } from '@material-ui/icons';
 import {
-  Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell
+  Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell, Button
 } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
@@ -11,6 +13,7 @@ import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { AuthContext } from "../../context";
 import { getFormattedDate, renderTh } from "../../utils";
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
@@ -19,25 +22,30 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
-  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useGetDoctorAppointmentsLazyQuery,
+  AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery, useGetDoctorAppointmentsLazyQuery,
   useRemoveAppointmentMutation
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES
+  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES, PUBLIC_APPOINTMENT_ROUTE,
+  LINK_COPIED, PUBLIC_LINK
 } from "../../constants";
+
+dotenv.config()
 
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
+  const { user } = useContext(AuthContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
-
+  const { page, copied, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
+  const { facility } = user || {}
+  const { id: facilityId } = (facility as FacilityPayload['facility']) || {}
+  
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     variables: {
       appointmentInput: {
         paginationOptions: {
-          page,
-          limit: PAGE_LIMIT
+          page, limit: PAGE_LIMIT
         }
       }
     },
@@ -103,7 +111,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       if (data) {
         const { removeAppointment: { response } } = data
 
@@ -112,19 +120,21 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          findAllAppointments()
+          await findAllAppointments()
         }
       }
     }
   });
 
-  const fetchAppointments = useCallback(() => {
-    doctorId ?
-      getDoctorAppointment({
-        variables: { getDoctorAppointment: { doctorId } }
-      })
-      :
-      findAllAppointments()
+  const fetchAppointments = useCallback(async () => {
+    try {
+      doctorId ?
+        await getDoctorAppointment({
+          variables: { getDoctorAppointment: { doctorId } }
+        })
+        :
+        await findAllAppointments()
+    } catch (error) { }
   }, [doctorId, findAllAppointments, getDoctorAppointment])
 
   useEffect(() => {
@@ -156,6 +166,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   };
 
+  const handleClipboard = () => {
+    navigator.clipboard.writeText(
+      `${process.env.REACT_APP_URL}${PUBLIC_APPOINTMENT_ROUTE}/${facilityId}`
+    )
+
+    dispatch({ type: ActionType.SET_COPIED, copied: true })
+  };
+
   return (
     <Box className={classes.mainTableContainer}>
       <Box className={classes.searchContainer}>
@@ -177,6 +195,18 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               </IconButton>
           }}
         />
+
+        {facilityId &&
+          <Button variant="contained" className="blue-button"
+            onClick={handleClipboard}
+          >
+            <IconButton color="default">
+              <InsertLink />
+            </IconButton>
+
+            {copied ? LINK_COPIED : PUBLIC_LINK}
+          </Button>
+        }
       </Box>
 
       <Box className="table-overflow">

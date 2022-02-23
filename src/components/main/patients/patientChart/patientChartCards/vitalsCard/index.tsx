@@ -5,8 +5,8 @@ import { useParams } from 'react-router';
 import VitalsChartingTable from './vitalChartComponent';
 import ChartingPageHeader from '../../ChartingPageHeader';
 // constants block
-import { ParamsType } from '../../../../../../../interfacesTypes';
-import { EDIT_PATIENT, PATIENTS_BREAD, PATIENT_EDIT_BREAD, USERS_BREAD } from '../../../../../../../constants';
+import { ParamsType } from '../../../../../../interfacesTypes';
+import { EDIT_PATIENT, PATIENTS_BREAD, PATIENT_EDIT_BREAD, USERS_BREAD } from '../../../../../../constants';
 
 const VitalChartComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();

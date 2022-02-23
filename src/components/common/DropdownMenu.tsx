@@ -26,7 +26,7 @@ const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon, curre
           {itemName}
           <IconButton
             aria-label="dropdown menu"
-            aria-controls="menu-appbar"
+            aria-controls="menu-appBar"
             aria-haspopup="true" color="inherit"
           >
             <DownArrowIcon />
@@ -38,7 +38,7 @@ const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon, curre
         <IconButton
           onClick={(event) => handleClick(event)}
           aria-label="dropdown menu"
-          aria-controls="menu-appbar"
+          aria-controls="menu-appBar"
           aria-haspopup="true"
           color="inherit"
         >

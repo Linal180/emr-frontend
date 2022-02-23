@@ -14,7 +14,7 @@ const InputController: FC<CustomInputControlProps> = ({
 }): JSX.Element => {
   const { control } = useFormContext()
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
-  
+
   const handleClickShowPassword = () => {
     if (passwordType === PASSWORD) {
       setPasswordType(TEXT);
@@ -22,18 +22,18 @@ const InputController: FC<CustomInputControlProps> = ({
       setPasswordType(PASSWORD);
     }
   };
-  
+
   return (
     <Controller
       name={controllerName}
       control={control}
       defaultValue=""
-      render={({ field, fieldState: { invalid } }) => (
+      render={({ field, fieldState: { invalid, error: { message } = {} }}) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={controllerName}>
             {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
           </InputLabel>
-          
+
           <TextField
             fullWidth
             error={invalid}
@@ -41,7 +41,7 @@ const InputController: FC<CustomInputControlProps> = ({
             disabled={disabled}
             id={controllerName}
             type={fieldType === "password" ? passwordType : fieldType}
-            helperText={error && error}
+            helperText={error ? error : message}
             {...field}
             InputProps={isPassword ? {
               endAdornment: <ShowPassword
