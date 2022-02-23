@@ -70,6 +70,8 @@ export const UPDATE_LOCATION_TEXT = "Update location";
 export const PREFERRED_LANGUAGE = "Preferred Language";
 export const PREFERRED_PHARMACY = "Preferred Pharmacy";
 export const CREATE_APPOINTMENT = "Create Appointment";
+export const CREATE_NEW_APPOINTMENT = "Create New Appointment";
+export const APPOINTMENT_LIST = "Appointment List";
 export const UPDATE_APPOINTMENT = "Update Appointment";
 export const SECONDARY_INSURANCE = "Secondary Insurance";
 export const EMERGENCY_CONTACT_PHONE = "Emergency Contact Phone";
@@ -204,6 +206,7 @@ export const CTP_NUMBER = "DPS / CTP Number";
 export const STATE_LICENSE = "State License";
 export const LICENSE_ACTIVE_DATE = "License Active Date";
 export const ACTIVE_TEXT = "Active";
+export const SELECT_COLOR_TEXT = "Select Color";
 export const SERVICE_NAME_TEXT = "Service Name";
 export const DURATION_TEXT = "Duration (In Minutes)";
 export const PRICE_TEXT = "Price (In USD)";
@@ -461,6 +464,7 @@ export const NOT_FOUND_EXCEPTION_CAP = "NOT FOUND EXCEPTION";
 export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
 export const REQUEST_MEMBERSHIP_PLAN = "Request Membership Plan";
 export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
+export const CALENDAR_VIEW_TEXT = "Calendar View";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
@@ -544,6 +548,7 @@ export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
+export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
@@ -653,6 +658,7 @@ export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a ema
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
+export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 export const APP_MENU_ITEMS = [
   {
@@ -763,6 +769,10 @@ export const APPOINTMENT_MENU_ITEMS = [
   {
     name: SCHEDULE_APPOINTMENTS_TEXT,
     link: SCHEDULE_APPOINTMENTS_ROUTE
+  },
+  {
+    name: CALENDAR_VIEW_TEXT,
+    link: START_PROJECT_ROUTE
   },
 ];
 

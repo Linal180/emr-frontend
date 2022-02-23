@@ -15,7 +15,7 @@ import { AuthContext } from "../../../context";
 import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
-import { ADMIN, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE, SOMETHING_WENT_WRONG, LOGIN_SUCCESSFULLY } from "../../../constants";
+import { ADMIN, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE, SOMETHING_WENT_WRONG, LOGIN_SUCCESSFULLY, STAFF } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
@@ -47,7 +47,7 @@ const LoginComponent = (): JSX.Element => {
 
           if (status === 200 && access_token && roles) {
             const userRoles = roles.map(role => role.role)
-            const isAdmin = userRoles.filter(role => role === SUPER_ADMIN || role === ADMIN)
+            const isAdmin = userRoles.filter(role => role === SUPER_ADMIN || role === ADMIN || role === STAFF)
 
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);

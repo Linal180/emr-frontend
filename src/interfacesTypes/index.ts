@@ -699,6 +699,7 @@ export interface MediaCardsType {
 
 export interface DropDownItems {
   itemName?: string;
+  current?: boolean;
   menuItem: DropDownOption[];
   avatarIcon?: boolean;
 }
