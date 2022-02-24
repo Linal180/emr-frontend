@@ -23,12 +23,11 @@ import {
   PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, CLIA_ID_NUMBER, CODE,
-  TIME_ZONE_TEXT, MAPPED_TIME_ZONES, CREATE_FACILITY, EMPTY_OPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY,
-  EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME,
-  NPI, REVENUE_CODE, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND,
-  FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES,
+  ADDRESS_2, BILLING_ADDRESS, FACILITY_IDS, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES,
+  CREATE_FACILITY, EMPTY_OPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES,
+  FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED,
+  MAPPED_PRACTICE_TYPES, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE,
+  FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION, MAPPED_COUNTRIES,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -92,9 +91,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               mobile && setValue('mobile', mobile)
               zipCode && setValue('zipCode', zipCode)
               address && setValue('address', address)
-              country && setValue('country', country)
               address2 && setValue('address2', address2)
               state && setValue('state', setRecord(state, state))
+              country && setValue('country', setRecord(country, country))
             }
 
             if (billingAddress) {
@@ -105,10 +104,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               email && setValue('billingEmail', email)
               phone && setValue('billingPhone', phone)
               address && setValue('billingAddress', address)
-              country && setValue('billingCountry', country)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
               state && setValue('billingState', setRecord(state, state))
+              country && setValue('billingCountry', setRecord(country, country))
             }
           }
         }
@@ -179,11 +178,13 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       billingAddress, billingZipCode, timeZone
     } = inputs;
 
-    const { name: timeZoneName } = timeZone
-    const { id: selectedServiceCode } = serviceCode;
     const { id: selectedState } = state;
-    const { id: selectedBillingState } = billingState;
+    const { name: timeZoneName } = timeZone;
+    const { id: selectedCountry } = country;
+    const { id: selectedServiceCode } = serviceCode;
     const { id: selectedPracticeType } = practiceType;
+    const { id: selectedBillingState } = billingState;
+    const { id: selectedBillingCountry } = billingCountry;
 
     const facilityInput = {
       name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
@@ -197,13 +198,13 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     const contactInput = {
       phone: phone || '', email: email || '', fax: fax || '', city: city || '',
-      state: selectedState || '', country: country || '', zipCode: zipCode || '', address: address || '',
+      state: selectedState || '', country: selectedCountry || '', zipCode: zipCode || '', address: address || '',
       address2: address2 || '', primaryContact: true
     }
 
     const billingAddressInput = {
       phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '',
-      state: selectedBillingState || '', country: billingCountry || '', zipCode: billingZipCode || '',
+      state: selectedBillingState || '', country: selectedBillingCountry || '', zipCode: billingZipCode || '',
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || ''
     }
 
@@ -265,11 +266,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6}>
-                        <InputController
+                        <Selector
                           isRequired
-                          fieldType="text"
-                          controllerName="code"
-                          controllerLabel={CODE}
+                          value={EMPTY_OPTION}
+                          label={SERVICE_CODE}
+                          name="serviceCode"
+                          options={MAPPED_SERVICE_CODES}
                         />
                       </Grid>
 
@@ -320,19 +322,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="revenueCode"
-                          controllerLabel={REVENUE_CODE}
-                        />
+
                       </Grid>
                     </Grid>
-
-                    <InputController
-                      fieldType="text"
-                      controllerName="insurancePlanType"
-                      controllerLabel={INSURANCE_PLAN_TYPE}
-                    />
 
                     <Grid container spacing={3}>
                       <Grid item md={6}>
@@ -351,14 +343,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         />
                       </Grid>
                     </Grid>
-
-                    <Selector
-                      isRequired
-                      value={EMPTY_OPTION}
-                      label={SERVICE_CODE}
-                      name="serviceCode"
-                      options={MAPPED_SERVICE_CODES}
-                    />
                   </>
                 )}
               </CardComponent>
@@ -427,10 +411,11 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingCountry"
-                          controllerLabel={COUNTRY}
+                        <Selector
+                          label={COUNTRY}
+                          value={EMPTY_OPTION}
+                          name="billingCountry"
+                          options={MAPPED_COUNTRIES}
                         />
                       </Grid>
                     </Grid>
@@ -440,7 +425,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               <Box pb={3} />
 
-              <CardComponent cardTitle={FACILITY_CONTACT} isEdit={true}>
+              <CardComponent cardTitle={FACILITY_LOCATION} isEdit={true}>
                 {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
@@ -503,10 +488,11 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="country"
-                          controllerLabel={COUNTRY}
+                        <Selector
+                          name="country"
+                          label={COUNTRY}
+                          value={EMPTY_OPTION}
+                          options={MAPPED_COUNTRIES}
                         />
                       </Grid>
                     </Grid>

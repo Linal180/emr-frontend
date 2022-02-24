@@ -443,25 +443,25 @@ export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
   & { serviceId: SelectorOption } & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
+  billingFax: string;
+  billingCity: string;
+  billingPager: string;
   billingEmail: string;
   billingPhone: string;
+  billingUserId: string;
   billingMobile: string;
-  billingFax: string;
   billingZipCode: string;
   billingAddress: string;
   billingAddress2: string;
-  billingCity: string;
-  billingCountry: string;
-  billingPager: string;
-  billingUserId: string;
   billingFacility: string;
   billingState: SelectorOption;
+  billingCountry: SelectorOption;
 }
 
-export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state">
+export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state" | "country">
   & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone"> & CustomBillingAddressInputs
   & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption }
-  & { state: SelectorOption };
+  & { state: SelectorOption } & { country: SelectorOption };
 
 type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
 
@@ -473,7 +473,8 @@ export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZone
   & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
-  & Omit<CreateContactInput, "facilityId" | "state"> & CustomBillingAddressInputs & { facilityId: SelectorOption }
+  & Omit<CreateContactInput, "facilityId" | "state" | "country"> & CustomBillingAddressInputs 
+  & { facilityId: SelectorOption } & { country: SelectorOption }
   & { speciality: SelectorOption } & { state: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
@@ -498,14 +499,14 @@ export interface StepperComponentProps {
 }
 
 interface BasicContactControlInputs {
+  basicCity: string;
   basicEmail: string;
   basicPhone: string;
   basicMobile: string;
   basicAddress: string;
   basicAddress2: string;
   basicZipCode: string;
-  basicCity: string;
-  basicCountry: string;
+  basicCountry: SelectorOption;
   basicState: SelectorOption;
 }
 
@@ -514,11 +515,11 @@ interface EmergencyContactControlInputs {
   emergencyPhone: string;
   emergencyCity?: string;
   emergencyMobile: string;
-  emergencyCountry?: string;
   emergencyAddress?: string;
   emergencyZipCode?: string;
   emergencyAddress2?: string;
   emergencyState?: SelectorOption;
+  emergencyCountry?: SelectorOption;
   emergencyRelationship: SelectorOption;
 }
 
@@ -539,22 +540,22 @@ interface GuardianContactControlInputs {
 }
 
 interface GuarantorContactControlInputs {
-  guarantorFirstName: string;
-  guarantorMiddleName: string;
-  guarantorLastName: string;
   guarantorDob: string;
-  guarantorEmail: string;
-  guarantorRelationship: SelectorOption;
-  guarantorPhone: string;
   guarantorSsn: string;
+  guarantorCity: string;
+  guarantorEmail: string;
+  guarantorPhone: string;
   guarantorSuffix: string;
   guarantorAddress: string;
-  guarantorAddress2: string;
   guarantorZipCode: string;
-  guarantorCity: string;
-  guarantorCountry: string;
+  guarantorLastName: string;
+  guarantorAddress2: string;
+  guarantorFirstName: string;
+  guarantorMiddleName: string;
   guarantorEmployerName: string;
   guarantorState: SelectorOption;
+  guarantorCountry: SelectorOption;
+  guarantorRelationship: SelectorOption;
 }
 
 interface EmployerControlInputs {
@@ -592,12 +593,13 @@ export type PatientInputProps =
 export type ExternalPatientInputProps =
   { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption } & { race: SelectorOption }
   & { ethnicity: SelectorOption } & { providerId: SelectorOption } & { genderIdentity: SelectorOption }
-  & { state: SelectorOption } & { maritialStatus: SelectorOption }
+  & { state: SelectorOption } & { maritialStatus: SelectorOption } & { country: SelectorOption }
+  & { emergencyCountry: SelectorOption } & { emergencyState: SelectorOption }
   & Pick<CreatePatientItemInput, 'dob' | 'pharmacy' | 'voiceCallPermission' | 'phonePermission' | 'language'
     | 'callToConsent'>
-  & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'zipCode' | 'country' | 'ssn'>
+  & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'zipCode' | 'ssn'>
   & Pick<EmergencyContactControlInputs, 'emergencyName' | 'emergencyRelationship' | 'emergencyPhone' |
-    'emergencyCity' | 'emergencyState' | 'emergencyCountry' | 'emergencyZipCode' | 'emergencyAddress' |
+    'emergencyCity' | 'emergencyZipCode' | 'emergencyAddress' |
     'emergencyAddress2'>
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">

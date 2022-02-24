@@ -2,7 +2,7 @@
 import states from 'states-us';
 import moment from 'moment-timezone';
 // graphql and interfaces block
-import { formatValue } from '../utils';
+import { formatServiceCode, formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
@@ -43,11 +43,15 @@ export enum DAYS {
   Sunday = "Sunday",
 };
 export const ADD = "Add";
+export const NEXT = "Next";
+export const FINISH = "Finish";
 export const VIEW = "View";
+export const USA = "United States";
 export const ALL_STAFF = "Staff";
 export const LINK_COPIED = "Link Copied";
 export const PUBLIC_LINK = "Public Appointment Link";
 export const MINUTES = "minutes";
+export const FACILITY_LOCATION = "Facility Location";
 export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
@@ -823,28 +827,59 @@ export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezon
   return { id: timezone, name: formatValue(timezone) }
 })
 
+export const MAPPED_COUNTRIES: SelectorOption[] = [{id: USA, name: USA}];
 export const MAPPED_STATES: SelectorOption[] = states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
-  { id: ServiceCode.Hospice_34, name: formatValue(ServiceCode.Hospice_34) },
-  { id: ServiceCode.Ambulance_41, name: formatValue(ServiceCode.Ambulance_41) },
-  { id: ServiceCode.Ambulance_42, name: formatValue(ServiceCode.Ambulance_42) },
-  { id: ServiceCode.Ambulance_24, name: formatValue(ServiceCode.Ambulance_24) },
-  { id: ServiceCode.GroupHome_14, name: formatValue(ServiceCode.GroupHome_14) },
-  { id: ServiceCode.EmergencyRoom_23, name: formatValue(ServiceCode.EmergencyRoom_23) },
-  { id: ServiceCode.AssistedLiving_13, name: formatValue(ServiceCode.AssistedLiving_13) },
-  { id: ServiceCode.BirthingCenter_25, name: formatValue(ServiceCode.BirthingCenter_25) },
-  { id: ServiceCode.HomelessShelter_04, name: formatValue(ServiceCode.HomelessShelter_04) },
-  { id: ServiceCode.IndependentClinic_49, name: formatValue(ServiceCode.IndependentClinic_49) },
-  { id: ServiceCode.IndependentLaboratory_81, name: formatValue(ServiceCode.IndependentLaboratory_81) },
-  { id: ServiceCode.CustodialCareFacility_33, name: formatValue(ServiceCode.CustodialCareFacility_33) },
-  { id: ServiceCode.CommunityMentalHealthCenter_53, name: formatValue(ServiceCode.CommunityMentalHealthCenter_53) },
-  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: formatValue(ServiceCode.FederallyQualifiedHealthCenter_50) },
-  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: formatValue(ServiceCode.EndStageRenalDiseaseTreatmentFacility_65) },
-  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: formatValue(ServiceCode.IndianHealthServiceFreeStandingFacility_05) },
-  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: formatValue(ServiceCode.IndianHealthServiceProviderBasedFacility_06) },
-  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: formatValue(ServiceCode.ComprehensiveInpatientRehabilitationFacility_61) },
-  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: formatValue(ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62) },
+  { id: ServiceCode.Pharmacy_01, name: formatServiceCode(ServiceCode.Pharmacy_01) },
+  { id: ServiceCode.TelehealthOtherThanPatientHome_02, name: formatServiceCode(ServiceCode.TelehealthOtherThanPatientHome_02) },
+  { id: ServiceCode.School_03, name: formatServiceCode(ServiceCode.School_03) },
+  { id: ServiceCode.HomelessShelter_04, name: formatServiceCode(ServiceCode.HomelessShelter_04) },
+  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: formatServiceCode(ServiceCode.IndianHealthServiceFreeStandingFacility_05) },
+  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: formatServiceCode(ServiceCode.IndianHealthServiceProviderBasedFacility_06) },
+  { id: ServiceCode.Tribal_07, name: formatServiceCode(ServiceCode.Tribal_07) },
+  { id: ServiceCode.Prison_09, name: formatServiceCode(ServiceCode.Prison_09) },
+  { id: ServiceCode.Telehealth_10, name: formatServiceCode(ServiceCode.Telehealth_10) },
+  { id: ServiceCode.Prison_10, name: formatServiceCode(ServiceCode.Prison_10) },
+  { id: ServiceCode.Office_11, name: formatServiceCode(ServiceCode.Office_11) },
+  { id: ServiceCode.Home_12, name: formatServiceCode(ServiceCode.Home_12) },
+  { id: ServiceCode.AssistedLiving_13, name: formatServiceCode(ServiceCode.AssistedLiving_13) },
+  { id: ServiceCode.GroupHome_14, name: formatServiceCode(ServiceCode.GroupHome_14) },
+  { id: ServiceCode.MobileUnit_15, name: formatServiceCode(ServiceCode.MobileUnit_15) },
+  { id: ServiceCode.TemporaryLoOgoing_16, name: formatServiceCode(ServiceCode.TemporaryLoOgoing_16) },
+  { id: ServiceCode.PlaceOfEmployment_18, name: formatServiceCode(ServiceCode.PlaceOfEmployment_18) },
+  { id: ServiceCode.OffCampusOutpatientHospital_19, name: formatServiceCode(ServiceCode.OffCampusOutpatientHospital_19) },
+  { id: ServiceCode.UrgentCare_20, name: formatServiceCode(ServiceCode.UrgentCare_20) },
+  { id: ServiceCode.InpatientHospital_21, name: formatServiceCode(ServiceCode.InpatientHospital_21) },
+  { id: ServiceCode.OutpatientHospital_22, name: formatServiceCode(ServiceCode.OutpatientHospital_22) },
+  { id: ServiceCode.EmergencyRoomHospital_23, name: formatServiceCode(ServiceCode.EmergencyRoomHospital_23) },
+  { id: ServiceCode.AmbulatorySurgicalCenter_24, name: formatServiceCode(ServiceCode.AmbulatorySurgicalCenter_24) },
+  { id: ServiceCode.BirthingCenter_25, name: formatServiceCode(ServiceCode.BirthingCenter_25) },
+  { id: ServiceCode.MilitaryTreatmentFacility_26, name: formatServiceCode(ServiceCode.MilitaryTreatmentFacility_26) },
+  { id: ServiceCode.SkilledNursingFacility_31, name: formatServiceCode(ServiceCode.SkilledNursingFacility_31) },
+  { id: ServiceCode.NursingFacility_32, name: formatServiceCode(ServiceCode.NursingFacility_32) },
+  { id: ServiceCode.CustodialCareFacility_33, name: formatServiceCode(ServiceCode.CustodialCareFacility_33) },
+  { id: ServiceCode.Hospice_34, name: formatServiceCode(ServiceCode.Hospice_34) },
+  { id: ServiceCode.AmbulanceLand_41, name: formatServiceCode(ServiceCode.AmbulanceLand_41) },
+  { id: ServiceCode.Ambulance_42, name: formatServiceCode(ServiceCode.Ambulance_42) },
+  { id: ServiceCode.IndependentClinic_49, name: formatServiceCode(ServiceCode.IndependentClinic_49) },
+  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: formatServiceCode(ServiceCode.FederallyQualifiedHealthCenter_50) },
+  { id: ServiceCode.InpatientPsychiatricFacility_51, name: formatServiceCode(ServiceCode.InpatientPsychiatricFacility_51) },
+  { id: ServiceCode.PsychiatricFacilityPartialHospitilization_52, name: formatServiceCode(ServiceCode.PsychiatricFacilityPartialHospitilization_52) },
+  { id: ServiceCode.CommunityMentalHealthCenter_53, name: formatServiceCode(ServiceCode.CommunityMentalHealthCenter_53) },
+  { id: ServiceCode.IntermediateCareFacilityMentallyRetarded_54, name: formatServiceCode(ServiceCode.IntermediateCareFacilityMentallyRetarded_54) },
+  { id: ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55, name: formatServiceCode(ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55) },
+  { id: ServiceCode.PsychiatricResidentialTreatmentCenter_56, name: formatServiceCode(ServiceCode.PsychiatricResidentialTreatmentCenter_56) },
+  { id: ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57, name: formatServiceCode(ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57) },
+  { id: ServiceCode.NonResidentialOpioidTreatmentFacility_58, name: formatServiceCode(ServiceCode.NonResidentialOpioidTreatmentFacility_58) },
+  { id: ServiceCode.MassImmunizationCenter_60, name: formatServiceCode(ServiceCode.MassImmunizationCenter_60) },
+  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: formatServiceCode(ServiceCode.ComprehensiveInpatientRehabilitationFacility_61) },
+  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: formatServiceCode(ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62) },
+  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: formatServiceCode(ServiceCode.EndStageRenalDiseaseTreatmentFacility_65) },
+  { id: ServiceCode.StateOrLocalPublicHealthClinic_71, name: formatServiceCode(ServiceCode.StateOrLocalPublicHealthClinic_71) },
+  { id: ServiceCode.RuralHealthClinic_72, name: formatServiceCode(ServiceCode.RuralHealthClinic_72) },
+  { id: ServiceCode.IndependentLaboratory_81, name: formatServiceCode(ServiceCode.IndependentLaboratory_81) },
+  { id: ServiceCode.WalkInRetailHealthClinic, name: formatServiceCode(ServiceCode.WalkInRetailHealthClinic) },
 ];
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [

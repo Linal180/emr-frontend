@@ -41,7 +41,7 @@ import {
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
+  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES, MAPPED_COUNTRIES,
 } from "../../../../constants";
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -64,9 +64,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     resolver: yupResolver(extendedPatientSchema)
   });
   const { handleSubmit, setValue, watch, reset } = methods;
-  const {
-    facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-  } = watch();
+  const { facilityId: { id: selectedFacility, name: selectedFacilityName } = {} } = watch();
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -142,19 +140,17 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
           medicationHistoryAuthority && setValue("medicationHistoryAuthority", medicationHistoryAuthority)
 
-          race && setValue("race", setRecord(race || '', race || ''))
-          gender && setValue("gender", setRecord(gender || '', gender || ''))
-          pronouns && setValue("pronouns", setRecord(pronouns || '', pronouns || ''))
-          ethnicity && setValue("ethnicity", setRecord(ethnicity || '', ethnicity || ''))
-          sexAtBirth && setValue("sexAtBirth", setRecord(sexAtBirth || '', sexAtBirth || ''))
-          maritialStatus && setValue("maritialStatus", setRecord(maritialStatus || '', maritialStatus || ''))
-          genderIdentity && setValue("genderIdentity", setRecord(genderIdentity || '', genderIdentity || ''))
-          sexualOrientation && setValue("sexualOrientation", setRecord(sexualOrientation || '',
-            sexualOrientation || ''))
-          primaryDepartment && setValue("primaryDepartment", setRecord(primaryDepartment || '',
-            primaryDepartment || ''))
-          registrationDepartment && setValue("registrationDepartment",
-            setRecord(registrationDepartment || '', registrationDepartment || ''))
+          race && setValue("race", setRecord(race, race))
+          gender && setValue("gender", setRecord(gender, gender))
+          pronouns && setValue("pronouns", setRecord(pronouns, pronouns))
+          ethnicity && setValue("ethnicity", setRecord(ethnicity, ethnicity))
+          sexAtBirth && setValue("sexAtBirth", setRecord(sexAtBirth, sexAtBirth))
+          maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
+          genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
+          sexualOrientation && setValue("sexualOrientation", setRecord(sexualOrientation, sexualOrientation))
+          primaryDepartment && setValue("primaryDepartment", setRecord(primaryDepartment, primaryDepartment))
+          registrationDepartment &&
+            setValue("registrationDepartment", setRecord(registrationDepartment, registrationDepartment))
 
           if (contacts) {
             const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -166,7 +162,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               name && setValue("emergencyName", name)
               phone && setValue("emergencyPhone", phone)
               mobile && setValue("emergencyMobile", mobile)
-              relationship && setValue("emergencyRelationship", setRecord(relationship || '', relationship || ''))
+              relationship && setValue("emergencyRelationship", setRecord(relationship, relationship))
             }
 
             const basicContact = contacts.filter(contact => contact.primaryContact)[0]
@@ -183,9 +179,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               mobile && setValue("basicMobile", mobile)
               address && setValue("basicAddress", address)
               zipCode && setValue("basicZipCode", zipCode)
-              country && setValue("basicCountry", country)
               address2 && setValue("basicAddress2", address2)
               state && setValue("basicState", setRecord(state, state))
+              country && setValue("basicCountry", setRecord(country, country))
             }
 
             const kinContact = contacts.filter(contact => contact.contactType === ContactType.NextOfKin)[0]
@@ -197,7 +193,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               name && setValue("kinName", name)
               phone && setValue("kinPhone", phone)
               mobile && setValue("kinMobile", mobile)
-              relationship && setValue("kinRelationship", setRecord(relationship || '', relationship || ''))
+              relationship && setValue("kinRelationship", setRecord(relationship, relationship))
             }
 
             const guarantorContact = contacts.filter(contact => contact.contactType === ContactType.Guarandor)[0]
@@ -216,12 +212,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               zipCode && setValue("guarantorZipCode", zipCode)
               address && setValue("guarantorAddress", address)
               address2 && setValue("guarantorAddress2", address2)
-              country && setValue("guarantorCountry", country)
               lastName && setValue("guarantorLastName", lastName)
               firstName && setValue("guarantorFirstName", firstName)
               middleName && setValue("guarantorMiddleName", middleName)
               state && setValue("guarantorState", setRecord(state, state))
               employerName && setValue("guarantorEmployerName", employerName)
+              country && setValue("guarantorCountry", setRecord(country, country))
             }
 
             const guardianContact = contacts.filter(contact => contact.contactType === ContactType.Guardian)[0]
@@ -311,9 +307,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent,
       patientNote, language, race, ethnicity, maritialStatus, sexualOrientation, genderIdentity,
       pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
-      statementNoteDateTo, facilityId, usualProviderId, medicationHistoryAuthority, sexAtBirth,
-      basicEmail, basicPhone, basicMobile, basicAddress, basicAddress2, basicZipCode, basicCity,
-      basicState, basicCountry,
+      statementNoteDateTo, facilityId, usualProviderId, medicationHistoryAuthority, sexAtBirth, basicCountry,
+      basicEmail, basicPhone, basicMobile, basicAddress, basicAddress2, basicZipCode, basicCity, basicState,
       emergencyName, emergencyRelationship, emergencyPhone, emergencyMobile,
       kinName, kinRelationship, kinMobile, kinPhone,
       guardianFirstName, guardianMiddleName, guardianLastName, guardianSuffix,
@@ -325,23 +320,25 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     if (user) {
       const { id: userId } = user;
-      const { id: selectedRace } = race
-      const { id: selectedGender } = gender
-      const { id: selectedPronouns } = pronouns
-      const { id: selectedFacility } = facilityId
-      const { id: selectedEthnicity } = ethnicity
-      const { id: selectedSexAtBirth } = sexAtBirth
-      const { id: selectedBasicState } = basicState
-      const { id: selectedGuarantorState } = guarantorState
-      const { id: selectedMaritalStatus } = maritialStatus
-      const { id: selectedGenderIdentity } = genderIdentity
-      const { id: selectedUsualProvider } = usualProviderId
-      const { id: selectedKinRelationship } = kinRelationship
-      const { id: selectedPrimaryDepartment } = primaryDepartment
-      const { id: selectedSexualOrientation } = sexualOrientation
-      const { id: selectedGuarantorRelationship } = guarantorRelationship
-      const { id: selectedEmergencyRelationship } = emergencyRelationship
-      const { id: selectedRegistrationDepartment } = registrationDepartment
+      const { id: selectedRace } = race;
+      const { id: selectedGender } = gender;
+      const { id: selectedPronouns } = pronouns;
+      const { id: selectedFacility } = facilityId;
+      const { id: selectedEthnicity } = ethnicity;
+      const { id: selectedCountry } = basicCountry;
+      const { id: selectedSexAtBirth } = sexAtBirth;
+      const { id: selectedBasicState } = basicState;
+      const { id: selectedGuarantorState } = guarantorState;
+      const { id: selectedMaritalStatus } = maritialStatus;
+      const { id: selectedGenderIdentity } = genderIdentity;
+      const { id: selectedUsualProvider } = usualProviderId;
+      const { id: selectedKinRelationship } = kinRelationship;
+      const { id: selectedGuarantorCountry } = guarantorCountry;
+      const { id: selectedPrimaryDepartment } = primaryDepartment;
+      const { id: selectedSexualOrientation } = sexualOrientation;
+      const { id: selectedGuarantorRelationship } = guarantorRelationship;
+      const { id: selectedEmergencyRelationship } = emergencyRelationship;
+      const { id: selectedRegistrationDepartment } = registrationDepartment;
 
       const patientItemInput = {
         suffix: suffix || '', firstName: firstName || '', middleName: middleName || '',
@@ -356,7 +353,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         statementNoteDateTo: getTimestamps(statementNoteDateTo || ''), email: basicEmail || '',
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
-        pronouns: selectedPronouns as Pronouns || Pronouns.None,
+        pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, facilityId: selectedFacility || '',
         gender: selectedGender as Genderidentity || Genderidentity.None,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
@@ -366,11 +363,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
         primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,
         registrationDepartment: selectedRegistrationDepartment as RegDepartment || RegDepartment.Hospital,
-        race: selectedRace as Race || Race.White,
       };
 
       const contactInput = {
-        contactType: ContactType.Self, country: basicCountry || '', primaryContact: true,
+        contactType: ContactType.Self, country: selectedCountry || '', primaryContact: true,
         email: basicEmail || '', city: basicCity || '', zipCode: basicZipCode || '',
         state: selectedBasicState || '', facilityId: selectedFacility || '', phone: basicPhone || '',
         mobile: basicMobile || '', address2: basicAddress2 || '', address: basicAddress || '',
@@ -388,7 +384,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
         employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '',
         zipCode: guarantorZipCode || '', city: guarantorCity || '', state: selectedGuarantorState || '',
-        phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: guarantorCountry || '',
+        phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: selectedGuarantorCountry || '',
         userId: userId || '', ssn: guarantorSsn || '', primaryContact: false,
         address: guarantorAddress || '',
       };
@@ -453,9 +449,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   useEffect(() => {
     if (isEdit) {
       id ?
-        getPatient({ variables: { getPatient: { id } } })
-        :
-        Alert.error(PATIENT_NOT_FOUND)
+        getPatient({ variables: { getPatient: { id } } }) : Alert.error(PATIENT_NOT_FOUND)
     }
   }, [getPatient, id, isEdit])
 
@@ -648,11 +642,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
+                        <Selector
                           isRequired
-                          fieldType="text"
-                          controllerName="basicCountry"
-                          controllerLabel={COUNTRY}
+                          name="basicCountry"
+                          label={COUNTRY}
+                          value={EMPTY_OPTION}
+                          options={MAPPED_COUNTRIES}
                         />
                       </Grid>
                     </Grid>
@@ -1175,10 +1170,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="guarantorCountry"
-                          controllerLabel={COUNTRY}
+                        <Selector
+                          name="guarantorCountry"
+                          label={COUNTRY}
+                          value={EMPTY_OPTION}
+                          options={MAPPED_COUNTRIES}
                         />
                       </Grid>
                     </Grid>
