@@ -2,13 +2,14 @@
 import { FC, ChangeEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
+import Search from "../../../common/Search";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { TablesSearchIcon, EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs'
+import { EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs'
 import {
   ACTION, EMAIL, PHONE, DELETE_PATIENT_DESCRIPTION, NAME, CITY, COUNTRY, PATIENT, dummyVitalsChartingList, PRACTICE_MANAGEMENT_ROUTE
 } from "../../../../constants";
@@ -17,7 +18,6 @@ const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const [page, setPage] = useState<number>(1);
   const [totalPages,] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [openDelete, setOpenDelete] = useState<boolean>(false);
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
@@ -25,27 +25,11 @@ const PracticeTable: FC = (): JSX.Element => {
   const handleDeletePatient = async () => {
   };
 
+  const search = (query: string) => { }
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box className={classes.searchContainer}>
-        <TextField
-          name="searchQuery"
-          className={classes.tablesSearchIcon}
-          value={searchQuery}
-          onChange={({ target: { value } }) => setSearchQuery(value)}
-          onKeyPress={({ key }) => key === "Enter"}
-          placeholder="Search"
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            startAdornment:
-              <IconButton color="default">
-                <TablesSearchIcon />
-              </IconButton>
-          }}
-        />
-      </Box>
+      <Search search={search} />
 
       <Box className="table-overflow">
         <Table aria-label="customized table">
@@ -93,6 +77,7 @@ const PracticeTable: FC = (): JSX.Element => {
               )}
           </TableBody>
         </Table>
+
         {totalPages > 1 && (
           <Box display="flex" justifyContent="flex-end" pt={3}>
             <Pagination

@@ -1,38 +1,22 @@
 // packages block
-import { FC, useState } from "react";
-import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow } from "@material-ui/core";
+import { FC } from "react";
+import { Box, Table, TableBody, TableHead, TableRow } from "@material-ui/core";
 // components block
+import Search from "../../../common/Search";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../utils";
-import { TablesSearchIcon } from '../../../../assets/svgs'
 import { ACTION, TEST, TEST_TAKEN, PRESCRIBED_BY, REPORTS } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 
 const LabResultsTable: FC = (): JSX.Element => {
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const classes = useTableStyles()
+
+  const search = (query: string) => { }
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box className={classes.searchContainer}>
-        <TextField
-          name="searchQuery"
-          className={classes.tablesSearchIcon}
-          value={searchQuery}
-          onChange={({ target: { value } }) => setSearchQuery(value)}
-          onKeyPress={({ key }) => key === "Enter"}
-          placeholder="Search"
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            startAdornment:
-              <IconButton color="default">
-                <TablesSearchIcon />
-              </IconButton>
-          }}
-        />
-      </Box>
+      <Search search={search} />
 
       <Box className="table-overflow">
         <Table aria-label="customized table">

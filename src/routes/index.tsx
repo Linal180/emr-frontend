@@ -89,9 +89,9 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
-      <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={Practice} />
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} />
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/edit`} component={ViewPractice} />
+      <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={Practice} />
       <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />

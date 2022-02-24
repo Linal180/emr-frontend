@@ -54,7 +54,6 @@ const ViewPracticeForm: FC<any> = (): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="npi"
-                        controllerLabel={''}
                       />
                     </Grid>
 
@@ -62,7 +61,6 @@ const ViewPracticeForm: FC<any> = (): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="ein"
-                        controllerLabel={''}
                       />
                     </Grid>
 
@@ -70,7 +68,6 @@ const ViewPracticeForm: FC<any> = (): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="upin"
-                        controllerLabel={''}
                       />
                     </Grid>
 
@@ -78,7 +75,6 @@ const ViewPracticeForm: FC<any> = (): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="medicare"
-                        controllerLabel={''}
                       />
                     </Grid>
 
@@ -86,7 +82,6 @@ const ViewPracticeForm: FC<any> = (): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="medicaid"
-                        controllerLabel={''}
                       />
                     </Grid>
 
@@ -94,7 +89,6 @@ const ViewPracticeForm: FC<any> = (): JSX.Element => {
                       <InputController
                         fieldType="text"
                         controllerName="champus"
-                        controllerLabel={''}
                       />
                     </Grid>
                   </Grid>
