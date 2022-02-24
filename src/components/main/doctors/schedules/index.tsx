@@ -36,6 +36,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     fetchPolicy: "network-only",
 
     onError() {
+      dispatch({ type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: [] });
       dispatch({ type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: [] })
     },
 
@@ -47,18 +48,15 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
 
         if (schedules && response) {
           const { status } = response || {}
-
           if (status && status === 200 && schedules) {
-            if (schedules.length > 0) {
-              dispatch({
-                type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
-              });
+            dispatch({
+              type: ActionType.SET_DOCTOR_SCHEDULES, doctorSchedules: schedules as SchedulesPayload['schedules']
+            });
 
-              dispatch({
-                type: ActionType.SET_BY_DAY_SCHEDULES,
-                byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
-              })
-            }
+            dispatch({
+              type: ActionType.SET_BY_DAY_SCHEDULES,
+              byDaySchedules: getDaySchedules(schedules as SchedulesPayload['schedules'])
+            })
           }
         }
       }
@@ -89,9 +87,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     if (deleteScheduleId) {
       await removeSchedule({
         variables: {
-          removeSchedule: {
-            id: deleteScheduleId
-          }
+          removeSchedule: { id: deleteScheduleId }
         }
       })
     }
@@ -103,18 +99,18 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
     dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
   };
 
-  const fetchDoctorSchedules = useCallback(() => {
-    if (id) {
-      getDoctorSchedule({
+  const fetchDoctorSchedules = useCallback(async () => {
+    try {
+      await getDoctorSchedule({
         variables: { getDoctorSchedule: { id } }
       })
-    } else Alert.error(DOCTOR_NOT_FOUND)
+    } catch (error) { }
   }, [getDoctorSchedule, id]);
 
   useEffect(() => {
-    if (id) {
+    id ?
       fetchDoctorSchedules()
-    } else
+      :
       Alert.error(DOCTOR_NOT_FOUND)
   }, [fetchDoctorSchedules, id])
 

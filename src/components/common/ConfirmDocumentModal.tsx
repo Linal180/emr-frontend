@@ -1,58 +1,49 @@
 // packages block
-import { FC, useState, ChangeEvent } from "react";
-import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, PropTypes, Typography, Box } from "@material-ui/core";
-// interfaces/types block/theme/svgs/constants
-import { DeleteWarningIcon } from "../../assets/svgs";
-import { ConfirmationTypes } from "../../interfacesTypes";
-import { aboutToDelete } from "../../utils";
-import { DELETE_RECORD_LEARN_MORE_TEXT, CANCEL, UPLOADS_DOCUMENT, UPLOAD } from "../../constants";
+import { FC } from "react";
+import dotenv from 'dotenv';
+import {
+  Button, Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, IconButton
+} from "@material-ui/core";
+// components block
+// constants and interfaces block
+import { CANCEL, UPLOAD, UPLOADS_DOCUMENT, UPLOADS_DOCUMENT_LEARN_MORE_TEXT } from "../../constants";
+import { DocumentModalComponentType } from "../../interfacesTypes";
+import { DocumentUploadIcon } from "../../assets/svgs";
+import { useDocumentModalStyles } from "../../styles/documentModalStyles";
 
-const ConfirmDocumentModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success }): JSX.Element => {
-  const [checked, setChecked] = useState(false);
+dotenv.config()
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setChecked(event.target.checked);
-  };
+const ConfirmDocumentModal: FC<DocumentModalComponentType> = ({
+
+  isOpen, setOpen
+}): JSX.Element => {
 
   const handleClose = () => {
-    setChecked(false)
-    setOpen && setOpen(!isOpen)
-  }
+    setOpen && setOpen(!isOpen);
+  };
 
-  const buttonColor: PropTypes.Color = success ? "primary" : "secondary"
+  const classes = useDocumentModalStyles();
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
+    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="image-dialog-title" aria-describedby="image-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
-        { UPLOADS_DOCUMENT }
+        {UPLOADS_DOCUMENT}
       </DialogTitle>
 
-      <DialogContent>
-        <Box display="flex">
-          <Box pt={0.75}>
-            <DeleteWarningIcon />
-          </Box>
+      <DialogContent className={classes.modalContent}>
+        <IconButton>
+          <DocumentUploadIcon />
+        </IconButton>
 
-          <CardContent>
-            <Typography component="h4" variant="h5">{aboutToDelete(title || '')}</Typography>
-
-            <Typography>
-              {DELETE_RECORD_LEARN_MORE_TEXT}
-            </Typography>
-          </CardContent>
-        </Box>
+        <Typography>{UPLOADS_DOCUMENT_LEARN_MORE_TEXT}</Typography>
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions className={classes.modalActions}>
         <Box pr={1}>
-          <Button onClick={handleClose} color="default">
-            {CANCEL}
-          </Button>
+          <Button onClick={handleClose} variant="outlined" color="default">{CANCEL}</Button>
         </Box>
 
-        <Button color="primary" variant="contained">
-          {UPLOAD}
-        </Button>
+        <Button color="primary" variant="contained">{UPLOAD}</Button>
       </DialogActions>
     </Dialog>
   );

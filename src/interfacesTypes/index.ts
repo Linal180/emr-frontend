@@ -439,8 +439,8 @@ export type ParamsType = {
 export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender">
   & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
-export type ScheduleInputProps = Omit<CreateScheduleInput, "locationId" | "servicesIds">
-  & { locationId: SelectorOption } & { serviceId: SelectorOption } & { day: SelectorOption };
+export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
+  & { serviceId: SelectorOption } & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingEmail: string;
@@ -472,9 +472,9 @@ export interface UpdateFacilityTimeZoneControlProps extends IControlLabel {
 export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZoneInput, "timeZone">
   & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
-export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality" | "ssnType">
+export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
   & Omit<CreateContactInput, "facilityId" | "state"> & CustomBillingAddressInputs & { facilityId: SelectorOption }
-  & { ssnType: SelectorOption } & { speciality: SelectorOption } & { state: SelectorOption };
+  & { speciality: SelectorOption } & { state: SelectorOption };
 
 export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
 
@@ -723,6 +723,11 @@ export interface MediaCardComponentType {
   allAttachments: Attachment[];
   imageSide: string;
   notDescription?: boolean;
+}
+
+export interface DocumentModalComponentType {
+  setOpen: Function;
+  isOpen: boolean;
 }
 
 export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |

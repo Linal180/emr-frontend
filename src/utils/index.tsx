@@ -1,6 +1,5 @@
 // packages block
 import moment from "moment";
-import states from "states-us";
 import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
@@ -330,9 +329,6 @@ export const setTimeDay = (time: string, day: string): string => {
 
   return result
 };
-
-export const renderStates = (): SelectorOption[] =>
-  states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
 
 export const activeClass = (pathname: string): string => {
   switch (pathname) {

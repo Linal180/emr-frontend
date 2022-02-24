@@ -5,7 +5,7 @@ import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Avatar, Box, Button, Grid, IconButton, Menu, Modal, Tab, TextField, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Grid, IconButton, Menu, Tab, TextField, Typography } from "@material-ui/core";
 //components block
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
@@ -14,6 +14,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import ConfirmDocumentModal from '../../../common/ConfirmDocumentModal';
 import DocumentsTable from './DocumentsTable';
 // constants, history, styling block
+import history from '../../../../history';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
@@ -27,8 +28,8 @@ import {
   AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, TablesSearchIcon, UploadIcon
 } from "../../../../assets/svgs";
 import {
-  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS,
-  PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, SIGNED, UPLOAD, UPLOAD_DOCUMENT, VIEW_CHART_TEXT
+  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION, MAPPED_WIDGETS,
+  PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, SIGNED, UPLOAD, VIEW_CHART_TEXT
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -283,6 +284,12 @@ const PatientDetailsComponent = (): JSX.Element => {
                     </Box>
                   </Box>
 
+                  <Box pr={1}>
+                    <Button color="primary" variant="contained" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                      {EDIT_PATIENT}
+                    </Button>
+                  </Box>
+
                   <Button color="primary" variant="contained" className="blue-button">
                     {SCHEDULE_APPOINTMENTS_TEXT}
                   </Button>
@@ -367,7 +374,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                       }}
                     />
 
-                    <Box ml={2} className={tableClasses.RadioButtonsStroke}>
+                    <Box ml={3} className={tableClasses.RadioButtonsStroke}>
                       <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>
                       <Button size="small">{SIGNED}</Button>
                     </Box>
@@ -395,8 +402,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
       <ConfirmDocumentModal
         isOpen={DocumentOpen}
-        description={UPLOAD_DOCUMENT}
-        handleDelete={handleDeleteWidget}
         setOpen={(DocumentOpen: boolean) => setDocumentOpen(DocumentOpen) }
       />
     </Box>

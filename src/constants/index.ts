@@ -1,4 +1,5 @@
 //packages block
+import states from 'states-us';
 import moment from 'moment-timezone';
 // graphql and interfaces block
 import { formatValue } from '../utils';
@@ -7,7 +8,7 @@ import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, 
 import {
   Communicationtype,
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
-  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, SsnType, UserRole
+  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole
 } from "../generated/graphql";
 
 // regex
@@ -41,11 +42,11 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 };
+export const ADD = "Add";
 export const VIEW = "View";
 export const ALL_STAFF = "Staff";
 export const LINK_COPIED = "Link Copied";
 export const PUBLIC_LINK = "Public Appointment Link";
-export const ADD = "Add";
 export const MINUTES = "minutes";
 export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
@@ -525,6 +526,7 @@ export const PENDING = "Pending";
 export const SIGNED = "Signed";
 export const UPLOAD = "Upload";
 export const UPLOADS_DOCUMENT = "Upload Document";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT= "Drop your image here, or browse";
 
 // Roles
 export const STAFF = "STAFF";
@@ -828,6 +830,8 @@ export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezon
   return { id: timezone, name: formatValue(timezone) }
 })
 
+export const MAPPED_STATES: SelectorOption[] = states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
+
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
   { id: ServiceCode.Hospice_34, name: formatValue(ServiceCode.Hospice_34) },
   { id: ServiceCode.Ambulance_41, name: formatValue(ServiceCode.Ambulance_41) },
@@ -863,13 +867,6 @@ export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
-];
-
-export const MAPPED_SSN_TYPES: SelectorOption[] = [
-  { id: SsnType.Tanf, name: formatValue(SsnType.Tanf) },
-  { id: SsnType.Oasdi, name: formatValue(SsnType.Oasdi) },
-  { id: SsnType.Medicare, name: formatValue(SsnType.Medicare) },
-  { id: SsnType.Medicaid, name: formatValue(SsnType.Medicaid) },
 ];
 
 export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [

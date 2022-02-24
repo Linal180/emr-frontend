@@ -11,7 +11,6 @@ import {
 import { useCalendarStyles } from "../../../styles/calendarStyles";
 import { APPOINTMENT_LIST, CREATE_NEW_APPOINTMENT, DUMMY_APPOINTMENTS } from "../../../constants";
 
-
 const StartProjectComponent = (): JSX.Element => {
   const classes = useCalendarStyles();
   const [currentDate, setCurrentDate] = useState(new Date())

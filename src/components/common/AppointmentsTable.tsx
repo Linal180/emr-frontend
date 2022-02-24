@@ -40,7 +40,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { page, copied, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
   const { facility } = user || {}
   const { id: facilityId } = (facility as FacilityPayload['facility']) || {}
-  
+
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     variables: {
       appointmentInput: {
@@ -77,7 +77,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
-  const [getDoctorAppointment, { loading: getDoctorAppointmentLoading }] = useGetDoctorAppointmentsLazyQuery({
+  const [getDoctorAppointment, { loading: getDoctorAppointmentLoading, error: doctorAppointmentError }] = useGetDoctorAppointmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -88,14 +88,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
     onCompleted(data) {
       const { getDoctorAppointment } = data || {};
-
       if (getDoctorAppointment) {
-        const { appointments, pagination } = getDoctorAppointment
+        const { appointments } = getDoctorAppointment
 
-        if (!searchQuery && pagination) {
-          const { totalPages } = pagination
-
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
+        if (!searchQuery) {
           dispatch({
             type: ActionType.SET_APPOINTMENTS,
             appointments: appointments as AppointmentsPayload['appointments']
@@ -269,7 +265,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           </TableBody>
         </Table>
 
-        {((!loading && !getDoctorAppointmentLoading && appointments?.length === 0) || error) && (
+        {((!loading && !getDoctorAppointmentLoading && appointments?.length === 0) || error || doctorAppointmentError) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

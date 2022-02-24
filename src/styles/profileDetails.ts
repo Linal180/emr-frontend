@@ -1,8 +1,8 @@
-import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK, BLACK_ONE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
+import { makeStyles } from "@material-ui/core";
+import { red } from "@material-ui/core/colors";
+import { BLACK, BLACK_ONE, BLUE_EIGHT, BLUE_SEVEN, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
 
-export const useProfileDetailsStyles = makeStyles(() =>
-  createStyles({
+export const useProfileDetailsStyles = makeStyles((theme) => ({
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
     },
