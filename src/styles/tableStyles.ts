@@ -43,15 +43,15 @@ export const useTableStyles = makeStyles(() => ({
 
   iconsBackground: {
     background: WHITE_THREE,
-    height:32,
-    width:32,
-    display:'flex',
+    height: 32,
+    width: 32,
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 6,
-    marginLeft:6,
+    marginLeft: 6,
     cursor: 'pointer',
-    
+
     "& svg": {
       maxWidth: 16
     }
@@ -62,4 +62,23 @@ export const useTableStyles = makeStyles(() => ({
     borderRadius: 6,
     padding: 4,
 },
+
+  practiceIconsBackground: {
+    height: 32,
+    width: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 6,
+    cursor: 'pointer',
+
+    "&:hover": {
+      background: WHITE_THREE,
+      borderRadius: 6,
+    },
+
+    "& svg": {
+      maxWidth: 20
+    }
+  },
 }))

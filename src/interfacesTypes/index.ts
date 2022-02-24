@@ -319,7 +319,7 @@ interface IControlLabel {
   disabled?: boolean;
   isRequired?: boolean;
   isPassword?: boolean;
-  controllerLabel: string;
+  controllerLabel?: string;
   pattern?: ValidationRule<RegExp> | undefined;
 }
 
@@ -343,6 +343,10 @@ export type SubMenuTypes = {
 
 export interface CustomInputControlProps extends IControlLabel {
   controllerName: string
+}
+
+export interface SearchComponentProps {
+  search: Function;
 }
 
 export interface AppMenuItemTypes {

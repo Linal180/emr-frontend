@@ -2,12 +2,10 @@
 import { ChangeEvent, FC, Reducer, useEffect, useReducer } from "react";
 import { Link, useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import {
-  Box, IconButton, Table, TableBody, TableCell, TableHead, TextField,
-  TableRow
-} from "@material-ui/core";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
+import Search from "../../../../common/Search";
 import TableLoader from "../../../../common/TableLoader";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -15,7 +13,7 @@ import { formatPhone, renderTh } from "../../../../../utils";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
+import { EditIcon, TrashIcon } from "../../../../../assets/svgs";
 import {
   locationReducer, Action, initialState, State, ActionType
 } from '../../../../../reducers/locationReducer';
@@ -95,8 +93,6 @@ const LocationTable: FC = (): JSX.Element => {
 
   const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
 
-  const handleSearch = () => { }
-
   const onDeleteClick = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_LOCATION_ID, deleteLocationId: id })
@@ -116,29 +112,12 @@ const LocationTable: FC = (): JSX.Element => {
     }
   };
 
+  const search = (query: string) => { }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box className={classes.searchContainer}>
-          <TextField
-            value={searchQuery}
-            className={classes.tablesSearchIcon}
-            onChange={({ target: { value } }) => dispatch({
-              type: ActionType.SET_SEARCH_QUERY, searchQuery: value
-            })}
-            onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-            name="searchQuery"
-            variant="outlined"
-            placeholder="Search"
-            fullWidth
-            InputProps={{
-              startAdornment:
-                <IconButton color="default">
-                  <TablesSearchIcon />
-                </IconButton>
-            }}
-          />
-        </Box>
+        <Search search={search} />
 
         <Box className="table-overflow">
           <Table aria-label="customized table">

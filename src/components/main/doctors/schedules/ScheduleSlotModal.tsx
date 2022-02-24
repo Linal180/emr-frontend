@@ -16,14 +16,14 @@ import { ActionType } from "../../../../reducers/doctorReducer";
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
-  getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
+  getDayFromTimestamps, getISOTime, renderServices, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
 } from "../../../../generated/graphql";
 import {
   CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, APPOINTMENT_TYPE, DOCTOR_SCHEDULE,
-  LOCATIONS_TEXT, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE,
+  START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND,
 } from "../../../../constants";
 
@@ -31,7 +31,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
 }): JSX.Element => {
   const { id: doctorId } = useParams<ParamsType>();
-  const { serviceList, locationList, fetchAllServicesList, fetchAllLocationList } = useContext(FacilityContext)
+  const { serviceList, fetchAllServicesList, fetchAllLocationList } = useContext(FacilityContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(doctorScheduleSchema)
@@ -138,14 +138,12 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
     if (doctorId) {
       if (isEdit) {
-        if (id) {
+        id ?
           await updateSchedule({
             variables: {
               updateScheduleInput: { id, ...scheduleInput }
             }
-          })
-        } else
-          Alert.error(SCHEDULE_NOT_FOUND)
+          }) : Alert.error(SCHEDULE_NOT_FOUND)
       } else {
         await createSchedule({
           variables: {
@@ -197,14 +195,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                             />
                           </Grid>
                         </Grid>
-
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={LOCATIONS_TEXT}
-                          name="locationId"
-                          options={renderLocations(locationList)}
-                        />
 
                         <Selector
                           isRequired
