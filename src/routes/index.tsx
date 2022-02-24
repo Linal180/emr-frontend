@@ -31,10 +31,10 @@ import PatientDetail from "../pages/main/patients/patientDetail";
 import Facilities from "../pages/main/facilities/facilitiesListing";
 import { StartProject } from "../pages/main/dashboard/startProject";
 import { PublicAppointment } from "../pages/main/publicAppointments";
-import AddPractice from "../pages/main/practiceManagement/addPractice";
+import { AddPractice } from "../pages/main/practiceManagement/addPractice";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
-import Practice from "../pages/main/practiceManagement/practiceListing";
-import ViewPractice from "../pages/main/practiceManagement/viewPractice";
+import { PracticeListing } from "../pages/main/practiceManagement/practiceListing";
+import { ViewPractice } from "../pages/main/practiceManagement/viewPractice";
 import { AppointmentFail } from "../pages/main/publicAppointments/fail";
 import { AddService } from "../pages/main/facilities/services/addService";
 import { AddAppointment } from "../pages/main/appointments/addAppointment";
@@ -91,7 +91,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} />
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/edit`} component={ViewPractice} />
-      <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={Practice} />
+      <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={PracticeListing} />
       <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} />
