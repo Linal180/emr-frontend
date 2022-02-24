@@ -14,7 +14,7 @@ import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../context";
-import { getFormattedDate, renderTh } from "../../utils";
+import { getFormattedDate, renderTh, getISOTime } from "../../utils";
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
 import { EditIcon, TablesSearchIcon, TrashIcon } from "../../assets/svgs"
@@ -22,14 +22,15 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
-  AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery, useGetDoctorAppointmentsLazyQuery,
-  useRemoveAppointmentMutation
+  AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery,
+  useRemoveAppointmentMutation, useGetDoctorAppointmentsLazyQuery,
 } from "../../generated/graphql";
 import {
-  ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT,
+  ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, PUBLIC_LINK,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES, PUBLIC_APPOINTMENT_ROUTE,
-  LINK_COPIED, PUBLIC_LINK
+  LINK_COPIED, CANCEL_TIME_EXPIRED_MESSAGE
 } from "../../constants";
+import moment from "moment";
 
 dotenv.config()
 
@@ -88,6 +89,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
     onCompleted(data) {
       const { getDoctorAppointment } = data || {};
+
       if (getDoctorAppointment) {
         const { appointments } = getDoctorAppointment
 
@@ -116,7 +118,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          await findAllAppointments()
+          try {
+            await findAllAppointments()
+          } catch (error) { }
         }
       }
     }
@@ -253,7 +257,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                           </Box>
                         </Link>
 
-                        <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
+                        <Box className={classes.iconsBackground} onClick={() => {
+                          moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
+                            Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
+                        }}>
                           <TrashIcon />
                         </Box>
                       </Box>
