@@ -9,7 +9,7 @@ import CardComponent from "../../../common/CardComponent";
 import InputController from '../../../../controller';
 import { FAX, PHONE, PRACTICE_DETAILS_TEXT, PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT } from "../../../../constants";
 
-const ViewPracticeForm: FC<any> = (): JSX.Element => {
+const ViewPracticeForm: FC = (): JSX.Element => {
   const methods = useForm<any>({
     mode: "all",
   });

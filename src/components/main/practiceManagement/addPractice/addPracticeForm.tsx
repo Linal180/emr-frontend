@@ -14,7 +14,7 @@ import {
   PRACTICE_IDENTIFIER, PRACTICE_NAME, ROLE, SAVE_TEXT, STATE, USER_DETAILS_TEXT, ZIP_CODE
 } from "../../../../constants";
 
-const AddPracticeForm: FC<any> = (): JSX.Element => {
+const AddPracticeForm: FC = (): JSX.Element => {
   const methods = useForm<any>({
     mode: "all",
   });
