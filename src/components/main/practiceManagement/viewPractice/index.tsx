@@ -2,17 +2,15 @@
 import { FC } from 'react';
 // component block
 import ViewPracticeForm from "./viewPracticeForm";
-import PracticePageHeader from '../../../common/PracticePageHeader';
+import PageHeader from '../../../common/PageHeader';
 // constants block
-import { PRACTICE_MANAGEMENT_TEXT, SAVE_TEXT } from '../../../../constants';
+import { PRACTICE_MANAGEMENT_TEXT } from '../../../../constants';
 
 const ViewPracticeComponent: FC = (): JSX.Element => {
   return (
     <>
-      <PracticePageHeader
+      <PageHeader
         title={PRACTICE_MANAGEMENT_TEXT}
-        hasComponent
-        buttonText={SAVE_TEXT}
       />
 
       <ViewPracticeForm />

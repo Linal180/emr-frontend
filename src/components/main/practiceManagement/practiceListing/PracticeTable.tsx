@@ -10,8 +10,7 @@ import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { TablesSearchIcon, EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs'
 import {
-  ACTION, EMAIL, PHONE, DELETE_PATIENT_DESCRIPTION,
-  PATIENTS_ROUTE, NAME, CITY, COUNTRY, PATIENT, dummyVitalsChartingList
+  ACTION, EMAIL, PHONE, DELETE_PATIENT_DESCRIPTION, NAME, CITY, COUNTRY, PATIENT, dummyVitalsChartingList, PRACTICE_MANAGEMENT_ROUTE
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
@@ -69,9 +68,7 @@ const PracticeTable: FC = (): JSX.Element => {
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
-                      <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
-                        {`${firstName} ${lastName}`}
-                      </Link>
+                      {`${firstName} ${lastName}`}
                     </TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(firstName || '')}</TableCell>
@@ -79,7 +76,7 @@ const PracticeTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{phone}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${PATIENTS_ROUTE}/${id}`}>
+                        <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/edit`}>
                           <Box className={classes.practiceIconsBackground}>
                             <EditPracticeIcon />
                           </Box>
