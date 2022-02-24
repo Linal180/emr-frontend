@@ -11,7 +11,7 @@ import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs'
 import {
-  ACTION, EMAIL, PHONE, DELETE_PATIENT_DESCRIPTION, NAME, CITY, COUNTRY, PATIENT, dummyVitalsChartingList, PRACTICE_MANAGEMENT_ROUTE
+  ACTION, EMAIL, PHONE, NAME, CITY, COUNTRY, dummyVitalsChartingList, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
@@ -22,7 +22,7 @@ const PracticeTable: FC = (): JSX.Element => {
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
 
-  const handleDeletePatient = async () => {
+  const handleDeletePractice = async () => {
   };
 
   const search = (query: string) => { }
@@ -90,10 +90,10 @@ const PracticeTable: FC = (): JSX.Element => {
         )}
 
         <ConfirmationModal
-          title={PATIENT}
+          title={PRACTICE}
           isOpen={openDelete}
-          description={DELETE_PATIENT_DESCRIPTION}
-          handleDelete={handleDeletePatient}
+          description={DELETE_PRACTICE_DESCRIPTION}
+          handleDelete={handleDeletePractice}
           setOpen={(open: boolean) => setOpenDelete(open)}
         />
       </Box>

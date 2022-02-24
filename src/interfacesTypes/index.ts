@@ -345,7 +345,7 @@ export interface CustomInputControlProps extends IControlLabel {
   controllerName: string
 }
 
-export interface SearchControlInput {
+export interface SearchComponentProps {
   search: Function;
 }
 

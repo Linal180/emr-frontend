@@ -4,9 +4,9 @@ import { Box, IconButton, TextField } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { TablesSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
-import { SearchControlInput, } from "../../interfacesTypes";
+import { SearchComponentProps } from "../../interfacesTypes";
 
-const Search: FC<SearchControlInput> = ({ search }): JSX.Element => {
+const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
 
