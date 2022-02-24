@@ -2,9 +2,10 @@
 import { FC, ChangeEvent, useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
@@ -12,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { ListContext } from "../../../../context";
 import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { TablesSearchIcon, EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import {
   useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation
 } from "../../../../generated/graphql";
@@ -26,7 +27,7 @@ const PatientsTable: FC = (): JSX.Element => {
   const { fetchAllPatientList } = useContext(ListContext)
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery,] = useState<string>('');
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [deletePatientId, setDeletePatientId] = useState<string>("");
   const [patients, setPatients] = useState<PatientsPayload['patients']>([]);
@@ -66,7 +67,7 @@ const PatientsTable: FC = (): JSX.Element => {
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
-    
+
     onError() {
       Alert.error(CANT_DELETE_PATIENT)
       setOpenDelete(false)
@@ -114,26 +115,11 @@ const PatientsTable: FC = (): JSX.Element => {
     }
   };
 
+  const search = (query: string) => { }
+
   return (
     <Box className={classes.mainTableContainer}>
-      <Box className={classes.searchContainer}>
-        <TextField
-          name="searchQuery"
-          className={classes.tablesSearchIcon}
-          value={searchQuery}
-          onChange={({ target: { value } }) => setSearchQuery(value)}
-          onKeyPress={({ key }) => key === "Enter"}
-          placeholder="Search"
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            startAdornment:
-              <IconButton color="default">
-                <TablesSearchIcon />
-              </IconButton>
-          }}
-        />
-      </Box>
+      <Search search={search} />
 
       <Box className="table-overflow">
         <Table aria-label="customized table">
@@ -158,7 +144,7 @@ const PatientsTable: FC = (): JSX.Element => {
             ) : (
               patients?.map((record: PatientPayload['patient'], index: number) => {
                 const { id, firstName, lastName, email, contacts } = record || {};
-                
+
                 const patientContact = contacts && contacts.filter(contact => contact.primaryContact)[0];
                 const { phone, city, country } = patientContact || {};
 

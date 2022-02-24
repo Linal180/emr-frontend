@@ -2,22 +2,23 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableCell, TableHead, TextField, TableRow } from "@material-ui/core";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { formatPhone, renderTh } from "../../../../utils";
-import { EditIcon, TrashIcon, TablesSearchIcon } from '../../../../assets/svgs'
+import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
 import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF, STAFF_TEXT } from "../../../../constants";
 import { useTableStyles } from "../../../../styles/tableStyles";
 
 const StaffTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [searchQuery,] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [deleteStaffId, setDeleteStaffId] = useState<string>("");
@@ -87,7 +88,7 @@ const StaffTable: FC = (): JSX.Element => {
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
 
-  const handleSearch = () => { }
+  const search = (query: string) => { }
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -110,24 +111,7 @@ const StaffTable: FC = (): JSX.Element => {
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box className={classes.searchContainer}>
-        <TextField
-          name="searchQuery"
-          className={classes.tablesSearchIcon}
-          value={searchQuery}
-          onChange={({ target: { value } }) => setSearchQuery(value)}
-          onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-          placeholder="Search"
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            startAdornment:
-              <IconButton color="default">
-                <TablesSearchIcon />
-              </IconButton>
-          }}
-        />
-      </Box>
+      <Search search={search} />
 
       <Box className="table-overflow">
         <Table aria-label="customized table">

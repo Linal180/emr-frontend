@@ -2,11 +2,10 @@
 import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import {
-  Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell
-} from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
@@ -14,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, formatValue, renderTh } from "../../../../utils";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../assets/svgs";
+import { EditIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
 import {
   AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload
@@ -115,27 +114,11 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   };
 
+  const search = (query: string) => { }
+
   return (
     <Box className={classes.mainTableContainer}>
-      <Box className={classes.searchContainer}>
-        <TextField
-          name="searchQuery"
-          className={classes.tablesSearchIcon}
-          value={searchQuery}
-          onChange={({ target: { value } }) => dispatch(
-            { type: ActionType.SET_SEARCH_QUERY, searchQuery: value })}
-          onKeyPress={({ key }) => key === "Enter"}
-          placeholder="Search"
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            startAdornment:
-              <IconButton color="default">
-                <TablesSearchIcon />
-              </IconButton>
-          }}
-        />
-      </Box>
+      <Search search={search} />
 
       <Box className="table-overflow">
         <Table aria-label="customized table">

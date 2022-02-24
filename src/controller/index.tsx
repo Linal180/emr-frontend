@@ -28,10 +28,10 @@ const InputController: FC<CustomInputControlProps> = ({
       name={controllerName}
       control={control}
       defaultValue=""
-      render={({ field, fieldState: { invalid, error: { message } = {} }}) => (
+      render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={controllerName}>
-            {isRequired ? requiredLabel(controllerLabel) : controllerLabel}
+            {isRequired ? requiredLabel(controllerLabel || '') : controllerLabel}
           </InputLabel>
 
           <TextField
