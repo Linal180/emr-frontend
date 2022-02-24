@@ -16,23 +16,22 @@ import { ActionType } from "../../../../reducers/doctorReducer";
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
-  getDayFromTimestamps, getISOTime, renderLocations, renderServices, setRecord, setTimeDay
+  getDayFromTimestamps, getISOTime, renderServices, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
 } from "../../../../generated/graphql";
 import {
-  CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, APPOINTMENT_TYPE,
-  LOCATIONS_TEXT, START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE,
-  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE,
-  CREATE_SCHEDULE, SCHEDULE_NOT_FOUND, DOCTOR_SCHEDULE
+  CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, APPOINTMENT_TYPE, DOCTOR_SCHEDULE,
+  START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE,
+  SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND,
 } from "../../../../constants";
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
 }): JSX.Element => {
   const { id: doctorId } = useParams<ParamsType>();
-  const { serviceList, locationList, fetchAllServicesList, fetchAllLocationList } = useContext(FacilityContext)
+  const { serviceList, fetchAllServicesList, fetchAllLocationList } = useContext(FacilityContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(doctorScheduleSchema)
@@ -56,16 +55,14 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
         if (schedule && status && status === 200) {
 
-          const { startAt, endAt, location, scheduleServices } = schedule || {};
-          const { id: locationId, name: locationName } = location || {}
+          const { startAt, endAt, scheduleServices } = schedule || {};
           const { service } = (scheduleServices && scheduleServices[0]) || {}
           const { id: serviceId, name: serviceName } = (service && service) || {}
 
-          endAt && setValue('endAt', getISOTime(endAt || ''))
-          startAt && setValue('startAt', getISOTime(startAt || ''))
-          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName || ''))
-          setValue('day', setRecord(getDayFromTimestamps(startAt || ''), getDayFromTimestamps(startAt || '')))
-          locationId && locationName && setValue('locationId', setRecord(locationId || '', locationName || ''))
+          endAt && setValue('endAt', getISOTime(endAt))
+          startAt && setValue('startAt', getISOTime(startAt))
+          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
+          startAt && setValue('day', setRecord(getDayFromTimestamps(startAt), getDayFromTimestamps(startAt)))
         }
       }
     }
@@ -130,26 +127,23 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     }
   }, [doctorFacilityId, fetchAllLocationList, fetchAllServicesList, getSchedule, id, isEdit])
 
-  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, locationId, serviceId, startAt, day }) => {
-    const { id: selectedLocation } = locationId || {}
+  const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day }) => {
     const { id: selectedService } = serviceId || {}
     const { id: dayName } = day || {}
 
     const scheduleInput = {
-      doctorId, locationId: selectedLocation || '', servicesIds: [selectedService] || [],
+      doctorId, servicesIds: [selectedService] || [],
       startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
 
     if (doctorId) {
       if (isEdit) {
-        if (id) {
+        id ?
           await updateSchedule({
             variables: {
               updateScheduleInput: { id, ...scheduleInput }
             }
-          })
-        } else
-          Alert.error(SCHEDULE_NOT_FOUND)
+          }) : Alert.error(SCHEDULE_NOT_FOUND)
       } else {
         await createSchedule({
           variables: {
@@ -201,14 +195,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                             />
                           </Grid>
                         </Grid>
-
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={LOCATIONS_TEXT}
-                          name="locationId"
-                          options={renderLocations(locationList)}
-                        />
 
                         <Selector
                           isRequired

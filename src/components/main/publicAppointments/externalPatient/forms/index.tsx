@@ -18,7 +18,7 @@ import { FacilityContext } from "../../../../../context";
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 import { WHITE_TWO, GRAY_TWO, WHITE_SIX } from "../../../../../theme";
 import { externalPatientSchema } from '../../../../../validationSchemas';
-import { getTimestamps, renderDoctors, renderStates, setRecord } from "../../../../../utils";
+import { getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { useExternalPatientStyles } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
@@ -35,7 +35,8 @@ import {
   ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
   PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
-  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
+  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS, 
+  MAPPED_STATES,
 } from "../../../../../constants";
 import history from '../../../../../history';
 
@@ -189,7 +190,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
     const patientItemInput = {
-      suffix: '', firstName: '', middleName: '', lastName: '', firstNameUsed: '', prefferedName: '',
+      suffix: '', firstNameUsed: '', prefferedName: '',
       previousFirstName: '', previouslastName: '', registrationDate: getTimestamps(''), language: language || '',
       motherMaidenName: '', ssn: ssn || '', dob: getTimestamps(dob || ''), privacyNotice: false,
       releaseOfInfoBill: false, deceasedDate: getTimestamps(''), callToConsent: callToConsent || false, patientNote: '',
@@ -328,7 +329,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               value={EMPTY_OPTION}
                               label={STATE}
                               name="state"
-                              options={renderStates()}
+                              options={MAPPED_STATES}
                             />
                           </Grid>
 
@@ -490,11 +491,10 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                           <Grid item md={3} sm={12} xs={12}>
                             <Selector
-                              isRequired
                               value={EMPTY_OPTION}
                               label={STATE}
                               name="emergencyState"
-                              options={renderStates()}
+                              options={MAPPED_STATES}
                             />
                           </Grid>
 

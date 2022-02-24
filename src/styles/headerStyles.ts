@@ -2,7 +2,7 @@ import { makeStyles } from "@material-ui/core";
 import { BLACK, BLACK_SEVEN, BLUE_EIGHT, WHITE, WHITE_FOUR } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
-  
+
   menuButton: {
     borderRadius: 6,
     padding: 9,
@@ -18,8 +18,8 @@ export const useHeaderStyles = makeStyles((theme) => ({
     backgroundColor: WHITE,
     borderBottom: `1px solid ${WHITE_FOUR}`,
     boxShadow: 'none',
-    padding: theme.spacing(0,4),
-    
+    padding: theme.spacing(0, 4),
+
     [theme.breakpoints.down("sm")]: {
       padding: 0,
     }
@@ -36,7 +36,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
     alignItems: 'center',
 
     "& .active": {
-      borderBottom:`1.5px solid ${BLUE_EIGHT}`,
+      borderBottom: `1.5px solid ${BLUE_EIGHT}`,
     },
 
     [theme.breakpoints.down("sm")]: {
@@ -45,6 +45,16 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   menuItem: {
+    minWidth: 80,
+    textAlign: 'center',
+    color: BLACK_SEVEN,
+    cursor: 'pointer',
+    textTransform: 'capitalize',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '0 20px',
+
     "& .MuiIconButton-root": {
       padding: '0 5px',
     }
@@ -57,13 +67,14 @@ export const useHeaderStyles = makeStyles((theme) => ({
   profileItem: {
     color: BLACK_SEVEN,
     textTransform: 'capitalize',
-    minWidth:'auto'
+    minWidth: 'auto'
   },
 
   profileItemName: {
     "& .MuiTypography-root": {
       minWidth: 30,
       margin: 0,
+      color: BLACK
     }
   },
 

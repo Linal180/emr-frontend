@@ -38,11 +38,6 @@ query GetSchedule($getSchedule: GetSchedule!){
         firstName
         lastName
       }
-
-      location {
-        id
-        name
-      }
       
       scheduleServices {
         id
@@ -100,12 +95,7 @@ query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!){
       endAt
       createdAt
       updatedAt
-      
-      location {
-        id
-        name
-      }
-      
+            
       scheduleServices {
         id
         
