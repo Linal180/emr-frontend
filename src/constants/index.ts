@@ -518,6 +518,13 @@ export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Plea
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+export const TITLE = "Title";
+export const SIZE = "Size";
+export const ACTIONS = "Actions";
+export const PENDING = "Pending";
+export const SIGNED = "Signed";
+export const UPLOAD = "Upload";
+export const UPLOADS_DOCUMENT = "Upload Document";
 
 // Roles
 export const STAFF = "STAFF";
@@ -1046,6 +1053,10 @@ export const PROFILE_TOP_TABS = [
     title: 'Communicator',
     value: "7"
   },
+  {
+    title: 'Documents',
+    value: "8"
+  },
 ]
 
 export const DOCTOR_TOP_TABS = [
@@ -1348,3 +1359,38 @@ export enum ATTACHMENT_TITLES {
   DrivingLicense = 'Driving License',
   InsuranceCard = 'Insurance Card'
 }
+
+export const DUMMY_DOCUMENTS = [
+  {
+    "title": "CBCDiagnosedocument.pdf",
+    "type": "Other",
+    "comments": "Check when patient comes next time",
+    "provider": "Dr. Clara Max",
+    "date": "8 Sep, 2020",
+    "size": "5KB",
+  },
+  {
+    "title": "xray-analysis.pdf",
+    "type": "Clinical Document",
+    "comments": "It came with the patients other rec...",
+    "provider": "Dr. Harrold Wixen",
+    "date": "17 Oct, 2020",
+    "size": "5KB",
+  },
+  {
+    "title": "Bloodreport.pdf",
+    "type": "Care Plan",
+    "comments": "N/A",
+    "provider": "Dr. A. H. John",
+    "date": "24 May, 2020",
+    "size": "122KB",
+  },
+  {
+    "title": "fracturecondition.png",
+    "type": "Chart Note",
+    "comments": "N/A",
+    "provider": "N/A",
+    "date": "17 Oct, 2020",
+    "size": "87KB",
+  },
+];

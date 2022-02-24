@@ -1,37 +1,41 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect } from 'react';
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useState } from 'react';
 import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Grid, IconButton, Menu, Modal, Tab, TextField, Typography } from "@material-ui/core";
 //components block
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import ConfirmDocumentModal from '../../../common/ConfirmDocumentModal';
+import DocumentsTable from './DocumentsTable';
 // constants, history, styling block
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
-  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, TablesSearchIcon, UploadIcon
 } from "../../../../assets/svgs";
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, MAPPED_WIDGETS,
-  PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
+  PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, SIGNED, UPLOAD, UPLOAD_DOCUMENT, VIEW_CHART_TEXT
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
   const { id } = useParams<ParamsType>();
   const classes = useProfileDetailsStyles()
+  const tableClasses = useTableStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { anchorEl, attachmentUrl, attachmentData, openDelete, patientData, tabValue, attachmentId } = state
   const isMenuOpen = Boolean(anchorEl);
@@ -218,6 +222,12 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
+  const [DocumentOpen, setDocumentOpen] = useState(false);
+
+  const handleUpload = () => {
+    setDocumentOpen(true);
+  };
+
   return (
     <Box>
       {isLoading ? <Backdrop loading={true} /> : (
@@ -338,6 +348,39 @@ const PatientDetailsComponent = (): JSX.Element => {
                 ))}
               </Grid>
             </TabPanel>
+
+            <TabPanel value="8">
+              <Box className={tableClasses.mainTableContainer}>
+                <Box className={tableClasses.searchContainer} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box display="flex">
+                    <TextField
+                      name="searchQuery"
+                      className={tableClasses.tablesSearchIcon}
+                      placeholder="Search"
+                      variant="outlined"
+                      fullWidth
+                      InputProps={{
+                        startAdornment:
+                          <IconButton color="default">
+                            <TablesSearchIcon />
+                          </IconButton>
+                      }}
+                    />
+
+                    <Box ml={2} className={tableClasses.RadioButtonsStroke}>
+                      <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>
+                      <Button size="small">{SIGNED}</Button>
+                    </Box>
+                  </Box>
+
+                  <Button color="primary" variant="contained" startIcon={<UploadIcon />} onClick={handleUpload}>
+                    {UPLOAD}
+                  </Button>
+                </Box>
+
+                <DocumentsTable />
+              </Box>
+            </TabPanel>
           </Box>
         </TabContext>
       )}
@@ -348,6 +391,13 @@ const PatientDetailsComponent = (): JSX.Element => {
         description={DELETE_WIDGET_DESCRIPTION}
         handleDelete={handleDeleteWidget}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+      />
+
+      <ConfirmDocumentModal
+        isOpen={DocumentOpen}
+        description={UPLOAD_DOCUMENT}
+        handleDelete={handleDeleteWidget}
+        setOpen={(DocumentOpen: boolean) => setDocumentOpen(DocumentOpen) }
       />
     </Box>
   )

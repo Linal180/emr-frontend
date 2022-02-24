@@ -298,11 +298,3 @@ body .MuiTabPanel-root {
   max-width: 532px;
   padding-bottom: 26px;
 }
-
-/* AppointmentCard-Border-Styling */
-.solidLeftBorder {
-  border-left: 3px solid #E4E6EF;
-}
-.dashedLeftBorder {
-  border-left: 2px dashed #E4E6EF;
-}

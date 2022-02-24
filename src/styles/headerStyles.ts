@@ -45,6 +45,8 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   menuItem: {
+    paddingBottom: 5,
+
     "& .MuiIconButton-root": {
       padding: '0 5px',
     }

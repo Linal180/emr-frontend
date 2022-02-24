@@ -1,5 +1,5 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { BLACK_TWO, GRAY_FIVE, WHITE, WHITE_THREE } from "../theme";
+import { BLACK_TWO, GRAY_FIVE, GRAY_SIX, WHITE, WHITE_THREE } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -56,4 +56,10 @@ export const useTableStyles = makeStyles(() => ({
       maxWidth: 16
     }
   },
+
+  RadioButtonsStroke: {
+    border: `1px solid ${GRAY_SIX}`,
+    borderRadius: 6,
+    padding: 4,
+},
 }))
