@@ -80,7 +80,7 @@ export enum ActionType {
   SET_GUARDIAN_CONTACT_ID = 'setGuardianContactID',
   SET_GUARANTOR_CONTACT_ID = 'setGuarantorContactId',
   SET_EMERGENCY_CONTACT_ID = 'setEmergencyContactID',
-  SET_IS_OPEN = "SET_IS_OPEN"
+  SET_IS_OPEN = "setIsOpen"
 }
 
 export type Action =

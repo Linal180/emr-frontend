@@ -694,7 +694,7 @@ export const TOOLTIP_DUMMY_MESSAGE = "tooltip message here";
 // INFO MESSAGES
 
 export const CLIA_ID_NUMBER_INFO = "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
-export const Federal_TAX_ID_INFO = "Known as Employer Identification Number (EIN) and is used to identify a business entity";
+export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
 export const NPI_INFO = "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
 export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO = "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";

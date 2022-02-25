@@ -5,7 +5,7 @@ import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Avatar, Box, Button, Grid, IconButton, Menu, Tab, TextField, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
@@ -15,6 +15,7 @@ import ConfirmDocumentModal from '../../../common/ConfirmDocumentModal';
 import DocumentsTable from './DocumentsTable';
 // constants, history, styling block
 import history from '../../../../history';
+import Search from '../../../common/Search';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
@@ -25,7 +26,7 @@ import {
   AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
-  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, TablesSearchIcon, UploadIcon
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, UploadIcon
 } from "../../../../assets/svgs";
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION, MAPPED_WIDGETS,
@@ -229,6 +230,8 @@ const PatientDetailsComponent = (): JSX.Element => {
     setDocumentOpen(true);
   };
 
+  const search = (query: string) => { }
+
   return (
     <Box>
       {isLoading ? <Backdrop loading={true} /> : (
@@ -360,20 +363,8 @@ const PatientDetailsComponent = (): JSX.Element => {
               <Box className={tableClasses.mainTableContainer}>
                 <Box className={tableClasses.searchContainer} display="flex" justifyContent="space-between" alignItems="center">
                   <Box display="flex">
-                    <TextField
-                      name="searchQuery"
-                      className={tableClasses.tablesSearchIcon}
-                      placeholder="Search"
-                      variant="outlined"
-                      fullWidth
-                      InputProps={{
-                        startAdornment:
-                          <IconButton color="default">
-                            <TablesSearchIcon />
-                          </IconButton>
-                      }}
-                    />
-
+                    <Search search={search} />
+                    
                     <Box ml={3} className={tableClasses.RadioButtonsStroke}>
                       <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>
                       <Button size="small">{SIGNED}</Button>
@@ -402,7 +393,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
       <ConfirmDocumentModal
         isOpen={DocumentOpen}
-        setOpen={(DocumentOpen: boolean) => setDocumentOpen(DocumentOpen) }
+        setOpen={(DocumentOpen: boolean) => setDocumentOpen(DocumentOpen)}
       />
     </Box>
   )

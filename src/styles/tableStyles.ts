@@ -61,6 +61,7 @@ export const useTableStyles = makeStyles(() => ({
     border: `1px solid ${GRAY_SIX}`,
     borderRadius: 6,
     padding: 4,
+    alignSelf: 'center',
 },
 
   practiceIconsBackground: {
