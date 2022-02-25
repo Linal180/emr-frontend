@@ -1,6 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { red } from "@material-ui/core/colors";
-import { BLACK, BLACK_ONE, BLUE_EIGHT, BLUE_SEVEN, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
+import { BLACK, BLACK_ONE, BLUE_SEVEN, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles((theme) => ({
     profileDetailsContainer: {
