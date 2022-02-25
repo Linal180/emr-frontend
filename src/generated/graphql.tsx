@@ -2424,6 +2424,41 @@ export type UpdatePatientMutationVariables = Exact<{
 
 export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
+export type FindAllPracticesQueryVariables = Exact<{
+  practiceInput: PracticeInput;
+}>;
+
+
+export type FindAllPracticesQuery = { __typename?: 'Query', findAllPractices: { __typename?: 'PracticesPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, practices?: Array<{ __typename?: 'Practice', id: string, fax?: string | null | undefined, name: string, phone?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, facilities?: Array<{ __typename?: 'Facility', id: string, name: string, contacts?: Array<{ __typename?: 'Contact', id: string, city?: string | null | undefined, email?: string | null | undefined, state?: string | null | undefined, address?: string | null | undefined, country?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+
+export type GetPracticeQueryVariables = Exact<{
+  getPractice: GetPractice;
+}>;
+
+
+export type GetPracticeQuery = { __typename?: 'Query', getPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string, phone?: string | null | undefined, fax?: string | null | undefined, practiceId?: string | null | undefined, ein?: string | null | undefined, upin?: string | null | undefined, medicare?: string | null | undefined, medicaid?: string | null | undefined, champus?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, facilities?: Array<{ __typename?: 'Facility', id: string, name: string, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, primaryContact?: boolean | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, country?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined }> | null | undefined }> | null | undefined } | null | undefined } };
+
+export type CreatePracticeMutationVariables = Exact<{
+  createPracticeInput: CreatePracticeInput;
+}>;
+
+
+export type CreatePracticeMutation = { __typename?: 'Mutation', createPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type UpdatePracticeMutationVariables = Exact<{
+  updatePracticeInput: UpdatePracticeInput;
+}>;
+
+
+export type UpdatePracticeMutation = { __typename?: 'Mutation', updatePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type RemovePracticeMutationVariables = Exact<{
+  removePractice: RemovePractice;
+}>;
+
+
+export type RemovePracticeMutation = { __typename?: 'Mutation', removePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
 export type CreateScheduleMutationVariables = Exact<{
   createScheduleInput: CreateScheduleInput;
 }>;
@@ -5331,6 +5366,248 @@ export function useUpdatePatientMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdatePatientMutationHookResult = ReturnType<typeof useUpdatePatientMutation>;
 export type UpdatePatientMutationResult = Apollo.MutationResult<UpdatePatientMutation>;
 export type UpdatePatientMutationOptions = Apollo.BaseMutationOptions<UpdatePatientMutation, UpdatePatientMutationVariables>;
+export const FindAllPracticesDocument = gql`
+    query FindAllPractices($practiceInput: PracticeInput!) {
+  findAllPractices(facilityInput: $practiceInput) {
+    response {
+      error
+      status
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    practices {
+      id
+      fax
+      name
+      phone
+      createdAt
+      updatedAt
+      facilities {
+        id
+        name
+        contacts {
+          id
+          city
+          email
+          state
+          address
+          country
+          primaryContact
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPracticesQuery__
+ *
+ * To run a query within a React component, call `useFindAllPracticesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPracticesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPracticesQuery({
+ *   variables: {
+ *      practiceInput: // value for 'practiceInput'
+ *   },
+ * });
+ */
+export function useFindAllPracticesQuery(baseOptions: Apollo.QueryHookOptions<FindAllPracticesQuery, FindAllPracticesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPracticesQuery, FindAllPracticesQueryVariables>(FindAllPracticesDocument, options);
+      }
+export function useFindAllPracticesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPracticesQuery, FindAllPracticesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPracticesQuery, FindAllPracticesQueryVariables>(FindAllPracticesDocument, options);
+        }
+export type FindAllPracticesQueryHookResult = ReturnType<typeof useFindAllPracticesQuery>;
+export type FindAllPracticesLazyQueryHookResult = ReturnType<typeof useFindAllPracticesLazyQuery>;
+export type FindAllPracticesQueryResult = Apollo.QueryResult<FindAllPracticesQuery, FindAllPracticesQueryVariables>;
+export const GetPracticeDocument = gql`
+    query GetPractice($getPractice: GetPractice!) {
+  getPractice(getPractice: $getPractice) {
+    response {
+      error
+      status
+      message
+    }
+    practice {
+      id
+      name
+      phone
+      fax
+      practiceId
+      ein
+      upin
+      medicare
+      medicaid
+      champus
+      createdAt
+      updatedAt
+      facilities {
+        id
+        name
+        contacts {
+          id
+          email
+          primaryContact
+          address
+          address2
+          country
+          state
+          zipCode
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPracticeQuery__
+ *
+ * To run a query within a React component, call `useGetPracticeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPracticeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPracticeQuery({
+ *   variables: {
+ *      getPractice: // value for 'getPractice'
+ *   },
+ * });
+ */
+export function useGetPracticeQuery(baseOptions: Apollo.QueryHookOptions<GetPracticeQuery, GetPracticeQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPracticeQuery, GetPracticeQueryVariables>(GetPracticeDocument, options);
+      }
+export function useGetPracticeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPracticeQuery, GetPracticeQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPracticeQuery, GetPracticeQueryVariables>(GetPracticeDocument, options);
+        }
+export type GetPracticeQueryHookResult = ReturnType<typeof useGetPracticeQuery>;
+export type GetPracticeLazyQueryHookResult = ReturnType<typeof useGetPracticeLazyQuery>;
+export type GetPracticeQueryResult = Apollo.QueryResult<GetPracticeQuery, GetPracticeQueryVariables>;
+export const CreatePracticeDocument = gql`
+    mutation CreatePractice($createPracticeInput: CreatePracticeInput!) {
+  createPractice(createPracticeInput: $createPracticeInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreatePracticeMutationFn = Apollo.MutationFunction<CreatePracticeMutation, CreatePracticeMutationVariables>;
+
+/**
+ * __useCreatePracticeMutation__
+ *
+ * To run a mutation, you first call `useCreatePracticeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePracticeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPracticeMutation, { data, loading, error }] = useCreatePracticeMutation({
+ *   variables: {
+ *      createPracticeInput: // value for 'createPracticeInput'
+ *   },
+ * });
+ */
+export function useCreatePracticeMutation(baseOptions?: Apollo.MutationHookOptions<CreatePracticeMutation, CreatePracticeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePracticeMutation, CreatePracticeMutationVariables>(CreatePracticeDocument, options);
+      }
+export type CreatePracticeMutationHookResult = ReturnType<typeof useCreatePracticeMutation>;
+export type CreatePracticeMutationResult = Apollo.MutationResult<CreatePracticeMutation>;
+export type CreatePracticeMutationOptions = Apollo.BaseMutationOptions<CreatePracticeMutation, CreatePracticeMutationVariables>;
+export const UpdatePracticeDocument = gql`
+    mutation UpdatePractice($updatePracticeInput: UpdatePracticeInput!) {
+  updatePractice(updatePracticeInput: $updatePracticeInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePracticeMutationFn = Apollo.MutationFunction<UpdatePracticeMutation, UpdatePracticeMutationVariables>;
+
+/**
+ * __useUpdatePracticeMutation__
+ *
+ * To run a mutation, you first call `useUpdatePracticeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePracticeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePracticeMutation, { data, loading, error }] = useUpdatePracticeMutation({
+ *   variables: {
+ *      updatePracticeInput: // value for 'updatePracticeInput'
+ *   },
+ * });
+ */
+export function useUpdatePracticeMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePracticeMutation, UpdatePracticeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePracticeMutation, UpdatePracticeMutationVariables>(UpdatePracticeDocument, options);
+      }
+export type UpdatePracticeMutationHookResult = ReturnType<typeof useUpdatePracticeMutation>;
+export type UpdatePracticeMutationResult = Apollo.MutationResult<UpdatePracticeMutation>;
+export type UpdatePracticeMutationOptions = Apollo.BaseMutationOptions<UpdatePracticeMutation, UpdatePracticeMutationVariables>;
+export const RemovePracticeDocument = gql`
+    mutation RemovePractice($removePractice: RemovePractice!) {
+  removePractice(removePractice: $removePractice) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemovePracticeMutationFn = Apollo.MutationFunction<RemovePracticeMutation, RemovePracticeMutationVariables>;
+
+/**
+ * __useRemovePracticeMutation__
+ *
+ * To run a mutation, you first call `useRemovePracticeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePracticeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePracticeMutation, { data, loading, error }] = useRemovePracticeMutation({
+ *   variables: {
+ *      removePractice: // value for 'removePractice'
+ *   },
+ * });
+ */
+export function useRemovePracticeMutation(baseOptions?: Apollo.MutationHookOptions<RemovePracticeMutation, RemovePracticeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemovePracticeMutation, RemovePracticeMutationVariables>(RemovePracticeDocument, options);
+      }
+export type RemovePracticeMutationHookResult = ReturnType<typeof useRemovePracticeMutation>;
+export type RemovePracticeMutationResult = Apollo.MutationResult<RemovePracticeMutation>;
+export type RemovePracticeMutationOptions = Apollo.BaseMutationOptions<RemovePracticeMutation, RemovePracticeMutationVariables>;
 export const CreateScheduleDocument = gql`
     mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
   createSchedule(createScheduleInput: $createScheduleInput) {

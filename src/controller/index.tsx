@@ -10,7 +10,7 @@ import { PASSWORD, TEXT } from "../constants";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled, placeholder
 }): JSX.Element => {
   const { control } = useFormContext()
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
@@ -40,6 +40,7 @@ const InputController: FC<CustomInputControlProps> = ({
             variant="outlined"
             disabled={disabled}
             id={controllerName}
+            placeholder={placeholder ? placeholder : ""}
             type={fieldType === "password" ? passwordType : fieldType}
             helperText={error ? error : message}
             {...field}

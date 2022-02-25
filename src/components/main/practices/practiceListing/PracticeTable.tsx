@@ -1,28 +1,108 @@
 // packages block
-import { FC, ChangeEvent, useState } from "react";
+import { FC, ChangeEvent, Reducer, useEffect, useReducer } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
+import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { formatPhone, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs'
+import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
+import { EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs';
 import {
-  ACTION, EMAIL, PHONE, NAME, CITY, COUNTRY, dummyVitalsChartingList, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE
+  practiceReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/practiceReducer";
+import {
+  PracticesPayload, useFindAllPracticesLazyQuery, useRemovePracticeMutation
+} from "../../../../generated/graphql";
+import {
+  ACTION, EMAIL, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
+  CANT_DELETE_PRACTICE, ADMIN_NAME, FACILITIES_TEXT, DATE_ADDED, STATUS
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
-  const [page, setPage] = useState<number>(1);
-  const [totalPages,] = useState<number>(0);
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
+  const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
-  const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
+  const [findAllPractices, { loading, error }] = useFindAllPracticesLazyQuery({
+    variables: {
+      practiceInput: {
+        paginationOptions: {
+          page: 1,
+          limit: PAGE_LIMIT
+        }
+      }
+    },
+
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      dispatch({ type: ActionType.SET_PRACTICES, practices: [] });
+    },
+
+    onCompleted(data) {
+      const { findAllPractices } = data || {};
+
+      if (findAllPractices) {
+        const { pagination, practices } = findAllPractices
+        practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
+
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+        }
+      }
+    }
+  });
+
+  const [removePractice, { loading: deletePracticeLoading }] = useRemovePracticeMutation({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      Alert.error(CANT_DELETE_PRACTICE)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { removePractice: { response } } = data
+
+        if (response) {
+          const { message } = response
+          message && Alert.success(message);
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+        }
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (!searchQuery) {
+      findAllPractices()
+    }
+  }, [page, findAllPractices, searchQuery]);
+
+
+  const handleChange = (_: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page })
+
+  const onDelete = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_DELETE_PRACTICE_ID, deletePracticeId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+    }
+  };
 
   const handleDeletePractice = async () => {
+    deletePracticeId &&
+      await removePractice({
+        variables: { removePractice: { id: deletePracticeId } }
+      })
   };
 
   const search = (query: string) => { }
@@ -36,28 +116,35 @@ const PracticeTable: FC = (): JSX.Element => {
           <TableHead>
             <TableRow>
               {renderTh(NAME)}
+              {renderTh(ADMIN_NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(CITY)}
-              {renderTh(COUNTRY)}
+              {renderTh(FACILITIES_TEXT)}
+              {renderTh(DATE_ADDED)}
+              {renderTh(STATUS)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
 
           <TableBody>
             {
-              dummyVitalsChartingList?.map((record) => {
-                const { id, firstName, lastName, email, phone } = record || {};
+              practices?.map(practice => {
+                const { id, name, createdAt, facilities } = practice || {};
+                const { contacts } = (facilities && facilities[0]) || {};
+                const facilityCount = (facilities && facilities.length) || 0;
+                const primaryContact = contacts?.filter(contact => contact.primaryContact)[0]
+                // const facilityAdmin = user?.filter(facilityUser => isUserAdmin(facilityUser.roles))[0]
+                const { email, phone } = primaryContact || {}
 
                 return (
                   <TableRow key={id}>
-                    <TableCell scope="row">
-                      {`${firstName} ${lastName}`}
-                    </TableCell>
+                    <TableCell scope="row">{name}</TableCell>
+                    <TableCell scope="row">--</TableCell>
                     <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{formatPhone(firstName || '')}</TableCell>
-                    <TableCell scope="row">{lastName}</TableCell>
-                    <TableCell scope="row">{phone}</TableCell>
+                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                    <TableCell scope="row">{facilityCount}</TableCell>
+                    <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
+                    <TableCell scope="row">--</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/edit`}>
@@ -66,7 +153,7 @@ const PracticeTable: FC = (): JSX.Element => {
                           </Box>
                         </Link>
 
-                        <Box className={classes.practiceIconsBackground}>
+                        <Box className={classes.practiceIconsBackground} onClick={() => onDelete(id || '')}>
                           <DeletePracticeIcon />
                         </Box>
                       </Box>
@@ -77,6 +164,12 @@ const PracticeTable: FC = (): JSX.Element => {
               )}
           </TableBody>
         </Table>
+
+        {((!loading && practices?.length === 0) || error) && (
+          <Box display="flex" justifyContent="center" pb={12} pt={5}>
+            <NoDataFoundComponent />
+          </Box>
+        )}
 
         {totalPages > 1 && (
           <Box display="flex" justifyContent="flex-end" pt={3}>
@@ -92,9 +185,12 @@ const PracticeTable: FC = (): JSX.Element => {
         <ConfirmationModal
           title={PRACTICE}
           isOpen={openDelete}
-          description={DELETE_PRACTICE_DESCRIPTION}
+          isLoading={deletePracticeLoading}
           handleDelete={handleDeletePractice}
-          setOpen={(open: boolean) => setOpenDelete(open)}
+          description={DELETE_PRACTICE_DESCRIPTION}
+          setOpen={(open: boolean) =>
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
+          }
         />
       </Box>
     </Box>

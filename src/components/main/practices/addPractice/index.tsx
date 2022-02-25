@@ -1,7 +1,7 @@
 // packages block
 import { FC } from 'react';
 // component block
-import AddPracticeForm from "./addPracticeForm";
+import PracticeForm from "../practiceForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
 import { PRACTICE_MANAGEMENT_TEXT } from '../../../../constants';
@@ -13,7 +13,7 @@ const AddPracticeComponent: FC = (): JSX.Element => {
         title={PRACTICE_MANAGEMENT_TEXT}
       />
 
-      <AddPracticeForm />
+      <PracticeForm />
     </>
   )
 };

@@ -221,6 +221,7 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
 
 export const renderPatient = (patients: PatientsPayload['patients']) => {
   const data: SelectorOption[] = [];
+  
   if (!!patients) {
     for (let patient of patients) {
       if (patient) {
