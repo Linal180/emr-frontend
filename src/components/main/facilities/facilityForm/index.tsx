@@ -31,7 +31,7 @@ import {
   FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED,
   MAPPED_PRACTICE_TYPES, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, CANCEL,
   FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION,
-  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER,
+  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, CLIA_ID_NUMBER_INFO, Federal_TAX_ID_INFO, TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -294,6 +294,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       fieldType="text"
                       controllerName="name"
                       controllerLabel={NAME}
+                      info="123"
                     />
 
                     <Grid container spacing={3}>
@@ -443,6 +444,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <Grid container spacing={3}>
                         <Grid item md={6}>
                           <InputController
+                            info={CLIA_ID_NUMBER_INFO}
                             fieldType="text"
                             controllerName="cliaIdNumber"
                             controllerLabel={CLIA_ID_NUMBER}
@@ -451,6 +453,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                         <Grid item md={6}>
                           <InputController
+                            info={Federal_TAX_ID_INFO}
                             fieldType="text"
                             controllerName="federalTaxId"
                             controllerLabel={FEDERAL_TAX_ID}
@@ -461,6 +464,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <Grid container spacing={3}>
                         <Grid item md={6}>
                           <InputController
+                            info={TAXONOMY_CODE_INFO}
                             fieldType="text"
                             controllerName="tamxonomyCode"
                             controllerLabel={TAXONOMY_CODE}
@@ -469,6 +473,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                         <Grid item md={6}>
                           <InputController
+                            info={NPI_INFO}
                             fieldType="text"
                             controllerName="npi"
                             controllerLabel={NPI}
@@ -479,6 +484,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <Grid container spacing={3}>
                         <Grid item md={6}>
                           <InputController
+                            info={MAMOGRAPHY_CERTIFICATION_NUMBER_INFO}
                             fieldType="text"
                             controllerName="mammographyCertificationNumber"
                             controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}

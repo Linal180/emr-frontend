@@ -1,17 +1,20 @@
 // packages block
 import { FC, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { FormControl, InputLabel, TextField } from "@material-ui/core";
+import { Box, FormControl, InputLabel, TextField } from "@material-ui/core";
 // components block
 import ShowPassword from "../components/common/ShowPassword";
 // styles, constants, utils and interfaces block
-import { requiredLabel } from "../utils";
 import { PASSWORD, TEXT } from "../constants";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
+import { DetailTooltip } from "../styles/tableStyles";
+import { useFormStyles } from "../styles/formsStyles";
+import { InfoOutlined } from "@material-ui/icons";
 
 const InputController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled, info
 }): JSX.Element => {
+  const classes = useFormStyles();
   const { control } = useFormContext()
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
 
@@ -30,9 +33,18 @@ const InputController: FC<CustomInputControlProps> = ({
       defaultValue=""
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
         <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={controllerName}>
-            {isRequired ? requiredLabel(controllerLabel || '') : controllerLabel}
+          <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
+            {isRequired ? `${controllerLabel} *` : controllerLabel}
+
+            {info &&
+              <Box>
+                <DetailTooltip placement="top-end" arrow title={info}>
+                  <InfoOutlined color="inherit" fontSize="inherit" />
+                </DetailTooltip>
+              </Box>
+            }
           </InputLabel>
+
 
           <TextField
             fullWidth

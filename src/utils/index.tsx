@@ -58,11 +58,11 @@ export const renderTh = (text: string, align?: TableAlignType) => (
 export const requiredLabel = (label: string) => {
   return (
     <Box>
-      {label}
+      {/* {label}
       <Box component="span" color="red">
         {' '}
         *
-      </Box>
+      </Box> */}
     </Box>
   )
 }

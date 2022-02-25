@@ -10,7 +10,7 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
     minWidth: 'auto',
     padding: 20,
     borderRadius: 5,
-  },
+  }
 }))(Tooltip);
 
 export const useTableStyles = makeStyles(() => ({

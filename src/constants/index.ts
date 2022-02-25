@@ -584,7 +584,6 @@ export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 
-
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
@@ -690,6 +689,16 @@ export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verif
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
+export const TOOLTIP_DUMMY_MESSAGE = "tooltip message here";
+
+// INFO MESSAGES
+
+export const CLIA_ID_NUMBER_INFO = "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
+export const Federal_TAX_ID_INFO = "Known as Employer Identification Number (EIN) and is used to identify a business entity";
+export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
+export const NPI_INFO = "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
+export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO = "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
+export const Tax_ID = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
 
 export const APP_MENU_ITEMS = [
   {

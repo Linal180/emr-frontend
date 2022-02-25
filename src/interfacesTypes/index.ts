@@ -342,7 +342,8 @@ export type SubMenuTypes = {
 };
 
 export interface CustomInputControlProps extends IControlLabel {
-  controllerName: string
+  controllerName: string;
+  info?: string;
 }
 
 export interface SearchComponentProps {
