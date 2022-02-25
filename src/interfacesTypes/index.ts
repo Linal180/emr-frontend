@@ -125,6 +125,14 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
+export interface ViewAppointmentCardProps {
+  isLoading?: boolean;
+  isOpen: boolean;
+  title?: string;
+  setIsOpen: Function;
+}
+
+
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
 }

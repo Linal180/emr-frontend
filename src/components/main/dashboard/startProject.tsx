@@ -1,63 +1,64 @@
 // packages block
 import { useState } from "react";
-import { Box, Button, ButtonGroup, Card, Typography } from "@material-ui/core";
-import { Add } from '@material-ui/icons';
-import { ViewState } from '@devexpress/dx-react-scheduler';
+import { Box, Card } from "@material-ui/core";
+import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator,
-  DayView, WeekView, AppointmentTooltip
+  DayView, WeekView, AppointmentTooltip, ViewSwitcher,
 } from '@devexpress/dx-react-scheduler-material-ui';
+// component block
+import AppointmentCard from "./AppointmentCard";
 // styles, constants  block
-import { useCalendarStyles } from "../../../styles/calendarStyles";
-import { APPOINTMENT_LIST, CREATE_NEW_APPOINTMENT, DUMMY_APPOINTMENTS } from "../../../constants";
+import { DUMMY_APPOINTMENTS } from "../../../constants";
 
 
 const StartProjectComponent = (): JSX.Element => {
-  const classes = useCalendarStyles();
   const [currentDate, setCurrentDate] = useState(new Date())
+  const [data, setData] = useState<any>(DUMMY_APPOINTMENTS)
 
   const handleDateChange = () => {
     setCurrentDate(currentDate)
   }
 
+  const commitChanges = (item: any): void => {
+    let data1: any;
+    if (item.changed) {
+      data1 = data.map((item: { changed: { [x: string]: any; }; id: string | number; }) => (
+        item.changed[item.id] ? { ...item, ...item.changed[item.id] } : item));
+    }
+    if (item.deleted !== undefined) {
+      data1 = data.filter((appointment: { id: any; }) => appointment.id !== item.deleted);
+    }
+    setData(data1)
+  }
+
   return (
-    <Box>
-      <Box display="flex" alignItems="center" justifyContent="space-between" flexWrap="wrap" py={4}>
-        <Typography variant="h4">{APPOINTMENT_LIST}</Typography>
-        
-        <Button color="primary" variant="contained" startIcon={<Add />}>
-          {CREATE_NEW_APPOINTMENT}
-        </Button>
+    <Card>
+      <Box>
+        <Scheduler data={DUMMY_APPOINTMENTS}>
+          <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+          <EditingState
+            onCommitChanges={commitChanges}
+          />
+
+          <MonthView />
+          <IntegratedEditing />
+          <WeekView />
+          <DayView />
+          <Toolbar />
+          <TodayButton />
+          <ViewSwitcher />
+          <DateNavigator />
+          {/* <ConfirmationDialog overlayComponent={AppointmentCard} /> */}
+          <Appointments />
+          <AppointmentTooltip showCloseButton
+            layoutComponent={AppointmentCard}
+          />
+
+          {/* <AppointmentForm overlayComponent={AppointmentCard} /> */}
+        </Scheduler>
       </Box>
-
-      <Card>
-        <Box className={classes.appointmentCalendar} p={3}>
-          <Scheduler data={DUMMY_APPOINTMENTS}>
-            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
-            <MonthView />
-            <WeekView />
-            <DayView />
-            <Toolbar />
-
-            <Box className={classes.buttonView}>
-              <ButtonGroup aria-label="primary button group">
-                <Button>Month</Button>
-                <Button>Week</Button>
-                <Button>Day</Button>
-              </ButtonGroup>
-            </Box>
-
-            <TodayButton />
-            <DateNavigator />
-            <Appointments />
-            <AppointmentTooltip
-              showCloseButton
-              showOpenButton
-            />
-          </Scheduler>
-        </Box>
-      </Card>
-    </Box>
+    </Card>
   )
 };
 

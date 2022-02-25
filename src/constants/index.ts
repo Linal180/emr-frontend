@@ -104,6 +104,7 @@ export const USER_DETAILS_TEXT = "User Details";
 export const PRACTICE_DETAILS_TEXT = "Practice Details";
 export const FACILITY_DETAILS_TEXT = "Facility Details";
 export const ADD_NEW_PRACTICE_TEXT = "Add New Practice";
+export const ADD_NEW_TEXT = "Add New";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
@@ -512,6 +513,7 @@ export const RESET_PASSWORD_TEXT = "Reset Password"
 export const PATIENT_DETAILS = "Patient Details"
 export const SELECT_SERVICES = "Select Services"
 export const BOOK_APPOINTMENT = "Book Appointment"
+export const APPOINTMENT_DETAILS = "Appointment Details"
 export const NO_SLOT_AVAILABLE = "No Slot available"
 export const PATIENT_LAST_NAME = "Patient Last Name"
 export const PATIENT_FIRST_NAME = "Patient First Name"
@@ -1175,26 +1177,47 @@ export const dummyVitalsChartingList = [
   },
 ]
 
-export const dummyAppointmentData = [
+export const dummyAppointmentData = {
+  appTime: "16:30 - 17:00",
+  timeVariant: "PM",
+  patientName: "John Doe",
+  patientDOB: "12-01-1990",
+  patientTel: "(333)123-4567",
+  patientStatus: "Status",
+  patientElg: "Eligibility Issue",
+}
+
+export const dummyAppointmentSubData = [
   {
-    appTime: "16:30 - 17:00",
-    timeVariant: "PM",
-    patientName: "John Doe",
-    patientDOB: "12-01-1990",
-    patientTel: "(333)123-4567",
-    patientStatus: "Status",
-    patientElg: "Eligibility Issue",
+    heading: "Appt Type",
+    description: "General",
   },
   {
-    appTime: "18:30 - 19:00",
-    timeVariant: "PM",
-    patientName: "John Doe",
-    patientDOB: "12-01-1990",
-    patientTel: "(333)123-4567",
-    patientStatus: "Ready for Staff",
-    patientElg: "Eligibility Issue",
+    heading: "Location",
+    description: "Clay County Hospital",
+  },
+  {
+    heading: "Name",
+    description: "Dr. Jonathan Smutt",
+  },
+  {
+    heading: "P Name",
+    description: "Floyd Miles",
+  },
+  {
+    heading: "Reason",
+    description: "High temperature",
+  },
+  {
+    heading: "Notes",
+    description: "Special Care Required",
+  },
+  {
+    heading: "Insurance",
+    description: "United Health Ins.",
   },
 ]
+
 
 export const PATIENT_CHARTING_DATA = [
   {
@@ -1226,130 +1249,83 @@ export const PATIENT_CHARTING_DATA = [
 
 export const DUMMY_APPOINTMENTS = [
   {
+    "id": 1,
     "title": "Website Re-Design Plan",
-    "startDate": "2018-07-23T04:30:00.000Z",
-    "endDate": "2018-07-23T06:30:00.000Z"
+    "startDate": "2022-02-24T04:30:00.000Z",
+    "endDate": "2022-02-24T06:30:00.000Z"
   },
   {
+    "id": 2,
     "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2018-07-23T07:00:00.000Z",
-    "endDate": "2018-07-23T08:00:00.000Z"
+    "startDate": "2022-02-24T07:00:00.000Z",
+    "endDate": "2022-02-24T08:00:00.000Z"
   },
   {
+    "id": 3,
     "title": "Install New Router in Dev Room",
-    "startDate": "2018-07-23T09:30:00.000Z",
-    "endDate": "2018-07-23T10:30:00.000Z"
+    "startDate": "2022-02-24T09:30:00.000Z",
+    "endDate": "2022-02-24T10:30:00.000Z"
   },
   {
+    "id": 4,
     "title": "Approve Personal Computer Upgrade Plan",
     "startDate": "2018-07-24T05:00:00.000Z",
     "endDate": "2018-07-24T06:00:00.000Z"
   },
   {
+    "id": 5,
     "title": "Final Budget Review",
     "startDate": "2018-07-24T07:00:00.000Z",
     "endDate": "2018-07-24T08:35:00.000Z"
   },
   {
+    "id": 6,
     "title": "New Brochures",
     "startDate": "2018-07-24T09:30:00.000Z",
     "endDate": "2018-07-24T10:45:00.000Z"
   },
   {
+    "id": 7,
     "title": "Install New Database",
     "startDate": "2018-07-25T04:45:00.000Z",
     "endDate": "2018-07-25T06:15:00.000Z"
   },
   {
+    "id": 8,
     "title": "Approve New Online Marketing Strategy",
     "startDate": "2018-07-25T07:00:00.000Z",
     "endDate": "2018-07-25T09:00:00.000Z"
   },
   {
+    "id": 9,
     "title": "Upgrade Personal Computers",
     "startDate": "2018-07-25T10:15:00.000Z",
     "endDate": "2018-07-25T11:30:00.000Z"
   },
   {
+    "id": 10,
     "title": "Customer Workshop",
     "startDate": "2018-07-26T06:00:00.000Z",
     "endDate": "2018-07-26T07:00:00.000Z"
   },
   {
+    "id": 11,
     "title": "Prepare 2015 Marketing Plan",
     "startDate": "2018-07-26T06:00:00.000Z",
     "endDate": "2018-07-26T08:30:00.000Z"
   },
   {
+    "id": 12,
     "title": "Brochure Design Review",
     "startDate": "2018-07-26T09:00:00.000Z",
     "endDate": "2018-07-26T10:30:00.000Z"
   },
   {
+    "id": 13,
     "title": "Create Icons for Website",
     "startDate": "2018-07-27T05:00:00.000Z",
     "endDate": "2018-07-27T06:30:00.000Z"
   },
-  {
-    "title": "Upgrade Server Hardware",
-    "startDate": "2018-07-27T09:30:00.000Z",
-    "endDate": "2018-07-27T11:00:00.000Z"
-  },
-  {
-    "title": "Submit New Website Design",
-    "startDate": "2018-07-27T11:30:00.000Z",
-    "endDate": "2018-07-27T13:00:00.000Z"
-  },
-  {
-    "title": "Launch New Website",
-    "startDate": "2018-07-26T07:20:00.000Z",
-    "endDate": "2018-07-26T09:00:00.000Z"
-  },
-  {
-    "title": "Website Re-Design Plan",
-    "startDate": "2018-07-16T04:30:00.000Z",
-    "endDate": "2018-07-16T10:30:00.000Z"
-  },
-  {
-    "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2018-07-16T07:00:00.000Z",
-    "endDate": "2018-07-16T08:00:00.000Z"
-  },
-  {
-    "title": "Install New Database",
-    "startDate": "2018-07-17T10:45:00.000Z",
-    "endDate": "2018-07-18T07:15:00.000Z"
-  },
-  {
-    "title": "Approve New Online Marketing Strategy",
-    "startDate": "2018-07-18T07:35:00.000Z",
-    "endDate": "2018-07-18T09:15:00.000Z"
-  },
-  {
-    "title": "Upgrade Personal Computers",
-    "startDate": "2018-07-19T10:15:00.000Z",
-    "endDate": "2018-07-20T15:30:00.000Z"
-  },
-  {
-    "title": "Prepare 2015 Marketing Plan",
-    "startDate": "2018-07-20T15:00:00.000Z",
-    "endDate": "2018-07-20T08:30:00.000Z"
-  },
-  {
-    "title": "Brochure Design Review",
-    "startDate": "2018-07-20T09:10:00.000Z",
-    "endDate": "2018-07-20T10:30:00.000Z"
-  },
-  {
-    "title": "Vacation",
-    "startDate": "2018-06-21T19:00:00.000Z",
-    "endDate": "2018-06-30T19:00:00.000Z"
-  },
-  {
-    "title": "Vacation",
-    "startDate": "2018-07-27T19:00:00.000Z",
-    "endDate": "2018-08-06T19:00:00.000Z"
-  }
 ];
 
 export enum ATTACHMENT_TITLES {
