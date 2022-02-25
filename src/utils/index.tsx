@@ -26,9 +26,23 @@ export const upperToNormal = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
 };
 
+export const formatServiceCode = (value: string) => {
+  const parts = value.split("_");
+  let formatted = `${parts[parts.length - 1]} - `;
+
+  for (let index in parts) {
+    if (parseInt(index) < parts.length - 1) {
+      formatted = `${formatted} ${parts[parseInt(index)].charAt(0)}${parts[parseInt(index)].slice(1).toLowerCase()} `
+    }
+  }
+
+  return formatted;
+};
+
 export const formatValue = (value: string) => {
   let formatted = ''
-  value.split("_").map(term => formatted = formatted + term.charAt(0).toUpperCase() + term.slice(1).toLowerCase() + ' ')
+  
+  value.split("_").map(term => formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} ` )
 
   return formatted;
 };

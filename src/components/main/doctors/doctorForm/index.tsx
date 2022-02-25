@@ -31,7 +31,8 @@ import {
   ANESTHESIA_LICENSE, CTP_NUMBER, STATE_LICENSE, LICENSE_ACTIVE_DATE, LICENSE_TERM_DATE, TAXONOMY_CODE,
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
-  FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS, MAPPED_STATES,
+  FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  MAPPED_STATES, MAPPED_COUNTRIES,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -120,9 +121,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               mobile && setValue('mobile', mobile)
               zipCode && setValue('zipCode', zipCode)
               address && setValue('address', address)
-              country && setValue('country', country)
               address2 && setValue('address2', address2)
               state && setValue('state', setRecord(state, state))
+              country && setValue('country', setRecord(country, country))
             }
 
             if (billingAddress) {
@@ -133,10 +134,10 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               email && setValue('billingEmail', email)
               phone && setValue('billingPhone', phone)
               address && setValue('billingAddress', address)
-              country && setValue('billingCountry', country)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
               state && setValue('billingState', setRecord(state, state))
+              country && setValue('billingCountry', setRecord(country, country))
             }
           }
         }
@@ -217,7 +218,9 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedState } = state;
       const { id: selectedFacility } = facilityId;
       const { id: selectedSpecialty } = speciality;
+      const { id: selectedCountry } = country || {};
       const { id: selectedBillingState } = billingState;
+      const { id: selectedBillingCountry } = billingCountry;
 
       const doctorItemInput = {
         firstName: firstName || "", middleName: middleName || "", lastName: lastName || "",
@@ -241,7 +244,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const contactInput = {
         email: email || "", pager: pager || "", phone: phone || "",
         mobile: mobile || "", fax: fax || "", address: address || "", address2: address2 || "",
-        zipCode: zipCode || "", city: city || "", state: selectedState || "", country: country || "",
+        zipCode: zipCode || "", city: city || "", state: selectedState || "", country: selectedCountry || "",
         facilityId: selectedFacility || ""
       };
 
@@ -249,7 +252,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         email: billingEmail || "", phone: billingPhone || "",
         fax: billingFax || "", address: billingAddress1 || "", address2: billingAddress2 || "",
         zipCode: billingZipCode || "", city: billingCity || "", state: selectedBillingState || "",
-        country: billingCountry || "", userId: billingUserId || "", facilityId: selectedFacility || ""
+        country: selectedBillingCountry || "", userId: billingUserId || "", facilityId: selectedFacility || ""
       };
 
       if (isEdit) {
@@ -510,10 +513,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingCountry"
-                          controllerLabel={COUNTRY}
+                        <Selector
+                          value={EMPTY_OPTION}
+                          label={COUNTRY}
+                          name="billingCountry"
+                          options={MAPPED_COUNTRIES}
                         />
                       </Grid>
                     </Grid>
@@ -598,10 +602,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="country"
-                          controllerLabel={COUNTRY}
+                        <Selector
+                          value={EMPTY_OPTION}
+                          label={COUNTRY}
+                          name="country"
+                          options={MAPPED_COUNTRIES}
                         />
                       </Grid>
                     </Grid>

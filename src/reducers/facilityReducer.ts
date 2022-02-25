@@ -6,7 +6,9 @@ export interface State {
   openModal: boolean;
   facilityId: string;
   openDelete: boolean;
+  addBilling: boolean;
   searchQuery: string;
+  sameAddress: boolean;
   deleteFacilityId: string;
   facility: FacilityPayload['facility'];
   facilities: FacilitiesPayload['facility'];
@@ -20,19 +22,23 @@ export const initialState: State = {
   facilityId: '',
   searchQuery: '',
   openModal: false,
+  addBilling: false,
   openDelete: false,
+  sameAddress: false,
   deleteFacilityId: '',
 }
 
 export enum ActionType {
-  SET_PAGE = 'SetPage',
+  SET_PAGE = 'setPage',
   SET_FACILITY = 'setFacility',
   SET_OPEN_MODAL = 'setOpenModal',
   SET_FACILITIES = 'setFacilities',
   SET_FACILITY_ID = 'setFacilityId',
+  SET_ADD_BILLING = 'setAddBilling',
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_SAME_ADDRESS = 'setSameAddress',
   SET_DELETE_FACILITY_ID = 'setDeleteFacilityId',
 }
 
@@ -42,7 +48,9 @@ export type Action =
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_FACILITY_ID; facilityId: string }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
+  | { type: ActionType.SET_ADD_BILLING, addBilling: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
+  | { type: ActionType.SET_SAME_ADDRESS, sameAddress: boolean }
   | { type: ActionType.SET_DELETE_FACILITY_ID; deleteFacilityId: string }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_FACILITIES; facilities: FacilitiesPayload['facility'] }
@@ -53,6 +61,18 @@ export const facilityReducer = (state: State, action: Action): State => {
       return {
         ...state,
         page: action.page
+      }
+
+    case ActionType.SET_ADD_BILLING:
+      return {
+        ...state,
+        addBilling: action.addBilling
+      }
+
+    case ActionType.SET_SAME_ADDRESS:
+      return {
+        ...state,
+        sameAddress: action.sameAddress
       }
 
     case ActionType.SET_TOTAL_PAGES:
@@ -91,11 +111,11 @@ export const facilityReducer = (state: State, action: Action): State => {
         facility: action.facility
       }
 
-      case ActionType.SET_FACILITIES:
-        return {
-          ...state,
-          facilities: action.facilities
-        }
+    case ActionType.SET_FACILITIES:
+      return {
+        ...state,
+        facilities: action.facilities
+      }
 
     case ActionType.SET_DELETE_FACILITY_ID:
       return {
