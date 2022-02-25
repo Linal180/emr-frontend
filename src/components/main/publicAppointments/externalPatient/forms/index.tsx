@@ -35,8 +35,12 @@ import {
   ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
   PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
-  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS, 
+  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
   MAPPED_STATES,
+  MAPPED_COUNTRIES,
+  USA,
+  NEXT,
+  FINISH,
 } from "../../../../../constants";
 import history from '../../../../../history';
 
@@ -125,11 +129,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 name && setValue("emergencyName", name)
                 city && setValue("emergencyCity", city)
                 phone && setValue("emergencyPhone", phone)
-                country && setValue("emergencyCountry", country)
                 zipCode && setValue("emergencyZipCode", zipCode)
                 address && setValue("emergencyAddress", address)
                 address2 && setValue("emergencyAddress2", address2)
                 state && setValue("emergencyState", setRecord(state, state))
+                country && setValue("emergencyCountry", setRecord(country, country))
                 relationship && setValue("emergencyRelationship", setRecord(relationship, relationship))
               }
 
@@ -142,9 +146,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 city && setValue("city", city)
                 zipCode && setValue("zipCode", zipCode)
                 address && setValue("address", address)
-                country && setValue("country", country)
                 address2 && setValue("address2", address2)
                 state && setValue("state", setRecord(state, state))
+                country && setValue("country", setRecord(country, country))
               }
             }
           }
@@ -184,8 +188,10 @@ const PatientFormComponent: FC = (): JSX.Element => {
     } = inputs;
     const { id: selectedRace } = race
     const { id: selectedState } = state
+    const { id: selectedCountry } = country
     const { id: selectedEthnicity } = ethnicity
     const { id: selectedRelation } = emergencyRelationship
+    const { id: selectedEmergencyCountry } = emergencyCountry
     const { id: selectedEmergencyState } = emergencyState || {}
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
@@ -203,21 +209,21 @@ const PatientFormComponent: FC = (): JSX.Element => {
     };
 
     const contactInput = {
-      contactType: ContactType.Self, country: country || '', email: '', city: city || '', mobile: '',
+      contactType: ContactType.Self, country: selectedCountry || '', email: '', city: city || '', mobile: '',
       zipCode: zipCode || '', state: selectedState || '', phone: '', address: address || '', address2: address2 || '',
     };
 
     const emergencyContactInput = {
       contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '',
       mobile: '', primaryContact: false, relationship: selectedRelation as RelationshipType || RelationshipType.Ward,
-      city: emergencyCity, state: selectedEmergencyState, country: emergencyCountry, zipCode: emergencyZipCode || '',
+      city: emergencyCity, state: selectedEmergencyState, country: selectedEmergencyCountry, zipCode: emergencyZipCode || '',
       address: emergencyAddress, address2: emergencyAddress2,
     };
 
     const guarantorContactInput = {
       firstName: '', middleName: '', lastName: '', email: '', contactType: ContactType.Guarandor,
       employerName: '', address2: '', zipCode: '', city: '', state: '', phone: '', suffix: '',
-      country: '', ssn: '', address: '', primaryContact: false,
+      country: USA, ssn: '', address: '', primaryContact: false,
     };
 
     const guardianContactInput = {
@@ -343,11 +349,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
-                            <InputController
+                            <Selector
                               isRequired
-                              fieldType="text"
-                              controllerName="country"
-                              controllerLabel={COUNTRY}
+                              value={EMPTY_OPTION}
+                              label={COUNTRY}
+                              name="country"
+                              options={MAPPED_COUNTRIES}
                             />
                           </Grid>
                         </Grid>
@@ -507,10 +514,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="emergencyCountry"
-                              controllerLabel={COUNTRY}
+                            <Selector
+                              value={EMPTY_OPTION}
+                              label={COUNTRY}
+                              name="emergencyCountry"
+                              options={MAPPED_COUNTRIES}
                             />
                           </Grid>
                         </Grid>
@@ -640,12 +648,19 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 className="blue-button" disabled={updatePatientLoading}
                 onClick={handleNextStep}
               >
-                Next
+                {NEXT}
 
                 {updatePatientLoading && <CircularProgress size={20} color="inherit" />}
               </Button>
               :
-              <Button variant="contained" className={consentAgreed ? "blue-button" : ''} type="button" onClick={handleFinish} disabled={!consentAgreed}>Finish</Button>
+              <Button
+                variant="contained" type="button"
+                className={consentAgreed ? "blue-button" : ''}
+                onClick={handleFinish}
+                disabled={!consentAgreed}
+              >
+                {FINISH}
+              </Button>
             }
           </Box>
         </Box>

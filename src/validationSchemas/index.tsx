@@ -87,6 +87,13 @@ const stateSchema = (isRequired: boolean) => {
   }).test('', requiredMessage(STATE), value => isRequired ? !!value : true)
 }
 
+const countrySchema = (isRequired: boolean) => {
+  return yup.object().shape({
+    name: yup.string(),
+    id: yup.string()
+  }).test('', requiredMessage(COUNTRY), value => isRequired ? !!value : true)
+}
+
 const npiSchema = { npi: notRequiredMatches(NPI_VALIDATION_MESSAGE, NPI_REGEX) }
 const ssnSchema = { ssn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX) }
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
@@ -169,6 +176,7 @@ const usualProviderSchema = {
     '', requiredMessage(USUAL_PROVIDER_ID), ({ id }) => !!id
   )
 }
+
 
 const providerIdSchema = {
   providerId: yup.object().shape({
@@ -306,7 +314,7 @@ export const contactSchema = {
   state: stateSchema(false),
   fax: notRequiredPhone(FAX),
   city: notRequiredStringOnly(CITY),
-  country: notRequiredStringOnly(COUNTRY),
+  country: countrySchema(false),
   address: addressValidation(ADDRESS, false),
   address2: addressValidation(ADDRESS, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
@@ -315,11 +323,11 @@ export const contactSchema = {
 
 export const basicContactSchema = {
   basicState: stateSchema(true),
+  basicCountry: countrySchema(true),
   basicCity: requiredStringOnly(CITY, 2, 20),
   basicMobile: notRequiredPhone(MOBILE_NUMBER),
   basicAddress: addressValidation(ADDRESS, true),
   basicAddress2: addressValidation(ADDRESS, false),
-  basicCountry: requiredStringOnly(COUNTRY, 2, 20),
   basicEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   basicZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
   basicPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15))
@@ -329,8 +337,8 @@ export const basicContactSchema = {
 export const billingAddressSchema = {
   billingState: stateSchema(false),
   billingFax: notRequiredPhone(FAX),
+  billingCountry: countrySchema(false),
   billingCity: notRequiredStringOnly(CITY),
-  billingCountry: notRequiredStringOnly(COUNTRY),
   billingEmail: yup.string().email(INVALID_EMAIL),
   billingAddress: addressValidation(ADDRESS, false),
   billingAddress2: addressValidation(ADDRESS, false),
@@ -488,8 +496,8 @@ export const guarantorPatientSchema = {
     id: yup.string().required()
   }).required(requiredMessage(RELATIONSHIP)),
   guarantorState: stateSchema(true),
+  guarantorCountry: countrySchema(false),
   guarantorSuffix: notRequiredStringOnly(SUFFIX),
-  guarantorCountry: notRequiredStringOnly(COUNTRY),
   guarantorAddress2: notRequiredStringOnly(ADDRESS),
   guarantorEmployerName: notRequiredStringOnly(NAME),
   guarantorSsn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX),
@@ -564,15 +572,15 @@ export const externalPatientSchema = yup.object({
   ...ssnSchema,
   ...providerIdSchema,
   state: stateSchema(true),
+  country: countrySchema(true),
   emergencyState: stateSchema(false),
   city: requiredStringOnly(CITY, 2, 20),
+  emergencyCountry: countrySchema(false),
   emergencyPhone: notRequiredPhone(PHONE),
   address: addressValidation(ADDRESS, true),
   emergencyCity: notRequiredStringOnly(CITY),
   emergencyName: notRequiredStringOnly(NAME),
   address2: addressValidation(ADDRESS, false),
-  country: requiredStringOnly(COUNTRY, 2, 20),
-  emergencyCountry: notRequiredStringOnly(COUNTRY),
   language: notRequiredStringOnly(PREFERRED_LANGUAGE),
   emergencyAddress: addressValidation(ADDRESS, false),
   emergencyAddress2: addressValidation(ADDRESS, false),

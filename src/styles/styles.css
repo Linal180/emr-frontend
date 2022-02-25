@@ -298,3 +298,12 @@ body .MuiTabPanel-root {
   max-width: 532px;
   padding-bottom: 26px;
 }
+
+.billing-box {
+  color: #009EF6;
+  cursor: pointer;
+}
+
+.billing-box .MuiTypography-root {
+  padding-left: 5px;
+}
