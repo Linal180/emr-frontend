@@ -2,6 +2,7 @@ import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { WHITE_FOUR } from '../../../theme';
 
 const currencies = [
   {
@@ -27,13 +28,15 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       '& .MuiTextField-root': {
         margin: theme.spacing(1),
+        border: `1px solid ${WHITE_FOUR}`,
         width: '12ch',
       },
       '& .MuiSelect-selectMenu': {
+        margin: theme.spacing(1),
         minHeight: 'auto'
       },
       '& .MuiSelect-select': {
-        padding: 'auto'
+        padding: 0
       }
     },
   }),

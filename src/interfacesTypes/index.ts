@@ -326,6 +326,7 @@ interface IControlLabel {
   fieldType?: string;
   disabled?: boolean;
   isRequired?: boolean;
+  multiline?: boolean;
   isPassword?: boolean;
   controllerLabel?: string;
   pattern?: ValidationRule<RegExp> | undefined;

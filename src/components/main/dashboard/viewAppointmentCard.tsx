@@ -4,16 +4,19 @@ import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Box, Grid, Button, Dialog, DialogTitle } from '@material-ui/core';
 // component block
 import Selector from '../../common/Selector';
-import InputController from '../../../controller';
 import DatePicker from '../../common/DatePicker';
+import InputController from '../../../controller';
 // constant block
+import { WHITE_FOUR } from '../../../theme';
 import { ListContext } from '../../../context';
 import { renderFacilities } from '../../../utils';
-import { DOB, FACILITY_LOCATIONS_TEXT, PROVIDER } from '../../../constants';
 import { ViewAppointmentCardProps } from '../../../interfacesTypes';
+import { useCalendarStyles } from '../../../styles/calendarStyles';
+import { DELETE, DOB_TIME, FACILITY_LOCATIONS_TEXT, PROVIDER, SAVE_APPOINTMENT } from '../../../constants';
 
 const ViewAppointmentCard: FC<ViewAppointmentCardProps> = ({ isOpen, setIsOpen, title }) => {
   const { facilityList } = useContext(ListContext)
+  const classes = useCalendarStyles()
   const methods = useForm<any>({
     mode: "all",
   });
@@ -49,8 +52,17 @@ const ViewAppointmentCard: FC<ViewAppointmentCardProps> = ({ isOpen, setIsOpen, 
                 />
               </Grid>
 
-              <Grid item>
-                <DatePicker isRequired name="dob" label={DOB} error={''} />
+              <Grid container spacing={2}>
+                <Grid item md={8}>
+                  <DatePicker name="dob" label={DOB_TIME} error={''} />
+                </Grid>
+
+                <Grid item md={4}>
+                  <InputController
+                    fieldType="time"
+                    controllerName="time"
+                  />
+                </Grid>
               </Grid>
 
               <Grid item>
@@ -58,16 +70,17 @@ const ViewAppointmentCard: FC<ViewAppointmentCardProps> = ({ isOpen, setIsOpen, 
                   fieldType="text"
                   controllerName="note"
                   controllerLabel="Note"
+                  multiline
                 />
               </Grid>
             </Grid>
 
-            <Box display="flex" justifyContent="space-between">
+            <Box display="flex" justifyContent="space-between" pt={3} sx={{ borderTop: `1px solid ${WHITE_FOUR}` }}>
               <Box onClick={handleClose}>
-                <Button type="submit" variant="contained" color="secondary">Cancel</Button>
+                <Button type="submit" color="secondary" className={classes.deleteButton}>{DELETE}</Button>
               </Box>
               <Box onClick={handleClose}>
-                <Button type="submit" variant="contained" color="primary">Save</Button>
+                <Button type="submit" variant="contained" color="primary">{SAVE_APPOINTMENT}</Button>
               </Box>
             </Box>
           </Box>

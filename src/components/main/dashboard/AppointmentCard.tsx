@@ -1,22 +1,23 @@
 // packages block
 import { useEffect, useState } from "react";
-import { Box, Button, Card, CardHeader, IconButton, Menu, Typography } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
+import { Box, Button, Card, CardHeader, IconButton, Menu, Typography } from "@material-ui/core";
 // component block
 import MultilineTextFields from "./selector";
 import ViewAppointmentCard from "./viewAppointmentCard";
-// constant block
-import { usePatientChartingStyles } from "../../../styles/patientCharting";
-import { APPOINTMENT_DETAILS, DELETE_APPOINTMENT_DESCRIPTION, dummyAppointmentSubData } from "../../../constants";
-import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
-import { Close } from "@material-ui/icons";
 import ConfirmationModal from "../../common/ConfirmationModal";
+// constant block
+import { WHITE_FOUR } from "../../../theme";
+import { useCalendarStyles } from "../../../styles/calendarStyles";
+import { APPOINTMENT_DETAILS, DELETE, DELETE_APPOINTMENT_DESCRIPTION, dummyAppointmentSubData, EDIT_APPOINTMENT } from "../../../constants";
 
 const AppointmentCard = ({ visible, onHide, showCloseButton }: AppointmentTooltip.LayoutProps): JSX.Element => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isEditOpen, setIsEditOpen] = useState<boolean>(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
-  const classes = usePatientChartingStyles()
+  const classes = useCalendarStyles()
   const methods = useForm<any>({
     mode: "all",
   });
@@ -57,12 +58,12 @@ const AppointmentCard = ({ visible, onHide, showCloseButton }: AppointmentToolti
           onClick={onHide}
         >
           <Close />
-        </IconButton>} />
+        </IconButton>} className={classes.cardHeader} />
         <Box>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Box display='flex' alignItems='center'>
-                <Typography>Tue Feb 15, 2022  - 08:00 - 08:30 am</Typography>
+              <Box display='flex' alignItems='center' pb={3}>
+                <Typography variant="subtitle2" color="inherit" title="">Tue Feb 15, 2022  - 08:00 - 08:30 am</Typography>
                 <MultilineTextFields />
               </Box>
             </form>
@@ -70,19 +71,19 @@ const AppointmentCard = ({ visible, onHide, showCloseButton }: AppointmentToolti
 
           {dummyAppointmentSubData.map(({ heading, description }) => {
             return (
-              <Box display='flex' justifyContent='space-between'>
-                <Typography>{heading}</Typography>
-                <Typography>{description}</Typography>
+              <Box display='flex' justifyContent='space-between' pb={1}>
+                <Typography variant="body2">{heading}</Typography>
+                <Typography variant="subtitle2" color="inherit">{description}</Typography>
               </Box>
             )
           })}
 
-          <Box display="flex" justifyContent="space-between" pt={3}>
+          <Box display="flex" justifyContent="space-between" mt={3} pt={3} marginTop={12} sx={{ borderTop: `1px solid ${WHITE_FOUR}` }}>
             <Box onClick={deleteHandleClick}>
-              <Button type="submit" variant="contained" color="secondary">Delete</Button>
+              <Button type="submit" color="secondary" className={classes.deleteButton}>{DELETE}</Button>
             </Box>
             <Box onClick={editHandleClick}>
-              <Button type="submit" variant="contained" color="primary">Edit Appointment</Button>
+              <Button type="submit" variant="contained" color="primary">{EDIT_APPOINTMENT}</Button>
             </Box>
           </Box>
 

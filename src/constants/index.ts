@@ -162,6 +162,7 @@ export const PROVIDER_INITIALS = "Provider Initials";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SPECIALTY = "Specialty";
 export const DOB = "Date of Birth";
+export const DOB_TIME = "Date/Time";
 export const DECEASED_DATE = "Deceased Date";
 export const DOCTOR_ID = "doctor id";
 export const PATIENT_ID = "patient id";
@@ -531,6 +532,8 @@ export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Plea
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+export const DELETE = "Delete";
+export const SAVE_APPOINTMENT = "Save Appointment";
 
 // Roles
 export const STAFF = "STAFF";
