@@ -2,7 +2,7 @@
 import states from 'states-us';
 import moment from 'moment-timezone';
 // graphql and interfaces block
-import { formatValue } from '../utils';
+import { formatServiceCode, formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
@@ -43,11 +43,20 @@ export enum DAYS {
   Sunday = "Sunday",
 };
 export const ADD = "Add";
+export const NEXT = "Next";
 export const VIEW = "View";
+export const FINISH = "Finish";
 export const ALL_STAFF = "Staff";
-export const LINK_COPIED = "Link Copied";
-export const PUBLIC_LINK = "Public Appointment Link";
 export const MINUTES = "minutes";
+export const USA = "United States";
+export const LINK_COPIED = "Link Copied";
+export const BILLING_PROFILE = "Billing Profile";
+export const PAYABLE_ADDRESS = "Payable Address";
+export const BILLING_IDENTIFIER = "Billing Identifier";
+export const PUBLIC_LINK = "Public Appointment Link";
+export const FACILITY_LOCATION = "Facility Location";
+export const ADD_FACILITY_BILLING = "Add billing for this facility";
+export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
 export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
@@ -99,6 +108,11 @@ export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
+export const PRACTICE_MANAGEMENT_TEXT = "Practice Management";
+export const USER_DETAILS_TEXT = "User Details";
+export const PRACTICE_DETAILS_TEXT = "Practice Details";
+export const FACILITY_DETAILS_TEXT = "Facility Details";
+export const ADD_NEW_PRACTICE_TEXT = "Add New Practice";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
@@ -128,7 +142,7 @@ export const FACILITY_BILLING_INFO = "Facility BIling Information";
 export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
 export const VITALS_TEXT = "Vitals";
-export const VITALS_ROUTE = "/vitals";
+export const SAVE_TEXT = "Save";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const ALLERGIES_TEXT = "Allergies";
@@ -169,6 +183,7 @@ export const DEA_TERM_DATE = "DEA Term Date";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
 export const EMAIL = "Email";
+export const PRACTICE_IDENTIFIER = "Practice Identifier";
 export const GROWTH_CHART = "Growth Chart";
 export const PDF_TEXT = "PDF";
 export const PHONE = "Phone";
@@ -299,6 +314,8 @@ export const REPORTS_TEXT = "Reports";
 export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
 export const FIRST_NAME = "First Name";
+export const PRACTICE_NAME = "Practice Name";
+export const FACILITY_NAME = "Facilty Name";
 export const SEND_EMAIL = "Send Email";
 export const START_TIME = "Start Time";
 export const END_TIME = "End Time";
@@ -307,6 +324,7 @@ export const CLINICAL_TEXT = "Clinical";
 export const INVOICES_TEXT = "Invoices";
 export const PATIENTS_TEXT = "Patients";
 export const PATIENT = "Patient";
+export const PRACTICE = "Practice";
 export const DOCTOR = "Doctor";
 export const DOCTOR_SCHEDULE = "Doctor Schedule";
 export const DURATION = "Duration";
@@ -484,6 +502,7 @@ export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
 export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION = "Confirm to delete doctor schedule";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
+export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
 export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
@@ -529,26 +548,28 @@ export const SUPER_ADMIN = "SUPER_ADMIN";
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
 export const STAFF_ROUTE = "/staff";
-export const PATIENTS_CHART = "/chart";
 export const DOCTORS_ROUTE = "/doctors";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
+export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
+export const PATIENTS_CHART = "/chart";
+export const VITALS_ROUTE = "/vitals";
+export const APPOINTMENTS_ROUTE = "/appointments";
+export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
+export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
-export const APPOINTMENTS_ROUTE = "/appointments";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const PATIENT_INFORMATION = "/patient-information";
-export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
-export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
@@ -823,28 +844,59 @@ export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezon
   return { id: timezone, name: formatValue(timezone) }
 })
 
+export const MAPPED_COUNTRIES: SelectorOption[] = [{id: USA, name: USA}];
 export const MAPPED_STATES: SelectorOption[] = states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
-  { id: ServiceCode.Hospice_34, name: formatValue(ServiceCode.Hospice_34) },
-  { id: ServiceCode.Ambulance_41, name: formatValue(ServiceCode.Ambulance_41) },
-  { id: ServiceCode.Ambulance_42, name: formatValue(ServiceCode.Ambulance_42) },
-  { id: ServiceCode.Ambulance_24, name: formatValue(ServiceCode.Ambulance_24) },
-  { id: ServiceCode.GroupHome_14, name: formatValue(ServiceCode.GroupHome_14) },
-  { id: ServiceCode.EmergencyRoom_23, name: formatValue(ServiceCode.EmergencyRoom_23) },
-  { id: ServiceCode.AssistedLiving_13, name: formatValue(ServiceCode.AssistedLiving_13) },
-  { id: ServiceCode.BirthingCenter_25, name: formatValue(ServiceCode.BirthingCenter_25) },
-  { id: ServiceCode.HomelessShelter_04, name: formatValue(ServiceCode.HomelessShelter_04) },
-  { id: ServiceCode.IndependentClinic_49, name: formatValue(ServiceCode.IndependentClinic_49) },
-  { id: ServiceCode.IndependentLaboratory_81, name: formatValue(ServiceCode.IndependentLaboratory_81) },
-  { id: ServiceCode.CustodialCareFacility_33, name: formatValue(ServiceCode.CustodialCareFacility_33) },
-  { id: ServiceCode.CommunityMentalHealthCenter_53, name: formatValue(ServiceCode.CommunityMentalHealthCenter_53) },
-  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: formatValue(ServiceCode.FederallyQualifiedHealthCenter_50) },
-  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: formatValue(ServiceCode.EndStageRenalDiseaseTreatmentFacility_65) },
-  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: formatValue(ServiceCode.IndianHealthServiceFreeStandingFacility_05) },
-  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: formatValue(ServiceCode.IndianHealthServiceProviderBasedFacility_06) },
-  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: formatValue(ServiceCode.ComprehensiveInpatientRehabilitationFacility_61) },
-  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: formatValue(ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62) },
+  { id: ServiceCode.Pharmacy_01, name: formatServiceCode(ServiceCode.Pharmacy_01) },
+  { id: ServiceCode.TelehealthOtherThanPatientHome_02, name: formatServiceCode(ServiceCode.TelehealthOtherThanPatientHome_02) },
+  { id: ServiceCode.School_03, name: formatServiceCode(ServiceCode.School_03) },
+  { id: ServiceCode.HomelessShelter_04, name: formatServiceCode(ServiceCode.HomelessShelter_04) },
+  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: formatServiceCode(ServiceCode.IndianHealthServiceFreeStandingFacility_05) },
+  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: formatServiceCode(ServiceCode.IndianHealthServiceProviderBasedFacility_06) },
+  { id: ServiceCode.Tribal_07, name: formatServiceCode(ServiceCode.Tribal_07) },
+  { id: ServiceCode.Prison_09, name: formatServiceCode(ServiceCode.Prison_09) },
+  { id: ServiceCode.Telehealth_10, name: formatServiceCode(ServiceCode.Telehealth_10) },
+  { id: ServiceCode.Prison_10, name: formatServiceCode(ServiceCode.Prison_10) },
+  { id: ServiceCode.Office_11, name: formatServiceCode(ServiceCode.Office_11) },
+  { id: ServiceCode.Home_12, name: formatServiceCode(ServiceCode.Home_12) },
+  { id: ServiceCode.AssistedLiving_13, name: formatServiceCode(ServiceCode.AssistedLiving_13) },
+  { id: ServiceCode.GroupHome_14, name: formatServiceCode(ServiceCode.GroupHome_14) },
+  { id: ServiceCode.MobileUnit_15, name: formatServiceCode(ServiceCode.MobileUnit_15) },
+  { id: ServiceCode.TemporaryLoOgoing_16, name: formatServiceCode(ServiceCode.TemporaryLoOgoing_16) },
+  { id: ServiceCode.PlaceOfEmployment_18, name: formatServiceCode(ServiceCode.PlaceOfEmployment_18) },
+  { id: ServiceCode.OffCampusOutpatientHospital_19, name: formatServiceCode(ServiceCode.OffCampusOutpatientHospital_19) },
+  { id: ServiceCode.UrgentCare_20, name: formatServiceCode(ServiceCode.UrgentCare_20) },
+  { id: ServiceCode.InpatientHospital_21, name: formatServiceCode(ServiceCode.InpatientHospital_21) },
+  { id: ServiceCode.OutpatientHospital_22, name: formatServiceCode(ServiceCode.OutpatientHospital_22) },
+  { id: ServiceCode.EmergencyRoomHospital_23, name: formatServiceCode(ServiceCode.EmergencyRoomHospital_23) },
+  { id: ServiceCode.AmbulatorySurgicalCenter_24, name: formatServiceCode(ServiceCode.AmbulatorySurgicalCenter_24) },
+  { id: ServiceCode.BirthingCenter_25, name: formatServiceCode(ServiceCode.BirthingCenter_25) },
+  { id: ServiceCode.MilitaryTreatmentFacility_26, name: formatServiceCode(ServiceCode.MilitaryTreatmentFacility_26) },
+  { id: ServiceCode.SkilledNursingFacility_31, name: formatServiceCode(ServiceCode.SkilledNursingFacility_31) },
+  { id: ServiceCode.NursingFacility_32, name: formatServiceCode(ServiceCode.NursingFacility_32) },
+  { id: ServiceCode.CustodialCareFacility_33, name: formatServiceCode(ServiceCode.CustodialCareFacility_33) },
+  { id: ServiceCode.Hospice_34, name: formatServiceCode(ServiceCode.Hospice_34) },
+  { id: ServiceCode.AmbulanceLand_41, name: formatServiceCode(ServiceCode.AmbulanceLand_41) },
+  { id: ServiceCode.Ambulance_42, name: formatServiceCode(ServiceCode.Ambulance_42) },
+  { id: ServiceCode.IndependentClinic_49, name: formatServiceCode(ServiceCode.IndependentClinic_49) },
+  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: formatServiceCode(ServiceCode.FederallyQualifiedHealthCenter_50) },
+  { id: ServiceCode.InpatientPsychiatricFacility_51, name: formatServiceCode(ServiceCode.InpatientPsychiatricFacility_51) },
+  { id: ServiceCode.PsychiatricFacilityPartialHospitilization_52, name: formatServiceCode(ServiceCode.PsychiatricFacilityPartialHospitilization_52) },
+  { id: ServiceCode.CommunityMentalHealthCenter_53, name: formatServiceCode(ServiceCode.CommunityMentalHealthCenter_53) },
+  { id: ServiceCode.IntermediateCareFacilityMentallyRetarded_54, name: formatServiceCode(ServiceCode.IntermediateCareFacilityMentallyRetarded_54) },
+  { id: ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55, name: formatServiceCode(ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55) },
+  { id: ServiceCode.PsychiatricResidentialTreatmentCenter_56, name: formatServiceCode(ServiceCode.PsychiatricResidentialTreatmentCenter_56) },
+  { id: ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57, name: formatServiceCode(ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57) },
+  { id: ServiceCode.NonResidentialOpioidTreatmentFacility_58, name: formatServiceCode(ServiceCode.NonResidentialOpioidTreatmentFacility_58) },
+  { id: ServiceCode.MassImmunizationCenter_60, name: formatServiceCode(ServiceCode.MassImmunizationCenter_60) },
+  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: formatServiceCode(ServiceCode.ComprehensiveInpatientRehabilitationFacility_61) },
+  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: formatServiceCode(ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62) },
+  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: formatServiceCode(ServiceCode.EndStageRenalDiseaseTreatmentFacility_65) },
+  { id: ServiceCode.StateOrLocalPublicHealthClinic_71, name: formatServiceCode(ServiceCode.StateOrLocalPublicHealthClinic_71) },
+  { id: ServiceCode.RuralHealthClinic_72, name: formatServiceCode(ServiceCode.RuralHealthClinic_72) },
+  { id: ServiceCode.IndependentLaboratory_81, name: formatServiceCode(ServiceCode.IndependentLaboratory_81) },
+  { id: ServiceCode.WalkInRetailHealthClinic, name: formatServiceCode(ServiceCode.WalkInRetailHealthClinic) },
 ];
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [

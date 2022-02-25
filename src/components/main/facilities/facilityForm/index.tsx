@@ -1,8 +1,11 @@
 // packages block
 import { FC, useEffect, useContext, Reducer, useReducer } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { AddCircleOutline } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
+import {
+  Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup, Grid, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
@@ -23,12 +26,12 @@ import {
   PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ADDRESS_2, BILLING_ADDRESS, FACILITY_CONTACT, FACILITY_IDS, FEDERAL_TAX_ID, CLIA_ID_NUMBER, CODE,
-  TIME_ZONE_TEXT, MAPPED_TIME_ZONES, CREATE_FACILITY, EMPTY_OPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY,
-  EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, INSURANCE_PLAN_TYPE, MAPPED_PRACTICE_TYPES, NAME,
-  NPI, REVENUE_CODE, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, FACILITY_NOT_FOUND,
-  FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES,
+  ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING,
+  CREATE_FACILITY, EMPTY_OPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES,
+  FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED,
+  MAPPED_PRACTICE_TYPES, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, CANCEL,
+  FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION,
+  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -37,8 +40,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(facilitySchema)
   });
-  const { reset, handleSubmit, setValue } = methods;
-  const [{ facility }, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
+  const { reset, handleSubmit, setValue, watch } = methods;
+  const { email, zipCode, phone, fax, address, address2, city, state, country } = watch()
+  const [{ facility, sameAddress, addBilling }, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
@@ -62,8 +66,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           if (facility && status && status === 200) {
             const {
               name, cliaIdNumber, federalTaxId, insurancePlanType, mammographyCertificationNumber,
-              npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode, timeZone,
-              contacts, billingAddress,
+              npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode, timeZone, billingAddress,
+              contacts,
             } = facility
 
             dispatch({ type: ActionType.SET_FACILITY, facility })
@@ -92,9 +96,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               mobile && setValue('mobile', mobile)
               zipCode && setValue('zipCode', zipCode)
               address && setValue('address', address)
-              country && setValue('country', country)
               address2 && setValue('address2', address2)
               state && setValue('state', setRecord(state, state))
+              country && setValue('country', setRecord(country, country))
             }
 
             if (billingAddress) {
@@ -105,10 +109,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               email && setValue('billingEmail', email)
               phone && setValue('billingPhone', phone)
               address && setValue('billingAddress', address)
-              country && setValue('billingCountry', country)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
               state && setValue('billingState', setRecord(state, state))
+              country && setValue('billingCountry', setRecord(country, country))
             }
           }
         }
@@ -164,9 +168,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   useEffect(() => {
     if (isEdit) {
       id ?
-        getFacility({ variables: { getFacility: { id } } })
-        :
-        Alert.error(FACILITY_NOT_FOUND)
+        getFacility({ variables: { getFacility: { id } } }) : Alert.error(FACILITY_NOT_FOUND)
     }
   }, [getFacility, isEdit, id])
 
@@ -179,31 +181,33 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       billingAddress, billingZipCode, timeZone
     } = inputs;
 
-    const { name: timeZoneName } = timeZone
-    const { id: selectedServiceCode } = serviceCode;
     const { id: selectedState } = state;
-    const { id: selectedBillingState } = billingState;
+    const { name: timeZoneName } = timeZone;
+    const { id: selectedCountry } = country;
+    const { id: selectedServiceCode } = serviceCode;
     const { id: selectedPracticeType } = practiceType;
+    const { id: selectedBillingState } = billingState;
+    const { id: selectedBillingCountry } = billingCountry;
 
     const facilityInput = {
       name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
       insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
       timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '',
       practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
-      serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Ambulance_24,
+      serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
       mammographyCertificationNumber: mammographyCertificationNumber || '',
       revenueCode: revenueCode || '',
     }
 
     const contactInput = {
       phone: phone || '', email: email || '', fax: fax || '', city: city || '',
-      state: selectedState || '', country: country || '', zipCode: zipCode || '', address: address || '',
+      state: selectedState || '', country: selectedCountry || '', zipCode: zipCode || '', address: address || '',
       address2: address2 || '', primaryContact: true
     }
 
     const billingAddressInput = {
       phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '',
-      state: selectedBillingState || '', country: billingCountry || '', zipCode: billingZipCode || '',
+      state: selectedBillingState || '', country: selectedBillingCountry || '', zipCode: billingZipCode || '',
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || ''
     }
 
@@ -237,6 +241,45 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
+  const copyAddress = () => {
+    fax && setValue("billingFax", fax)
+    city && setValue("billingCity", city)
+    phone && setValue("billingPhone", phone)
+    email && setValue("billingEmail", email)
+    state && setValue("billingState", state)
+    zipCode && setValue("billingZipCode", zipCode)
+    address && setValue("billingAddress", address)
+    country && setValue("billingCountry", country)
+    address2 && setValue("billingAddress2", address2)
+  };
+
+  const resetBillingAddress = () => {
+    setValue("billingFax", '')
+    setValue("billingCity", '')
+    setValue("billingPhone", '')
+    setValue("billingEmail", '')
+    setValue("billingAddress", '')
+    setValue("billingZipCode", '')
+    setValue("billingAddress2", '')
+    setValue("billingState", setRecord('', ''))
+    setValue("billingCountry", setRecord('', ''))
+  };
+
+  const setBillingValues = (checked: boolean) => checked ? copyAddress() : resetBillingAddress()
+
+  const cancelBilling = () => {
+    dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: false })
+    dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })
+
+    resetBillingAddress()
+  };
+
+  const handleSameAddress = (checked: boolean) => {
+    dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: checked })
+
+    setBillingValues(checked);
+  }
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -265,11 +308,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={6}>
-                        <InputController
+                        <Selector
                           isRequired
-                          fieldType="text"
-                          controllerName="code"
-                          controllerLabel={CODE}
+                          value={EMPTY_OPTION}
+                          label={SERVICE_CODE}
+                          name="serviceCode"
+                          options={MAPPED_SERVICE_CODES}
                         />
                       </Grid>
 
@@ -289,158 +333,166 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               <Box pb={3} />
 
-              <CardComponent cardTitle={FACILITY_IDS} isEdit={true}>
+              <CardComponent cardTitle={BILLING_PROFILE} isEdit={true}>
                 {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="cliaIdNumber"
-                          controllerLabel={CLIA_ID_NUMBER}
-                        />
+                    <Collapse in={!addBilling} mountOnEnter unmountOnExit>
+                      <Box pb={3}
+                        onClick={() => dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })}
+                        className="billing-box" display="flex" alignItems="center"
+                      >
+                        <AddCircleOutline color='inherit' />
+
+                        <Typography>{ADD_FACILITY_BILLING}</Typography>
+                      </Box>
+                    </Collapse>
+
+                    <Collapse in={addBilling} mountOnEnter unmountOnExit>
+                      <Box display="flex" alignItems="center" justifyContent="space-between" onClick={cancelBilling}>
+                        <Typography component="p" variant='h5'>{PAYABLE_ADDRESS}</Typography>
+                        <Button color='secondary' variant='contained' className='blue-button'>{CANCEL}</Button>
+                      </Box>
+
+                      <FormControl component="fieldset">
+                        <FormGroup>
+                          <Box mr={3} mb={2} mt={2}>
+                            <FormControlLabel
+                              label={SAME_AS_FACILITY_LOCATION}
+                              control={
+                                <Checkbox color="primary" checked={sameAddress}
+                                  onChange={({ target: { checked } }) => handleSameAddress(checked)}
+                                />
+                              }
+                            />
+                          </Box>
+                        </FormGroup>
+                      </FormControl>
+
+                      <Grid container spacing={3}>
+                        <Grid item md={8}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="billingEmail"
+                            controllerLabel={EMAIL}
+                          />
+                        </Grid>
+
+                        <Grid item md={4}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="billingZipCode"
+                            controllerLabel={ZIP}
+                          />
+                        </Grid>
                       </Grid>
 
-                      <Grid item md={6}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="federalTaxId"
-                          controllerLabel={FEDERAL_TAX_ID}
-                        />
-                      </Grid>
-                    </Grid>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <PhoneField name="billingPhone" label={PHONE} />
+                        </Grid>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="tamxonomyCode"
-                          controllerLabel={TAXONOMY_CODE}
-                        />
+                        <Grid item md={6} sm={12} xs={12}>
+                          <PhoneField name="billingFax" label={FAX} />
+                        </Grid>
                       </Grid>
 
-                      <Grid item md={6}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="revenueCode"
-                          controllerLabel={REVENUE_CODE}
-                        />
+                      <InputController
+                        fieldType="text"
+                        controllerName="billingAddress"
+                        controllerLabel={ADDRESS}
+                      />
+
+                      <InputController
+                        fieldType="text"
+                        controllerName="billingAddress2"
+                        controllerLabel={ADDRESS_2}
+                      />
+
+                      <Grid container spacing={3}>
+                        <Grid item md={4}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="billingCity"
+                            controllerLabel={CITY}
+                          />
+                        </Grid>
+
+                        <Grid item md={4}>
+                          <Selector
+                            value={EMPTY_OPTION}
+                            label={STATE}
+                            name="billingState"
+                            options={MAPPED_STATES}
+                          />
+                        </Grid>
+
+                        <Grid item md={4}>
+                          <Selector
+                            label={COUNTRY}
+                            value={EMPTY_OPTION}
+                            name="billingCountry"
+                            options={MAPPED_COUNTRIES}
+                          />
+                        </Grid>
                       </Grid>
-                    </Grid>
 
-                    <InputController
-                      fieldType="text"
-                      controllerName="insurancePlanType"
-                      controllerLabel={INSURANCE_PLAN_TYPE}
-                    />
+                      <Box py={2}>
+                        <Typography component="p" variant='h5'>{BILLING_IDENTIFIER}</Typography>
+                      </Box>
 
-                    <Grid container spacing={3}>
-                      <Grid item md={6}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="mammographyCertificationNumber"
-                          controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
-                        />
+                      <Grid container spacing={3}>
+                        <Grid item md={6}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="cliaIdNumber"
+                            controllerLabel={CLIA_ID_NUMBER}
+                          />
+                        </Grid>
+
+                        <Grid item md={6}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="federalTaxId"
+                            controllerLabel={FEDERAL_TAX_ID}
+                          />
+                        </Grid>
                       </Grid>
 
-                      <Grid item md={6}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="npi"
-                          controllerLabel={NPI}
-                        />
-                      </Grid>
-                    </Grid>
+                      <Grid container spacing={3}>
+                        <Grid item md={6}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="tamxonomyCode"
+                            controllerLabel={TAXONOMY_CODE}
+                          />
+                        </Grid>
 
-                    <Selector
-                      isRequired
-                      value={EMPTY_OPTION}
-                      label={SERVICE_CODE}
-                      name="serviceCode"
-                      options={MAPPED_SERVICE_CODES}
-                    />
+                        <Grid item md={6}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="npi"
+                            controllerLabel={NPI}
+                          />
+                        </Grid>
+                      </Grid>
+
+                      <Grid container spacing={3}>
+                        <Grid item md={6}>
+                          <InputController
+                            fieldType="text"
+                            controllerName="mammographyCertificationNumber"
+                            controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Collapse>
                   </>
                 )}
               </CardComponent>
             </Grid>
 
             <Grid item md={6}>
-              <CardComponent cardTitle={BILLING_ADDRESS} isEdit={true}>
-                {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={8}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingEmail"
-                          controllerLabel={EMAIL}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingZipCode"
-                          controllerLabel={ZIP}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="billingPhone" label={PHONE} />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="billingFax" label={FAX} />
-                      </Grid>
-                    </Grid>
-
-                    <InputController
-                      fieldType="text"
-                      controllerName="billingAddress"
-                      controllerLabel={ADDRESS}
-                    />
-
-                    <InputController
-                      fieldType="text"
-                      controllerName="billingAddress2"
-                      controllerLabel={ADDRESS_2}
-                    />
-
-                    <Grid container spacing={3}>
-                      <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingCity"
-                          controllerLabel={CITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          value={EMPTY_OPTION}
-                          label={STATE}
-                          name="billingState"
-                          options={MAPPED_STATES}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="billingCountry"
-                          controllerLabel={COUNTRY}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={FACILITY_CONTACT} isEdit={true}>
+              <CardComponent cardTitle={FACILITY_LOCATION} isEdit={true}>
                 {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
@@ -503,10 +555,11 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
                       <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="country"
-                          controllerLabel={COUNTRY}
+                        <Selector
+                          name="country"
+                          label={COUNTRY}
+                          value={EMPTY_OPTION}
+                          options={MAPPED_COUNTRIES}
                         />
                       </Grid>
                     </Grid>

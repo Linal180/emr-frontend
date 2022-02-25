@@ -4,11 +4,10 @@ import dotenv from 'dotenv';
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import { InsertLink } from '@material-ui/icons';
-import {
-  Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell, Button
-} from "@material-ui/core";
+import { Box, IconButton, Table, TableBody, TableHead, TableRow, TableCell, Button } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
+import Search from "./Search";
 import TableLoader from "./TableLoader";
 import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
@@ -17,7 +16,7 @@ import { AuthContext } from "../../context";
 import { getFormattedDate, renderTh, getISOTime } from "../../utils";
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../assets/svgs"
+import { EditIcon, TrashIcon } from "../../assets/svgs"
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
@@ -174,27 +173,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     dispatch({ type: ActionType.SET_COPIED, copied: true })
   };
 
+  const search = (query: string) => { }
+
   return (
     <Box className={classes.mainTableContainer}>
       <Box className={classes.searchContainer}>
-        <TextField
-          name="searchQuery"
-          className={classes.tablesSearchIcon}
-          value={searchQuery}
-          onChange={({ target: { value } }) =>
-            dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: value })
-          }
-          onKeyPress={({ key }) => key === "Enter"}
-          placeholder="Search"
-          variant="outlined"
-          fullWidth
-          InputProps={{
-            startAdornment:
-              <IconButton color="default">
-                <TablesSearchIcon />
-              </IconButton>
-          }}
-        />
+        <Search search={search} />
 
         {facilityId &&
           <Button variant="contained" className="blue-button"

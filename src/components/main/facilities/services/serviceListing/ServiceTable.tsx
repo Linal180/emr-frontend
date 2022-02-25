@@ -2,9 +2,10 @@
 import { FC, useEffect, ChangeEvent, Reducer, useReducer } from "react";
 import { Link, useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, IconButton, Table, TableBody, TableHead, TextField, TableRow, TableCell } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
+import Search from "../../../../common/Search";
 import TableLoader from "../../../../common/TableLoader";
 import ConfirmationModal from "../../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
@@ -13,7 +14,7 @@ import { renderTh } from "../../../../../utils";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
 import { BLUE_FIVE, BLUE_FOUR, RED, RED_ONE } from "../../../../../theme";
-import { EditIcon, TablesSearchIcon, TrashIcon } from "../../../../../assets/svgs";
+import { EditIcon, TrashIcon } from "../../../../../assets/svgs";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
 } from '../../../../../reducers/serviceReducer';
@@ -111,31 +112,12 @@ const ServicesTable: FC = (): JSX.Element => {
 
   const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
 
-  const handleSearch = () => { }
+  const search = (query: string) => { }
 
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box className={classes.searchContainer}>
-          <TextField
-            value={searchQuery}
-            className={classes.tablesSearchIcon}
-            onChange={({ target: { value } }) => dispatch({
-              type: ActionType.SET_SEARCH_QUERY, searchQuery: value
-            })}
-            onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-            name="searchQuery"
-            variant="outlined"
-            placeholder="Search"
-            fullWidth
-            InputProps={{
-              startAdornment:
-                <IconButton color="default">
-                  <TablesSearchIcon />
-                </IconButton>
-            }}
-          />
-        </Box>
+        <Search search={search} />
 
         <Box className="table-overflow">
           <Table aria-label="customized table">
