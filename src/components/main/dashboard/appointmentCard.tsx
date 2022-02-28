@@ -26,9 +26,7 @@ const AppointmentCard = ({ visible, onHide }: AppointmentTooltip.LayoutProps): J
     setIsOpen(!isOpen)
   }
 
-  const editHandleClick = () => {
-    alert('hello')
-  }
+  const editHandleClick = () => { }
 
   const deleteHandleClick = () => {
     setIsDeleteOpen(true)
