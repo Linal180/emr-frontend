@@ -4,7 +4,7 @@ import {
 
 export interface State {
   facilityPages: number;
-  facilityList: FacilitiesPayload['facility'];
+  facilityList: FacilitiesPayload['facilities'];
   servicePages: number;
   serviceList: ServicesPayload['services']
   locationPages: number;
@@ -43,7 +43,7 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_FACILITY_PAGES; facilityPages: number }
-  | { type: ActionType.SET_FACILITY_LIST; facilityList: FacilitiesPayload['facility'] }
+  | { type: ActionType.SET_FACILITY_LIST; facilityList: FacilitiesPayload['facilities'] }
   | { type: ActionType.SET_SERVICE_PAGES; servicePages: number }
   | { type: ActionType.SET_SERVICE_LIST; serviceList: ServicesPayload['services'] }
   | { type: ActionType.SET_DOCTOR_PAGES; doctorPages: number }

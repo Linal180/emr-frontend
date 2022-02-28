@@ -542,7 +542,7 @@ export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
 export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
 export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
 export const VERIFY_EMAIL_TEXT = "We have sent an email to example@emr.com please follow a link to verify your email";
-export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account and start a new project";
+export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
@@ -615,6 +615,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const MAINTENANCE_ALERT = "Maintenance is in progress";
 export const CANCEL_TIME_EXPIRED_MESSAGE = "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
 export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";

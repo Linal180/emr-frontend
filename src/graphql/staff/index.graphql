@@ -44,13 +44,10 @@ query FindAllStaff($staffInput: StaffInput!) {
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode
@@ -107,13 +104,10 @@ query GetStaff($getStaff: GetStaff!){
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode
@@ -179,13 +173,10 @@ mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode
@@ -236,13 +227,10 @@ mutation CreateStaff($createStaffInput: CreateStaffInput!) {
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode

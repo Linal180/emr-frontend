@@ -46,15 +46,17 @@ const PracticeTable: FC = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { findAllPractices } = data || {};
+      if (data) {
+        const { findAllPractices } = data;
 
-      if (findAllPractices) {
-        const { pagination, practices } = findAllPractices
-        practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
+        if (findAllPractices) {
+          const { pagination, practices } = findAllPractices
+          practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
 
-        if (!searchQuery && pagination) {
-          const { totalPages } = pagination
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+          if (!searchQuery && pagination) {
+            const { totalPages } = pagination
+            totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+          }
         }
       }
     }

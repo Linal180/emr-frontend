@@ -28,29 +28,22 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, PUBLIC_APPOINTMENT_ROUTE,
-  CODE, STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED,
-  FACILITY_SERVICES_ROUTE, SERVICES, PUBLIC_LINK,
+  STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED, PUBLIC_LINK,
+  FACILITY_SERVICES_ROUTE, SERVICES,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { fetchAllFacilityList } = useContext(ListContext)
+  const { facility } = user || {}
+  const { practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
   const [{ copied }, appointmentDispatcher] =
     useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
-    variables: {
-      facilityInput: {
-        paginationOptions: {
-          page,
-          limit: PAGE_LIMIT
-        }
-      }
-    },
-
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -62,7 +55,7 @@ const FacilityTable: FC = (): JSX.Element => {
       const { findAllFacility } = data || {};
 
       if (findAllFacility) {
-        const { facility, pagination } = findAllFacility
+        const { facilities, pagination } = findAllFacility
 
         if (!searchQuery) {
           if (pagination) {
@@ -70,8 +63,8 @@ const FacilityTable: FC = (): JSX.Element => {
             totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }
 
-          facility && dispatch({
-            type: ActionType.SET_FACILITIES, facilities: facility as FacilitiesPayload['facility']
+          facilities && dispatch({
+            type: ActionType.SET_FACILITIES, facilities: facilities as FacilitiesPayload['facilities']
           })
         }
       }
@@ -101,9 +94,19 @@ const FacilityTable: FC = (): JSX.Element => {
 
   useEffect(() => {
     if (!searchQuery) {
-      findAllFacility()
+      console.log(practiceId, "---")
+
+      findAllFacility({
+        variables: {
+          facilityInput: {
+            practiceId,
+            paginationOptions: { page, limit: PAGE_LIMIT }
+          }
+        },
+
+      })
     }
-  }, [page, findAllFacility, searchQuery]);
+  }, [page, findAllFacility, searchQuery, practiceId]);
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) =>
     dispatch({ type: ActionType.SET_PAGE, page });
@@ -150,7 +153,6 @@ const FacilityTable: FC = (): JSX.Element => {
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}
-                {renderTh(CODE)}
                 {renderTh(CITY)}
                 {renderTh(STATE)}
                 {renderTh(ZIP)}
@@ -169,14 +171,13 @@ const FacilityTable: FC = (): JSX.Element => {
                 </TableRow>
               ) : (
                 facilities?.map((facility: FacilityPayload['facility']) => {
-                  const { id, name, code, contacts } = facility || {};
+                  const { id, name, contacts } = facility || {};
                   const facilityContact = contacts && (contacts.filter(contact => contact.primaryContact)[0])
                   const { email, phone, zipCode, city, state } = facilityContact || {}
 
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{name}</TableCell>
-                      <TableCell scope="row">{code}</TableCell>
                       <TableCell scope="row">{city}</TableCell>
                       <TableCell scope="row">{state}</TableCell>
                       <TableCell scope="row">{zipCode}</TableCell>
@@ -199,15 +200,6 @@ const FacilityTable: FC = (): JSX.Element => {
                               </Box>
                             </Link>
                           </DetailTooltip>
-
-                          {/* TO-DO: Replace Location with Facility */}
-                          {/* <DetailTooltip title={LOCATIONS_TEXT}>
-                            <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_LOCATIONS_ROUTE}`}>
-                              <Box className={classes.iconsBackground}>
-                                <RemoveRedEye />
-                              </Box>
-                            </Link>
-                          </DetailTooltip> */}
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>

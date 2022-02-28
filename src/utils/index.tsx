@@ -95,7 +95,7 @@ export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) 
   return isAdmin;
 }
 
-export const isSuperAdmin = (roles: Maybe<Maybe<Role>[]> | undefined) => {
+export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   let isSupeAdmin: boolean = false
 
   if (roles) {
@@ -157,7 +157,7 @@ export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
 }
 
-export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
+export const renderFacilities = (facilities: FacilitiesPayload['facilities']) => {
   const data: SelectorOption[] = [];
 
   if (!!facilities) {

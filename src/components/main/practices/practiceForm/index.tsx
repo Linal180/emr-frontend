@@ -16,7 +16,7 @@ import { AuthContext } from '../../../../context';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { updatePracticeSchema, createPracticeSchema } from '../../../../validationSchemas';
 import {
-  PracticeType, ServiceCode, useCreatePracticeMutation, useGetPracticeLazyQuery, UserRole, useUpdatePracticeMutation
+  useCreatePracticeMutation, useGetPracticeLazyQuery, UserRole, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, USER_DETAILS_TEXT, ZIP_CODE,
@@ -130,11 +130,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       name, champus, ein, fax, medicaid, medicare, phone, upin
     }
 
-    const facilityInput = {
-      cliaIdNumber: '', federalTaxId: '', insurancePlanType: '', npi: '', code: '', timeZone: '',
-      tamxonomyCode: '', practiceType: PracticeType.Hospital, serviceCode: ServiceCode.Pharmacy_01,
-      mammographyCertificationNumber: '', revenueCode: '', name: facilityName
-    }
     if (isEdit) {
       id ?
         await updatePractice({
@@ -142,15 +137,14 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         })
         :
         Alert.error(PRACTICE_NOT_FOUND)
-
     } else {
       const { id: selectedRole } = roleType;
-      
+
       await createPractice({
         variables: {
           createPracticeInput: {
             createPracticeItemInput: { ...practiceInput },
-            createFacilityItemInput: { ...facilityInput },
+            createFacilityItemInput: { name: facilityName },
             registerUserInput: {
               email: userEmail || '', password: userPassword || "admin@123", firstName: userFirstName || '',
               lastName: userLastName || '', isAdmin: true, phone: userPhone || '',

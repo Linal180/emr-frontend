@@ -11,9 +11,9 @@ import { Action as DoctorAction } from "../reducers/doctorReducer";
 import {
   LoginUserInput, User, CreateStaffInput, UpdateContactInput, CreateScheduleInput, ContactsPayload,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
-  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreateFacilityItemInput,
+  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, CreateAppointmentInput, CreatePracticeItemInput,
+  UpdateFacilityTimeZoneInput, CreateAppointmentInput,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -45,7 +45,7 @@ export interface AppContextProps {
 }
 
 export interface ListContextInterface {
-  facilityList: FacilitiesPayload['facility'];
+  facilityList: FacilitiesPayload['facilities'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
   doctorList: AllDoctorPayload['doctors'];

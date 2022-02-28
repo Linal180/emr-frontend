@@ -582,16 +582,14 @@ export const externalPatientSchema = yup.object({
 })
 
 const registerUserSchema = {
+  userPhone: notRequiredPhone(PHONE),
+  userEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   userFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
     .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26))
     .required(requiredMessage(LAST_NAME)),
   userLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
     .min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26))
     .required(requiredMessage(FIRST_NAME)),
-  userPassword: yup.string(),
-  userEmail: yup.string(),
-  userPhone: yup.string(),
-  userZipCode: yup.string(),
 }
 
 const practiceFacilitySchema = {

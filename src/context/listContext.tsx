@@ -47,7 +47,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { findAllFacility: { facility, pagination } } = data
+        const { findAllFacility: { facilities, pagination } } = data
 
         if (pagination) {
           const { totalPages } = pagination;
@@ -57,8 +57,8 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
           }
         }
 
-        !!facility && !!facilityList &&
-          setFacilityList([...facilityList, ...facility] as FacilitiesPayload['facility'])
+        !!facilities && !!facilityList &&
+          setFacilityList([...facilityList, ...facilities] as FacilitiesPayload['facilities'])
       }
     }
   })
@@ -259,7 +259,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   useEffect(() => { hasToken && fetchAllPatientList(patientPages) }, [fetchAllPatientList, hasToken, patientPages])
   useEffect(() => { hasToken && fetchAllServicesList(servicePages) }, [fetchAllServicesList, hasToken, servicePages])
 
-  const setFacilityList = (facilities: FacilitiesPayload['facility']) => dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: facilities });
+  const setFacilityList = (facilities: FacilitiesPayload['facilities']) => dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: facilities });
   const setDoctorList = (doctors: AllDoctorPayload['doctors']) => dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: doctors });
   const setLocationList = (locations: ContactsPayload['contacts']) => dispatch({ type: ActionType.SET_LOCATION_LIST, locationList: locations });
   const setServicesList = (services: ServicesPayload['services']) => dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: services });
