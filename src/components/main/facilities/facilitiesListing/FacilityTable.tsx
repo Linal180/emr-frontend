@@ -94,16 +94,12 @@ const FacilityTable: FC = (): JSX.Element => {
 
   useEffect(() => {
     if (!searchQuery) {
-      console.log(practiceId, "---")
-
       findAllFacility({
         variables: {
           facilityInput: {
-            practiceId,
-            paginationOptions: { page, limit: PAGE_LIMIT }
+            practiceId, paginationOptions: { page, limit: PAGE_LIMIT }
           }
         },
-
       })
     }
   }, [page, findAllFacility, searchQuery, practiceId]);
