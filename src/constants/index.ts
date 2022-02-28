@@ -46,6 +46,7 @@ export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
 export const NEXT = "Next";
 export const VIEW = "View";
+export const VIEW_PRACTICES = "View Practices";
 export const EIN = "EIN";
 export const ADMIN_NAME = "Admin Name";
 export const FINISH = "Finish";
@@ -792,6 +793,13 @@ export const USER_MENU_ITEMS = [
   },
 ];
 
+export const PRACTICE_MENU_ITEMS = [
+  {
+    name: VIEW_PRACTICES,
+    link: PRACTICE_MANAGEMENT_ROUTE
+  }
+];
+
 export const APPOINTMENT_MENU_ITEMS = [
   {
     name: VIEW_APPOINTMENTS_TEXT,
@@ -852,7 +860,7 @@ export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezon
   return { id: timezone, name: formatValue(timezone) }
 })
 
-export const MAPPED_COUNTRIES: SelectorOption[] = [{id: USA, name: USA}];
+export const MAPPED_COUNTRIES: SelectorOption[] = [{ id: USA, name: USA }];
 export const MAPPED_STATES: SelectorOption[] = states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [

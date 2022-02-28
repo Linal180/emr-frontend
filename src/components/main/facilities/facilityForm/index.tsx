@@ -40,7 +40,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     mode: "all",
     resolver: yupResolver(facilitySchema)
   });
-  const { reset, handleSubmit, setValue, watch } = methods;
+  const { reset, handleSubmit, setValue, watch, formState: { errors } } = methods;
   const { email, zipCode, phone, fax, address, address2, city, state, country } = watch()
   const [{ facility, sameAddress, addBilling }, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
 
@@ -283,6 +283,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {JSON.stringify(errors)}
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
             <Grid md={6} item>
