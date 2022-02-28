@@ -477,7 +477,7 @@ export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZone
   & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
 export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
-  & Omit<CreateContactInput, "facilityId" | "state" | "country"> & CustomBillingAddressInputs 
+  & Omit<CreateContactInput, "facilityId" | "state" | "country"> & CustomBillingAddressInputs
   & { facilityId: SelectorOption } & { country: SelectorOption }
   & { speciality: SelectorOption } & { state: SelectorOption };
 
@@ -600,7 +600,7 @@ export type ExternalPatientInputProps =
   & { state: SelectorOption } & { maritialStatus: SelectorOption } & { country: SelectorOption }
   & { emergencyCountry: SelectorOption } & { emergencyState: SelectorOption }
   & Pick<CreatePatientItemInput, 'dob' | 'pharmacy' | 'voiceCallPermission' | 'phonePermission' | 'language'
-    | 'callToConsent'>
+    | 'callToConsent' | 'releaseOfInfoBill'>
   & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'zipCode' | 'ssn'>
   & Pick<EmergencyContactControlInputs, 'emergencyName' | 'emergencyRelationship' | 'emergencyPhone' |
     'emergencyCity' | 'emergencyZipCode' | 'emergencyAddress' |

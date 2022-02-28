@@ -13,6 +13,9 @@ export interface State {
   searchQuery: string;
   isInsurance: boolean;
   appointmentId: string;
+  isEmployment: boolean;
+  isAutoAccident: boolean;
+  isOtherAccident: boolean;
   deleteAppointmentId: string;
   facility: FacilityPayload['facility'];
   availableSlots: DoctorSlotsPayload['slots'];
@@ -34,6 +37,9 @@ export const initialState: State = {
   appointment: null,
   isInsurance: false,
   availableSlots: [],
+  isEmployment: false,
+  isAutoAccident: false,
+  isOtherAccident: false,
   deleteAppointmentId: '',
   offset: moment.tz().zone(),
   currentDate: new Date().toDateString(),
@@ -52,8 +58,11 @@ export enum ActionType {
   SET_CURRENT_DATE = 'setCurrentDate',
   SET_IS_INSURANCE = 'setIsInsurance',
   SET_APPOINTMENTS = 'setAppointments',
+  SET_IS_EMPLOYMENT = 'setIsEmployment',
   SET_APPOINTMENT_ID = 'setAppointmentId',
   SET_AVAILABLE_SLOTS = 'setAvailableSlots',
+  SET_IS_AUTO_ACCIDENT = 'setIsAutoAccident',
+  SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
 }
 
@@ -67,7 +76,10 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_CURRENT_DATE, currentDate: string }
   | { type: ActionType.SET_IS_INSURANCE; isInsurance: boolean }
+  | { type: ActionType.SET_IS_EMPLOYMENT, isEmployment: boolean }
   | { type: ActionType.SET_APPOINTMENT_ID; appointmentId: string }
+  | { type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: boolean }
+  | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
@@ -164,6 +176,24 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         deleteAppointmentId: action.deleteAppointmentId
+      }
+
+    case ActionType.SET_IS_EMPLOYMENT:
+      return {
+        ...state,
+        isEmployment: action.isEmployment
+      }
+
+    case ActionType.SET_IS_OTHER_ACCIDENT:
+      return {
+        ...state,
+        isOtherAccident: action.isOtherAccident
+      }
+
+    case ActionType.SET_IS_AUTO_ACCIDENT:
+      return {
+        ...state,
+        isAutoAccident: action.isAutoAccident
       }
   }
 };

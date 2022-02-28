@@ -1,18 +1,17 @@
 // packages block
-import { useEffect, FC, useContext, useState, Reducer, useReducer, useCallback } from 'react';
+import { useEffect, FC, useContext, useState, Reducer, useReducer, useCallback, ChangeEvent } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
-import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
+import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
-import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { appointmentSchema } from '../../../../validationSchemas';
@@ -38,6 +37,8 @@ import {
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
 } from "../../../../constants";
+import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import { GRAY_TWO, WHITE } from '../../../../theme';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
@@ -47,12 +48,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { availableSlots, serviceId, offset, currentDate } = state
+  const { availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident } = state
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
   });
-  const { reset, setValue, handleSubmit, watch, formState: { errors } } = methods;
+  const { reset, setValue, handleSubmit, watch, formState: { errors }, control } = methods;
   const {
     serviceId: { id: selectedService } = {},
     providerId: { id: selectedProvider } = {},
@@ -60,6 +61,20 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   } = watch();
 
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { checked, name } } = event
+    if (name === 'employment') {
+      dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: checked })
+      setValue('employment', checked)
+    } else if (name === 'autoAccident') {
+      dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: checked })
+      setValue('autoAccident', checked)
+    } else if (name === 'otherAccident') {
+      dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: checked })
+      setValue('otherAccident', checked)
+    }
+  };
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
     fetchPolicy: "network-only",
@@ -90,8 +105,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           notes && setValue('notes', notes)
           reason && setValue('reason', reason)
           employment && setValue('employment', employment)
+          dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           autoAccident && setValue('autoAccident', autoAccident)
+          dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
           otherAccident && setValue('otherAccident', otherAccident)
+          dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: isOtherAccident as boolean })
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
           facilityId && setValue('facilityId', setRecord(facilityId, facilityName || ''))
@@ -424,17 +442,59 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <ToggleButtonComponent name="employment" label={EMPLOYMENT} />
+                        <Controller
+                          name='employment'
+                          control={control}
+                          render={() => (
+                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                              <InputLabel shrink>{EMPLOYMENT}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={isEmployment ? WHITE : GRAY_TWO}>Yes</Box>
+                                <AntSwitch checked={isEmployment} onChange={(event) => { handleChange(event) }} name='employment' />
+                                <Box color={isEmployment ? GRAY_TWO : WHITE}>No</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <ToggleButtonComponent name="autoAccident" label={AUTO_ACCIDENT} />
+                        <Controller
+                          name='autoAccident'
+                          control={control}
+                          render={() => (
+                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                              <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={isAutoAccident ? WHITE : GRAY_TWO}>Yes</Box>
+                                <AntSwitch checked={isAutoAccident} onChange={(event) => { handleChange(event) }} name='autoAccident' />
+                                <Box color={isAutoAccident ? GRAY_TWO : WHITE}>No</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <ToggleButtonComponent name="otherAccident" label={OTHER_ACCIDENT} />
+                        <Controller
+                          name='otherAccident'
+                          control={control}
+                          render={() => (
+                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                              <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={isOtherAccident ? WHITE : GRAY_TWO}>Yes</Box>
+                                <AntSwitch checked={isOtherAccident} onChange={(event) => { handleChange(event) }} name='otherAccident' />
+                                <Box color={isOtherAccident ? GRAY_TWO : WHITE}>No</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
                       </Grid>
                     </Grid>
                   </>

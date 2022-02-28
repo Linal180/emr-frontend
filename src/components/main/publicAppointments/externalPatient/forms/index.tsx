@@ -1,9 +1,9 @@
 // packages block
-import { FC, useContext, Reducer, useReducer, useEffect } from 'react';
+import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm, FormProvider, SubmitHandler } from 'react-hook-form';
-import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress } from '@material-ui/core';
+import { useForm, FormProvider, SubmitHandler, Controller } from 'react-hook-form';
+import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel } from '@material-ui/core';
 // components
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
@@ -12,15 +12,14 @@ import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
 import PatientStepper from '../../../../common/PatientStepper';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
-import ToggleButtonComponent from "../../../../common/ToggleButtonComponent";
 //context, graphql and utils block
 import { FacilityContext } from "../../../../../context";
 import ViewDataLoader from '../../../../common/ViewDataLoader';
-import { WHITE_TWO, GRAY_TWO, WHITE_SIX } from "../../../../../theme";
+import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE } from "../../../../../theme";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
-import { useExternalPatientStyles } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { AntSwitch, useExternalPatientStyles } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/patientReducer"
@@ -43,21 +42,38 @@ import {
   FINISH,
 } from "../../../../../constants";
 import history from '../../../../../history';
+import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useExternalPatientStyles();
+  const toggleButtonClass = usePublicAppointmentStyles();
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
-    consentAgreed
+    consentAgreed, isAppointment, isBilling, isVoice
   } = state
   const methods = useForm<ExternalPatientInputProps>({
     mode: "all",
     resolver: yupResolver(externalPatientSchema)
   });
-  const { handleSubmit, setValue } = methods;
+  const { handleSubmit, setValue, control } = methods;
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { checked, name } } = event
+    if (name === 'releaseOfInfoBill') {
+      dispatch({ type: ActionType.SET_IS_BILLING, isBilling: checked })
+      setValue('releaseOfInfoBill', checked)
+    } else if (name === 'voiceCallPermission') {
+      dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
+      setValue('voiceCallPermission', checked)
+    } else if (name === 'phonePermission') {
+      dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: checked })
+      setValue('phonePermission', checked)
+    }
+  };
+
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -77,7 +93,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
           if (patient) {
             const { ssn, dob, callToConsent, language, race, ethnicity, maritialStatus, genderIdentity, contacts,
-              doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission, preferredCommunicationMethod
+              doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission, preferredCommunicationMethod, releaseOfInfoBill
             } = patient;
 
             if (facility) {
@@ -108,8 +124,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
             language && setValue("language", language)
             callToConsent && setValue("callToConsent", callToConsent)
             phonePermission && setValue("phonePermission", phonePermission)
+            dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: phonePermission as boolean })
             voiceCallPermission && setValue("voiceCallPermission", voiceCallPermission)
-
+            dispatch({ type: ActionType.SET_IS_VOICE, isVoice: voiceCallPermission as boolean })
+            releaseOfInfoBill && setValue('releaseOfInfoBill', releaseOfInfoBill)
+            dispatch({ type: ActionType.SET_IS_BILLING, isBilling: releaseOfInfoBill as boolean })
             race && setValue("race", setRecord(race, race))
             ethnicity && setValue("ethnicity", setRecord(ethnicity, ethnicity))
             maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
@@ -462,9 +481,20 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
-                            <ToggleButtonComponent
-                              name="billingInfo"
-                              label={RELEASE_BILLING_INFO_PERMISSIONS}
+                            <Controller
+                              name='releaseOfInfoBill'
+                              control={control}
+                              render={() => (
+                                <FormControl fullWidth margin="normal" className={toggleButtonClass.toggleContainer}>
+                                  <InputLabel shrink>{RELEASE_BILLING_INFO_PERMISSIONS}</InputLabel>
+
+                                  <label className="toggle-main">
+                                    <Box color={isBilling ? WHITE : GRAY_TWO}>Yes</Box>
+                                    <AntSwitch checked={isBilling} onChange={(event) => { handleChange(event) }} name='releaseOfInfoBill' />
+                                    <Box color={isBilling ? GRAY_TWO : WHITE}>No</Box>
+                                  </label>
+                                </FormControl>
+                              )}
                             />
                           </Grid>
                         </Grid>
@@ -544,13 +574,38 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
-                            <ToggleButtonComponent name="voiceMail" label={VOICE_MAIL_PERMISSIONS} />
+                            <Controller
+                              name='voiceCallPermission'
+                              control={control}
+                              render={() => (
+                                <FormControl fullWidth margin="normal" className={toggleButtonClass.toggleContainer}>
+                                  <InputLabel shrink>{VOICE_MAIL_PERMISSIONS}</InputLabel>
+
+                                  <label className="toggle-main">
+                                    <Box color={isVoice ? WHITE : GRAY_TWO}>Yes</Box>
+                                    <AntSwitch checked={isVoice} onChange={(event) => { handleChange(event) }} name='voiceCallPermission' />
+                                    <Box color={isVoice ? GRAY_TWO : WHITE}>No</Box>
+                                  </label>
+                                </FormControl>
+                              )}
+                            />
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            <ToggleButtonComponent
-                              name="confirmAppointment"
-                              label={APPOINTMENT_CONFIRMATION_PERMISSIONS}
+                            <Controller
+                              name='phonePermission'
+                              control={control}
+                              render={() => (
+                                <FormControl fullWidth margin="normal" className={toggleButtonClass.toggleContainer}>
+                                  <InputLabel shrink>{APPOINTMENT_CONFIRMATION_PERMISSIONS}</InputLabel>
+
+                                  <label className="toggle-main">
+                                    <Box color={isAppointment ? WHITE : GRAY_TWO}>Yes</Box>
+                                    <AntSwitch checked={isAppointment} onChange={(event) => { handleChange(event) }} name='phonePermission' />
+                                    <Box color={isAppointment ? GRAY_TWO : WHITE}>No</Box>
+                                  </label>
+                                </FormControl>
+                              )}
                             />
                           </Grid>
                         </Grid>
