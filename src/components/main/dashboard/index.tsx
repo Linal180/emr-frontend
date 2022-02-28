@@ -8,7 +8,7 @@ import DASHBOARD_IMAGE from "../../../assets/images/dashboard-image.svg"
 import { CALENDAR, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, LOREM_TEXT_15 } from "../../../constants";
 
 const DashboardComponent: FC = (): JSX.Element => (
-  <Box sx={{p: 5}}>
+  <Box sx={{ p: 5 }}>
     <Box maxWidth={113} pb={2}>
       <EMRIcon />
     </Box>

@@ -1336,3 +1336,34 @@ export enum ATTACHMENT_TITLES {
   DrivingLicense = 'Driving License',
   InsuranceCard = 'Insurance Card'
 }
+
+export const MAPPED_STATUS = [
+  {
+    value: 'status',
+    label: 'Status',
+  },
+  {
+    value: 'pending',
+    label: 'Pending',
+  },
+  {
+    value: 'inLobby',
+    label: 'In Lobby',
+  },
+  {
+    value: 'inRoom',
+    label: 'In Room',
+  },
+  {
+    value: 'withDoctor',
+    label: 'With Doctor',
+  },
+  {
+    value: 'noShow',
+    label: 'No Show',
+  },
+  {
+    value: 'cancel',
+    label: 'Cancel',
+  },
+];

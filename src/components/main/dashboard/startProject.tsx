@@ -7,7 +7,7 @@ import {
   DayView, WeekView, AppointmentTooltip, ViewSwitcher,
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
-import AppointmentCard from "./AppointmentCard";
+import AppointmentCard from "./appointmentCard";
 // styles, constants  block
 import { DUMMY_APPOINTMENTS } from "../../../constants";
 
@@ -26,6 +26,7 @@ const StartProjectComponent = (): JSX.Element => {
       data1 = data.map((item: { changed: { [x: string]: any; }; id: string | number; }) => (
         item.changed[item.id] ? { ...item, ...item.changed[item.id] } : item));
     }
+
     if (item.deleted !== undefined) {
       data1 = data.filter((appointment: { id: any; }) => appointment.id !== item.deleted);
     }
@@ -37,10 +38,7 @@ const StartProjectComponent = (): JSX.Element => {
       <Box>
         <Scheduler data={DUMMY_APPOINTMENTS}>
           <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
-          <EditingState
-            onCommitChanges={commitChanges}
-          />
-
+          <EditingState onCommitChanges={commitChanges} />
           <MonthView />
           <IntegratedEditing />
           <WeekView />
@@ -49,13 +47,8 @@ const StartProjectComponent = (): JSX.Element => {
           <TodayButton />
           <ViewSwitcher />
           <DateNavigator />
-          {/* <ConfirmationDialog overlayComponent={AppointmentCard} /> */}
           <Appointments />
-          <AppointmentTooltip showCloseButton
-            layoutComponent={AppointmentCard}
-          />
-
-          {/* <AppointmentForm overlayComponent={AppointmentCard} /> */}
+          <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
         </Scheduler>
       </Box>
     </Card>

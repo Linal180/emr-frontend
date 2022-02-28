@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { RED_FOUR } from "../theme";
+import { RED_FOUR, WHITE_FOUR } from "../theme";
 
 export const useCalendarStyles = makeStyles(() =>
   createStyles({
@@ -26,6 +26,21 @@ export const useCalendarStyles = makeStyles(() =>
       "& .MuiButton-label": {
         color: RED_FOUR
       }
-    }
+    },
+
+    statusDropdown: {
+      '& .MuiTextField-root': {
+        margin: 1,
+        border: `1px solid ${WHITE_FOUR}`,
+        width: '12ch',
+      },
+      '& .MuiSelect-selectMenu': {
+        margin: 1,
+        minHeight: 'auto'
+      },
+      '& .MuiSelect-select': {
+        padding: 0
+      }
+    },
   })
 );
