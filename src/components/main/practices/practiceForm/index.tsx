@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
@@ -10,30 +10,30 @@ import Selector from '../../../common/Selector';
 import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
+import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
+import { AuthContext } from '../../../../context';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { updatePracticeSchema, createPracticeSchema } from '../../../../validationSchemas';
 import {
-  PracticeType,
-  Role,
-  ServiceCode,
-  useCreatePracticeMutation, useGetPracticeLazyQuery, UserRole, useUpdatePracticeMutation
+  PracticeType, ServiceCode, useCreatePracticeMutation, useGetPracticeLazyQuery, UserRole, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, USER_DETAILS_TEXT, ZIP_CODE,
   FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, MAPPED_ROLES, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE,
   PRACTICE_IDENTIFIER, PRACTICE_NAME, ROLE, PRACTICE_MANAGEMENT_ROUTE, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
+  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN,
+  MAPPED_STATES, MAPPED_COUNTRIES,
 } from "../../../../constants";
-import ViewDataLoader from '../../../common/ViewDataLoader';
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+  const { user } = useContext(AuthContext)
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updatePracticeSchema : createPracticeSchema)
   });
-  const { handleSubmit, setValue, reset, formState: { errors } } = methods;
-
+  const { handleSubmit, setValue, reset } = methods;
+  const { id: adminId } = user || {}
   const [getPractice, { loading: getPracticeLoading }] = useGetPracticeLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -121,14 +121,10 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   }, [getPractice, isEdit, id])
 
   const onSubmit: SubmitHandler<CustomPracticeInputProps> = async (inputs) => {
-    const { name, phone, fax, upin, ein, medicaid, medicare, champus, facilityName, address,
-      address2, zipCode, city, state, country, userFirstName, userLastName, userEmail, userPassword,
+    const { name, phone, fax, upin, ein, medicaid, medicare, champus, facilityName,
+      userFirstName, userLastName, userEmail, userPassword,
       userPhone, roleType
     } = inputs;
-
-    const { id: selectedRole } = roleType;
-    const { id: selectedCountry } = country;
-    const { id: selectedState } = state;
 
     const practiceInput = {
       name, champus, ein, fax, medicaid, medicare, phone, upin
@@ -148,6 +144,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         Alert.error(PRACTICE_NOT_FOUND)
 
     } else {
+      const { id: selectedRole } = roleType;
+      
       await createPractice({
         variables: {
           createPracticeInput: {
@@ -156,7 +154,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             registerUserInput: {
               email: userEmail || '', password: userPassword || "admin@123", firstName: userFirstName || '',
               lastName: userLastName || '', isAdmin: true, phone: userPhone || '',
-              roleType: selectedRole as UserRole || UserRole.Admin,
+              roleType: selectedRole as UserRole || UserRole.Admin, adminId: adminId || '',
             }
           }
         }

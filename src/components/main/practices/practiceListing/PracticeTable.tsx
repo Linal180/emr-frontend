@@ -76,6 +76,7 @@ const PracticeTable: FC = (): JSX.Element => {
         if (response) {
           const { message } = response
           message && Alert.success(message);
+          findAllPractices();
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
@@ -147,7 +148,7 @@ const PracticeTable: FC = (): JSX.Element => {
                     <TableCell scope="row">--</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/edit`}>
+                        <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>
                           <Box className={classes.practiceIconsBackground}>
                             <EditPracticeIcon />
                           </Box>

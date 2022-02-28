@@ -6,9 +6,8 @@ import { formatServiceCode, formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
-  Communicationtype,
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
-  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole
+  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole, Communicationtype,
 } from "../generated/graphql";
 
 // regex
@@ -16,8 +15,10 @@ export const ZIP_REGEX = /^\d{5}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
+export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
+export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
 export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
 export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
@@ -600,6 +601,8 @@ export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
+export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optional";
+export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
 export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
