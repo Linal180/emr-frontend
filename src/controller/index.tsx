@@ -10,7 +10,7 @@ import { PASSWORD, TEXT } from "../constants";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled, multiline
 }): JSX.Element => {
   const { control } = useFormContext()
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
@@ -38,6 +38,7 @@ const InputController: FC<CustomInputControlProps> = ({
             fullWidth
             error={invalid}
             variant="outlined"
+            multiline={multiline}
             disabled={disabled}
             id={controllerName}
             type={fieldType === "password" ? passwordType : fieldType}
