@@ -2,7 +2,6 @@ import { makeStyles } from "@material-ui/core";
 import { BLACK, BLACK_SEVEN, BLUE_EIGHT, WHITE, WHITE_FOUR } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
-
   menuButton: {
     borderRadius: 6,
     padding: 9,
@@ -36,7 +35,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
     alignItems: 'center',
 
     "& .active": {
-      borderBottom: `1.5px solid ${BLUE_EIGHT}`,
+      borderBottom: `2px solid ${BLUE_EIGHT}`,
     },
 
     [theme.breakpoints.down("sm")]: {
@@ -45,6 +44,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   menuItem: {
+    paddingBottom: 5,
     minWidth: 80,
     textAlign: 'center',
     color: BLACK_SEVEN,
@@ -76,6 +76,5 @@ export const useHeaderStyles = makeStyles((theme) => ({
       margin: 0,
       color: BLACK
     }
-  },
-
+  }
 }));

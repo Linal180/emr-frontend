@@ -351,7 +351,8 @@ export type SubMenuTypes = {
 };
 
 export interface CustomInputControlProps extends IControlLabel {
-  controllerName: string
+  controllerName: string;
+  info?: string;
 }
 
 export interface SearchComponentProps {
@@ -738,6 +739,11 @@ export interface MediaCardComponentType {
   allAttachments: Attachment[];
   imageSide: string;
   notDescription?: boolean;
+}
+
+export interface DocumentModalComponentType {
+  setOpen: Function;
+  isOpen: boolean;
 }
 
 export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |

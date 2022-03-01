@@ -1,5 +1,5 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect } from 'react';
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useState } from 'react';
 import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
@@ -11,28 +11,33 @@ import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import ConfirmDocumentModal from '../../../common/ConfirmDocumentModal';
+import DocumentsTable from './DocumentsTable';
 // constants, history, styling block
 import history from '../../../../history';
+import Search from '../../../common/Search';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
-  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, UploadIcon
 } from "../../../../assets/svgs";
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION, MAPPED_WIDGETS,
-  PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, VIEW_CHART_TEXT
+  PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, SIGNED, UPLOAD, VIEW_CHART_TEXT
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
   const { id } = useParams<ParamsType>();
   const classes = useProfileDetailsStyles()
+  const tableClasses = useTableStyles()
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { anchorEl, attachmentUrl, attachmentData, openDelete, patientData, tabValue, attachmentId } = state
   const isMenuOpen = Boolean(anchorEl);
@@ -187,29 +192,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-  const ProfileDetailedData = [
-    {
-      title: "Allergies",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-    {
-      title: "Past Medical History",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-    {
-      title: "Problems",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-    {
-      title: "Medications",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-    {
-      title: "Family History",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-  ]
-
   const onDeleteClick = () =>
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
@@ -218,6 +200,12 @@ const PatientDetailsComponent = (): JSX.Element => {
   const onSubmit: SubmitHandler<any> = async (inputs) => { }
 
   const isLoading = getPatientLoading || getAttachmentLoading
+
+  const [DocumentOpen, setDocumentOpen] = useState(false);
+
+  const handleUpload = () => setDocumentOpen(true);
+
+  const search = (query: string) => { }
 
   return (
     <Box>
@@ -289,10 +277,17 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <TabPanel value="1">
               <Grid container spacing={3}>
-                {ProfileDetailedData.map((item, index) => (
+                {PROFILE_DETAIL_DATA.map((item, index) => (
                   <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
                     {item && item.title === "Allergies" && <>
-                      <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
+                      <Box
+                        my={2}
+                        aria-haspopup="true"
+                        aria-controls={widgetId}
+                        className={classes.addSlot}
+                        aria-label="widget's patient"
+                        onClick={handleWidgetMenuOpen}
+                      >
                         <AddWidgetIcon />
 
                         <Typography component='h1' variant="h4">
@@ -326,6 +321,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                       </FormProvider>
                     </>
                     }
+                    
                     <Box bgcolor={WHITE} p={4}>
                       <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
                         <Box className={classes.profileInfoHeading}>
@@ -345,6 +341,29 @@ const PatientDetailsComponent = (): JSX.Element => {
                 ))}
               </Grid>
             </TabPanel>
+
+            <TabPanel value="8">
+              <Box className={tableClasses.mainTableContainer}>
+                <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box display="flex">
+                    <Box className={tableClasses.searchOuterContainer}>
+                      <Search search={search} />
+                    </Box>
+
+                    <Box ml={3} className={tableClasses.RadioButtonsStroke}>
+                      <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>
+                      <Button size="small">{SIGNED}</Button>
+                    </Box>
+                  </Box>
+
+                  <Button color="primary" variant="contained" startIcon={<UploadIcon />} onClick={handleUpload}>
+                    {UPLOAD}
+                  </Button>
+                </Box>
+
+                <DocumentsTable />
+              </Box>
+            </TabPanel>
           </Box>
         </TabContext>
       )}
@@ -355,6 +374,11 @@ const PatientDetailsComponent = (): JSX.Element => {
         description={DELETE_WIDGET_DESCRIPTION}
         handleDelete={handleDeleteWidget}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+      />
+
+      <ConfirmDocumentModal
+        isOpen={DocumentOpen}
+        setOpen={(DocumentOpen: boolean) => setDocumentOpen(DocumentOpen)}
       />
     </Box>
   )
