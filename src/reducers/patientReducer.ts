@@ -16,6 +16,9 @@ export interface State {
   basicContactId: string;
   deletePatientId: string;
   consentAgreed: boolean;
+  isBilling: boolean;
+  isVoice: boolean;
+  isAppointment: boolean;
   guardianContactId: string;
   guarantorContactId: string;
   emergencyContactId: string;
@@ -52,6 +55,9 @@ export const initialState: State = {
   emergencyContactId: '',
   guarantorContactId: '',
   patientData: undefined,
+  isBilling: false,
+  isVoice: false,
+  isAppointment: false,
 }
 
 
@@ -72,11 +78,14 @@ export enum ActionType {
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_KIN_CONTACT_ID = 'setKinContactID',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
+  SET_IS_VOICE = 'setIsVoice',
   SET_CONSENT_AGREED = 'setConsentAgreed',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_BASIC_CONTACT_ID = 'setBasicContactID',
   SET_ATTACHMENTS_DATA = 'setAttachmentsData',
   SET_DELETE_PATIENT_ID = 'setDeletePatientId',
+  SET_IS_BILLING = 'setIsBilling',
+  SET_IS_APPOINTMENT = 'setIsAppointment',
   SET_GUARDIAN_CONTACT_ID = 'setGuardianContactID',
   SET_GUARANTOR_CONTACT_ID = 'setGuarantorContactId',
   SET_EMERGENCY_CONTACT_ID = 'setEmergencyContactID',
@@ -99,6 +108,9 @@ export type Action =
   | { type: ActionType.SET_CONSENT_AGREED, consentAgreed: boolean }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
+  | { type: ActionType.SET_IS_VOICE, isVoice: boolean }
+  | { type: ActionType.SET_IS_BILLING, isBilling: boolean }
+  | { type: ActionType.SET_IS_APPOINTMENT, isAppointment: boolean }
   | { type: ActionType.SET_BASIC_CONTACT_ID; basicContactId: string }
   | { type: ActionType.SET_DELETE_PATIENT_ID; deletePatientId: string }
   | { type: ActionType.SET_GUARDIAN_CONTACT_ID; guardianContactId: string }
@@ -185,7 +197,6 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         basicContactId: action.basicContactId
       }
-
     case ActionType.SET_KIN_CONTACT_ID:
       return {
         ...state,
@@ -254,6 +265,24 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isEditCard: action.isEditCard
+      }
+
+    case ActionType.SET_IS_VOICE:
+      return {
+        ...state,
+        isVoice: action.isVoice
+      }
+
+    case ActionType.SET_IS_BILLING:
+      return {
+        ...state,
+        isBilling: action.isBilling
+      }
+
+    case ActionType.SET_IS_APPOINTMENT:
+      return {
+        ...state,
+        isAppointment: action.isAppointment
       }
   }
 };

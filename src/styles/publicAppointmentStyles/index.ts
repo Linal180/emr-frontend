@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_FOUR, BLUE_ONE, GRAY_ONE, POPPINS, WHITE } from "../../theme";
+import { BLACK_FOUR, BLUE_ONE, GRAY_ONE, GRAY_SIX, POPPINS, WHITE } from "../../theme";
 
 export const usePublicAppointmentStyles = makeStyles(() =>
   createStyles({
@@ -38,6 +38,52 @@ export const usePublicAppointmentStyles = makeStyles(() =>
           background: BLUE_ONE,
           color: WHITE
         }
+      }
+    },
+
+    toggleContainer: {
+      "& .toggle-main": {
+        display: 'flex',
+        position: 'relative',
+        border: `1px solid ${GRAY_SIX}`,
+        fontWeight: 500,
+        fontSize: 14,
+        width: 145,
+        height: 44,
+        padding: 5,
+        borderRadius: 6,
+
+        "& > div": {
+          position: 'relative',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          paddingBottom: 2,
+          zIndex: 2,
+          flex: 1,
+        }
+      },
+
+      "& .MuiToggleButtonGroup-root": {
+        marginTop: 10,
+      },
+
+      "& .MuiToggleButton-root.Mui-selected": {
+        color: WHITE,
+        backgroundColor: BLUE_ONE,
+        padding: "9px 30px",
+        borderRadius: 6,
+      },
+
+      "& .MuiToggleButtonGroup-groupedHorizontal:not(:first-child)": {
+        borderTopRightRadius: "6px",
+        borderBottomRightRadius: "6px",
+      },
+
+      "& .MuiToggleButtonGroup-groupedHorizontal:not(:last-child)": {
+        borderTopLeftRadius: "6px",
+        borderBottomLeftRadius: "6px",
       }
     },
   })
