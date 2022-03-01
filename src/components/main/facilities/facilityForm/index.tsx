@@ -42,7 +42,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   });
   const { reset, handleSubmit, setValue, watch } = methods;
   const { email, zipCode, phone, fax, address, address2, city, state, country } = watch()
-  const [{ facility, sameAddress, addBilling, billingId, contactId }, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
+  const [{ sameAddress, addBilling, billingId, contactId }, dispatch] =
+    useReducer<Reducer<State, Action>>(facilityReducer, initialState)
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
@@ -217,7 +218,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           updateFacilityInput: {
             updateFacilityItemInput: { id, ...facilityInput },
             updateContactInput: { ...contactIdInput },
-            updateBillingAddressInput: { ...billingIdInput },
+            updateBillingAddressInput: { id: '', ...billingIdInput },
           }
         }
       })

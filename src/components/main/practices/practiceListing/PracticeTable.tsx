@@ -71,14 +71,14 @@ const PracticeTable: FC = (): JSX.Element => {
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       if (data) {
         const { removePractice: { response } } = data
 
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          findAllPractices();
+          await findAllPractices();
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
