@@ -18,8 +18,8 @@ import history from '../../../../history';
 import Search from '../../../common/Search';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { useTableStyles } from "../../../../styles/tableStyles";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
@@ -29,8 +29,9 @@ import {
   AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, UploadIcon
 } from "../../../../assets/svgs";
 import {
-  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION, MAPPED_WIDGETS,
-  PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, SIGNED, UPLOAD, VIEW_CHART_TEXT
+  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION,
+  MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, UPLOAD,
+  SCHEDULE_APPOINTMENTS_TEXT, SIGNED, VIEW_CHART_TEXT
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -321,7 +322,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                       </FormProvider>
                     </>
                     }
-                    
+
                     <Box bgcolor={WHITE} p={4}>
                       <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
                         <Box className={classes.profileInfoHeading}>

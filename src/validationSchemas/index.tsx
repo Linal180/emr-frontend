@@ -338,7 +338,7 @@ export const billingAddressSchema = {
   billingAddress: addressValidation(ADDRESS, false),
   billingAddress2: addressValidation(ADDRESS, false),
   billingZipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
-  billingPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
+  billingPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10)).max(15, MaxLength(PHONE_NUMBER, 15)),
 }
 
 export const extendedContactSchema = yup.object({
@@ -490,13 +490,13 @@ export const guarantorPatientSchema = {
   guarantorState: stateSchema(true),
   guarantorCountry: countrySchema(false),
   guarantorSuffix: notRequiredStringOnly(SUFFIX),
-  guarantorAddress2: notRequiredStringOnly(ADDRESS),
+  guarantorAddress: addressValidation(ADDRESS, true),
   guarantorEmployerName: notRequiredStringOnly(NAME),
-  guarantorSsn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX),
+  guarantorAddress2: addressValidation(ADDRESS, false),
   guarantorMiddleName: notRequiredStringOnly(MIDDLE_NAME),
+  guarantorSsn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX),
   guarantorEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
-  guarantorAddress: yup.string().matches(STRING_REGEX, ValidMessage(ADDRESS)).required(requiredMessage(ADDRESS)),
-  guarantorPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11))
+  guarantorPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10))
     .max(15, MaxLength(PHONE_NUMBER, 15)).required(requiredMessage(PHONE_NUMBER)),
   guarantorZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE)
     .required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
