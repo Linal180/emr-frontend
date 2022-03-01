@@ -2,6 +2,7 @@ import { PracticePayload, PracticesPayload } from "../generated/graphql"
 
 export interface State {
   page: number;
+  isAdmin: boolean;
   totalPages: number;
   openModal: boolean;
   practiceId: string;
@@ -16,6 +17,7 @@ export const initialState: State = {
   page: 1,
   totalPages: 0,
   practice: null,
+  isAdmin: false,
   practices: [],
   practiceId: '',
   searchQuery: '',
@@ -26,6 +28,7 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_PAGE = 'setPage',
+  SET_IS_ADMIN = 'setIsAdmin',
   SET_PRACTICE = 'setPractice',
   SET_OPEN_MODAL = 'setOpenModal',
   SET_PRACTICES = 'setPractices',
@@ -38,6 +41,7 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
+  | { type: ActionType.SET_IS_ADMIN; isAdmin: boolean }
   | { type: ActionType.SET_OPEN_MODAL; openModal: boolean }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_PRACTICE_ID; practiceId: string }
@@ -54,6 +58,13 @@ export const practiceReducer = (state: State, action: Action): State => {
         ...state,
         page: action.page
       }
+
+    case ActionType.SET_IS_ADMIN:
+      return {
+        ...state,
+        isAdmin: action.isAdmin
+      }
+
     case ActionType.SET_TOTAL_PAGES:
       return {
         ...state,

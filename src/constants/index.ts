@@ -47,6 +47,7 @@ export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
 export const NEXT = "Next";
 export const VIEW = "View";
+export const IS_ADMIN = "Is Admin?";
 export const VIEW_PRACTICES = "View Practices";
 export const EIN = "EIN";
 export const ADMIN_NAME = "Admin Name";
@@ -449,7 +450,7 @@ export const PENDING = "Pending";
 export const SIGNED = "Signed";
 export const UPLOAD = "Upload";
 export const UPLOADS_DOCUMENT = "Upload Document";
-export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT= "Drop your image here, or browse";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const DELETE = "Delete";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
@@ -875,7 +876,17 @@ export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
   { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
+  { id: UserRole.Doctor, name: formatValue(UserRole.Doctor) },
   { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
+  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
+];
+
+export const MAPPED_STAFF_ROLES: SelectorOption[] = [
+  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
+  { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
+  { id: UserRole.Doctor, name: formatValue(UserRole.Doctor) },
+  { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
+  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) }
 ];
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
