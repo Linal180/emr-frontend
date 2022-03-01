@@ -72,16 +72,18 @@ const PracticeTable: FC = (): JSX.Element => {
     },
 
     async onCompleted(data) {
-      if (data) {
-        const { removePractice: { response } } = data
+      try {
+        if (data) {
+          const { removePractice: { response } } = data
 
-        if (response) {
-          const { message } = response
-          message && Alert.success(message);
-          await findAllPractices();
-          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          if (response) {
+            const { message } = response
+            message && Alert.success(message);
+            await findAllPractices();
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          }
         }
-      }
+      } catch (error) { }
     }
   });
 

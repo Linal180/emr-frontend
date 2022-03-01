@@ -77,16 +77,18 @@ const FacilityTable: FC = (): JSX.Element => {
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       if (data) {
         const { removeFacility: { response } } = data
 
         if (response) {
-          const { message } = response
-          message && Alert.success(message);
-          findAllFacility();
-          fetchAllFacilityList();
-          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          try {
+            const { message } = response
+            message && Alert.success(message);
+            await findAllFacility();
+            fetchAllFacilityList();
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          } catch (error) { }
         }
       }
     }

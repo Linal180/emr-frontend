@@ -1813,7 +1813,7 @@ export type UpdateBillingAddressInput = {
   email?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   fax?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
   pager?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;

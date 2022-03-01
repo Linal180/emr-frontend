@@ -66,17 +66,19 @@ const StaffTable: FC = (): JSX.Element => {
       setOpenDelete(false)
     },
 
-    onCompleted(data) {
-      if (data) {
-        const { removeStaff: { response } } = data
+    async onCompleted(data) {
+      try {
+        if (data) {
+          const { removeStaff: { response } } = data
 
-        if (response) {
-          const { message } = response
-          message && Alert.success(message);
-          setOpenDelete(false)
-          findAllStaff();
+          if (response) {
+            const { message } = response
+            message && Alert.success(message);
+            setOpenDelete(false)
+            await findAllStaff();
+          }
         }
-      }
+      } catch (error) { }
     }
   });
 

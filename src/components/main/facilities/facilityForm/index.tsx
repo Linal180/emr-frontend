@@ -219,7 +219,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           updateFacilityInput: {
             updateFacilityItemInput: { id, ...facilityInput },
             updateContactInput: { ...contactIdInput },
-            updateBillingAddressInput: { id: '', ...billingIdInput },
+            updateBillingAddressInput: { ...billingIdInput },
           }
         }
       })

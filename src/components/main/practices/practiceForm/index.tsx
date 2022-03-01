@@ -185,6 +185,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
+                          isRequired
                           fieldType="text"
                           controllerName="userFirstName"
                           controllerLabel={FIRST_NAME}
@@ -193,6 +194,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
+                          isRequired
                           fieldType="text"
                           controllerName="userLastName"
                           controllerLabel={LAST_NAME}
@@ -203,6 +205,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={4} sm={12} xs={12}>
                         <InputController
+                          isRequired
                           fieldType="email"
                           controllerName="userEmail"
                           controllerLabel={EMAIL}
@@ -215,6 +218,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={4}>
                         <Selector
+                          isRequired
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
@@ -254,6 +258,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <>
                       <Grid item md={12} sm={12} xs={12}>
                         <InputController
+                          isRequired
                           fieldType="text"
                           controllerName="name"
                           controllerLabel={PRACTICE_NAME}

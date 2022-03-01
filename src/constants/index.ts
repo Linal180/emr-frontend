@@ -7,7 +7,7 @@ import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
-  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole, Communicationtype,
+  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole, Communicationtype, Gender,
 } from "../generated/graphql";
 
 // regex
@@ -717,7 +717,7 @@ export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN
 export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
 export const NPI_INFO = "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
 export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO = "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
-export const Tax_ID_INFO = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
+export const TAX_ID_INFO = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
 export const UPIN_INFO = "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
 export const EIN_INFO = "An Employer Identification Number (EIN) is a nine-digit number that IRS assigns in the following format: XX-XXXXXXX";
 
@@ -1008,6 +1008,12 @@ export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
   { id: Sexualorientation.Bisexual, name: formatValue(Sexualorientation.Bisexual) },
   { id: Sexualorientation.Homosexual, name: formatValue(Sexualorientation.Homosexual) },
   { id: Sexualorientation.Heterosexual, name: formatValue(Sexualorientation.Heterosexual) },
+];
+
+export const MAPPED_GENDER: SelectorOption[] = [
+  { id: Gender.Male, name: formatValue(Gender.Male) },
+  { id: Gender.Female, name: formatValue(Gender.Female) },
+  { id: Gender.Other, name: formatValue(Gender.Other) },
 ];
 
 export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
