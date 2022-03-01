@@ -1,13 +1,16 @@
 // packages block
 import { FC, useState, ChangeEvent } from "react";
-import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, FormControlLabel, Checkbox, Typography, Box } from "@material-ui/core";
+import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, FormControlLabel, 
+  Checkbox, Typography, Box } from "@material-ui/core";
 // interfaces/types block/theme/svgs/constants
 import { DeleteWarningIcon } from "../../assets/svgs";
 import { ConfirmationTypes } from "../../interfacesTypes";
 import { aboutToDelete, deleteRecordTitle } from "../../utils";
 import { DELETE_RECORD, DELETE_RECORD_LEARN_MORE_TEXT, CANCEL } from "../../constants";
 
-const ConfirmationModal: FC<ConfirmationTypes> = ({ setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success }): JSX.Element => {
+const ConfirmationModal: FC<ConfirmationTypes> = ({
+  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success
+}): JSX.Element => {
   const [checked, setChecked] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {

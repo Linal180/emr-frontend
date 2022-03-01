@@ -73,7 +73,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
 
   return (
     <>
-      <Box ml={2} mr={2} mb={2} mt={2}>
+      <Box m={2}>
         <Grid container spacing={3}>
           {attachments &&
             attachments.map((attachment: Attachment) => {
@@ -83,8 +83,10 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
                 <Grid item md={4} xs={12} key={id}>
                   <Card>
                     <CardMedia component="img" height="200" image={url || undefined} alt={'emr images'} />
+
                     <CardActions>
                       <Button size="small" color="primary" onClick={() => handleEditClick(attachment)}>Edit</Button>
+
                       <Button size="small" color="secondary" onClick={() => handleDeleteModal(id)}>
                         Delete
                       </Button>
@@ -96,7 +98,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
 
           <Grid md={12} xs={12}>
             {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
-              <CameraAlt color="inherit" />
+              <CameraAlt color="primary" />
             </Typography>}
             
             {!notDescription && <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>

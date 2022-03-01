@@ -11,7 +11,6 @@ import AppointmentCard from "./appointmentCard";
 // styles, constants  block
 import { DUMMY_APPOINTMENTS } from "../../../constants";
 
-
 const StartProjectComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
 

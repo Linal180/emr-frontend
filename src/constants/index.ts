@@ -442,6 +442,16 @@ export const LEGAL_SEX = "Legal Sex";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const ADDRESS_CTA = "Address (CTA)";
 export const EMPLOYER = "Employer";
+export const TITLE = "Title";
+export const SIZE = "Size";
+export const ACTIONS = "Actions";
+export const PENDING = "Pending";
+export const SIGNED = "Signed";
+export const UPLOAD = "Upload";
+export const UPLOADS_DOCUMENT = "Upload Document";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT= "Drop your image here, or browse";
+export const DELETE = "Delete";
+export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
 export const DECREASED_DATE = "Deceased Date";
 export const NOTICE_ON_FILE = "Notices on file";
@@ -549,8 +559,6 @@ export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Plea
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
-export const DELETE = "Delete";
-export const SAVE_APPOINTMENT = "Save Appointment";
 
 // Roles
 export const STAFF = "STAFF";
@@ -588,7 +596,6 @@ export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
-
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -700,6 +707,18 @@ export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verif
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
+export const TOOLTIP_DUMMY_MESSAGE = "tooltip message here";
+
+// INFO MESSAGES
+
+export const CLIA_ID_NUMBER_INFO = "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
+export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN) and is used to identify a business entity";
+export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
+export const NPI_INFO = "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
+export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO = "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
+export const Tax_ID_INFO = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
+export const UPIN_INFO = "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
+export const EIN_INFO = "An Employer Identification Number (EIN) is a nine-digit number that IRS assigns in the following format: XX-XXXXXXX";
 
 export const APP_MENU_ITEMS = [
   {
@@ -1120,6 +1139,10 @@ export const PROFILE_TOP_TABS = [
     title: 'Communicator',
     value: "7"
   },
+  {
+    title: 'Documents',
+    value: "8"
+  },
 ]
 
 export const DOCTOR_TOP_TABS = [
@@ -1426,4 +1449,67 @@ export const MAPPED_STATUS = [
     value: 'cancel',
     label: 'Cancel',
   },
+  {
+    "title": "Vacation",
+    "startDate": "2018-07-27T19:00:00.000Z",
+    "endDate": "2018-08-06T19:00:00.000Z"
+  }
 ];
+
+export const DUMMY_DOCUMENTS = [
+  {
+    "title": "CBCDiagnosedocument.pdf",
+    "type": "Other",
+    "comments": "Check when patient comes next time",
+    "provider": "Dr. Clara Max",
+    "date": "8 Sep, 2020",
+    "size": "5KB",
+  },
+  {
+    "title": "xray-analysis.pdf",
+    "type": "Clinical Document",
+    "comments": "It came with the patients other rec...",
+    "provider": "Dr. Harrold Wixen",
+    "date": "17 Oct, 2020",
+    "size": "5KB",
+  },
+  {
+    "title": "Bloodreport.pdf",
+    "type": "Care Plan",
+    "comments": "N/A",
+    "provider": "Dr. A. H. John",
+    "date": "24 May, 2020",
+    "size": "122KB",
+  },
+  {
+    "title": "fracturecondition.png",
+    "type": "Chart Note",
+    "comments": "N/A",
+    "provider": "N/A",
+    "date": "17 Oct, 2020",
+    "size": "87KB",
+  },
+];
+
+export const PROFILE_DETAIL_DATA = [
+  {
+    title: "Allergies",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Past Medical History",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Problems",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Medications",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Family History",
+    description: LOREM_TEXT_15
+  },
+]
