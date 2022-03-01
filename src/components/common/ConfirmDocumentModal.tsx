@@ -4,31 +4,29 @@ import dotenv from 'dotenv';
 import {
   Button, Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, IconButton
 } from "@material-ui/core";
-// components block
 // constants and interfaces block
-import { CANCEL, UPLOAD, UPLOADS_DOCUMENT, UPLOADS_DOCUMENT_LEARN_MORE_TEXT } from "../../constants";
-import { DocumentModalComponentType } from "../../interfacesTypes";
 import { DocumentUploadIcon } from "../../assets/svgs";
+import { DocumentModalComponentType } from "../../interfacesTypes";
 import { useDocumentModalStyles } from "../../styles/documentModalStyles";
+import { CANCEL, UPLOAD, UPLOADS_DOCUMENT, UPLOADS_DOCUMENT_LEARN_MORE_TEXT } from "../../constants";
 
 dotenv.config()
 
-const ConfirmDocumentModal: FC<DocumentModalComponentType> = ({
-
-  isOpen, setOpen
-}): JSX.Element => {
-
-  const handleClose = () => {
-    setOpen && setOpen(!isOpen);
-  };
-
+const ConfirmDocumentModal: FC<DocumentModalComponentType> = ({ isOpen, setOpen }): JSX.Element => {
   const classes = useDocumentModalStyles();
 
+  const handleClose = () => setOpen && setOpen(!isOpen);
+
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="image-dialog-title" aria-describedby="image-dialog-description" maxWidth="sm" fullWidth>
-      <DialogTitle id="alert-dialog-title">
-        {UPLOADS_DOCUMENT}
-      </DialogTitle>
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={isOpen}
+      onClose={handleClose}
+      aria-labelledby="image-dialog-title"
+      aria-describedby="image-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{UPLOADS_DOCUMENT}</DialogTitle>
 
       <DialogContent className={classes.modalContent}>
         <IconButton>

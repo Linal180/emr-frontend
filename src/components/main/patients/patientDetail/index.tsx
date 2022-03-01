@@ -30,7 +30,7 @@ import {
 } from "../../../../assets/svgs";
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION, MAPPED_WIDGETS,
-  PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, SIGNED, UPLOAD, VIEW_CHART_TEXT
+  PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, SIGNED, UPLOAD, VIEW_CHART_TEXT
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -192,29 +192,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-  const ProfileDetailedData = [
-    {
-      title: "Allergies",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-    {
-      title: "Past Medical History",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-    {
-      title: "Problems",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-    {
-      title: "Medications",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-    {
-      title: "Family History",
-      description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Odio viverra proin tortor pellentesque turpis pellentesque diam. Tellus turpis gravida amet, sit eget maecenas. Diam quisque facilisi nunc morbi vitae nec quis viverra."
-    },
-  ]
-
   const onDeleteClick = () =>
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
@@ -226,9 +203,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const [DocumentOpen, setDocumentOpen] = useState(false);
 
-  const handleUpload = () => {
-    setDocumentOpen(true);
-  };
+  const handleUpload = () => setDocumentOpen(true);
 
   const search = (query: string) => { }
 
@@ -302,10 +277,17 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <TabPanel value="1">
               <Grid container spacing={3}>
-                {ProfileDetailedData.map((item, index) => (
+                {PROFILE_DETAIL_DATA.map((item, index) => (
                   <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
                     {item && item.title === "Allergies" && <>
-                      <Box className={classes.addSlot} my={2} aria-label="widget's patient" aria-controls={widgetId} aria-haspopup="true" onClick={handleWidgetMenuOpen}>
+                      <Box
+                        my={2}
+                        aria-haspopup="true"
+                        aria-controls={widgetId}
+                        className={classes.addSlot}
+                        aria-label="widget's patient"
+                        onClick={handleWidgetMenuOpen}
+                      >
                         <AddWidgetIcon />
 
                         <Typography component='h1' variant="h4">
@@ -339,6 +321,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                       </FormProvider>
                     </>
                     }
+                    
                     <Box bgcolor={WHITE} p={4}>
                       <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
                         <Box className={classes.profileInfoHeading}>
@@ -366,7 +349,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                     <Box className={tableClasses.searchOuterContainer}>
                       <Search search={search} />
                     </Box>
-                    
+
                     <Box ml={3} className={tableClasses.RadioButtonsStroke}>
                       <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>
                       <Button size="small">{SIGNED}</Button>

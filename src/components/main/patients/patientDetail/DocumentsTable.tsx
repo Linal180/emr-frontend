@@ -2,12 +2,11 @@
 // packages block
 import { FC } from "react";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
-
-// components block
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { ACTION, COMMENTS, DATE, PROVIDER, SIZE, TITLE, TYPE, DUMMY_DOCUMENTS } from "../../../../constants";
+// constant, utils and styles block
 import { renderTh } from "../../../../utils";
+import { useTableStyles } from "../../../../styles/tableStyles";
 import { DownloadIcon, EditNewIcon, PrinterIcon, SignedIcon, TrashNewIcon } from "../../../../assets/svgs";
+import { ACTION, COMMENTS, DATE, PROVIDER, SIZE, TITLE, TYPE, DUMMY_DOCUMENTS } from "../../../../constants";
 
 const DocumentsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()

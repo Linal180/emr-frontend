@@ -1455,3 +1455,26 @@ export const DUMMY_DOCUMENTS = [
     "size": "87KB",
   },
 ];
+
+export const PROFILE_DETAIL_DATA = [
+  {
+    title: "Allergies",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Past Medical History",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Problems",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Medications",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Family History",
+    description: LOREM_TEXT_15
+  },
+]
