@@ -62,15 +62,21 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
-    if (name === 'releaseOfInfoBill') {
-      dispatch({ type: ActionType.SET_IS_BILLING, isBilling: checked })
-      setValue('releaseOfInfoBill', checked)
-    } else if (name === 'voiceCallPermission') {
-      dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
-      setValue('voiceCallPermission', checked)
-    } else if (name === 'phonePermission') {
-      dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: checked })
-      setValue('phonePermission', checked)
+    switch (name) {
+      case 'releaseOfInfoBill':
+        dispatch({ type: ActionType.SET_IS_BILLING, isBilling: checked })
+        setValue('releaseOfInfoBill', checked)
+        return;
+
+      case 'voiceCallPermission':
+        dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
+        setValue('voiceCallPermission', checked)
+        return;
+
+      case 'phonePermission':
+        dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: checked })
+        setValue('phonePermission', checked)
+        return;
     }
   };
 
@@ -93,7 +99,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
           if (patient) {
             const { ssn, dob, callToConsent, language, race, ethnicity, maritialStatus, genderIdentity, contacts,
-              doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission, preferredCommunicationMethod, releaseOfInfoBill
+              doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission, preferredCommunicationMethod,
+              releaseOfInfoBill
             } = patient;
 
             if (facility) {
@@ -122,19 +129,20 @@ const PatientFormComponent: FC = (): JSX.Element => {
             ssn && setValue("ssn", ssn)
             pharmacy && setValue("pharmacy", pharmacy)
             language && setValue("language", language)
+            race && setValue("race", setRecord(race, race))
             callToConsent && setValue("callToConsent", callToConsent)
             phonePermission && setValue("phonePermission", phonePermission)
-            dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: phonePermission as boolean })
-            voiceCallPermission && setValue("voiceCallPermission", voiceCallPermission)
-            dispatch({ type: ActionType.SET_IS_VOICE, isVoice: voiceCallPermission as boolean })
-            releaseOfInfoBill && setValue('releaseOfInfoBill', releaseOfInfoBill)
-            dispatch({ type: ActionType.SET_IS_BILLING, isBilling: releaseOfInfoBill as boolean })
-            race && setValue("race", setRecord(race, race))
             ethnicity && setValue("ethnicity", setRecord(ethnicity, ethnicity))
+            releaseOfInfoBill && setValue('releaseOfInfoBill', releaseOfInfoBill)
+            voiceCallPermission && setValue("voiceCallPermission", voiceCallPermission)
             maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
             genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
+
             preferredCommunicationMethod &&
               setValue("preferredCommunicationMethod", setRecord(preferredCommunicationMethod, preferredCommunicationMethod))
+            dispatch({ type: ActionType.SET_IS_VOICE, isVoice: voiceCallPermission as boolean })
+            dispatch({ type: ActionType.SET_IS_BILLING, isBilling: releaseOfInfoBill as boolean })
+            dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: phonePermission as boolean })
 
             if (contacts) {
               const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -215,16 +223,15 @@ const PatientFormComponent: FC = (): JSX.Element => {
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
     const patientItemInput = {
-      suffix: '', firstNameUsed: '', prefferedName: '',
-      previousFirstName: '', previouslastName: '', registrationDate: getTimestamps(''), language: language || '',
-      motherMaidenName: '', ssn: ssn || '', dob: getTimestamps(dob || ''), privacyNotice: false,
-      releaseOfInfoBill: false, deceasedDate: getTimestamps(''), callToConsent: callToConsent || false, patientNote: '',
-      statementNoteDateTo: getTimestamps(''), medicationHistoryAuthority: false, phonePermission: phonePermission || false,
-      homeBound: Homebound.No, holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '',
+      suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '', 
+      registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '', 
+      dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''), 
+      callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''), 
+      medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No, 
+      holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '', pharmacy: pharmacy || '',
       ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, voiceCallPermission: voiceCallPermission || false,
       statementDelivereOnline: false, statementNote: '', race: selectedRace as Race || Race.White,
       preferredCommunicationMethod: selectedCommunicationMethod as Communicationtype || Communicationtype.Email,
-      pharmacy: pharmacy || ''
     };
 
     const contactInput = {

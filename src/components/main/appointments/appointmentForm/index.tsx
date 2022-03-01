@@ -2,9 +2,9 @@
 import { useEffect, FC, useContext, useState, Reducer, useReducer, useCallback, ChangeEvent } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
 import { MuiPickersUtilsProvider, DatePicker } from '@material-ui/pickers';
+import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -14,21 +14,23 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
+import { GRAY_TWO, WHITE } from '../../../../theme';
 import { appointmentSchema } from '../../../../validationSchemas';
 import { FacilityContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { ExtendedAppointmentInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimestamps, renderDoctors, renderFacilities, renderPatient, renderServices,
-  getTimeFromTimestamps, requiredMessage, setRecord, getStandardTime,
+  getTimestamps, renderDoctors, renderFacilities, renderPatient, renderServices, getTimeFromTimestamps,
+  setRecord, getStandardTime,
 } from "../../../../utils";
 import {
   DoctorSlotsPayload,
-  PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery,
-  useGetDoctorSlotsLazyQuery, useUpdateAppointmentMutation
+  PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
+  useGetDoctorSlotsLazyQuery,
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -37,15 +39,13 @@ import {
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
 } from "../../../../constants";
-import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { GRAY_TWO, WHITE } from '../../../../theme';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
   const { facilityList } = useContext(ListContext)
+  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const {
-    serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList,
-    fetchAllPatientList
+    serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident } = state
@@ -53,26 +53,31 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     mode: "all",
     resolver: yupResolver(appointmentSchema)
   });
-  const { reset, setValue, handleSubmit, watch, formState: { errors }, control } = methods;
+  const { reset, setValue, handleSubmit, watch, control } = methods;
   const {
     serviceId: { id: selectedService } = {},
     providerId: { id: selectedProvider } = {},
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
   } = watch();
 
-  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
-
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
-    if (name === 'employment') {
-      dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: checked })
-      setValue('employment', checked)
-    } else if (name === 'autoAccident') {
-      dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: checked })
-      setValue('autoAccident', checked)
-    } else if (name === 'otherAccident') {
-      dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: checked })
-      setValue('otherAccident', checked)
+
+    switch (name) {
+      case 'employment':
+        setValue('employment', checked)
+        dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: checked })
+        return;
+
+      case 'autoAccident':
+        dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: checked })
+        setValue('autoAccident', checked)
+        return;
+
+      case 'otherAccident':
+        dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: checked })
+        setValue('otherAccident', checked)
+        return;
     }
   };
 
@@ -105,20 +110,21 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           notes && setValue('notes', notes)
           reason && setValue('reason', reason)
           employment && setValue('employment', employment)
-          dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           autoAccident && setValue('autoAccident', autoAccident)
-          dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
           otherAccident && setValue('otherAccident', otherAccident)
-          dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: isOtherAccident as boolean })
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
-          facilityId && setValue('facilityId', setRecord(facilityId, facilityName || ''))
           serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
+          facilityId && facilityName && setValue('facilityId', setRecord(facilityId, facilityName))
           patientId && setValue('patientId', setRecord(patientId, `${patientFN} ${patientLN}` || ''))
           providerId && setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}` || ''))
-          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime || ''))
-          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime || ''))
+          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
+          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
+
           setDate(new Date(getTimeFromTimestamps(scheduleStartDateTime || '')) as MaterialUiPickersDate)
+          dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
+          dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
+          dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: isOtherAccident as boolean })
         }
       }
     }
@@ -215,7 +221,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         }
       })
     }
-  }, [currentDate, getDoctorSlots, id, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch])
+  }, [
+    currentDate, getDoctorSlots, id, offset, selectedFacility, date, selectedProvider, selectedService,
+    serviceId, watch
+  ])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -287,17 +296,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   };
 
-  const {
-    notes: { message: notesError } = {},
-    patientId: { id: patientError } = {},
-    serviceId: { id: serviceError } = {},
-    reason: { message: reasonError } = {},
-    providerId: { id: providerError } = {},
-    facilityId: { id: facilityError } = {},
-    primaryInsurance: { message: primaryInsuranceError } = {},
-    secondaryInsurance: { message: secondaryInsuranceError } = {},
-  } = errors;
-
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -314,7 +312,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         label={FACILITY}
                         name="facilityId"
                         options={renderFacilities(facilityList)}
-                        error={facilityError?.message && requiredMessage(FACILITY)}
                       />
                     </Grid>
 
@@ -326,7 +323,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         label={APPOINTMENT_TYPE}
                         name="serviceId"
                         options={renderServices(serviceList)}
-                        error={serviceError?.message && requiredMessage(APPOINTMENT_TYPE)}
                       />
                     </Grid>
                   </Grid>
@@ -346,7 +342,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={PROVIDER}
                           name="providerId"
                           options={renderDoctors(doctorList)}
-                          error={providerError?.message && requiredMessage(PROVIDER)}
                         />
                       </Grid>
 
@@ -357,7 +352,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={PATIENT}
                           name="patientId"
                           options={renderPatient(patientList)}
-                          error={patientError?.message && requiredMessage(PATIENT)}
                         />
                       </Grid>
                     </Grid>
@@ -365,28 +359,24 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     <InputController
                       fieldType="text"
                       controllerName="reason"
-                      error={reasonError}
                       controllerLabel={REASON}
                     />
 
                     <InputController
                       fieldType="text"
                       controllerName="notes"
-                      error={notesError}
                       controllerLabel={NOTES}
                     />
 
                     <InputController
                       fieldType="text"
                       controllerName="primaryInsurance"
-                      error={primaryInsuranceError}
                       controllerLabel={PRIMARY_INSURANCE}
                     />
 
                     <InputController
                       fieldType="text"
                       controllerName="secondaryInsurance"
-                      error={secondaryInsuranceError}
                       controllerLabel={SECONDARY_INSURANCE}
                     />
                   </>
