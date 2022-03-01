@@ -1,29 +1,46 @@
 import { makeStyles, createStyles } from "@material-ui/core";
+import { RED_FOUR, WHITE_FOUR } from "../theme";
 
 export const useCalendarStyles = makeStyles(() =>
   createStyles({
-    appointmentCalendar: {
-      "& .MuiToolbar-root": {
-        display: 'inline-flex',
-        alignSelf: 'flex-start'
+    dropdown: {
+      "& .MuiMenu-paper": {
+        padding: 20,
+
+        "& .MuiCardContent-root": {
+          padding: 0,
+        }
+
       },
 
-      "& .MuiTableCell-root > div": {
-        textAlign: 'right',
-      },
-      
-      "& .MuiIconButton-root": {
-        border: '1px solid rgba(0, 0, 0, 0.23)',
-        borderRadius: 6,
-        padding: '7px 16px',
+      "& .MuiPopover-paper": {
+        minHeight: 300
       }
     },
 
-    buttonView: {
-      position:'absolute',
-      marginTop: 18,
-      right: 50,
-      zIndex:5,
+    cardHeader: {
+      padding: 8,
+    },
+
+    deleteButton: {
+      "& .MuiButton-label": {
+        color: RED_FOUR
+      }
+    },
+
+    statusDropdown: {
+      '& .MuiTextField-root': {
+        margin: 1,
+        border: `1px solid ${WHITE_FOUR}`,
+        width: '12ch',
+      },
+      '& .MuiSelect-selectMenu': {
+        margin: 1,
+        minHeight: 'auto'
+      },
+      '& .MuiSelect-select': {
+        padding: 0
+      }
     },
   })
 );
