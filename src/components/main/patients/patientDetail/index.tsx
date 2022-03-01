@@ -361,9 +361,11 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <TabPanel value="8">
               <Box className={tableClasses.mainTableContainer}>
-                <Box className={tableClasses.searchContainer} display="flex" justifyContent="space-between" alignItems="center">
+                <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
                   <Box display="flex">
-                    <Search search={search} />
+                    <Box className={tableClasses.searchOuterContainer}>
+                      <Search search={search} />
+                    </Box>
                     
                     <Box ml={3} className={tableClasses.RadioButtonsStroke}>
                       <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>

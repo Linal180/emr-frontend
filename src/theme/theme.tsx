@@ -540,6 +540,6 @@ export const theme = createTheme({
           color: GRAY_THREE
         }
       }
-    },
+    }
   },
 });

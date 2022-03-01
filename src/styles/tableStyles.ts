@@ -33,6 +33,12 @@ export const useTableStyles = makeStyles(() => ({
     justifyContent: 'space-between',
   },
 
+  searchOuterContainer: {
+    "& .MuiBox-root": {
+      borderBottom: 'none'
+    }
+  },
+
   status: {
     fontWeight: 'bold',
     fontSize: '0.75rem',

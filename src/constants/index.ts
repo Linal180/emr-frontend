@@ -698,7 +698,9 @@ export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN
 export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
 export const NPI_INFO = "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
 export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO = "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
-export const Tax_ID = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
+export const Tax_ID_INFO = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
+export const UPIN_INFO = "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
+export const EIN_INFO = "An Employer Identification Number (EIN) is a nine-digit number that IRS assigns in the following format: XX-XXXXXXX";
 
 export const APP_MENU_ITEMS = [
   {
