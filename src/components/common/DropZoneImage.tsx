@@ -13,7 +13,8 @@ import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { MediaPatientDataType, DropzoneImageType } from "../../interfacesTypes";
 
 const DropzoneImage: FC<DropzoneImageType> = ({
-  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reset, isProfile
+  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reload,
+  isProfile, title, description
 }): JSX.Element => {
   const classes = useDropzoneStyles();
   const [loading, setLoading] = useState<boolean>(false);
@@ -34,7 +35,7 @@ const DropzoneImage: FC<DropzoneImageType> = ({
 
   const handleModalClose = () => {
     handleClose()
-    reset()
+    reload()
   }
 
   const handleFileChange = async (file: File) => {
@@ -64,14 +65,14 @@ const DropzoneImage: FC<DropzoneImageType> = ({
           case AttachmentType.Patient:
             const patientData = data as unknown as MediaPatientDataType;
             if (patientData) {
-              const {
-                patient: { attachments: patientAttachment },
-              } = patientData || {};
+              const { patient: { attachments: patientAttachment } } = patientData || {};
+
               if (patientAttachment) {
-                setAttachments(patientAttachment)
-                Alert.success('Patient Media added successfully!');
+                reload();
                 setLoading(false);
                 handleModalClose();
+                setAttachments(patientAttachment)
+                Alert.success('Media added successfully!');
               }
             }
             break;
@@ -94,9 +95,7 @@ const DropzoneImage: FC<DropzoneImageType> = ({
     });
   }
 
-  const handleUpdateImage = () => {
-    setImageEdit(true)
-  }
+  const handleUpdateImage = () => setImageEdit(true)
 
   return (
     <>
@@ -142,7 +141,7 @@ const DropzoneImage: FC<DropzoneImageType> = ({
             )}
 
             <DropzoneArea
-              onChange={(files) => !!files.length && handleFileChange(files[0])}
+              onChange={(files) => reload()}
               filesLimit={1}
               dropzoneText={imageEdit ? 'Please click here to update the image' : 'Please add or drop the image here'}
               alertSnackbarProps={{ autoHideDuration: 3000 }}

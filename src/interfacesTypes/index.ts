@@ -566,14 +566,16 @@ export interface PhoneInputProps {
 
 export interface DropzoneImageType {
   itemId: string;
+  title?: string;
   isEdit?: boolean;
   isProfile?: boolean;
+  description?: string;
   attachmentId: string;
   isDisabled?: boolean;
   hasHighlight?: boolean;
   attachment?: Attachment;
   imageModuleType: AttachmentType;
-  reset: Function;
+  reload: Function;
   handleClose: Function;
   setActiveStep?: Function;
   setAttachments: Function;
@@ -595,17 +597,21 @@ export interface ICreateMediaInput {
 
 export interface MediaModalTypes extends DialogTypes {
   itemId: string;
+  title?: string;
   isProfile?: boolean;
+  description?: string;
   preSignedUrl?: string;
   attachment?: Attachment;
   attachments?: Attachment[];
   imageModuleType: AttachmentType;
-  setEdit: Function
+  reload: Function;
+  setEdit: Function;
   setAttachments: Function;
 }
 
 export interface MediaCardsType {
   itemId: string;
+  reload: Function;
   imageSide: string;
   isProfile?: boolean;
   hasCollage?: boolean;

@@ -18,7 +18,8 @@ import { Action, ActionType, mediaReducer, State, initialState } from "../../../
 dotenv.config()
 
 const AddImageModal: FC<MediaModalTypes> = ({
-  imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, isProfile, preSignedUrl
+  imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, isProfile, preSignedUrl,
+  title, description, reload
 }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { fileUrl, attachmentId } = state;
@@ -54,6 +55,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
 
           if (message && status && status === 200) {
             Alert.success(message)
+            reset();
             dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
           }
         }
@@ -94,11 +96,13 @@ const AddImageModal: FC<MediaModalTypes> = ({
               </Box>
               :
               <DropzoneImage
-                reset={reset}
+                title={title}
+                reload={reload}
                 isEdit={isEdit}
                 itemId={itemId}
                 isProfile={isProfile}
                 handleClose={handleClose}
+                description={description}
                 attachmentId={attachmentId}
                 setAttachments={setAttachments}
                 imageModuleType={imageModuleType}

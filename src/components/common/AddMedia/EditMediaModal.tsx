@@ -11,7 +11,7 @@ import { useUpdateAttachmentDataMutation } from "../../../generated/graphql";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 
 const EditMediaModel: FC<MediaModalTypes> = (props): JSX.Element => {
-  const { imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, attachments } = props
+  const { imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment, attachments } = props
 
   const { handleSubmit, reset, setValue } = useForm<ICreateMediaInput>();
 
@@ -91,7 +91,7 @@ const EditMediaModel: FC<MediaModalTypes> = (props): JSX.Element => {
               </Box>
             </Box> :
             <DropzoneImage
-              reset={reset}
+              reload={reload}
               itemId={itemId}
               isEdit={isEdit}
               handleClose={handleClose}

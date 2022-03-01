@@ -223,11 +223,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
     const patientItemInput = {
-      suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '', 
-      registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '', 
-      dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''), 
-      callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''), 
-      medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No, 
+      suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '',
+      registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '',
+      dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''),
+      callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''),
+      medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No,
       holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '', pharmacy: pharmacy || '',
       ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, voiceCallPermission: voiceCallPermission || false,
       statementDelivereOnline: false, statementNote: '', race: selectedRace as Race || Race.White,
@@ -628,11 +628,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Typography component="h4" variant="h4">Driving License</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
+                          <MediaCards reload={() => console.log("1111111111111")} moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
+                          <MediaCards reload={() => console.log("1111111111111")} moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
                         </Grid>
                       </Grid>
                     </Box>
@@ -641,11 +641,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Typography component="h4" variant="h4">Insurance Card</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
+                          <MediaCards reload={() => console.log("1111111111111")} moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
+                          <MediaCards reload={() => console.log("1111111111111")} moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
                         </Grid>
                       </Grid>
                     </Box>
@@ -660,11 +660,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Box pb={6}>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
-                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
+                            <MediaCards reload={() => console.log("1111111111111")} moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
+                            <MediaCards reload={() => console.log("PPPPPPPPPPPP")} moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
                           </Grid>
                         </Grid>
                       </Box>

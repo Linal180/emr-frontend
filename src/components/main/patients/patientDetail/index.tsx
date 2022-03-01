@@ -232,7 +232,15 @@ const PatientDetailsComponent = (): JSX.Element => {
                 <Box pl={1}>
                   <Box pr={3.75} position="relative">
                     <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-                    <MediaCards isProfile={true} moduleType={AttachmentType.Patient} itemId={id} imageSide={attachmentUrl} attachmentData={attachmentData || undefined} notDescription={true} />
+                    
+                    <MediaCards
+                      reload={() => console.log("reloading...........")}
+                      isProfile={true}
+                      notDescription={true}
+                      moduleType={AttachmentType.Patient}
+                      itemId={id} imageSide={attachmentUrl}
+                      attachmentData={attachmentData || undefined}
+                    />
                   </Box>
                 </Box>
               </Box>
