@@ -1,22 +1,31 @@
 // packages block
 import { useState, useContext, ChangeEvent } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { Card, CardContent, CardHeader, Box, Typography, Grid, FormControlLabel, Checkbox, Button } from "@material-ui/core";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { Card, CardContent, CardHeader, Box, Typography, Grid, FormControlLabel, Checkbox, Button, FormControl, InputLabel } from "@material-ui/core";
 // components block
 import Selector from "../../../../common/Selector";
 import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
-import ToggleButtonComponent from "../../../../common/ToggleButtonComponent";
 // constants, utils block
 import { ListContext } from "../../../../../context";
 import { DOB, STATUS } from "../../../../../constants";
 import { renderFacilities } from "../../../../../utils";
+import { GRAY_TWO, WHITE } from "../../../../../theme";
+import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
 
 const PatientCardForm = (): JSX.Element => {
   const methods = useForm<any>({ mode: "all", });
+  const { setValue, control } = methods;
   const [state, setState] = useState({ one: false, })
   const { facilityList } = useContext(ListContext)
-
+  const [isChecked, setIsChecked] = useState(false);
+  const classes = usePublicAppointmentStyles();
+  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { checked } } = event
+    setIsChecked(checked);
+    setValue('homeBound', checked)
+  };
   const handleChange = (name: string) => (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -87,9 +96,23 @@ const PatientCardForm = (): JSX.Element => {
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
-                <ToggleButtonComponent name="homeBound" label={STATUS} />
+                <Controller
+                  name='homeBound'
+                  control={control}
+                  render={() => (
+                    <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                      <InputLabel shrink>{STATUS}</InputLabel>
+
+                      <label className="toggle-main">
+                        <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
+                        <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
+                        <Box color={isChecked ? GRAY_TWO : WHITE}>No</Box>
+                      </label>
+                    </FormControl>
+                  )}
+                />
               </Grid>
-              
+
               <Grid item md={12} sm={12} xs={12}>
                 <InputController
                   fieldType="text"

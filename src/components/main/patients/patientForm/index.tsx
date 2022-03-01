@@ -1,9 +1,9 @@
 // packages block
 import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
+import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox,
+  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel,
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -13,7 +13,6 @@ import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
-import ToggleButtonComponent from '../../../common/ToggleButtonComponent';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { extendedPatientSchema } from '../../../../validationSchemas';
@@ -43,6 +42,9 @@ import {
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES, MAPPED_COUNTRIES,
 } from "../../../../constants";
+import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
+import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import { GRAY_TWO, WHITE } from '../../../../theme';
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -59,12 +61,21 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     four: false,
     five: false
   })
+  const [isChecked, setIsChecked] = useState(false);
+  const classes = usePublicAppointmentStyles();
+
   const methods = useForm<PatientInputProps>({
     mode: "all",
     resolver: yupResolver(extendedPatientSchema)
   });
-  const { handleSubmit, setValue, watch, reset } = methods;
+  const { handleSubmit, setValue, watch, reset, control } = methods;
   const { facilityId: { id: selectedFacility, name: selectedFacilityName } = {} } = watch();
+
+  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { checked } } = event
+    setIsChecked(checked);
+    setValue('homeBound', checked)
+  };
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -135,6 +146,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           previousFirstName && setValue("previousFirstName", previousFirstName)
           releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
+          homeBound && setIsChecked(homeBound === Homebound.Yes ? true : false)
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
@@ -877,8 +889,21 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     </Grid>
 
                     <Grid item md={12} sm={12} xs={12}>
-                      <ToggleButtonComponent name="homeBound" label={HOMEBOUND} />
-                    </Grid>
+                      <Controller
+                        name='homeBound'
+                        control={control}
+                        render={() => (
+                          <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                            <InputLabel shrink>{HOMEBOUND}</InputLabel>
+
+                            <label className="toggle-main">
+                              <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
+                              <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
+                              <Box color={isChecked ? GRAY_TWO : WHITE}>No</Box>
+                            </label>
+                          </FormControl>
+                        )}
+                      /> </Grid>
                   </>
                 )}
               </CardComponent>
@@ -1041,7 +1066,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <PhoneField name="employerPhone" label={EMPLOYER_PHONE} />
                       </Grid>
                     </Grid>
-
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
@@ -1230,3 +1254,4 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 };
 
 export default PatientForm;
+

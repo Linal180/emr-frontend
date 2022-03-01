@@ -511,7 +511,7 @@ export type ExternalPatientInputProps =
   & { state: SelectorOption } & { maritialStatus: SelectorOption } & { country: SelectorOption }
   & { emergencyCountry: SelectorOption } & { emergencyState: SelectorOption }
   & Pick<CreatePatientItemInput, 'dob' | 'pharmacy' | 'voiceCallPermission' | 'phonePermission' | 'language'
-    | 'callToConsent'>
+    | 'callToConsent' | 'releaseOfInfoBill'>
   & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'zipCode' | 'ssn'>
   & Pick<EmergencyContactControlInputs, 'emergencyName' | 'emergencyRelationship' | 'emergencyPhone' |
     'emergencyCity' | 'emergencyZipCode' | 'emergencyAddress' |
