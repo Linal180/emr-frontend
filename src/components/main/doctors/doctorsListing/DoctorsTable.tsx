@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer } from "react";
+import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
@@ -10,9 +10,9 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { ListContext } from "../../../../context";
+import { AuthContext, ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, formatValue, renderTh } from "../../../../utils";
+import { formatPhone, formatValue, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
 import {
@@ -25,20 +25,14 @@ import {
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { user } = useContext(AuthContext)
+  const { facility, roles } = user || {}
+  const { id: facilityId } = facility || {}
   const { fetchAllDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
 
   const [findAllDoctor, { loading, error }] = useFindAllDoctorLazyQuery({
-    variables: {
-      doctorInput: {
-        paginationOptions: {
-          page,
-          limit: PAGE_LIMIT,
-        }
-      }
-    },
-
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -64,6 +58,18 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   });
 
+  const fetchAllDoctors = useCallback(() => {
+    const isSuper = isSuperAdmin(roles);
+    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+    const doctorInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+
+    findAllDoctor({
+      variables: {
+        doctorInput: { ...doctorInputs }
+      },
+    })
+  }, [facilityId, findAllDoctor, page, roles])
+
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
@@ -77,7 +83,7 @@ const DoctorsTable: FC = (): JSX.Element => {
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          findAllDoctor()
+          fetchAllDoctors()
           fetchAllDoctorList();
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
@@ -86,10 +92,10 @@ const DoctorsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if (!searchQuery) {
-      findAllDoctor()
-    }
-  }, [page, findAllDoctor, searchQuery]);
+    !searchQuery && fetchAllDoctors()
+  }, [page, searchQuery, facilityId, roles, fetchAllDoctors]);
+
+  useEffect(() => { }, [user]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value

@@ -72,14 +72,11 @@ query FindAllPatient($patientInput: PatientInput!) {
         id
         npi
         name
-        code
         practiceType
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         serviceCode
         mammographyCertificationNumber
         createdAt
@@ -197,13 +194,10 @@ query GetPatient($getPatient: GetPatient!) {
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode

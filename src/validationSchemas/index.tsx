@@ -10,14 +10,15 @@ import {
   PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE, PHONE_NUMBER, PRACTICE_TYPE, TAXONOMY_CODE_REGEX,
   DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, USUAL_PROVIDER_ID, PATIENT,
   NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE, RELATIONSHIP, DAY,
-  TIME_ZONE_TEXT, PREFERRED_NAME, PROVIDER, SSN_REGEX, SSN_VALIDATION_MESSAGE,
-  TAXONOMY_VALIDATION_MESSAGE, TID_VALIDATION_MESSAGE, MAX_DOCTOR_DOB_VALIDATION_MESSAGE,
-  TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX, PHONE, MOBILE,
+  TIME_ZONE_TEXT, PREFERRED_NAME, PROVIDER, SSN_REGEX, SSN_VALIDATION_MESSAGE, ADDRESS_REGEX,
+  TAXONOMY_VALIDATION_MESSAGE, TID_VALIDATION_MESSAGE, MAX_DOCTOR_DOB_VALIDATION_MESSAGE, EIN_REGEX,
+  TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX, PHONE, MOBILE, ZIP_REGEX,
   STRING_REGEX, MIDDLE_NAME, PREVIOUS_FIRST_NAME, MIN_DOCTOR_DOB_VALIDATION_MESSAGE, SEX_AT_BIRTH,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
-  PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME,
-  APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, INSURANCE_PLAN_TYPE, PREFERRED_PHARMACY, ADDRESS_REGEX,
-  ZIP_REGEX, ZIP_VALIDATION_MESSAGE,
+  PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
+  APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
+  UPIN_VALIDATION_MESSAGE,
+  PRACTICE_NAME,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -70,12 +71,12 @@ const requiredStringOnly = (label: string, min: number, max: number) => {
 const notRequiredPhone = (label: string) => {
   return yup.string()
     .test(
-      '', MinLength(label, 11), value => {
+      '', MinLength(label, 10), value => {
         if (!value) {
           return true
         }
 
-        return !!value && value.length >= 11
+        return !!value && value.length >= 10
       })
 }
 
@@ -93,6 +94,8 @@ const countrySchema = (isRequired: boolean) => {
   }).test('', requiredMessage(COUNTRY), value => isRequired ? !!value : true)
 }
 
+const einSchema = { ein: notRequiredMatches(EIN_VALIDATION_MESSAGE, EIN_REGEX) }
+const upinSchema = { upin: notRequiredMatches(UPIN_VALIDATION_MESSAGE, UPIN_REGEX) }
 const npiSchema = { npi: notRequiredMatches(NPI_VALIDATION_MESSAGE, NPI_REGEX) }
 const ssnSchema = { ssn: notRequiredMatches(SSN_VALIDATION_MESSAGE, SSN_REGEX) }
 const passwordSchema = { password: yup.string().required(requiredMessage(PASSWORD_LABEL)) }
@@ -170,7 +173,6 @@ const usualProviderSchema = {
     '', requiredMessage(USUAL_PROVIDER_ID), ({ id }) => !!id
   )
 }
-
 
 const providerIdSchema = {
   providerId: yup.object().shape({
@@ -307,12 +309,12 @@ export const contactSchema = {
   ...emailSchema,
   state: stateSchema(false),
   fax: notRequiredPhone(FAX),
-  city: notRequiredStringOnly(CITY),
   country: countrySchema(false),
+  phone: notRequiredPhone(PHONE),
+  city: notRequiredStringOnly(CITY),
   address: addressValidation(ADDRESS, false),
   address2: addressValidation(ADDRESS, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
-  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
 };
 
 export const basicContactSchema = {
@@ -324,7 +326,7 @@ export const basicContactSchema = {
   basicAddress2: addressValidation(ADDRESS, false),
   basicEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   basicZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
-  basicPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15))
+  basicPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10)).max(15, MaxLength(PHONE_NUMBER, 15))
     .required(requiredMessage(PHONE_NUMBER)),
 };
 
@@ -332,12 +334,12 @@ export const billingAddressSchema = {
   billingState: stateSchema(false),
   billingFax: notRequiredPhone(FAX),
   billingCountry: countrySchema(false),
+  billingPhone: notRequiredPhone(PHONE),
   billingCity: notRequiredStringOnly(CITY),
   billingEmail: yup.string().email(INVALID_EMAIL),
   billingAddress: addressValidation(ADDRESS, false),
   billingAddress2: addressValidation(ADDRESS, false),
   billingZipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
-  billingPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
 }
 
 export const extendedContactSchema = yup.object({
@@ -353,8 +355,8 @@ const staffBasicSchema = {
   ...facilityIdSchema,
   ...firstLastNameSchema,
   username: yup.string(),
-  mobile: yup.string().min(11, MinLength(MOBILE_NUMBER, 11)).max(15, MaxLength(MOBILE_NUMBER, 15)),
-  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
+  phone: notRequiredPhone(PHONE),
+  mobile: yup.string().min(10, MinLength(MOBILE_NUMBER, 10)).max(15, MaxLength(MOBILE_NUMBER, 15)),
 }
 
 export const addStaffSchema = yup.object({
@@ -379,13 +381,13 @@ export const facilitySchema = yup.object({
   ...federalTaxIdSchema,
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
-  name: yup.string().required(requiredMessage(NAME)),
-  insurancePlanType: notRequiredStringOnly(INSURANCE_PLAN_TYPE),
+  name: yup.string().required(requiredMessage(NAME))
 })
 
 export const basicDoctorSchema = {
   ...ssnSchema,
   ...npiSchema,
+  ...upinSchema,
   ...deaDateSchema,
   ...doctorDobSchema,
   ...specialtySchema,
@@ -393,7 +395,6 @@ export const basicDoctorSchema = {
   ...licenseDateSchema,
   ...taxonomyCodeSchema,
   ...firstLastNameSchema,
-  upin: yup.string(),
   taxId: yup.string(),
   prefix: yup.string(),
   deaNumber: yup.string(),
@@ -496,7 +497,7 @@ export const guarantorPatientSchema = {
   guarantorMiddleName: notRequiredStringOnly(MIDDLE_NAME),
   guarantorEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   guarantorAddress: yup.string().matches(STRING_REGEX, ValidMessage(ADDRESS)).required(requiredMessage(ADDRESS)),
-  guarantorPhone: yup.string().min(11, MinLength(PHONE_NUMBER, 11))
+  guarantorPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10))
     .max(15, MaxLength(PHONE_NUMBER, 15)).required(requiredMessage(PHONE_NUMBER)),
   guarantorZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE)
     .required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
@@ -565,6 +566,7 @@ export const externalPatientSchema = yup.object({
   ...providerIdSchema,
   state: stateSchema(true),
   country: countrySchema(true),
+  phone: notRequiredPhone(PHONE),
   emergencyState: stateSchema(false),
   city: requiredStringOnly(CITY, 2, 20),
   emergencyCountry: countrySchema(false),
@@ -578,5 +580,37 @@ export const externalPatientSchema = yup.object({
   emergencyAddress2: addressValidation(ADDRESS, false),
   preferredPharmacy: notRequiredStringOnly(PREFERRED_PHARMACY),
   zipCode: requiredMatches(ZIP_CODE, ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
-  phone: yup.string().min(11, MinLength(PHONE_NUMBER, 11)).max(15, MaxLength(PHONE_NUMBER, 15)),
+})
+
+const registerUserSchema = {
+  userPhone: notRequiredPhone(PHONE),
+  userEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
+  userFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
+    .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26))
+    .required(requiredMessage(LAST_NAME)),
+  userLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
+    .min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26))
+    .required(requiredMessage(FIRST_NAME)),
+}
+
+const practiceFacilitySchema = {
+  ...einSchema,
+  ...upinSchema,
+  state: stateSchema(false),
+  city: notRequiredStringOnly(CITY),
+  country: countrySchema(false),
+  address: addressValidation(ADDRESS, false),
+  address2: addressValidation(ADDRESS, false),
+  facilityName: yup.string().required(requiredMessage(NAME)),
+  zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
+}
+
+export const createPracticeSchema = yup.object({
+  ...registerUserSchema,
+  ...practiceFacilitySchema,
+  name: yup.string().required(requiredMessage(PRACTICE_NAME)),
+})
+
+export const updatePracticeSchema = yup.object({
+  ...practiceFacilitySchema
 })

@@ -75,9 +75,6 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 
     if (message === UNAUTHORIZED || message === TOKEN_INVALID) handleLogout();
   }
-
-  if (networkError) {
-  };
   
   if (networkError) {
     Alert.error(MAINTENANCE_ALERT)

@@ -62,9 +62,7 @@ query FindAllContacts($contactInput: ContactInput!){
         practiceType
         cliaIdNumber
         federalTaxId
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         timeZone
         mammographyCertificationNumber
         npi

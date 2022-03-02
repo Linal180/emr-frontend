@@ -83,13 +83,10 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode
@@ -229,13 +226,10 @@ query GetDoctor($getDoctor: GetDoctor!) {
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode

@@ -15,7 +15,11 @@ import { AuthContext } from "../../../context";
 import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
-import { ADMIN, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE, SOMETHING_WENT_WRONG, LOGIN_SUCCESSFULLY, STAFF } from "../../../constants";
+import {
+  ADMIN, EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
+  NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, SUPER_ADMIN, TOKEN, WRONG_EMAIL_OR_PASSWORD, STAFF,
+  DASHBOARD_ROUTE, SOMETHING_WENT_WRONG,
+} from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
@@ -38,6 +42,7 @@ const LoginComponent = (): JSX.Element => {
     onCompleted(data) {
       if (data) {
         const { login: { response, access_token, roles } } = data
+
         if (response) {
           const { status } = response
 
@@ -67,10 +72,10 @@ const LoginComponent = (): JSX.Element => {
   });
 
   const onSubmit: SubmitHandler<LoginUserInput> = async (data) => {
+    setIsLoggedIn(false);
+
     await login({
-      variables: {
-        loginUser: data,
-      },
+      variables: { loginUser: data }
     });
   };
 
@@ -102,6 +107,7 @@ const LoginComponent = (): JSX.Element => {
 
         <Button type="submit" variant="contained" color="inherit" fullWidth disabled={loading}>
           {SIGN_IN}
+
           {loading && <CircularProgress size={20} color="inherit" />}
         </Button>
       </form>

@@ -14,19 +14,17 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { AuthContext, ListContext } from '../../../../context';
-import { getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
 import { addStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
+import { getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
 import {
-  Gender, useCreateStaffMutation, useGetStaffLazyQuery, UserRole,
-  useUpdateStaffMutation
+  Gender, useCreateStaffMutation, useGetStaffLazyQuery, UserRole, useUpdateStaffMutation
 } from "../../../../generated/graphql";
 import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
-  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES,
+  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_STAFF_ROLES, NOT_FOUND_EXCEPTION,
   STAFF_NOT_FOUND, CANT_UPDATE_STAFF, CANT_CREATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER_IDENTITY, 
-  NOT_FOUND_EXCEPTION
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -36,7 +34,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     mode: "all",
     resolver: yupResolver(isEdit ? updateStaffSchema : addStaffSchema)
   });
-
   const { reset, setValue, handleSubmit, formState: { errors } } = methods;
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
@@ -77,7 +74,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             firstName && setValue('firstName', firstName)
             role && setValue('roleType', setRecord(role, role))
             gender && setValue('gender', setRecord(gender, gender))
-            facilityId && setValue('facilityId', setRecord(facilityId, name || ''))
+            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
           }
         }
       }
@@ -147,7 +144,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
     if (isEdit) {
       if (id) {
-
         await updateStaff({
           variables: {
             updateStaffInput: {
@@ -213,7 +209,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
-                          options={MAPPED_ROLES}
+                          options={MAPPED_STAFF_ROLES}
                           error={roleError?.message && requiredMessage(ROLE)}
                         />
                       </Grid>
@@ -247,7 +243,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={GENDER}
                           value={EMPTY_OPTION}
                           error={genderError?.message && requiredMessage(GENDER)}
-                          options={MAPPED_GENDER_IDENTITY}
+                          options={MAPPED_GENDER}
                         />
                       </Grid>
 
