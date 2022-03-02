@@ -25,9 +25,10 @@ import {
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, PUBLIC_LINK,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES, PUBLIC_APPOINTMENT_ROUTE,
-  LINK_COPIED, CANCEL_TIME_EXPIRED_MESSAGE
+  LINK_COPIED, CANCEL_TIME_EXPIRED_MESSAGE, STATUS, CANCELLED, INITIATED
 } from "../../constants";
 import moment from "moment";
+import { BLUE_FIVE, BLUE_FOUR, RED, RED_ONE } from "../../theme";
 
 dotenv.config()
 
@@ -202,6 +203,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               {renderTh(DATE)}
               {renderTh(DURATION)}
               {renderTh(FACILITY)}
+              {renderTh(STATUS)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -215,13 +217,15 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             ) : (
               appointments?.map((appointment: AppointmentPayload['appointment']) => {
                 const {
-                  id, scheduleStartDateTime, provider, facility, patient, appointmentType
+                  id, scheduleStartDateTime, provider, facility, patient, appointmentType, status
                 } = appointment || {};
                 const { name } = facility || {};
                 const { firstName, lastName } = patient || {};
                 const { duration, name: type } = appointmentType || {};
                 const { firstName: doctorFN, lastName: doctorLN } = provider || {};
-
+                const ActiveStatus = status === 'CANCELLED' ? CANCELLED : INITIATED;
+                const StatusBackground = status === 'CANCELLED' ? BLUE_FIVE : RED_ONE
+                const StatusColor = status === 'CANCELLED' ? BLUE_FOUR : RED
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{type}</TableCell>
@@ -233,6 +237,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     <TableCell scope="row">{duration} {MINUTES}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
+                      <Box className={classes.status} component='span' bgcolor={StatusBackground} color={StatusColor}>
+                        {ActiveStatus}
+                      </Box>
+                    </TableCell>                    <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
