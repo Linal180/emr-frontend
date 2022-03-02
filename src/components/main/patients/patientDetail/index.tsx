@@ -321,7 +321,6 @@ const PatientDetailsComponent = (): JSX.Element => {
                       </FormProvider>
                     </>
                     }
-                    
                     <Box bgcolor={WHITE} p={4}>
                       <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
                         <Box className={classes.profileInfoHeading}>

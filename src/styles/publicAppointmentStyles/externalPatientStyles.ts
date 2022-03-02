@@ -1,5 +1,23 @@
-import { WHITE_FOUR, BLUE_ONE, BLACK_TWO, BLUE_THREE, WHITE, WHITE_FIVE, BLACK_ONE, WHITE_SIX, GRAY_SIX, GRAY_TWO, BLUE_SIX } from '../../theme/colors';
-import { createStyles, makeStyles, StepConnector, Switch, withStyles } from "@material-ui/core";
+import {
+  WHITE_FOUR,
+  BLUE_ONE,
+  BLACK_TWO,
+  BLUE_THREE,
+  WHITE,
+  WHITE_FIVE,
+  BLACK_ONE,
+  WHITE_SIX,
+  GRAY_SIX,
+  GRAY_TWO,
+  BLUE_SIX,
+} from "../../theme/colors";
+import {
+  createStyles,
+  makeStyles,
+  StepConnector,
+  Switch,
+  withStyles,
+} from "@material-ui/core";
 
 export const CustomConnector = withStyles({
   alternativeLabel: {
@@ -7,27 +25,26 @@ export const CustomConnector = withStyles({
   },
 
   active: {
-    '& $line': {
+    "& $line": {
       border: `1px dashed ${WHITE_FOUR}`,
     },
   },
 
   completed: {
-    '& $line': {
+    "& $line": {
       border: `1px dashed ${WHITE_FOUR}`,
     },
   },
 
   line: {
     marginTop: 8,
-    flexDirection: 'column',
+    flexDirection: "column",
     height: 50,
     border: `1px dashed ${WHITE_FOUR}`,
     width: 2,
     marginLeft: 8,
   },
 })(StepConnector);
-
 
 export const useColorLibStepIconStyles = makeStyles({
   root: {
@@ -36,10 +53,10 @@ export const useColorLibStepIconStyles = makeStyles({
     width: 40,
     height: 40,
     color: BLACK_TWO,
-    display: 'flex',
+    display: "flex",
     borderRadius: 9,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginRight: 12,
     fontWeight: 600,
     fontFamily: "Poppins, sans-serif",
@@ -64,7 +81,7 @@ export const useColorLibStepIconStyles = makeStyles({
 
     "& .MuiSvgIcon-root": {
       padding: 5,
-    }
+    },
   },
 });
 
@@ -81,7 +98,7 @@ export const useExternalPatientStyles = makeStyles({
   stepperContainer: {
     height: "calc(100vh - 130px)",
 
-    '@media (max-width:960px)': {
+    "@media (max-width:960px)": {
       height: "auto",
     },
 
@@ -89,24 +106,24 @@ export const useExternalPatientStyles = makeStyles({
       marginTop: 40,
       padding: 30,
 
-      '@media (max-width:960px)': {
+      "@media (max-width:960px)": {
         marginTop: 0,
       },
-    }
+    },
   },
 
   customStepper: {
     "& .MuiStepLabel-label.MuiStepLabel-active": {
-      '& h5': {
+      "& h5": {
         color: BLACK_ONE,
       },
     },
 
-    '& h5': {
+    "& h5": {
       color: BLACK_TWO,
     },
 
-    '& p': {
+    "& p": {
       color: WHITE_FIVE,
       fontWeight: 500,
     },
@@ -125,7 +142,7 @@ export const useExternalPatientStyles = makeStyles({
     "& .MuiCheckbox-root .MuiSvgIcon-root": {
       width: 24,
       height: 24,
-    }
+    },
   },
 
   agreementPointsContainer: {
@@ -137,8 +154,8 @@ export const useExternalPatientStyles = makeStyles({
 export const toggleButtonComponent = makeStyles({
   toggleContainer: {
     "& .toggle-main": {
-      display: 'flex',
-      position: 'relative',
+      display: "flex",
+      position: "relative",
       border: `1px solid ${GRAY_SIX}`,
       fontWeight: 500,
       fontSize: 14,
@@ -148,15 +165,15 @@ export const toggleButtonComponent = makeStyles({
       borderRadius: 6,
 
       "& > div": {
-        position: 'relative',
-        height: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
+        position: "relative",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         paddingBottom: 2,
         zIndex: 2,
         flex: 1,
-      }
+      },
     },
 
     "& .MuiToggleButtonGroup-root": {
@@ -178,16 +195,16 @@ export const toggleButtonComponent = makeStyles({
     "& .MuiToggleButtonGroup-groupedHorizontal:not(:last-child)": {
       borderTopLeftRadius: "6px",
       borderBottomLeftRadius: "6px",
-    }
+    },
   },
 
   buttonToggleContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
 
     "& .MuiFormLabel-root": {
-      color: GRAY_TWO
+      color: GRAY_TWO,
     },
 
     "& .MuiToggleButton-root.Mui-selected": {
@@ -205,9 +222,9 @@ export const toggleButtonComponent = makeStyles({
     "& .MuiToggleButtonGroup-groupedHorizontal:not(:last-child)": {
       borderTopLeftRadius: "6px",
       borderBottomLeftRadius: "6px",
-    }
-  }
-})
+    },
+  },
+});
 
 export const verificationFormStyles = makeStyles({
   verticalContainer: {
@@ -215,21 +232,20 @@ export const verificationFormStyles = makeStyles({
       height: "calc(100vh - 130px)",
       overflowY: "auto",
     },
-  }
-})
+  },
+});
 
 export const AntSwitch = withStyles(() =>
   createStyles({
     root: {
-      width: '100%',
+      width: "100%",
       height: "100%",
       padding: 5,
-      display: 'flex',
-      position: 'absolute',
+      display: "flex",
+      position: "absolute",
       left: 0,
       top: 0,
     },
-
 
     thumb: {
       width: 70,
@@ -237,26 +253,26 @@ export const AntSwitch = withStyles(() =>
       opacity: 0.8,
       borderRadius: 6,
       backgroundColor: WHITE_FIVE,
-      boxShadow: 'none',
-      transform: 'translateX(93%)',
-      transition: 'all .3s ease-in',
+      boxShadow: "none",
+      transform: "translateX(93%)",
+      transition: "all .3s ease-in",
     },
 
     switchBase: {
       padding: 4,
-      transform: 'none !important',
+      transform: "none !important",
 
-      '&$checked': {
-        '& + $track': {
+      "&$checked": {
+        "& + $track": {
           opacity: 0.8,
-          backgroundColor: 'transparent',
-          borderColor: 'none',
+          backgroundColor: "transparent",
+          borderColor: "none",
         },
 
         "& .MuiSwitch-thumb": {
           backgroundColor: BLUE_SIX,
-          transform: 'translateX(0)',
-        }
+          transform: "translateX(0)",
+        },
       },
     },
 
@@ -266,5 +282,5 @@ export const AntSwitch = withStyles(() =>
     },
 
     checked: {},
-  }),
+  })
 )(Switch);

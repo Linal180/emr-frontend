@@ -93,6 +93,7 @@ export const FRONT_SIDE = "Front Side";
 export const BACK_SIDE = "Back Side";
 export const PATIENT_INFORMATION_TEXT = "Patient Information";
 export const DOCUMENT_VERIFICATION = "Document Verification";
+export const PAYMENT_DETAILS = "Payment Details";
 export const CONTACT_METHOD = "How we can contact you?";
 export const RELEASE_BILLING_INFO_PERMISSIONS = "Can we release medical and billing information to this contact?";
 export const VOICE_MAIL_PERMISSIONS = "Is it okay for us to leave a voicemail?";
@@ -316,6 +317,7 @@ export const REPORTS_TEXT = "Reports";
 export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
 export const FIRST_NAME = "First Name";
+export const CARD_NUMBER = "Card Number";
 export const PRACTICE_NAME = "Practice Name";
 export const FACILITY_NAME = "Facilty Name";
 export const SEND_EMAIL = "Send Email";
@@ -480,6 +482,11 @@ export const ID_NUMBER = "ID Number";
 export const GROUP_NUMBER = "Policy / Group number";
 export const ISSUE_DATE = "Issue Date";
 export const EXPIRATION_DATE = "Expiration Date";
+export const EXPIRY_DATE = "Expiry Date";
+export const CVV = "CVV";
+export const PAY = "Pay";
+export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
+export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
 export const POLICY_HOLDER_ID = "Policy holder ID";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
@@ -1037,6 +1044,7 @@ export const getSteps = (): StepLabelType[] => {
     { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
     // { title: 'Document Verification', subTitle: 'Verification information requested' },
     { title: 'Consent Agreement', subTitle: 'Provide basic Patient Information' },
+    { title: 'Payment', subTitle: 'Process Transaction' }
   ];
 };
 

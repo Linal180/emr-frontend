@@ -1,9 +1,9 @@
 // packages block
-import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent } from 'react';
+import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent, useState } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider, SubmitHandler, Controller } from 'react-hook-form';
-import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel } from '@material-ui/core';
+import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel, RadioGroup, Radio } from '@material-ui/core';
 // components
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
@@ -40,9 +40,21 @@ import {
   USA,
   NEXT,
   FINISH,
+  PAYMENT_DETAILS,
+  FIRST_NAME,
+  LAST_NAME,
+  CARD_NUMBER,
+  EXPIRY_DATE,
+  CVV,
+  PAY_DEBIT_CARD_TEXT,
+  PAY_PAYPAL_TEXT,
+  PAY,
 } from "../../../../../constants";
 import history from '../../../../../history';
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
+import { CardIcon, PaypalButton, PaypalIcon } from '../../../../../assets/svgs';
+import { link } from 'fs';
+import { Link } from 'react-router-dom';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -50,6 +62,14 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const toggleButtonClass = usePublicAppointmentStyles();
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+
+  // radio-buttons-state
+  const [valueNew, setValueNew] = useState('creditCard');
+
+  const handleChangeNew = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValueNew((event.target as HTMLInputElement).value);
+  };
+
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
     consentAgreed, isAppointment, isBilling, isVoice
@@ -223,11 +243,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
     const patientItemInput = {
-      suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '', 
-      registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '', 
-      dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''), 
-      callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''), 
-      medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No, 
+      suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '',
+      registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '',
+      dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''),
+      callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''),
+      medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No,
       holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '', pharmacy: pharmacy || '',
       ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, voiceCallPermission: voiceCallPermission || false,
       statementDelivereOnline: false, statementNote: '', race: selectedRace as Race || Race.White,
@@ -321,7 +341,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
             </Box>
 
             <Box flex={1}>
-              {activeStep === 0 ? (
+              {activeStep === 20 ? (
                 <Box className={classes.mainGridContainer}>
                   <Box mb={2} mr={2}>
                     <CardComponent cardTitle={PATIENT_INFORMATION_TEXT}>
@@ -621,7 +641,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </CardComponent>
                   </Box>
                 </Box>
-              ) : activeStep === 5 ? ( // not reachable for now
+              ) : activeStep === 25 ? ( // not reachable for now
                 <Box>
                   <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                     <Box py={2}>
@@ -671,7 +691,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </Box>
                   </CardComponent>
                 </Box>
-              ) : activeStep === 1 && (
+              ) : activeStep === 21 ? (
                 <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                   <Box className={classes.agreementContainer}>
                     <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>
@@ -694,6 +714,83 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </Box>
                   </Box>
                 </CardComponent>
+              ) : activeStep === 0 && (
+                <Box>
+                  <CardComponent cardTitle={PAY_DEBIT_CARD_TEXT}>
+                    {/* <Box display="flex">
+                      <Box mr={2} display="flex"><CardIcon /></Box>
+
+                      <Typography variant="h5">{PAY_DEBIT_CARD_TEXT}</Typography>
+                    </Box> */}
+
+                    <Box mt={5}>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            fieldType="text"
+                            controllerName=""
+                            controllerLabel={FIRST_NAME}
+                          />
+                        </Grid>
+
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            fieldType="text"
+                            controllerName=""
+                            controllerLabel={LAST_NAME}
+                          />
+                        </Grid>
+                      </Grid>
+
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <InputController
+                            fieldType="number"
+                            controllerName=""
+                            controllerLabel={CARD_NUMBER}
+                          />
+                        </Grid>
+
+                        <Grid item md={6} sm={12} xs={12}>
+                          <Grid container spacing={3}>
+                            <Grid item md={6} sm={12} xs={12}>
+                              <InputController
+                                fieldType="text"
+                                controllerName=""
+                                controllerLabel={EXPIRY_DATE}
+                              />
+                            </Grid>
+
+                            <Grid item md={6} sm={12} xs={12}>
+                              <InputController
+                                fieldType="text"
+                                controllerName=""
+                                controllerLabel={CVV}
+                              />
+                            </Grid>
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                      <Box mb={3} display="flex" justifyContent="center">
+                        <Button variant="contained" color="primary">{PAY}</Button>
+                      </Box>
+                    </Box>
+                  </CardComponent>
+
+                  <Box mt={2}>
+                    <CardComponent cardTitle={PAY_PAYPAL_TEXT}>
+                      {/* <Box mt={2} display="flex" alignItems="center">
+                        <Box mr={2} display="flex"><PaypalIcon /></Box>
+
+                        <Typography variant="h5">{PAY_PAYPAL_TEXT}</Typography>
+                      </Box> */}
+
+                      <Box component={Link} display="block" mt={3} mb={3} textAlign="center">
+                        <PaypalButton />
+                      </Box>
+                    </CardComponent>
+                  </Box>
+                </Box>
               )}
             </Box>
           </Box>
