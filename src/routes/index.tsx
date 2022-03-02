@@ -77,7 +77,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={`${PATIENT_INFORMATION}/:id`} component={PatientForm} exact />
       <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={AppointmentConfirmation} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
-      <PublicRoute path={CANCEL_APPOINTMENT} component={CancelAppointment} exact />
+      <PublicRoute path={`${CANCEL_APPOINTMENT}/:id`} component={CancelAppointment} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
       <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={PublicAppointment} exact />
 
