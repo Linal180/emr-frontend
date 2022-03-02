@@ -61,8 +61,9 @@ import {
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
   FACILITY_LOCATIONS_ROUTE, FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, MAINTENANCE_ROUTE
+  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, MAINTENANCE_ROUTE, CANCEL_APPOINTMENT
 } from "../constants";
+import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -77,6 +78,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={`${PATIENT_INFORMATION}/:id`} component={PatientForm} exact />
       <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={AppointmentConfirmation} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
+      <PublicRoute path={CANCEL_APPOINTMENT} component={CancelAppointment} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
       <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={PublicAppointment} exact />
 

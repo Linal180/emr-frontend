@@ -441,7 +441,7 @@ export const PENDING = "Pending";
 export const SIGNED = "Signed";
 export const UPLOAD = "Upload";
 export const UPLOADS_DOCUMENT = "Upload Document";
-export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT= "Drop your image here, or browse";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const DELETE = "Delete";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
@@ -588,6 +588,7 @@ export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
+export const CANCEL_APPOINTMENT = '/cancel-appointment';
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -868,7 +869,7 @@ export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezon
   return { id: timezone, name: formatValue(timezone) }
 })
 
-export const MAPPED_COUNTRIES: SelectorOption[] = [{id: USA, name: USA}];
+export const MAPPED_COUNTRIES: SelectorOption[] = [{ id: USA, name: USA }];
 export const MAPPED_STATES: SelectorOption[] = states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
