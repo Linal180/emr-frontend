@@ -1,8 +1,8 @@
 // packages block
-import { ChangeEvent, FC, Reducer, useContext, useEffect, useReducer } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
-import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
+import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
+import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 // components block
 import history from '../../../../history';
 import Alert from '../../../common/Alert';
@@ -13,35 +13,27 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import { AuthContext } from '../../../../context';
-import { GRAY_TWO, WHITE } from '../../../../theme';
-import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { updatePracticeSchema, createPracticeSchema } from '../../../../validationSchemas';
-import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import {
-  practiceReducer, Action, initialState, State, ActionType
-} from '../../../../reducers/practiceReducer';
 import {
   useCreatePracticeMutation, useGetPracticeLazyQuery, UserRole, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, USER_DETAILS_TEXT, ZIP_CODE,
-  FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, IS_ADMIN,
-  PRACTICE_IDENTIFIER, PRACTICE_NAME, ROLE, PRACTICE_MANAGEMENT_ROUTE, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN,
-  MAPPED_STATES, MAPPED_COUNTRIES, MAPPED_STAFF_ROLES,
+  FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER,
+  PRACTICE_NAME, ROLE, PRACTICE_MANAGEMENT_ROUTE, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION,
+  NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
+  MAPPED_STAFF_ROLES,
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
-  const classes = usePublicAppointmentStyles();
   const { user } = useContext(AuthContext)
   const { id: adminId } = user || {}
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updatePracticeSchema : createPracticeSchema)
   });
-  const { handleSubmit, setValue, reset, control } = methods;
-  const [{ isAdmin }, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
+  const { handleSubmit, setValue, reset } = methods;
 
   const [getPractice, { loading: getPracticeLoading }] = useGetPracticeLazyQuery({
     fetchPolicy: "network-only",
@@ -155,7 +147,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             createPracticeItemInput: { ...practiceInput },
             createFacilityItemInput: { name: facilityName },
             registerUserInput: {
-              isAdmin, email: userEmail || '', password: userPassword || "admin@123", firstName: userFirstName || '',
+              isAdmin: true, email: userEmail || '', password: userPassword || "admin@123", firstName: userFirstName || '',
               lastName: userLastName || '', phone: userPhone || '',
               roleType: selectedRole as UserRole || UserRole.Doctor, adminId: adminId || '',
             }
@@ -163,12 +155,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         }
       })
     }
-  };
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { target: { checked } } = event
-    setValue('isAdmin', checked)
-    dispatch({ type: ActionType.SET_IS_ADMIN, isAdmin: checked })
   };
 
   const disableSubmit = getPracticeLoading || createPracticeLoading || updatePracticeLoading;
@@ -223,26 +209,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           name="roleType"
                           value={EMPTY_OPTION}
                           options={MAPPED_STAFF_ROLES}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Controller
-                          name='isAdmin'
-                          control={control}
-                          render={() => (
-                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-                              <InputLabel shrink>{IS_ADMIN}</InputLabel>
-
-                              <label className="toggle-main">
-                                <Box color={isAdmin ? WHITE : GRAY_TWO}>Yes</Box>
-                                <AntSwitch checked={isAdmin} onChange={(event) => { handleChange(event) }} name='employment' />
-                                <Box color={isAdmin ? GRAY_TWO : WHITE}>No</Box>
-                              </label>
-                            </FormControl>
-                          )}
                         />
                       </Grid>
                     </Grid>

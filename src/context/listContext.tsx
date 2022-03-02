@@ -260,7 +260,10 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   useEffect(() => {
     const isSuper = isSuperAdmin(roles)
 
-    !isSuper && parentId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: parentId })
+    !isSuper ?
+      parentId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: parentId })
+      :
+      dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: '' })
   }, [parentId, roles, hasToken]);
 
   useEffect(() => { hasToken && fetchAllFacilityList(facilityPages) }, [fetchAllFacilityList, hasToken, facilityPages])

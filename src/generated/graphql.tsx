@@ -400,6 +400,7 @@ export type CreateFacilityItemInput = {
   mammographyCertificationNumber?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   npi?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   /** Facility type */
   practiceType?: Maybe<PracticeType>;
   /** Service Code type */
@@ -1929,6 +1930,7 @@ export type UpdateFacilityItemInput = {
   mammographyCertificationNumber?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   npi?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   /** Facility type */
   practiceType?: Maybe<PracticeType>;
   /** Service Code type */
