@@ -888,9 +888,9 @@ export const MAPPED_ROLES: SelectorOption[] = [
 ];
 
 export const MAPPED_STAFF_ROLES: SelectorOption[] = [
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
   { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
-  { id: UserRole.Doctor, name: formatValue(UserRole.Doctor) },
+  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
+  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
   { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
   { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) }
 ];

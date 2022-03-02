@@ -1,5 +1,5 @@
 // packages block
-import { createContext, FC, useEffect, useCallback, useReducer, Reducer } from "react";
+import { createContext, FC, useEffect, useCallback, useReducer, Reducer, useContext } from "react";
 // graphql, interfaces/types, reducer and constants block
 import { LIST_PAGE_LIMIT, TOKEN } from "../constants";
 import { ListContextInterface } from "../interfacesTypes";
@@ -10,6 +10,8 @@ import {
   AllDoctorPayload, useFindAllDoctorLazyQuery, FacilitiesPayload, useFindAllFacilitiesLazyQuery,
   ContactsPayload, ServicesPayload, useFindAllServicesLazyQuery, useFindAllContactsLazyQuery, useFindAllPatientLazyQuery, PatientsPayload,
 } from "../generated/graphql";
+import { AuthContext } from "./authContext";
+import { isSuperAdmin } from "../utils";
 
 export const ListContext = createContext<ListContextInterface>({
   facilityList: [],
@@ -30,11 +32,14 @@ export const ListContext = createContext<ListContextInterface>({
 });
 
 export const ListContextProvider: FC = ({ children }): JSX.Element => {
+  const { user } = useContext(AuthContext);
+  const { roles, facility } = user || {};
+  const { practiceId: parentId } = facility || {};
   const hasToken = localStorage.getItem(TOKEN);
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(listContextReducer, initialState)
   const {
     doctorPages, doctorList, facilityPages, facilityList, servicePages, locationPages,
-    serviceList, locationList, patientList, patientPages
+    serviceList, locationList, patientList, patientPages, practiceId
   } = state;
 
   const [findAllFacility] = useFindAllFacilitiesLazyQuery({
@@ -170,19 +175,16 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const fetchAllFacilityList = useCallback(async (page = 1) => {
     try {
       dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [] })
+      const pageInputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } };
+      const facilityInputs = practiceId ? { practiceId, ...pageInputs } : { ...pageInputs };
 
       await findAllFacility({
         variables: {
-          facilityInput: {
-            paginationOptions: {
-              page,
-              limit: LIST_PAGE_LIMIT
-            }
-          }
+          facilityInput: { ...facilityInputs }
         },
       });
     } catch (error) { }
-  }, [findAllFacility])
+  }, [findAllFacility, practiceId])
 
   const fetchAllDoctorList = useCallback(async (page = 1) => {
     try {
@@ -253,6 +255,13 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
       });
     } catch (error) { }
   }, [findAllContacts])
+
+  useEffect(() => { }, [user]);
+  useEffect(() => {
+    const isSuper = isSuperAdmin(roles)
+
+    !isSuper && parentId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: parentId })
+  }, [parentId, roles, hasToken]);
 
   useEffect(() => { hasToken && fetchAllFacilityList(facilityPages) }, [fetchAllFacilityList, hasToken, facilityPages])
   useEffect(() => { hasToken && fetchAllDoctorList(doctorPages) }, [fetchAllDoctorList, hasToken, doctorPages])

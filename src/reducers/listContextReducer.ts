@@ -3,6 +3,7 @@ import {
 } from "../generated/graphql"
 
 export interface State {
+  practiceId: string;
   facilityPages: number;
   facilityList: FacilitiesPayload['facilities'];
   servicePages: number;
@@ -16,6 +17,7 @@ export interface State {
 }
 
 export const initialState: State = {
+  practiceId: '',
   facilityPages: 1,
   facilityList: [],
   servicePages: 1,
@@ -29,6 +31,7 @@ export const initialState: State = {
 }
 
 export enum ActionType {
+  SET_PRACTICE_ID = 'setPracticeId',
   SET_FACILITY_PAGES = "setFacilityPages",
   SET_FACILITY_LIST = "setFacilityList",
   SET_SERVICE_PAGES = "setServicePages",
@@ -42,6 +45,7 @@ export enum ActionType {
 }
 
 export type Action =
+  | { type: ActionType.SET_PRACTICE_ID, practiceId: string }
   | { type: ActionType.SET_FACILITY_PAGES; facilityPages: number }
   | { type: ActionType.SET_FACILITY_LIST; facilityList: FacilitiesPayload['facilities'] }
   | { type: ActionType.SET_SERVICE_PAGES; servicePages: number }
@@ -59,6 +63,12 @@ export const listContextReducer = (state: State, action: Action): State => {
       return {
         ...state,
         facilityPages: action.facilityPages
+      }
+
+    case ActionType.SET_PRACTICE_ID:
+      return {
+        ...state,
+        practiceId: action.practiceId
       }
 
     case ActionType.SET_FACILITY_LIST:
