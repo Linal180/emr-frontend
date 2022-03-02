@@ -6,9 +6,8 @@ import { formatServiceCode, formatValue } from '../utils';
 import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
-  Communicationtype,
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
-  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole
+  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole, Communicationtype, Gender,
 } from "../generated/graphql";
 
 // regex
@@ -16,8 +15,10 @@ export const ZIP_REGEX = /^\d{5}$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
+export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
+export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
 export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
 export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
@@ -43,8 +44,13 @@ export enum DAYS {
   Sunday = "Sunday",
 };
 export const ADD = "Add";
+export const DATE_ADDED = "Date Added";
 export const NEXT = "Next";
 export const VIEW = "View";
+export const IS_ADMIN = "Is Admin?";
+export const VIEW_PRACTICES = "View Practices";
+export const EIN = "EIN";
+export const ADMIN_NAME = "Admin Name";
 export const FINISH = "Finish";
 export const ALL_STAFF = "Staff";
 export const MINUTES = "minutes";
@@ -113,6 +119,7 @@ export const USER_DETAILS_TEXT = "User Details";
 export const PRACTICE_DETAILS_TEXT = "Practice Details";
 export const FACILITY_DETAILS_TEXT = "Facility Details";
 export const ADD_NEW_PRACTICE_TEXT = "Add New Practice";
+export const ADD_NEW_TEXT = "Add New";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
@@ -170,6 +177,7 @@ export const PROVIDER_INITIALS = "Provider Initials";
 export const DEGREE_CREDENTIALS = "Degree/ Credentials";
 export const SPECIALTY = "Specialty";
 export const DOB = "Date of Birth";
+export const DOB_TIME = "Date/Time";
 export const DECEASED_DATE = "Deceased Date";
 export const DOCTOR_ID = "doctor id";
 export const PATIENT_ID = "patient id";
@@ -207,6 +215,9 @@ export const NPI = "NPI";
 export const FROM_TEXT = "From:";
 export const TO_TEXT = "To:";
 export const UPIN = "UPIN";
+export const MEDICARE = "Medicare";
+export const MEDICAID = "Medicaid";
+export const CHAMPUS = "Champus";
 export const EMC_PROVIDER_ID = "EMC Provider ID";
 export const Organization_Type = "Organization Type";
 export const BILLING_FACILITY = "Billing Facility";
@@ -432,6 +443,16 @@ export const LEGAL_SEX = "Legal Sex";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const ADDRESS_CTA = "Address (CTA)";
 export const EMPLOYER = "Employer";
+export const TITLE = "Title";
+export const SIZE = "Size";
+export const ACTIONS = "Actions";
+export const PENDING = "Pending";
+export const SIGNED = "Signed";
+export const UPLOAD = "Upload";
+export const UPLOADS_DOCUMENT = "Upload Document";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
+export const DELETE = "Delete";
+export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
 export const DECREASED_DATE = "Deceased Date";
 export const NOTICE_ON_FILE = "Notices on file";
@@ -521,6 +542,7 @@ export const RESET_PASSWORD_TEXT = "Reset Password"
 export const PATIENT_DETAILS = "Patient Details"
 export const SELECT_SERVICES = "Select Services"
 export const BOOK_APPOINTMENT = "Book Appointment"
+export const APPOINTMENT_DETAILS = "Appointment Details"
 export const NO_SLOT_AVAILABLE = "No Slot available"
 export const PATIENT_LAST_NAME = "Patient Last Name"
 export const PATIENT_FIRST_NAME = "Patient First Name"
@@ -534,7 +556,7 @@ export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
 export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
 export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
 export const VERIFY_EMAIL_TEXT = "We have sent an email to example@emr.com please follow a link to verify your email";
-export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account and start a new project";
+export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
@@ -542,40 +564,43 @@ export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
+export const DOCTOR_ROLE = "DOCTOR";
+export const PATIENT_ROLE = "PATIENT";
+export const BILLING_ROLE = "BILLING";
 export const SUPER_ADMIN = "SUPER_ADMIN";
+export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 
 // routes paths
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
 export const STAFF_ROUTE = "/staff";
+export const VITALS_ROUTE = "/vitals";
+export const PATIENTS_CHART = "/chart";
 export const DOCTORS_ROUTE = "/doctors";
 export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
-export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
-export const PATIENTS_CHART = "/chart";
-export const VITALS_ROUTE = "/vitals";
-export const APPOINTMENTS_ROUTE = "/appointments";
-export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
-export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const PATIENT_INFORMATION = "/patient-information";
+export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
+export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
+export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
-
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -593,6 +618,8 @@ export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
+export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optional";
+export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
 export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
@@ -605,6 +632,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const MAINTENANCE_ALERT = "Maintenance is in progress";
 export const CANCEL_TIME_EXPIRED_MESSAGE = "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
 export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";
@@ -616,6 +644,7 @@ export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully"
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully"
 export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated."
 export const FACILITY_NOT_FOUND = 'Facility not found!';
+export const PRACTICE_NOT_FOUND = 'Practice not found!';
 export const LOCATION_NOT_FOUND = 'Location not found!';
 export const APPOINTMENT_NOT_FOUND = 'Appointment not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
@@ -646,42 +675,57 @@ export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
+export const PATIENT_UPDATED = "Patient updated successfully!";
+export const CANT_DELETE_SERVICE = "Service can't be deleted.";
+export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
-export const LOCATION_CREATED = "Location is created successfully";
-export const LOCATION_UPDATED = "Location is updated successfully";
 export const USER_EXIST = "User already exists with this email.";
 export const FACILITY_UPDATED = "Facility updated successfully!";
-export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
-export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
+export const LOCATION_CREATED = "Location is created successfully";
+export const LOCATION_UPDATED = "Location is updated successfully";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
-export const ADMIN_PORTAL_NEW_MESSAGE = "Enter your credentials to login to your portal";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Reset password token not found.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Managers can access Admin Portal!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
+export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
 export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
+export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
 export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or invalid.";
 export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
 export const FORGOT_PASSWORD_MESSAGE = "Please enter your email to get a reset-password link.";
 export const FORGET_PASSWORD_SUCCESS = "An email has been sent to your registered email address";
+export const FORGOT_PASSWORD_TEXT_MESSAGE = "Enter your registered email address to get reset-password link";
 export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a email while you are logged in.";
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
+export const TOOLTIP_DUMMY_MESSAGE = "tooltip message here";
+
+// INFO MESSAGES
+
+export const CLIA_ID_NUMBER_INFO = "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
+export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN) and is used to identify a business entity";
+export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
+export const NPI_INFO = "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
+export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO = "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
+export const TAX_ID_INFO = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
+export const UPIN_INFO = "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
+export const EIN_INFO = "An Employer Identification Number (EIN) is a nine-digit number that IRS assigns in the following format: XX-XXXXXXX";
 
 export const APP_MENU_ITEMS = [
   {
@@ -784,6 +828,13 @@ export const USER_MENU_ITEMS = [
   },
 ];
 
+export const PRACTICE_MENU_ITEMS = [
+  {
+    name: VIEW_PRACTICES,
+    link: PRACTICE_MANAGEMENT_ROUTE
+  }
+];
+
 export const APPOINTMENT_MENU_ITEMS = [
   {
     name: VIEW_APPOINTMENTS_TEXT,
@@ -831,7 +882,17 @@ export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
   { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
+  { id: UserRole.Doctor, name: formatValue(UserRole.Doctor) },
   { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
+  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
+];
+
+export const MAPPED_STAFF_ROLES: SelectorOption[] = [
+  { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
+  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
+  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
+  { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
+  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) }
 ];
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
@@ -844,7 +905,7 @@ export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezon
   return { id: timezone, name: formatValue(timezone) }
 })
 
-export const MAPPED_COUNTRIES: SelectorOption[] = [{id: USA, name: USA}];
+export const MAPPED_COUNTRIES: SelectorOption[] = [{ id: USA, name: USA }];
 export const MAPPED_STATES: SelectorOption[] = states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
@@ -953,6 +1014,12 @@ export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
   { id: Sexualorientation.Bisexual, name: formatValue(Sexualorientation.Bisexual) },
   { id: Sexualorientation.Homosexual, name: formatValue(Sexualorientation.Homosexual) },
   { id: Sexualorientation.Heterosexual, name: formatValue(Sexualorientation.Heterosexual) },
+];
+
+export const MAPPED_GENDER: SelectorOption[] = [
+  { id: Gender.Male, name: formatValue(Gender.Male) },
+  { id: Gender.Female, name: formatValue(Gender.Female) },
+  { id: Gender.Other, name: formatValue(Gender.Other) },
 ];
 
 export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
@@ -1095,6 +1162,10 @@ export const PROFILE_TOP_TABS = [
     title: 'Communicator',
     value: "7"
   },
+  {
+    title: 'Documents',
+    value: "8"
+  },
 ]
 
 export const DOCTOR_TOP_TABS = [
@@ -1215,26 +1286,47 @@ export const dummyVitalsChartingList = [
   },
 ]
 
-export const dummyAppointmentData = [
+export const dummyAppointmentData = {
+  appTime: "16:30 - 17:00",
+  timeVariant: "PM",
+  patientName: "John Doe",
+  patientDOB: "12-01-1990",
+  patientTel: "(333)123-4567",
+  patientStatus: "Status",
+  patientElg: "Eligibility Issue",
+}
+
+export const dummyAppointmentSubData = [
   {
-    appTime: "16:30 - 17:00",
-    timeVariant: "PM",
-    patientName: "John Doe",
-    patientDOB: "12-01-1990",
-    patientTel: "(333)123-4567",
-    patientStatus: "Status",
-    patientElg: "Eligibility Issue",
+    heading: "Appt Type",
+    description: "General",
   },
   {
-    appTime: "18:30 - 19:00",
-    timeVariant: "PM",
-    patientName: "John Doe",
-    patientDOB: "12-01-1990",
-    patientTel: "(333)123-4567",
-    patientStatus: "Ready for Staff",
-    patientElg: "Eligibility Issue",
+    heading: "Location",
+    description: "Clay County Hospital",
+  },
+  {
+    heading: "Name",
+    description: "Dr. Jonathan Smutt",
+  },
+  {
+    heading: "P Name",
+    description: "Floyd Miles",
+  },
+  {
+    heading: "Reason",
+    description: "High temperature",
+  },
+  {
+    heading: "Notes",
+    description: "Special Care Required",
+  },
+  {
+    heading: "Insurance",
+    description: "United Health Ins.",
   },
 ]
+
 
 export const PATIENT_CHARTING_DATA = [
   {
@@ -1266,124 +1358,119 @@ export const PATIENT_CHARTING_DATA = [
 
 export const DUMMY_APPOINTMENTS = [
   {
+    "id": 1,
     "title": "Website Re-Design Plan",
-    "startDate": "2018-07-23T04:30:00.000Z",
-    "endDate": "2018-07-23T06:30:00.000Z"
+    "startDate": "2022-02-24T04:30:00.000Z",
+    "endDate": "2022-02-24T06:30:00.000Z"
   },
   {
+    "id": 2,
     "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2018-07-23T07:00:00.000Z",
-    "endDate": "2018-07-23T08:00:00.000Z"
+    "startDate": "2022-02-24T07:00:00.000Z",
+    "endDate": "2022-02-24T08:00:00.000Z"
   },
   {
+    "id": 3,
     "title": "Install New Router in Dev Room",
-    "startDate": "2018-07-23T09:30:00.000Z",
-    "endDate": "2018-07-23T10:30:00.000Z"
+    "startDate": "2022-02-24T09:30:00.000Z",
+    "endDate": "2022-02-24T10:30:00.000Z"
   },
   {
+    "id": 4,
     "title": "Approve Personal Computer Upgrade Plan",
     "startDate": "2018-07-24T05:00:00.000Z",
     "endDate": "2018-07-24T06:00:00.000Z"
   },
   {
+    "id": 5,
     "title": "Final Budget Review",
     "startDate": "2018-07-24T07:00:00.000Z",
     "endDate": "2018-07-24T08:35:00.000Z"
   },
   {
+    "id": 6,
     "title": "New Brochures",
     "startDate": "2018-07-24T09:30:00.000Z",
     "endDate": "2018-07-24T10:45:00.000Z"
   },
   {
+    "id": 7,
     "title": "Install New Database",
     "startDate": "2018-07-25T04:45:00.000Z",
     "endDate": "2018-07-25T06:15:00.000Z"
   },
   {
+    "id": 8,
     "title": "Approve New Online Marketing Strategy",
     "startDate": "2018-07-25T07:00:00.000Z",
     "endDate": "2018-07-25T09:00:00.000Z"
   },
   {
+    "id": 9,
     "title": "Upgrade Personal Computers",
     "startDate": "2018-07-25T10:15:00.000Z",
     "endDate": "2018-07-25T11:30:00.000Z"
   },
   {
+    "id": 10,
     "title": "Customer Workshop",
     "startDate": "2018-07-26T06:00:00.000Z",
     "endDate": "2018-07-26T07:00:00.000Z"
   },
   {
+    "id": 11,
     "title": "Prepare 2015 Marketing Plan",
     "startDate": "2018-07-26T06:00:00.000Z",
     "endDate": "2018-07-26T08:30:00.000Z"
   },
   {
+    "id": 12,
     "title": "Brochure Design Review",
     "startDate": "2018-07-26T09:00:00.000Z",
     "endDate": "2018-07-26T10:30:00.000Z"
   },
   {
+    "id": 13,
     "title": "Create Icons for Website",
     "startDate": "2018-07-27T05:00:00.000Z",
     "endDate": "2018-07-27T06:30:00.000Z"
   },
+];
+
+export enum ATTACHMENT_TITLES {
+  ProfilePicture = 'Profile Picture',
+  DrivingLicense = 'Driving License',
+  InsuranceCard = 'Insurance Card'
+}
+
+export const MAPPED_STATUS = [
   {
-    "title": "Upgrade Server Hardware",
-    "startDate": "2018-07-27T09:30:00.000Z",
-    "endDate": "2018-07-27T11:00:00.000Z"
+    value: 'status',
+    label: 'Status',
   },
   {
-    "title": "Submit New Website Design",
-    "startDate": "2018-07-27T11:30:00.000Z",
-    "endDate": "2018-07-27T13:00:00.000Z"
+    value: 'pending',
+    label: 'Pending',
   },
   {
-    "title": "Launch New Website",
-    "startDate": "2018-07-26T07:20:00.000Z",
-    "endDate": "2018-07-26T09:00:00.000Z"
+    value: 'inLobby',
+    label: 'In Lobby',
   },
   {
-    "title": "Website Re-Design Plan",
-    "startDate": "2018-07-16T04:30:00.000Z",
-    "endDate": "2018-07-16T10:30:00.000Z"
+    value: 'inRoom',
+    label: 'In Room',
   },
   {
-    "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2018-07-16T07:00:00.000Z",
-    "endDate": "2018-07-16T08:00:00.000Z"
+    value: 'withDoctor',
+    label: 'With Doctor',
   },
   {
-    "title": "Install New Database",
-    "startDate": "2018-07-17T10:45:00.000Z",
-    "endDate": "2018-07-18T07:15:00.000Z"
+    value: 'noShow',
+    label: 'No Show',
   },
   {
-    "title": "Approve New Online Marketing Strategy",
-    "startDate": "2018-07-18T07:35:00.000Z",
-    "endDate": "2018-07-18T09:15:00.000Z"
-  },
-  {
-    "title": "Upgrade Personal Computers",
-    "startDate": "2018-07-19T10:15:00.000Z",
-    "endDate": "2018-07-20T15:30:00.000Z"
-  },
-  {
-    "title": "Prepare 2015 Marketing Plan",
-    "startDate": "2018-07-20T15:00:00.000Z",
-    "endDate": "2018-07-20T08:30:00.000Z"
-  },
-  {
-    "title": "Brochure Design Review",
-    "startDate": "2018-07-20T09:10:00.000Z",
-    "endDate": "2018-07-20T10:30:00.000Z"
-  },
-  {
-    "title": "Vacation",
-    "startDate": "2018-06-21T19:00:00.000Z",
-    "endDate": "2018-06-30T19:00:00.000Z"
+    value: 'cancel',
+    label: 'Cancel',
   },
   {
     "title": "Vacation",
@@ -1392,8 +1479,60 @@ export const DUMMY_APPOINTMENTS = [
   }
 ];
 
-export enum ATTACHMENT_TITLES {
-  ProfilePicture = 'Profile Picture',
-  DrivingLicense = 'Driving License',
-  InsuranceCard = 'Insurance Card'
-}
+export const DUMMY_DOCUMENTS = [
+  {
+    "title": "CBCDiagnosedocument.pdf",
+    "type": "Other",
+    "comments": "Check when patient comes next time",
+    "provider": "Dr. Clara Max",
+    "date": "8 Sep, 2020",
+    "size": "5KB",
+  },
+  {
+    "title": "xray-analysis.pdf",
+    "type": "Clinical Document",
+    "comments": "It came with the patients other rec...",
+    "provider": "Dr. Harrold Wixen",
+    "date": "17 Oct, 2020",
+    "size": "5KB",
+  },
+  {
+    "title": "Bloodreport.pdf",
+    "type": "Care Plan",
+    "comments": "N/A",
+    "provider": "Dr. A. H. John",
+    "date": "24 May, 2020",
+    "size": "122KB",
+  },
+  {
+    "title": "fracturecondition.png",
+    "type": "Chart Note",
+    "comments": "N/A",
+    "provider": "N/A",
+    "date": "17 Oct, 2020",
+    "size": "87KB",
+  },
+];
+
+export const PROFILE_DETAIL_DATA = [
+  {
+    title: "Allergies",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Past Medical History",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Problems",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Medications",
+    description: LOREM_TEXT_15
+  },
+  {
+    title: "Family History",
+    description: LOREM_TEXT_15
+  },
+]

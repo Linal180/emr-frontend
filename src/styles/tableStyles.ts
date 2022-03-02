@@ -1,5 +1,5 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { BLACK_TWO, GRAY_FIVE, WHITE, WHITE_THREE } from "../theme";
+import { BLACK_TWO, GRAY_FIVE, GRAY_SIX, WHITE, WHITE_THREE } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -10,7 +10,7 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
     minWidth: 'auto',
     padding: 20,
     borderRadius: 5,
-  },
+  }
 }))(Tooltip);
 
 export const useTableStyles = makeStyles(() => ({
@@ -31,6 +31,12 @@ export const useTableStyles = makeStyles(() => ({
     borderBottom: `1px solid ${WHITE_THREE}`,
     display: 'flex',
     justifyContent: 'space-between',
+  },
+
+  searchOuterContainer: {
+    "& .MuiBox-root": {
+      borderBottom: 'none'
+    }
   },
 
   status: {
@@ -56,6 +62,13 @@ export const useTableStyles = makeStyles(() => ({
       maxWidth: 16
     }
   },
+
+  RadioButtonsStroke: {
+    border: `1px solid ${GRAY_SIX}`,
+    borderRadius: 6,
+    padding: 4,
+    alignSelf: 'center',
+},
 
   practiceIconsBackground: {
     height: 32,

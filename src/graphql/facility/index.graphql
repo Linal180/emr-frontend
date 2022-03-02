@@ -1,18 +1,16 @@
 query FindAllFacilities($facilityInput: FacilityInput!) {
   findAllFacility(facilityInput: $facilityInput) {
-    facility {
+    facilities {
       id
       name
       practiceType
-      code
       cliaIdNumber
       federalTaxId
       isPrivate
-      revenueCode
       tamxonomyCode
-      insurancePlanType
       mammographyCertificationNumber
       npi
+      practiceId
       timeZone
       serviceCode
       createdAt
@@ -38,34 +36,6 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
         createdAt
         updatedAt
       }
-
-      staff {
-        id
-        firstName
-        lastName
-        email
-        username
-        dob
-        phone
-        mobile
-        gender
-        createdAt
-        updatedAt
-        
-        user {
-          id
-          email
-          token
-          status
-          userId
-          userType
-          inviteSentAt
-          emailVerified
-          inviteAcceptedAt
-          createdAt
-          updatedAt
-        }
-      }
     }
 
     pagination {
@@ -87,16 +57,14 @@ query GetFacility($getFacility: GetFacility!){
       id
       name
       practiceType
-      code
       cliaIdNumber
       federalTaxId
       isPrivate
-      revenueCode
       tamxonomyCode
       timeZone
-      insurancePlanType
       mammographyCertificationNumber
       npi
+      practiceId
       serviceCode
       createdAt
       updatedAt
@@ -137,34 +105,6 @@ query GetFacility($getFacility: GetFacility!){
         createdAt
         updatedAt
       }
-
-      staff {
-        id
-        firstName
-        lastName
-        email
-        username
-        dob
-        phone
-        mobile
-        gender
-        createdAt
-        updatedAt
-
-        user {
-          id
-          email
-          token
-          status
-          userId
-          userType
-          inviteSentAt
-          emailVerified
-          inviteAcceptedAt
-          createdAt
-          updatedAt
-        }
-      }
     }
 
     response{
@@ -186,66 +126,6 @@ mutation RemoveFacility($removeFacility: RemoveFacility!){
 
 mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
   updateFacility(updateFacilityInput: $updateFacilityInput){
-    facility{
-      id
-      name
-      practiceType
-      code
-      cliaIdNumber
-      federalTaxId
-      isPrivate
-      revenueCode
-      tamxonomyCode
-      timeZone
-      insurancePlanType
-      mammographyCertificationNumber
-      npi
-      serviceCode
-      
-      contacts {
-        id
-        email
-        phone
-        mobile
-        pager
-        fax
-        address
-        address2
-        zipCode
-        serviceCode
-        city
-        serviceCode
-        state
-        country
-        userId
-        primaryContact
-      }
-
-      staff {
-        id
-        firstName
-        lastName
-        email
-        username
-        dob
-        phone
-        mobile
-        gender
-
-        user {
-          id
-          email
-          token
-          status
-          userId
-          userType
-          inviteSentAt
-          emailVerified
-          inviteAcceptedAt
-        }
-      }
-    }
-
     response{
       name
       status
@@ -255,74 +135,6 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
 }
 mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
   createFacility(createFacilityInput: $createFacilityInput){
-    facility {
-      id
-      name
-      practiceType
-      code
-      cliaIdNumber
-      federalTaxId
-      isPrivate
-      revenueCode
-      tamxonomyCode
-      insurancePlanType
-      timeZone
-      mammographyCertificationNumber
-      npi
-      serviceCode
-      createdAt
-      updatedAt
-      
-      contacts {
-        id
-        email
-        mobile
-        phone
-        pager
-        fax
-        address
-        address2
-        serviceCode
-        zipCode
-        serviceCode
-        city
-        state
-        country
-        userId
-        primaryContact
-        createdAt
-        updatedAt
-      }
-
-      staff {
-        id
-        firstName
-        lastName
-        email
-        username
-        dob
-        phone
-        mobile
-        gender
-        createdAt
-        updatedAt
-
-        user {
-          id
-          email
-          token
-          status
-          userId
-          userType
-          inviteSentAt
-          emailVerified
-          inviteAcceptedAt
-          createdAt
-          updatedAt
-        }
-      }
-    }
-
     response{
       name
       status

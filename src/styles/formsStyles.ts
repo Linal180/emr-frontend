@@ -1,15 +1,10 @@
-import { makeStyles, createStyles } from "@material-ui/core";
-import { GRAY_TWO } from "../theme";
+import { makeStyles } from "@material-ui/core";
 
-export const useFormStyles = makeStyles(() =>
-  createStyles({
-    controlLabel: {
-     justifyContent: 'space-between',
-     marginLeft: 0,
-   },
-
-   helperText: {
-     color: GRAY_TWO,
-   }
-  })
-);
+export const useFormStyles = makeStyles(() => ({
+  detailTooltipBox: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    width: "100%",
+  },
+}));

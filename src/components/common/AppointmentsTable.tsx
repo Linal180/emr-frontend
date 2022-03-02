@@ -13,13 +13,11 @@ import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../context";
-import { getFormattedDate, renderTh, getISOTime } from "../../utils";
+import { EditIcon, TrashIcon } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
-import { EditIcon, TrashIcon } from "../../assets/svgs"
-import {
-  appointmentReducer, Action, initialState, State, ActionType
-} from "../../reducers/appointmentReducer";
+import { getFormattedDate, renderTh, getISOTime, isSuperAdmin } from "../../utils";
+import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
 import {
   AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery,
   useRemoveAppointmentMutation, useGetDoctorAppointmentsLazyQuery,
@@ -38,7 +36,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { user } = useContext(AuthContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, copied, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
-  const { facility } = user || {}
+  const { facility, roles } = user || {}
   const { id: facilityId } = (facility as FacilityPayload['facility']) || {}
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
@@ -175,12 +173,13 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const search = (query: string) => { }
 
+  const isSuper = isSuperAdmin(roles)
   return (
     <Box className={classes.mainTableContainer}>
       <Box className={classes.searchContainer}>
         <Search search={search} />
 
-        {facilityId &&
+        {facilityId && !isSuper &&
           <Button variant="contained" className="blue-button"
             onClick={handleClipboard}
           >

@@ -3,12 +3,14 @@ import { DaySchedule } from "../interfacesTypes";
 
 export interface State {
   page: number;
-  serviceId: string,
-  currentDate: string,
   isEdit: boolean;
+  serviceId: string;
+  contactId: string;
+  billingId: string;
   scheduleId: string;
   currentTab: string;
   totalPages: number;
+  currentDate: string;
   openDelete: boolean;
   searchQuery: string;
   deleteDoctorId: string;
@@ -25,14 +27,16 @@ export interface State {
 
 export const initialState: State = {
   page: 1,
-  serviceId: '',
-  currentDate: '',
   doctors: [],
   doctor: null,
   totalPages: 0,
+  contactId: '',
+  billingId: '',
+  serviceId: '',
   isEdit: false,
   scheduleId: "",
   currentTab: "1",
+  currentDate: '',
   searchQuery: "",
   openDelete: false,
   byDaySchedules: [],
@@ -50,6 +54,8 @@ export enum ActionType {
   SET_DOCTOR = 'setDoctor',
   SET_IS_EDIT = 'setIsEdit',
   SET_DOCTORS = 'setDoctors',
+  SET_CONTACT_ID = 'setContactId',
+  SET_BILLING_ID = 'setBillingId',
   SET_SERVICE_ID = 'setServiceId',
   SET_SCHEDULE_ID = 'setScheduleId',
   SET_CURRENT_TAB = 'setCurrentTab',
@@ -69,14 +75,16 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
-  | { type: ActionType.SET_SERVICE_ID, serviceId: string }
-  | { type: ActionType.SET_CURRENT_DATE, currentDate: string }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
+  | { type: ActionType.SET_SERVICE_ID, serviceId: string }
+  | { type: ActionType.SET_BILLING_ID, billingId: string }
+  | { type: ActionType.SET_CONTACT_ID, contactId: string }
   | { type: ActionType.SET_SCHEDULE_ID, scheduleId: string }
   | { type: ActionType.SET_CURRENT_TAB; currentTab: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
+  | { type: ActionType.SET_CURRENT_DATE, currentDate: string }
   | { type: ActionType.SET_DOCTOR; doctor: DoctorPayload['doctor'] }
   | { type: ActionType.SET_DELETE_DOCTOR_ID; deleteDoctorId: string }
   | { type: ActionType.SET_DELETE_SCHEDULE_ID; deleteScheduleId: string }
@@ -94,6 +102,18 @@ export const doctorReducer = (state: State, action: Action): State => {
       return {
         ...state,
         page: action.page
+      }
+
+    case ActionType.SET_CONTACT_ID:
+      return {
+        ...state,
+        contactId: action.contactId
+      }
+
+    case ActionType.SET_BILLING_ID:
+      return {
+        ...state,
+        billingId: action.billingId
       }
 
     case ActionType.SET_IS_EDIT:

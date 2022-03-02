@@ -519,12 +519,11 @@ export const theme = createTheme({
         minWidth: '0 !important',
         lineHeight: '19px',
         padding: '8px 15px',
-        fontSize: 18,
         fontWeight: 500,
         minHeight: 0,
 
         "&.Mui-selected": {
-          borderBottom: `5px solid ${BLUE_EIGHT}`,
+          borderBottom: `2px solid ${BLUE_EIGHT}`,
           color: BLUE_EIGHT,
         }
       },
@@ -541,6 +540,6 @@ export const theme = createTheme({
           color: GRAY_THREE
         }
       }
-    },
+    }
   },
 });
