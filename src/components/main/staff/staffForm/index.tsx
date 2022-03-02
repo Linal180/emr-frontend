@@ -13,8 +13,8 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
+import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
-import { addStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import { getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
 import {
@@ -24,7 +24,7 @@ import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_STAFF_ROLES, NOT_FOUND_EXCEPTION,
   STAFF_NOT_FOUND, CANT_UPDATE_STAFF, CANT_CREATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER,
+  FORBIDDEN_EXCEPTION, STAFF_CREATED,  CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -32,7 +32,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { facilityList } = useContext(ListContext)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? updateStaffSchema : addStaffSchema)
+    resolver: yupResolver(staffSchema)
   });
   const { reset, setValue, handleSubmit, formState: { errors } } = methods;
 
@@ -163,7 +163,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         await createStaff({
           variables: {
             createStaffInput: {
-              firstName, lastName, email, password, phone, mobile, roleType: role as UserRole,
+              firstName, lastName, email, password: 'staff@123', phone, mobile, roleType: role as UserRole,
               dob: getTimestamps(dob || ''), gender: staffGender as Gender, facilityId: facilityID,
               adminId: id, username
             }
@@ -270,34 +270,24 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <CardComponent cardTitle={ACCOUNT_INFO}>
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <InputController
-                      isRequired
-                      disabled={isEdit}
-                      fieldType="email"
-                      controllerName="email"
-                      controllerLabel={EMAIL}
-                    />
-
                     <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 6} sm={12} xs={12}>
+                      <Grid item md={8} sm={12} xs={12}>
+                        <InputController
+                          isRequired
+                          disabled={isEdit}
+                          fieldType="email"
+                          controllerName="email"
+                          controllerLabel={EMAIL}
+                        />
+                      </Grid>
+
+                      <Grid item md={4} sm={12} xs={12}>
                         <InputController
                           fieldType="text"
                           controllerName="username"
                           controllerLabel={PROVIDER}
                         />
                       </Grid>
-
-                      {!isEdit &&
-                        <Grid item md={6} sm={12} xs={12}>
-                          <InputController
-                            isRequired
-                            isPassword
-                            fieldType="password"
-                            controllerName="password"
-                            controllerLabel={PASSWORD_LABEL}
-                          />
-                        </Grid>
-                      }
                     </Grid>
                   </>
                 )}
