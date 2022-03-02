@@ -31,11 +31,15 @@ import {
   FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED,
   MAPPED_PRACTICE_TYPES, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, CANCEL,
   FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION,
-  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, CLIA_ID_NUMBER_INFO, 
+  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, CLIA_ID_NUMBER_INFO,
   TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO,
 } from "../../../../constants";
+import { AuthContext } from '../../../../context';
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+  const { user } = useContext(AuthContext);
+  const { facility } = user || {};
+  const { practiceId } = facility || {};
   const { fetchAllFacilityList } = useContext(ListContext)
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
@@ -192,7 +196,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     const facilityInput = {
       name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', npi: npi || '',
-      timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '',
+      timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '', practiceId,
       practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
       serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
       mammographyCertificationNumber: mammographyCertificationNumber || '',
