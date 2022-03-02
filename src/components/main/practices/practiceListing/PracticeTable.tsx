@@ -20,7 +20,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
-  CANT_DELETE_PRACTICE, ADMIN_NAME, FACILITIES_TEXT, DATE_ADDED, STATUS
+  CANT_DELETE_PRACTICE, FACILITIES_TEXT, DATE_ADDED, 
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
@@ -32,8 +32,7 @@ const PracticeTable: FC = (): JSX.Element => {
     variables: {
       practiceInput: {
         paginationOptions: {
-          page: 1,
-          limit: PAGE_LIMIT
+          page, limit: PAGE_LIMIT
         }
       }
     },
@@ -121,12 +120,10 @@ const PracticeTable: FC = (): JSX.Element => {
           <TableHead>
             <TableRow>
               {renderTh(NAME)}
-              {renderTh(ADMIN_NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(FACILITIES_TEXT)}
               {renderTh(DATE_ADDED)}
-              {renderTh(STATUS)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -138,18 +135,15 @@ const PracticeTable: FC = (): JSX.Element => {
                 const { contacts } = (facilities && facilities[0]) || {};
                 const facilityCount = (facilities && facilities.length) || 0;
                 const primaryContact = contacts?.filter(contact => contact.primaryContact)[0]
-                // const facilityAdmin = user?.filter(facilityUser => isUserAdmin(facilityUser.roles))[0]
                 const { email, phone } = primaryContact || {}
 
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">--</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{facilityCount}</TableCell>
                     <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
-                    <TableCell scope="row">--</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>
