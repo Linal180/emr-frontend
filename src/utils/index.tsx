@@ -11,7 +11,7 @@ import {
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
-  LOGIN_ROUTE, PATIENTS_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, START_PROJECT_ROUTE, TOKEN,
+  LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, START_PROJECT_ROUTE, TOKEN,
   USER_EMAIL, VIEW_APPOINTMENTS_ROUTE
 } from "../constants";
 
@@ -41,8 +41,8 @@ export const formatServiceCode = (value: string) => {
 
 export const formatValue = (value: string) => {
   let formatted = ''
-  
-  value.split("_").map(term => formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} ` )
+
+  value.split("_").map(term => formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
 
   return formatted;
 };
@@ -95,7 +95,7 @@ export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) 
   return isAdmin;
 }
 
-export const isSuperAdmin = (roles: Maybe<Maybe<Role>[]> | undefined) => {
+export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   let isSupeAdmin: boolean = false
 
   if (roles) {
@@ -157,7 +157,7 @@ export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
 }
 
-export const renderFacilities = (facilities: FacilitiesPayload['facility']) => {
+export const renderFacilities = (facilities: FacilitiesPayload['facilities']) => {
   const data: SelectorOption[] = [];
 
   if (!!facilities) {
@@ -221,6 +221,7 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
 
 export const renderPatient = (patients: PatientsPayload['patients']) => {
   const data: SelectorOption[] = [];
+
   if (!!patients) {
     for (let patient of patients) {
       if (patient) {
@@ -348,6 +349,9 @@ export const activeClass = (pathname: string): string => {
   switch (pathname) {
     case DASHBOARD_ROUTE:
       return 'inDashboard';
+
+    case PRACTICE_MANAGEMENT_ROUTE:
+      return 'inPractice';
 
     case VIEW_APPOINTMENTS_ROUTE:
     case SCHEDULE_APPOINTMENTS_ROUTE:

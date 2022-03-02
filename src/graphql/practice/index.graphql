@@ -1,0 +1,109 @@
+query FindAllPractices($practiceInput: PracticeInput!){
+  findAllPractices(facilityInput: $practiceInput){
+    response {
+      error
+      status
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
+    }
+    
+    practices {
+      id
+      fax
+      name
+      phone
+      createdAt
+      updatedAt
+      
+      facilities {
+        id
+        name
+
+        contacts {
+          id
+          city
+          email
+          state
+          address
+          country
+          primaryContact
+        }
+      }
+    }
+  }  	
+}
+
+query GetPractice($getPractice: GetPractice!){
+  getPractice(getPractice: $getPractice){
+    response {
+      error
+      status
+      message
+    }
+    
+    practice {
+      id
+      name
+      phone
+      fax
+      practiceId
+      ein
+      upin
+      medicare
+      medicaid
+      champus
+      createdAt
+      updatedAt
+      
+      facilities {
+        id
+        name
+        
+        contacts {
+          id
+          email
+        	primaryContact
+          address
+          address2
+					country
+          state
+          zipCode
+        }
+      }
+    }
+  }
+}
+
+mutation CreatePractice($createPracticeInput: CreatePracticeInput!){
+  createPractice(createPracticeInput: $createPracticeInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation UpdatePractice($updatePracticeInput: UpdatePracticeInput!){
+  updatePractice(updatePracticeInput: $updatePracticeInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation RemovePractice($removePractice: RemovePractice!){
+  removePractice(removePractice: $removePractice){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

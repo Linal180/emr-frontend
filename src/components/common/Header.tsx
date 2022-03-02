@@ -1,25 +1,32 @@
 // packages block
-import { FC } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
 // Components block
 import DropdownMenu from "./DropdownMenu";
 // utils and header styles block
 import history from "../../history";
-import { activeClass } from "../../utils";
 import { EMRLogo } from "../../assets/svgs";
+import { AuthContext } from "../../context";
+import { activeClass, isSuperAdmin } from "../../utils";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import {
   BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, RICHARD_TEXT, USER_MENU_ITEMS,
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, PROFILE_MENU_ITEMS, FACILITIES_TEXT,
-  FACILITIES_ROUTE, ROOT_ROUTE
+  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MENU_ITEMS
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { location: { pathname } } = history
-
+  const { user } = useContext(AuthContext);
+  const { location: { pathname } } = history;
+  const { roles } = user || {};
+  const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
+
+  useEffect(() => { 
+    setIsSuper(isSuperAdmin(roles))
+  }, [isSuper, roles, user]);
 
   return (
     <AppBar className={classes.appBar}>
@@ -36,6 +43,14 @@ const HeaderNew: FC = (): JSX.Element => {
           >
             {HOME_TEXT}
           </Typography>
+
+          {isSuper &&
+            <DropdownMenu
+              itemName={PRACTICE_MANAGEMENT_TEXT}
+              menuItem={PRACTICE_MENU_ITEMS}
+              current={currentRoute === 'inPractice'}
+            />
+          }
 
           <DropdownMenu
             itemName={SCHEDULE_TEXT}

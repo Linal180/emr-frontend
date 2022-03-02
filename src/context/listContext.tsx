@@ -1,5 +1,5 @@
 // packages block
-import { createContext, FC, useEffect, useCallback, useReducer, Reducer } from "react";
+import { createContext, FC, useEffect, useCallback, useReducer, Reducer, useContext } from "react";
 // graphql, interfaces/types, reducer and constants block
 import { LIST_PAGE_LIMIT, TOKEN } from "../constants";
 import { ListContextInterface } from "../interfacesTypes";
@@ -10,6 +10,8 @@ import {
   AllDoctorPayload, useFindAllDoctorLazyQuery, FacilitiesPayload, useFindAllFacilitiesLazyQuery,
   ContactsPayload, ServicesPayload, useFindAllServicesLazyQuery, useFindAllContactsLazyQuery, useFindAllPatientLazyQuery, PatientsPayload,
 } from "../generated/graphql";
+import { AuthContext } from "./authContext";
+import { isSuperAdmin } from "../utils";
 
 export const ListContext = createContext<ListContextInterface>({
   facilityList: [],
@@ -30,11 +32,14 @@ export const ListContext = createContext<ListContextInterface>({
 });
 
 export const ListContextProvider: FC = ({ children }): JSX.Element => {
+  const { user } = useContext(AuthContext);
+  const { roles, facility } = user || {};
+  const { practiceId: parentId } = facility || {};
   const hasToken = localStorage.getItem(TOKEN);
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(listContextReducer, initialState)
   const {
     doctorPages, doctorList, facilityPages, facilityList, servicePages, locationPages,
-    serviceList, locationList, patientList, patientPages
+    serviceList, locationList, patientList, patientPages, practiceId
   } = state;
 
   const [findAllFacility] = useFindAllFacilitiesLazyQuery({
@@ -47,7 +52,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { findAllFacility: { facility, pagination } } = data
+        const { findAllFacility: { facilities, pagination } } = data
 
         if (pagination) {
           const { totalPages } = pagination;
@@ -57,8 +62,8 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
           }
         }
 
-        !!facility && !!facilityList &&
-          setFacilityList([...facilityList, ...facility] as FacilitiesPayload['facility'])
+        !!facilities && !!facilityList &&
+          setFacilityList([...facilityList, ...facilities] as FacilitiesPayload['facilities'])
       }
     }
   })
@@ -170,19 +175,16 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const fetchAllFacilityList = useCallback(async (page = 1) => {
     try {
       dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [] })
+      const pageInputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } };
+      const facilityInputs = practiceId ? { practiceId, ...pageInputs } : { ...pageInputs };
 
       await findAllFacility({
         variables: {
-          facilityInput: {
-            paginationOptions: {
-              page,
-              limit: LIST_PAGE_LIMIT
-            }
-          }
+          facilityInput: { ...facilityInputs }
         },
       });
     } catch (error) { }
-  }, [findAllFacility])
+  }, [findAllFacility, practiceId])
 
   const fetchAllDoctorList = useCallback(async (page = 1) => {
     try {
@@ -254,12 +256,19 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     } catch (error) { }
   }, [findAllContacts])
 
+  useEffect(() => { }, [user]);
+  useEffect(() => {
+    const isSuper = isSuperAdmin(roles)
+
+    !isSuper && parentId && dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: parentId })
+  }, [parentId, roles, hasToken]);
+
   useEffect(() => { hasToken && fetchAllFacilityList(facilityPages) }, [fetchAllFacilityList, hasToken, facilityPages])
   useEffect(() => { hasToken && fetchAllDoctorList(doctorPages) }, [fetchAllDoctorList, hasToken, doctorPages])
   useEffect(() => { hasToken && fetchAllPatientList(patientPages) }, [fetchAllPatientList, hasToken, patientPages])
   useEffect(() => { hasToken && fetchAllServicesList(servicePages) }, [fetchAllServicesList, hasToken, servicePages])
 
-  const setFacilityList = (facilities: FacilitiesPayload['facility']) => dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: facilities });
+  const setFacilityList = (facilities: FacilitiesPayload['facilities']) => dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: facilities });
   const setDoctorList = (doctors: AllDoctorPayload['doctors']) => dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: doctors });
   const setLocationList = (locations: ContactsPayload['contacts']) => dispatch({ type: ActionType.SET_LOCATION_LIST, locationList: locations });
   const setServicesList = (services: ServicesPayload['services']) => dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: services });

@@ -1058,7 +1058,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="employerName"
                           controllerLabel={EMPLOYER_NAME}
-
                         />
                       </Grid>
 
@@ -1082,7 +1081,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           fieldType="text"
                           controllerName="employerIndustry"
                           controllerLabel={USUAL_INDUSTRY}
-
                         />
                       </Grid>
                     </Grid>

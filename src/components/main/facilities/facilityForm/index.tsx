@@ -43,7 +43,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   });
   const { reset, handleSubmit, setValue, watch } = methods;
   const { email, zipCode, phone, fax, address, address2, city, state, country } = watch()
-  const [{ facility, sameAddress, addBilling }, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
+  const [{ sameAddress, addBilling, billingId, contactId }, dispatch] =
+    useReducer<Reducer<State, Action>>(facilityReducer, initialState)
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
@@ -66,8 +67,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
           if (facility && status && status === 200) {
             const {
-              name, cliaIdNumber, federalTaxId, insurancePlanType, mammographyCertificationNumber,
-              npi, code, tamxonomyCode, revenueCode, practiceType, serviceCode, timeZone, billingAddress,
+              name, cliaIdNumber, federalTaxId, mammographyCertificationNumber,
+              npi, tamxonomyCode, practiceType, serviceCode, timeZone, billingAddress,
               contacts,
             } = facility
 
@@ -75,20 +76,18 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             npi && setValue('npi', npi)
             name && setValue('name', name)
-            code && setValue('code', code)
-            revenueCode && setValue('revenueCode', revenueCode)
             cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
             federalTaxId && setValue('federalTaxId', federalTaxId)
             tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
             timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
-            insurancePlanType && setValue('insurancePlanType', insurancePlanType)
             serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
             practiceType && setValue('practiceType', setRecord(practiceType, practiceType))
             mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
-            if (contacts) {
+            if (contacts && contacts.length > 0) {
               const primaryContact = contacts.filter(item => item.primaryContact)[0]
-              const { email, phone, zipCode, mobile, fax, address, address2, city, state, country } = primaryContact || {}
+              const { id, email, phone, zipCode, mobile, fax, address, address2, city, state, country } = primaryContact || {}
+              dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
 
               fax && setValue('fax', fax)
               city && setValue('city', city)
@@ -102,8 +101,9 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               country && setValue('country', setRecord(country, country))
             }
 
-            if (billingAddress) {
-              const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+            if (billingAddress && billingAddress.length > 0) {
+              const { id, email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+              dispatch({ type: ActionType.SET_BILLING_ID, billingId: id })
 
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
@@ -175,8 +175,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const onSubmit: SubmitHandler<CustomFacilityInputProps> = async (inputs) => {
     const {
-      name, cliaIdNumber, federalTaxId, insurancePlanType, npi, code, tamxonomyCode,
-      mammographyCertificationNumber, revenueCode, practiceType, serviceCode,
+      name, cliaIdNumber, federalTaxId, npi, tamxonomyCode,
+      mammographyCertificationNumber, practiceType, serviceCode,
       phone, email, fax, city, state, country, address2, address, zipCode,
       billingPhone, billingEmail, billingFax, billingCity, billingState, billingCountry, billingAddress2,
       billingAddress, billingZipCode, timeZone
@@ -191,13 +191,11 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const { id: selectedBillingCountry } = billingCountry;
 
     const facilityInput = {
-      name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '',
-      insurancePlanType: insurancePlanType || '', npi: npi || '', code: code || '',
+      name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', npi: npi || '',
       timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '',
       practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
       serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
       mammographyCertificationNumber: mammographyCertificationNumber || '',
-      revenueCode: revenueCode || '',
     }
 
     const contactInput = {
@@ -212,23 +210,19 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || ''
     }
 
-    if (isEdit) {
-      const { contacts, billingAddress: billing } = facility || {};
+    if (isEdit && id) {
+      const contactIdInput = contactId ? { id: contactId, ...contactInput } : { ...contactInput }
+      const billingIdInput = billingId ? { id: billingId, ...billingAddressInput } : { ...billingAddressInput }
 
-      if (id && contacts && billing) {
-        const { id: contactId } = contacts.filter(item => item.primaryContact)[0] || contacts[0]
-        const { id: billingId } = billing[0]
-
-        await updateFacility({
-          variables: {
-            updateFacilityInput: {
-              updateFacilityItemInput: { id, ...facilityInput },
-              updateContactInput: { id: contactId, ...contactInput },
-              updateBillingAddressInput: { id: billingId, ...billingAddressInput },
-            }
+      await updateFacility({
+        variables: {
+          updateFacilityInput: {
+            updateFacilityItemInput: { id, ...facilityInput },
+            updateContactInput: { ...contactIdInput },
+            updateBillingAddressInput: { ...billingIdInput },
           }
-        })
-      }
+        }
+      })
     } else {
       await createFacility({
         variables: {
