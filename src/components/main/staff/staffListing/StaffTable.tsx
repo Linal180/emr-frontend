@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
@@ -10,14 +10,18 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { formatPhone, renderTh } from "../../../../utils";
+import { AuthContext } from "../../../../context";
+import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { useTableStyles } from "../../../../styles/tableStyles";
 import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
 import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF, STAFF_TEXT } from "../../../../constants";
-import { useTableStyles } from "../../../../styles/tableStyles";
 
 const StaffTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { user } = useContext(AuthContext);
+  const { facility, roles } = user || {};
+  const { id: facilityId } = facility || {};
   const [searchQuery,] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -26,15 +30,6 @@ const StaffTable: FC = (): JSX.Element => {
   const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
 
   const [findAllStaff, { loading, error }] = useFindAllStaffLazyQuery({
-    variables: {
-      staffInput: {
-        paginationOptions: {
-          page: 1,
-          limit: PAGE_LIMIT
-        }
-      }
-    },
-
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -60,6 +55,18 @@ const StaffTable: FC = (): JSX.Element => {
     }
   });
 
+  const fetchAllStaff = useCallback(() => {
+    const isSuper = isSuperAdmin(roles);
+    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+    const staffInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+
+    findAllStaff({
+      variables: {
+        staffInput: { ...staffInputs }
+      }
+    })
+  }, [facilityId, findAllStaff, page, roles]);
+
   const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
     onError() {
       Alert.error(CANT_DELETE_STAFF)
@@ -82,11 +89,11 @@ const StaffTable: FC = (): JSX.Element => {
     }
   });
 
+  useEffect(() => { }, [user]);
+
   useEffect(() => {
-    if (!searchQuery) {
-      findAllStaff()
-    }
-  }, [page, findAllStaff, searchQuery]);
+    !searchQuery && fetchAllStaff()
+  }, [fetchAllStaff, page, searchQuery]);
 
   const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
 

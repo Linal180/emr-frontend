@@ -1,5 +1,5 @@
 // packages block
-import { FC, ChangeEvent, useState, useEffect, useContext } from "react";
+import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
@@ -10,8 +10,8 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { ListContext } from "../../../../context";
-import { formatPhone, renderTh } from "../../../../utils";
+import { AuthContext, ListContext } from "../../../../context";
+import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import {
@@ -24,6 +24,9 @@ import {
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const { user } = useContext(AuthContext)
+  const { roles, facility } = user || {};
+  const { id: facilityId } = facility || {}
   const { fetchAllPatientList } = useContext(ListContext)
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -33,15 +36,6 @@ const PatientsTable: FC = (): JSX.Element => {
   const [patients, setPatients] = useState<PatientsPayload['patients']>([]);
 
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
-    variables: {
-      patientInput: {
-        paginationOptions: {
-          page: 1,
-          limit: PAGE_LIMIT
-        }
-      }
-    },
-
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -63,6 +57,18 @@ const PatientsTable: FC = (): JSX.Element => {
       }
     }
   });
+
+  const fetchAllPatients = useCallback(() => {
+    const isSuper = isSuperAdmin(roles);
+    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+    const patientsInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+
+    findAllPatient({
+      variables: {
+        patientInput: { ...patientsInputs }
+      },
+    })
+  }, [facilityId, findAllPatient, page, roles])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     notifyOnNetworkStatusChange: true,
@@ -88,13 +94,13 @@ const PatientsTable: FC = (): JSX.Element => {
     }
   });
 
-  useEffect(() => {
-    if (!searchQuery) {
-      findAllPatient()
-    }
-  }, [page, findAllPatient, searchQuery]);
+  useEffect(() => { }, [user]);
 
-  const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
+  useEffect(() => {
+    !searchQuery && fetchAllPatients()
+  }, [page, searchQuery, fetchAllPatients]);
+
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
   const onDeleteClick = (id: string) => {
     if (id) {

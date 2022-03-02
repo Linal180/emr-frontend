@@ -564,7 +564,11 @@ export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
+export const DOCTOR_ROLE = "DOCTOR";
+export const PATIENT_ROLE = "PATIENT";
+export const BILLING_ROLE = "BILLING";
 export const SUPER_ADMIN = "SUPER_ADMIN";
+export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 
 // routes paths
 export const ROOT_ROUTE = "/";
