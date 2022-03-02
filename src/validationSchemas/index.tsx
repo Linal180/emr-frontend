@@ -359,13 +359,7 @@ const staffBasicSchema = {
   mobile: yup.string().min(10, MinLength(MOBILE_NUMBER, 10)).max(15, MaxLength(MOBILE_NUMBER, 15)),
 }
 
-export const addStaffSchema = yup.object({
-  ...emailSchema,
-  ...passwordSchema,
-  ...staffBasicSchema,
-})
-
-export const updateStaffSchema = yup.object({
+export const staffSchema = yup.object({
   ...emailSchema,
   ...staffBasicSchema,
 })
@@ -585,10 +579,10 @@ export const externalPatientSchema = yup.object({
 const registerUserSchema = {
   userPhone: notRequiredPhone(PHONE),
   userEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
-  userFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
+  userFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
     .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26))
     .required(requiredMessage(LAST_NAME)),
-  userLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
+  userLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
     .min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26))
     .required(requiredMessage(FIRST_NAME)),
 }
@@ -601,7 +595,6 @@ const practiceFacilitySchema = {
   country: countrySchema(false),
   address: addressValidation(ADDRESS, false),
   address2: addressValidation(ADDRESS, false),
-  facilityName: yup.string().required(requiredMessage(NAME)),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
@@ -609,6 +602,7 @@ export const createPracticeSchema = yup.object({
   ...registerUserSchema,
   ...practiceFacilitySchema,
   name: yup.string().required(requiredMessage(PRACTICE_NAME)),
+  facilityName: yup.string().required(requiredMessage(NAME)),
 })
 
 export const updatePracticeSchema = yup.object({

@@ -17,7 +17,7 @@ export const initialState: State = {
   page: 1,
   totalPages: 0,
   practice: null,
-  isAdmin: false,
+  isAdmin: true,
   practices: [],
   practiceId: '',
   searchQuery: '',

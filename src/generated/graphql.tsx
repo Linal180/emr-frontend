@@ -2120,6 +2120,8 @@ export enum UserRole {
   Doctor = 'DOCTOR',
   DoctorAssistant = 'DOCTOR_ASSISTANT',
   Nurse = 'NURSE',
+  NursePractitioner = 'NURSE_PRACTITIONER',
+  OfficeManager = 'OFFICE_MANAGER',
   Patient = 'PATIENT',
   Staff = 'STAFF',
   SuperAdmin = 'SUPER_ADMIN'

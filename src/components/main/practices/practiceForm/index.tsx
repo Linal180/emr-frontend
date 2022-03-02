@@ -1,8 +1,8 @@
 // packages block
-import { FC, useContext, useEffect } from 'react';
+import { ChangeEvent, FC, Reducer, useContext, useEffect, useReducer } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
+import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
+import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
 // components block
 import history from '../../../../history';
 import Alert from '../../../common/Alert';
@@ -13,8 +13,14 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import { AuthContext } from '../../../../context';
+import { GRAY_TWO, WHITE } from '../../../../theme';
+import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { updatePracticeSchema, createPracticeSchema } from '../../../../validationSchemas';
+import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import {
+  practiceReducer, Action, initialState, State, ActionType
+} from '../../../../reducers/practiceReducer';
 import {
   useCreatePracticeMutation, useGetPracticeLazyQuery, UserRole, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
@@ -23,17 +29,19 @@ import {
   FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER,
   PRACTICE_NAME, ROLE, PRACTICE_MANAGEMENT_ROUTE, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION,
   NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
-  MAPPED_STAFF_ROLES,
+  IS_ADMIN, MAPPED_PRACTICE_ROLES,
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { id: adminId } = user || {}
+  const classes = usePublicAppointmentStyles();
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updatePracticeSchema : createPracticeSchema)
   });
-  const { handleSubmit, setValue, reset } = methods;
+  const { handleSubmit, setValue, reset, control } = methods;
+  const [{ isAdmin }, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
 
   const [getPractice, { loading: getPracticeLoading }] = useGetPracticeLazyQuery({
     fetchPolicy: "network-only",
@@ -157,6 +165,12 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   };
 
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { checked } } = event
+    setValue('isAdmin', checked)
+    dispatch({ type: ActionType.SET_IS_ADMIN, isAdmin: checked })
+  };
+
   const disableSubmit = getPracticeLoading || createPracticeLoading || updatePracticeLoading;
 
   return (
@@ -208,7 +222,27 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
-                          options={MAPPED_STAFF_ROLES}
+                          options={MAPPED_PRACTICE_ROLES}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Grid container spacing={3}>
+                      <Grid item md={6} sm={12} xs={12}>
+                        <Controller
+                          name='isAdmin'
+                          control={control}
+                          render={() => (
+                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                              <InputLabel shrink>{IS_ADMIN}</InputLabel>
+
+                              <label className="toggle-main">
+                                <Box color={isAdmin ? WHITE : GRAY_TWO}>Yes</Box>
+                                <AntSwitch checked={isAdmin} onChange={(event) => { handleChange(event) }} name='employment' />
+                                <Box color={isAdmin ? GRAY_TWO : WHITE}>No</Box>
+                              </label>
+                            </FormControl>
+                          )}
                         />
                       </Grid>
                     </Grid>
@@ -296,6 +330,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <CardComponent cardTitle={FACILITY_DETAILS_TEXT}>
                     <Grid item md={12} sm={12} xs={12}>
                       <InputController
+                        isRequired
                         fieldType="text"
                         controllerName="facilityName"
                         controllerLabel={FACILITY_NAME}

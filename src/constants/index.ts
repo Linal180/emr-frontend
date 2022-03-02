@@ -881,18 +881,32 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
 export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
-  { id: UserRole.Doctor, name: formatValue(UserRole.Doctor) },
-  { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
-  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
+  { id: UserRole.Staff, name: 'Office Staff' },
+  { id: UserRole.Doctor, name: 'Physician' },
+  { id: UserRole.Billing, name: 'Biller' },
+  { id: UserRole.DoctorAssistant, name: 'Physician Assistant' },
+  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
 ];
 
 export const MAPPED_STAFF_ROLES: SelectorOption[] = [
-  { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
+  { id: UserRole.Staff, name: 'Office Staff' },
   { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
-  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) }
+  { id: UserRole.Billing, name: 'Biller' },
+  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
+  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
+];
+
+export const MAPPED_PRACTICE_ROLES: SelectorOption[] = [
+  { id: UserRole.Doctor, name: 'Physician' },
+  { id: UserRole.DoctorAssistant, name: 'Physician Assistant' },
+  { id: UserRole.Staff, name: 'Office Staff' },
+  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
+  { id: UserRole.Billing, name: 'Biller' },
+  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
 ];
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
