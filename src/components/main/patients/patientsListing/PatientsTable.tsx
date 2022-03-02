@@ -87,7 +87,7 @@ const PatientsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           setOpenDelete(false)
-          findAllPatient();
+          fetchAllPatients();
           fetchAllPatientList();
         }
       }

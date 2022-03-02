@@ -55,16 +55,18 @@ const StaffTable: FC = (): JSX.Element => {
     }
   });
 
-  const fetchAllStaff = useCallback(() => {
-    const isSuper = isSuperAdmin(roles);
-    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-    const staffInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+  const fetchAllStaff = useCallback(async () => {
+    try {
+      const isSuper = isSuperAdmin(roles);
+      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const staffInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
 
-    findAllStaff({
-      variables: {
-        staffInput: { ...staffInputs }
-      }
-    })
+      await findAllStaff({
+        variables: {
+          staffInput: { ...staffInputs }
+        }
+      })
+    } catch (error) { }
   }, [facilityId, findAllStaff, page, roles]);
 
   const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
@@ -82,7 +84,7 @@ const StaffTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             setOpenDelete(false)
-            await findAllStaff();
+            await fetchAllStaff();
           }
         }
       } catch (error) { }
@@ -95,7 +97,7 @@ const StaffTable: FC = (): JSX.Element => {
     !searchQuery && fetchAllStaff()
   }, [fetchAllStaff, page, searchQuery]);
 
-  const handleChange = (event: ChangeEvent<unknown>, value: number) => setPage(value);
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
   const search = (query: string) => { }
 

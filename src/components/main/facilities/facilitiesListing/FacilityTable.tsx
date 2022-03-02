@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer } from "react";
+import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { InsertLink } from "@material-ui/icons";
@@ -71,6 +71,18 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   });
 
+  const fetchAllFacilities = useCallback(async () => {
+    try {
+      await findAllFacility({
+        variables: {
+          facilityInput: {
+            practiceId, paginationOptions: { page, limit: PAGE_LIMIT }
+          }
+        },
+      })
+    } catch (error) { }
+  }, [findAllFacility, page, practiceId])
+
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {
       Alert.error(CANT_DELETE_FACILITY)
@@ -85,7 +97,7 @@ const FacilityTable: FC = (): JSX.Element => {
           try {
             const { message } = response
             message && Alert.success(message);
-            await findAllFacility();
+            await fetchAllFacilities();
             fetchAllFacilityList();
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           } catch (error) { }
@@ -95,16 +107,8 @@ const FacilityTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if (!searchQuery) {
-      findAllFacility({
-        variables: {
-          facilityInput: {
-            practiceId, paginationOptions: { page, limit: PAGE_LIMIT }
-          }
-        },
-      })
-    }
-  }, [page, findAllFacility, searchQuery, practiceId]);
+    !searchQuery && fetchAllFacilities();
+  }, [fetchAllFacilities, page, searchQuery]);
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) =>
     dispatch({ type: ActionType.SET_PAGE, page });
