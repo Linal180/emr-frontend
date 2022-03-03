@@ -686,5 +686,5 @@ export interface AppointmentDatePickerProps {
 }
 
 export type CustomPracticeInputProps = CreatePracticeItemInput & RegisterUserInputs
-  & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode"> & { facilityName: string }
+  & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email"> & { facilityName: string }
   & { roleType: SelectorOption } & { country: SelectorOption } & { state: SelectorOption } & { isAdmin: boolean }

@@ -45,6 +45,7 @@ export enum DAYS {
 };
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
+export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
 export const VIEW = "View";
 export const IS_ADMIN = "Is Admin?";

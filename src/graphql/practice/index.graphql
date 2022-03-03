@@ -22,6 +22,7 @@ query FindAllPractices($practiceInput: PracticeInput!){
       facilities {
         id
         name
+        isPrimary
 
         contacts {
           id
@@ -66,12 +67,12 @@ query GetPractice($getPractice: GetPractice!){
         contacts {
           id
           email
-        	primaryContact
+          state
+					country
+          zipCode
           address
           address2
-					country
-          state
-          zipCode
+        	primaryContact
         }
       }
     }
