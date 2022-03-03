@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent, useState } from 'react';
+import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,9 +18,10 @@ import ViewDataLoader from '../../../../common/ViewDataLoader';
 import PatientStepper from '../../../../common/PatientStepper';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 //context, graphql and utils block
+import history from '../../../../../history';
 import { FacilityContext } from "../../../../../context";
-import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE } from "../../../../../theme";
 import { externalPatientSchema } from '../../../../../validationSchemas';
+import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE } from "../../../../../theme";
 import { getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
 import { CardIcon, PaypalButton, PaypalIcon } from '../../../../../assets/svgs';
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
@@ -35,14 +36,14 @@ import {
 } from "../../../../../generated/graphql";
 import {
   MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
-  PATIENT_NOT_FOUND, ADDRESS, agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL, SELECT_PROVIDER, EMERGENCY_CONTACT_NAME,
-  FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN, ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY,
-  MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY, EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT,
-  PREFERRED_COMMUNICATION_METHOD, PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
-  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS, MAPPED_STATES, MAPPED_COUNTRIES,
+  PATIENT_NOT_FOUND, ADDRESS, agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL, SELECT_PROVIDER,
+  EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN, ADDRESS_2,
+  CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
+  EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD, PREFERRED_LANGUAGE,
+  RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS, DOCUMENT_VERIFICATION,
+  CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS, MAPPED_STATES, MAPPED_COUNTRIES,
   USA, NEXT, FINISH, FIRST_NAME, LAST_NAME, CARD_NUMBER, EXPIRY_DATE, CVV, PAY_DEBIT_CARD_TEXT, PAY_PAYPAL_TEXT, PAY
 } from "../../../../../constants";
-import history from '../../../../../history';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -50,40 +51,15 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const toggleButtonClass = usePublicAppointmentStyles();
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const [expanded, setExpanded] = useState<string | false>('panel1');
-
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
-    consentAgreed, isAppointment, isBilling, isVoice
+    consentAgreed, isAppointment, isBilling, isVoice, paymentMethod
   } = state
   const methods = useForm<ExternalPatientInputProps>({
     mode: "all",
     resolver: yupResolver(externalPatientSchema)
   });
   const { handleSubmit, setValue, control } = methods;
-
-  const handleChangeAccordion = (panel: string) =>
-    (_: ChangeEvent<{}>, isExpanded: boolean) => setExpanded(isExpanded ? panel : false);
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { target: { checked, name } } = event
-    switch (name) {
-      case 'releaseOfInfoBill':
-        dispatch({ type: ActionType.SET_IS_BILLING, isBilling: checked })
-        setValue('releaseOfInfoBill', checked)
-        return;
-
-      case 'voiceCallPermission':
-        dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
-        setValue('voiceCallPermission', checked)
-        return;
-
-      case 'phonePermission':
-        dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: checked })
-        setValue('phonePermission', checked)
-        return;
-    }
-  };
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -298,6 +274,30 @@ const PatientFormComponent: FC = (): JSX.Element => {
       Alert.error(PATIENT_NOT_FOUND)
   }, [getPatient, id])
 
+  const handleChangeAccordion = (paymentMethod: string) =>
+    (_: ChangeEvent<{}>, isExpanded: boolean) =>
+      dispatch({ type: ActionType.SET_PAYMENT_METHOD, paymentMethod })
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { checked, name } } = event
+    switch (name) {
+      case 'releaseOfInfoBill':
+        dispatch({ type: ActionType.SET_IS_BILLING, isBilling: checked })
+        setValue('releaseOfInfoBill', checked)
+        return;
+
+      case 'voiceCallPermission':
+        dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
+        setValue('voiceCallPermission', checked)
+        return;
+
+      case 'phonePermission':
+        dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: checked })
+        setValue('phonePermission', checked)
+        return;
+    }
+  };
+
   const handleNextStep = () => {
     activeStep !== 0 && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
   };
@@ -325,7 +325,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
             </Box>
 
             <Box flex={1}>
-              {activeStep === 20 ? (
+              {activeStep === 0 ? (
                 <Box className={classes.mainGridContainer}>
                   <Box mb={2} mr={2}>
                     <CardComponent cardTitle={PATIENT_INFORMATION_TEXT}>
@@ -625,7 +625,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </CardComponent>
                   </Box>
                 </Box>
-              ) : activeStep === 25 ? ( // not reachable for now
+              ) : activeStep === 5 ? ( // not reachable for now
                 <Box>
                   <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                     <Box py={2}>
@@ -675,7 +675,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </Box>
                   </CardComponent>
                 </Box>
-              ) : activeStep === 21 ? (
+              ) : activeStep === 1 ? (
                 <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                   <Box className={classes.agreementContainer}>
                     <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>
@@ -698,12 +698,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </Box>
                   </Box>
                 </CardComponent>
-              ) : activeStep === 0 && (
+              ) : activeStep === 2 && (
                 <Box>
                   <Box className={classes.paymentAccordion}>
-                    <Accordion expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')}>
+                    <Accordion expanded={paymentMethod === 'card'} onChange={handleChangeAccordion('card')}>
                       <AccordionSummary
-                        expandIcon={<Radio color='primary' disableRipple checked={expanded === 'panel1'} />}
+                        expandIcon={<Radio color='primary' disableRipple checked={paymentMethod === 'card'} />}
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
                       >
@@ -763,7 +763,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               </Grid>
                             </Grid>
                           </Grid>
-                          
+
                           <Box display="flex">
                             <Button variant="contained" color="primary">{PAY}</Button>
                           </Box>
@@ -773,9 +773,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
                   </Box>
 
                   <Box className={classes.paymentAccordion} mt={2}>
-                    <Accordion expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')}>
+                    <Accordion expanded={paymentMethod === 'paypal'} onChange={handleChangeAccordion('paypal')}>
                       <AccordionSummary
-                        expandIcon={<Radio color='primary' disableRipple checked={expanded === 'panel2'} />}
+                        expandIcon={<Radio color='primary' disableRipple checked={paymentMethod === 'paypal'} />}
                         aria-controls="panel2bh-content"
                         id="panel2bh-header"
                       >

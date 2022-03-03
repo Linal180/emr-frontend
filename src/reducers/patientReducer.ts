@@ -3,8 +3,10 @@ import { AttachmentPayload, AttachmentsPayload, PatientPayload, PatientsPayload 
 export interface State {
   page: number;
   tabValue: string;
-  patientId: string;
+  isVoice: boolean;
   selection: string;
+  patientId: string;
+  isBilling: boolean;
   employerId: string;
   totalPages: number;
   activeStep: number;
@@ -12,12 +14,11 @@ export interface State {
   searchQuery: string;
   isEditCard: boolean;
   kinContactId: string;
+  paymentMethod: string;
   attachmentUrl: string;
   basicContactId: string;
   deletePatientId: string;
   consentAgreed: boolean;
-  isBilling: boolean;
-  isVoice: boolean;
   isAppointment: boolean;
   guardianContactId: string;
   guarantorContactId: string;
@@ -39,11 +40,14 @@ export const initialState: State = {
   patientId: '',
   employerId: '',
   anchorEl: null,
+  isVoice: false,
   selection: 'NO',
   searchQuery: '',
   attachmentId: '',
+  isBilling: false,
   kinContactId: '',
   isEditCard: false,
+  paymentMethod: '',
   attachmentUrl: '',
   openDelete: false,
   basicContactId: '',
@@ -51,22 +55,23 @@ export const initialState: State = {
   deletePatientId: '',
   consentAgreed: false,
   attachmentData: null,
+  isAppointment: false,
   guardianContactId: '',
   emergencyContactId: '',
   guarantorContactId: '',
   patientData: undefined,
-  isBilling: false,
-  isVoice: false,
-  isAppointment: false,
 }
 
 
 export enum ActionType {
   SET_PAGE = 'setPage',
+  SET_IS_OPEN = "setIsOpen",
+  SET_IS_VOICE = 'setIsVoice',
   SET_PATIENTS = 'setPatients',
   SET_TAB_VALUE = 'setTabValue',
   SET_ANCHOR_EL = 'setAnchorEl',
   SET_SELECTION = 'setSelection',
+  SET_IS_BILLING = 'setIsBilling',
   SET_PATIENT_ID = 'setPatientId',
   SET_ACTIVE_STEP = 'setActiveStep',
   SET_OPEN_DELETE = 'setOpenDelete',
@@ -77,26 +82,26 @@ export enum ActionType {
   SET_PATIENT_DATA = 'setPatientData',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_KIN_CONTACT_ID = 'setKinContactID',
+  SET_IS_APPOINTMENT = 'setIsAppointment',
+  SET_PAYMENT_METHOD = 'setPaymentMethod',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
-  SET_IS_VOICE = 'setIsVoice',
   SET_CONSENT_AGREED = 'setConsentAgreed',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_BASIC_CONTACT_ID = 'setBasicContactID',
   SET_ATTACHMENTS_DATA = 'setAttachmentsData',
   SET_DELETE_PATIENT_ID = 'setDeletePatientId',
-  SET_IS_BILLING = 'setIsBilling',
-  SET_IS_APPOINTMENT = 'setIsAppointment',
   SET_GUARDIAN_CONTACT_ID = 'setGuardianContactID',
   SET_GUARANTOR_CONTACT_ID = 'setGuarantorContactId',
   SET_EMERGENCY_CONTACT_ID = 'setEmergencyContactID',
-  SET_IS_OPEN = "setIsOpen"
 }
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
+  | { type: ActionType.SET_IS_VOICE, isVoice: boolean }
   | { type: ActionType.SET_TAB_VALUE; tabValue: string }
   | { type: ActionType.SET_SELECTION; selection: string }
   | { type: ActionType.SET_PATIENT_ID; patientId: string }
+  | { type: ActionType.SET_IS_BILLING, isBilling: boolean }
   | { type: ActionType.SET_EMPLOYER_ID; employerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
@@ -105,12 +110,11 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
+  | { type: ActionType.SET_PAYMENT_METHOD, paymentMethod: string }
+  | { type: ActionType.SET_IS_APPOINTMENT, isAppointment: boolean }
   | { type: ActionType.SET_CONSENT_AGREED, consentAgreed: boolean }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
-  | { type: ActionType.SET_IS_VOICE, isVoice: boolean }
-  | { type: ActionType.SET_IS_BILLING, isBilling: boolean }
-  | { type: ActionType.SET_IS_APPOINTMENT, isAppointment: boolean }
   | { type: ActionType.SET_BASIC_CONTACT_ID; basicContactId: string }
   | { type: ActionType.SET_DELETE_PATIENT_ID; deletePatientId: string }
   | { type: ActionType.SET_GUARDIAN_CONTACT_ID; guardianContactId: string }
@@ -131,6 +135,12 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         page: action.page
       }
+
+      case ActionType.SET_PAYMENT_METHOD:
+        return {
+          ...state,
+          paymentMethod: action.paymentMethod
+        }
 
     case ActionType.SET_CONSENT_AGREED:
       return {
