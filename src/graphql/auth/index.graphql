@@ -46,52 +46,10 @@ query GetLoggedInUser {
       facility {
         id
         name
-        practiceType
-        code
-        cliaIdNumber
-        federalTaxId
-        isPrivate
-        revenueCode
-        tamxonomyCode
-        insurancePlanType
-        mammographyCertificationNumber
-        npi
-        serviceCode
+        practiceId
         createdAt
         updatedAt
         
-        contacts {
-          id
-          email
-          mobile
-          pager
-          fax
-          address
-          address2
-          zipCode
-          city
-          state
-          serviceCode
-          country
-          userId
-          serviceCode
-          createdAt
-          updatedAt
-        }
-
-        staff {
-          id
-          firstName
-          lastName
-          email
-          username
-          dob
-          phone
-          mobile
-          gender
-          createdAt
-          updatedAt
-        }
       }
     }
   }
@@ -134,13 +92,10 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode
@@ -215,13 +170,10 @@ mutation RegisterUser($user: RegisterUserInput!) {
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode
@@ -295,13 +247,10 @@ mutation EmailVerification($verifyEmail: VerifyEmailInput!){
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode
@@ -375,13 +324,10 @@ mutation ResendVerificationEmail($resendVerificationEmail: ResendVerificationEma
         id
         name
         practiceType
-        code
         cliaIdNumber
         federalTaxId
         isPrivate
-        revenueCode
         tamxonomyCode
-        insurancePlanType
         mammographyCertificationNumber
         npi
         serviceCode

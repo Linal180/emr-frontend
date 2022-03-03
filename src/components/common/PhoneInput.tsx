@@ -25,10 +25,12 @@ const PhoneField: FC<PhoneInputProps> = ({ name, label, isRequired }) => {
           <PhoneInput
             {...field}
 
-            country={'us'}
+            country='us'
             disableDropdown
+            disableCountryCode
             value={field.value}
             onlyCountries={['us']}
+            placeholder='(111) 111-1111'
             onChange={(phone: any) => field.onChange(phone)}
           />
 

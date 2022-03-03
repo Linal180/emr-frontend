@@ -1,19 +1,23 @@
 // packages block
 import { FC } from 'react';
 // component block
-import ViewPracticeForm from "./viewPracticeForm";
+import PracticeForm from "../practiceForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
 import { PRACTICE_MANAGEMENT_TEXT } from '../../../../constants';
+import { useParams } from 'react-router';
+import { ParamsType } from '../../../../interfacesTypes';
 
 const ViewPracticeComponent: FC = (): JSX.Element => {
+  const { id } = useParams<ParamsType>();
+
   return (
     <>
       <PageHeader
         title={PRACTICE_MANAGEMENT_TEXT}
       />
 
-      <ViewPracticeForm />
+      <PracticeForm isEdit id={id} />
     </>
   )
 };

@@ -134,7 +134,7 @@ const DoctorDetailComponent = (): JSX.Element => {
                     {`${firstName} ${lastName}`}
                   </Box>
 
-                  <Box display="flex" width="100%" maxWidth={650} pt={1} flexWrap="wrap">
+                  <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                     {ProfileDetails.map((item, index) => (
                       <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
                         <Box>{item.icon}</Box>
