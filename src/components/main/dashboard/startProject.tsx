@@ -20,6 +20,7 @@ const StartProjectComponent = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, searchQuery, appointments } = state;
 
+
   const [findAllAppointments, { loading: appointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     variables: {
       appointmentInput: {
@@ -41,7 +42,7 @@ const StartProjectComponent = (): JSX.Element => {
       const { findAllAppointments } = data || {};
 
       if (findAllAppointments) {
-        const { appointments, pagination } = findAllAppointments
+        const { appointments, pagination } = findAllAppointments || {}
 
         if (!searchQuery && pagination) {
           const { totalPages } = pagination
@@ -64,6 +65,25 @@ const StartProjectComponent = (): JSX.Element => {
     setCurrentDate(currentDate)
   }
 
+  const Appointment = ({
+    children, style, ...restProps
+  }: any) => {
+    const { data: { color } } = restProps
+
+    return (
+      <Appointments.Appointment
+        {...restProps}
+        style={{
+          ...style,
+          backgroundColor: color,
+          borderRadius: '8px',
+        }}
+      >
+        {children}
+      </Appointments.Appointment>
+    )
+  };
+
   return (
     <Card>
       {appointmentsLoading ? <Backdrop loading={true} /> :
@@ -77,7 +97,7 @@ const StartProjectComponent = (): JSX.Element => {
             <TodayButton />
             <ViewSwitcher />
             <DateNavigator />
-            <Appointments />
+            <Appointments appointmentComponent={Appointment} />
             <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
           </Scheduler>
         </Box>
