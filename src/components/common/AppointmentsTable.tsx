@@ -1,6 +1,7 @@
 // packages block
 import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import dotenv from 'dotenv';
+import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
 import { InsertLink } from '@material-ui/icons';
@@ -16,7 +17,7 @@ import { AuthContext } from "../../context";
 import { EditIcon, TrashIcon } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
-import { getFormattedDate, renderTh, getISOTime, isSuperAdmin } from "../../utils";
+import { getFormattedDate, renderTh, getISOTime, isSuperAdmin, appointmentStatus } from "../../utils";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
 import {
   AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery,
@@ -25,10 +26,8 @@ import {
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, PUBLIC_LINK,
   TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES, PUBLIC_APPOINTMENT_ROUTE,
-  LINK_COPIED, CANCEL_TIME_EXPIRED_MESSAGE, STATUS, CANCELLED, INITIATED
+  LINK_COPIED, CANCEL_TIME_EXPIRED_MESSAGE, STATUS,
 } from "../../constants";
-import moment from "moment";
-import { BLUE_FIVE, BLUE_FOUR, RED, RED_ONE } from "../../theme";
 
 dotenv.config()
 
@@ -223,24 +222,28 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 const { firstName, lastName } = patient || {};
                 const { duration, name: type } = appointmentType || {};
                 const { firstName: doctorFN, lastName: doctorLN } = provider || {};
-                const ActiveStatus = status === 'CANCELLED' ? CANCELLED : INITIATED;
-                const StatusBackground = status === 'CANCELLED' ? BLUE_FIVE : RED_ONE
-                const StatusColor = status === 'CANCELLED' ? BLUE_FOUR : RED
+
+                const {text, bgColor, textColor} = appointmentStatus(status || '')
+                
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{type}</TableCell>
                     {!doctorId && <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>}
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
+
                     <TableCell scope="row">
                       {getFormattedDate(scheduleStartDateTime || '')}
                     </TableCell>
+                    
                     <TableCell scope="row">{duration} {MINUTES}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
-                      <Box className={classes.status} component='span' bgcolor={StatusBackground} color={StatusColor}>
-                        {ActiveStatus}
+                      <Box className={classes.status} component='span' bgcolor={bgColor} color={textColor}>
+                        {text}
                       </Box>
-                    </TableCell>                    <TableCell scope="row">
+                    </TableCell>
+                    
+                    <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
