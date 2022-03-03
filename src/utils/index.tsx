@@ -7,7 +7,7 @@ import history from "../history";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, AppointmentsPayload
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
@@ -377,3 +377,39 @@ export const activeClass = (pathname: string): string => {
       return ''
   }
 };
+
+const makeTodayAppointment = (startDate: Date, endDate: Date) => {
+  const currentDate = moment(startDate);
+
+  const days = moment(startDate).diff(endDate, 'days');
+  const nextStartDate = moment(startDate)
+    .year(currentDate.year())
+    .month(currentDate.month())
+    .date(parseInt(startDate.toDateString()));
+
+  const nextEndDate = moment(endDate)
+    .year(currentDate.year())
+    .month(currentDate.month())
+    .date(parseInt((endDate).toDateString()) + days);
+
+  return {
+    startDate: nextStartDate.toDate(),
+    endDate: nextEndDate.toDate(),
+  };
+};
+
+export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
+  return data?.map(appointment => {
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
+    const { firstName, lastName } = patient || {}
+    const { color } = appointmentType || {}
+    console.log(color);
+
+    return {
+      id,
+      title: `${firstName} ${lastName}`,
+      ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
+    }
+
+  })
+}

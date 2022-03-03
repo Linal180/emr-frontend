@@ -15,6 +15,7 @@ export interface State {
   appointmentId: string;
   isEmployment: boolean;
   isAutoAccident: boolean;
+  appointmentColor: string;
   isOtherAccident: boolean;
   deleteAppointmentId: string;
   facility: FacilityPayload['facility'];
@@ -38,6 +39,7 @@ export const initialState: State = {
   isInsurance: false,
   availableSlots: [],
   isEmployment: false,
+  appointmentColor: '',
   isAutoAccident: false,
   isOtherAccident: false,
   deleteAppointmentId: '',
@@ -63,6 +65,7 @@ export enum ActionType {
   SET_AVAILABLE_SLOTS = 'setAvailableSlots',
   SET_IS_AUTO_ACCIDENT = 'setIsAutoAccident',
   SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
+  SET_APPOINTMENT_COLOR = 'setAppointmentColor',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
 }
 
@@ -80,6 +83,7 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENT_ID; appointmentId: string }
   | { type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: boolean }
   | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
+  | { type: ActionType.SET_APPOINTMENT_COLOR, appointmentColor: string }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
@@ -194,6 +198,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isAutoAccident: action.isAutoAccident
+      }
+
+    case ActionType.SET_APPOINTMENT_COLOR:
+      return {
+        ...state,
+        appointmentColor: action.appointmentColor
       }
   }
 };

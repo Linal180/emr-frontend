@@ -42,5 +42,9 @@ export const useCalendarStyles = makeStyles(() =>
         padding: 0
       }
     },
+
+    calendrAppointments: {
+      padding: 2
+    }
   })
 );

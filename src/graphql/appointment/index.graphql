@@ -23,6 +23,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
         id
         name
         duration
+        color
       }
       
       provider {
