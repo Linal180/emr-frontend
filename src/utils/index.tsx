@@ -8,7 +8,7 @@ import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, Appointmentstatus
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, AppointmentsPayload, Appointmentstatus
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
@@ -379,6 +379,40 @@ export const activeClass = (pathname: string): string => {
   }
 };
 
+const makeTodayAppointment = (startDate: Date, endDate: Date) => {
+  const currentDate = moment(startDate);
+
+  const days = moment(startDate).diff(endDate, 'days');
+  const nextStartDate = moment(startDate)
+    .year(currentDate.year())
+    .month(currentDate.month())
+    .date(parseInt(startDate.toDateString()));
+
+  const nextEndDate = moment(endDate)
+    .year(currentDate.year())
+    .month(currentDate.month())
+    .date(parseInt((endDate).toDateString()) + days);
+
+  return {
+    startDate: nextStartDate.toDate(),
+    endDate: nextEndDate.toDate(),
+  };
+};
+
+export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
+  return data?.map(appointment => {
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
+    const { firstName, lastName } = patient || {}
+    const { color } = appointmentType || {}
+
+    return {
+      id, color,
+      title: `${firstName} ${lastName}`,
+      ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
+    }
+
+  })
+}
 export const appointmentStatus = (status: string) => {
   const cancelled = status === Appointmentstatus.Cancelled;
 
