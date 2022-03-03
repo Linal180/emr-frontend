@@ -14,19 +14,11 @@ import { mapAppointmentData } from "../../../utils"
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
 import { AppointmentsPayload, useFindAllAppointmentsLazyQuery } from "../../../generated/graphql";
 import Backdrop from "../../common/Backdrop";
-import { useCalendarStyles } from "../../../styles/calendarStyles";
-
 
 const StartProjectComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, searchQuery, appointments, appointmentColor } = state;
-
-  // const props = {
-  //   color: appointmentColor
-  // }
-
-  const classes = useCalendarStyles()
+  const { page, searchQuery, appointments } = state;
 
   const [findAllAppointments, { loading: appointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     variables: {
@@ -72,23 +64,11 @@ const StartProjectComponent = (): JSX.Element => {
     setCurrentDate(currentDate)
   }
 
-  const asd = appointments?.map((item) => {
-    const color = item?.appointmentType?.color;
-
-    return (
-      { color }
-    )
-  })
-
-  console.log(asd);
-  console.log(appointments);
-
-
   return (
     <Card>
       {appointmentsLoading ? <Backdrop loading={true} /> :
-        <Box className={classes.calendrAppointments}>
-          <Scheduler data={mapAppointmentData(appointments)} height={800} >
+        <Box>
+          <Scheduler data={mapAppointmentData(appointments)}>
             <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
             <MonthView />
             <WeekView />

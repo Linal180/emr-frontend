@@ -468,6 +468,7 @@ export type CreatePatientItemInput = {
 };
 
 export type CreatePracticeInput = {
+  createContactInput?: Maybe<CreateContactInput>;
   createFacilityItemInput?: Maybe<CreateFacilityItemInput>;
   createPracticeItemInput?: Maybe<CreatePracticeItemInput>;
   registerUserInput?: Maybe<RegisterUserInput>;
@@ -642,6 +643,7 @@ export type Facility = {
   doctors?: Maybe<Array<Doctor>>;
   federalTaxId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isPrimary?: Maybe<Scalars['Boolean']>;
   isPrivate?: Maybe<Scalars['Boolean']>;
   mammographyCertificationNumber?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -2120,6 +2122,8 @@ export enum UserRole {
   Doctor = 'DOCTOR',
   DoctorAssistant = 'DOCTOR_ASSISTANT',
   Nurse = 'NURSE',
+  NursePractitioner = 'NURSE_PRACTITIONER',
+  OfficeManager = 'OFFICE_MANAGER',
   Patient = 'PATIENT',
   Staff = 'STAFF',
   SuperAdmin = 'SUPER_ADMIN'

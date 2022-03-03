@@ -401,10 +401,8 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
 
 export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
   return data?.map(appointment => {
-    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id } = appointment || {}
     const { firstName, lastName } = patient || {}
-    const { color } = appointmentType || {}
-    console.log(color);
 
     return {
       id,
