@@ -1,24 +1,30 @@
 // packages block
 import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider, SubmitHandler, Controller } from 'react-hook-form';
-import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel, RadioGroup, Radio } from '@material-ui/core';
+import {
+  Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel,
+  Radio, Accordion, AccordionSummary, AccordionDetails
+} from '@material-ui/core';
 // components
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
 import PhoneField from '../../../../common/PhoneInput';
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
+import ViewDataLoader from '../../../../common/ViewDataLoader';
 import PatientStepper from '../../../../common/PatientStepper';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 //context, graphql and utils block
 import { FacilityContext } from "../../../../../context";
-import ViewDataLoader from '../../../../common/ViewDataLoader';
 import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE } from "../../../../../theme";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
+import { CardIcon, PaypalButton, PaypalIcon } from '../../../../../assets/svgs';
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
+import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import { AntSwitch, useExternalPatientStyles } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
   patientReducer, Action, initialState, State, ActionType
@@ -29,32 +35,14 @@ import {
 } from "../../../../../generated/graphql";
 import {
   MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
-  PATIENT_NOT_FOUND, ADDRESS, agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL, SELECT_PROVIDER,
-  EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN,
-  ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
-  EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
-  PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
-  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
-  MAPPED_STATES,
-  MAPPED_COUNTRIES,
-  USA,
-  NEXT,
-  FINISH,
-  PAYMENT_DETAILS,
-  FIRST_NAME,
-  LAST_NAME,
-  CARD_NUMBER,
-  EXPIRY_DATE,
-  CVV,
-  PAY_DEBIT_CARD_TEXT,
-  PAY_PAYPAL_TEXT,
-  PAY,
+  PATIENT_NOT_FOUND, ADDRESS, agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL, SELECT_PROVIDER, EMERGENCY_CONTACT_NAME,
+  FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN, ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY,
+  MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY, EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT,
+  PREFERRED_COMMUNICATION_METHOD, PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
+  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS, MAPPED_STATES, MAPPED_COUNTRIES,
+  USA, NEXT, FINISH, FIRST_NAME, LAST_NAME, CARD_NUMBER, EXPIRY_DATE, CVV, PAY_DEBIT_CARD_TEXT, PAY_PAYPAL_TEXT, PAY
 } from "../../../../../constants";
 import history from '../../../../../history';
-import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
-import { CardIcon, PaypalButton, PaypalIcon } from '../../../../../assets/svgs';
-import { link } from 'fs';
-import { Link } from 'react-router-dom';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -62,13 +50,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const toggleButtonClass = usePublicAppointmentStyles();
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-
-  // radio-buttons-state
-  const [valueNew, setValueNew] = useState('creditCard');
-
-  const handleChangeNew = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValueNew((event.target as HTMLInputElement).value);
-  };
+  const [expanded, setExpanded] = useState<string | false>('panel1');
 
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
@@ -79,6 +61,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
     resolver: yupResolver(externalPatientSchema)
   });
   const { handleSubmit, setValue, control } = methods;
+
+  const handleChangeAccordion = (panel: string) =>
+    (_: ChangeEvent<{}>, isExpanded: boolean) => setExpanded(isExpanded ? panel : false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
@@ -99,7 +84,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
         return;
     }
   };
-
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -716,79 +700,98 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 </CardComponent>
               ) : activeStep === 0 && (
                 <Box>
-                  <CardComponent cardTitle={PAY_DEBIT_CARD_TEXT}>
-                    {/* <Box display="flex">
-                      <Box mr={2} display="flex"><CardIcon /></Box>
-
-                      <Typography variant="h5">{PAY_DEBIT_CARD_TEXT}</Typography>
-                    </Box> */}
-
-                    <Box mt={5}>
-                      <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
-                          <InputController
-                            fieldType="text"
-                            controllerName=""
-                            controllerLabel={FIRST_NAME}
-                          />
-                        </Grid>
-
-                        <Grid item md={6} sm={12} xs={12}>
-                          <InputController
-                            fieldType="text"
-                            controllerName=""
-                            controllerLabel={LAST_NAME}
-                          />
-                        </Grid>
-                      </Grid>
-
-                      <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
-                          <InputController
-                            fieldType="number"
-                            controllerName=""
-                            controllerLabel={CARD_NUMBER}
-                          />
-                        </Grid>
-
-                        <Grid item md={6} sm={12} xs={12}>
+                  <Box className={classes.paymentAccordion}>
+                    <Accordion expanded={expanded === 'panel1'} onChange={handleChangeAccordion('panel1')}>
+                      <AccordionSummary
+                        expandIcon={<Radio color='primary' disableRipple checked={expanded === 'panel1'} />}
+                        aria-controls="panel1bh-content"
+                        id="panel1bh-header"
+                      >
+                        <Box display="flex" alignItems="center">
+                          <CardIcon />
+                          <Box ml={3}>
+                            <Typography variant='h4'>{PAY_DEBIT_CARD_TEXT}</Typography>
+                          </Box>
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Box className={classes.paymentAccordionDetail}>
                           <Grid container spacing={3}>
                             <Grid item md={6} sm={12} xs={12}>
                               <InputController
                                 fieldType="text"
-                                controllerName=""
-                                controllerLabel={EXPIRY_DATE}
+                                controllerName="firstName"
+                                controllerLabel={FIRST_NAME}
                               />
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
                               <InputController
                                 fieldType="text"
-                                controllerName=""
-                                controllerLabel={CVV}
+                                controllerName="lastName"
+                                controllerLabel={LAST_NAME}
                               />
                             </Grid>
                           </Grid>
-                        </Grid>
-                      </Grid>
-                      <Box mb={3} display="flex" justifyContent="center">
-                        <Button variant="contained" color="primary">{PAY}</Button>
-                      </Box>
-                    </Box>
-                  </CardComponent>
 
-                  <Box mt={2}>
-                    <CardComponent cardTitle={PAY_PAYPAL_TEXT}>
-                      {/* <Box mt={2} display="flex" alignItems="center">
-                        <Box mr={2} display="flex"><PaypalIcon /></Box>
+                          <Grid container spacing={3}>
+                            <Grid item md={6} sm={12} xs={12}>
+                              <InputController
+                                fieldType="number"
+                                controllerName="cardNumber"
+                                controllerLabel={CARD_NUMBER}
+                              />
+                            </Grid>
 
-                        <Typography variant="h5">{PAY_PAYPAL_TEXT}</Typography>
-                      </Box> */}
+                            <Grid item md={6} sm={12} xs={12}>
+                              <Grid container spacing={3}>
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="expiryDate"
+                                    controllerLabel={EXPIRY_DATE}
+                                  />
+                                </Grid>
 
-                      <Box component={Link} display="block" mt={3} mb={3} textAlign="center">
-                        <PaypalButton />
-                      </Box>
-                    </CardComponent>
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="number"
+                                    controllerName="cvv"
+                                    controllerLabel={CVV}
+                                  />
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+                          
+                          <Box display="flex">
+                            <Button variant="contained" color="primary">{PAY}</Button>
+                          </Box>
+                        </Box>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Box>
+
+                  <Box className={classes.paymentAccordion} mt={2}>
+                    <Accordion expanded={expanded === 'panel2'} onChange={handleChangeAccordion('panel2')}>
+                      <AccordionSummary
+                        expandIcon={<Radio color='primary' disableRipple checked={expanded === 'panel2'} />}
+                        aria-controls="panel2bh-content"
+                        id="panel2bh-header"
+                      >
+                        <Box display="flex" alignItems="center">
+                          <PaypalIcon />
+                          <Box ml={3}>
+                            <Typography variant='h4'>{PAY_PAYPAL_TEXT}</Typography>
+                          </Box>
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Box component={Link} mt={3} mb={3} className={classes.paymentAccordionDetail}>
+                          <PaypalButton />
+                        </Box>
+                      </AccordionDetails>
+                    </Accordion>
                   </Box>
                 </Box>
               )}

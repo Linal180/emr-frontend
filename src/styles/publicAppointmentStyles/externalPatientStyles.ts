@@ -10,6 +10,7 @@ import {
   GRAY_SIX,
   GRAY_TWO,
   BLUE_SIX,
+  BLACK_SEVEN,
 } from "../../theme/colors";
 import {
   createStyles,
@@ -18,6 +19,7 @@ import {
   Switch,
   withStyles,
 } from "@material-ui/core";
+import { theme } from "../../theme";
 
 export const CustomConnector = withStyles({
   alternativeLabel: {
@@ -149,6 +151,33 @@ export const useExternalPatientStyles = makeStyles({
     maxHeight: "calc(100vh - 344px)",
     overflowY: "auto",
   },
+
+  paymentAccordion: {
+    marginBottom: 20,
+    backgroundColor: WHITE,
+    borderRadius: 12,
+    padding: theme.spacing(2, 4),
+
+    "& .MuiPaper-elevation1": {
+      boxShadow: "none",
+    },
+
+    "& .MuiTypography-h4": {
+      fontWeight: 500,
+      color: BLACK_SEVEN,
+    },
+
+    "& .MuiAccordionSummary-content.Mui-expanded .MuiTypography-root": {
+      fontWeight: 500,
+      color: BLACK_SEVEN,
+    }
+  },
+
+  paymentAccordionDetail: {
+    margin: '20px auto',
+    width: '100%',
+    textAlign: 'center',
+  }
 });
 
 export const toggleButtonComponent = makeStyles({
