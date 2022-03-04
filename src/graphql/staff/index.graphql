@@ -7,7 +7,6 @@ query FindAllStaff($staffInput: StaffInput!) {
     }
 
     response {
-      name
       error
       status
 			message
@@ -15,45 +14,13 @@ query FindAllStaff($staffInput: StaffInput!) {
 
     allstaff {
       id
+      email
       firstName
       lastName
-      email
       username
-      dob
       phone
-      mobile
-      gender
       createdAt
       updatedAt
-      
-      user {
-        id
-        email
-        token
-        status
-        userId
-        userType
-        inviteSentAt
-        emailVerified
-        inviteAcceptedAt
-        createdAt
-        updatedAt
-      }
-
-      facility {
-        id
-        name
-        practiceType
-        cliaIdNumber
-        federalTaxId
-        isPrivate
-        tamxonomyCode
-        mammographyCertificationNumber
-        npi
-        serviceCode
-        createdAt
-        updatedAt
-      }
     }
   }
 }
@@ -82,18 +49,6 @@ query GetStaff($getStaff: GetStaff!){
       updatedAt
       
       user {
-        id
-        email
-        token
-        status
-        userId
-        userType
-        inviteSentAt
-        emailVerified
-        inviteAcceptedAt
-        createdAt
-        updatedAt
-
         roles {
           id
           role
@@ -103,16 +58,6 @@ query GetStaff($getStaff: GetStaff!){
       facility {
         id
         name
-        practiceType
-        cliaIdNumber
-        federalTaxId
-        isPrivate
-        tamxonomyCode
-        mammographyCertificationNumber
-        npi
-        serviceCode
-        createdAt
-        updatedAt
       }
     }
   }
@@ -131,58 +76,9 @@ mutation RemoveStaff($removeStaff: RemoveStaff!){
 mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
   updateStaff(updateStaffInput: $updateStaffInput){
     response {
-      name
       error
       status
 			message
-    }
-
-    staff {
-      id
-      firstName
-      lastName
-      email
-      username
-      dob
-      phone
-      mobile
-      gender
-      createdAt
-      updatedAt
-      
-      user {
-        id
-        email
-        token
-        status
-        userId
-        userType
-        inviteSentAt
-        emailVerified
-        inviteAcceptedAt
-        createdAt
-        updatedAt
-
-        roles {
-          id
-          role
-        }
-      }
-
-      facility {
-        id
-        name
-        practiceType
-        cliaIdNumber
-        federalTaxId
-        isPrivate
-        tamxonomyCode
-        mammographyCertificationNumber
-        npi
-        serviceCode
-        createdAt
-        updatedAt
-      }
     }
   }
 }
@@ -190,54 +86,9 @@ mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
 mutation CreateStaff($createStaffInput: CreateStaffInput!) {
   createStaff(createStaffInput: $createStaffInput){
     response {
-      name
       error
       status
 			message
     }
-
-    staff {
-      id
-      firstName
-      lastName
-      email
-      username
-      dob
-      phone
-      mobile
-      gender
-      createdAt
-      updatedAt
-      
-      user {
-        id
-        email
-        token
-        status
-        userId
-        userType
-        inviteSentAt
-        emailVerified
-        inviteAcceptedAt
-        createdAt
-        updatedAt
-      }
-
-      facility {
-        id
-        name
-        practiceType
-        cliaIdNumber
-        federalTaxId
-        isPrivate
-        tamxonomyCode
-        mammographyCertificationNumber
-        npi
-        serviceCode
-        createdAt
-        updatedAt
-      }
-    }
   }
 }
-

@@ -5,12 +5,14 @@ query findAllServices($serviceInput: ServiceInput!) {
       totalCount
       totalPages
     }
+
     response {
       name
       error
       status
-	  message
+	    message
     }
+
     services {
       id
       name
@@ -65,17 +67,6 @@ mutation RemoveService($removeService: RemoveService!){
 
 mutation CreateService($createServiceInput: CreateServiceInput!) {
   createService(createServiceInput: $createServiceInput){
-    service {
-      id
-      name
-      duration
-      price
-      isActive
-      color
-      facilityId
-      createdAt
-      updatedAt
-    }
     response{
       name
       status
@@ -86,17 +77,6 @@ mutation CreateService($createServiceInput: CreateServiceInput!) {
 
 mutation UpdateService($updateServiceInput: UpdateServiceInput!) {
   updateService(updateServiceInput: $updateServiceInput){
-    service {
-      id
-      name
-      duration
-      price
-      isActive
-      color
-      facilityId
-      createdAt
-      updatedAt
-    }
     response{
       name
       status

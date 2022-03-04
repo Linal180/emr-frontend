@@ -8,16 +8,13 @@ import {
 } from '../reducers/facilityContextReducer';
 import {
   AllDoctorPayload, useFindAllDoctorLazyQuery, useFindAllPatientLazyQuery, PatientsPayload,
-  ContactsPayload, ServicesPayload, useFindAllServicesLazyQuery, useFindAllContactsLazyQuery,
+  ServicesPayload, useFindAllServicesLazyQuery,
 } from "../generated/graphql";
 
 export const FacilityContext = createContext<FacilityContextInterface>({
   doctorList: [],
   setDoctorList: () => { },
   fetchAllDoctorList: () => { },
-  locationList: [],
-  setLocationList: () => { },
-  fetchAllLocationList: () => { },
   serviceList: [],
   setServicesList: () => { },
   fetchAllServicesList: () => { },
@@ -29,8 +26,7 @@ export const FacilityContext = createContext<FacilityContextInterface>({
 export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(facilityContextReducer, initialState)
   const {
-    doctorPages, doctorList, servicePages, locationPages, serviceList, locationList,
-    patientList, patientPages
+    doctorPages, doctorList, servicePages, serviceList, patientList, patientPages
   } = state;
 
   const [findAllDoctor] = useFindAllDoctorLazyQuery({
@@ -115,34 +111,6 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     }
   })
 
-  const [findAllContacts] = useFindAllContactsLazyQuery({
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: "network-only",
-
-    onError() {
-      return null;
-    },
-
-    onCompleted(data) {
-      try {
-        if (data) {
-          const { findAllContacts: { contacts, pagination } } = data
-
-          if (pagination) {
-            const { totalPages } = pagination;
-
-            if (totalPages ? locationPages !== totalPages : false) {
-              setLocationPages(locationPages + 1)
-            }
-          }
-
-          !!contacts && !!locationList &&
-            setLocationList([...locationList, ...contacts] as ContactsPayload['contacts'])
-        }
-      } catch (error) { }
-    }
-  })
-
   const fetchAllDoctorList = useCallback(async (facilityId, page = 1) => {
     dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: [] })
 
@@ -199,30 +167,8 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     } catch { }
   }, [findAllServices])
 
-  const fetchAllLocationList = useCallback(async (facilityId, page = 1) => {
-    dispatch({ type: ActionType.SET_LOCATION_LIST, locationList: [] })
-
-    try {
-      await findAllContacts({
-        variables: {
-          contactInput: {
-            facilityId,
-            paginationOptions: {
-              page,
-              limit: LIST_PAGE_LIMIT
-            }
-          }
-        },
-      });
-    } catch { }
-  }, [findAllContacts])
-
   const setDoctorList = (doctors: AllDoctorPayload['doctors']) => dispatch({
     type: ActionType.SET_DOCTOR_LIST, doctorList: doctors
-  });
-
-  const setLocationList = (locations: ContactsPayload['contacts']) => dispatch({
-    type: ActionType.SET_LOCATION_LIST, locationList: locations
   });
 
   const setServicesList = (services: ServicesPayload['services']) => dispatch({
@@ -235,10 +181,6 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
 
   const setDoctorPages = (pageNumber: number) => dispatch({
     type: ActionType.SET_DOCTOR_PAGES, doctorPages: pageNumber
-  });
-
-  const setLocationPages = (pageNumber: number) => dispatch({
-    type: ActionType.SET_LOCATION_PAGES, locationPages: pageNumber
   });
 
   const setServicePages = (pageNumber: number) => dispatch({
@@ -259,9 +201,6 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
         serviceList,
         setServicesList,
         fetchAllServicesList,
-        locationList,
-        setLocationList,
-        fetchAllLocationList,
         patientList,
         setPatientList,
         fetchAllPatientList

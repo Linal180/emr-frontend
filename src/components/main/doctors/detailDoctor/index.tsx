@@ -7,18 +7,18 @@ import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 // components block
 import Alert from "../../../common/Alert";
 import DoctorScheduleForm from "../schedules";
+import AppointmentsTable from "../../../common/AppointmentsTable";
 // constants, history, styling block
 import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
-import { formatPhone, getFormattedDate, getTimestamps } from "../../../../utils";
-import { useGetDoctorLazyQuery } from "../../../../generated/graphql";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { DOCTORS_ROUTE, DOCTOR_NOT_FOUND, DOCTOR_TOP_TABS, EDIT_DOCTOR } from "../../../../constants";
+import { formatPhone, getFormattedDate, getTimestamps } from "../../../../utils";
+import { DoctorPayload, useGetDoctorLazyQuery } from "../../../../generated/graphql";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
+import { DOCTORS_ROUTE, DOCTOR_NOT_FOUND, DOCTOR_TOP_TABS, EDIT_DOCTOR } from "../../../../constants";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/doctorReducer';
-import AppointmentsTable from "../../../common/AppointmentsTable";
 
 const DoctorDetailComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -45,7 +45,7 @@ const DoctorDetailComponent = (): JSX.Element => {
 
       if (doctor) {
         const { facilityId } = doctor;
-        dispatch({ type: ActionType.SET_DOCTOR, doctor })
+        dispatch({ type: ActionType.SET_DOCTOR, doctor: doctor as DoctorPayload['doctor'] })
         facilityId && dispatch({ type: ActionType.SET_DOCTOR_FACILITY_ID, doctorFacilityId: facilityId })
       }
     }

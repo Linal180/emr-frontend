@@ -31,7 +31,7 @@ import {
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
   PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery,
-  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
+  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery, FacilityPayload,
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL, DOB, EMAIL, EMPTY_OPTION,
@@ -77,9 +77,9 @@ const PublicAppointmentForm = (): JSX.Element => {
           const { status } = response
 
           if (facility && status && status === 200) {
-            dispatch({ type: ActionType.SET_FACILITY, facility })
             fetchAllDoctorList(facilityId);
             fetchAllServicesList(facilityId)
+            dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
           }
         }
       } catch (error) { }

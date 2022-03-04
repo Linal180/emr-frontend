@@ -2,78 +2,18 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
   findAllDoctor(doctorInput: $doctorInput) {
     doctors {
       id
-      ssn
-      dob
-      npi
-      upin
       email
-      taxId
-      taxId
-      prefix
-      suffix
       lastName
       firstName
-      deaNumber
-      middleName
-      middleName
       speciality
-      taxIdStuff
-      stateLicense
-      dpsCtpNumber
-      taxonomyCode
-      emcProviderId
-      providerIntials
-      languagesSpoken
-      blueShildNumber
-      billingFacility
-      campusGrpNumber
-      licenseTermDate
-      degreeCredentials
-      anesthesiaLicense
-      specialityLicense
-      medicareGrpNumber
-      prescriptiveAuthNumber
-      prescriptiveAuthNumber
-      licenseActiveDate
-      meammographyCertNumber
-      medicaidGrpNumber
-      deaActiveDate
-      deaTermDate
       createdAt
       updatedAt
 
-      billingAddress {
-        id
-        fax
-        email
-        phone
-        mobile
-        address
-        address2
-        zipCode
-        city
-        state
-        country
-        userId
-        createdAt
-        updatedAt
-      }
 
       contacts {
         id
         email
         phone
-        mobile
-        pager
-        fax
-        address
-        address2
-        zipCode
-        serviceCode
-        city
-        state
-        country
-        userId
         primaryContact
         createdAt
         updatedAt
@@ -82,28 +22,7 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
       facility {
         id
         name
-        practiceType
-        cliaIdNumber
-        federalTaxId
         isPrivate
-        tamxonomyCode
-        mammographyCertificationNumber
-        npi
-        serviceCode
-        createdAt
-        updatedAt
-      }
-
-      user {
-        id
-        email
-        token
-        status
-        userId
-        userType
-        inviteSentAt
-        emailVerified
-        inviteAcceptedAt
         createdAt
         updatedAt
       }
@@ -225,28 +144,7 @@ query GetDoctor($getDoctor: GetDoctor!) {
       facility {
         id
         name
-        practiceType
-        cliaIdNumber
-        federalTaxId
         isPrivate
-        tamxonomyCode
-        mammographyCertificationNumber
-        npi
-        serviceCode
-        createdAt
-        updatedAt
-      }
-
-      user {
-        id
-        email
-        token
-        status
-        userId
-        userType
-        inviteSentAt
-        emailVerified
-        inviteAcceptedAt
         createdAt
         updatedAt
       }
