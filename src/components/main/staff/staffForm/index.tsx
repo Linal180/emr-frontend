@@ -13,20 +13,18 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
+import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
-import { getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
-import { addStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
+import { getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
 import {
-  Gender, useCreateStaffMutation, useGetStaffLazyQuery, UserRole,
-  useUpdateStaffMutation
+  Gender, useCreateStaffMutation, useGetStaffLazyQuery, UserRole, useUpdateStaffMutation
 } from "../../../../generated/graphql";
 import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
-  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_ROLES,
+  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_STAFF_ROLES, NOT_FOUND_EXCEPTION,
   STAFF_NOT_FOUND, CANT_UPDATE_STAFF, CANT_CREATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, PASSWORD_LABEL, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER_IDENTITY, 
-  NOT_FOUND_EXCEPTION
+  FORBIDDEN_EXCEPTION, STAFF_CREATED,  CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -34,9 +32,8 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { facilityList } = useContext(ListContext)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(isEdit ? updateStaffSchema : addStaffSchema)
+    resolver: yupResolver(staffSchema)
   });
-
   const { reset, setValue, handleSubmit, formState: { errors } } = methods;
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
@@ -77,7 +74,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             firstName && setValue('firstName', firstName)
             role && setValue('roleType', setRecord(role, role))
             gender && setValue('gender', setRecord(gender, gender))
-            facilityId && setValue('facilityId', setRecord(facilityId, name || ''))
+            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
           }
         }
       }
@@ -147,7 +144,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
     if (isEdit) {
       if (id) {
-
         await updateStaff({
           variables: {
             updateStaffInput: {
@@ -167,7 +163,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         await createStaff({
           variables: {
             createStaffInput: {
-              firstName, lastName, email, password, phone, mobile, roleType: role as UserRole,
+              firstName, lastName, email, password: 'staff@123', phone, mobile, roleType: role as UserRole,
               dob: getTimestamps(dob || ''), gender: staffGender as Gender, facilityId: facilityID,
               adminId: id, username
             }
@@ -213,7 +209,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
-                          options={MAPPED_ROLES}
+                          options={MAPPED_STAFF_ROLES}
                           error={roleError?.message && requiredMessage(ROLE)}
                         />
                       </Grid>
@@ -247,7 +243,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           label={GENDER}
                           value={EMPTY_OPTION}
                           error={genderError?.message && requiredMessage(GENDER)}
-                          options={MAPPED_GENDER_IDENTITY}
+                          options={MAPPED_GENDER}
                         />
                       </Grid>
 
@@ -274,34 +270,24 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <CardComponent cardTitle={ACCOUNT_INFO}>
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <InputController
-                      isRequired
-                      disabled={isEdit}
-                      fieldType="email"
-                      controllerName="email"
-                      controllerLabel={EMAIL}
-                    />
-
                     <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 6} sm={12} xs={12}>
+                      <Grid item md={8} sm={12} xs={12}>
+                        <InputController
+                          isRequired
+                          disabled={isEdit}
+                          fieldType="email"
+                          controllerName="email"
+                          controllerLabel={EMAIL}
+                        />
+                      </Grid>
+
+                      <Grid item md={4} sm={12} xs={12}>
                         <InputController
                           fieldType="text"
                           controllerName="username"
                           controllerLabel={PROVIDER}
                         />
                       </Grid>
-
-                      {!isEdit &&
-                        <Grid item md={6} sm={12} xs={12}>
-                          <InputController
-                            isRequired
-                            isPassword
-                            fieldType="password"
-                            controllerName="password"
-                            controllerLabel={PASSWORD_LABEL}
-                          />
-                        </Grid>
-                      }
                     </Grid>
                   </>
                 )}

@@ -7,7 +7,7 @@ import { SelectorOption, StepLabelType } from '../interfacesTypes'
 import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
-  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole, Communicationtype,
+  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole, Communicationtype, Gender,
 } from "../generated/graphql";
 
 // regex
@@ -45,6 +45,7 @@ export enum DAYS {
 };
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
+export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
 export const VIEW = "View";
 export const IS_ADMIN = "Is Admin?";
@@ -283,6 +284,8 @@ export const SSN = "SSN";
 export const DATE = "Date";
 export const ACTIVE = "Active";
 export const STATUS = "Status";
+export const CANCELLED = "Cancelled";
+export const INITIATED = "Initialized";
 export const ACTION = "Actions";
 export const DRAWER_WIDTH = 300;
 export const TAGS_TEXT = "Tags";
@@ -564,7 +567,11 @@ export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
+export const DOCTOR_ROLE = "DOCTOR";
+export const PATIENT_ROLE = "PATIENT";
+export const BILLING_ROLE = "BILLING";
 export const SUPER_ADMIN = "SUPER_ADMIN";
+export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 
 // routes paths
 export const ROOT_ROUTE = "/";
@@ -597,6 +604,7 @@ export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
+export const CANCEL_APPOINTMENT = '/cancel-appointment';
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -641,6 +649,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully"
 export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated."
 export const FACILITY_NOT_FOUND = 'Facility not found!';
 export const PRACTICE_NOT_FOUND = 'Practice not found!';
+export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = 'Cancelled appointment cant be edited!'
 export const LOCATION_NOT_FOUND = 'Location not found!';
 export const APPOINTMENT_NOT_FOUND = 'Appointment not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
@@ -671,44 +680,46 @@ export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
+export const PATIENT_UPDATED = "Patient updated successfully!";
+export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
-export const LOCATION_CREATED = "Location is created successfully";
-export const LOCATION_UPDATED = "Location is updated successfully";
 export const USER_EXIST = "User already exists with this email.";
 export const FACILITY_UPDATED = "Facility updated successfully!";
-export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
-export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
+export const LOCATION_CREATED = "Location is created successfully";
+export const LOCATION_UPDATED = "Location is updated successfully";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
-export const ADMIN_PORTAL_NEW_MESSAGE = "Enter your credentials to login to your portal";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Reset password token not found.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Managers can access Admin Portal!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
+export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
 export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
+export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
 export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or invalid.";
 export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
 export const FORGOT_PASSWORD_MESSAGE = "Please enter your email to get a reset-password link.";
 export const FORGET_PASSWORD_SUCCESS = "An email has been sent to your registered email address";
+export const PRACTICE_OR_FACILITY_ALREADY_EXISTS = "Practice/Facility already exits against provided data!";
+export const FORGOT_PASSWORD_TEXT_MESSAGE = "Enter your registered email address to get reset-password link";
 export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a email while you are logged in.";
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
-export const TOOLTIP_DUMMY_MESSAGE = "tooltip message here";
 
 // INFO MESSAGES
 
@@ -717,7 +728,7 @@ export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN
 export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
 export const NPI_INFO = "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
 export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO = "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
-export const Tax_ID_INFO = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
+export const TAX_ID_INFO = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
 export const UPIN_INFO = "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
 export const EIN_INFO = "An Employer Identification Number (EIN) is a nine-digit number that IRS assigns in the following format: XX-XXXXXXX";
 
@@ -875,18 +886,32 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
 export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
-  { id: UserRole.Doctor, name: formatValue(UserRole.Doctor) },
-  { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
-  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
+  { id: UserRole.Staff, name: 'Office Staff' },
+  { id: UserRole.Doctor, name: 'Physician' },
+  { id: UserRole.Billing, name: 'Biller' },
+  { id: UserRole.DoctorAssistant, name: 'Physician Assistant' },
+  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
 ];
 
 export const MAPPED_STAFF_ROLES: SelectorOption[] = [
+  { id: UserRole.Staff, name: 'Office Staff' },
+  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Staff, name: formatValue(UserRole.Staff) },
-  { id: UserRole.Doctor, name: formatValue(UserRole.Doctor) },
-  { id: UserRole.Billing, name: formatValue(UserRole.Billing) },
-  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) }
+  { id: UserRole.Billing, name: 'Biller' },
+  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
+  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
+];
+
+export const MAPPED_PRACTICE_ROLES: SelectorOption[] = [
+  { id: UserRole.Doctor, name: 'Physician' },
+  { id: UserRole.DoctorAssistant, name: 'Physician Assistant' },
+  { id: UserRole.Staff, name: 'Office Staff' },
+  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
+  { id: UserRole.Billing, name: 'Biller' },
+  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
 ];
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
@@ -1008,6 +1033,12 @@ export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
   { id: Sexualorientation.Bisexual, name: formatValue(Sexualorientation.Bisexual) },
   { id: Sexualorientation.Homosexual, name: formatValue(Sexualorientation.Homosexual) },
   { id: Sexualorientation.Heterosexual, name: formatValue(Sexualorientation.Heterosexual) },
+];
+
+export const MAPPED_GENDER: SelectorOption[] = [
+  { id: Gender.Male, name: formatValue(Gender.Male) },
+  { id: Gender.Female, name: formatValue(Gender.Female) },
+  { id: Gender.Other, name: formatValue(Gender.Other) },
 ];
 
 export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [

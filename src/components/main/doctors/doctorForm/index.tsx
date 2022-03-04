@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, useContext, useEffect } from 'react';
+import { FC, useContext, useEffect, Reducer, useReducer } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
@@ -17,9 +17,9 @@ import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import { getDate, getTimestamps, renderFacilities, setRecord } from "../../../../utils";
+import { doctorReducer, State, Action, initialState, ActionType } from '../../../../reducers/doctorReducer';
 import {
-  DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole,
-  useUpdateDoctorMutation
+  DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole, useUpdateDoctorMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, NOT_FOUND_EXCEPTION,
@@ -32,13 +32,13 @@ import {
   PRESCRIPTIVE_AUTH_NUMBER, DOCTORS_ROUTE, MAPPED_SPECIALTIES, FORBIDDEN_EXCEPTION, CREATE_DOCTOR,
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, Tax_ID_INFO,
+  MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facilityList, fetchAllDoctorList } = useContext(ListContext)
-  const [doctor, setDoctor] = useState<DoctorPayload['doctor']>()
+  const [{ contactId, billingId }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const methods = useForm<DoctorInputProps>({
     mode: "all",
     resolver: yupResolver(doctorSchema)
@@ -108,27 +108,33 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             meammographyCertNumber && setValue('meammographyCertNumber', meammographyCertNumber)
             prescriptiveAuthNumber && setValue('prescriptiveAuthNumber', prescriptiveAuthNumber)
 
-            setDoctor(doctor)
+            doctor && dispatch({ type: ActionType.SET_DOCTOR, doctor: doctor as DoctorPayload['doctor'] })
 
-            if (contacts) {
-              const { email, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = contacts[0]
+            if (contacts && contacts.length > 0) {
+              const primaryContact = contacts.filter(contact => contact.primaryContact)[0]
 
-              fax && setValue('fax', fax)
-              city && setValue('city', city)
-              email && setValue('email', email)
-              phone && setValue('phone', phone)
-              pager && setValue('pager', pager)
-              mobile && setValue('mobile', mobile)
-              zipCode && setValue('zipCode', zipCode)
-              address && setValue('address', address)
-              address2 && setValue('address2', address2)
-              state && setValue('state', setRecord(state, state))
-              country && setValue('country', setRecord(country, country))
+              if (primaryContact) {
+                const { id, email, phone, zipCode, mobile, fax, address, address2, city, state, country, pager } = primaryContact
+
+                dispatch({ type: ActionType.SET_CONTACT_ID, contactId: id })
+                fax && setValue('fax', fax)
+                city && setValue('city', city)
+                email && setValue('email', email)
+                phone && setValue('phone', phone)
+                pager && setValue('pager', pager)
+                mobile && setValue('mobile', mobile)
+                zipCode && setValue('zipCode', zipCode)
+                address && setValue('address', address)
+                address2 && setValue('address2', address2)
+                state && setValue('state', setRecord(state, state))
+                country && setValue('country', setRecord(country, country))
+              }
             }
 
-            if (billingAddress) {
-              const { email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
+            if (billingAddress && billingAddress.length > 0) {
+              const { id, email, zipCode, fax, address, address2, phone, city, state, country } = billingAddress[0]
 
+              dispatch({ type: ActionType.SET_BILLING_ID, billingId: id })
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
               email && setValue('billingEmail', email)
@@ -256,18 +262,16 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       };
 
       if (isEdit) {
-        const { contacts, billingAddress } = doctor || {}
-
-        if (id && contacts && billingAddress) {
-          const { id: contactId } = contacts[0]
-          const { id: billingId } = billingAddress[0]
+        if (id) {
+          const contactIdInput = contactId ? { id: contactId, ...contactInput } : { ...contactInput }
+          const billingIdInput = billingId ? { id: billingId, ...billingAddressInput } : { ...billingAddressInput }
 
           await updateDoctor({
             variables: {
               updateDoctorInput: {
                 updateDoctorItemInput: { id, ...doctorItemInput },
-                updateContactInput: { id: contactId, ...contactInput },
-                updateBillingAddressInput: { id: billingId, ...billingAddressInput }
+                updateContactInput: { ...contactIdInput },
+                updateBillingAddressInput: { ...billingIdInput }
               }
             }
           })
@@ -622,7 +626,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
-                          info={Tax_ID_INFO}
+                          info={TAX_ID_INFO}
                           fieldType="text"
                           controllerName="taxId"
                           controllerLabel={TAX_ID}

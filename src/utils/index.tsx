@@ -4,15 +4,16 @@ import { Typography, Box, TableCell } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
+import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, AppointmentsPayload, Appointmentstatus
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
-  LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, START_PROJECT_ROUTE, TOKEN,
-  USER_EMAIL, VIEW_APPOINTMENTS_ROUTE
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
+  LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, TOKEN,
+  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED,
 } from "../constants";
 
 export const handleLogout = () => {
@@ -375,5 +376,49 @@ export const activeClass = (pathname: string): string => {
 
     default:
       return ''
+  }
+};
+
+const makeTodayAppointment = (startDate: Date, endDate: Date) => {
+  const currentDate = moment(startDate);
+
+  const days = moment(startDate).diff(endDate, 'days');
+  const nextStartDate = moment(startDate)
+    .year(currentDate.year())
+    .month(currentDate.month())
+    .date(parseInt(startDate.toDateString()));
+
+  const nextEndDate = moment(endDate)
+    .year(currentDate.year())
+    .month(currentDate.month())
+    .date(parseInt((endDate).toDateString()) + days);
+
+  return {
+    startDate: nextStartDate.toDate(),
+    endDate: nextEndDate.toDate(),
+  };
+};
+
+export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
+  return data?.map(appointment => {
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
+    const { firstName, lastName } = patient || {}
+    const { color } = appointmentType || {}
+
+    return {
+      id, color,
+      title: `${firstName} ${lastName}`,
+      ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
+    }
+
+  })
+}
+export const appointmentStatus = (status: string) => {
+  const cancelled = status === Appointmentstatus.Cancelled;
+
+  return {
+    text: cancelled ? CANCELLED : INITIATED,
+    bgColor: cancelled ? BLUE_FIVE : RED_ONE,
+    textColor: cancelled ? RED : GREEN
   }
 };

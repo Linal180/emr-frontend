@@ -12,7 +12,10 @@ import { requiredLabel } from "../../../utils";
 import { ForgetPasswordInputs } from "../../../interfacesTypes";
 import { useForgetPasswordMutation } from "../../../generated/graphql";
 import { forgetPasswordValidationSchema } from "../../../validationSchemas";
-import { SEND_EMAIL, FORGET_PASSWORD_SUCCESS, SIGN_IN, BACK_TO, LOGIN_ROUTE, EMAIL } from "../../../constants";
+import {
+  SEND_EMAIL, FORGET_PASSWORD_SUCCESS, SIGN_IN, BACK_TO, LOGIN_ROUTE, EMAIL, NOT_FOUND_EXCEPTION,
+  USER_NOT_FOUND_EXCEPTION_MESSAGE
+} from "../../../constants";
 
 const ForgetPasswordComponent = (): JSX.Element => {
   const { control, handleSubmit, reset, formState: { errors } } = useForm<ForgetPasswordInputs>({
@@ -21,8 +24,11 @@ const ForgetPasswordComponent = (): JSX.Element => {
   });
 
   const [forgotPassword, { loading }] = useForgetPasswordMutation({
-    onError() {
-      return null;
+    onError({ message }) {
+      message === NOT_FOUND_EXCEPTION ?
+        Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
+        :
+        Alert.error(message)
     },
 
     onCompleted() {

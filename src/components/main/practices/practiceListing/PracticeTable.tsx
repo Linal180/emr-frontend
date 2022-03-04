@@ -20,7 +20,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
-  CANT_DELETE_PRACTICE, ADMIN_NAME, FACILITIES_TEXT, DATE_ADDED, STATUS
+  CANT_DELETE_PRACTICE, FACILITIES_TEXT, DATE_ADDED, 
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
@@ -32,8 +32,7 @@ const PracticeTable: FC = (): JSX.Element => {
     variables: {
       practiceInput: {
         paginationOptions: {
-          page: 1,
-          limit: PAGE_LIMIT
+          page, limit: PAGE_LIMIT
         }
       }
     },
@@ -72,16 +71,18 @@ const PracticeTable: FC = (): JSX.Element => {
     },
 
     async onCompleted(data) {
-      if (data) {
-        const { removePractice: { response } } = data
+      try {
+        if (data) {
+          const { removePractice: { response } } = data
 
-        if (response) {
-          const { message } = response
-          message && Alert.success(message);
-          await findAllPractices();
-          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          if (response) {
+            const { message } = response
+            message && Alert.success(message);
+            await findAllPractices();
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          }
         }
-      }
+      } catch (error) { }
     }
   });
 
@@ -119,12 +120,10 @@ const PracticeTable: FC = (): JSX.Element => {
           <TableHead>
             <TableRow>
               {renderTh(NAME)}
-              {renderTh(ADMIN_NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(FACILITIES_TEXT)}
               {renderTh(DATE_ADDED)}
-              {renderTh(STATUS)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -132,22 +131,20 @@ const PracticeTable: FC = (): JSX.Element => {
           <TableBody>
             {
               practices?.map(practice => {
-                const { id, name, createdAt, facilities } = practice || {};
-                const { contacts } = (facilities && facilities[0]) || {};
+                const { id, name, phone, createdAt, facilities } = practice || {};
                 const facilityCount = (facilities && facilities.length) || 0;
+                const primaryFacility = facilities?.filter(facility => facility.isPrimary)[0]
+                const { contacts } = primaryFacility || {};
                 const primaryContact = contacts?.filter(contact => contact.primaryContact)[0]
-                // const facilityAdmin = user?.filter(facilityUser => isUserAdmin(facilityUser.roles))[0]
-                const { email, phone } = primaryContact || {}
+                const { email } = primaryContact || {}
 
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">--</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{facilityCount}</TableCell>
                     <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
-                    <TableCell scope="row">--</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>

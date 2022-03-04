@@ -37,7 +37,7 @@ export const useProfileDetailsStyles = makeStyles((theme) => ({
     },
 
     profileInfoItem: {
-      width: "25%",
+      minWidth: "25%",
       alignItems: 'center',
       color: GRAY_TWO,
       marginBottom: 8,

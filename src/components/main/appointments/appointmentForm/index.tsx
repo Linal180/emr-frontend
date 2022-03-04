@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext, useState, Reducer, useReducer, useCallback, ChangeEvent } from 'react';
+import { useEffect, FC, useContext, Reducer, useReducer, useCallback, ChangeEvent } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
@@ -28,9 +28,8 @@ import {
   setRecord, getStandardTime,
 } from "../../../../utils";
 import {
-  DoctorSlotsPayload,
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
-  useGetDoctorSlotsLazyQuery,
+  useGetDoctorSlotsLazyQuery, Appointmentstatus, DoctorSlotsPayload, BillingStatus,
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -38,17 +37,17 @@ import {
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
+  CANCELLED_APPOINTMENT_EDIT_MESSAGE,
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
   const { facilityList } = useContext(ListContext)
-  const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const {
     serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident } = state
+  const { date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident } = state
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -99,8 +98,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         if (appointment && status && status === 200) {
           const {
             reason, scheduleStartDateTime, scheduleEndDateTime, notes, primaryInsurance, secondaryInsurance,
-            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient,
+            employment, autoAccident, otherAccident, appointmentType, facility, provider, patient, status
           } = appointment || {}
+
+          if (status === Appointmentstatus.Cancelled) {
+            history.push(VIEW_APPOINTMENTS_ROUTE);
+            Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
+          }
 
           const { id: facilityId, name: facilityName } = facility || {};
           const { id: serviceId, name: serviceName } = appointmentType || {};
@@ -121,10 +125,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
           scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
 
-          setDate(new Date(getTimeFromTimestamps(scheduleStartDateTime || '')) as MaterialUiPickersDate)
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
           dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: isOtherAccident as boolean })
+          dispatch({
+            type: ActionType.SET_DATE,
+            date: new Date(getTimeFromTimestamps(scheduleStartDateTime || '')) as MaterialUiPickersDate
+          });
         }
       }
     }
@@ -267,7 +274,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
         notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
         serviceId: selectedService, providerId: selectedProvider, employment: employment || false,
-        paymentType: PaymentType.Self
+        paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
       };
 
       if (isEdit) {
@@ -281,7 +288,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       } else {
         await createAppointment({
           variables: {
-            createAppointmentInput: { ...appointmentInput }
+            createAppointmentInput: { ...appointmentInput, }
           }
         })
       }
@@ -383,6 +390,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 )}
               </CardComponent>
             </Grid>
+
             <Grid md={6} item>
               <Grid item md={12} sm={12} className="custom-calendar">
                 <CardComponent cardTitle="Available Slots">
@@ -396,8 +404,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         disablePast
                         fullWidth
                         disableToolbar
-                        onChange={currentDate => currentDate && setDate(currentDate)}
+                        onChange={currentDate => currentDate &&
+                          dispatch({ type: ActionType.SET_DATE, date: currentDate })
+                        }
                       />
+
                     </MuiPickersUtilsProvider>
                   </Box>
 

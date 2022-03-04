@@ -30,8 +30,8 @@ import {
 } from "../../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
-  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery,
-  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
+  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery, BillingStatus,
+  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery, FacilityPayload,
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL, DOB, EMAIL, EMPTY_OPTION,
@@ -77,9 +77,9 @@ const PublicAppointmentForm = (): JSX.Element => {
           const { status } = response
 
           if (facility && status && status === 200) {
-            dispatch({ type: ActionType.SET_FACILITY, facility })
             fetchAllDoctorList(facilityId);
             fetchAllServicesList(facilityId)
+            dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
           }
         }
       } catch (error) { }
@@ -101,7 +101,10 @@ const PublicAppointmentForm = (): JSX.Element => {
       if (getDoctorSlots) {
         const { slots } = getDoctorSlots;
 
-        slots && dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots });
+        slots ?
+          dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots })
+          :
+          dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
       }
     }
   });
@@ -130,11 +133,9 @@ const PublicAppointmentForm = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if (facilityId) {
-      getFacility({
-        variables: { getFacility: { id: facilityId } }
-      })
-    } else
+    facilityId ?
+      getFacility({ variables: { getFacility: { id: facilityId } } })
+      :
       history.push(PATIENT_APPOINTMENT_FAIL)
   }, [facilityId, getFacility])
 
@@ -184,8 +185,8 @@ const PublicAppointmentForm = (): JSX.Element => {
               createExternalAppointmentItemInput: {
                 serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
                 paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
-                scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
-                scheduleEndDateTime: getTimestamps(scheduleEndDateTime)
+                scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
+                scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },
 
               createPatientItemInput: {
@@ -392,7 +393,7 @@ const PublicAppointmentForm = (): JSX.Element => {
                           <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
 
                           <label htmlFor={`timeSlot-${index}`}>
-                          {getStandardTime(new Date(startTime || '').getTime().toString())} - {getStandardTime(new Date(endTime || '').getTime().toString())}
+                            {getStandardTime(new Date(startTime || '').getTime().toString())} - {getStandardTime(new Date(endTime || '').getTime().toString())}
                           </label>
                         </li>
                       )
