@@ -15,6 +15,7 @@ import {
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateFacilityTimeZoneInput, 
 } from "../generated/graphql";
+import { Appointments } from "@devexpress/dx-react-scheduler-material-ui";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
