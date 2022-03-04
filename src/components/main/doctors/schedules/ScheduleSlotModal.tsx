@@ -31,7 +31,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
 }): JSX.Element => {
   const { id: doctorId } = useParams<ParamsType>();
-  const { serviceList, fetchAllServicesList, fetchAllLocationList } = useContext(FacilityContext)
+  const { serviceList, fetchAllServicesList } = useContext(FacilityContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(doctorScheduleSchema)
@@ -118,14 +118,13 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
   useEffect(() => {
     fetchAllServicesList(doctorFacilityId)
-    fetchAllLocationList(doctorFacilityId)
 
     if (isEdit && id) {
       getSchedule({
         variables: { getSchedule: { id } }
       })
     }
-  }, [doctorFacilityId, fetchAllLocationList, fetchAllServicesList, getSchedule, id, isEdit])
+  }, [doctorFacilityId, fetchAllServicesList, getSchedule, id, isEdit])
 
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day }) => {
     const { id: selectedService } = serviceId || {}
