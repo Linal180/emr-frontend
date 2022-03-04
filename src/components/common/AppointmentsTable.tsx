@@ -21,7 +21,7 @@ import { getFormattedDate, renderTh, getISOTime, isSuperAdmin, appointmentStatus
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
 import {
   AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery,
-  useRemoveAppointmentMutation, useGetDoctorAppointmentsLazyQuery,
+  useRemoveAppointmentMutation, useGetDoctorAppointmentsLazyQuery
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, PUBLIC_LINK,
@@ -222,7 +222,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 const { firstName, lastName } = patient || {};
                 const { duration, name: type } = appointmentType || {};
                 const { firstName: doctorFN, lastName: doctorLN } = provider || {};
-
                 const { text, bgColor, textColor } = appointmentStatus(status || '')
 
                 return (
