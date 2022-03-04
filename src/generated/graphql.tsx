@@ -46,6 +46,7 @@ export type AllStaffPayload = {
 export type Appointment = {
   __typename?: 'Appointment';
   appointmentCancelReason?: Maybe<Scalars['String']>;
+  appointmentNumber?: Maybe<Scalars['String']>;
   appointmentType?: Maybe<Service>;
   appointmentTypeId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
@@ -62,6 +63,7 @@ export type Appointment = {
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  paymentStatus?: Maybe<Scalars['String']>;
   paymentType: PaymentType;
   primaryInsurance?: Maybe<Scalars['String']>;
   provider?: Maybe<Doctor>;
@@ -76,6 +78,7 @@ export type Appointment = {
 };
 
 export type AppointmentInput = {
+  appointmentNumber?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
 };
 
@@ -153,6 +156,11 @@ export type BillingAddress = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type BraintreePayload = {
+  __typename?: 'BraintreePayload';
+  clientToken: Scalars['String'];
+};
+
 /** The patient's communication method assigned */
 export enum Communicationtype {
   Email = 'EMAIL',
@@ -184,6 +192,7 @@ export type Contact = {
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   lastName?: Maybe<Scalars['String']>;
+  locationLink?: Maybe<Scalars['String']>;
   middleName?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -292,6 +301,7 @@ export type CreateContactInput = {
   fax?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
+  locationLink?: Maybe<Scalars['String']>;
   middleName?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -380,6 +390,7 @@ export type CreateExternalAppointmentItemInput = {
   isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  paymentStatus?: Maybe<Scalars['String']>;
   paymentType: PaymentType;
   providerId: Scalars['String'];
   scheduleEndDateTime: Scalars['String'];
@@ -468,6 +479,7 @@ export type CreatePatientItemInput = {
 };
 
 export type CreatePracticeInput = {
+  createContactInput?: Maybe<CreateContactInput>;
   createFacilityItemInput?: Maybe<CreateFacilityItemInput>;
   createPracticeItemInput?: Maybe<CreatePracticeItemInput>;
   registerUserInput?: Maybe<RegisterUserInput>;
@@ -572,6 +584,7 @@ export type Doctor = {
   taxIdStuff?: Maybe<Scalars['String']>;
   taxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
+  transaction?: Maybe<Transactions>;
   updatedAt: Scalars['String'];
   upin?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
@@ -642,6 +655,7 @@ export type Facility = {
   doctors?: Maybe<Array<Doctor>>;
   federalTaxId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  isPrimary?: Maybe<Scalars['Boolean']>;
   isPrivate?: Maybe<Scalars['Boolean']>;
   mammographyCertificationNumber?: Maybe<Scalars['String']>;
   name: Scalars['String'];
@@ -654,6 +668,7 @@ export type Facility = {
   staff?: Maybe<Array<Staff>>;
   tamxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
+  transaction?: Maybe<Transactions>;
   updatedAt?: Maybe<Scalars['String']>;
   user?: Maybe<Array<User>>;
 };
@@ -796,6 +811,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
   cancelAppointment: AppointmentPayload;
+  chargeAfterAppointment: AppointmentPayload;
+  chargePayment: AppointmentPayload;
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createContact: ContactPayload;
@@ -853,6 +870,16 @@ export type MutationActivateUserArgs = {
 
 export type MutationCancelAppointmentArgs = {
   cancelAppointment: CancelAppointment;
+};
+
+
+export type MutationChargeAfterAppointmentArgs = {
+  paymentInput: PaymentInputsAfterAppointment;
+};
+
+
+export type MutationChargePaymentArgs = {
+  paymentInput: PaymentInput;
 };
 
 
@@ -1160,6 +1187,7 @@ export type Patient = {
   statementNoteDateFrom: Scalars['String'];
   statementNoteDateTo: Scalars['String'];
   suffix?: Maybe<Scalars['String']>;
+  transaction?: Maybe<Transactions>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
   voiceCallPermission: Scalars['Boolean'];
@@ -1201,6 +1229,23 @@ export type PatientsPayload = {
   pagination?: Maybe<PaginationPayload>;
   patients?: Maybe<Array<Maybe<Patient>>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PaymentInput = {
+  client: Scalars['String'];
+  clientIntent: Scalars['String'];
+  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput;
+  createGuardianContactInput: CreateContactInput;
+  createPatientItemInput: CreatePatientItemInput;
+};
+
+export type PaymentInputsAfterAppointment = {
+  appointmentId: Scalars['String'];
+  clientIntent: Scalars['String'];
+  facilityId: Scalars['String'];
+  patientId: Scalars['String'];
+  price: Scalars['String'];
+  providerId: Scalars['String'];
 };
 
 /** The patient payment type assigned */
@@ -1285,6 +1330,7 @@ export type Query = {
   getSchedule: SchedulePayload;
   getService: ServicePayload;
   getStaff: StaffPayload;
+  getToken: BraintreePayload;
   getUser: UserPayload;
   me: UserPayload;
   searchUser: UsersPayload;
@@ -1771,6 +1817,22 @@ export type StaffPayload = {
   staff?: Maybe<Staff>;
 };
 
+export type Transactions = {
+  __typename?: 'Transactions';
+  appointment?: Maybe<Appointment>;
+  appointmentId: Scalars['String'];
+  createdAt?: Maybe<Scalars['String']>;
+  doctor?: Maybe<Array<Doctor>>;
+  doctorId: Scalars['String'];
+  facility?: Maybe<Array<Facility>>;
+  facilityId: Scalars['String'];
+  id: Scalars['String'];
+  patient?: Maybe<Array<Patient>>;
+  patientId: Scalars['String'];
+  transactionId: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type UpdateAppointmentInput = {
   autoAccident?: Maybe<Scalars['Boolean']>;
   employment?: Maybe<Scalars['Boolean']>;
@@ -1838,6 +1900,7 @@ export type UpdateContactInput = {
   firstName?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
+  locationLink?: Maybe<Scalars['String']>;
   middleName?: Maybe<Scalars['String']>;
   mobile?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
@@ -2420,6 +2483,11 @@ export type UpdatePatientMutationVariables = Exact<{
 
 
 export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type GetTokenQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTokenQuery = { __typename?: 'Query', getToken: { __typename?: 'BraintreePayload', clientToken: string } };
 
 export type FindAllPracticesQueryVariables = Exact<{
   practiceInput: PracticeInput;
@@ -5120,6 +5188,40 @@ export function useUpdatePatientMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdatePatientMutationHookResult = ReturnType<typeof useUpdatePatientMutation>;
 export type UpdatePatientMutationResult = Apollo.MutationResult<UpdatePatientMutation>;
 export type UpdatePatientMutationOptions = Apollo.BaseMutationOptions<UpdatePatientMutation, UpdatePatientMutationVariables>;
+export const GetTokenDocument = gql`
+    query GetToken {
+  getToken {
+    clientToken
+  }
+}
+    `;
+
+/**
+ * __useGetTokenQuery__
+ *
+ * To run a query within a React component, call `useGetTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTokenQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTokenQuery(baseOptions?: Apollo.QueryHookOptions<GetTokenQuery, GetTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTokenQuery, GetTokenQueryVariables>(GetTokenDocument, options);
+      }
+export function useGetTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTokenQuery, GetTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTokenQuery, GetTokenQueryVariables>(GetTokenDocument, options);
+        }
+export type GetTokenQueryHookResult = ReturnType<typeof useGetTokenQuery>;
+export type GetTokenLazyQueryHookResult = ReturnType<typeof useGetTokenLazyQuery>;
+export type GetTokenQueryResult = Apollo.QueryResult<GetTokenQuery, GetTokenQueryVariables>;
 export const FindAllPracticesDocument = gql`
     query FindAllPractices($practiceInput: PracticeInput!) {
   findAllPractices(facilityInput: $practiceInput) {

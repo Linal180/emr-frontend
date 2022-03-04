@@ -15,6 +15,7 @@ import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
 import AppointmentDatePicker from "../AppointmentDatePicker";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
+import PaymentForm from "../../payment";
 // constants block
 import history from "../../../../../history";
 import { WHITE_TWO } from "../../../../../theme";
@@ -405,7 +406,9 @@ const PublicAppointmentForm = (): JSX.Element => {
 
               </CardComponent>
             </Grid>
-
+            <Grid item  lg={9} md={8} sm={6} xs={12}  >
+             <PaymentForm />  
+            </Grid>
             <Grid item md={12}>
               <Box pt={4} display="flex" justifyContent="center" gridGap={20}>
                 <Link to={PATIENT_APPOINTMENT_CANCEL}>
