@@ -649,6 +649,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully"
 export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated."
 export const FACILITY_NOT_FOUND = 'Facility not found!';
 export const PRACTICE_NOT_FOUND = 'Practice not found!';
+export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = 'Cancelled appointment cant be edited!'
 export const LOCATION_NOT_FOUND = 'Location not found!';
 export const APPOINTMENT_NOT_FOUND = 'Appointment not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';

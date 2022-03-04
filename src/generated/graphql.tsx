@@ -2157,14 +2157,14 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleStartDateTime: string, scheduleEndDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, phonePermission: boolean, preferredCommunicationMethod: Communicationtype, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleEndDateTime: string, scheduleStartDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, token?: string | null | undefined, status: Appointmentstatus, employment?: boolean | null | undefined, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, scheduleStartDateTime: string, scheduleEndDateTime: string, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, paymentType: PaymentType, patientId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null | undefined, provider?: { __typename?: 'Doctor', id: string, ssn?: string | null | undefined, dob?: string | null | undefined, npi?: string | null | undefined, upin?: string | null | undefined, email?: string | null | undefined, taxId?: string | null | undefined, prefix?: string | null | undefined, suffix?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, deaNumber?: string | null | undefined, middleName?: string | null | undefined, speciality?: Speciality | null | undefined, taxIdStuff?: string | null | undefined, stateLicense?: string | null | undefined, dpsCtpNumber?: string | null | undefined, taxonomyCode?: string | null | undefined, emcProviderId?: string | null | undefined, providerIntials?: string | null | undefined, languagesSpoken?: string | null | undefined, blueShildNumber?: string | null | undefined, billingFacility?: string | null | undefined, campusGrpNumber?: string | null | undefined, licenseTermDate?: string | null | undefined, degreeCredentials?: string | null | undefined, anesthesiaLicense?: string | null | undefined, specialityLicense?: string | null | undefined, medicareGrpNumber?: string | null | undefined, prescriptiveAuthNumber?: string | null | undefined, licenseActiveDate?: string | null | undefined, meammographyCertNumber?: string | null | undefined, medicaidGrpNumber?: string | null | undefined, deaActiveDate: string, deaTermDate: string, createdAt: string, updatedAt: string } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, preferredCommunicationMethod: Communicationtype, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, registrationDepartment: RegDepartment, primaryDepartment: PrimaryDepartment, registrationDate: any, deceasedDate: any, privacyNotice: boolean, callToConsent: boolean, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, serviceCode: ServiceCode } | null | undefined } | null | undefined } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, token?: string | null | undefined, status: Appointmentstatus, patientId?: string | null | undefined, employment?: boolean | null | undefined, paymentType: PaymentType, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, scheduleEndDateTime: string, scheduleStartDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null | undefined, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null | undefined, firstName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, serviceCode: ServiceCode } | null | undefined } | null | undefined } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -2206,7 +2206,7 @@ export type GetDoctorAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorAppointmentsQuery = { __typename?: 'Query', getDoctorAppointment: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined, totalCount?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleStartDateTime: string, scheduleEndDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, phonePermission: boolean, preferredCommunicationMethod: Communicationtype, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
+export type GetDoctorAppointmentsQuery = { __typename?: 'Query', getDoctorAppointment: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined, totalCount?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleStartDateTime: string, scheduleEndDateTime: string, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, duration: string } | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type RemoveAttachmentDataMutationVariables = Exact<{
   removeAttachment: RemoveAttachment;
@@ -2600,8 +2600,8 @@ export const FindAllAppointmentsDocument = gql`
     appointments {
       id
       status
-      scheduleStartDateTime
       scheduleEndDateTime
+      scheduleStartDateTime
       createdAt
       updatedAt
       appointmentType {
@@ -2616,12 +2616,6 @@ export const FindAllAppointmentsDocument = gql`
       }
       patient {
         id
-        phonePermission
-        preferredCommunicationMethod
-        pharmacy
-        medicationHistoryAuthority
-        releaseOfInfoBill
-        voiceCallPermission
         firstName
         lastName
       }
@@ -2675,15 +2669,15 @@ export const GetAppointmentDocument = gql`
       reason
       token
       status
+      patientId
       employment
+      paymentType
       autoAccident
       otherAccident
-      scheduleStartDateTime
-      scheduleEndDateTime
       primaryInsurance
       secondaryInsurance
-      paymentType
-      patientId
+      scheduleEndDateTime
+      scheduleStartDateTime
       createdAt
       updatedAt
       appointmentType {
@@ -2695,91 +2689,13 @@ export const GetAppointmentDocument = gql`
       }
       provider {
         id
-        ssn
-        dob
-        npi
-        upin
-        email
-        taxId
-        taxId
-        prefix
-        suffix
         lastName
         firstName
-        deaNumber
-        middleName
-        middleName
-        speciality
-        taxIdStuff
-        stateLicense
-        dpsCtpNumber
-        taxonomyCode
-        emcProviderId
-        providerIntials
-        languagesSpoken
-        blueShildNumber
-        billingFacility
-        campusGrpNumber
-        licenseTermDate
-        degreeCredentials
-        anesthesiaLicense
-        specialityLicense
-        medicareGrpNumber
-        prescriptiveAuthNumber
-        prescriptiveAuthNumber
-        licenseActiveDate
-        meammographyCertNumber
-        medicaidGrpNumber
-        deaActiveDate
-        deaTermDate
-        createdAt
-        updatedAt
       }
       patient {
         id
         firstName
-        middleName
         lastName
-        suffix
-        firstNameUsed
-        prefferedName
-        previousFirstName
-        previouslastName
-        motherMaidenName
-        ssn
-        gender
-        preferredCommunicationMethod
-        dob
-        phonePermission
-        pharmacy
-        medicationHistoryAuthority
-        releaseOfInfoBill
-        voiceCallPermission
-        registrationDepartment
-        primaryDepartment
-        registrationDate
-        deceasedDate
-        privacyNotice
-        releaseOfInfoBill
-        callToConsent
-        medicationHistoryAuthority
-        patientNote
-        language
-        race
-        ethnicity
-        maritialStatus
-        sexualOrientation
-        genderIdentity
-        sexAtBirth
-        pronouns
-        homeBound
-        holdStatement
-        statementDelivereOnline
-        statementNote
-        statementNoteDateFrom
-        statementNoteDateTo
-        createdAt
-        updatedAt
       }
       facility {
         id
@@ -3041,12 +2957,6 @@ export const GetDoctorAppointmentsDocument = gql`
       }
       patient {
         id
-        phonePermission
-        preferredCommunicationMethod
-        pharmacy
-        medicationHistoryAuthority
-        releaseOfInfoBill
-        voiceCallPermission
         firstName
         lastName
       }
