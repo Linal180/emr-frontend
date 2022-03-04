@@ -150,6 +150,7 @@ export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
 export const VITALS_TEXT = "Vitals";
 export const SAVE_TEXT = "Save";
+export const UPLOAD_PICTURE = "Upload Picture";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const ALLERGIES_TEXT = "Allergies";
@@ -321,12 +322,16 @@ export const POS = "Place of Service Code (POS)";
 export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
 export const CANCEL = "Cancel";
+export const CVV = "CVV";
+export const PAY = "Pay";
 export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
 export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
 export const FIRST_NAME = "First Name";
+export const CARD_NUMBER = "Card Number";
+export const EXPIRY_DATE = "Expiry Date";
 export const PRACTICE_NAME = "Practice Name";
 export const FACILITY_NAME = "Facilty Name";
 export const SEND_EMAIL = "Send Email";
@@ -425,9 +430,13 @@ export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 export const CONTACT_INFORMATION = "Contact Information";
 export const DEMOGRAPHICS = "Demographics";
 export const GUARANTOR = "Guarantor";
+export const BILLING = "Billing";
+export const PAYMENT_METHOD = "Payment Method";
 export const REGISTRATION_DATES = "Provider/ Registration Dates";
 export const PRIVACY = "Privacy";
 export const PRICE = "Price";
+export const ADDRESS_NUMBER = "Address Number";
+export const CONTACT_NUMBER = "Contact Number";
 export const IS_ACTIVE = "Active";
 export const EMERGENCY_CONTACT = "Emergency Contact";
 export const NEXT_OF_KIN = "Next Of Kin";
@@ -575,6 +584,7 @@ export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 // routes paths
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
+export const PROFILE_ROUTE = "/profile";
 export const STAFF_ROUTE = "/staff";
 export const VITALS_ROUTE = "/vitals";
 export const PATIENTS_CHART = "/chart";
@@ -856,7 +866,7 @@ export const APPOINTMENT_MENU_ITEMS = [
 export const PROFILE_MENU_ITEMS = [
   {
     name: PROFILE_TEXT,
-    link: "/",
+    link: PROFILE_ROUTE,
   },
   {
     name: MY_ACCOUNT_TEXT,
