@@ -30,7 +30,7 @@ import {
 } from "../../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
-  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery,
+  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery, BillingStatus,
   Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery, FacilityPayload,
 } from "../../../../../generated/graphql";
 import {
@@ -185,8 +185,8 @@ const PublicAppointmentForm = (): JSX.Element => {
               createExternalAppointmentItemInput: {
                 serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
                 paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
-                scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
-                scheduleEndDateTime: getTimestamps(scheduleEndDateTime)
+                scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
+                scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },
 
               createPatientItemInput: {

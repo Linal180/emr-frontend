@@ -29,7 +29,7 @@ import {
 } from "../../../../utils";
 import {
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
-  useGetDoctorSlotsLazyQuery, Appointmentstatus, DoctorSlotsPayload,
+  useGetDoctorSlotsLazyQuery, Appointmentstatus, DoctorSlotsPayload, BillingStatus,
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -274,7 +274,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
         notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
         serviceId: selectedService, providerId: selectedProvider, employment: employment || false,
-        paymentType: PaymentType.Self
+        paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
       };
 
       if (isEdit) {
@@ -288,7 +288,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       } else {
         await createAppointment({
           variables: {
-            createAppointmentInput: { ...appointmentInput }
+            createAppointmentInput: { ...appointmentInput, }
           }
         })
       }
