@@ -1,5 +1,5 @@
 query findAllServices($serviceInput: ServiceInput!) {
-	findAllServices(serviceInput: $serviceInput) {
+  findAllServices(serviceInput: $serviceInput) {
     pagination {
       page
       totalCount
@@ -10,7 +10,7 @@ query findAllServices($serviceInput: ServiceInput!) {
       name
       error
       status
-	    message
+      message
     }
 
     services {
@@ -27,7 +27,7 @@ query findAllServices($serviceInput: ServiceInput!) {
 }
 
 query getService($getService: GetService!) {
-	getService(getService: $getService) {
+  getService(getService: $getService) {
     response {
       error
       status
@@ -56,7 +56,7 @@ query getService($getService: GetService!) {
 }
 
 mutation RemoveService($removeService: RemoveService!){
-	removeService(removeService: $removeService){
+  removeService(removeService: $removeService){
     response{
       name
       status

@@ -28,10 +28,8 @@ import {
   setRecord, getStandardTime,
 } from "../../../../utils";
 import {
-  DoctorSlotsPayload,
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
-  useGetDoctorSlotsLazyQuery,
-  Appointmentstatus,
+  useGetDoctorSlotsLazyQuery, Appointmentstatus, DoctorSlotsPayload,
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -134,7 +132,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             type: ActionType.SET_DATE,
             date: new Date(getTimeFromTimestamps(scheduleStartDateTime || '')) as MaterialUiPickersDate
           });
-
         }
       }
     }
@@ -408,7 +405,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         fullWidth
                         disableToolbar
                         onChange={currentDate => currentDate &&
-                          dispatch({ type: ActionType.SET_DATE, date: currentDate})  
+                          dispatch({ type: ActionType.SET_DATE, date: currentDate })
                         }
                       />
 

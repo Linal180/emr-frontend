@@ -29,7 +29,7 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
     }
 
     pagination {
-    	totalPages
+      totalPages
     }
     
     response {
@@ -163,7 +163,7 @@ mutation UpdateDoctor($updateDoctorInput: UpdateDoctorInput!){
     response {
       error
       status
-			message
+      message
     }
   }
 }

@@ -1,5 +1,5 @@
 query FindAllStaff($staffInput: StaffInput!) {
-	findAllStaff(staffInput: $staffInput) {
+  findAllStaff(staffInput: $staffInput) {
     pagination {
       page
       totalCount
@@ -9,7 +9,7 @@ query FindAllStaff($staffInput: StaffInput!) {
     response {
       error
       status
-			message
+      message
     }
 
     allstaff {
@@ -26,12 +26,12 @@ query FindAllStaff($staffInput: StaffInput!) {
 }
 
 query GetStaff($getStaff: GetStaff!){
-	getStaff(getStaff: $getStaff){
+  getStaff(getStaff: $getStaff){
     response {
       name
       error
       status
-			message
+      message
     }
 
     staff {
@@ -64,7 +64,7 @@ query GetStaff($getStaff: GetStaff!){
 }
 
 mutation RemoveStaff($removeStaff: RemoveStaff!){
-	removeStaff(removeStaff: $removeStaff){
+  removeStaff(removeStaff: $removeStaff){
     response{
       name
       status
@@ -78,7 +78,7 @@ mutation UpdateStaff($updateStaffInput: UpdateStaffInput!) {
     response {
       error
       status
-			message
+      message
     }
   }
 }
@@ -88,7 +88,7 @@ mutation CreateStaff($createStaffInput: CreateStaffInput!) {
     response {
       error
       status
-			message
+      message
     }
   }
 }

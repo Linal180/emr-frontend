@@ -68,11 +68,11 @@ query GetPractice($getPractice: GetPractice!){
           id
           email
           state
-					country
+          country
           zipCode
           address
           address2
-        	primaryContact
+          primaryContact
         }
       }
     }
