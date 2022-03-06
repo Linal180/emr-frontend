@@ -1,11 +1,11 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useState } from 'react';
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useState, useCallback } from 'react';
 import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
@@ -104,13 +104,17 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   });
 
-  useEffect(() => {
-    if (id) {
-      getPatient({
+  const fetchPatient = useCallback(async () => {
+    try {
+      await getPatient({
         variables: { getPatient: { id } }
       })
-    }
-  }, [getPatient, id])
+    } catch (error) { }
+  }, [getPatient, id]);
+
+  useEffect(() => {
+    id && fetchPatient()
+  }, [fetchPatient, id])
 
   useEffect(() => {
     try {
@@ -231,10 +235,17 @@ const PatientDetailsComponent = (): JSX.Element => {
               <Box key={attachmentId} display="flex" alignItems="center">
                 <Box pl={1}>
                   <Box pr={3.75} position="relative">
-                    <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-                    
+                    {getAttachmentLoading ?
+                      <Avatar variant="square" className={classes.profileImage}>
+                        <CircularProgress size={20} color="inherit" />
+                      </Avatar>
+                      :
+                      <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+                    }
+
                     <MediaCards
-                      reload={() => console.log("reloading...........")}
+                      title='Profile Picture'
+                      reload={() => fetchPatient()}
                       isProfile={true}
                       notDescription={true}
                       moduleType={AttachmentType.Patient}

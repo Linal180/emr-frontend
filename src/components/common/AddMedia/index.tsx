@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, useReducer, Reducer } from "react";
+import { FC, useEffect, useReducer, Reducer, useRef } from "react";
 import dotenv from 'dotenv';
 import { useForm } from "react-hook-form";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -19,11 +19,11 @@ dotenv.config()
 
 const AddImageModal: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, isProfile, preSignedUrl,
-  title, description, reload
+  title, reload
 }): JSX.Element => {
+  const dropZoneRef = useRef<any>();
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { fileUrl, attachmentId } = state;
-
   const { handleSubmit, reset } = useForm<ICreateMediaInput>();
 
   const handleClose = () => {
@@ -56,6 +56,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
           if (message && status && status === 200) {
             Alert.success(message)
             reset();
+            reload();
             dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
           }
         }
@@ -65,6 +66,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
 
   const handleMediaSubmit = async (mediaData: Pick<CreateAttachmentInput, "title">) => {
     const { title } = mediaData
+    dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
     dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: { title } })
   };
 
@@ -96,13 +98,12 @@ const AddImageModal: FC<MediaModalTypes> = ({
               </Box>
               :
               <DropzoneImage
+                ref={dropZoneRef}
                 title={title}
                 reload={reload}
                 isEdit={isEdit}
                 itemId={itemId}
-                isProfile={isProfile}
                 handleClose={handleClose}
-                description={description}
                 attachmentId={attachmentId}
                 setAttachments={setAttachments}
                 imageModuleType={imageModuleType}
@@ -114,13 +115,13 @@ const AddImageModal: FC<MediaModalTypes> = ({
         <DialogActions>
           <Box px={2} py={1} display="flex" justifyContent="space-between" width="100%">
             <Box display="flex" flex={1} justifyContent="flex-end">
-              <Button variant="contained" color="primary" type="submit" disabled={deleteAttachmentLoading}>
-                {deleteAttachmentLoading &&
-                  <CircularProgress size={20} />
-                }
+                <Button variant="contained" color="primary" type="submit" disabled={deleteAttachmentLoading}>
+                  {deleteAttachmentLoading &&
+                    <CircularProgress size={20} />
+                  }
 
-                {ADD}
-              </Button>
+                  {ADD}
+                </Button>
             </Box>
           </Box>
         </DialogActions>

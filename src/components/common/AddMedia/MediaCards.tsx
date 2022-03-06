@@ -11,17 +11,18 @@ import { MediaCardsType } from "../../../interfacesTypes";
 import { Action, ActionType, initialState, mediaReducer, State } from '../../../reducers/mediaReducer'
 
 const MediaCards: FC<MediaCardsType> = ({
-  moduleType, itemId, attachmentData, imageSide, notDescription, isProfile, reload
+  moduleType, itemId, attachmentData, imageSide, notDescription, isProfile, reload, title
 }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { isOpen, attachments, attachment, isEdit, isEditModalOpen } = state
 
   useEffect(() => {
-    attachmentData &&
+    if (attachmentData) {
       dispatch({
         type: ActionType.SET_ATTACHMENT,
         attachment: attachmentData
       })
+    }
   }, [attachmentData])
 
   const renderCard = (title: string, allAttachments: Attachment[]) => {
@@ -59,6 +60,7 @@ const MediaCards: FC<MediaCardsType> = ({
         isEdit={isEdit}
         isOpen={isOpen}
         imageModuleType={moduleType}
+        attachment={attachment}
         allAttachments={allAttachments}
       />
     )
@@ -69,6 +71,7 @@ const MediaCards: FC<MediaCardsType> = ({
       {renderCard('Upload records', attachments)}
 
       <AddImageModal
+        title={title}
         reload={reload}
         isProfile={isProfile}
         imageModuleType={moduleType}
@@ -128,6 +131,7 @@ const MediaCards: FC<MediaCardsType> = ({
 
         attachment={attachment}
         attachments={attachments}
+        preSignedUrl={imageSide}
       />
     </Box>
   );
