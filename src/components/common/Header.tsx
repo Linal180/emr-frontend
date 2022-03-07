@@ -13,7 +13,7 @@ import { useHeaderStyles } from "../../styles/headerStyles";
 import {
   BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, RICHARD_TEXT, USER_MENU_ITEMS,
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, PROFILE_MENU_ITEMS, FACILITIES_TEXT,
-  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MENU_ITEMS
+  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -24,7 +24,7 @@ const HeaderNew: FC = (): JSX.Element => {
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
 
-  useEffect(() => { 
+  useEffect(() => {
     setIsSuper(isSuperAdmin(roles))
   }, [isSuper, roles, user]);
 
@@ -45,11 +45,13 @@ const HeaderNew: FC = (): JSX.Element => {
           </Typography>
 
           {isSuper &&
-            <DropdownMenu
-              itemName={PRACTICE_MANAGEMENT_TEXT}
-              menuItem={PRACTICE_MENU_ITEMS}
-              current={currentRoute === 'inPractice'}
-            />
+            <Typography
+              component={Link}
+              to={PRACTICE_MANAGEMENT_ROUTE}
+              className={currentRoute === 'inPractice' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+            >
+              {PRACTICE_MANAGEMENT_TEXT}
+            </Typography>
           }
 
           <DropdownMenu

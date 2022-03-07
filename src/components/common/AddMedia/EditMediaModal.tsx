@@ -16,15 +16,14 @@ const EditMediaModel: FC<MediaModalTypes> = ({
   preSignedUrl, title
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
-  const [{ fileUrl }, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
+  const [{ fileUrl, attachmentId }, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
-  const [attachmentId, setAttachmentId] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
   const handlePreview = useCallback(() => {
     const { id } = attachment || {}
     preSignedUrl && dispatch({ type: ActionType.SET_FILE_URL, fileUrl: preSignedUrl })
-    id && setAttachmentId(id)
+    id && dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: id })
   }, [attachment, preSignedUrl])
 
   useEffect(() => {
@@ -37,16 +36,23 @@ const EditMediaModel: FC<MediaModalTypes> = ({
     handlePreview()
   };
 
-  const handleMediaSubmit = async (mediaData: ICreateMediaInput) => {
+  const handleMediaSubmit = async (data: ICreateMediaInput) => {
     setLoading(true)
-    const { title } = mediaData
-    dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: { title } })
+    const { title } = data
+    dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
     dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
     setLoading(false)
   }
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="image-dialog-title" aria-describedby="image-dialog-description" maxWidth="sm" fullWidth>
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={isOpen}
+      onClose={handleClose}
+      aria-labelledby="image-dialog-title"
+      aria-describedby="image-dialog-description"
+    >
       <DialogTitle id="image-dialog-title">Edit Media</DialogTitle>
       <form onSubmit={handleSubmit((data) => handleMediaSubmit(data))}>
         <DialogContent>

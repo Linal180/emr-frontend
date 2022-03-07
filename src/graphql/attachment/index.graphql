@@ -8,3 +8,24 @@ mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
     }
   }
 }
+
+query GetAttachments($getAttachment: GetAttachment!){
+  getAttachments(getAttachment: $getAttachment){
+    response {
+      error
+      status
+      message
+    }
+    
+    attachments {
+      id
+      key
+      url
+      type
+      title
+      typeId
+      createdAt
+      updatedAt
+    }
+  }
+}

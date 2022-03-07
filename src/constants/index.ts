@@ -833,13 +833,6 @@ export const USER_MENU_ITEMS = [
   },
 ];
 
-export const PRACTICE_MENU_ITEMS = [
-  {
-    name: VIEW_PRACTICES,
-    link: PRACTICE_MANAGEMENT_ROUTE
-  }
-];
-
 export const APPOINTMENT_MENU_ITEMS = [
   {
     name: VIEW_APPOINTMENTS_TEXT,
@@ -1458,8 +1451,10 @@ export const DUMMY_APPOINTMENTS = [
 
 export enum ATTACHMENT_TITLES {
   ProfilePicture = 'Profile Picture',
-  DrivingLicense = 'Driving License',
-  InsuranceCard = 'Insurance Card'
+  DrivingLicense1 = 'Driving License 1',
+  DrivingLicense2 = 'Driving License 2',
+  InsuranceCard1 = 'Insurance Card 1',
+  InsuranceCard2 = 'Insurance Card 2'
 }
 
 export const MAPPED_STATUS = [

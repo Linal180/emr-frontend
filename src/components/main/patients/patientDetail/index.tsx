@@ -23,6 +23,10 @@ import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
+  mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
+  ActionType as mediaActionType
+} from "../../../../reducers/mediaReducer";
+import {
   AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
@@ -39,8 +43,10 @@ const PatientDetailsComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useProfileDetailsStyles()
   const tableClasses = useTableStyles()
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { anchorEl, attachmentUrl, attachmentData, openDelete, patientData, tabValue, attachmentId } = state
+  const [{ anchorEl, openDelete, patientData, tabValue }, dispatch] =
+    useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
+    useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
   const { handleSubmit } = methods;
@@ -71,7 +77,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
       if (getAttachment) {
         const { preSignedUrl } = getAttachment
-        preSignedUrl && dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
+        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
       }
     },
   });
@@ -96,9 +102,9 @@ const PatientDetailsComponent = (): JSX.Element => {
             attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
           const { id: attachmentId, } = profilePicture || {}
 
-          attachmentId && dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
+          attachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
-          dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
+          mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
         }
       }
     },
@@ -106,25 +112,33 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const fetchPatient = useCallback(async () => {
     try {
-      await getPatient({
+      id && await getPatient({
         variables: { getPatient: { id } }
       })
     } catch (error) { }
   }, [getPatient, id]);
 
-  useEffect(() => {
-    id && fetchPatient()
-  }, [fetchPatient, id])
-
-  useEffect(() => {
+  const fetchAttachment = useCallback(async () => {
     try {
-      attachmentId && getAttachment({
+      attachmentId && await getAttachment({
         variables: {
           getMedia: { id: attachmentId }
         },
       })
     } catch (error) { }
   }, [attachmentId, getAttachment])
+
+  const reloadAttachment = useCallback(() => {
+    if (attachmentData) {
+      fetchAttachment();
+    } else {
+      fetchPatient()
+    }
+  }, [attachmentData, fetchAttachment, fetchPatient])
+
+  useEffect(() => {
+    reloadAttachment()
+  }, [id, attachmentId, attachmentData, fetchAttachment, fetchPatient, reloadAttachment])
 
   const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter(item => item.primaryContact)
@@ -244,12 +258,13 @@ const PatientDetailsComponent = (): JSX.Element => {
                     }
 
                     <MediaCards
-                      title='Profile Picture'
-                      reload={() => fetchPatient()}
+                      title={ATTACHMENT_TITLES.ProfilePicture}
+                      reload={() => reloadAttachment()}
                       isProfile={true}
                       notDescription={true}
                       moduleType={AttachmentType.Patient}
-                      itemId={id} imageSide={attachmentUrl}
+                      itemId={id}
+                      imageSide={attachmentUrl}
                       attachmentData={attachmentData || undefined}
                     />
                   </Box>

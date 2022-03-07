@@ -67,7 +67,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
   const handleMediaSubmit = async (mediaData: Pick<CreateAttachmentInput, "title">) => {
     const { title } = mediaData
     dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
-    dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: { title } })
+    dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
   };
 
   const handleDelete = async () => {

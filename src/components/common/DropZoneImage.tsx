@@ -152,7 +152,7 @@ const DropzoneImage: FC<any> = forwardRef(({
               filesLimit={1}
               dropzoneText={imageEdit ? 'Please click here to update the image' : 'Please add or drop the image here'}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
-              acceptedFiles={['image/jpeg', 'image/jpg', 'image/png', 'image/svg']}
+              // acceptedFiles={['image/jpeg', 'image/jpg', 'image/png', 'image/svg', 'file/pdf' ]}
             />
           </Box>
         )
