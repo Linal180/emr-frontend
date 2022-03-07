@@ -1844,6 +1844,7 @@ export type UpdateAppointmentInput = {
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patientId?: Maybe<Scalars['String']>;
+  paymentStatus?: Maybe<Scalars['String']>;
   paymentType?: Maybe<PaymentType>;
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
@@ -2253,7 +2254,7 @@ export type CreateExternalAppointmentMutationVariables = Exact<{
 }>;
 
 
-export type CreateExternalAppointmentMutation = { __typename?: 'Mutation', createExternalAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string } | null | undefined } };
+export type CreateExternalAppointmentMutation = { __typename?: 'Mutation', createExternalAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, providerId?: string | null | undefined, patientId?: string | null | undefined, facilityId?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string } | null | undefined } | null | undefined } };
 
 export type CancelAppointmentMutationVariables = Exact<{
   cancelAppointment: CancelAppointment;
@@ -2488,6 +2489,13 @@ export type GetTokenQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetTokenQuery = { __typename?: 'Query', getToken: { __typename?: 'BraintreePayload', clientToken: string } };
+
+export type ChargeAfterAppointmentMutationVariables = Exact<{
+  paymentInput: PaymentInputsAfterAppointment;
+}>;
+
+
+export type ChargeAfterAppointmentMutation = { __typename?: 'Mutation', chargeAfterAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, name?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, paymentStatus?: string | null | undefined } | null | undefined } };
 
 export type FindAllPracticesQueryVariables = Exact<{
   practiceInput: PracticeInput;
@@ -3008,6 +3016,15 @@ export const CreateExternalAppointmentDocument = gql`
     }
     appointment {
       id
+      providerId
+      patientId
+      facilityId
+      appointmentType {
+        id
+        name
+        price
+        duration
+      }
     }
   }
 }
@@ -5222,6 +5239,48 @@ export function useGetTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetTokenQueryHookResult = ReturnType<typeof useGetTokenQuery>;
 export type GetTokenLazyQueryHookResult = ReturnType<typeof useGetTokenLazyQuery>;
 export type GetTokenQueryResult = Apollo.QueryResult<GetTokenQuery, GetTokenQueryVariables>;
+export const ChargeAfterAppointmentDocument = gql`
+    mutation ChargeAfterAppointment($paymentInput: PaymentInputsAfterAppointment!) {
+  chargeAfterAppointment(paymentInput: $paymentInput) {
+    response {
+      error
+      status
+      message
+      name
+    }
+    appointment {
+      id
+      paymentStatus
+    }
+  }
+}
+    `;
+export type ChargeAfterAppointmentMutationFn = Apollo.MutationFunction<ChargeAfterAppointmentMutation, ChargeAfterAppointmentMutationVariables>;
+
+/**
+ * __useChargeAfterAppointmentMutation__
+ *
+ * To run a mutation, you first call `useChargeAfterAppointmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChargeAfterAppointmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [chargeAfterAppointmentMutation, { data, loading, error }] = useChargeAfterAppointmentMutation({
+ *   variables: {
+ *      paymentInput: // value for 'paymentInput'
+ *   },
+ * });
+ */
+export function useChargeAfterAppointmentMutation(baseOptions?: Apollo.MutationHookOptions<ChargeAfterAppointmentMutation, ChargeAfterAppointmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChargeAfterAppointmentMutation, ChargeAfterAppointmentMutationVariables>(ChargeAfterAppointmentDocument, options);
+      }
+export type ChargeAfterAppointmentMutationHookResult = ReturnType<typeof useChargeAfterAppointmentMutation>;
+export type ChargeAfterAppointmentMutationResult = Apollo.MutationResult<ChargeAfterAppointmentMutation>;
+export type ChargeAfterAppointmentMutationOptions = Apollo.BaseMutationOptions<ChargeAfterAppointmentMutation, ChargeAfterAppointmentMutationVariables>;
 export const FindAllPracticesDocument = gql`
     query FindAllPractices($practiceInput: PracticeInput!) {
   findAllPractices(facilityInput: $practiceInput) {

@@ -1,44 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import DropIn from 'braintree-web-drop-in-react';
 import {
   PaymentMethodRequestablePayload,
   PaymentOptionSelectedPayload,
 } from 'braintree-web-drop-in';
-import { useGetTokenLazyQuery, useGetTokenQuery } from '../../../../generated/graphql';
+import { Box, Button } from '@material-ui/core';
+import { PAY } from '../../../../constants';
 
-export const Payment = () => {
+interface PaymentProps {
+  clientToken: string;
+  amount: string;
+  chargePayment: (token: string) => void;
+}
 
-    //states
+export const Payment = (props: PaymentProps): JSX.Element => {
+  const { clientToken, amount, chargePayment } = props;
 
-    
+  //states
+
   const [instance, setInstance] = useState<any>(null);
-  const [clientToken, setClientToken] = useState<string>('');
   const [showPayBtn, setShowPayBtn] = useState<boolean>(false);
 
-  const  [getToken, { loading,data }] = useGetTokenLazyQuery({
-    onCompleted(){
-
-    },
-    onError(){
-
-    }
-  })
-
-  useEffect(() => {
-    getToken()
-    if(loading){
-
-    }else{
-      data?.getToken.clientToken && setClientToken(data?.getToken.clientToken);
-    }
-  }, [data,loading,getToken]);
-
   const buy = async () => {
-    debugger;
-    // Send the nonce to your server
     const { nonce } = await instance.requestPaymentMethod();
-    debugger;
-    // await fetch(`server.test/purchase/${nonce}`);
+    chargePayment(nonce);
   };
 
   const onPaymentOptionSelected = (payload: PaymentOptionSelectedPayload) => {
@@ -56,7 +41,6 @@ export const Payment = () => {
       if (payload.type === 'PayPalAccount') {
         buy();
       } else if (payload.type === 'CreditCard') {
-        debugger
         setShowPayBtn(false);
       }
     }
@@ -65,14 +49,14 @@ export const Payment = () => {
   return (
     <div>
       {clientToken ? (
-        <div >
+        <div>
           <DropIn
             options={{
               authorization: clientToken,
               paypal: {
                 flow: 'checkout',
                 currency: 'USD',
-                amount: '50',
+                amount: amount,
                 commit: true,
               },
               card: {
@@ -81,17 +65,17 @@ export const Payment = () => {
                   styles: {
                     input: {
                       // color: 'blue',
-                      'font-size': '18px'
+                      'font-size': '18px',
                     },
                     '.number': {
-                      'color':"green"
+                      color: 'green',
                       // Custom web fonts are not supported. Only use system installed fonts.
                     },
                     '.invalid': {
-                      color: 'red'
-                    }
-                  }
-                }            
+                      color: 'red',
+                    },
+                  },
+                },
               },
               dataCollector: true,
               paymentOptionPriority: ['paypal', 'card'],
@@ -100,7 +84,18 @@ export const Payment = () => {
             onPaymentOptionSelected={onPaymentOptionSelected}
             onInstance={(insta) => setInstance(insta)}
           />
-          {/* {showPayBtn && <button onClick={buy}>Buy</button>} */}
+
+          {showPayBtn && (
+            <Box pt={4} display='flex' justifyContent='center' gridGap={20}>
+              <Button
+                onClick={buy}
+                variant='contained'
+                className={'blue-button'}
+              >
+                {PAY}
+              </Button>
+            </Box>
+          )}
         </div>
       ) : (
         'loading'
