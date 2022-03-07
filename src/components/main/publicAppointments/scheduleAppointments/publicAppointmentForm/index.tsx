@@ -164,16 +164,16 @@ const PublicAppointmentForm = (): JSX.Element => {
   const [chargePaymentMutation,{loading: appoitmentLoader }] =useChargeAfterAppointmentMutation({
     onCompleted({chargeAfterAppointment: {appointment,response}}){
 
-      // if (response) {
+      if (response && appointment) {
      
           Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
-          history.push(`${SLOT_CONFIRMATION}/${externalAppointment?.id}`)
+          history.push(`${SLOT_CONFIRMATION}/${appointment?.id}`)
      
          
-        // }
-        // else{
-        //   Alert.error('Cannot find appointment id')
-        //  }
+        }
+        else{
+          Alert.error('Cannot find appointment id')
+         }
     },
     onError({message}){
       Alert.error(message)

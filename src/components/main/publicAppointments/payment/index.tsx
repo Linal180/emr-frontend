@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import DropIn from 'braintree-web-drop-in-react';
 import {
+  PaymentMethodPayload,
   PaymentMethodRequestablePayload,
   PaymentOptionSelectedPayload,
 } from 'braintree-web-drop-in';
 import { Box, Button } from '@material-ui/core';
 import { PAY } from '../../../../constants';
+import Alert from "../../../common/Alert";
+
 
 interface PaymentProps {
   clientToken: string;
@@ -21,9 +24,29 @@ export const Payment = (props: PaymentProps): JSX.Element => {
   const [instance, setInstance] = useState<any>(null);
   const [showPayBtn, setShowPayBtn] = useState<boolean>(false);
 
-  const buy = async () => {
-    const { nonce } = await instance.requestPaymentMethod();
-    chargePayment(nonce);
+  // const buy = async () => {
+  //   const { nonce } = await instance.requestPaymentMethod({});
+  //   chargePayment(nonce);
+  // };
+
+  const threeDSecurePayment = () => {
+    instance.requestPaymentMethod(
+      {
+        threeDSecure: {
+          amount,
+        },
+      },
+      (err: any, payload: PaymentMethodPayload) => {
+      
+        if(!err){
+          chargePayment(payload.nonce);
+        }
+        else{
+          Alert.error(err?.message)
+        }
+        
+      }
+    );
   };
 
   const onPaymentOptionSelected = (payload: PaymentOptionSelectedPayload) => {
@@ -39,7 +62,8 @@ export const Payment = (props: PaymentProps): JSX.Element => {
   ) => {
     if (payload.paymentMethodIsSelected) {
       if (payload.type === 'PayPalAccount') {
-        buy();
+        // buy();
+        threeDSecurePayment()
       } else if (payload.type === 'CreditCard') {
         setShowPayBtn(false);
       }
@@ -77,6 +101,7 @@ export const Payment = (props: PaymentProps): JSX.Element => {
                   },
                 },
               },
+              threeDSecure: { amount: amount },
               dataCollector: true,
               paymentOptionPriority: ['paypal', 'card'],
             }}
@@ -88,7 +113,7 @@ export const Payment = (props: PaymentProps): JSX.Element => {
           {showPayBtn && (
             <Box pt={4} display='flex' justifyContent='center' gridGap={20}>
               <Button
-                onClick={buy}
+                onClick={threeDSecurePayment}
                 variant='contained'
                 className={'blue-button'}
               >
