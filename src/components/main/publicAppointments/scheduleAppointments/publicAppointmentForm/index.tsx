@@ -30,8 +30,8 @@ import {
 } from "../../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
-  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery,
-  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
+  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery, BillingStatus,
+  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery, FacilityPayload,
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, DOB, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT,
@@ -78,9 +78,9 @@ const PublicAppointmentForm = (): JSX.Element => {
           const { status } = response
 
           if (facility && status && status === 200) {
-            dispatch({ type: ActionType.SET_FACILITY, facility })
             fetchAllDoctorList(facilityId);
             fetchAllServicesList(facilityId)
+            dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
           }
         }
       } catch (error) { }
@@ -186,8 +186,8 @@ const PublicAppointmentForm = (): JSX.Element => {
               createExternalAppointmentItemInput: {
                 serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
                 paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
-                scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
-                scheduleEndDateTime: getTimestamps(scheduleEndDateTime)
+                scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
+                scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },
 
               createPatientItemInput: {

@@ -7,13 +7,14 @@ import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
-  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, Appointmentstatus
+  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus,
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, AppointmentsPayload,
+  AttachmentsPayload,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
   LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, TOKEN,
-  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED,
+  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES,
 } from "../constants";
 
 export const handleLogout = () => {
@@ -379,6 +380,41 @@ export const activeClass = (pathname: string): string => {
   }
 };
 
+const makeTodayAppointment = (startDate: Date, endDate: Date) => {
+  const currentDate = moment(startDate);
+
+  const days = moment(startDate).diff(endDate, 'days');
+  const nextStartDate = moment(startDate)
+    .year(currentDate.year())
+    .month(currentDate.month())
+    .date(parseInt(startDate.toDateString()));
+
+  const nextEndDate = moment(endDate)
+    .year(currentDate.year())
+    .month(currentDate.month())
+    .date(parseInt((endDate).toDateString()) + days);
+
+  return {
+    startDate: nextStartDate.toDate(),
+    endDate: nextEndDate.toDate(),
+  };
+};
+
+export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
+  return data?.map(appointment => {
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
+    const { firstName, lastName } = patient || {}
+    const { color } = appointmentType || {}
+
+    return {
+      id, color,
+      title: `${firstName} ${lastName}`,
+      ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
+    }
+
+  })
+}
+
 export const appointmentStatus = (status: string) => {
   const cancelled = status === Appointmentstatus.Cancelled;
 
@@ -386,5 +422,16 @@ export const appointmentStatus = (status: string) => {
     text: cancelled ? CANCELLED : INITIATED,
     bgColor: cancelled ? BLUE_FIVE : RED_ONE,
     textColor: cancelled ? RED : GREEN
+  }
+};
+
+export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
+  const drivingLicense1 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense1)[0] || undefined
+  const drivingLicense2 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense2)[0] || undefined
+  const insuranceCard1 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.InsuranceCard1)[0] || undefined
+  const insuranceCard2 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.InsuranceCard2)[0] || undefined
+
+  return {
+    drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2
   }
 };

@@ -21,7 +21,7 @@ import { getFormattedDate, renderTh, getISOTime, isSuperAdmin, appointmentStatus
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
 import {
   AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery,
-  useRemoveAppointmentMutation, useGetDoctorAppointmentsLazyQuery,
+  useRemoveAppointmentMutation, useGetDoctorAppointmentsLazyQuery
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, PUBLIC_LINK,
@@ -222,9 +222,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 const { firstName, lastName } = patient || {};
                 const { duration, name: type } = appointmentType || {};
                 const { firstName: doctorFN, lastName: doctorLN } = provider || {};
+                const { text, bgColor, textColor } = appointmentStatus(status || '')
 
-                const {text, bgColor, textColor} = appointmentStatus(status || '')
-                
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{type}</TableCell>
@@ -234,7 +233,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     <TableCell scope="row">
                       {getFormattedDate(scheduleStartDateTime || '')}
                     </TableCell>
-                    
+
                     <TableCell scope="row">{duration} {MINUTES}</TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
@@ -242,7 +241,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                         {text}
                       </Box>
                     </TableCell>
-                    
+
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
