@@ -90,7 +90,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
     }
   };
 
-  const [getAttachments, { loading: getAttachmentsLoading }] = useGetAttachmentsLazyQuery({
+  const [getAttachments] = useGetAttachmentsLazyQuery({
     onError({ message }) {
       Alert.error(message);
     },
