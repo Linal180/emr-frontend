@@ -404,7 +404,7 @@ const PublicAppointmentForm = (): JSX.Element => {
                   <FormControlLabel
                     control={<Checkbox color="primary" defaultChecked />}
                     label={AGREEMENT_TEXT}
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                 </Box>
               </Grid>

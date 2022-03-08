@@ -74,7 +74,7 @@ export const useExternalPatientStyles = makeStyles({
   },
 
   mainGridContainer: {
-    maxHeight: "calc(100vh - 130px)",
+    maxHeight: "calc(100vh - 150px)",
     overflowY: "auto",
   },
 

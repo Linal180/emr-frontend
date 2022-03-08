@@ -22,7 +22,7 @@ import history from '../../../../../history';
 import { FacilityContext } from "../../../../../context";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
-import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE, GREEN } from "../../../../../theme";
+import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE, GREEN, WHITE_SEVEN } from "../../../../../theme";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import { getDocumentByType, getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
@@ -48,8 +48,9 @@ import {
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
   PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
-  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES,
+  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
 } from "../../../../../constants";
+import { EMRLogo } from '../../../../../assets/svgs';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -419,9 +420,24 @@ const PatientFormComponent: FC = (): JSX.Element => {
     )
   }
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75}>
+    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
+      <EMRLogo />
+
+      <Box mb={3} />
+
+      <Box mb={3} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+        <Typography variant="h4">{MORE_INFO}</Typography>
+
+        <Box display="flex" justifyContent="flex-end" flexWrap="wrap">
+          <Button variant="outlined" color="secondary">{CANCEL_APPOINTMENT_TEXT}</Button>
+
+          <Box p={1} />
+
+          <Button variant="contained" color="primary">{NEXT}</Button>
+        </Box>
+      </Box>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <Box display="flex" flexWrap="wrap" gridGap={20}>
             <Box className={classes.stepperGrid}>
               <Card className={classes.stepperContainer}>
@@ -814,9 +830,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
               </Button>
             }
           </Box>
-        </Box>
-      </form>
-    </FormProvider>
+        </form>
+      </FormProvider>
+    </Box>
   );
 };
 
