@@ -38,10 +38,9 @@ import {
   ActionType as mediaActionType
 } from "../../../../../reducers/mediaReducer";
 import {
-  Attachment,
   AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race, AttachmentsPayload,
   RelationshipType, useGetAttachmentsLazyQuery, useGetPatientLazyQuery, useRemoveAttachmentDataMutation,
-  useUpdatePatientMutation
+  useUpdatePatientMutation, Attachment,
 } from "../../../../../generated/graphql";
 import {
   MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,

@@ -667,6 +667,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const PAYMENT_CANT_DONE  = "Patient not exist in system, so payment can't be done"
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const MAINTENANCE_ALERT = "Maintenance is in progress";
 export const CANCEL_TIME_EXPIRED_MESSAGE = "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
