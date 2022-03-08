@@ -5,18 +5,15 @@ import { Avatar, Box, Button, Grid } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 //components block
 import InputController from '../../../controller';
-import MediaCards from "../../common/AddMedia/MediaCards";
 // constants, history, styling block
 import { ParamsType } from "../../../interfacesTypes";
-import { AttachmentType } from "../../../generated/graphql";
 import { useProfileStyles } from "../../../styles/profileStyles";
 import { patientReducer, Action, initialState, State } from "../../../reducers/patientReducer";
 import { ADDRESS_NUMBER, CITY, CONTACT_NUMBER, COUNTRY, EMAIL, FIRST_NAME, LAST_NAME, SAVE_TEXT, STATE, UPLOAD_PICTURE, ZIP_CODE } from "../../../constants";
 const ProfileComponent = (): JSX.Element => {
-  const { id } = useParams<ParamsType>();
   const classes = useProfileStyles()
   const [state] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { attachmentUrl, attachmentData, attachmentId } = state
+  const { attachmentUrl, attachmentId } = state
   const methods = useForm<any>({
     mode: "all",
   });

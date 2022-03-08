@@ -3,7 +3,7 @@ import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel, Typography,
+  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel,
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -40,7 +40,8 @@ import {
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES, MAPPED_COUNTRIES, BILLING, PAYMENT_METHOD, CARD_NUMBER, EXPIRY_DATE, CVV, PAY,
+  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES, MAPPED_COUNTRIES, 
+  BILLING, PAYMENT_METHOD, CARD_NUMBER, EXPIRY_DATE, CVV,
 } from "../../../../constants";
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
