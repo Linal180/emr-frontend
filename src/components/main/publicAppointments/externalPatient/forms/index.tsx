@@ -2,8 +2,12 @@
 import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Close as CloseIcon } from '@material-ui/icons';
+import { FileIcon, defaultStyles, DefaultExtensionType } from 'react-file-icon';
 import { useForm, FormProvider, SubmitHandler, Controller } from 'react-hook-form';
-import { Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel } from '@material-ui/core';
+import {
+  Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel, IconButton
+} from '@material-ui/core';
 // components
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
@@ -11,21 +15,30 @@ import PhoneField from '../../../../common/PhoneInput';
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
 import PatientStepper from '../../../../common/PatientStepper';
+import ViewDataLoader from '../../../../common/ViewDataLoader';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 //context, graphql and utils block
+import history from '../../../../../history';
 import { FacilityContext } from "../../../../../context";
-import ViewDataLoader from '../../../../common/ViewDataLoader';
-import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE } from "../../../../../theme";
 import { externalPatientSchema } from '../../../../../validationSchemas';
-import { getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
+import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
+import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE, GREEN } from "../../../../../theme";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
+import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
+import { getDocumentByType, getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
 import { AntSwitch, useExternalPatientStyles } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/patientReducer"
 import {
-  AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race,
-  RelationshipType, useGetPatientLazyQuery, useUpdatePatientMutation
+  mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
+  ActionType as mediaActionType
+} from "../../../../../reducers/mediaReducer";
+import {
+  Attachment,
+  AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race, AttachmentsPayload,
+  RelationshipType, useGetAttachmentsLazyQuery, useGetPatientLazyQuery, useRemoveAttachmentDataMutation,
+  useUpdatePatientMutation
 } from "../../../../../generated/graphql";
 import {
   MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
@@ -35,18 +48,13 @@ import {
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
   PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
-  MAPPED_STATES,
-  MAPPED_COUNTRIES,
-  USA,
-  NEXT,
-  FINISH,
+  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES,
 } from "../../../../../constants";
-import history from '../../../../../history';
-import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useExternalPatientStyles();
+  const dropzoneClasses = useDropzoneStyles()
   const toggleButtonClass = usePublicAppointmentStyles();
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
@@ -54,6 +62,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
     consentAgreed, isAppointment, isBilling, isVoice
   } = state
+  const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
+    useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const methods = useForm<ExternalPatientInputProps>({
     mode: "all",
     resolver: yupResolver(externalPatientSchema)
@@ -80,6 +90,50 @@ const PatientFormComponent: FC = (): JSX.Element => {
     }
   };
 
+  const [getAttachments] = useGetAttachmentsLazyQuery({
+    onError({ message }) {
+      Alert.error(message);
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { getAttachments } = data;
+
+        if (getAttachments) {
+          const { attachments } = getAttachments
+
+          const { drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } =
+            getDocumentByType(attachments as AttachmentsPayload['attachments'])
+
+          mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_1, insuranceCard1: insuranceCard1 || undefined })
+          mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_2, insuranceCard2: insuranceCard2 || undefined })
+          mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_1, drivingLicense1: drivingLicense1 || undefined })
+          mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_2, drivingLicense2: drivingLicense2 || undefined })
+        }
+      }
+    }
+  })
+
+  const fetchDocuments = async () => {
+    try {
+      id && await getAttachments({
+        variables: {
+          getAttachment: { typeId: id }
+        }
+      })
+    } catch (error) { }
+  };
+
+  const [removeAttachment, { loading: removeAttachmentLoading }] = useRemoveAttachmentDataMutation({
+    onError({ message }) {
+      Alert.error(message);
+    },
+
+    async onCompleted() {
+      Alert.success('Attachment deleted successfully!');
+      await fetchDocuments();
+    }
+  })
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -100,8 +154,15 @@ const PatientFormComponent: FC = (): JSX.Element => {
           if (patient) {
             const { ssn, dob, callToConsent, language, race, ethnicity, maritialStatus, genderIdentity, contacts,
               doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission, preferredCommunicationMethod,
-              releaseOfInfoBill
+              releaseOfInfoBill, attachments
             } = patient;
+
+            const { drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = getDocumentByType(attachments)
+
+            mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_1, insuranceCard1: insuranceCard1 || undefined })
+            mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_2, insuranceCard2: insuranceCard2 || undefined })
+            mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_1, drivingLicense1: drivingLicense1 || undefined })
+            mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_2, drivingLicense2: drivingLicense2 || undefined })
 
             if (facility) {
               const { id: facilityId } = facility
@@ -139,7 +200,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
             genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
 
             preferredCommunicationMethod &&
-              setValue("preferredCommunicationMethod", setRecord(preferredCommunicationMethod, preferredCommunicationMethod))
+              setValue("preferredCommunicationMethod",
+                setRecord(preferredCommunicationMethod, preferredCommunicationMethod))
             dispatch({ type: ActionType.SET_IS_VOICE, isVoice: voiceCallPermission as boolean })
             dispatch({ type: ActionType.SET_IS_BILLING, isBilling: releaseOfInfoBill as boolean })
             dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: phonePermission as boolean })
@@ -223,11 +285,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
     const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
     const patientItemInput = {
-      suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '', 
-      registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '', 
-      dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''), 
-      callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''), 
-      medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No, 
+      suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '',
+      registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '',
+      dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''),
+      callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''),
+      medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No,
       holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '', pharmacy: pharmacy || '',
       ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, voiceCallPermission: voiceCallPermission || false,
       statementDelivereOnline: false, statementNote: '', race: selectedRace as Race || Race.White,
@@ -309,6 +371,53 @@ const PatientFormComponent: FC = (): JSX.Element => {
     history.push(PATIENT_APPOINTMENT_SUCCESS)
   };
 
+  const handleRemoveAttachment = async (id: string) => {
+    dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: id })
+
+    await removeAttachment({
+      variables: {
+        removeAttachment: {
+          id,
+        }
+      }
+    })
+  }
+
+  const renderDocument = (title: string, attachment: Attachment | undefined) => {
+    const { id: attachmentId, url } = attachment || {}
+    const fileName = url?.split(/_(.+)/)[1].replaceAll(/%\d./g, "") || '';
+    const filteredFileName = fileName.length > 40 ? `${fileName.substr(0, 40)}....` : fileName
+    const fileExtension: DefaultExtensionType = url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
+
+    if (attachment) {
+      return (
+        <Box display="flex" alignItems="center" key={attachmentId} sx={{ p: 4, border: `1px solid ${GREEN}` }}>
+          <Box minWidth={40} className={dropzoneClasses.fileIcon}>
+            <FileIcon extension={fileExtension} {...defaultStyles[fileExtension]} />
+          </Box>
+
+          <Box flex={1} className={dropzoneClasses.documentNameContainer}>
+            <Typography variant='body2' color='secondary' noWrap className={dropzoneClasses.fileName}>
+              {filteredFileName.length > 35 ? `${filteredFileName.slice(0, 35)}...` : filteredFileName}
+            </Typography>
+          </Box>
+
+          <IconButton onClick={() => handleRemoveAttachment(attachmentId || '')} disabled={removeAttachmentLoading}>
+            <CloseIcon color={removeAttachmentLoading ? 'disabled' : 'secondary'} />
+          </IconButton>
+        </Box>
+      )
+    } else return (
+      <MediaCards
+        title={title}
+        reload={() => fetchDocuments()}
+        moduleType={AttachmentType.Patient}
+        itemId={id || ''}
+        imageSide={title.includes("1") ? FRONT_SIDE : BACK_SIDE}
+        attachmentData={undefined}
+      />
+    )
+  }
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -621,18 +730,18 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </CardComponent>
                   </Box>
                 </Box>
-              ) : activeStep === 5 ? ( // not reachable for now
+              ) : activeStep === 1 ? (
                 <Box>
                   <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                     <Box py={2}>
                       <Typography component="h4" variant="h4">Driving License</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
+                          {renderDocument(ATTACHMENT_TITLES.DrivingLicense1, drivingLicense1)}
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
+                          {renderDocument(ATTACHMENT_TITLES.DrivingLicense2, drivingLicense2)}
                         </Grid>
                       </Grid>
                     </Box>
@@ -641,37 +750,17 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       <Typography component="h4" variant="h4">Insurance Card</Typography>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
+                          {renderDocument(ATTACHMENT_TITLES.InsuranceCard1, insuranceCard1)}
                         </Grid>
 
                         <Grid item md={6} sm={12} xs={12}>
-                          <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
+                          {renderDocument(ATTACHMENT_TITLES.InsuranceCard2, insuranceCard2)}
                         </Grid>
                       </Grid>
                     </Box>
-
-                    <Box py={2}>
-                      <Typography component="h4" variant="h4">
-                        Insurance Card
-
-                        <Box display="inline" color={GRAY_TWO}>(Secondary)</Box>
-                      </Typography>
-
-                      <Box pb={6}>
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={FRONT_SIDE} />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <MediaCards moduleType={AttachmentType.Patient} itemId={id} imageSide={BACK_SIDE} />
-                          </Grid>
-                        </Grid>
-                      </Box>
-                    </Box>
                   </CardComponent>
                 </Box>
-              ) : activeStep === 1 && (
+              ) : activeStep === 2 && (
                 <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                   <Box className={classes.agreementContainer}>
                     <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>

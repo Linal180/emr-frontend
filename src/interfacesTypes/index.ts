@@ -2,7 +2,7 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
 import { Action } from "../reducers/locationReducer";
@@ -15,7 +15,6 @@ import {
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateFacilityTimeZoneInput, 
 } from "../generated/graphql";
-import { Appointments } from "@devexpress/dx-react-scheduler-material-ui";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -560,15 +559,18 @@ export interface PhoneInputProps {
 }
 
 export interface DropzoneImageType {
+  ref?: Ref;
   itemId: string;
+  title?: string;
   isEdit?: boolean;
   isProfile?: boolean;
+  description?: string;
   attachmentId: string;
   isDisabled?: boolean;
   hasHighlight?: boolean;
   attachment?: Attachment;
   imageModuleType: AttachmentType;
-  reset: Function;
+  reload: Function;
   handleClose: Function;
   setActiveStep?: Function;
   setAttachments: Function;
@@ -590,17 +592,22 @@ export interface ICreateMediaInput {
 
 export interface MediaModalTypes extends DialogTypes {
   itemId: string;
+  title?: string;
   isProfile?: boolean;
+  description?: string;
   preSignedUrl?: string;
   attachment?: Attachment;
   attachments?: Attachment[];
   imageModuleType: AttachmentType;
-  setEdit: Function
+  reload: Function;
+  setEdit: Function;
   setAttachments: Function;
 }
 
 export interface MediaCardsType {
   itemId: string;
+  title?: string;
+  reload: Function;
   imageSide: string;
   isProfile?: boolean;
   hasCollage?: boolean;
@@ -630,6 +637,7 @@ export interface MediaCardComponentType {
   imageSide: string;
   imageModuleType?: string;
   notDescription?: boolean;
+  attachment?: Attachment;
   attachments?: Attachment[];
   allAttachments: Attachment[];
   setOpen: Function;

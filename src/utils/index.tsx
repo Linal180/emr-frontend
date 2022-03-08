@@ -7,13 +7,14 @@ import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
-  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, AppointmentsPayload, Appointmentstatus
+  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus,
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, AppointmentsPayload,
+  AttachmentsPayload,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
   LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, SCHEDULE_APPOINTMENTS_ROUTE, STAFF_ROUTE, TOKEN,
-  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED,
+  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES,
 } from "../constants";
 
 export const handleLogout = () => {
@@ -413,6 +414,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
 
   })
 }
+
 export const appointmentStatus = (status: string) => {
   const cancelled = status === Appointmentstatus.Cancelled;
 
@@ -420,5 +422,16 @@ export const appointmentStatus = (status: string) => {
     text: cancelled ? CANCELLED : INITIATED,
     bgColor: cancelled ? BLUE_FIVE : RED_ONE,
     textColor: cancelled ? RED : GREEN
+  }
+};
+
+export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
+  const drivingLicense1 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense1)[0] || undefined
+  const drivingLicense2 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense2)[0] || undefined
+  const insuranceCard1 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.InsuranceCard1)[0] || undefined
+  const insuranceCard2 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.InsuranceCard2)[0] || undefined
+
+  return {
+    drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2
   }
 };

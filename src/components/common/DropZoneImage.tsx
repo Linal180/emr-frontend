@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState } from "react";
+import { FC, useImperativeHandle, useState, forwardRef } from "react";
 import axios from "axios";
 import { Edit } from "@material-ui/icons";
 import { DropzoneArea } from "material-ui-dropzone";
@@ -10,14 +10,16 @@ import Alert from "./Alert";
 import { getToken, handleLogout } from "../../utils";
 import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
-import { MediaPatientDataType, DropzoneImageType } from "../../interfacesTypes";
+import { MediaPatientDataType } from "../../interfacesTypes";
+import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
 
-const DropzoneImage: FC<DropzoneImageType> = ({
-  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reset, isProfile
-}): JSX.Element => {
+const DropzoneImage: FC<any> = forwardRef(({
+  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reload, title,
+}, ref): JSX.Element => {
   const classes = useDropzoneStyles();
   const [loading, setLoading] = useState<boolean>(false);
   const [imageEdit, setImageEdit] = useState<boolean>(false);
+  const [file, setFile] = useState<File>();
 
   const token = getToken();
   let moduleRoute = "";
@@ -34,14 +36,21 @@ const DropzoneImage: FC<DropzoneImageType> = ({
 
   const handleModalClose = () => {
     handleClose()
-    reset()
+    reload()
   }
 
-  const handleFileChange = async (file: File) => {
+  useImperativeHandle(ref, () => ({
+    submit() {
+      file && handleFileChange()
+    }
+  }));
+
+  const handleFileChange = async () => {
     const formData = new FormData();
     attachmentId && formData.append("id", attachmentId);
     itemId && formData.append("typeId", itemId);
-    formData.append("file", file);
+    title && formData.append("title", title);
+    file && formData.append("file", file);
 
     setLoading(true);
     await axios.post(
@@ -64,14 +73,14 @@ const DropzoneImage: FC<DropzoneImageType> = ({
           case AttachmentType.Patient:
             const patientData = data as unknown as MediaPatientDataType;
             if (patientData) {
-              const {
-                patient: { attachments: patientAttachment },
-              } = patientData || {};
+              const { patient: { attachments: patientAttachment } } = patientData || {};
+
               if (patientAttachment) {
-                setAttachments(patientAttachment)
-                Alert.success('Patient Media added successfully!');
                 setLoading(false);
                 handleModalClose();
+                setAttachments(patientAttachment)
+                Alert.success('Media added successfully!');
+                reload();
               }
             }
             break;
@@ -94,9 +103,7 @@ const DropzoneImage: FC<DropzoneImageType> = ({
     });
   }
 
-  const handleUpdateImage = () => {
-    setImageEdit(true)
-  }
+  const handleUpdateImage = () => setImageEdit(true)
 
   return (
     <>
@@ -142,17 +149,18 @@ const DropzoneImage: FC<DropzoneImageType> = ({
             )}
 
             <DropzoneArea
-              onChange={(files) => !!files.length && handleFileChange(files[0])}
               filesLimit={1}
-              dropzoneText={imageEdit ? 'Please click here to update the image' : 'Please add or drop the image here'}
+              maxFileSize={5000000}
+              acceptedFiles={ACCEPTABLE_FILES}
+              onChange={(files) => setFile(files[0])}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
-              acceptedFiles={['image/jpeg', 'image/jpg', 'image/png', 'image/svg']}
+              dropzoneText={isEdit ? PLEASE_CLICK_TO_UPDATE_DOCUMENT : PLEASE_ADD_DOCUMENT}
             />
           </Box>
         )
       )}
     </>
   );
-};
+});
 
 export default DropzoneImage;
