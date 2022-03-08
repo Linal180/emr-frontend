@@ -4,6 +4,7 @@ import { AppointmentPayload, AppointmentsPayload, DoctorSlotsPayload, FacilityPa
 export interface State {
   page: number;
   offset: number;
+  agreed: boolean;
   copied: boolean;
   serviceId: string;
   totalPages: number;
@@ -28,6 +29,7 @@ export const initialState: State = {
   serviceId: '',
   totalPages: 0,
   copied: false,
+  agreed: false,
   providerId: '',
   facility: null,
   searchQuery: '',
@@ -47,6 +49,7 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_PAGE = 'setPage',
+  SET_AGREED = 'setAgreed',
   SET_COPIED = 'setCopied',
   SET_FACILITY = 'setFacility',
   SET_SERVICE_ID = 'setServiceId',
@@ -68,6 +71,7 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
+  | { type: ActionType.SET_AGREED, agreed: boolean }
   | { type: ActionType.SET_COPIED, copied: boolean }
   | { type: ActionType.SET_SERVICE_ID, serviceId: string }
   | { type: ActionType.SET_PROVIDER_ID, providerId: string }
@@ -92,6 +96,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         page: action.page
+      }
+
+    case ActionType.SET_AGREED:
+      return {
+        ...state,
+        agreed: action.agreed
       }
 
     case ActionType.SET_COPIED:

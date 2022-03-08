@@ -1,7 +1,6 @@
 // packages block
 import { Reducer, useContext, useEffect, useState, useReducer } from "react";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Button, Checkbox, colors, FormControlLabel, Grid, Typography } from "@material-ui/core";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
@@ -36,10 +35,10 @@ import {
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, DOB, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT,
   MAPPED_GENDER_IDENTITY, MAPPED_RELATIONSHIP_TYPE, PATIENT_DETAILS, PHONE, SELECT_SERVICES,
-  SLOT_CONFIRMATION, SELECT_PROVIDER, INSURANCE_COMPANY, MEMBERSHIP_ID, BOOK_APPOINTMENT,
+  SELECT_PROVIDER, INSURANCE_COMPANY, MEMBERSHIP_ID, BOOK_APPOINTMENT, AVAILABLE_SLOTS, SELECT_DATE,
   RELATIONSHIP_WITH_PATIENT, YOUR_NAME, PROVIDER, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL,
   APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, FIRST_NAME, LAST_NAME,
-  AGREEMENT_HEADING, agreementPoints, AGREEMENT_TEXT, AVAILABLE_SLOTS, SELECT_DATE, PATIENT_APPOINTMENT_SUCCESS, SUBMIT
+  AGREEMENT_HEADING, agreementPoints, AGREEMENT_TEXT, 
 } from "../../../../../constants";
 import { EMRLogo } from "../../../../../assets/svgs";
 
@@ -48,7 +47,7 @@ const PublicAppointmentForm = (): JSX.Element => {
   const { id: facilityId } = useParams<ParamsType>();
   const { serviceList, doctorList, fetchAllDoctorList, fetchAllServicesList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { facility, isInsurance, availableSlots, currentDate, offset } = state;
+  const { facility, isInsurance, availableSlots, currentDate, offset, agreed } = state;
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
@@ -61,7 +60,7 @@ const PublicAppointmentForm = (): JSX.Element => {
     paymentType: { name: selectedPaymentType } = {},
   } = watch();
 
-  const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
+  const [getFacility] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -110,7 +109,7 @@ const PublicAppointmentForm = (): JSX.Element => {
     }
   });
 
-  const [createExternalAppointment, { loading: createExternalAppointmentLoading }] = useCreateExternalAppointmentMutation({
+  const [createExternalAppointment] = useCreateExternalAppointmentMutation({
     fetchPolicy: "network-only",
 
     onError({ message }) {
@@ -127,7 +126,9 @@ const PublicAppointmentForm = (): JSX.Element => {
         if (id && status && status === 200) {
           Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
           reset()
-          history.push(`${SLOT_CONFIRMATION}/${id}`)
+          // history.push(`${SLOT_CONFIRMATION}/${id}`)
+          // history.push(`${}/${id}`)
+          // PATIENT_APPOINTMENT_SUCCESS
         }
       }
     }
@@ -232,7 +233,6 @@ const PublicAppointmentForm = (): JSX.Element => {
     }
   };
 
-  const disableSubmit = createExternalAppointmentLoading || getSlotsLoading || getFacilityLoading
   const {
     dob: { message: dobError } = {},
     email: { message: emailError } = {},
@@ -402,9 +402,14 @@ const PublicAppointmentForm = (): JSX.Element => {
 
                 <Box bgcolor={WHITE} mt={-1} p={3.75} className={classes.agreement_box}>
                   <FormControlLabel
-                    control={<Checkbox color="primary" defaultChecked />}
+                    control={
+                      <Checkbox color="primary" checked={agreed} onChange={() =>
+                        dispatch({ type: ActionType.SET_AGREED, agreed: !agreed })
+                      }
+                      />
+                    }
                     label={AGREEMENT_TEXT}
-                    labelPlacement="start"
+                    labelPlacement="end"
                   />
                 </Box>
               </Grid>
@@ -441,15 +446,8 @@ const PublicAppointmentForm = (): JSX.Element => {
 
               <Grid item lg={12} md={12} sm={12} xs={12}>
                 <Box pt={4} display="flex" justifyContent="center" gridGap={20}>
-                
-                <Link to={PATIENT_APPOINTMENT_SUCCESS}>
-                  <Button variant="contained">
-                    {SUBMIT}
-                  </Button>
-                </Link>
-
-                  <Button type="submit" variant="contained" color="primary" className={disableSubmit ? '' : ''}
-                    disabled={disableSubmit}
+                  <Button type="submit" variant="contained" color="primary"
+                    disabled={!agreed}
                   >
                     {BOOK_APPOINTMENT}
                   </Button>
