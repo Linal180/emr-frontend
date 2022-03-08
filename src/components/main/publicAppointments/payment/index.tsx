@@ -86,8 +86,8 @@ export const ExternalPaymentComponent = (): JSX.Element => {
         const { status } = response
 
         if (appointment && status && status === 200) {
-          const { appointmentType, patientId, provider, facility } = appointment;
-          const { id: appointmentId, price } = appointmentType || {}
+          const { appointmentType, patientId, provider, facility,id } = appointment;
+          const {  price } = appointmentType || {}
           const { id: providerId } = provider || {}
           const { id: facilityId } = facility || {}
 
@@ -95,7 +95,7 @@ export const ExternalPaymentComponent = (): JSX.Element => {
           patientId && setPatientId(patientId)
           providerId && setProviderId(providerId)
           facilityId && setFacilityId(facilityId)
-          appointmentId && setAppointmentId(appointmentId)
+          id && setAppointmentId(id)
 
           try {
             await getToken()
