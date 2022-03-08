@@ -1,12 +1,10 @@
 // packages block
-import { useParams } from 'react-router';
 import { Reducer, useReducer } from 'react';
 import { Avatar, Box, Button, Grid } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 //components block
 import InputController from '../../../controller';
 // constants, history, styling block
-import { ParamsType } from "../../../interfacesTypes";
 import { useProfileStyles } from "../../../styles/profileStyles";
 import { patientReducer, Action, initialState, State } from "../../../reducers/patientReducer";
 import { ADDRESS_NUMBER, CITY, CONTACT_NUMBER, COUNTRY, EMAIL, FIRST_NAME, LAST_NAME, SAVE_TEXT, STATE, UPLOAD_PICTURE, ZIP_CODE } from "../../../constants";
@@ -26,8 +24,6 @@ const ProfileComponent = (): JSX.Element => {
           <Box>
             <Box key={attachmentId} pr={3.75} position="relative">
               <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-
-              {/* <MediaCards isProfile={true} moduleType={AttachmentType.Patient} itemId={id} imageSide={attachmentUrl} attachmentData={attachmentData || undefined} notDescription={true} /> */}
             </Box>
 
             <Box pt={2}>
