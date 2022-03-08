@@ -64,6 +64,7 @@ export type Appointment = {
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  paymentStatus?: Maybe<Scalars['String']>;
   paymentType: PaymentType;
   primaryInsurance?: Maybe<Scalars['String']>;
   provider?: Maybe<Doctor>;
@@ -161,6 +162,11 @@ export enum BillingStatus {
   Due = 'DUE',
   Paid = 'PAID'
 }
+
+export type BraintreePayload = {
+  __typename?: 'BraintreePayload';
+  clientToken: Scalars['String'];
+};
 
 /** The patient's communication method assigned */
 export enum Communicationtype {
@@ -393,6 +399,7 @@ export type CreateExternalAppointmentItemInput = {
   isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  paymentStatus?: Maybe<Scalars['String']>;
   paymentType: PaymentType;
   providerId: Scalars['String'];
   scheduleEndDateTime: Scalars['String'];
@@ -586,6 +593,7 @@ export type Doctor = {
   taxIdStuff?: Maybe<Scalars['String']>;
   taxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
+  transaction?: Maybe<Transactions>;
   updatedAt: Scalars['String'];
   upin?: Maybe<Scalars['String']>;
   user?: Maybe<User>;
@@ -669,6 +677,7 @@ export type Facility = {
   staff?: Maybe<Array<Staff>>;
   tamxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
+  transaction?: Maybe<Transactions>;
   updatedAt?: Maybe<Scalars['String']>;
   user?: Maybe<Array<User>>;
 };
@@ -811,6 +820,8 @@ export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
   cancelAppointment: AppointmentPayload;
+  chargeAfterAppointment: AppointmentPayload;
+  chargePayment: AppointmentPayload;
   createAppointment: AppointmentPayload;
   createAttachmentData: AttachmentPayload;
   createContact: ContactPayload;
@@ -869,6 +880,16 @@ export type MutationActivateUserArgs = {
 
 export type MutationCancelAppointmentArgs = {
   cancelAppointment: CancelAppointment;
+};
+
+
+export type MutationChargeAfterAppointmentArgs = {
+  paymentInput: PaymentInputsAfterAppointment;
+};
+
+
+export type MutationChargePaymentArgs = {
+  paymentInput: PaymentInput;
 };
 
 
@@ -1181,6 +1202,7 @@ export type Patient = {
   statementNoteDateFrom: Scalars['String'];
   statementNoteDateTo: Scalars['String'];
   suffix?: Maybe<Scalars['String']>;
+  transaction?: Maybe<Transactions>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
   voiceCallPermission: Scalars['Boolean'];
@@ -1222,6 +1244,23 @@ export type PatientsPayload = {
   pagination?: Maybe<PaginationPayload>;
   patients?: Maybe<Array<Maybe<Patient>>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PaymentInput = {
+  client: Scalars['String'];
+  clientIntent: Scalars['String'];
+  createExternalAppointmentItemInput: CreateExternalAppointmentItemInput;
+  createGuardianContactInput: CreateContactInput;
+  createPatientItemInput: CreatePatientItemInput;
+};
+
+export type PaymentInputsAfterAppointment = {
+  appointmentId: Scalars['String'];
+  clientIntent: Scalars['String'];
+  facilityId: Scalars['String'];
+  patientId: Scalars['String'];
+  price: Scalars['String'];
+  providerId: Scalars['String'];
 };
 
 /** The patient payment type assigned */
@@ -1306,6 +1345,7 @@ export type Query = {
   getSchedule: SchedulePayload;
   getService: ServicePayload;
   getStaff: StaffPayload;
+  getToken: BraintreePayload;
   getUser: UserPayload;
   me: UserPayload;
   searchUser: UsersPayload;
@@ -1792,6 +1832,22 @@ export type StaffPayload = {
   staff?: Maybe<Staff>;
 };
 
+export type Transactions = {
+  __typename?: 'Transactions';
+  appointment?: Maybe<Appointment>;
+  appointmentId: Scalars['String'];
+  createdAt?: Maybe<Scalars['String']>;
+  doctor?: Maybe<Array<Doctor>>;
+  doctorId: Scalars['String'];
+  facility?: Maybe<Array<Facility>>;
+  facilityId: Scalars['String'];
+  id: Scalars['String'];
+  patient?: Maybe<Array<Patient>>;
+  patientId: Scalars['String'];
+  transactionId: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type UpdateAppointmentBillingStatusInput = {
   billingStatus: Scalars['String'];
   id: Scalars['String'];
@@ -1809,6 +1865,7 @@ export type UpdateAppointmentInput = {
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patientId?: Maybe<Scalars['String']>;
+  paymentStatus?: Maybe<Scalars['String']>;
   paymentType?: Maybe<PaymentType>;
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
@@ -2218,7 +2275,7 @@ export type CreateExternalAppointmentMutationVariables = Exact<{
 }>;
 
 
-export type CreateExternalAppointmentMutation = { __typename?: 'Mutation', createExternalAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string } | null | undefined } };
+export type CreateExternalAppointmentMutation = { __typename?: 'Mutation', createExternalAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, providerId?: string | null | undefined, patientId?: string | null | undefined, facilityId?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string } | null | undefined } | null | undefined } };
 
 export type CancelAppointmentMutationVariables = Exact<{
   cancelAppointment: CancelAppointment;
@@ -2399,6 +2456,18 @@ export type UpdatePatientMutationVariables = Exact<{
 
 
 export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type GetTokenQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetTokenQuery = { __typename?: 'Query', getToken: { __typename?: 'BraintreePayload', clientToken: string } };
+
+export type ChargeAfterAppointmentMutationVariables = Exact<{
+  paymentInput: PaymentInputsAfterAppointment;
+}>;
+
+
+export type ChargeAfterAppointmentMutation = { __typename?: 'Mutation', chargeAfterAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, name?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, paymentStatus?: string | null | undefined } | null | undefined } };
 
 export type FindAllPracticesQueryVariables = Exact<{
   practiceInput: PracticeInput;
@@ -2836,6 +2905,15 @@ export const CreateExternalAppointmentDocument = gql`
     }
     appointment {
       id
+      providerId
+      patientId
+      facilityId
+      appointmentType {
+        id
+        name
+        price
+        duration
+      }
     }
   }
 }
@@ -4261,6 +4339,82 @@ export function useUpdatePatientMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdatePatientMutationHookResult = ReturnType<typeof useUpdatePatientMutation>;
 export type UpdatePatientMutationResult = Apollo.MutationResult<UpdatePatientMutation>;
 export type UpdatePatientMutationOptions = Apollo.BaseMutationOptions<UpdatePatientMutation, UpdatePatientMutationVariables>;
+export const GetTokenDocument = gql`
+    query GetToken {
+  getToken {
+    clientToken
+  }
+}
+    `;
+
+/**
+ * __useGetTokenQuery__
+ *
+ * To run a query within a React component, call `useGetTokenQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTokenQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTokenQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetTokenQuery(baseOptions?: Apollo.QueryHookOptions<GetTokenQuery, GetTokenQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTokenQuery, GetTokenQueryVariables>(GetTokenDocument, options);
+      }
+export function useGetTokenLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTokenQuery, GetTokenQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTokenQuery, GetTokenQueryVariables>(GetTokenDocument, options);
+        }
+export type GetTokenQueryHookResult = ReturnType<typeof useGetTokenQuery>;
+export type GetTokenLazyQueryHookResult = ReturnType<typeof useGetTokenLazyQuery>;
+export type GetTokenQueryResult = Apollo.QueryResult<GetTokenQuery, GetTokenQueryVariables>;
+export const ChargeAfterAppointmentDocument = gql`
+    mutation ChargeAfterAppointment($paymentInput: PaymentInputsAfterAppointment!) {
+  chargeAfterAppointment(paymentInput: $paymentInput) {
+    response {
+      error
+      status
+      message
+      name
+    }
+    appointment {
+      id
+      paymentStatus
+    }
+  }
+}
+    `;
+export type ChargeAfterAppointmentMutationFn = Apollo.MutationFunction<ChargeAfterAppointmentMutation, ChargeAfterAppointmentMutationVariables>;
+
+/**
+ * __useChargeAfterAppointmentMutation__
+ *
+ * To run a mutation, you first call `useChargeAfterAppointmentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useChargeAfterAppointmentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [chargeAfterAppointmentMutation, { data, loading, error }] = useChargeAfterAppointmentMutation({
+ *   variables: {
+ *      paymentInput: // value for 'paymentInput'
+ *   },
+ * });
+ */
+export function useChargeAfterAppointmentMutation(baseOptions?: Apollo.MutationHookOptions<ChargeAfterAppointmentMutation, ChargeAfterAppointmentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ChargeAfterAppointmentMutation, ChargeAfterAppointmentMutationVariables>(ChargeAfterAppointmentDocument, options);
+      }
+export type ChargeAfterAppointmentMutationHookResult = ReturnType<typeof useChargeAfterAppointmentMutation>;
+export type ChargeAfterAppointmentMutationResult = Apollo.MutationResult<ChargeAfterAppointmentMutation>;
+export type ChargeAfterAppointmentMutationOptions = Apollo.BaseMutationOptions<ChargeAfterAppointmentMutation, ChargeAfterAppointmentMutationVariables>;
 export const FindAllPracticesDocument = gql`
     query FindAllPractices($practiceInput: PracticeInput!) {
   findAllPractices(facilityInput: $practiceInput) {

@@ -24,6 +24,14 @@ export interface State {
   availableSlots: DoctorSlotsPayload['slots'];
   appointment: AppointmentPayload['appointment'];
   appointments: AppointmentsPayload['appointments'];
+  externalAppointment: {
+    id: string ;
+    price: string;
+    facilityId: string;
+    patientId: string;
+    providerId: string;
+  };
+  appointmentPaymentToken: string;
 }
 
 export const initialState: State = {
@@ -47,6 +55,14 @@ export const initialState: State = {
   deleteAppointmentId: '',
   offset: moment.tz().zone(),
   currentDate: new Date().toDateString(),
+  externalAppointment: {
+    id: '',
+    price: "",
+    facilityId: '',
+    patientId: "",
+    providerId: '',
+  },
+  appointmentPaymentToken: "",
   date: new Date() as MaterialUiPickersDate,
 }
 
@@ -71,6 +87,8 @@ export enum ActionType {
   SET_IS_AUTO_ACCIDENT = 'setIsAutoAccident',
   SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
+  SET_EXTERNAL_APPOINTMENT = 'setExternalAppointment',
+  SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
 }
 
 export type Action =
@@ -94,6 +112,14 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: DoctorSlotsPayload['slots'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
+  | { type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
+    id: string,
+    price: string,
+    facilityId: string,
+    patientId: string,
+    providerId: string,
+  } }
+  | { type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN; appointmentPaymentToken: string}
 
 export const appointmentReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -215,6 +241,16 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isAutoAccident: action.isAutoAccident
+      }
+    case ActionType.SET_EXTERNAL_APPOINTMENT:
+      return {
+        ...state,
+        externalAppointment: action.externalAppointment
+      }
+    case ActionType.SET_APPOINTMENT_PAYMENT_TOKEN:
+      return {
+        ...state,
+        appointmentPaymentToken: action.appointmentPaymentToken
       }
   }
 };
