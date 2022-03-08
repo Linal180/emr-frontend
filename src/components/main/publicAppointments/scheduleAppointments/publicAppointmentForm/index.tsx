@@ -239,7 +239,7 @@ const PublicAppointmentForm = (): JSX.Element => {
       <Box mb={3} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
         <Typography variant="h4">{BOOK_YOUR_APPOINTMENT}</Typography>
 
-        <Button variant="contained" color="primary">{BOOK_APPOINTMENT}</Button>
+        <Button variant="contained" color="primary" disabled={!agreed}>{BOOK_APPOINTMENT}</Button>
       </Box>
 
       <Box>
