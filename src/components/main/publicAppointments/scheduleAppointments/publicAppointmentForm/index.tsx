@@ -35,6 +35,8 @@ import {
   Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
   useGetTokenLazyQuery,
   useChargeAfterAppointmentMutation,
+  FacilityPayload,
+  BillingStatus
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL, DOB, EMAIL, EMPTY_OPTION,
@@ -80,9 +82,9 @@ const PublicAppointmentForm = (): JSX.Element => {
           const { status } = response
 
           if (facility && status && status === 200) {
-            dispatch({ type: ActionType.SET_FACILITY, facility })
             fetchAllDoctorList(facilityId);
             fetchAllServicesList(facilityId)
+            dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
           }
         }
       } catch (error) { }
@@ -233,8 +235,8 @@ const PublicAppointmentForm = (): JSX.Element => {
               createExternalAppointmentItemInput: {
                 serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
                 paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
-                scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
-                scheduleEndDateTime: getTimestamps(scheduleEndDateTime)
+                scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
+                scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },
 
               createPatientItemInput: {

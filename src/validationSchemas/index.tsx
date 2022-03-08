@@ -593,14 +593,15 @@ const practiceFacilitySchema = {
   state: stateSchema(false),
   city: notRequiredStringOnly(CITY),
   country: countrySchema(false),
-  address: addressValidation(ADDRESS, false),
   address2: addressValidation(ADDRESS, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
 export const createPracticeSchema = yup.object({
+  ...emailSchema,
   ...registerUserSchema,
   ...practiceFacilitySchema,
+  address: addressValidation(ADDRESS, true),
   name: yup.string().required(requiredMessage(PRACTICE_NAME)),
   facilityName: yup.string().required(requiredMessage(NAME)),
 })

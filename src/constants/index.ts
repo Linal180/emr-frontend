@@ -45,6 +45,7 @@ export enum DAYS {
 };
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
+export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
 export const VIEW = "View";
 export const IS_ADMIN = "Is Admin?";
@@ -655,6 +656,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully"
 export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated."
 export const FACILITY_NOT_FOUND = 'Facility not found!';
 export const PRACTICE_NOT_FOUND = 'Practice not found!';
+export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = 'Cancelled appointment cant be edited!'
 export const LOCATION_NOT_FOUND = 'Location not found!';
 export const APPOINTMENT_NOT_FOUND = 'Appointment not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
@@ -718,13 +720,13 @@ export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or
 export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
 export const FORGOT_PASSWORD_MESSAGE = "Please enter your email to get a reset-password link.";
 export const FORGET_PASSWORD_SUCCESS = "An email has been sent to your registered email address";
+export const PRACTICE_OR_FACILITY_ALREADY_EXISTS = "Practice/Facility already exits against provided data!";
 export const FORGOT_PASSWORD_TEXT_MESSAGE = "Enter your registered email address to get reset-password link";
 export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a email while you are logged in.";
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
-export const TOOLTIP_DUMMY_MESSAGE = "tooltip message here";
 
 // INFO MESSAGES
 
