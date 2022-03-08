@@ -7,14 +7,8 @@ import {
 } from 'braintree-web-drop-in';
 import { Box, Button } from '@material-ui/core';
 import { PAY } from '../../../../constants';
-import Alert from "../../../common/Alert";
-
-
-interface PaymentProps {
-  clientToken: string;
-  amount: string;
-  chargePayment: (token: string) => void;
-}
+import Alert from '../../../common/Alert';
+import { PaymentProps } from '../../../../interfacesTypes';
 
 export const Payment = (props: PaymentProps): JSX.Element => {
   const { clientToken, amount, chargePayment } = props;
@@ -37,14 +31,11 @@ export const Payment = (props: PaymentProps): JSX.Element => {
         },
       },
       (err: any, payload: PaymentMethodPayload) => {
-      
-        if(!err){
+        if (!err) {
           chargePayment(payload.nonce);
+        } else {
+          Alert.error(err?.message);
         }
-        else{
-          Alert.error(err?.message)
-        }
-        
       }
     );
   };
@@ -63,7 +54,7 @@ export const Payment = (props: PaymentProps): JSX.Element => {
     if (payload.paymentMethodIsSelected) {
       if (payload.type === 'PayPalAccount') {
         // buy();
-        threeDSecurePayment()
+        threeDSecurePayment();
       } else if (payload.type === 'CreditCard') {
         setShowPayBtn(false);
       }

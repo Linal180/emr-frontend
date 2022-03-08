@@ -15,7 +15,6 @@ import {
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateFacilityTimeZoneInput, 
 } from "../generated/graphql";
-import { Appointments } from "@devexpress/dx-react-scheduler-material-ui";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -683,3 +682,9 @@ export interface AppointmentDatePickerProps {
 export type CustomPracticeInputProps = CreatePracticeItemInput & RegisterUserInputs
   & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email"> & { facilityName: string }
   & { roleType: SelectorOption } & { country: SelectorOption } & { state: SelectorOption } & { isAdmin: boolean }
+
+  export interface PaymentProps {
+    clientToken: string;
+    amount: string;
+    chargePayment: (token: string) => void;
+  }
