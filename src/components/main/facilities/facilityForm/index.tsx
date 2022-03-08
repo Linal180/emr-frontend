@@ -23,6 +23,7 @@ import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
+  FacilityPayload,
   PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
@@ -76,7 +77,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               contacts,
             } = facility
 
-            dispatch({ type: ActionType.SET_FACILITY, facility })
+            dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
 
             npi && setValue('npi', npi)
             name && setValue('name', name)

@@ -1,4 +1,5 @@
 import moment from "moment";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { AppointmentPayload, AppointmentsPayload, DoctorSlotsPayload, FacilityPayload } from "../generated/graphql"
 
 export interface State {
@@ -18,6 +19,7 @@ export interface State {
   isAutoAccident: boolean;
   isOtherAccident: boolean;
   deleteAppointmentId: string;
+  date: MaterialUiPickersDate;
   facility: FacilityPayload['facility'];
   availableSlots: DoctorSlotsPayload['slots'];
   appointment: AppointmentPayload['appointment'];
@@ -45,12 +47,14 @@ export const initialState: State = {
   deleteAppointmentId: '',
   offset: moment.tz().zone(),
   currentDate: new Date().toDateString(),
+  date: new Date() as MaterialUiPickersDate,
 }
 
 export enum ActionType {
   SET_PAGE = 'setPage',
-  SET_AGREED = 'setAgreed',
+  SET_DATE = 'setDate',
   SET_COPIED = 'setCopied',
+  SET_AGREED = 'setAgreed',
   SET_FACILITY = 'setFacility',
   SET_SERVICE_ID = 'setServiceId',
   SET_PROVIDER_ID = 'setProviderId',
@@ -78,6 +82,7 @@ export type Action =
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
+  | { type: ActionType.SET_DATE, date: MaterialUiPickersDate }
   | { type: ActionType.SET_CURRENT_DATE, currentDate: string }
   | { type: ActionType.SET_IS_INSURANCE; isInsurance: boolean }
   | { type: ActionType.SET_IS_EMPLOYMENT, isEmployment: boolean }
@@ -102,6 +107,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         agreed: action.agreed
+      }
+
+    case ActionType.SET_DATE:
+      return {
+        ...state,
+        date: action.date
       }
 
     case ActionType.SET_COPIED:

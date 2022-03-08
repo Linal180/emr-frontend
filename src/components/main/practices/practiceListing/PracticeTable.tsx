@@ -131,11 +131,12 @@ const PracticeTable: FC = (): JSX.Element => {
           <TableBody>
             {
               practices?.map(practice => {
-                const { id, name, createdAt, facilities } = practice || {};
-                const { contacts } = (facilities && facilities[0]) || {};
+                const { id, name, phone, createdAt, facilities } = practice || {};
                 const facilityCount = (facilities && facilities.length) || 0;
+                const primaryFacility = facilities?.filter(facility => facility.isPrimary)[0]
+                const { contacts } = primaryFacility || {};
                 const primaryContact = contacts?.filter(contact => contact.primaryContact)[0]
-                const { email, phone } = primaryContact || {}
+                const { email } = primaryContact || {}
 
                 return (
                   <TableRow key={id}>

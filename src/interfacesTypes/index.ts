@@ -2,18 +2,18 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
 import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import {
-  LoginUserInput, User, CreateStaffInput, UpdateContactInput, CreateScheduleInput, ContactsPayload,
+  LoginUserInput, User, CreateStaffInput, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, CreateAppointmentInput,
+  UpdateFacilityTimeZoneInput, 
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -51,9 +51,6 @@ export interface ListContextInterface {
   doctorList: AllDoctorPayload['doctors'];
   setDoctorList: Function;
   fetchAllDoctorList: Function;
-  locationList: ContactsPayload['contacts'];
-  setLocationList: Function;
-  fetchAllLocationList: Function;
   serviceList: ServicesPayload['services'];
   setServicesList: Function;
   fetchAllServicesList: Function;
@@ -66,9 +63,6 @@ export interface FacilityContextInterface {
   doctorList: AllDoctorPayload['doctors'];
   setDoctorList: Function;
   fetchAllDoctorList: Function;
-  locationList: ContactsPayload['contacts'];
-  setLocationList: Function;
-  fetchAllLocationList: Function;
   serviceList: ServicesPayload['services'];
   setServicesList: Function;
   fetchAllServicesList: Function;
@@ -565,15 +559,18 @@ export interface PhoneInputProps {
 }
 
 export interface DropzoneImageType {
+  ref?: Ref;
   itemId: string;
+  title?: string;
   isEdit?: boolean;
   isProfile?: boolean;
+  description?: string;
   attachmentId: string;
   isDisabled?: boolean;
   hasHighlight?: boolean;
   attachment?: Attachment;
   imageModuleType: AttachmentType;
-  reset: Function;
+  reload: Function;
   handleClose: Function;
   setActiveStep?: Function;
   setAttachments: Function;
@@ -595,17 +592,22 @@ export interface ICreateMediaInput {
 
 export interface MediaModalTypes extends DialogTypes {
   itemId: string;
+  title?: string;
   isProfile?: boolean;
+  description?: string;
   preSignedUrl?: string;
   attachment?: Attachment;
   attachments?: Attachment[];
   imageModuleType: AttachmentType;
-  setEdit: Function
+  reload: Function;
+  setEdit: Function;
   setAttachments: Function;
 }
 
 export interface MediaCardsType {
   itemId: string;
+  title?: string;
+  reload: Function;
   imageSide: string;
   isProfile?: boolean;
   hasCollage?: boolean;
@@ -635,6 +637,7 @@ export interface MediaCardComponentType {
   imageSide: string;
   imageModuleType?: string;
   notDescription?: boolean;
+  attachment?: Attachment;
   attachments?: Attachment[];
   allAttachments: Attachment[];
   setOpen: Function;
@@ -686,5 +689,5 @@ export interface AppointmentDatePickerProps {
 }
 
 export type CustomPracticeInputProps = CreatePracticeItemInput & RegisterUserInputs
-  & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode"> & { facilityName: string }
+  & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email"> & { facilityName: string }
   & { roleType: SelectorOption } & { country: SelectorOption } & { state: SelectorOption } & { isAdmin: boolean }

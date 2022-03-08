@@ -13,7 +13,7 @@ import { ParamsType } from "../../../../interfacesTypes";
 import { getFormattedDate, getStandardTime } from "../../../../utils";
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles";
 import {
-  Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery
+  AppointmentPayload, Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery
 } from "../../../../generated/graphql";
 import {
   appointmentReducer, Action, initialState, State, ActionType
@@ -54,7 +54,7 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
               history.push(PATIENT_APPOINTMENT_CANCEL)
             }
 
-            dispatch({ type: ActionType.SET_APPOINTMENT, appointment })
+            dispatch({ type: ActionType.SET_APPOINTMENT, appointment: appointment as AppointmentPayload['appointment'] })
           }
         }
       } catch (error) { }

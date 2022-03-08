@@ -13,11 +13,10 @@ import { FileIcon } from "../../../assets/svgs";
 import { BLUE_ONE } from "../../../theme";
 import { CameraAlt } from "@material-ui/icons";
 
-const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, setAttachment, setAttachments, attachments, allAttachments, imageSide, notDescription }): JSX.Element => {
+const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments, allAttachments, imageSide, notDescription }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
   const classes = documentVerificationFormStyles()
-
 
   const [removeAttachmentData, { loading }] = useRemoveAttachmentDataMutation({
     onError({ message }) {
@@ -62,8 +61,13 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
   }
 
   const handleAddMedia = () => {
-    setOpen(!isOpen);
-    setAttachment && setAttachment(undefined)
+    if (attachment) {
+      setEdit(!isEdit)
+      setAttachment && setAttachment(attachment)
+    } else {
+      setOpen(!isOpen);
+      setAttachment && setAttachment(undefined)
+    }
   }
 
   const handleDeleteModal = (attachmentId: string) => {
@@ -100,7 +104,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
             {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
               <CameraAlt color="primary" />
             </Typography>}
-            
+
             {!notDescription && <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
               <Box>
                 <FileIcon />

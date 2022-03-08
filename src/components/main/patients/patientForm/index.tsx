@@ -15,9 +15,12 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
+import { GRAY_TWO, WHITE } from '../../../../theme';
 import { extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext, FacilityContext } from '../../../../context';
 import { GeneralFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
+import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
@@ -40,20 +43,16 @@ import {
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES, MAPPED_COUNTRIES, 
-  BILLING, PAYMENT_METHOD, CARD_NUMBER, EXPIRY_DATE, CVV,
+  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES, 
+  MAPPED_COUNTRIES, BILLING, PAYMENT_METHOD, CARD_NUMBER, EXPIRY_DATE, CVV,
 } from "../../../../constants";
-import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
-import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { GRAY_TWO, WHITE } from '../../../../theme';
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facilityList, fetchAllPatientList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId,
-    guarantorContactId, employerId
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
     one: false,
