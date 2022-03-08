@@ -24,6 +24,7 @@ export const WHITE_THREE = "#F3F6F9";
 export const WHITE_FOUR = "#E4E6EF;";
 export const WHITE_FIVE = "#A1A5B7;";
 export const WHITE_SIX = "#F1FAFF";
+export const WHITE_SEVEN = "#F3F4F6";
 
 export const GREEN = "#1DC894";
 

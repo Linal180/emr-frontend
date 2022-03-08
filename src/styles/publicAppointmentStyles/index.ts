@@ -86,5 +86,15 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         borderBottomLeftRadius: "6px",
       }
     },
+
+    agreement_box: {
+      boxShadow: `0px -4px 10px rgba(0, 0, 0, 0.1)`,
+      borderRadius: '0px 0px 8px 8px',
+
+      "& .MuiFormControlLabel-label": {
+        fontWeight: 600,
+        fontSize: 16,
+      }
+    }
   })
 );

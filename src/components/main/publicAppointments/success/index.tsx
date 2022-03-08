@@ -1,33 +1,36 @@
 
-import { Box, Card, Typography } from '@material-ui/core';
+import { Box, Button, Card, colors, Typography } from '@material-ui/core';
+import {
+  APPOINTMENT_CONFIRMED, APPOINTMENT_SUCCESS_HEADING, APPOINTMENT_SUCCESS_SUBHEADING,
+  CANCEL_APPOINTMENT_TEXT, CONTINUE_TEXT
+} from '../../../../constants';
 import { successStyles } from '../../../../styles/publicAppointmentStyles/successStyles';
-import { WHITE_TWO } from '../../../../theme';
+import { GRAY_FIVE, WHITE_TWO } from '../../../../theme';
 
 const AppointmentSuccessComponent = () => {
   const classes = successStyles();
 
   return (
-    <Box bgcolor={WHITE_TWO}
-      minHeight="100vh"
-      p={3.75}
-      sx={{
-        justifyContent: "center",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
+    <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
       <Card>
-        <Box minHeight="580px" className={classes.container}>
-          <Box maxWidth="700px">
-            <Typography component="h3" variant="h3">Thank you! When you arrive, Please make sure to have these documents with you.</Typography>
-          </Box>
+        <Box p={3} borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4"><strong>{APPOINTMENT_CONFIRMED}</strong></Typography>
+        </Box>
 
-          <Box pt={3}>
-            <ul>
-              <li><Typography component="h5" variant="h5">Please bring a valid photo ID and any insurance cards (if applicable).</Typography></li>
-              <li><Typography component="h5" variant="h5">Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).</Typography></li>
-            </ul>
-          </Box>
+        <Box className={classes.container}>
+          <Typography variant="h4">{APPOINTMENT_SUCCESS_HEADING}</Typography>
+
+          <Box mb={3} />
+
+          <Typography component="h5" variant="h5">{APPOINTMENT_SUCCESS_SUBHEADING}</Typography>
+        </Box>
+
+        <Box mt={5} py={4} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
+          <Button variant="outlined" color="secondary">{CANCEL_APPOINTMENT_TEXT}</Button>
+
+          <Box p={1} />
+
+          <Button variant="contained" color="primary">{CONTINUE_TEXT}</Button>
         </Box>
       </Card>
     </Box>
