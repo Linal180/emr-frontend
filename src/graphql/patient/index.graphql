@@ -14,15 +14,7 @@ query FindAllPatient($patientInput: PatientInput!) {
 
     patients {
       id
-      dob
       email
-      gender
-      phonePermission
-      pharmacy
-      medicationHistoryAuthority
-      preferredCommunicationMethod
-      releaseOfInfoBill
-      voiceCallPermission
       lastName
       firstName
       createdAt
@@ -30,66 +22,12 @@ query FindAllPatient($patientInput: PatientInput!) {
       
       contacts {
         id
-        fax
-        ssn
+        name
         city
         email
-        pager
         phone
-        mobile
-        address
-        address2
-        state
-        zipCode
         country
-        name
-        suffix
-        firstName
         primaryContact
-        middleName
-        lastName
-        serviceCode
-        employerName
-        relationship
-        contactType
-        createdAt
-        updatedAt
-      }
-
-      employer {
-        id
-        name
-        email
-        phone
-        mobile
-        industry
-        usualOccupation
-        createdAt
-        updatedAt
-      }
-
-      facility {
-        id
-        npi
-        name
-        practiceType
-        cliaIdNumber
-        federalTaxId
-        isPrivate
-        tamxonomyCode
-        serviceCode
-        mammographyCertificationNumber
-        createdAt
-        updatedAt
-      }
-
-       attachments {
-        id
-        type
-        typeId
-        key
-        url
-        title
         createdAt
         updatedAt
       }
@@ -151,31 +89,58 @@ query GetPatient($getPatient: GetPatient!) {
       statementNoteDateTo
       createdAt
       updatedAt
+
+      doctorPatients {
+        id
+        doctorId
+        currentProvider
+        
+        doctor {
+          id
+          firstName
+          lastName
+          createdAt
+          updatedAt
+        }
+      }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
       
       contacts {
         id
+        fax
+        ssn
+        city
         email
+        pager
+        phone
+        mobile
+        address
+        address2
+        state
+        zipCode
+        country
         name
         suffix
         firstName
+        primaryContact
         middleName
         lastName
-        phone
         serviceCode
-        primaryContact
-        mobile
-        pager
-        fax
-        address
-        address2
-        zipCode
-        city
-        state
-        country
-        ssn
         employerName
         relationship
         contactType
+        createdAt
+        updatedAt
       }
 
       employer {
@@ -193,41 +158,10 @@ query GetPatient($getPatient: GetPatient!) {
       facility {
         id
         name
-        practiceType
-        cliaIdNumber
-        federalTaxId
         isPrivate
-        tamxonomyCode
-        mammographyCertificationNumber
-        npi
         serviceCode
         updatedAt
-      }
-      
-      doctorPatients {
-        id
-        doctorId
-        currentProvider
-        
-        doctor {
-          id
-          firstName
-          lastName
-          createdAt
-          updatedAt
-        }
-      }
-
-      attachments {
-        id
-        type
-        typeId
-        key
-        url
-        title
-        createdAt
-        updatedAt
-      }
+      } 
     }
   }
 }

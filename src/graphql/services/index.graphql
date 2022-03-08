@@ -1,16 +1,18 @@
 query findAllServices($serviceInput: ServiceInput!) {
-	findAllServices(serviceInput: $serviceInput) {
+  findAllServices(serviceInput: $serviceInput) {
     pagination {
       page
       totalCount
       totalPages
     }
+
     response {
       name
       error
       status
-	  message
+      message
     }
+
     services {
       id
       name
@@ -25,7 +27,7 @@ query findAllServices($serviceInput: ServiceInput!) {
 }
 
 query getService($getService: GetService!) {
-	getService(getService: $getService) {
+  getService(getService: $getService) {
     response {
       error
       status
@@ -54,7 +56,7 @@ query getService($getService: GetService!) {
 }
 
 mutation RemoveService($removeService: RemoveService!){
-	removeService(removeService: $removeService){
+  removeService(removeService: $removeService){
     response{
       name
       status
@@ -65,17 +67,6 @@ mutation RemoveService($removeService: RemoveService!){
 
 mutation CreateService($createServiceInput: CreateServiceInput!) {
   createService(createServiceInput: $createServiceInput){
-    service {
-      id
-      name
-      duration
-      price
-      isActive
-      color
-      facilityId
-      createdAt
-      updatedAt
-    }
     response{
       name
       status
@@ -86,17 +77,6 @@ mutation CreateService($createServiceInput: CreateServiceInput!) {
 
 mutation UpdateService($updateServiceInput: UpdateServiceInput!) {
   updateService(updateServiceInput: $updateServiceInput){
-    service {
-      id
-      name
-      duration
-      price
-      isActive
-      color
-      facilityId
-      createdAt
-      updatedAt
-    }
     response{
       name
       status

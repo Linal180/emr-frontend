@@ -40,7 +40,8 @@ import {
   PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES, MAPPED_COUNTRIES,
+  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
+  MAPPED_COUNTRIES,
 } from "../../../../constants";
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
@@ -51,8 +52,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facilityList, fetchAllPatientList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId,
-    guarantorContactId, employerId
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
     one: false,

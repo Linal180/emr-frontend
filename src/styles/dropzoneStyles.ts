@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core'
+import { makeStyles, Theme } from '@material-ui/core'
 
-export const useDropzoneStyles = makeStyles(() => ({
+export const useDropzoneStyles = makeStyles((theme: Theme) => ({
   disabledDropzone: {
     position: 'absolute',
     background: 'rgba(255, 255, 255, 0.6)',
@@ -56,5 +56,41 @@ export const useDropzoneStyles = makeStyles(() => ({
     opacity: 0,
     visibility: 'hidden',
     userSelect: 'none'
-  }
+  },
+
+  preview: {
+    display: 'none'
+  },
+
+  fileIcon: {
+    maxWidth: 40,
+
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: 20,
+    }
+  },
+
+  documentNameContainer: {
+    paddingLeft: 30,
+
+    [theme.breakpoints.down('md')]: {
+      paddingLeft: 16,
+    },
+
+    [theme.breakpoints.down('sm')]: {
+      maxWidth: "70%",
+    }
+  },
+
+  fileName: {
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 10,
+    }
+  },
+
+  dropZoneText: {
+    fontSize: 20,
+    fontWeight: 'normal'
+  },
+
 }))

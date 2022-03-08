@@ -2,14 +2,14 @@ import { AttachmentPayload, AttachmentsPayload, PatientPayload, PatientsPayload 
 
 export interface State {
   page: number;
-  tabValue: string;
   isVoice: boolean;
+  tabValue: string;
   selection: string;
   patientId: string;
-  isBilling: boolean;
   employerId: string;
   totalPages: number;
   activeStep: number;
+  isBilling: boolean;
   openDelete: boolean;
   searchQuery: string;
   isEditCard: boolean;
@@ -17,9 +17,9 @@ export interface State {
   paymentMethod: string;
   attachmentUrl: string;
   basicContactId: string;
-  deletePatientId: string;
   consentAgreed: boolean;
   isAppointment: boolean;
+  deletePatientId: string;
   guardianContactId: string;
   guarantorContactId: string;
   emergencyContactId: string;
@@ -43,8 +43,8 @@ export const initialState: State = {
   isVoice: false,
   selection: 'NO',
   searchQuery: '',
-  attachmentId: '',
   isBilling: false,
+  attachmentId: '',
   kinContactId: '',
   isEditCard: false,
   paymentMethod: '',
@@ -54,8 +54,8 @@ export const initialState: State = {
   attachmentsData: [],
   deletePatientId: '',
   consentAgreed: false,
-  attachmentData: null,
   isAppointment: false,
+  attachmentData: null,
   guardianContactId: '',
   emergencyContactId: '',
   guarantorContactId: '',

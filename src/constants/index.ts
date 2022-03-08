@@ -45,6 +45,7 @@ export enum DAYS {
 };
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
+export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
 export const VIEW = "View";
 export const IS_ADMIN = "Is Admin?";
@@ -164,6 +165,7 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records"
 export const ADD_WIDGET_TEXT = "Add Widget"
+export const ACCEPTABLE_FILES = ['.jpg', '.jpeg', '.png', '.docx', '.doc', '.pdf'];
 export const DELETE_WIDGET_DESCRIPTION = " Are you sure you want to remove this widget?"
 export const DELETE_WIDGET_TEXT = "Delete Widget"
 export const VIEW_CHART_TEXT = "View Chart"
@@ -284,6 +286,8 @@ export const SSN = "SSN";
 export const DATE = "Date";
 export const ACTIVE = "Active";
 export const STATUS = "Status";
+export const CANCELLED = "Cancelled";
+export const INITIATED = "Initialized";
 export const ACTION = "Actions";
 export const DRAWER_WIDTH = 300;
 export const TAGS_TEXT = "Tags";
@@ -612,6 +616,8 @@ export const CANCEL_APPOINTMENT = '/cancel-appointment';
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
+export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
 export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
 export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be less that 100-years";
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
@@ -653,6 +659,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully"
 export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated."
 export const FACILITY_NOT_FOUND = 'Facility not found!';
 export const PRACTICE_NOT_FOUND = 'Practice not found!';
+export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = 'Cancelled appointment cant be edited!'
 export const LOCATION_NOT_FOUND = 'Location not found!';
 export const APPOINTMENT_NOT_FOUND = 'Appointment not found!';
 export const STAFF_NOT_FOUND = 'Staff not found!';
@@ -716,13 +723,13 @@ export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or
 export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
 export const FORGOT_PASSWORD_MESSAGE = "Please enter your email to get a reset-password link.";
 export const FORGET_PASSWORD_SUCCESS = "An email has been sent to your registered email address";
+export const PRACTICE_OR_FACILITY_ALREADY_EXISTS = "Practice/Facility already exits against provided data!";
 export const FORGOT_PASSWORD_TEXT_MESSAGE = "Enter your registered email address to get reset-password link";
 export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a email while you are logged in.";
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
-export const TOOLTIP_DUMMY_MESSAGE = "tooltip message here";
 
 // INFO MESSAGES
 
@@ -834,13 +841,6 @@ export const USER_MENU_ITEMS = [
     name: STAFF_TEXT,
     link: STAFF_ROUTE
   },
-];
-
-export const PRACTICE_MENU_ITEMS = [
-  {
-    name: VIEW_PRACTICES,
-    link: PRACTICE_MANAGEMENT_ROUTE
-  }
 ];
 
 export const APPOINTMENT_MENU_ITEMS = [
@@ -1462,8 +1462,10 @@ export const DUMMY_APPOINTMENTS = [
 
 export enum ATTACHMENT_TITLES {
   ProfilePicture = 'Profile Picture',
-  DrivingLicense = 'Driving License',
-  InsuranceCard = 'Insurance Card'
+  DrivingLicense1 = 'Driving License 1',
+  DrivingLicense2 = 'Driving License 2',
+  InsuranceCard1 = 'Insurance Card 1',
+  InsuranceCard2 = 'Insurance Card 2'
 }
 
 export const MAPPED_STATUS = [
