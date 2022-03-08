@@ -147,7 +147,7 @@ export const useExternalPatientStyles = makeStyles({
     },
   },
 
-  agreementPointsContainer: {
+  AGREEMENT_POINTSContainer: {
     maxHeight: "calc(100vh - 344px)",
     overflowY: "auto",
   },

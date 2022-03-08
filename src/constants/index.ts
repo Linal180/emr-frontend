@@ -1120,16 +1120,12 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
 
 export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 
-export const getSteps = (): StepLabelType[] => {
-  return [
-    { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
-    // { title: 'Document Verification', subTitle: 'Verification information requested' },
-    { title: 'Consent Agreement', subTitle: 'Provide basic Patient Information' },
-    { title: 'Payment', subTitle: 'Process Transaction' }
-  ];
-};
+export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
+  { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
+  { title: 'Document Verification', subTitle: 'Verification information requested' },
+];
 
-export const agreementPoints = [
+export const AGREEMENT_POINTS = [
   "Proin id ligula dictum, convallis enim ut, facilisis massa.Mauris a nisi ut sapien blandit imperdiet sed id lacus.Mauris auctor interdum dignissim.",
   "Proin id ligula dictum, convallis enim ut, facilisis massa.",
   "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed",

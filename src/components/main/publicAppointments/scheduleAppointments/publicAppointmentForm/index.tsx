@@ -39,7 +39,7 @@ import {
   MAPPED_GENDER_IDENTITY, MAPPED_RELATIONSHIP_TYPE, PATIENT_DETAILS, PHONE, SELECT_SERVICES,
   SELECT_PROVIDER, BOOK_APPOINTMENT, AVAILABLE_SLOTS, RELATIONSHIP_WITH_PATIENT, YOUR_NAME,
   FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE,
-  BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, agreementPoints, APPOINTMENT_PAYMENT,
+  BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT,
 } from "../../../../../constants";
 
 const PublicAppointmentForm = (): JSX.Element => {
@@ -351,8 +351,8 @@ const PublicAppointmentForm = (): JSX.Element => {
                 <CardComponent cardTitle={AGREEMENT_HEADING}>
                   <Box maxHeight={400} pl={2} mb={3} overflow="auto">
                     <ul>
-                      {agreementPoints.map((point) => (
-                        <li>]
+                      {AGREEMENT_POINTS.map((point) => (
+                        <li>
                           <Typography variant="subtitle1" component="p">{point}</Typography>
                         </li>
                       ))}
