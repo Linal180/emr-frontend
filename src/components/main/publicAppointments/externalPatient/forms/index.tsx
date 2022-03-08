@@ -1,12 +1,14 @@
 // packages block
 import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { FileIcon, defaultStyles, DefaultExtensionType } from 'react-file-icon';
 import { useForm, FormProvider, SubmitHandler, Controller } from 'react-hook-form';
 import {
-  Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel, IconButton
+  Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel,
+  Radio, Accordion, AccordionSummary, AccordionDetails, IconButton
 } from '@material-ui/core';
 // components
 import Alert from "../../../../common/Alert";
@@ -22,7 +24,8 @@ import history from '../../../../../history';
 import { FacilityContext } from "../../../../../context";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
-import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE, GREEN, WHITE_SEVEN } from "../../../../../theme";
+import { CardIcon, PaypalButton, PaypalIcon } from '../../../../../assets/svgs';
+import { GRAY_TWO, WHITE_SIX, WHITE, GREEN, WHITE_SEVEN } from "../../../../../theme";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import { getDocumentByType, getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
@@ -48,7 +51,8 @@ import {
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD,
   PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
-  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
+  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT, CARD_NUMBER,
+  CVV, EXPIRY_DATE, FIRST_NAME, LAST_NAME, PAY, PAY_DEBIT_CARD_TEXT, PAY_PAYPAL_TEXT,
 } from "../../../../../constants";
 import { EMRLogo } from '../../../../../assets/svgs';
 
@@ -61,7 +65,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
-    consentAgreed, isAppointment, isBilling, isVoice
+    consentAgreed, isAppointment, isBilling, isVoice, paymentMethod
   } = state
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -70,26 +74,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
     resolver: yupResolver(externalPatientSchema)
   });
   const { handleSubmit, setValue, control } = methods;
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { target: { checked, name } } = event
-    switch (name) {
-      case 'releaseOfInfoBill':
-        dispatch({ type: ActionType.SET_IS_BILLING, isBilling: checked })
-        setValue('releaseOfInfoBill', checked)
-        return;
-
-      case 'voiceCallPermission':
-        dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
-        setValue('voiceCallPermission', checked)
-        return;
-
-      case 'phonePermission':
-        dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: checked })
-        setValue('phonePermission', checked)
-        return;
-    }
-  };
 
   const [getAttachments] = useGetAttachmentsLazyQuery({
     onError({ message }) {
@@ -356,6 +340,31 @@ const PatientFormComponent: FC = (): JSX.Element => {
       :
       Alert.error(PATIENT_NOT_FOUND)
   }, [getPatient, id])
+
+  const handleChangeAccordion = (paymentMethod: string) =>
+    (_: ChangeEvent<{}>, isExpanded: boolean) =>
+      dispatch({ type: ActionType.SET_PAYMENT_METHOD, paymentMethod })
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { target: { checked, name } } = event
+
+    switch (name) {
+      case 'releaseOfInfoBill':
+        dispatch({ type: ActionType.SET_IS_BILLING, isBilling: checked })
+        setValue('releaseOfInfoBill', checked)
+        return;
+
+      case 'voiceCallPermission':
+        dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
+        setValue('voiceCallPermission', checked)
+        return;
+
+      case 'phonePermission':
+        dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: checked })
+        setValue('phonePermission', checked)
+        return;
+    }
+  };
 
   const handleNextStep = () => {
     activeStep !== 0 && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
@@ -776,7 +785,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </Box>
                   </CardComponent>
                 </Box>
-              ) : activeStep === 2 && (
+              ) : activeStep === 2 ? (
                 <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                   <Box className={classes.agreementContainer}>
                     <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>
@@ -799,6 +808,102 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </Box>
                   </Box>
                 </CardComponent>
+              ) : activeStep === 3 && (
+                <Box>
+                  <Box className={classes.paymentAccordion}>
+                    <Accordion expanded={paymentMethod === 'card'} onChange={handleChangeAccordion('card')}>
+                      <AccordionSummary
+                        expandIcon={<Radio color='primary' disableRipple checked={paymentMethod === 'card'} />}
+                        aria-controls="panel1bh-content"
+                        id="panel1bh-header"
+                      >
+                        <Box display="flex" alignItems="center">
+                          <CardIcon />
+                          <Box ml={3}>
+                            <Typography variant='h4'>{PAY_DEBIT_CARD_TEXT}</Typography>
+                          </Box>
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Box className={classes.paymentAccordionDetail}>
+                          <Grid container spacing={3}>
+                            <Grid item md={6} sm={12} xs={12}>
+                              <InputController
+                                fieldType="text"
+                                controllerName="firstName"
+                                controllerLabel={FIRST_NAME}
+                              />
+                            </Grid>
+
+                            <Grid item md={6} sm={12} xs={12}>
+                              <InputController
+                                fieldType="text"
+                                controllerName="lastName"
+                                controllerLabel={LAST_NAME}
+                              />
+                            </Grid>
+                          </Grid>
+
+                          <Grid container spacing={3}>
+                            <Grid item md={6} sm={12} xs={12}>
+                              <InputController
+                                fieldType="number"
+                                controllerName="cardNumber"
+                                controllerLabel={CARD_NUMBER}
+                              />
+                            </Grid>
+
+                            <Grid item md={6} sm={12} xs={12}>
+                              <Grid container spacing={3}>
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="expiryDate"
+                                    controllerLabel={EXPIRY_DATE}
+                                  />
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  <InputController
+                                    fieldType="number"
+                                    controllerName="cvv"
+                                    controllerLabel={CVV}
+                                  />
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                          </Grid>
+
+                          <Box display="flex">
+                            <Button variant="contained" color="primary">{PAY}</Button>
+                          </Box>
+                        </Box>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Box>
+
+                  <Box className={classes.paymentAccordion} mt={2}>
+                    <Accordion expanded={paymentMethod === 'paypal'} onChange={handleChangeAccordion('paypal')}>
+                      <AccordionSummary
+                        expandIcon={<Radio color='primary' disableRipple checked={paymentMethod === 'paypal'} />}
+                        aria-controls="panel2bh-content"
+                        id="panel2bh-header"
+                      >
+                        <Box display="flex" alignItems="center">
+                          <PaypalIcon />
+                          <Box ml={3}>
+                            <Typography variant='h4'>{PAY_PAYPAL_TEXT}</Typography>
+                          </Box>
+                        </Box>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <Box component={Link} mt={3} mb={3} className={classes.paymentAccordionDetail}>
+                          <PaypalButton />
+                        </Box>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Box>
+                </Box>
               )}
             </Box>
           </Box>
