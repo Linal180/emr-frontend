@@ -1,5 +1,6 @@
 // packages block
-import { useState } from 'react';
+import { useParams } from 'react-router';
+import { Reducer, useCallback, useEffect, useReducer, useState } from 'react';
 import { Box, Button } from '@material-ui/core';
 import DropIn from 'braintree-web-drop-in-react';
 import {
@@ -7,33 +8,131 @@ import {
 } from 'braintree-web-drop-in';
 // components block
 import Alert from '../../../common/Alert';
+import BackdropLoader from '../../../common/Backdrop';
 // constants and types block
-import { PAY } from '../../../../constants';
-import { PaymentProps } from '../../../../interfacesTypes';
+import history from "../../../../history";
+import { ParamsType } from '../../../../interfacesTypes';
+import { APPOINTMENT_BOOKED_SUCCESSFULLY, PAY, SLOT_CONFIRMATION } from '../../../../constants';
+import {
+  appointmentReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/appointmentReducer";
+import {
+  useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery
+} from '../../../../generated/graphql';
 
-export const Payment = (props: PaymentProps): JSX.Element => {
-  const { clientToken, amount, chargePayment } = props;
-
-  //states
-
+export const ExternalPaymentComponent = (): JSX.Element => {
+  const { id } = useParams<ParamsType>()
   const [instance, setInstance] = useState<any>(null);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const { appointmentPaymentToken, } = state
   const [showPayBtn, setShowPayBtn] = useState<boolean>(false);
+  const [appointmentId, setAppointmentId] = useState<string>('');
+  const [patientId, setPatientId] = useState<string>('');
+  const [facilityId, setFacilityId] = useState<string>('');
+  const [providerId, setProviderId] = useState<string>('');
+  const [price, setPrice] = useState<string>('');
 
-  // const buy = async () => {
-  //   const { nonce } = await instance.requestPaymentMethod({});
-  //   chargePayment(nonce);
-  // };
+  const [chargePayment] = useChargeAfterAppointmentMutation({
+    onCompleted({ chargeAfterAppointment: { appointment, response } }) {
+      if (response && appointment) {
+        Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
+        history.push(`${SLOT_CONFIRMATION}/${appointmentId}`)
+      } else Alert.error('Cannot find appointment id')
+    },
+    onError({ message }) {
+      Alert.error(message)
+    }
+  })
+
+  const [getToken] = useGetTokenLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onCompleted(data) {
+      if (data) {
+        const { getToken } = data;
+
+        if (getToken) {
+          const { clientToken } = getToken;
+
+          dispatch({
+            type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN,
+            appointmentPaymentToken: clientToken
+          })
+        }
+      }
+
+    },
+
+    onError({ message }) {
+      Alert.error(message)
+    }
+  });
+
+  const [getAppointment] = useGetAppointmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    async onCompleted(data) {
+      const { getAppointment: { response, appointment } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (appointment && status && status === 200) {
+          const { appointmentType, patientId, provider, facility } = appointment;
+          const { id: appointmentId, price } = appointmentType || {}
+          const { id: providerId } = provider || {}
+          const { id: facilityId } = facility || {}
+
+          price && setPrice(price)
+          patientId && setPatientId(patientId)
+          providerId && setProviderId(providerId)
+          facilityId && setFacilityId(facilityId)
+          appointmentId && setAppointmentId(appointmentId)
+
+          try {
+            await getToken()
+          } catch (error) { }
+        }
+      }
+    }
+  });
+
+  const fetchAppointment = useCallback(async () => {
+    id && await getAppointment({
+      variables: { getAppointment: { id } }
+    })
+  }, [getAppointment, id])
+
+  useEffect(() => {
+    fetchAppointment()
+  }, [fetchAppointment]);
+
+  const charge = (token: string) => {
+    chargePayment({
+      variables: {
+        paymentInput: {
+          price, patientId, providerId, facilityId, appointmentId, clientIntent: token,
+        }
+      }
+    })
+  }
 
   const threeDSecurePayment = () => {
     instance.requestPaymentMethod(
       {
-        threeDSecure: {
-          amount,
-        },
+        threeDSecure: { amount: price },
       },
       (err: any, payload: PaymentMethodPayload) => {
         if (!err) {
-          chargePayment(payload.nonce);
+          charge(payload.nonce);
         } else {
           Alert.error(err?.message);
         }
@@ -54,7 +153,6 @@ export const Payment = (props: PaymentProps): JSX.Element => {
   ) => {
     if (payload.paymentMethodIsSelected) {
       if (payload.type === 'PayPalAccount') {
-        // buy();
         threeDSecurePayment();
       } else if (payload.type === 'CreditCard') {
         setShowPayBtn(false);
@@ -64,15 +162,15 @@ export const Payment = (props: PaymentProps): JSX.Element => {
 
   return (
     <div>
-      {clientToken ? (
+      {appointmentPaymentToken ? (
         <div>
           <DropIn
             options={{
-              authorization: clientToken,
+              authorization: appointmentPaymentToken,
               paypal: {
                 flow: 'checkout',
                 currency: 'USD',
-                amount: amount,
+                amount: price,
                 commit: true,
               },
               card: {
@@ -93,13 +191,13 @@ export const Payment = (props: PaymentProps): JSX.Element => {
                   },
                 },
               },
-              threeDSecure: { amount: amount },
+              threeDSecure: { amount: price },
               dataCollector: true,
               paymentOptionPriority: ['paypal', 'card'],
             }}
             onPaymentMethodRequestable={onPaymentMethodRequestable}
             onPaymentOptionSelected={onPaymentOptionSelected}
-            onInstance={(insta) => setInstance(insta)}
+            onInstance={(data) => setInstance(data)}
           />
 
           {showPayBtn && (
@@ -115,10 +213,10 @@ export const Payment = (props: PaymentProps): JSX.Element => {
           )}
         </div>
       ) : (
-        'loading'
+        <BackdropLoader loading={true} />
       )}
     </div>
   );
 };
 
-export default Payment;
+export default ExternalPaymentComponent;

@@ -49,6 +49,7 @@ import { PatientChart } from "../pages/main/patients/patientDetail/patientChart"
 import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
 import { ScheduleAppointments } from "../pages/main/appointments/scheduleAppointments";
 import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
+import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
 import { VitalsCards } from "../pages/main/patients/patientDetail/patientChart/patientChartCards/patientVitals";
 // constants
 import { AuthContext } from "../context";
@@ -58,7 +59,7 @@ import {
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
   FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PROFILE_ROUTE, MAINTENANCE_ROUTE, 
-  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE,
+  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -74,6 +75,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={AppointmentConfirmation} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
       <PublicRoute path={`${CANCEL_APPOINTMENT}/:id`} component={CancelAppointment} exact />
+      <PublicRoute path={`${APPOINTMENT_PAYMENT}/:id`} component={ExternalPayment} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
       <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={PublicAppointment} exact />
 

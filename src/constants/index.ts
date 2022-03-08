@@ -622,6 +622,7 @@ export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
+export const CANCEL_APPOINTMENT = '/cancel-appointment';
 export const PATIENT_INFORMATION = "/patient-information";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
@@ -629,11 +630,11 @@ export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
+export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
-export const CANCEL_APPOINTMENT = '/cancel-appointment';
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;

@@ -4,13 +4,12 @@ import { BLACK_FOUR, BLUE_ONE, GRAY_ONE, GRAY_SIX, POPPINS, WHITE } from "../../
 export const usePublicAppointmentStyles = makeStyles(() =>
   createStyles({
     timeSlots: {
+      padding: 0,
       display: 'flex',
       flexWrap: "wrap",
       listStyle: 'none',
-      margin: "10px 0 20px",
       overflowX: 'auto',
-      padding: 0,
-      maxHeight: 185,
+      margin: "10px 0 20px",
 
       '& li': {
         width: 'calc(50% - 12px)',
