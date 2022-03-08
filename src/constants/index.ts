@@ -164,6 +164,7 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records"
 export const ADD_WIDGET_TEXT = "Add Widget"
+export const ACCEPTABLE_FILES = ['.jpg', '.jpeg', '.png', '.docx', '.doc', '.pdf'];
 export const DELETE_WIDGET_DESCRIPTION = " Are you sure you want to remove this widget?"
 export const DELETE_WIDGET_TEXT = "Delete Widget"
 export const VIEW_CHART_TEXT = "View Chart"
@@ -608,6 +609,8 @@ export const CANCEL_APPOINTMENT = '/cancel-appointment';
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
+export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
 export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
 export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be less that 100-years";
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";

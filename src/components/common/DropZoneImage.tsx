@@ -11,6 +11,7 @@ import { getToken, handleLogout } from "../../utils";
 import { AttachmentType } from "../../generated/graphql";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { MediaPatientDataType } from "../../interfacesTypes";
+import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
 
 const DropzoneImage: FC<any> = forwardRef(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reload, title,
@@ -148,11 +149,12 @@ const DropzoneImage: FC<any> = forwardRef(({
             )}
 
             <DropzoneArea
-              onChange={(files) => setFile(files[0])}
               filesLimit={1}
-              dropzoneText={imageEdit ? 'Please click here to update the image' : 'Please add or drop the image here'}
+              maxFileSize={5000000}
+              acceptedFiles={ACCEPTABLE_FILES}
+              onChange={(files) => setFile(files[0])}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
-              acceptedFiles={['image/jpeg', 'image/jpg', 'image/png', 'image/svg']}
+              dropzoneText={isEdit ? PLEASE_CLICK_TO_UPDATE_DOCUMENT : PLEASE_ADD_DOCUMENT}
             />
           </Box>
         )
