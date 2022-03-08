@@ -4,8 +4,8 @@ export interface State {
   page: number;
   isVoice: boolean;
   tabValue: string;
-  patientId: string;
   selection: string;
+  patientId: string;
   employerId: string;
   totalPages: number;
   activeStep: number;
@@ -14,6 +14,7 @@ export interface State {
   searchQuery: string;
   isEditCard: boolean;
   kinContactId: string;
+  paymentMethod: string;
   attachmentUrl: string;
   basicContactId: string;
   consentAgreed: boolean;
@@ -46,6 +47,7 @@ export const initialState: State = {
   attachmentId: '',
   kinContactId: '',
   isEditCard: false,
+  paymentMethod: '',
   attachmentUrl: '',
   openDelete: false,
   basicContactId: '',
@@ -80,8 +82,9 @@ export enum ActionType {
   SET_PATIENT_DATA = 'setPatientData',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_KIN_CONTACT_ID = 'setKinContactID',
-  SET_ATTACHMENT_URL = 'setAttachmentUrl',
   SET_IS_APPOINTMENT = 'setIsAppointment',
+  SET_PAYMENT_METHOD = 'setPaymentMethod',
+  SET_ATTACHMENT_URL = 'setAttachmentUrl',
   SET_CONSENT_AGREED = 'setConsentAgreed',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_BASIC_CONTACT_ID = 'setBasicContactID',
@@ -107,6 +110,7 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
+  | { type: ActionType.SET_PAYMENT_METHOD, paymentMethod: string }
   | { type: ActionType.SET_IS_APPOINTMENT, isAppointment: boolean }
   | { type: ActionType.SET_CONSENT_AGREED, consentAgreed: boolean }
   | { type: ActionType.SET_ANCHOR_EL; anchorEl: HTMLElement | null }
@@ -131,6 +135,12 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         page: action.page
       }
+
+      case ActionType.SET_PAYMENT_METHOD:
+        return {
+          ...state,
+          paymentMethod: action.paymentMethod
+        }
 
     case ActionType.SET_CONSENT_AGREED:
       return {
