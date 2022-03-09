@@ -183,11 +183,19 @@ const ExternalPaymentComponent = (): JSX.Element => {
                 <DropIn
                   options={{
                     authorization: appointmentPaymentToken,
+                    translations: {
+                      PayPal: 'Pay via PayPal',
+                      Card: 'Pay via Debit or Credit Card',
+                      chooseAWayToPay: ''
+                    },
                     paypal: {
                       flow: 'checkout',
                       currency: 'USD',
                       amount: price,
                       commit: true,
+                      buttonStyle: {
+                        tagline: false,
+                      }
                     },
                     card: {
                       cardholderName: true,
