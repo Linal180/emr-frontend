@@ -1,13 +1,16 @@
 //packages block
-import states from 'states-us';
-import moment from 'moment-timezone';
+import states from "states-us";
+import moment from "moment-timezone";
 // graphql and interfaces block
-import { formatServiceCode, formatValue } from '../utils';
-import { SelectorOption, StepLabelType } from '../interfacesTypes'
-import { UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, } from "../assets/svgs";
+import { formatServiceCode, formatValue, getFormattedDate, getStandardTime } from "../utils";
+import { SelectorOption, StepLabelType } from "../interfacesTypes";
 import {
-  Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns, Race,
-  RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality, UserRole, Communicationtype, Gender,
+  UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon,
+} from "../assets/svgs";
+import {
+  Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
+  Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality,
+  UserRole, Communicationtype, Gender,
 } from "../generated/graphql";
 
 // regex
@@ -28,7 +31,8 @@ export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
-export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
 export const NOTES = "Notes";
@@ -42,7 +46,7 @@ export enum DAYS {
   Friday = "Friday",
   Saturday = "Saturday",
   Sunday = "Sunday",
-};
+}
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
 export const SYSTEM_PASSWORD = "admin@123";
@@ -93,20 +97,22 @@ export const CREATE_NEW_APPOINTMENT = "Create New Appointment";
 export const APPOINTMENT_LIST = "Appointment List";
 export const UPDATE_APPOINTMENT = "Update Appointment";
 export const SECONDARY_INSURANCE = "Secondary Insurance";
-export const EMERGENCY_CONTACT_PHONE = "Emergency Contact Phone";
 export const FAILED_TO_CREATE_DOCTOR = "Failed to create doctor!";
 export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
-export const EMERGENCY_CONTACT_NAME = "Emergency Contact Name";
 export const ADD_STAFF = "Add Staff";
 export const FRONT_SIDE = "Front Side";
 export const BACK_SIDE = "Back Side";
-export const PATIENT_INFORMATION_TEXT = "Patient Information";
+export const DRIVING_LICENSE = "Driving License";
+export const INSURANCE_CARD = "Insurance Card";
 export const DOCUMENT_VERIFICATION = "Document Verification";
+export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
 export const CONTACT_METHOD = "How we can contact you?";
-export const RELEASE_BILLING_INFO_PERMISSIONS = "Can we release medical and billing information to this contact?";
+export const RELEASE_BILLING_INFO_PERMISSIONS =
+  "Can we release medical and billing information to this contact?";
 export const VOICE_MAIL_PERMISSIONS = "Is it okay for us to leave a voicemail?";
-export const APPOINTMENT_CONFIRMATION_PERMISSIONS = "May we phone, email, or send a text to you to confirm appointments?";
+export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
+  "May we phone, email, or send a text to you to confirm appointments?";
 export const EDIT_STAFF = "Edit Staff";
 export const CANT_UPDATE_STAFF = "Staff cant be updated";
 export const CANT_CREATE_STAFF = "Can't create staff";
@@ -166,12 +172,20 @@ export const SURGICAL_HISTORY_TEXT = "Surgical History";
 export const MEDICAL_HISTORY_TEXT = "Past Medical History";
 export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
-export const ADD_MORE_RECORDS_TEXT = "Add more records"
-export const ADD_WIDGET_TEXT = "Add Widget"
-export const ACCEPTABLE_FILES = ['.jpg', '.jpeg', '.png', '.docx', '.doc', '.pdf'];
-export const DELETE_WIDGET_DESCRIPTION = " Are you sure you want to remove this widget?"
-export const DELETE_WIDGET_TEXT = "Delete Widget"
-export const VIEW_CHART_TEXT = "View Chart"
+export const ADD_MORE_RECORDS_TEXT = "Add more records";
+export const ADD_WIDGET_TEXT = "Add Widget";
+export const ACCEPTABLE_FILES = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".docx",
+  ".doc",
+  ".pdf",
+];
+export const DELETE_WIDGET_DESCRIPTION =
+  " Are you sure you want to remove this widget?";
+export const DELETE_WIDGET_TEXT = "Delete Widget";
+export const VIEW_CHART_TEXT = "View Chart";
 export const NON_AVAILABILITY_TEXT = "Non-Availability";
 export const ADDITIONAL_INFO = "Additional Info";
 export const AVAILABILITY_STATUS = "Set your availability status";
@@ -206,7 +220,7 @@ export const ZIP_CODE = "Zip code";
 export const ADDRESS = "Address";
 export const ADDRESS_2 = "Address 2";
 export const CITY = "City";
-export const STATE = "State"
+export const STATE = "State";
 export const COUNTRY = "Country";
 export const PRACTICE_TYPE = "Practice Type";
 export const PICK_DAY_TEXT = "Pick Day";
@@ -276,6 +290,7 @@ export const PAGE_LIMIT = 8;
 export const INSURANCE = "Insurance";
 export const LAST_APPOINTMENT = "Last Appointment";
 export const RESET = "Reset";
+export const SET = "Set Password";
 export const REASON = "Reason";
 export const APPOINTMENT = "Appointment";
 export const ALL_APPOINTMENTS = "All Appointments";
@@ -324,7 +339,6 @@ export const SERVICE_CODE = "Service Code";
 export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const LOCATION_ID = "Location ID";
 export const POS = "Place of Service Code (POS)";
-export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
 export const CANCEL = "Cancel";
 export const CVV = "CVV";
@@ -338,7 +352,7 @@ export const FIRST_NAME = "First Name";
 export const CARD_NUMBER = "Card Number";
 export const EXPIRY_DATE = "Expiry Date";
 export const PRACTICE_NAME = "Practice Name";
-export const FACILITY_NAME = "Facilty Name";
+export const FACILITY_NAME = "Facility Name";
 export const SEND_EMAIL = "Send Email";
 export const START_TIME = "Start Time";
 export const END_TIME = "End Time";
@@ -388,7 +402,7 @@ export const UNAUTHORIZED = "Unauthorized";
 export const MANAGEMENT_TEXT = "Management";
 export const PROPERTIES_TEXT = "Properties";
 export const FACILITIES_TEXT = "Facilities";
-export const VISIT_REASON = "Reason for visit"
+export const VISIT_REASON = "Reason for visit";
 export const TOKEN_INVALID = "Token Invalid";
 export const RESET_FILTERS = "Reset Filters";
 export const NO_DATA_FOUND = "No data found";
@@ -466,7 +480,8 @@ export const PENDING = "Pending";
 export const SIGNED = "Signed";
 export const UPLOAD = "Upload";
 export const UPLOADS_DOCUMENT = "Upload Document";
-export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT =
+  "Drop your image here, or browse";
 export const DELETE = "Delete";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
@@ -483,23 +498,23 @@ export const GENDER_IDENTITY = "Gender Identity";
 export const HOLD_STATEMENT = "Hold Statement";
 export const HOMEBOUND = "Home Bound";
 export const LANGUAGE = "Language";
-export const REGISTRATION_DEPARTMENT = "Registration Department"
-export const PRIMARY_DEPARTMENT = "Primary Department"
-export const MARITAL_STATUS = "Marital Status"
-export const SEX_AT_BIRTH = "Sex At Birth"
-export const SEXUAL_ORIENTATION = "Sexual Orientation"
-export const USUAL_PROVIDER_ID = "Usual Provider"
-export const PRONOUNS = "Pronouns"
-export const RACE = "Race"
-export const SEX = "Sex"
-export const SUBMIT = "Submit"
-export const DOB_TEXT = "DOB"
-export const PAYMENT = "Payment"
-export const MORE_INFO = "More Info"
-export const RELOAD = "Reload Page"
-export const RELATIONSHIP = "Relationship"
-export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor"
-export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)"
+export const REGISTRATION_DEPARTMENT = "Registration Department";
+export const PRIMARY_DEPARTMENT = "Primary Department";
+export const MARITAL_STATUS = "Marital Status";
+export const SEX_AT_BIRTH = "Sex At Birth";
+export const SEXUAL_ORIENTATION = "Sexual Orientation";
+export const USUAL_PROVIDER_ID = "Usual Provider";
+export const PRONOUNS = "Pronouns";
+export const RACE = "Race";
+export const SEX = "Sex";
+export const SUBMIT = "Submit";
+export const DOB_TEXT = "DOB";
+export const PAYMENT = "Payment";
+export const MORE_INFO = "More Info";
+export const RELOAD = "Reload Page";
+export const RELATIONSHIP = "Relationship";
+export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
+export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const EMPLOYER_PHONE = "Employer Phone";
 export const USUAL_OCCUPATION = "Usual Occupation (Current or Most Recent)";
 export const USUAL_INDUSTRY = "Usual Industry";
@@ -543,16 +558,22 @@ export const DELETE_SERVICE_DESCRIPTION = "Confirm to delete Service";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
-export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION = "Confirm to delete doctor schedule";
+export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION =
+  "Confirm to delete doctor schedule";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
 export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
-export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
-export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this media?";
-export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
-export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
-export const EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT = "Emergency Contact Relationship To Patient";
-export const YOUR_NAME = "Your Name"
+export const MAMMOGRAPHY_CERTIFICATION_NUMBER =
+  "Mammography Certification Number";
+export const DELETE_MEDIA_DESCRIPTION =
+  "Are you sure you want to delete this media?";
+export const DELETE_REQUEST_DESCRIPTION =
+  "Are you sure you want to delete this request?";
+export const ANNUAL_MANAGEMENT_FEE =
+  "Annual Management Fee (based on initial capital contribution)";
+export const RELATIONSHIP_TO_PATIENT =
+  "Relationship To Patient";
+export const YOUR_NAME = "Your Name";
 export const SCHEDULE_TEXT = "Schedule";
 export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
 export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
@@ -562,38 +583,56 @@ export const PROFILE_TEXT = "Profile";
 export const CONTINUE_TEXT = "Continue";
 export const AVAILABLE_SLOTS = "Available Slots";
 export const MY_ACCOUNT_TEXT = "My Account";
-export const SKIP_NOW_TEXT = "Skip for now"
-export const SELECT_DATE = "Select Date"
-export const PATIENT_DETAILS = "Patient Details"
-export const SELECT_SERVICES = "Select Services"
-export const BOOK_APPOINTMENT = "Book Appointment"
-export const RESET_PASSWORD_TEXT = "Reset Password"
-export const NO_SLOT_AVAILABLE = "No Slot available"
-export const PATIENT_LAST_NAME = "Patient Last Name"
-export const FORGOT_PASSWORD_TEXT = "Forgot Password"
-export const PATIENT_FIRST_NAME = "Patient First Name"
-export const APPOINTMENT_DETAILS = "Appointment Details"
+export const SKIP_NOW_TEXT = "Skip for now";
+export const SELECT_DATE = "Select Date";
+export const PATIENT_DETAILS = "Patient Details";
+export const SELECT_SERVICES = "Select Services";
+export const BOOK_APPOINTMENT = "Book Appointment";
+export const RESET_PASSWORD_TEXT = "Reset Password";
+export const NO_SLOT_AVAILABLE = "No Slot available";
+export const PATIENT_LAST_NAME = "Patient Last Name";
+export const FORGOT_PASSWORD_TEXT = "Forgot Password";
+export const PATIENT_FIRST_NAME = "Patient First Name";
+export const APPOINTMENT_DETAILS = "Appointment Details";
 export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
-export const BOOK_YOUR_APPOINTMENT = "1 - Book Your Appointment"
-export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose you Payment Method"
+export const BOOK_YOUR_APPOINTMENT = "1 - Book Your Appointment";
+export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose you Payment Method";
 export const MAINTENANCE_IN_PROGRESS = "Maintenance in progress";
 export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
-export const AGREEMENT_HEADING = "User data privacy & TOS agreement."
+export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
-export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
-export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
-export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
-export const appointmentChargesDescription = (amount: string) => `You will be charged $${amount} for this appointment booking.`
-export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
-export const VERIFY_EMAIL_TEXT = "We have sent an email to example@emr.com please follow a link to verify your email";
-export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
-export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
-export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
-export const APPOINTMENT_SUCCESS_HEADING = "Thank you! Your visit at 8:15 am has been confirmed. We've sent you a confirmation message & email for your records."
-export const APPOINTMENT_SUCCESS_SUBHEADING = "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message."
-
+export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
+export const PASSWORD_CHANGE_TEXT =
+  "Your password is successfully changed. Please Sign in to your account.";
+export const SLOT_CONFIRMATION_HEADING_TWO =
+  "We've sent you a confirmation message & email for your records.";
+export const APPOINTMENT_BOOKING_PAYMENT_CHARGED =
+  "You will be charged $34.00 for this appointment booking.";
+export const SLOT_CONFIRMATION_SUB_HEADING =
+  "Skip some of the paperwork at the clinic by adding more information.";
+export const VERIFY_EMAIL_TEXT =
+  "We have sent an email to example@emr.com please follow a link to verify your email";
+export const DELETE_RECORD_LEARN_MORE_TEXT =
+  "You are about to delete this record permanently. Are you sure you want to delete this record?";
+export const CONSENT_AGREEMENT_LABEL =
+  "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record.";
+export const SLOT_CONFIRMATION_SUB_HEADING_TWO =
+  "You can access the information form now or later from your email or text message.";
+export const APPOINTMENT_CONFIRM_HEADING =
+  "We've sent you a confirmation message & email for your records.";
+export const APPOINTMENT_CONFIRM_SUBHEADING =
+  "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
+export const appointmentConfirmationDescription = (dateTime: string) =>
+  `Thank you! Your visit at ${getStandardTime(
+    dateTime || ""
+  )} on ${getFormattedDate(
+    dateTime || ""
+  )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
+  export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
+  export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
+  export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
@@ -618,19 +657,19 @@ export const DASHBOARD_ROUTE = "/dashboard";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
-export const CANCEL_APPOINTMENT = '/cancel-appointment';
+export const CANCEL_APPOINTMENT = "/cancel-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
-export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
@@ -640,81 +679,104 @@ export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointme
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
-export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
-export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
-export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
-export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be less that 100-years";
+export const PLEASE_CLICK_TO_UPDATE_DOCUMENT =
+  "Please click here to update the documents";
+export const PLEASE_ADD_DOCUMENT =
+  "Please upload or drag and drop the documents here";
+export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE =
+  "Doctor's age should be more that 20-years";
+export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE =
+  "Doctor's age should be less that 100-years";
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const ZIP_VALIDATION_MESSAGE = "Valid zip code is 5-digit long";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
-export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
-export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
+export const MAMMOGRAPHY_VALIDATION_MESSAGE =
+  "Valid mammography certification Number format is like REF-EW-111111";
+export const FACILITY_CODE_VALIDATION_MESSAGE =
+  "Facility code can only be capital alphabets 2-5 in length";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
-export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optional";
-export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
-export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
-export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
-export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
-export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;
-export const MaxLength = (fieldName: string, length: number) => `${fieldName} can be up to ${length} characters long`;
-export const MinLength = (fieldName: string, length: number) => `${fieldName} should be at least ${length} characters long`;
-export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
-export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
-export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
+export const EIN_VALIDATION_MESSAGE =
+  "EIN should be NN-NNNNNNN, dash is optional";
+export const UPIN_VALIDATION_MESSAGE =
+  "UPIN should be six-place alpha numeric identifiers";
+export const TAXONOMY_VALIDATION_MESSAGE =
+  "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
+export const REVENUE_CODE_VALIDATION_MESSAGE =
+  "Revenue code should be a 4-digit combination";
+export const DELETE_USER_INFO =
+  "This will delete all the information associated with the user.";
+export const ValidMessage = (fieldName: string, Example?: string) =>
+  `Please enter valid ${fieldName.toLowerCase()}`;
+export const MaxLength = (fieldName: string, length: number) =>
+  `${fieldName} can be up to ${length} characters long`;
+export const MinLength = (fieldName: string, length: number) =>
+  `${fieldName} should be at least ${length} characters long`;
+export const USER_REQUEST_CANNOT_EDITED_NOTE =
+  "Note: Investor has not signed the document. So, this request cannot be edited.";
+export const PASSWORD_VALIDATION_MESSAGE =
+  "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
+export const PHASE_CANNOT_CHANGE_NOTE =
+  "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
-export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done"
+export const PAYMENT_CANT_DONE =
+  "Patient not exist in system, so payment can't be done";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const MAINTENANCE_ALERT = "Maintenance is in progress";
-export const CANCEL_TIME_EXPIRED_MESSAGE = "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
-export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";
-export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
-export const CANT_BOOK_APPOINTMENT = "You can not book this appointment."
-export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully"
-export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully"
-export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully"
-export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully"
-export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated."
-export const FACILITY_NOT_FOUND = 'Facility not found!';
-export const PRACTICE_NOT_FOUND = 'Practice not found!';
-export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = 'Cancelled appointment cant be edited!'
-export const LOCATION_NOT_FOUND = 'Location not found!';
-export const APPOINTMENT_NOT_FOUND = 'Appointment not found!';
-export const STAFF_NOT_FOUND = 'Staff not found!';
-export const SCHEDULE_NOT_FOUND = 'Schedule not found!';
-export const PATIENT_NOT_FOUND = 'Patient not found!';
-export const SERVICE_NOT_FOUND = 'Service not found!';
-export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!"
-export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!"
+export const CANCEL_TIME_EXPIRED_MESSAGE =
+  "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
+export const SLOT_ALREADY_BOOKED =
+  "This patient has already a booked appointment with this provider.";
+export const APPOINTMENT_SLOT_ERROR_MESSAGE =
+  "Appointment Time is required. Please select available slot!";
+export const CANT_BOOK_APPOINTMENT = "You can not book this appointment.";
+export const APPOINTMENT_BOOKED_SUCCESSFULLY =
+  "Appointment is booked successfully";
+export const APPOINTMENT_UPDATED_SUCCESSFULLY =
+  "Appointment is updated successfully";
+export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
+export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
+export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated.";
+export const FACILITY_NOT_FOUND = "Facility not found!";
+export const PRACTICE_NOT_FOUND = "Practice not found!";
+export const CANCELLED_APPOINTMENT_EDIT_MESSAGE =
+  "Cancelled appointment cant be edited!";
+export const LOCATION_NOT_FOUND = "Location not found!";
+export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
+export const STAFF_NOT_FOUND = "Staff not found!";
+export const SCHEDULE_NOT_FOUND = "Schedule not found!";
+export const PATIENT_NOT_FOUND = "Patient not found!";
+export const SERVICE_NOT_FOUND = "Service not found!";
+export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
+export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const TRY_AGAIN = "Something went wrong. Try again!";
 export const INVALID_EMAIL = "Invalid email address";
 export const SCHEDULE_START = "Schedule Start Time";
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
-export const APPOINTMENT_CANCEL = "Your appointment is cancel successfully";
+export const APPOINTMENT_CANCEL = "Appointment Cancel";
+export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
-export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const STAFF_CREATED = "Staff created successfully!";
-export const PATIENT_CREATED = "Patient created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
-export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
-export const SERVICE_CREATED = "Service created successfully!";
-export const SERVICE_UPDATED = "Service updated successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
+export const SERVICE_CREATED = "Service created successfully!";
+export const SERVICE_UPDATED = "Service updated successfully!";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
+export const PATIENT_CREATED = "Patient created successfully!";
 export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
@@ -734,15 +796,19 @@ export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
+export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
-export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Reset password token not found.";
+export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
+export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
+export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Managers can access Admin Portal!";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
 export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
 export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
+export const SET_PASSWORD_TEXT_MESSAGE = "Set your password and login to your portal";
 export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
 export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or invalid.";
 export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
@@ -754,10 +820,10 @@ export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a ema
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
+export const appointmentChargesDescription = (amount: string) => `You will be charged $${amount} for this appointment booking.`;
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
-
 export const CLIA_ID_NUMBER_INFO = "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
@@ -772,7 +838,7 @@ export const APP_MENU_ITEMS = [
     name: MANAGEMENT_TEXT,
     items: [],
     index: 2,
-    sectionName: true
+    sectionName: true,
   },
   {
     name: USERS_TEXT,
@@ -781,15 +847,15 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: DOCTORS_TEXT,
-        link: DOCTORS_ROUTE
+        link: DOCTORS_ROUTE,
       },
       {
         name: PATIENTS_TEXT,
-        link: PATIENTS_ROUTE
+        link: PATIENTS_ROUTE,
       },
       {
         name: STAFF_TEXT,
-        link: STAFF_ROUTE
+        link: STAFF_ROUTE,
       },
     ],
   },
@@ -800,11 +866,11 @@ export const APP_MENU_ITEMS = [
     items: [
       {
         name: VIEW_APPOINTMENTS_TEXT,
-        link: VIEW_APPOINTMENTS_ROUTE
+        link: VIEW_APPOINTMENTS_ROUTE,
       },
       {
         name: SCHEDULE_APPOINTMENTS_TEXT,
-        link: SCHEDULE_APPOINTMENTS_ROUTE
+        link: `${APPOINTMENTS_ROUTE}/new`
       },
     ],
   },
@@ -812,7 +878,7 @@ export const APP_MENU_ITEMS = [
     name: CLINICAL_TEXT,
     items: [],
     index: 5,
-    sectionName: true
+    sectionName: true,
   },
   {
     name: FACILITIES_TEXT,
@@ -856,30 +922,30 @@ export const APP_MENU_ITEMS = [
 export const USER_MENU_ITEMS = [
   {
     name: DOCTORS_TEXT,
-    link: DOCTORS_ROUTE
+    link: DOCTORS_ROUTE,
   },
   {
     name: PATIENTS_TEXT,
-    link: PATIENTS_ROUTE
+    link: PATIENTS_ROUTE,
   },
   {
     name: STAFF_TEXT,
-    link: STAFF_ROUTE
+    link: STAFF_ROUTE,
   },
 ];
 
 export const APPOINTMENT_MENU_ITEMS = [
   {
     name: VIEW_APPOINTMENTS_TEXT,
-    link: VIEW_APPOINTMENTS_ROUTE
+    link: VIEW_APPOINTMENTS_ROUTE,
   },
   {
     name: SCHEDULE_APPOINTMENTS_TEXT,
-    link: SCHEDULE_APPOINTMENTS_ROUTE
+    link: `${APPOINTMENTS_ROUTE}/new`
   },
   {
     name: CALENDAR_VIEW_TEXT,
-    link: START_PROJECT_ROUTE
+    link: START_PROJECT_ROUTE,
   },
 ];
 
@@ -906,39 +972,49 @@ export const BILLING_MENU_ITEMS = [
 ];
 
 export const MAPPED_WIDGETS: SelectorOption[] = [
-  { id: 'one', name: 'one' },
-  { id: 'two', name: 'two' },
-  { id: 'three', name: 'three' },
-  { id: 'four', name: 'four' }]
+  { id: "one", name: "one" },
+  { id: "two", name: "two" },
+  { id: "three", name: "three" },
+  { id: "four", name: "four" },
+];
 
 export const MAPPED_ROLES: SelectorOption[] = [
   { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Staff, name: 'Office Staff' },
-  { id: UserRole.Doctor, name: 'Physician' },
-  { id: UserRole.Billing, name: 'Biller' },
-  { id: UserRole.DoctorAssistant, name: 'Physician Assistant' },
-  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.Staff, name: "Office Staff" },
+  { id: UserRole.Doctor, name: "Physician" },
+  { id: UserRole.Billing, name: "Biller" },
+  { id: UserRole.DoctorAssistant, name: "Physician Assistant" },
+  {
+    id: UserRole.NursePractitioner,
+    name: formatValue(UserRole.NursePractitioner),
+  },
   { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
 ];
 
 export const MAPPED_STAFF_ROLES: SelectorOption[] = [
-  { id: UserRole.Staff, name: 'Office Staff' },
+  { id: UserRole.Staff, name: "Office Staff" },
   { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: 'Biller' },
-  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.Billing, name: "Biller" },
+  {
+    id: UserRole.NursePractitioner,
+    name: formatValue(UserRole.NursePractitioner),
+  },
   { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
   { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
 ];
 
 export const MAPPED_PRACTICE_ROLES: SelectorOption[] = [
-  { id: UserRole.Doctor, name: 'Physician' },
-  { id: UserRole.DoctorAssistant, name: 'Physician Assistant' },
-  { id: UserRole.Staff, name: 'Office Staff' },
+  { id: UserRole.Doctor, name: "Physician" },
+  { id: UserRole.DoctorAssistant, name: "Physician Assistant" },
+  { id: UserRole.Staff, name: "Office Staff" },
   { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: 'Biller' },
-  { id: UserRole.NursePractitioner, name: formatValue(UserRole.NursePractitioner) },
+  { id: UserRole.Billing, name: "Biller" },
+  {
+    id: UserRole.NursePractitioner,
+    name: formatValue(UserRole.NursePractitioner),
+  },
   { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
 ];
 
@@ -946,73 +1022,237 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
   { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
-]
+];
 
-export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map(timezone => {
-  return { id: timezone, name: formatValue(timezone) }
-})
+export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz
+  .names()
+  .map((timezone) => {
+    return { id: timezone, name: formatValue(timezone) };
+  });
 
 export const MAPPED_COUNTRIES: SelectorOption[] = [{ id: USA, name: USA }];
-export const MAPPED_STATES: SelectorOption[] = states.map(({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` }));
+export const MAPPED_STATES: SelectorOption[] = states.map(
+  ({ name, abbreviation }) => ({ id: name, name: `${name} - ${abbreviation}` })
+);
 
 export const MAPPED_SERVICE_CODES: SelectorOption[] = [
-  { id: ServiceCode.Pharmacy_01, name: formatServiceCode(ServiceCode.Pharmacy_01) },
-  { id: ServiceCode.TelehealthOtherThanPatientHome_02, name: formatServiceCode(ServiceCode.TelehealthOtherThanPatientHome_02) },
+  {
+    id: ServiceCode.Pharmacy_01,
+    name: formatServiceCode(ServiceCode.Pharmacy_01),
+  },
+  {
+    id: ServiceCode.TelehealthOtherThanPatientHome_02,
+    name: formatServiceCode(ServiceCode.TelehealthOtherThanPatientHome_02),
+  },
   { id: ServiceCode.School_03, name: formatServiceCode(ServiceCode.School_03) },
-  { id: ServiceCode.HomelessShelter_04, name: formatServiceCode(ServiceCode.HomelessShelter_04) },
-  { id: ServiceCode.IndianHealthServiceFreeStandingFacility_05, name: formatServiceCode(ServiceCode.IndianHealthServiceFreeStandingFacility_05) },
-  { id: ServiceCode.IndianHealthServiceProviderBasedFacility_06, name: formatServiceCode(ServiceCode.IndianHealthServiceProviderBasedFacility_06) },
+  {
+    id: ServiceCode.HomelessShelter_04,
+    name: formatServiceCode(ServiceCode.HomelessShelter_04),
+  },
+  {
+    id: ServiceCode.IndianHealthServiceFreeStandingFacility_05,
+    name: formatServiceCode(
+      ServiceCode.IndianHealthServiceFreeStandingFacility_05
+    ),
+  },
+  {
+    id: ServiceCode.IndianHealthServiceProviderBasedFacility_06,
+    name: formatServiceCode(
+      ServiceCode.IndianHealthServiceProviderBasedFacility_06
+    ),
+  },
   { id: ServiceCode.Tribal_07, name: formatServiceCode(ServiceCode.Tribal_07) },
   { id: ServiceCode.Prison_09, name: formatServiceCode(ServiceCode.Prison_09) },
-  { id: ServiceCode.Telehealth_10, name: formatServiceCode(ServiceCode.Telehealth_10) },
+  {
+    id: ServiceCode.Telehealth_10,
+    name: formatServiceCode(ServiceCode.Telehealth_10),
+  },
   { id: ServiceCode.Prison_10, name: formatServiceCode(ServiceCode.Prison_10) },
   { id: ServiceCode.Office_11, name: formatServiceCode(ServiceCode.Office_11) },
   { id: ServiceCode.Home_12, name: formatServiceCode(ServiceCode.Home_12) },
-  { id: ServiceCode.AssistedLiving_13, name: formatServiceCode(ServiceCode.AssistedLiving_13) },
-  { id: ServiceCode.GroupHome_14, name: formatServiceCode(ServiceCode.GroupHome_14) },
-  { id: ServiceCode.MobileUnit_15, name: formatServiceCode(ServiceCode.MobileUnit_15) },
-  { id: ServiceCode.TemporaryLoOgoing_16, name: formatServiceCode(ServiceCode.TemporaryLoOgoing_16) },
-  { id: ServiceCode.PlaceOfEmployment_18, name: formatServiceCode(ServiceCode.PlaceOfEmployment_18) },
-  { id: ServiceCode.OffCampusOutpatientHospital_19, name: formatServiceCode(ServiceCode.OffCampusOutpatientHospital_19) },
-  { id: ServiceCode.UrgentCare_20, name: formatServiceCode(ServiceCode.UrgentCare_20) },
-  { id: ServiceCode.InpatientHospital_21, name: formatServiceCode(ServiceCode.InpatientHospital_21) },
-  { id: ServiceCode.OutpatientHospital_22, name: formatServiceCode(ServiceCode.OutpatientHospital_22) },
-  { id: ServiceCode.EmergencyRoomHospital_23, name: formatServiceCode(ServiceCode.EmergencyRoomHospital_23) },
-  { id: ServiceCode.AmbulatorySurgicalCenter_24, name: formatServiceCode(ServiceCode.AmbulatorySurgicalCenter_24) },
-  { id: ServiceCode.BirthingCenter_25, name: formatServiceCode(ServiceCode.BirthingCenter_25) },
-  { id: ServiceCode.MilitaryTreatmentFacility_26, name: formatServiceCode(ServiceCode.MilitaryTreatmentFacility_26) },
-  { id: ServiceCode.SkilledNursingFacility_31, name: formatServiceCode(ServiceCode.SkilledNursingFacility_31) },
-  { id: ServiceCode.NursingFacility_32, name: formatServiceCode(ServiceCode.NursingFacility_32) },
-  { id: ServiceCode.CustodialCareFacility_33, name: formatServiceCode(ServiceCode.CustodialCareFacility_33) },
-  { id: ServiceCode.Hospice_34, name: formatServiceCode(ServiceCode.Hospice_34) },
-  { id: ServiceCode.AmbulanceLand_41, name: formatServiceCode(ServiceCode.AmbulanceLand_41) },
-  { id: ServiceCode.Ambulance_42, name: formatServiceCode(ServiceCode.Ambulance_42) },
-  { id: ServiceCode.IndependentClinic_49, name: formatServiceCode(ServiceCode.IndependentClinic_49) },
-  { id: ServiceCode.FederallyQualifiedHealthCenter_50, name: formatServiceCode(ServiceCode.FederallyQualifiedHealthCenter_50) },
-  { id: ServiceCode.InpatientPsychiatricFacility_51, name: formatServiceCode(ServiceCode.InpatientPsychiatricFacility_51) },
-  { id: ServiceCode.PsychiatricFacilityPartialHospitilization_52, name: formatServiceCode(ServiceCode.PsychiatricFacilityPartialHospitilization_52) },
-  { id: ServiceCode.CommunityMentalHealthCenter_53, name: formatServiceCode(ServiceCode.CommunityMentalHealthCenter_53) },
-  { id: ServiceCode.IntermediateCareFacilityMentallyRetarded_54, name: formatServiceCode(ServiceCode.IntermediateCareFacilityMentallyRetarded_54) },
-  { id: ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55, name: formatServiceCode(ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55) },
-  { id: ServiceCode.PsychiatricResidentialTreatmentCenter_56, name: formatServiceCode(ServiceCode.PsychiatricResidentialTreatmentCenter_56) },
-  { id: ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57, name: formatServiceCode(ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57) },
-  { id: ServiceCode.NonResidentialOpioidTreatmentFacility_58, name: formatServiceCode(ServiceCode.NonResidentialOpioidTreatmentFacility_58) },
-  { id: ServiceCode.MassImmunizationCenter_60, name: formatServiceCode(ServiceCode.MassImmunizationCenter_60) },
-  { id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61, name: formatServiceCode(ServiceCode.ComprehensiveInpatientRehabilitationFacility_61) },
-  { id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62, name: formatServiceCode(ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62) },
-  { id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65, name: formatServiceCode(ServiceCode.EndStageRenalDiseaseTreatmentFacility_65) },
-  { id: ServiceCode.StateOrLocalPublicHealthClinic_71, name: formatServiceCode(ServiceCode.StateOrLocalPublicHealthClinic_71) },
-  { id: ServiceCode.RuralHealthClinic_72, name: formatServiceCode(ServiceCode.RuralHealthClinic_72) },
-  { id: ServiceCode.IndependentLaboratory_81, name: formatServiceCode(ServiceCode.IndependentLaboratory_81) },
-  { id: ServiceCode.WalkInRetailHealthClinic, name: formatServiceCode(ServiceCode.WalkInRetailHealthClinic) },
+  {
+    id: ServiceCode.AssistedLiving_13,
+    name: formatServiceCode(ServiceCode.AssistedLiving_13),
+  },
+  {
+    id: ServiceCode.GroupHome_14,
+    name: formatServiceCode(ServiceCode.GroupHome_14),
+  },
+  {
+    id: ServiceCode.MobileUnit_15,
+    name: formatServiceCode(ServiceCode.MobileUnit_15),
+  },
+  {
+    id: ServiceCode.TemporaryLoOgoing_16,
+    name: formatServiceCode(ServiceCode.TemporaryLoOgoing_16),
+  },
+  {
+    id: ServiceCode.PlaceOfEmployment_18,
+    name: formatServiceCode(ServiceCode.PlaceOfEmployment_18),
+  },
+  {
+    id: ServiceCode.OffCampusOutpatientHospital_19,
+    name: formatServiceCode(ServiceCode.OffCampusOutpatientHospital_19),
+  },
+  {
+    id: ServiceCode.UrgentCare_20,
+    name: formatServiceCode(ServiceCode.UrgentCare_20),
+  },
+  {
+    id: ServiceCode.InpatientHospital_21,
+    name: formatServiceCode(ServiceCode.InpatientHospital_21),
+  },
+  {
+    id: ServiceCode.OutpatientHospital_22,
+    name: formatServiceCode(ServiceCode.OutpatientHospital_22),
+  },
+  {
+    id: ServiceCode.EmergencyRoomHospital_23,
+    name: formatServiceCode(ServiceCode.EmergencyRoomHospital_23),
+  },
+  {
+    id: ServiceCode.AmbulatorySurgicalCenter_24,
+    name: formatServiceCode(ServiceCode.AmbulatorySurgicalCenter_24),
+  },
+  {
+    id: ServiceCode.BirthingCenter_25,
+    name: formatServiceCode(ServiceCode.BirthingCenter_25),
+  },
+  {
+    id: ServiceCode.MilitaryTreatmentFacility_26,
+    name: formatServiceCode(ServiceCode.MilitaryTreatmentFacility_26),
+  },
+  {
+    id: ServiceCode.SkilledNursingFacility_31,
+    name: formatServiceCode(ServiceCode.SkilledNursingFacility_31),
+  },
+  {
+    id: ServiceCode.NursingFacility_32,
+    name: formatServiceCode(ServiceCode.NursingFacility_32),
+  },
+  {
+    id: ServiceCode.CustodialCareFacility_33,
+    name: formatServiceCode(ServiceCode.CustodialCareFacility_33),
+  },
+  {
+    id: ServiceCode.Hospice_34,
+    name: formatServiceCode(ServiceCode.Hospice_34),
+  },
+  {
+    id: ServiceCode.AmbulanceLand_41,
+    name: formatServiceCode(ServiceCode.AmbulanceLand_41),
+  },
+  {
+    id: ServiceCode.Ambulance_42,
+    name: formatServiceCode(ServiceCode.Ambulance_42),
+  },
+  {
+    id: ServiceCode.IndependentClinic_49,
+    name: formatServiceCode(ServiceCode.IndependentClinic_49),
+  },
+  {
+    id: ServiceCode.FederallyQualifiedHealthCenter_50,
+    name: formatServiceCode(ServiceCode.FederallyQualifiedHealthCenter_50),
+  },
+  {
+    id: ServiceCode.InpatientPsychiatricFacility_51,
+    name: formatServiceCode(ServiceCode.InpatientPsychiatricFacility_51),
+  },
+  {
+    id: ServiceCode.PsychiatricFacilityPartialHospitilization_52,
+    name: formatServiceCode(
+      ServiceCode.PsychiatricFacilityPartialHospitilization_52
+    ),
+  },
+  {
+    id: ServiceCode.CommunityMentalHealthCenter_53,
+    name: formatServiceCode(ServiceCode.CommunityMentalHealthCenter_53),
+  },
+  {
+    id: ServiceCode.IntermediateCareFacilityMentallyRetarded_54,
+    name: formatServiceCode(
+      ServiceCode.IntermediateCareFacilityMentallyRetarded_54
+    ),
+  },
+  {
+    id: ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55,
+    name: formatServiceCode(
+      ServiceCode.ResidentialSubstanceAbuseTreatmenmtFacility_55
+    ),
+  },
+  {
+    id: ServiceCode.PsychiatricResidentialTreatmentCenter_56,
+    name: formatServiceCode(
+      ServiceCode.PsychiatricResidentialTreatmentCenter_56
+    ),
+  },
+  {
+    id: ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57,
+    name: formatServiceCode(
+      ServiceCode.NonResidentialSubstanceAbuseTreatmentFacility_57
+    ),
+  },
+  {
+    id: ServiceCode.NonResidentialOpioidTreatmentFacility_58,
+    name: formatServiceCode(
+      ServiceCode.NonResidentialOpioidTreatmentFacility_58
+    ),
+  },
+  {
+    id: ServiceCode.MassImmunizationCenter_60,
+    name: formatServiceCode(ServiceCode.MassImmunizationCenter_60),
+  },
+  {
+    id: ServiceCode.ComprehensiveInpatientRehabilitationFacility_61,
+    name: formatServiceCode(
+      ServiceCode.ComprehensiveInpatientRehabilitationFacility_61
+    ),
+  },
+  {
+    id: ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62,
+    name: formatServiceCode(
+      ServiceCode.ComprehensiveOutpatientRehabilitationFacility_62
+    ),
+  },
+  {
+    id: ServiceCode.EndStageRenalDiseaseTreatmentFacility_65,
+    name: formatServiceCode(
+      ServiceCode.EndStageRenalDiseaseTreatmentFacility_65
+    ),
+  },
+  {
+    id: ServiceCode.StateOrLocalPublicHealthClinic_71,
+    name: formatServiceCode(ServiceCode.StateOrLocalPublicHealthClinic_71),
+  },
+  {
+    id: ServiceCode.RuralHealthClinic_72,
+    name: formatServiceCode(ServiceCode.RuralHealthClinic_72),
+  },
+  {
+    id: ServiceCode.IndependentLaboratory_81,
+    name: formatServiceCode(ServiceCode.IndependentLaboratory_81),
+  },
+  {
+    id: ServiceCode.WalkInRetailHealthClinic,
+    name: formatServiceCode(ServiceCode.WalkInRetailHealthClinic),
+  },
 ];
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [
   { id: Speciality.Neurology, name: formatValue(Speciality.Neurology) },
   { id: Speciality.Pharmacist, name: formatValue(Speciality.Pharmacist) },
-  { id: Speciality.Gastroenterology, name: formatValue(Speciality.Gastroenterology) },
-  { id: Speciality.PediatricDentist, name: formatValue(Speciality.PediatricDentist) },
-  { id: Speciality.PhysicianAssistant, name: formatValue(Speciality.PhysicianAssistant) },
+  {
+    id: Speciality.Gastroenterology,
+    name: formatValue(Speciality.Gastroenterology),
+  },
+  {
+    id: Speciality.PediatricDentist,
+    name: formatValue(Speciality.PediatricDentist),
+  },
+  {
+    id: Speciality.PhysicianAssistant,
+    name: formatValue(Speciality.PhysicianAssistant),
+  },
 ];
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
@@ -1043,24 +1283,54 @@ export const MAPPED_RACE: SelectorOption[] = [
   { id: Race.Other, name: formatValue(Race.Other) },
   { id: Race.Asian, name: formatValue(Race.Asian) },
   { id: Race.White, name: formatValue(Race.White) },
-  { id: Race.BlackAfricanAmerican, name: formatValue(Race.BlackAfricanAmerican) },
-  { id: Race.BlackAfricanAmerican, name: formatValue(Race.BlackAfricanAmerican) },
-  { id: Race.AmericanIndianAlaskaNative, name: formatValue(Race.AmericanIndianAlaskaNative) },
-  { id: Race.NativeHawaiianPacificIslander, name: formatValue(Race.NativeHawaiianPacificIslander) },
+  {
+    id: Race.BlackAfricanAmerican,
+    name: formatValue(Race.BlackAfricanAmerican),
+  },
+  {
+    id: Race.BlackAfricanAmerican,
+    name: formatValue(Race.BlackAfricanAmerican),
+  },
+  {
+    id: Race.AmericanIndianAlaskaNative,
+    name: formatValue(Race.AmericanIndianAlaskaNative),
+  },
+  {
+    id: Race.NativeHawaiianPacificIslander,
+    name: formatValue(Race.NativeHawaiianPacificIslander),
+  },
 ];
 
 export const MAPPED_ETHNICITY: SelectorOption[] = [
   { id: Ethnicity.None, name: formatValue(Ethnicity.None) },
-  { id: Ethnicity.CenteralAmerican, name: formatValue(Ethnicity.CenteralAmerican) },
-  { id: Ethnicity.CenteralAmericanIndian, name: formatValue(Ethnicity.CenteralAmericanIndian) },
+  {
+    id: Ethnicity.CenteralAmerican,
+    name: formatValue(Ethnicity.CenteralAmerican),
+  },
+  {
+    id: Ethnicity.CenteralAmericanIndian,
+    name: formatValue(Ethnicity.CenteralAmericanIndian),
+  },
 ];
 
 export const MAPPED_SEXUAL_ORIENTATION: SelectorOption[] = [
   { id: Sexualorientation.None, name: formatValue(Sexualorientation.None) },
-  { id: Sexualorientation.DontKnow, name: formatValue(Sexualorientation.DontKnow) },
-  { id: Sexualorientation.Bisexual, name: formatValue(Sexualorientation.Bisexual) },
-  { id: Sexualorientation.Homosexual, name: formatValue(Sexualorientation.Homosexual) },
-  { id: Sexualorientation.Heterosexual, name: formatValue(Sexualorientation.Heterosexual) },
+  {
+    id: Sexualorientation.DontKnow,
+    name: formatValue(Sexualorientation.DontKnow),
+  },
+  {
+    id: Sexualorientation.Bisexual,
+    name: formatValue(Sexualorientation.Bisexual),
+  },
+  {
+    id: Sexualorientation.Homosexual,
+    name: formatValue(Sexualorientation.Homosexual),
+  },
+  {
+    id: Sexualorientation.Heterosexual,
+    name: formatValue(Sexualorientation.Heterosexual),
+  },
 ];
 
 export const MAPPED_GENDER: SelectorOption[] = [
@@ -1074,8 +1344,6 @@ export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
   { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
   { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
   { id: Genderidentity.NotExclusive, name: formatValue(Genderidentity.NotExclusive) },
-  { id: Genderidentity.TransgenderMale, name: formatValue(Genderidentity.TransgenderMale) },
-  { id: Genderidentity.TransgenderFemale, name: formatValue(Genderidentity.TransgenderFemale) },
 ];
 
 export const MAPPED_PAYMENT_METHOD: SelectorOption[] = [
@@ -1085,9 +1353,15 @@ export const MAPPED_PAYMENT_METHOD: SelectorOption[] = [
 
 export const MAPPED_COMMUNICATION_METHOD: SelectorOption[] = [
   { id: Communicationtype.Email, name: formatValue(Communicationtype.Email) },
-  { id: Communicationtype.Message, name: formatValue(Communicationtype.Message) },
+  {
+    id: Communicationtype.Message,
+    name: formatValue(Communicationtype.Message),
+  },
   { id: Communicationtype.Phone, name: formatValue(Communicationtype.Phone) },
-  { id: Communicationtype.VoiceMessage, name: formatValue(Communicationtype.VoiceMessage) },
+  {
+    id: Communicationtype.VoiceMessage,
+    name: formatValue(Communicationtype.VoiceMessage),
+  },
 ];
 
 export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
@@ -1099,32 +1373,93 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
   { id: RelationshipType.Spouse, name: formatValue(RelationshipType.Spouse) },
   { id: RelationshipType.Father, name: formatValue(RelationshipType.Father) },
   { id: RelationshipType.Unknown, name: formatValue(RelationshipType.Unknown) },
-  { id: RelationshipType.Employee, name: formatValue(RelationshipType.Employee) },
-  { id: RelationshipType.OrganDonor, name: formatValue(RelationshipType.OrganDonor) },
-  { id: RelationshipType.Grandchild, name: formatValue(RelationshipType.Grandchild) },
-  { id: RelationshipType.LifePartner, name: formatValue(RelationshipType.LifePartner) },
-  { id: RelationshipType.Grandparent, name: formatValue(RelationshipType.Grandparent) },
-  { id: RelationshipType.NephewNiece, name: formatValue(RelationshipType.NephewNiece) },
-  { id: RelationshipType.FostherChild, name: formatValue(RelationshipType.FostherChild) },
-  { id: RelationshipType.CadaverDonor, name: formatValue(RelationshipType.CadaverDonor) },
-  { id: RelationshipType.SignificantOther, name: formatValue(RelationshipType.SignificantOther) },
-  { id: RelationshipType.EmancipatedMinor, name: formatValue(RelationshipType.EmancipatedMinor) },
-  { id: RelationshipType.InjuredPlaintiiff, name: formatValue(RelationshipType.InjuredPlaintiiff) },
-  { id: RelationshipType.SponsoredDependent, name: formatValue(RelationshipType.SponsoredDependent) },
-  { id: RelationshipType.StepsonStepdaughter, name: formatValue(RelationshipType.StepsonStepdaughter) },
-  { id: RelationshipType.ChildMotherInsurance, name: formatValue(RelationshipType.ChildMotherInsurance) },
-  { id: RelationshipType.HandicappedDependent, name: formatValue(RelationshipType.HandicappedDependent) },
-  { id: RelationshipType.ChildFatherInsurance, name: formatValue(RelationshipType.ChildFatherInsurance) },
-  { id: RelationshipType.DependentOfMinorDependent, name: formatValue(RelationshipType.DependentOfMinorDependent) },
-  { id: RelationshipType.StepsonStepdaughterStepmotherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepmotherInsrtance) },
-  { id: RelationshipType.StepsonStepdaughterStepfatherInsrtance, name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsrtance) },
+  {
+    id: RelationshipType.Employee,
+    name: formatValue(RelationshipType.Employee),
+  },
+  {
+    id: RelationshipType.OrganDonor,
+    name: formatValue(RelationshipType.OrganDonor),
+  },
+  {
+    id: RelationshipType.Grandchild,
+    name: formatValue(RelationshipType.Grandchild),
+  },
+  {
+    id: RelationshipType.LifePartner,
+    name: formatValue(RelationshipType.LifePartner),
+  },
+  {
+    id: RelationshipType.Grandparent,
+    name: formatValue(RelationshipType.Grandparent),
+  },
+  {
+    id: RelationshipType.NephewNiece,
+    name: formatValue(RelationshipType.NephewNiece),
+  },
+  {
+    id: RelationshipType.FostherChild,
+    name: formatValue(RelationshipType.FostherChild),
+  },
+  {
+    id: RelationshipType.CadaverDonor,
+    name: formatValue(RelationshipType.CadaverDonor),
+  },
+  {
+    id: RelationshipType.SignificantOther,
+    name: formatValue(RelationshipType.SignificantOther),
+  },
+  {
+    id: RelationshipType.EmancipatedMinor,
+    name: formatValue(RelationshipType.EmancipatedMinor),
+  },
+  {
+    id: RelationshipType.InjuredPlaintiiff,
+    name: formatValue(RelationshipType.InjuredPlaintiiff),
+  },
+  {
+    id: RelationshipType.SponsoredDependent,
+    name: formatValue(RelationshipType.SponsoredDependent),
+  },
+  {
+    id: RelationshipType.StepsonStepdaughter,
+    name: formatValue(RelationshipType.StepsonStepdaughter),
+  },
+  {
+    id: RelationshipType.ChildMotherInsurance,
+    name: formatValue(RelationshipType.ChildMotherInsurance),
+  },
+  {
+    id: RelationshipType.HandicappedDependent,
+    name: formatValue(RelationshipType.HandicappedDependent),
+  },
+  {
+    id: RelationshipType.ChildFatherInsurance,
+    name: formatValue(RelationshipType.ChildFatherInsurance),
+  },
+  {
+    id: RelationshipType.DependentOfMinorDependent,
+    name: formatValue(RelationshipType.DependentOfMinorDependent),
+  },
+  {
+    id: RelationshipType.StepsonStepdaughterStepmotherInsrtance,
+    name: formatValue(RelationshipType.StepsonStepdaughterStepmotherInsrtance),
+  },
+  {
+    id: RelationshipType.StepsonStepdaughterStepfatherInsrtance,
+    name: formatValue(RelationshipType.StepsonStepdaughterStepfatherInsrtance),
+  },
 ];
 
 export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
-  { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
-  { title: 'Document Verification', subTitle: 'Verification information requested' },
+  {
+    title: "Patient Information",
+  },
+  {
+    title: "Document Verification",
+  },
 ];
 
 export const AGREEMENT_POINTS = [
@@ -1139,7 +1474,7 @@ export const AGREEMENT_POINTS = [
   "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
   "Pro in id ligula dictum, convallis enim ut, facilisis massa.Maris a nisi ut sapien blandit imperdiet sed id lacus.Mauis auctor interdum dignissim.Crasat lacus ma",
   "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis",
-]
+];
 
 // Breadcrumb links
 export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE }
@@ -1174,68 +1509,67 @@ export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROU
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
-export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
 
 // profile top tabs
 export const PROFILE_TOP_TABS = [
   {
-    title: 'General Info',
-    value: "1"
+    title: "General Info",
+    value: "1",
   },
   {
-    title: 'Insurance',
-    value: "2"
+    title: "Insurance",
+    value: "2",
   },
   {
-    title: 'Registration',
-    value: "3"
+    title: "Registration",
+    value: "3",
   },
   {
-    title: 'Messaging',
-    value: "4"
+    title: "Messaging",
+    value: "4",
   },
   {
-    title: 'Billing',
-    value: "5"
+    title: "Billing",
+    value: "5",
   },
   {
-    title: 'Clinical',
-    value: "6"
+    title: "Clinical",
+    value: "6",
   },
   {
-    title: 'Communicator',
-    value: "7"
+    title: "Communicator",
+    value: "7",
   },
   {
-    title: 'Documents',
-    value: "8"
+    title: "Documents",
+    value: "8",
   },
-]
+];
 
 export const DOCTOR_TOP_TABS = [
   {
-    title: 'Doctor Profile',
-    value: "1"
+    title: "Doctor Profile",
+    value: "1",
   },
   {
-    title: 'Doctors Schedule',
-    value: "2"
+    title: "Doctors Schedule",
+    value: "2",
   },
   {
-    title: 'Doctors Appointments',
-    value: "3"
+    title: "Doctors Appointments",
+    value: "3",
   },
-]
+];
 
 export const WEEK_DAYS: SelectorOption[] = [
-  { id: DAYS.Monday, name: DAYS.Monday, },
-  { id: DAYS.Tuesday, name: DAYS.Tuesday, },
-  { id: DAYS.Wednesday, name: DAYS.Wednesday, },
-  { id: DAYS.Thursday, name: DAYS.Thursday, },
-  { id: DAYS.Friday, name: DAYS.Friday, },
-  { id: DAYS.Saturday, name: DAYS.Saturday, },
-  { id: DAYS.Sunday, name: DAYS.Sunday, },
-]
+  { id: DAYS.Monday, name: DAYS.Monday },
+  { id: DAYS.Tuesday, name: DAYS.Tuesday },
+  { id: DAYS.Wednesday, name: DAYS.Wednesday },
+  { id: DAYS.Thursday, name: DAYS.Thursday },
+  { id: DAYS.Friday, name: DAYS.Friday },
+  { id: DAYS.Saturday, name: DAYS.Saturday },
+  { id: DAYS.Sunday, name: DAYS.Sunday },
+];
 
 export const dummyVitalsChartingList = [
   {
@@ -1328,7 +1662,7 @@ export const dummyVitalsChartingList = [
     specialty: "Pediatric Dentist",
     code: 89025,
   },
-]
+];
 
 export const dummyAppointmentData = {
   appTime: "16:30 - 17:00",
@@ -1338,7 +1672,7 @@ export const dummyAppointmentData = {
   patientTel: "(333)123-4567",
   patientStatus: "Status",
   patientElg: "Eligibility Issue",
-}
+};
 
 export const dummyAppointmentSubData = [
   {
@@ -1369,216 +1703,215 @@ export const dummyAppointmentSubData = [
     heading: "Insurance",
     description: "United Health Ins.",
   },
-]
-
+];
 
 export const PATIENT_CHARTING_DATA = [
   {
     title: "Allergies",
     description: "Lorem ipsum",
-    date: "25-11-22"
+    date: "25-11-22",
   },
   {
     title: "Allergies",
     description: "Lorem ipsum",
-    date: "25-11-22"
+    date: "25-11-22",
   },
   {
     title: "Allergies",
     description: "Lorem ipsum",
-    date: "25-11-22"
+    date: "25-11-22",
   },
   {
     title: "Allergies",
     description: "Lorem ipsum",
-    date: "25-11-22"
+    date: "25-11-22",
   },
   {
     title: "Allergies",
     description: "Lorem ipsum",
-    date: "25-11-22"
+    date: "25-11-22",
   },
-]
+];
 
 export const DUMMY_APPOINTMENTS = [
   {
-    "id": 1,
-    "title": "Website Re-Design Plan",
-    "startDate": "2022-02-24T04:30:00.000Z",
-    "endDate": "2022-02-24T06:30:00.000Z"
+    id: 1,
+    title: "Website Re-Design Plan",
+    startDate: "2022-02-24T04:30:00.000Z",
+    endDate: "2022-02-24T06:30:00.000Z",
   },
   {
-    "id": 2,
-    "title": "Book Flights to San Fran for Sales Trip",
-    "startDate": "2022-02-24T07:00:00.000Z",
-    "endDate": "2022-02-24T08:00:00.000Z"
+    id: 2,
+    title: "Book Flights to San Fran for Sales Trip",
+    startDate: "2022-02-24T07:00:00.000Z",
+    endDate: "2022-02-24T08:00:00.000Z",
   },
   {
-    "id": 3,
-    "title": "Install New Router in Dev Room",
-    "startDate": "2022-02-24T09:30:00.000Z",
-    "endDate": "2022-02-24T10:30:00.000Z"
+    id: 3,
+    title: "Install New Router in Dev Room",
+    startDate: "2022-02-24T09:30:00.000Z",
+    endDate: "2022-02-24T10:30:00.000Z",
   },
   {
-    "id": 4,
-    "title": "Approve Personal Computer Upgrade Plan",
-    "startDate": "2018-07-24T05:00:00.000Z",
-    "endDate": "2018-07-24T06:00:00.000Z"
+    id: 4,
+    title: "Approve Personal Computer Upgrade Plan",
+    startDate: "2018-07-24T05:00:00.000Z",
+    endDate: "2018-07-24T06:00:00.000Z",
   },
   {
-    "id": 5,
-    "title": "Final Budget Review",
-    "startDate": "2018-07-24T07:00:00.000Z",
-    "endDate": "2018-07-24T08:35:00.000Z"
+    id: 5,
+    title: "Final Budget Review",
+    startDate: "2018-07-24T07:00:00.000Z",
+    endDate: "2018-07-24T08:35:00.000Z",
   },
   {
-    "id": 6,
-    "title": "New Brochures",
-    "startDate": "2018-07-24T09:30:00.000Z",
-    "endDate": "2018-07-24T10:45:00.000Z"
+    id: 6,
+    title: "New Brochures",
+    startDate: "2018-07-24T09:30:00.000Z",
+    endDate: "2018-07-24T10:45:00.000Z",
   },
   {
-    "id": 7,
-    "title": "Install New Database",
-    "startDate": "2018-07-25T04:45:00.000Z",
-    "endDate": "2018-07-25T06:15:00.000Z"
+    id: 7,
+    title: "Install New Database",
+    startDate: "2018-07-25T04:45:00.000Z",
+    endDate: "2018-07-25T06:15:00.000Z",
   },
   {
-    "id": 8,
-    "title": "Approve New Online Marketing Strategy",
-    "startDate": "2018-07-25T07:00:00.000Z",
-    "endDate": "2018-07-25T09:00:00.000Z"
+    id: 8,
+    title: "Approve New Online Marketing Strategy",
+    startDate: "2018-07-25T07:00:00.000Z",
+    endDate: "2018-07-25T09:00:00.000Z",
   },
   {
-    "id": 9,
-    "title": "Upgrade Personal Computers",
-    "startDate": "2018-07-25T10:15:00.000Z",
-    "endDate": "2018-07-25T11:30:00.000Z"
+    id: 9,
+    title: "Upgrade Personal Computers",
+    startDate: "2018-07-25T10:15:00.000Z",
+    endDate: "2018-07-25T11:30:00.000Z",
   },
   {
-    "id": 10,
-    "title": "Customer Workshop",
-    "startDate": "2018-07-26T06:00:00.000Z",
-    "endDate": "2018-07-26T07:00:00.000Z"
+    id: 10,
+    title: "Customer Workshop",
+    startDate: "2018-07-26T06:00:00.000Z",
+    endDate: "2018-07-26T07:00:00.000Z",
   },
   {
-    "id": 11,
-    "title": "Prepare 2015 Marketing Plan",
-    "startDate": "2018-07-26T06:00:00.000Z",
-    "endDate": "2018-07-26T08:30:00.000Z"
+    id: 11,
+    title: "Prepare 2015 Marketing Plan",
+    startDate: "2018-07-26T06:00:00.000Z",
+    endDate: "2018-07-26T08:30:00.000Z",
   },
   {
-    "id": 12,
-    "title": "Brochure Design Review",
-    "startDate": "2018-07-26T09:00:00.000Z",
-    "endDate": "2018-07-26T10:30:00.000Z"
+    id: 12,
+    title: "Brochure Design Review",
+    startDate: "2018-07-26T09:00:00.000Z",
+    endDate: "2018-07-26T10:30:00.000Z",
   },
   {
-    "id": 13,
-    "title": "Create Icons for Website",
-    "startDate": "2018-07-27T05:00:00.000Z",
-    "endDate": "2018-07-27T06:30:00.000Z"
+    id: 13,
+    title: "Create Icons for Website",
+    startDate: "2018-07-27T05:00:00.000Z",
+    endDate: "2018-07-27T06:30:00.000Z",
   },
 ];
 
 export enum ATTACHMENT_TITLES {
-  ProfilePicture = 'Profile Picture',
-  DrivingLicense1 = 'Driving License 1',
-  DrivingLicense2 = 'Driving License 2',
-  InsuranceCard1 = 'Insurance Card 1',
-  InsuranceCard2 = 'Insurance Card 2'
+  ProfilePicture = "Profile Picture",
+  DrivingLicense1 = "Driving License 1",
+  DrivingLicense2 = "Driving License 2",
+  InsuranceCard1 = "Insurance Card 1",
+  InsuranceCard2 = "Insurance Card 2",
 }
 
 export const MAPPED_STATUS = [
   {
-    value: 'status',
-    label: 'Status',
+    value: "status",
+    label: "Status",
   },
   {
-    value: 'pending',
-    label: 'Pending',
+    value: "pending",
+    label: "Pending",
   },
   {
-    value: 'inLobby',
-    label: 'In Lobby',
+    value: "inLobby",
+    label: "In Lobby",
   },
   {
-    value: 'inRoom',
-    label: 'In Room',
+    value: "inRoom",
+    label: "In Room",
   },
   {
-    value: 'withDoctor',
-    label: 'With Doctor',
+    value: "withDoctor",
+    label: "With Doctor",
   },
   {
-    value: 'noShow',
-    label: 'No Show',
+    value: "noShow",
+    label: "No Show",
   },
   {
-    value: 'cancel',
-    label: 'Cancel',
+    value: "cancel",
+    label: "Cancel",
   },
   {
-    "title": "Vacation",
-    "startDate": "2018-07-27T19:00:00.000Z",
-    "endDate": "2018-08-06T19:00:00.000Z"
-  }
+    title: "Vacation",
+    startDate: "2018-07-27T19:00:00.000Z",
+    endDate: "2018-08-06T19:00:00.000Z",
+  },
 ];
 
 export const DUMMY_DOCUMENTS = [
   {
-    "title": "CBCDiagnosedocument.pdf",
-    "type": "Other",
-    "comments": "Check when patient comes next time",
-    "provider": "Dr. Clara Max",
-    "date": "8 Sep, 2020",
-    "size": "5KB",
+    title: "CBCDiagnosedocument.pdf",
+    type: "Other",
+    comments: "Check when patient comes next time",
+    provider: "Dr. Clara Max",
+    date: "8 Sep, 2020",
+    size: "5KB",
   },
   {
-    "title": "xray-analysis.pdf",
-    "type": "Clinical Document",
-    "comments": "It came with the patients other rec...",
-    "provider": "Dr. Harrold Wixen",
-    "date": "17 Oct, 2020",
-    "size": "5KB",
+    title: "xray-analysis.pdf",
+    type: "Clinical Document",
+    comments: "It came with the patients other rec...",
+    provider: "Dr. Harrold Wixen",
+    date: "17 Oct, 2020",
+    size: "5KB",
   },
   {
-    "title": "Bloodreport.pdf",
-    "type": "Care Plan",
-    "comments": "N/A",
-    "provider": "Dr. A. H. John",
-    "date": "24 May, 2020",
-    "size": "122KB",
+    title: "Bloodreport.pdf",
+    type: "Care Plan",
+    comments: "N/A",
+    provider: "Dr. A. H. John",
+    date: "24 May, 2020",
+    size: "122KB",
   },
   {
-    "title": "fracturecondition.png",
-    "type": "Chart Note",
-    "comments": "N/A",
-    "provider": "N/A",
-    "date": "17 Oct, 2020",
-    "size": "87KB",
+    title: "fracturecondition.png",
+    type: "Chart Note",
+    comments: "N/A",
+    provider: "N/A",
+    date: "17 Oct, 2020",
+    size: "87KB",
   },
 ];
 
 export const PROFILE_DETAIL_DATA = [
   {
     title: "Allergies",
-    description: LOREM_TEXT_15
+    description: LOREM_TEXT_15,
   },
   {
     title: "Past Medical History",
-    description: LOREM_TEXT_15
+    description: LOREM_TEXT_15,
   },
   {
     title: "Problems",
-    description: LOREM_TEXT_15
+    description: LOREM_TEXT_15,
   },
   {
     title: "Medications",
-    description: LOREM_TEXT_15
+    description: LOREM_TEXT_15,
   },
   {
     title: "Family History",
-    description: LOREM_TEXT_15
+    description: LOREM_TEXT_15,
   },
-]
+];

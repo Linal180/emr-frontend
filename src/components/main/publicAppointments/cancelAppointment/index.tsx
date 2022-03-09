@@ -1,7 +1,7 @@
 // packages block
 import { FC, useEffect } from "react";
 import { useParams } from "react-router";
-import { Box, Card, Typography } from '@material-ui/core';
+import { Box, Card, colors, Typography } from '@material-ui/core';
 // components block
 import Alert from "../../../common/Alert";
 // utils, styles  block, constants
@@ -10,7 +10,7 @@ import { ParamsType } from "../../../../interfacesTypes";
 import { useCancelAppointmentMutation } from "../../../../generated/graphql";
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles"
 import {
-  APPOINTMENT_CANCEL, APPOINTMENT_NOT_EXIST, CANT_CANCELLED_APPOINTMENT, NOT_FOUND_EXCEPTION,
+  APPOINTMENT_CANCEL, APPOINTMENT_CANCEL_TEXT, APPOINTMENT_NOT_EXIST, CANT_CANCELLED_APPOINTMENT, NOT_FOUND_EXCEPTION,
   PATIENT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND
 } from "../../../../constants";
 
@@ -35,7 +35,6 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
     }
   });
 
-
   useEffect(() => {
     if (id) {
       cancelAppointment({
@@ -47,16 +46,14 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
   }, [cancelAppointment, id])
 
   return (
-    <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75}
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
       <Card>
-        <Box minHeight="580px" className={classes.container}>
-          <Box maxWidth="700px">
-            <Typography component="h3" variant="h3">{APPOINTMENT_CANCEL}</Typography>
-          </Box>
+        <Box p={3} borderBottom={`1px solid ${colors.grey[300]}`}>
+          <Typography variant="h4"><strong>{APPOINTMENT_CANCEL}</strong></Typography>
+        </Box>
+
+        <Box className={classes.container}>
+          <Typography variant="h5" component="h5">{APPOINTMENT_CANCEL_TEXT}</Typography>
         </Box>
       </Card>
     </Box>

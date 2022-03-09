@@ -8,7 +8,8 @@ import { useLoginStyles } from "../../styles/loginStyles";
 import { EMRLogo, LoginSideImage } from "../../assets/svgs";
 import {
   FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD_TEXT, FORGOT_PASSWORD_TEXT_MESSAGE, LOGIN_ROUTE, LOGIN_TEXT_MESSAGE,
-  RESET_PASSWORD_ROUTE, RESET_PASSWORD_TEXT, RESET_PASSWORD_TEXT_MESSAGE, ROOT_ROUTE, SIGN_IN
+  RESET_PASSWORD_ROUTE, RESET_PASSWORD_TEXT, RESET_PASSWORD_TEXT_MESSAGE, ROOT_ROUTE, SET, SET_PASSWORD_ROUTE,
+  SET_PASSWORD_TEXT_MESSAGE, SIGN_IN
 } from "../../constants";
 
 const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
@@ -18,6 +19,11 @@ const AuthLayout: FC<Children> = ({ children }): JSX.Element => {
   let text = ''
 
   switch (pathname) {
+    case SET_PASSWORD_ROUTE:
+      title = SET
+      text = SET_PASSWORD_TEXT_MESSAGE
+      break;
+
     case RESET_PASSWORD_ROUTE:
       title = RESET_PASSWORD_TEXT
       text = RESET_PASSWORD_TEXT_MESSAGE
