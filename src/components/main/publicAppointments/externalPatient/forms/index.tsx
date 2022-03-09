@@ -43,14 +43,14 @@ import {
   useUpdatePatientMutation, Attachment,
 } from "../../../../../generated/graphql";
 import {
-  MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
-  EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN,
-  ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
-  EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER,
-  PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
-  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
+  MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
+  FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, SSN,
+  CITY, COUNTRY, EMPTY_OPTION, PREFERRED_PHARMACY, APPOINTMENT_CONFIRMATION_PERMISSIONS,
+  PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS,
+  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS,
   MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
-  PATIENT_NOT_FOUND, ADDRESS, CANCEL_APPOINTMENT,
+  PATIENT_NOT_FOUND, CANCEL_APPOINTMENT, DEMOGRAPHICS, APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, FIRST_NAME,
+  LAST_NAME, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD,
 } from "../../../../../constants";
 import { EMRLogo } from '../../../../../assets/svgs';
 
@@ -419,10 +419,10 @@ const PatientFormComponent: FC = (): JSX.Element => {
   }
 
   return (
-    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
-      <EMRLogo />
-
-      <Box mb={3} />
+    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="0px 30px 0px 60px">
+      <Box pt={3}>
+        <EMRLogo />
+      </Box>
 
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -430,7 +430,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
             <Typography variant="h4">{MORE_INFO}</Typography>
 
             <Box display="flex" justifyContent="flex-end" flexWrap="wrap">
-              {/* <Button
+              <Button
                 variant="outlined"
                 color="secondary"
                 onClick={() => history.push(`${CANCEL_APPOINTMENT}/${id}`)}
@@ -438,7 +438,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 {CANCEL_APPOINTMENT_TEXT}
               </Button>
 
-              <Box p={1} /> */}
+              <Box p={1} />
 
               {activeStep < 1 ?
                 <Button
@@ -477,7 +477,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
               {activeStep === 0 ? (
                 <Box className={classes.mainGridContainer}>
                   <Box mb={2} mr={2}>
-                    <CardComponent cardTitle={PATIENT_INFORMATION_TEXT}>
+                    <CardComponent cardTitle={DEMOGRAPHICS}>
                       {getPatientLoading ? <ViewDataLoader columns={6} rows={7} hasMedia={false} /> : <>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
@@ -493,7 +493,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="address2"
-                              controllerLabel={ADDRESS_2}
+                              controllerLabel={APARTMENT_SUITE_OTHER}
                             />
                           </Grid>
                         </Grid>
@@ -539,15 +539,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                         </Grid>
 
                         <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="ssn"
-                              controllerLabel={SSN}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
+                          <Grid item md={4} sm={12} xs={12}>
                             <Selector
                               isRequired
                               value={EMPTY_OPTION}
@@ -556,10 +548,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               options={renderDoctors(doctorList)}
                             />
                           </Grid>
-                        </Grid>
 
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
+                          <Grid item md={4} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
                               controllerName="pharmacy"
@@ -567,44 +557,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             />
                           </Grid>
 
-                          <Grid item md={6} sm={12} xs={12}>
+                          <Grid item md={4} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
-                              controllerName="language"
-                              controllerLabel={PREFERRED_LANGUAGE}
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <Selector
-                              isRequired
-                              value={EMPTY_OPTION}
-                              label={RACE}
-                              name="race"
-                              options={MAPPED_RACE}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <Selector
-                              isRequired
-                              value={EMPTY_OPTION}
-                              label={ETHNICITY}
-                              name="ethnicity"
-                              options={MAPPED_ETHNICITY}
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <Selector
-                              name="maritialStatus"
-                              label={MARITAL_STATUS}
-                              value={EMPTY_OPTION}
-                              options={MAPPED_MARITAL_STATUS}
+                              controllerName="ssn"
+                              controllerLabel={SSN}
                             />
                           </Grid>
                         </Grid>
@@ -614,28 +571,38 @@ const PatientFormComponent: FC = (): JSX.Element => {
                   </Box>
 
                   <Box mb={2} mr={2}>
-                    <CardComponent cardTitle={EMERGENCY_CONTACT_NAME}>
+                    <CardComponent cardTitle={EMERGENCY_CONTACT}>
                       {getPatientLoading ? <ViewDataLoader columns={6} rows={7} hasMedia={false} /> : <>
-                        <Grid item md={6} sm={12} xs={12}>
-                          <InputController
-                            fieldType="text"
-                            controllerName="emergencyName"
-                            controllerLabel={EMERGENCY_CONTACT_NAME}
-                          />
+                        <Grid container spacing={3}>
+                          <Grid item md={6} sm={12} xs={12}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="emergencyName"
+                              controllerLabel={FIRST_NAME}
+                            />
+                          </Grid>
+
+                          <Grid item md={6} sm={12} xs={12}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="emergencyName"
+                              controllerLabel={LAST_NAME}
+                            />
+                          </Grid>
                         </Grid>
 
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <Selector
                               value={EMPTY_OPTION}
-                              label={EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT}
+                              label={RELATIONSHIP_TO_PATIENT}
                               name="emergencyRelationship"
                               options={MAPPED_RELATIONSHIP_TYPE}
                             />
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            <PhoneField label={EMERGENCY_CONTACT_PHONE} name='emergencyPhone' />
+                            <PhoneField label={PHONE} name='emergencyPhone' />
                           </Grid>
                         </Grid>
 
@@ -664,7 +631,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="emergencyAddress"
-                              controllerLabel={ADDRESS}
+                              controllerLabel={STREET_ADDRESS}
                             />
                           </Grid>
 
@@ -672,7 +639,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="emergencyAddress2"
-                              controllerLabel={ADDRESS_2}
+                              controllerLabel={APARTMENT_SUITE_OTHER}
                             />
                           </Grid>
                         </Grid>
@@ -778,7 +745,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 <Box>
                   <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                     <Box py={2}>
-                      <Typography component="h4" variant="h4">Driving License</Typography>
+                      <Typography component="h4" variant="h4">{DRIVING_LICENSE}</Typography>
+
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           {renderDocument(ATTACHMENT_TITLES.DrivingLicense1, drivingLicense1)}
@@ -791,7 +759,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </Box>
 
                     <Box py={2}>
-                      <Typography component="h4" variant="h4">Insurance Card</Typography>
+                      <Typography component="h4" variant="h4">{INSURANCE_CARD}</Typography>
+
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
                           {renderDocument(ATTACHMENT_TITLES.InsuranceCard1, insuranceCard1)}

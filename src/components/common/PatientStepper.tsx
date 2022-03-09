@@ -20,16 +20,12 @@ const PatientStepper = ({ activeStep }: StepperComponentProps) => {
       style={{ position: 'relative' }}
       data-cy="newCourseStepper"
     >
-      {PATIENT_REGISTRATION_STEPS.map(({ title, subTitle }, index) => {
+      {PATIENT_REGISTRATION_STEPS.map(({ title }, index) => {
         return (
           <Step key={index}>
             <StepLabel StepIconComponent={CustomStepIcon}>
-              <Typography variant="h5" component="h5">
+              <Typography variant="h4" component="h5">
                 {title}
-              </Typography>
-
-              <Typography variant="body2" component="p">
-                {subTitle}
               </Typography>
             </StepLabel>
           </Step>)
