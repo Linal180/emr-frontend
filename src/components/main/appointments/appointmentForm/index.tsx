@@ -418,7 +418,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         const { startTime, endTime } = slot || {}
 
                         return (
-                          <li onClick={() => handleSlot(slot)}>
+                          <li onClick={() => handleSlot(slot)} key={index}>
                             <div>
                               <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
                               <label htmlFor={`timeSlot-${index}`}>

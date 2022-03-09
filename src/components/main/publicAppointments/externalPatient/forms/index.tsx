@@ -1,14 +1,13 @@
 // packages block
 import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent } from 'react';
-import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { FileIcon, defaultStyles, DefaultExtensionType } from 'react-file-icon';
 import { useForm, FormProvider, SubmitHandler, Controller } from 'react-hook-form';
 import {
-  Box, Button, Card, Grid, Typography, Checkbox, FormControlLabel, CircularProgress, FormControl, InputLabel,
-  Radio, Accordion, AccordionSummary, AccordionDetails, IconButton
+  Box, Button, Card, Grid, Typography, CircularProgress, FormControl, InputLabel,
+  IconButton
 } from '@material-ui/core';
 // components
 import Alert from "../../../../common/Alert";
@@ -21,15 +20,17 @@ import ViewDataLoader from '../../../../common/ViewDataLoader';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 //context, graphql and utils block
 import history from '../../../../../history';
+import { EMRLogo } from '../../../../../assets/svgs';
 import { FacilityContext } from "../../../../../context";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
-import { CardIcon, PaypalButton, PaypalIcon } from '../../../../../assets/svgs';
-import { WHITE_TWO, GRAY_TWO, WHITE_SIX, WHITE, GREEN } from "../../../../../theme";
+import { GRAY_TWO, WHITE, GREEN, WHITE_SEVEN } from "../../../../../theme";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import { getDocumentByType, getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
-import { AntSwitch, useExternalPatientStyles } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import {
+  AntSwitch, useExternalPatientStyles
+} from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/patientReducer"
@@ -38,20 +39,18 @@ import {
   ActionType as mediaActionType
 } from "../../../../../reducers/mediaReducer";
 import {
-  Attachment,
   AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race, AttachmentsPayload,
   RelationshipType, useGetAttachmentsLazyQuery, useGetPatientLazyQuery, useRemoveAttachmentDataMutation,
-  useUpdatePatientMutation
+  useUpdatePatientMutation, Attachment,
 } from "../../../../../generated/graphql";
 import {
   MAPPED_MARITAL_STATUS, MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
-  PATIENT_NOT_FOUND, ADDRESS, agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL, SELECT_PROVIDER,
-  EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN, ADDRESS_2,
-  CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
-  EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD, PREFERRED_LANGUAGE,
-  RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS, DOCUMENT_VERIFICATION,
-  CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS, MAPPED_STATES, MAPPED_COUNTRIES,
-  USA, NEXT, FINISH, FIRST_NAME, LAST_NAME, CARD_NUMBER, EXPIRY_DATE, CVV, PAY_DEBIT_CARD_TEXT, PAY_PAYPAL_TEXT, PAY, ATTACHMENT_TITLES
+  EMERGENCY_CONTACT_NAME, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, RACE, SSN,
+  ADDRESS_2, CITY, COUNTRY, EMPTY_OPTION, ETHNICITY, MAPPED_ETHNICITY, MAPPED_RACE, MARITAL_STATUS, PREFERRED_PHARMACY,
+  EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER,
+  PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
+  DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
+  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, PATIENT_NOT_FOUND, ADDRESS,
 } from "../../../../../constants";
 
 const PatientFormComponent: FC = (): JSX.Element => {
@@ -63,7 +62,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
-    consentAgreed, isAppointment, isBilling, isVoice, paymentMethod
+    isAppointment, isBilling, isVoice
   } = state
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -252,84 +251,86 @@ const PatientFormComponent: FC = (): JSX.Element => {
   });
 
   const onSubmit: SubmitHandler<ExternalPatientInputProps> = async (inputs) => {
-    const {
-      ssn, dob, callToConsent, language, race, ethnicity, pharmacy,
-      preferredCommunicationMethod, voiceCallPermission, phonePermission, emergencyName, emergencyPhone,
-      emergencyState, emergencyCity, emergencyAddress, emergencyAddress2, emergencyCountry, emergencyZipCode,
-      emergencyRelationship, address, address2, state, city, country, zipCode
-    } = inputs;
-    const { id: selectedRace } = race
-    const { id: selectedState } = state
-    const { id: selectedCountry } = country
-    const { id: selectedEthnicity } = ethnicity
-    const { id: selectedRelation } = emergencyRelationship
-    const { id: selectedEmergencyCountry } = emergencyCountry
-    const { id: selectedEmergencyState } = emergencyState || {}
-    const { id: selectedCommunicationMethod } = preferredCommunicationMethod
+    if (activeStep === 0) {
+      const {
+        ssn, dob, callToConsent, language, race, ethnicity, pharmacy,
+        preferredCommunicationMethod, voiceCallPermission, phonePermission, emergencyName, emergencyPhone,
+        emergencyState, emergencyCity, emergencyAddress, emergencyAddress2, emergencyCountry, emergencyZipCode,
+        emergencyRelationship, address, address2, state, city, country, zipCode
+      } = inputs;
+      const { id: selectedRace } = race
+      const { id: selectedState } = state
+      const { id: selectedCountry } = country
+      const { id: selectedEthnicity } = ethnicity
+      const { id: selectedRelation } = emergencyRelationship
+      const { id: selectedEmergencyCountry } = emergencyCountry
+      const { id: selectedEmergencyState } = emergencyState || {}
+      const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
-    const patientItemInput = {
-      suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '',
-      registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '',
-      dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''),
-      callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''),
-      medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No,
-      holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '', pharmacy: pharmacy || '',
-      ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, voiceCallPermission: voiceCallPermission || false,
-      statementDelivereOnline: false, statementNote: '', race: selectedRace as Race || Race.White,
-      preferredCommunicationMethod: selectedCommunicationMethod as Communicationtype || Communicationtype.Email,
-    };
+      const patientItemInput = {
+        suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '',
+        registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '',
+        dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''),
+        callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''),
+        medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No,
+        holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '', pharmacy: pharmacy || '',
+        ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, voiceCallPermission: voiceCallPermission || false,
+        statementDelivereOnline: false, statementNote: '', race: selectedRace as Race || Race.White,
+        preferredCommunicationMethod: selectedCommunicationMethod as Communicationtype || Communicationtype.Email,
+      };
 
-    const contactInput = {
-      contactType: ContactType.Self, country: selectedCountry || '', email: '', city: city || '', mobile: '',
-      zipCode: zipCode || '', state: selectedState || '', phone: '', address: address || '', address2: address2 || '',
-    };
+      const contactInput = {
+        contactType: ContactType.Self, country: selectedCountry || '', email: '', city: city || '', mobile: '',
+        zipCode: zipCode || '', state: selectedState || '', phone: '', address: address || '', address2: address2 || '',
+      };
 
-    const emergencyContactInput = {
-      contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '',
-      mobile: '', primaryContact: false, relationship: selectedRelation as RelationshipType || RelationshipType.Ward,
-      city: emergencyCity, state: selectedEmergencyState, country: selectedEmergencyCountry, zipCode: emergencyZipCode || '',
-      address: emergencyAddress, address2: emergencyAddress2,
-    };
+      const emergencyContactInput = {
+        contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '',
+        mobile: '', primaryContact: false, relationship: selectedRelation as RelationshipType || RelationshipType.Ward,
+        city: emergencyCity, state: selectedEmergencyState, country: selectedEmergencyCountry, zipCode: emergencyZipCode || '',
+        address: emergencyAddress, address2: emergencyAddress2,
+      };
 
-    const guarantorContactInput = {
-      firstName: '', middleName: '', lastName: '', email: '', contactType: ContactType.Guarandor,
-      employerName: '', address2: '', zipCode: '', city: '', state: '', phone: '', suffix: '',
-      country: USA, ssn: '', address: '', primaryContact: false,
-    };
+      const guarantorContactInput = {
+        firstName: '', middleName: '', lastName: '', email: '', contactType: ContactType.Guarandor,
+        employerName: '', address2: '', zipCode: '', city: '', state: '', phone: '', suffix: '',
+        country: USA, ssn: '', address: '', primaryContact: false,
+      };
 
-    const guardianContactInput = {
-      firstName: '', middleName: '', primaryContact: false, lastName: '',
-      contactType: ContactType.Guardian, suffix: '',
-    };
+      const guardianContactInput = {
+        firstName: '', middleName: '', primaryContact: false, lastName: '',
+        contactType: ContactType.Guardian, suffix: '',
+      };
 
-    const nextOfKinContactInput = {
-      name: '', phone: '', mobile: '', primaryContact: false,
-    };
+      const nextOfKinContactInput = {
+        name: '', phone: '', mobile: '', primaryContact: false,
+      };
 
-    const employerInput = {
-      name: '', email: '', phone: '', usualOccupation: '', industry: '',
-    };
+      const employerInput = {
+        name: '', email: '', phone: '', usualOccupation: '', industry: '',
+      };
 
-    const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
-    const contactIdInput = basicContactId ? { id: basicContactId, ...contactInput } : { ...contactInput }
-    const kinContactIdInput = kinContactId ? { id: kinContactId, ...nextOfKinContactInput } : { ...nextOfKinContactInput }
-    const guardianIdInput = guardianContactId ? { id: guardianContactId, ...guardianContactInput } : { ...guardianContactInput }
-    const emergencyIdInput = emergencyContactId ? { id: emergencyContactId, ...emergencyContactInput } : { ...emergencyContactInput }
-    const guarantorIdInput = guarantorContactId ? { id: guarantorContactId, ...guarantorContactInput } : { ...guarantorContactInput }
+      const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
+      const contactIdInput = basicContactId ? { id: basicContactId, ...contactInput } : { ...contactInput }
+      const kinContactIdInput = kinContactId ? { id: kinContactId, ...nextOfKinContactInput } : { ...nextOfKinContactInput }
+      const guardianIdInput = guardianContactId ? { id: guardianContactId, ...guardianContactInput } : { ...guardianContactInput }
+      const emergencyIdInput = emergencyContactId ? { id: emergencyContactId, ...emergencyContactInput } : { ...emergencyContactInput }
+      const guarantorIdInput = guarantorContactId ? { id: guarantorContactId, ...guarantorContactInput } : { ...guarantorContactInput }
 
-    await updatePatient({
-      variables: {
-        updatePatientInput: {
-          updatePatientItemInput: { id, ...patientItemInput },
-          updateContactInput: { ...contactIdInput },
-          updateEmployerInput: { ...employerIdInput },
-          updateGuardianContactInput: { ...guardianIdInput },
-          updateEmergencyContactInput: { ...emergencyIdInput },
-          updateGuarantorContactInput: { ...guarantorIdInput },
-          updateNextOfKinContactInput: { ...kinContactIdInput },
+      await updatePatient({
+        variables: {
+          updatePatientInput: {
+            updatePatientItemInput: { id, ...patientItemInput },
+            updateContactInput: { ...contactIdInput },
+            updateEmployerInput: { ...employerIdInput },
+            updateGuardianContactInput: { ...guardianIdInput },
+            updateEmergencyContactInput: { ...emergencyIdInput },
+            updateGuarantorContactInput: { ...guarantorIdInput },
+            updateNextOfKinContactInput: { ...kinContactIdInput },
+          }
         }
-      }
-    })
+      })
+    }
   };
 
   useEffect(() => {
@@ -338,10 +339,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
       :
       Alert.error(PATIENT_NOT_FOUND)
   }, [getPatient, id])
-
-  const handleChangeAccordion = (paymentMethod: string) =>
-    (_: ChangeEvent<{}>, isExpanded: boolean) =>
-      dispatch({ type: ActionType.SET_PAYMENT_METHOD, paymentMethod })
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked, name } } = event
@@ -366,13 +363,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
   const handleNextStep = () => {
     activeStep !== 0 && dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep + 1 })
-  };
-
-  const handleBackStep = () =>
-    dispatch({ type: ActionType.SET_ACTIVE_STEP, activeStep: activeStep - 1 });
-
-  const handleConsent = (checked: boolean) => {
-    dispatch({ type: ActionType.SET_CONSENT_AGREED, consentAgreed: checked })
   };
 
   const handleFinish = (e: any) => {
@@ -426,10 +416,55 @@ const PatientFormComponent: FC = (): JSX.Element => {
       />
     )
   }
+
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75}>
+    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
+      <EMRLogo />
+
+      <Box mb={3} />
+
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box mb={3} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+            <Typography variant="h4">{MORE_INFO}</Typography>
+
+            <Box display="flex" justifyContent="flex-end" flexWrap="wrap">
+              {/* <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => history.push(`${CANCEL_APPOINTMENT}/${id}`)}
+              >
+                {CANCEL_APPOINTMENT_TEXT}
+              </Button>
+
+              <Box p={1} /> */}
+
+              {activeStep < 1 ?
+                <Button
+                  variant="contained"
+                  color='primary'
+                  type={activeStep === 0 ? 'submit' : 'button'}
+                  disabled={updatePatientLoading}
+                  onClick={handleNextStep}
+                >
+                  {NEXT}
+
+                  {updatePatientLoading && <CircularProgress size={20} color="inherit" />}
+                </Button>
+                :
+                <Button
+                  variant="contained"
+                  color='primary'
+                  type="button"
+                  onClick={handleFinish}
+                  disabled={updatePatientLoading}
+                >
+                  {FINISH}
+                </Button>
+              }
+            </Box>
+          </Box>
+
           <Box display="flex" flexWrap="wrap" gridGap={20}>
             <Box className={classes.stepperGrid}>
               <Card className={classes.stepperContainer}>
@@ -738,7 +773,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </CardComponent>
                   </Box>
                 </Box>
-              ) : activeStep === 1 ? (
+              ) : activeStep === 1 && (
                 <Box>
                   <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
                     <Box py={2}>
@@ -768,159 +803,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
                     </Box>
                   </CardComponent>
                 </Box>
-              ) : activeStep === 2 ? (
-                <CardComponent cardTitle={DOCUMENT_VERIFICATION}>
-                  <Box className={classes.agreementContainer}>
-                    <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>
-
-                    <Box bgcolor={WHITE_SIX} my={2} p={3.75} className={classes.agreementPointsContainer}>
-                      <ul>
-                        {agreementPoints.map((point) => (
-                          <li>
-                            <Typography variant="h6" component="p">{point}</Typography>
-                          </li>
-                        ))}
-                      </ul>
-                    </Box>
-
-                    <Box pb={2}>
-                      <FormControlLabel
-                        control={<Checkbox color="primary" onChange={({ target: { checked } }) => handleConsent(checked)} />}
-                        label={CONSENT_AGREEMENT_LABEL}
-                      />
-                    </Box>
-                  </Box>
-                </CardComponent>
-              ) : activeStep === 3 && (
-                <Box>
-                  <Box className={classes.paymentAccordion}>
-                    <Accordion expanded={paymentMethod === 'card'} onChange={handleChangeAccordion('card')}>
-                      <AccordionSummary
-                        expandIcon={<Radio color='primary' disableRipple checked={paymentMethod === 'card'} />}
-                        aria-controls="panel1bh-content"
-                        id="panel1bh-header"
-                      >
-                        <Box display="flex" alignItems="center">
-                          <CardIcon />
-                          <Box ml={3}>
-                            <Typography variant='h4'>{PAY_DEBIT_CARD_TEXT}</Typography>
-                          </Box>
-                        </Box>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Box className={classes.paymentAccordionDetail}>
-                          <Grid container spacing={3}>
-                            <Grid item md={6} sm={12} xs={12}>
-                              <InputController
-                                fieldType="text"
-                                controllerName="firstName"
-                                controllerLabel={FIRST_NAME}
-                              />
-                            </Grid>
-
-                            <Grid item md={6} sm={12} xs={12}>
-                              <InputController
-                                fieldType="text"
-                                controllerName="lastName"
-                                controllerLabel={LAST_NAME}
-                              />
-                            </Grid>
-                          </Grid>
-
-                          <Grid container spacing={3}>
-                            <Grid item md={6} sm={12} xs={12}>
-                              <InputController
-                                fieldType="number"
-                                controllerName="cardNumber"
-                                controllerLabel={CARD_NUMBER}
-                              />
-                            </Grid>
-
-                            <Grid item md={6} sm={12} xs={12}>
-                              <Grid container spacing={3}>
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="text"
-                                    controllerName="expiryDate"
-                                    controllerLabel={EXPIRY_DATE}
-                                  />
-                                </Grid>
-
-                                <Grid item md={6} sm={12} xs={12}>
-                                  <InputController
-                                    fieldType="number"
-                                    controllerName="cvv"
-                                    controllerLabel={CVV}
-                                  />
-                                </Grid>
-                              </Grid>
-                            </Grid>
-                          </Grid>
-
-                          <Box display="flex">
-                            <Button variant="contained" color="primary">{PAY}</Button>
-                          </Box>
-                        </Box>
-                      </AccordionDetails>
-                    </Accordion>
-                  </Box>
-
-                  <Box className={classes.paymentAccordion} mt={2}>
-                    <Accordion expanded={paymentMethod === 'paypal'} onChange={handleChangeAccordion('paypal')}>
-                      <AccordionSummary
-                        expandIcon={<Radio color='primary' disableRipple checked={paymentMethod === 'paypal'} />}
-                        aria-controls="panel2bh-content"
-                        id="panel2bh-header"
-                      >
-                        <Box display="flex" alignItems="center">
-                          <PaypalIcon />
-                          <Box ml={3}>
-                            <Typography variant='h4'>{PAY_PAYPAL_TEXT}</Typography>
-                          </Box>
-                        </Box>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Box component={Link} mt={3} mb={3} className={classes.paymentAccordionDetail}>
-                          <PaypalButton />
-                        </Box>
-                      </AccordionDetails>
-                    </Accordion>
-                  </Box>
-                </Box>
               )}
             </Box>
           </Box>
-
-          <Box display="flex" justifyContent="center" gridGap={20} mt={3}>
-            <Button variant="contained" disabled={activeStep === 0} onClick={handleBackStep}>
-              Back
-            </Button>
-
-            {activeStep < 1 ?
-              <Button
-                variant="contained"
-                type={activeStep === 0 ? 'submit' : 'button'}
-                className="blue-button" disabled={updatePatientLoading}
-                onClick={handleNextStep}
-              >
-                {NEXT}
-
-                {updatePatientLoading && <CircularProgress size={20} color="inherit" />}
-              </Button>
-              :
-              <Button
-                variant="contained" type="button"
-                className={consentAgreed ? "blue-button" : ''}
-                onClick={handleFinish}
-                disabled={!consentAgreed}
-              >
-                {FINISH}
-              </Button>
-            }
-          </Box>
-        </Box>
-      </form>
-    </FormProvider>
+        </form>
+      </FormProvider>
+    </Box>
   );
 };
 

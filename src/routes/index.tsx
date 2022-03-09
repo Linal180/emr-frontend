@@ -15,6 +15,7 @@ import ViewStaff from "../pages/main/staff/viewStaff";
 import AddResult from "../pages/main/reports/addResult";
 import AddDoctor from "../pages/main/doctors/addDoctor";
 import ResetPassword from "../pages/auth/resetPassword";
+import ProfileComponent from "../components/main/profile";
 import ViewDoctor from "../pages/main/doctors/viewDoctor";
 import ForgetPassword from "../pages/auth/forgetPassword";
 import AddPatient from "../pages/main/patients/addPatient";
@@ -45,8 +46,10 @@ import { Appointments } from "../pages/main/appointments/appointmentsListing";
 import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
 import { PatientChart } from "../pages/main/patients/patientDetail/patientChart";
+import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
 import { ScheduleAppointments } from "../pages/main/appointments/scheduleAppointments";
 import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
+import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
 import { VitalsCards } from "../pages/main/patients/patientDetail/patientChart/patientChartCards/patientVitals";
 // constants
 import { AuthContext } from "../context";
@@ -55,10 +58,9 @@ import {
   STAFF_ROUTE, DOCTORS_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, CANCEL_APPOINTMENT,
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, SCHEDULE_APPOINTMENTS_ROUTE, INVOICES_ROUTE,
-  FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PRACTICE_MANAGEMENT_ROUTE, MAINTENANCE_ROUTE,
-  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE,
+  FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PROFILE_ROUTE, MAINTENANCE_ROUTE, 
+  PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
 } from "../constants";
-import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -73,6 +75,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={`${SLOT_CONFIRMATION}/:id`} component={AppointmentConfirmation} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_CANCEL} component={AppointmentCancel} exact />
       <PublicRoute path={`${CANCEL_APPOINTMENT}/:id`} component={CancelAppointment} exact />
+      <PublicRoute path={`${APPOINTMENT_PAYMENT}/:id`} component={ExternalPayment} exact />
       <PublicRoute path={PATIENT_APPOINTMENT_FAIL} component={AppointmentFail} exact />
       <PublicRoute path={`${PUBLIC_APPOINTMENT_ROUTE}/:id`} component={PublicAppointment} exact />
 
@@ -83,6 +86,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} />
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/:id`} component={ViewPractice} />
       <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={PracticeListing} />
+      <PrivateRoute exact path={PROFILE_ROUTE} component={ProfileComponent} />
 
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
       <PrivateRoute exact path={`${DASHBOARD_ROUTE}/start-project`} component={StartProject} />

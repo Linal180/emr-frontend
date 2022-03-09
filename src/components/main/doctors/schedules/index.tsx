@@ -128,7 +128,7 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
 
                       return slots && slots.length > 0
                         && (
-                          <Box className={classes.viewSlots} mb={3}>
+                          <Box key={day} className={classes.viewSlots} mb={3}>
                             <Typography className={classes.heading}>
                               {day}
                             </Typography>

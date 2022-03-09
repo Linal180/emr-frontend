@@ -27,7 +27,7 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
+  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
   AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, UploadIcon
@@ -141,7 +141,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   }, [id, attachmentId, attachmentData, fetchAttachment, fetchPatient, reloadAttachment])
 
   const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
-  const selfContact = contacts?.filter(item => item.primaryContact)
+  const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
 
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";

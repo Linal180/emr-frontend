@@ -63,7 +63,7 @@ const AppointmentCard = ({ visible, onHide }: AppointmentTooltip.LayoutProps): J
 
             {dummyAppointmentSubData.map(({ heading, description }) => {
               return (
-                <Box display='flex' justifyContent='space-between' pb={1}>
+                <Box display='flex' key={`${heading}`} justifyContent='space-between' pb={1}>
                   <Typography variant="body2">{heading}</Typography>
                   <Typography variant="subtitle2" color="inherit">{description}</Typography>
                 </Box>

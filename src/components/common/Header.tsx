@@ -8,12 +8,12 @@ import DropdownMenu from "./DropdownMenu";
 import history from "../../history";
 import { EMRLogo } from "../../assets/svgs";
 import { AuthContext } from "../../context";
-import { activeClass, isSuperAdmin } from "../../utils";
+import { activeClass, formatValue, isSuperAdmin } from "../../utils";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import {
-  BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, RICHARD_TEXT, USER_MENU_ITEMS,
+  BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, USER_MENU_ITEMS,
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, PROFILE_MENU_ITEMS, FACILITIES_TEXT,
-  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE
+  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SUPER_ADMIN, ADMIN
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -97,7 +97,7 @@ const HeaderNew: FC = (): JSX.Element => {
             className={classes.profileItemName}
           >
             <Typography>{HELLO_TEXT}</Typography>
-            <Typography variant="h6">{RICHARD_TEXT}</Typography>
+            <Typography variant="h6">{isSuper ? formatValue(SUPER_ADMIN) : formatValue(ADMIN)}</Typography>
           </Box>
 
           <DropdownMenu menuItem={PROFILE_MENU_ITEMS} avatarIcon={true} />

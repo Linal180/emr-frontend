@@ -13,7 +13,7 @@ import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { formatPhone, getFormattedDate, getTimestamps } from "../../../../utils";
-import { DoctorPayload, useGetDoctorLazyQuery } from "../../../../generated/graphql";
+import { Contact, DoctorPayload, useGetDoctorLazyQuery } from "../../../../generated/graphql";
 import { AtIcon, HashIcon, LocationIcon, ProfileUserIcon } from "../../../../assets/svgs";
 import { DOCTORS_ROUTE, DOCTOR_NOT_FOUND, DOCTOR_TOP_TABS, EDIT_DOCTOR } from "../../../../constants";
 import {
@@ -63,7 +63,7 @@ const DoctorDetailComponent = (): JSX.Element => {
   }, [getDoctor, id])
 
   const { firstName, lastName, dob, contacts, createdAt } = doctor || {}
-  const selfContact = contacts?.filter(item => item.primaryContact)
+  const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
   const DOCTOR_AGE = moment().diff(getTimestamps(dob || ''), 'years');
 
   let selfPhoneNumber = "";

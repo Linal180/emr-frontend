@@ -64,11 +64,13 @@ export const PUBLIC_LINK = "Public Appointment Link";
 export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
 export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
+export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
 export const PAYMENT_TYPE = "Payment Type";
+export const SELECT_PAYMENT = "Select Payment";
 export const AUTO_ACCIDENT = "Auto Accident";
 export const STREET_ADDRESS = "Street Address";
 export const OTHER_ACCIDENT = "Other Accident";
@@ -152,6 +154,7 @@ export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
 export const VITALS_TEXT = "Vitals";
 export const SAVE_TEXT = "Save";
+export const UPLOAD_PICTURE = "Upload Picture";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const ALLERGIES_TEXT = "Allergies";
@@ -324,6 +327,8 @@ export const POS = "Place of Service Code (POS)";
 export const TAMXONOMY_CODE = "Tamxonomy Code";
 export const USER_ID = "User ID";
 export const CANCEL = "Cancel";
+export const CVV = "CVV";
+export const PAY = "Pay";
 export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
@@ -331,6 +336,7 @@ export const DOCTORS_TEXT = "Doctors";
 export const UNVERIFIED = "Unverified";
 export const FIRST_NAME = "First Name";
 export const CARD_NUMBER = "Card Number";
+export const EXPIRY_DATE = "Expiry Date";
 export const PRACTICE_NAME = "Practice Name";
 export const FACILITY_NAME = "Facilty Name";
 export const SEND_EMAIL = "Send Email";
@@ -429,9 +435,13 @@ export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 export const CONTACT_INFORMATION = "Contact Information";
 export const DEMOGRAPHICS = "Demographics";
 export const GUARANTOR = "Guarantor";
+export const BILLING = "Billing";
+export const PAYMENT_METHOD = "Payment Method";
 export const REGISTRATION_DATES = "Provider/ Registration Dates";
 export const PRIVACY = "Privacy";
 export const PRICE = "Price";
+export const ADDRESS_NUMBER = "Address Number";
+export const CONTACT_NUMBER = "Contact Number";
 export const IS_ACTIVE = "Active";
 export const EMERGENCY_CONTACT = "Emergency Contact";
 export const NEXT_OF_KIN = "Next Of Kin";
@@ -481,6 +491,11 @@ export const SEXUAL_ORIENTATION = "Sexual Orientation"
 export const USUAL_PROVIDER_ID = "Usual Provider"
 export const PRONOUNS = "Pronouns"
 export const RACE = "Race"
+export const SEX = "Sex"
+export const SUBMIT = "Submit"
+export const DOB_TEXT = "DOB"
+export const PAYMENT = "Payment"
+export const MORE_INFO = "More Info"
 export const RELOAD = "Reload Page"
 export const RELATIONSHIP = "Relationship"
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor"
@@ -495,9 +510,6 @@ export const ID_NUMBER = "ID Number";
 export const GROUP_NUMBER = "Policy / Group number";
 export const ISSUE_DATE = "Issue Date";
 export const EXPIRATION_DATE = "Expiration Date";
-export const EXPIRY_DATE = "Expiry Date";
-export const CVV = "CVV";
-export const PAY = "Pay";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
@@ -542,35 +554,45 @@ export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial ca
 export const EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT = "Emergency Contact Relationship To Patient";
 export const YOUR_NAME = "Your Name"
 export const SCHEDULE_TEXT = "Schedule";
+export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
+export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
-export const RICHARD_TEXT = "Richard";
 export const PROFILE_TEXT = "Profile";
+export const CONTINUE_TEXT = "Continue";
+export const AVAILABLE_SLOTS = "Available Slots";
 export const MY_ACCOUNT_TEXT = "My Account";
 export const SKIP_NOW_TEXT = "Skip for now"
-export const FORGOT_PASSWORD_TEXT = "Forgot Password"
-export const RESET_PASSWORD_TEXT = "Reset Password"
+export const SELECT_DATE = "Select Date"
 export const PATIENT_DETAILS = "Patient Details"
 export const SELECT_SERVICES = "Select Services"
 export const BOOK_APPOINTMENT = "Book Appointment"
-export const APPOINTMENT_DETAILS = "Appointment Details"
+export const RESET_PASSWORD_TEXT = "Reset Password"
 export const NO_SLOT_AVAILABLE = "No Slot available"
 export const PATIENT_LAST_NAME = "Patient Last Name"
+export const FORGOT_PASSWORD_TEXT = "Forgot Password"
 export const PATIENT_FIRST_NAME = "Patient First Name"
+export const APPOINTMENT_DETAILS = "Appointment Details"
 export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
+export const BOOK_YOUR_APPOINTMENT = "1 - Book Your Appointment"
+export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose you Payment Method"
 export const MAINTENANCE_IN_PROGRESS = "Maintenance in progress";
 export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
+export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const AGREEMENT_HEADING = "User data privacy & TOS agreement."
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
+export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
 export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
+export const appointmentChargesDescription = (amount: string) => `You will be charged $${amount} for this appointment booking.`
 export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
 export const VERIFY_EMAIL_TEXT = "We have sent an email to example@emr.com please follow a link to verify your email";
-export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
+export const APPOINTMENT_SUCCESS_HEADING = "Thank you! Your visit at 8:15 am has been confirmed. We've sent you a confirmation message & email for your records."
+export const APPOINTMENT_SUCCESS_SUBHEADING = "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message."
 
 // Roles
 export const STAFF = "STAFF";
@@ -584,6 +606,7 @@ export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 // routes paths
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
+export const PROFILE_ROUTE = "/profile";
 export const STAFF_ROUTE = "/staff";
 export const VITALS_ROUTE = "/vitals";
 export const PATIENTS_CHART = "/chart";
@@ -601,6 +624,7 @@ export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
+export const CANCEL_APPOINTMENT = '/cancel-appointment';
 export const PATIENT_INFORMATION = "/patient-information";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
@@ -608,11 +632,11 @@ export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
+export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
-export const CANCEL_APPOINTMENT = '/cancel-appointment';
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -646,6 +670,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 
 // ALERT MESSAGES
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done"
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const MAINTENANCE_ALERT = "Maintenance is in progress";
 export const CANCEL_TIME_EXPIRED_MESSAGE = "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
@@ -861,7 +886,7 @@ export const APPOINTMENT_MENU_ITEMS = [
 export const PROFILE_MENU_ITEMS = [
   {
     name: PROFILE_TEXT,
-    link: "/",
+    link: PROFILE_ROUTE,
   },
   {
     name: MY_ACCOUNT_TEXT,
@@ -1097,16 +1122,12 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
 
 export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 
-export const getSteps = (): StepLabelType[] => {
-  return [
-    { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
-    // { title: 'Document Verification', subTitle: 'Verification information requested' },
-    { title: 'Consent Agreement', subTitle: 'Provide basic Patient Information' },
-    { title: 'Payment', subTitle: 'Process Transaction' }
-  ];
-};
+export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
+  { title: 'Patient Information', subTitle: 'Provide basic Patient Information' },
+  { title: 'Document Verification', subTitle: 'Verification information requested' },
+];
 
-export const agreementPoints = [
+export const AGREEMENT_POINTS = [
   "Proin id ligula dictum, convallis enim ut, facilisis massa.Mauris a nisi ut sapien blandit imperdiet sed id lacus.Mauris auctor interdum dignissim.",
   "Proin id ligula dictum, convallis enim ut, facilisis massa.",
   "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed",
