@@ -15,9 +15,12 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
+import { GRAY_TWO, WHITE } from '../../../../theme';
 import { extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext, FacilityContext } from '../../../../context';
 import { GeneralFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
+import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
@@ -41,11 +44,8 @@ import {
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES,
+  MAPPED_COUNTRIES, BILLING, PAYMENT_METHOD, CARD_NUMBER, EXPIRY_DATE, CVV,
 } from "../../../../constants";
-import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
-import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
-import { GRAY_TWO, WHITE } from '../../../../theme';
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -61,6 +61,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     four: false,
     five: false
   })
+
   const [isChecked, setIsChecked] = useState(false);
   const classes = usePublicAppointmentStyles();
 
@@ -459,6 +460,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   };
 
   useEffect(() => {
+    console.log("Getting patient")
     if (isEdit) {
       id ?
         getPatient({ variables: { getPatient: { id } } }) : Alert.error(PATIENT_NOT_FOUND)
@@ -470,13 +472,14 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       usualProviderId: EMPTY_OPTION,
       facilityId: { id, name }
     });
-
+    console.log("Getting ====")
     if (id) {
       fetchAllDoctorList(id);
     }
   }, [fetchAllDoctorList, reset]);
 
   useEffect(() => {
+    console.log("setting facility")
     selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
   }, [fetchList, selectedFacility, selectedFacilityName, watch])
 
@@ -903,7 +906,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             </label>
                           </FormControl>
                         )}
-                      /> </Grid>
+                      />
+                    </Grid>
                   </>
                 )}
               </CardComponent>
@@ -1233,6 +1237,67 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     </Grid>
                   </>
                 )}
+              </CardComponent>
+
+              <Box pb={3} />
+
+              <CardComponent cardTitle={BILLING}>
+                <Grid item md={12} sm={12} xs={12}>
+                  <Selector
+                    name="paymentmethod"
+                    label={PAYMENT_METHOD}
+                    value={EMPTY_OPTION}
+                    options={MAPPED_RELATIONSHIP_TYPE}
+                  />
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="firstName"
+                      controllerLabel={FIRST_NAME}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      controllerName="lastName"
+                      controllerLabel={LAST_NAME}
+                    />
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3}>
+                  <Grid item md={6} sm={12} xs={12}>
+                    <InputController
+                      fieldType="number"
+                      controllerName="cardNumber"
+                      controllerLabel={CARD_NUMBER}
+                    />
+                  </Grid>
+
+                  <Grid item md={6} sm={12} xs={12}>
+                    <Grid container spacing={3}>
+                      <Grid item md={6} sm={12} xs={12}>
+                        <InputController
+                          fieldType="number"
+                          controllerName="expiryDate"
+                          controllerLabel={EXPIRY_DATE}
+                        />
+                      </Grid>
+
+                      <Grid item md={6} sm={12} xs={12}>
+                        <InputController
+                          fieldType="text"
+                          controllerName="cvv"
+                          controllerLabel={CVV}
+                        />
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Grid>
               </CardComponent>
             </Grid>
           </Grid>

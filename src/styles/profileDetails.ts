@@ -1,7 +1,8 @@
-import { makeStyles } from "@material-ui/core";
-import { BLACK, BLACK_ONE, BLUE_SEVEN, GRAY_TWO, WHITE, WHITE_SIX } from "../theme";
+import { makeStyles, createStyles } from "@material-ui/core";
+import { BLACK, BLACK_ONE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
 
-export const useProfileDetailsStyles = makeStyles((theme) => ({
+export const useProfileDetailsStyles = makeStyles(() =>
+  createStyles({
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
     },
@@ -14,11 +15,29 @@ export const useProfileDetailsStyles = makeStyles((theme) => ({
       display: 'flex'
     },
 
+    patientProfileCard: {
+      padding: 50,
+      background: WHITE,
+      borderRadius: 12,
+      display: 'flex',
+      width: '60%',
+      margin: 'auto',
+      justifyContent: 'space-around'
+    },
+
+    changePasswordCard: {
+      background: WHITE,
+      borderRadius: 12,
+      width: '30%',
+      margin: 'auto',
+      padding: 30
+    },
+
     profileImage: {
       height: 160,
       width: 160,
       borderRadius: 12,
-
+      
       "& > img": {
         height: '100%',
         width: '100%',
@@ -37,7 +56,7 @@ export const useProfileDetailsStyles = makeStyles((theme) => ({
     },
 
     profileInfoItem: {
-      minWidth: "25%",
+      width: "25%",
       alignItems: 'center',
       color: GRAY_TWO,
       marginBottom: 8,
@@ -91,7 +110,6 @@ export const useProfileDetailsStyles = makeStyles((theme) => ({
     dropdown: {
       "& .MuiMenu-paper": {
         padding: 20
-
       },
 
       "& .MuiPopover-paper": {
@@ -102,10 +120,10 @@ export const useProfileDetailsStyles = makeStyles((theme) => ({
     profileCardMasonry: {
       columnMinWidth: '30%',
       columnCount: 3,
-
       [theme.breakpoints.down('md')]: {
         columnCount: 2,
       },
+
       [theme.breakpoints.down('sm')]: {
         columnCount: 1,
       },

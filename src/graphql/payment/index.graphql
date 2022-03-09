@@ -1,0 +1,23 @@
+
+
+query GetToken {
+  getToken {
+    clientToken 
+  }
+}
+
+mutation ChargeAfterAppointment($paymentInput: PaymentInputsAfterAppointment!){
+  chargeAfterAppointment(paymentInput: $paymentInput){
+    response {
+      error
+      status
+      message
+      name
+    }
+    
+    appointment {
+      id
+      billingStatus
+    }
+  }
+}

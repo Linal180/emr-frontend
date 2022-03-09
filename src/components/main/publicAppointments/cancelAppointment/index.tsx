@@ -1,22 +1,26 @@
 // packages block
 import { FC, useEffect } from "react";
+import { useParams } from "react-router";
 import { Box, Card, Typography } from '@material-ui/core';
+// components block
+import Alert from "../../../common/Alert";
 // utils, styles  block, constants
 import { WHITE_TWO } from '../../../../theme';
-import { APPOINTMENT_CANCEL, CANT_CANCELLED_APPOINTMENT, PATIENT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND } from "../../../../constants";
-import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles"
-import { useCancelAppointmentMutation } from "../../../../generated/graphql";
-import Alert from "../../../common/Alert";
-import { useParams } from "react-router";
 import { ParamsType } from "../../../../interfacesTypes";
+import { useCancelAppointmentMutation } from "../../../../generated/graphql";
+import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles"
+import {
+  APPOINTMENT_CANCEL, APPOINTMENT_NOT_EXIST, CANT_CANCELLED_APPOINTMENT, NOT_FOUND_EXCEPTION,
+  PATIENT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND
+} from "../../../../constants";
 
 const CancelAppointmentComponent: FC = (): JSX.Element => {
   const classes = confirmationStyles();
   const { id } = useParams<ParamsType>();
 
   const [cancelAppointment,] = useCancelAppointmentMutation({
-    onError() {
-      Alert.error(CANT_CANCELLED_APPOINTMENT)
+    onError({ message }) {
+      Alert.error(message === NOT_FOUND_EXCEPTION ? APPOINTMENT_NOT_EXIST : CANT_CANCELLED_APPOINTMENT)
     },
 
     onCompleted(data) {

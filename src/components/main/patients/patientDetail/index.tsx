@@ -1,11 +1,11 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useState } from 'react';
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useState, useCallback } from 'react';
 import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Avatar, Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
@@ -18,19 +18,24 @@ import history from '../../../../history';
 import Search from '../../../common/Search';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { useTableStyles } from "../../../../styles/tableStyles";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  AttachmentType, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
+  mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
+  ActionType as mediaActionType
+} from "../../../../reducers/mediaReducer";
+import {
+  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
   AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, UploadIcon
 } from "../../../../assets/svgs";
 import {
-  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION, MAPPED_WIDGETS,
-  PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT, SIGNED, UPLOAD, VIEW_CHART_TEXT
+  ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION,
+  MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, UPLOAD,
+  SCHEDULE_APPOINTMENTS_TEXT, SIGNED, VIEW_CHART_TEXT
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -38,8 +43,10 @@ const PatientDetailsComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useProfileDetailsStyles()
   const tableClasses = useTableStyles()
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { anchorEl, attachmentUrl, attachmentData, openDelete, patientData, tabValue, attachmentId } = state
+  const [{ anchorEl, openDelete, patientData, tabValue }, dispatch] =
+    useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
+    useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
   const { handleSubmit } = methods;
@@ -70,7 +77,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
       if (getAttachment) {
         const { preSignedUrl } = getAttachment
-        preSignedUrl && dispatch({ type: ActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
+        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
       }
     },
   });
@@ -95,25 +102,25 @@ const PatientDetailsComponent = (): JSX.Element => {
             attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
           const { id: attachmentId, } = profilePicture || {}
 
-          attachmentId && dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
+          attachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
-          dispatch({ type: ActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
+          mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
         }
       }
     },
   });
 
-  useEffect(() => {
-    if (id) {
-      getPatient({
+  const fetchPatient = useCallback(async () => {
+    try {
+      id && await getPatient({
         variables: { getPatient: { id } }
       })
-    }
-  }, [getPatient, id])
+    } catch (error) { }
+  }, [getPatient, id]);
 
-  useEffect(() => {
+  const fetchAttachment = useCallback(async () => {
     try {
-      attachmentId && getAttachment({
+      attachmentId && await getAttachment({
         variables: {
           getMedia: { id: attachmentId }
         },
@@ -121,8 +128,20 @@ const PatientDetailsComponent = (): JSX.Element => {
     } catch (error) { }
   }, [attachmentId, getAttachment])
 
+  const reloadAttachment = useCallback(() => {
+    if (attachmentData) {
+      fetchAttachment();
+    } else {
+      fetchPatient()
+    }
+  }, [attachmentData, fetchAttachment, fetchPatient])
+
+  useEffect(() => {
+    reloadAttachment()
+  }, [id, attachmentId, attachmentData, fetchAttachment, fetchPatient, reloadAttachment])
+
   const { firstName, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
-  const selfContact = contacts?.filter(item => item.primaryContact)
+  const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
 
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
@@ -230,8 +249,24 @@ const PatientDetailsComponent = (): JSX.Element => {
               <Box key={attachmentId} display="flex" alignItems="center">
                 <Box pl={1}>
                   <Box pr={3.75} position="relative">
-                    <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-                    <MediaCards isProfile={true} moduleType={AttachmentType.Patient} itemId={id} imageSide={attachmentUrl} attachmentData={attachmentData || undefined} notDescription={true} />
+                    {getAttachmentLoading ?
+                      <Avatar variant="square" className={classes.profileImage}>
+                        <CircularProgress size={20} color="inherit" />
+                      </Avatar>
+                      :
+                      <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+                    }
+
+                    <MediaCards
+                      title={ATTACHMENT_TITLES.ProfilePicture}
+                      reload={() => reloadAttachment()}
+                      isProfile={true}
+                      notDescription={true}
+                      moduleType={AttachmentType.Patient}
+                      itemId={id}
+                      imageSide={attachmentUrl}
+                      attachmentData={attachmentData || undefined}
+                    />
                   </Box>
                 </Box>
               </Box>

@@ -3,15 +3,15 @@ import { FC, Reducer, useReducer, MouseEvent } from "react";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Card, CardContent, CardHeader, IconButton, Box, Typography, Menu } from "@material-ui/core";
 // components block
+import PatientCardForm from "./PatientCardForm";
 // interfaces/types block
-import {
-  patientReducer, Action, initialState, State, ActionType
-} from "../../../../../reducers/patientReducer";
+import history from "../../../../../history";
 import { AddChartingIcon } from "../../../../../assets/svgs";
 import { ChartingCardComponentType } from "../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
-import history from "../../../../../history";
-import PatientCardForm from "./PatientCardForm";
+import {
+  patientReducer, Action, initialState, State, ActionType
+} from "../../../../../reducers/patientReducer";
 
 const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon, vitalsCard }): JSX.Element => {
   const classes = usePatientChartingStyles()
@@ -68,8 +68,9 @@ const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, c
           <CardContent>
             {cardChartingData && cardChartingData.map((item, index) => {
               const { title, description, date } = item
+
               return (
-                <Box pb={2}>
+                <Box pb={2} key={index}>
                   <Box display="flex" justifyContent="space-between">
                     <Typography className={classes.cardContentHeading} key={`${item}-${index}`}>{title}</Typography>
                     <Typography className={classes.cardContentDate}>{date}</Typography>

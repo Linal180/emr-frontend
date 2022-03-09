@@ -4,7 +4,7 @@ import { Box, Checkbox, FormControlLabel, Typography } from '@material-ui/core';
 import CardComponent from "../../../../common/CardComponent";
 // constants and styles block
 import { WHITE_SIX } from '../../../../../theme';
-import { agreementPoints, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL } from '../../../../../constants';
+import { AGREEMENT_POINTS, AGREEMENT_HEADING, CONSENT_AGREEMENT_LABEL } from '../../../../../constants';
 import { consentAgreementStyles } from '../../../../../styles/publicAppointmentStyles/consentAgreementStyles';
 
 const ConsentFormComponent = () => {
@@ -17,7 +17,7 @@ const ConsentFormComponent = () => {
 
         <Box bgcolor={WHITE_SIX} my={2} p={3.75} className={classes.agreementPointsContainer}>
           <ul>
-            {agreementPoints.map((point) => (
+            {AGREEMENT_POINTS.map((point) => (
               <li>
                 <Typography variant="h6" component="p">{point}</Typography>
               </li>
