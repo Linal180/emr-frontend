@@ -50,7 +50,7 @@ import {
   PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
   MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
-  PATIENT_NOT_FOUND, ADDRESS,
+  PATIENT_NOT_FOUND, ADDRESS, CANCEL_APPOINTMENT,
 } from "../../../../../constants";
 import { EMRLogo } from '../../../../../assets/svgs';
 
@@ -417,6 +417,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
       />
     )
   }
+
   return (
     <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
       <EMRLogo />
@@ -429,9 +430,15 @@ const PatientFormComponent: FC = (): JSX.Element => {
             <Typography variant="h4">{MORE_INFO}</Typography>
 
             <Box display="flex" justifyContent="flex-end" flexWrap="wrap">
-              <Button variant="outlined" color="secondary">{CANCEL_APPOINTMENT_TEXT}</Button>
+              {/* <Button
+                variant="outlined"
+                color="secondary"
+                onClick={() => history.push(`${CANCEL_APPOINTMENT}/${id}`)}
+              >
+                {CANCEL_APPOINTMENT_TEXT}
+              </Button>
 
-              <Box p={1} />
+              <Box p={1} /> */}
 
               {activeStep < 1 ?
                 <Button

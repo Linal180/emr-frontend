@@ -64,6 +64,7 @@ export const PUBLIC_LINK = "Public Appointment Link";
 export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
 export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
+export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";

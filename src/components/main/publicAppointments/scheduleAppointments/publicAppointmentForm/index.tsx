@@ -236,15 +236,16 @@ const PublicAppointmentForm = (): JSX.Element => {
 
       <Box mb={3} />
 
-      <Box mb={3} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
-        <Typography variant="h4">{BOOK_YOUR_APPOINTMENT}</Typography>
-
-        <Button variant="contained" color="primary">{BOOK_APPOINTMENT}</Button>
-      </Box>
 
       <Box>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
+            <Box mb={3} display="flex" justifyContent="space-between" alignItems="center" flexWrap="wrap">
+              <Typography variant="h4">{BOOK_YOUR_APPOINTMENT}</Typography>
+
+              <Button variant="contained" type="submit" color="primary" disabled={!agreed}>{BOOK_APPOINTMENT}</Button>
+            </Box>
+
             <Grid container spacing={3}>
               <Grid lg={9} md={8} sm={6} xs={12} item>
                 <CardComponent cardTitle={SELECT_SERVICES}>

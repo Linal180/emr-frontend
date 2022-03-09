@@ -142,6 +142,7 @@ mutation CreateExternalAppointment($createExternalAppointmentInput: CreateExtern
 
     appointment {
       id
+      token
       providerId
       patientId
       facilityId
