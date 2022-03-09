@@ -18,7 +18,7 @@ export const consentAgreementStyles = makeStyles({
     }
   },
 
-  AGREEMENT_POINTSContainer: {
+  agreementPointsContainer: {
     maxHeight: "calc(100vh - 344px)",
     overflowY: "auto",
   },
