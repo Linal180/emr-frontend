@@ -17,6 +17,7 @@ import { ParamsType } from '../../../../interfacesTypes';
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
   appointmentChargesDescription,
+  NONE,
 } from '../../../../constants';
 import {
   appointmentReducer, Action, initialState, State, ActionType
@@ -177,7 +178,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
 
       <Grid container spacing={3} justifyContent='center' alignItems='center'>
         <Grid item md={6} sm={12} xs={12}>
-          <Box mt={10} p={5}>
+          <Box mt={5} p={5}>
             {appointmentPaymentToken ? (
               <Box>
                 <DropIn

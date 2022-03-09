@@ -312,6 +312,9 @@ body .MuiTabPanel-root {
 .zoid-outlet {
   width: 100% !important;
 }
+.braintree-option {
+  min-height: 80px !important;
+}
 .braintree-option, .braintree-sheet, .braintree-sheet__header, .braintree-upper-container:before  {
   border: none !important;
   background-color: #ffffff !important;
