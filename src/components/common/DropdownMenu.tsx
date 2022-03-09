@@ -57,7 +57,7 @@ const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon, curre
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         transformOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        {menuItem && menuItem.map((item) => (<Link to={item.link} className={classes.menuLink}>
+        {menuItem && menuItem.map((item) => (<Link key={`${item.link}-${item.name}`} to={item.link} className={classes.menuLink}>
           <MenuItem onClick={handleClose}>{item.name}</MenuItem>
         </Link>
         ))}

@@ -68,8 +68,9 @@ const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, c
           <CardContent>
             {cardChartingData && cardChartingData.map((item, index) => {
               const { title, description, date } = item
+
               return (
-                <Box pb={2}>
+                <Box pb={2} key={index}>
                   <Box display="flex" justifyContent="space-between">
                     <Typography className={classes.cardContentHeading} key={`${item}-${index}`}>{title}</Typography>
                     <Typography className={classes.cardContentDate}>{date}</Typography>

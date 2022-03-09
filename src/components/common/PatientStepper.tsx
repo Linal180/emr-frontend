@@ -22,7 +22,7 @@ const PatientStepper = ({ activeStep }: StepperComponentProps) => {
     >
       {PATIENT_REGISTRATION_STEPS.map(({ title, subTitle }, index) => {
         return (
-          <Step key={index}>
+          <Step key={`${index}-${title}`}>
             <StepLabel StepIconComponent={CustomStepIcon}>
               <Typography variant="h5" component="h5">
                 {title}
