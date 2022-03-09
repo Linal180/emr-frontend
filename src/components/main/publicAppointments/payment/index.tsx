@@ -1,7 +1,7 @@
 // packages block
 import { useParams } from 'react-router';
 import { Reducer, useCallback, useEffect, useReducer, useState } from 'react';
-import { Box, Button } from '@material-ui/core';
+import { Box, Button, Grid, Typography } from '@material-ui/core';
 import DropIn from 'braintree-web-drop-in-react';
 import {
   PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload,
@@ -12,13 +12,15 @@ import BackdropLoader from '../../../common/Backdrop';
 // constants and types block
 import history from "../../../../history";
 import { ParamsType } from '../../../../interfacesTypes';
-import { APPOINTMENT_BOOKED_SUCCESSFULLY, PAY, SLOT_CONFIRMATION } from '../../../../constants';
+import { APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_BOOKING_PAYMENT_CHARGED, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION } from '../../../../constants';
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/appointmentReducer";
 import {
   useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery
 } from '../../../../generated/graphql';
+import { WHITE_SEVEN } from '../../../../theme';
+import { EMRLogo } from '../../../../assets/svgs';
 
 export const ExternalPaymentComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>()
@@ -86,8 +88,8 @@ export const ExternalPaymentComponent = (): JSX.Element => {
         const { status } = response
 
         if (appointment && status && status === 200) {
-          const { appointmentType, patientId, provider, facility,id } = appointment;
-          const {  price } = appointmentType || {}
+          const { appointmentType, patientId, provider, facility, id } = appointment;
+          const { price } = appointmentType || {}
           const { id: providerId } = provider || {}
           const { id: facilityId } = facility || {}
 
@@ -161,61 +163,73 @@ export const ExternalPaymentComponent = (): JSX.Element => {
   };
 
   return (
-    <div>
-      {appointmentPaymentToken ? (
-        <div>
-          <DropIn
-            options={{
-              authorization: appointmentPaymentToken,
-              paypal: {
-                flow: 'checkout',
-                currency: 'USD',
-                amount: price,
-                commit: true,
-              },
-              card: {
-                cardholderName: true,
-                overrides: {
-                  styles: {
-                    input: {
-                      // color: 'blue',
-                      'font-size': '18px',
-                    },
-                    '.number': {
-                      color: 'green',
-                      // Custom web fonts are not supported. Only use system installed fonts.
-                    },
-                    '.invalid': {
-                      color: 'red',
-                    },
-                  },
-                },
-              },
-              threeDSecure: { amount: price },
-              dataCollector: true,
-              paymentOptionPriority: ['paypal', 'card'],
-            }}
-            onPaymentMethodRequestable={onPaymentMethodRequestable}
-            onPaymentOptionSelected={onPaymentOptionSelected}
-            onInstance={(data) => setInstance(data)}
-          />
+    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
+      <EMRLogo />
 
-          {showPayBtn && (
-            <Box pt={4} display='flex' justifyContent='center' gridGap={20}>
-              <Button
-                onClick={threeDSecurePayment}
-                variant='contained'
-                className={'blue-button'}
-              >
-                {PAY}
-              </Button>
-            </Box>
-          )}
-        </div>
-      ) : (
-        <BackdropLoader loading={true} />
-      )}
-    </div>
+      <Box mb={3} />
+
+      <Typography variant="h4">{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
+
+      <Box mb={1} />
+
+      <Typography variant="body1">{APPOINTMENT_BOOKING_PAYMENT_CHARGED}</Typography>
+      
+      <Grid container spacing={3} justifyContent='center' alignItems='center'>
+        <Grid item md={6} sm={12} xs={12}>
+          <Box mt={10} p={5}>
+            {appointmentPaymentToken ? (
+              <Box>
+                <DropIn
+                  options={{
+                    authorization: appointmentPaymentToken,
+                    paypal: {
+                      flow: 'checkout',
+                      currency: 'USD',
+                      amount: price,
+                      commit: true,
+                    },
+                    card: {
+                      cardholderName: true,
+                      overrides: {
+                        styles: {
+                          input: {
+                            'font-size': '18px',
+                          },
+                          '.number': {
+                            color: 'green',
+                          },
+                          '.invalid': {
+                            color: 'red',
+                          },
+                        },
+                      },
+                    },
+                    threeDSecure: { amount: price },
+                    dataCollector: true,
+                    paymentOptionPriority: ['paypal', 'card'],
+                  }}
+                  onPaymentMethodRequestable={onPaymentMethodRequestable}
+                  onPaymentOptionSelected={onPaymentOptionSelected}
+                  onInstance={(data) => setInstance(data)}
+                />
+
+                {showPayBtn && (
+                  <Button
+                    onClick={threeDSecurePayment}
+                    variant='contained'
+                    color='primary'
+                  >
+                    {PAY}
+                  </Button>
+                )}
+              </Box>
+            ) : (
+              <BackdropLoader loading={true} />
+            )}
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   );
 };
 
