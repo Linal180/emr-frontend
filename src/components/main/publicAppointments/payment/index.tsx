@@ -11,18 +11,21 @@ import Alert from '../../../common/Alert';
 import BackdropLoader from '../../../common/Backdrop';
 // constants and types block
 import history from "../../../../history";
+import { WHITE_SEVEN } from '../../../../theme';
+import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
-import { APPOINTMENT_BOOKED_SUCCESSFULLY, appointmentChargesDescription, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION } from '../../../../constants';
+import {
+  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
+  appointmentChargesDescription,
+} from '../../../../constants';
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/appointmentReducer";
 import {
   useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery
 } from '../../../../generated/graphql';
-import { WHITE_SEVEN } from '../../../../theme';
-import { EMRLogo } from '../../../../assets/svgs';
 
-export const ExternalPaymentComponent = (): JSX.Element => {
+const ExternalPaymentComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>()
   const [instance, setInstance] = useState<any>(null);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
@@ -166,14 +169,12 @@ export const ExternalPaymentComponent = (): JSX.Element => {
     <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
       <EMRLogo />
 
-      <Box mb={3} />
-
-      <Typography variant="h4">{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
-
-      <Box mb={1} />
+      <Box mt={3} mb={1}>
+        <Typography variant="h4">{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
+      </Box>
 
       <Typography variant="body1">{appointmentChargesDescription(price || "0")}</Typography>
-      
+
       <Grid container spacing={3} justifyContent='center' alignItems='center'>
         <Grid item md={6} sm={12} xs={12}>
           <Box mt={10} p={5}>

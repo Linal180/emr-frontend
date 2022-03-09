@@ -1,11 +1,11 @@
 
-import { Box, Button, Card, colors, Typography } from '@material-ui/core';
+import { Box, Card, colors, Typography } from '@material-ui/core';
 import {
-  APPOINTMENT_CONFIRMED, APPOINTMENT_SUCCESS_HEADING, APPOINTMENT_SUCCESS_SUBHEADING,
-  CANCEL_APPOINTMENT_TEXT, CONTINUE_TEXT
+  APPOINTMENT_CONFIRMED, APPOINTMENT_SUCCESS_DOCUMENTS_HEADING, APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1, 
+  APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2,
 } from '../../../../constants';
 import { successStyles } from '../../../../styles/publicAppointmentStyles/successStyles';
-import { GRAY_FIVE, WHITE_TWO } from '../../../../theme';
+import { WHITE_TWO } from '../../../../theme';
 
 const AppointmentSuccessComponent = () => {
   const classes = successStyles();
@@ -18,19 +18,19 @@ const AppointmentSuccessComponent = () => {
         </Box>
 
         <Box className={classes.container}>
-          <Typography variant="h4">{APPOINTMENT_SUCCESS_HEADING}</Typography>
+          <Typography variant="h4">{APPOINTMENT_SUCCESS_DOCUMENTS_HEADING}</Typography>
 
           <Box mb={3} />
-
-          <Typography component="h5" variant="h5">{APPOINTMENT_SUCCESS_SUBHEADING}</Typography>
-        </Box>
-
-        <Box mt={5} py={4} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
-          <Button variant="outlined" color="secondary">{CANCEL_APPOINTMENT_TEXT}</Button>
-
-          <Box p={1} />
-
-          <Button variant="contained" color="primary">{CONTINUE_TEXT}</Button>
+          <Typography component="h5" variant="h5">
+            <ul>
+              <li>
+                {APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1}
+              </li>
+              <li>
+                {APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2}
+              </li>
+            </ul>
+          </Typography>
         </Box>
       </Card>
     </Box>
