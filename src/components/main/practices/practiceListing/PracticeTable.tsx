@@ -1,5 +1,5 @@
 // packages block
-import { FC, ChangeEvent, Reducer, useEffect, useReducer } from "react";
+import { FC, ChangeEvent, Reducer, useEffect, useReducer, useContext } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
@@ -9,6 +9,7 @@ import Search from "../../../common/Search";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
+import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
 import { EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs';
@@ -24,7 +25,8 @@ import {
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
-  const classes = useTableStyles()
+  const classes = useTableStyles();
+  const { fetchAllFacilityList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
@@ -79,6 +81,7 @@ const PracticeTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             await findAllPractices();
+            fetchAllFacilityList();
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
         }

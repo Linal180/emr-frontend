@@ -630,7 +630,6 @@ export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
-export const SCHEDULE_APPOINTMENTS_ROUTE = "/schedule-appointments";
 export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
@@ -804,7 +803,7 @@ export const APP_MENU_ITEMS = [
       },
       {
         name: SCHEDULE_APPOINTMENTS_TEXT,
-        link: SCHEDULE_APPOINTMENTS_ROUTE
+        link: `${APPOINTMENTS_ROUTE}/new`
       },
     ],
   },
@@ -875,7 +874,7 @@ export const APPOINTMENT_MENU_ITEMS = [
   },
   {
     name: SCHEDULE_APPOINTMENTS_TEXT,
-    link: SCHEDULE_APPOINTMENTS_ROUTE
+    link: `${APPOINTMENTS_ROUTE}/new`
   },
   {
     name: CALENDAR_VIEW_TEXT,
@@ -1174,7 +1173,6 @@ export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROU
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE }
 export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
-export const SCHEDULE_APPOINTMENTS_BREAD = { text: SCHEDULE_APPOINTMENTS_TEXT, link: SCHEDULE_APPOINTMENTS_ROUTE }
 
 // profile top tabs
 export const PROFILE_TOP_TABS = [
