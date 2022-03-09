@@ -585,7 +585,7 @@ export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
 export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
 export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
-export const APPOINTMENT_BOOKING_PAYMENT_CHARGED = "You will be charged $34.00 for this appointment booking."
+export const appointmentChargesDescription = (amount: string) => `You will be charged $${amount} for this appointment booking.`
 export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
 export const VERIFY_EMAIL_TEXT = "We have sent an email to example@emr.com please follow a link to verify your email";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";

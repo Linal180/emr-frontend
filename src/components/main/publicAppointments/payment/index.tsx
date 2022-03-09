@@ -12,7 +12,7 @@ import BackdropLoader from '../../../common/Backdrop';
 // constants and types block
 import history from "../../../../history";
 import { ParamsType } from '../../../../interfacesTypes';
-import { APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_BOOKING_PAYMENT_CHARGED, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION } from '../../../../constants';
+import { APPOINTMENT_BOOKED_SUCCESSFULLY, appointmentChargesDescription, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION } from '../../../../constants';
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/appointmentReducer";
@@ -172,7 +172,7 @@ export const ExternalPaymentComponent = (): JSX.Element => {
 
       <Box mb={1} />
 
-      <Typography variant="body1">{APPOINTMENT_BOOKING_PAYMENT_CHARGED}</Typography>
+      <Typography variant="body1">{appointmentChargesDescription(price || "0")}</Typography>
       
       <Grid container spacing={3} justifyContent='center' alignItems='center'>
         <Grid item md={6} sm={12} xs={12}>

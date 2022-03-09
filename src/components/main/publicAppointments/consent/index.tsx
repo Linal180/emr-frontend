@@ -17,8 +17,8 @@ const ConsentComponent = () => {
 
         <Box bgcolor={WHITE_SIX} my={2} p={3.75} className={classes.agreementPointsContainer}>
           <ul>
-            {AGREEMENT_POINTS.map((point) => (
-              <li>
+            {AGREEMENT_POINTS.map((point, index) => (
+              <li key={index}>
                 <Typography variant="h6" component="p">{point}</Typography>
               </li>
             ))}
