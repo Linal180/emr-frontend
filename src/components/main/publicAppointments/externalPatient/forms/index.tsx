@@ -20,6 +20,7 @@ import ViewDataLoader from '../../../../common/ViewDataLoader';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 //context, graphql and utils block
 import history from '../../../../../history';
+import { EMRLogo } from '../../../../../assets/svgs';
 import { FacilityContext } from "../../../../../context";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
@@ -49,10 +50,8 @@ import {
   EMERGENCY_CONTACT_PHONE, EMERGENCY_CONTACT_RELATIONSHIP_TO_PATIENT, PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER,
   PREFERRED_LANGUAGE, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS, APPOINTMENT_CONFIRMATION_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_INFORMATION_TEXT, PATIENT_APPOINTMENT_SUCCESS,
-  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
-  PATIENT_NOT_FOUND, ADDRESS, CANCEL_APPOINTMENT,
+  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, PATIENT_NOT_FOUND, ADDRESS,
 } from "../../../../../constants";
-import { EMRLogo } from '../../../../../assets/svgs';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
