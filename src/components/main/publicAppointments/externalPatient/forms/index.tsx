@@ -20,6 +20,7 @@ import ViewDataLoader from '../../../../common/ViewDataLoader';
 import MediaCards from "../../../../common/AddMedia/MediaCards";
 //context, graphql and utils block
 import history from '../../../../../history';
+import { EMRLogo } from '../../../../../assets/svgs';
 import { FacilityContext } from "../../../../../context";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
@@ -52,7 +53,6 @@ import {
   PATIENT_NOT_FOUND, CANCEL_APPOINTMENT, DEMOGRAPHICS, APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, FIRST_NAME,
   LAST_NAME, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD,
 } from "../../../../../constants";
-import { EMRLogo } from '../../../../../assets/svgs';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();

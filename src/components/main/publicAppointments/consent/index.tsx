@@ -15,10 +15,10 @@ const ConsentComponent = () => {
       <Box className={classes.agreementContainer}>
         <Typography component="h3" variant="h3">{AGREEMENT_HEADING}</Typography>
 
-        <Box bgcolor={WHITE_SIX} my={2} p={3.75} className={classes.AGREEMENT_POINTSContainer}>
+        <Box bgcolor={WHITE_SIX} my={2} p={3.75} className={classes.agreementPointsContainer}>
           <ul>
-            {AGREEMENT_POINTS.map((point) => (
-              <li>
+            {AGREEMENT_POINTS.map((point, index) => (
+              <li key={index}>
                 <Typography variant="h6" component="p">{point}</Typography>
               </li>
             ))}

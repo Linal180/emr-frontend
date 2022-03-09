@@ -352,8 +352,8 @@ const PublicAppointmentForm = (): JSX.Element => {
                 <CardComponent cardTitle={AGREEMENT_HEADING}>
                   <Box maxHeight={400} pl={2} mb={3} overflow="auto">
                     <ul>
-                      {AGREEMENT_POINTS.map((point) => (
-                        <li>
+                      {AGREEMENT_POINTS.map((point, index) => (
+                        <li key={index}>
                           <Typography variant="subtitle1" component="p">{point}</Typography>
                         </li>
                       ))}
@@ -390,7 +390,7 @@ const PublicAppointmentForm = (): JSX.Element => {
                         const { startTime, endTime } = slot || {}
 
                         return (
-                          <li onClick={() => handleSlot(slot)}>
+                          <li key={index} onClick={() => handleSlot(slot)}>
                             <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
 
                             <label htmlFor={`timeSlot-${index}`}>
