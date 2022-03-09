@@ -25,7 +25,7 @@ import {
   useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery
 } from '../../../../generated/graphql';
 
-export const ExternalPaymentComponent = (): JSX.Element => {
+const ExternalPaymentComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>()
   const [instance, setInstance] = useState<any>(null);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
@@ -233,3 +233,5 @@ export const ExternalPaymentComponent = (): JSX.Element => {
     </Box>
   );
 };
+
+export default ExternalPaymentComponent;
