@@ -558,7 +558,6 @@ export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
 export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
-export const RICHARD_TEXT = "Richard";
 export const PROFILE_TEXT = "Profile";
 export const CONTINUE_TEXT = "Continue";
 export const AVAILABLE_SLOTS = "Available Slots";

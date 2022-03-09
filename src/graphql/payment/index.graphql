@@ -17,7 +17,7 @@ mutation ChargeAfterAppointment($paymentInput: PaymentInputsAfterAppointment!){
     
     appointment {
       id
-      paymentStatus
+      billingStatus
     }
   }
 }
