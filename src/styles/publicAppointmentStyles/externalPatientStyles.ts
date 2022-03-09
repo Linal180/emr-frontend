@@ -1,25 +1,11 @@
 import {
-  WHITE_FOUR,
-  BLUE_ONE,
-  BLACK_TWO,
-  WHITE,
-  WHITE_FIVE,
-  BLACK_ONE,
-  WHITE_SIX,
-  GRAY_SIX,
-  GRAY_TWO,
-  BLUE_SIX,
-  BLACK_SEVEN,
-  BLUE_EIGHT,
-} from "../../theme/colors";
-import {
-  createStyles,
-  makeStyles,
-  StepConnector,
-  Switch,
-  withStyles,
+  createStyles, makeStyles, StepConnector, Switch, withStyles,
 } from "@material-ui/core";
 import { theme } from "../../theme";
+import {
+  WHITE_FOUR, BLUE_ONE, BLACK_TWO, WHITE, WHITE_FIVE, BLACK_ONE, GRAY_SIX, GRAY_TWO, BLUE_SIX,
+  BLACK_SEVEN, BLUE_EIGHT,
+} from "../../theme/colors";
 
 export const CustomConnector = withStyles({
   alternativeLabel: {
