@@ -12,8 +12,8 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
-import { AuthContext } from '../../../../context';
 import { GRAY_TWO, WHITE } from '../../../../theme';
+import { AuthContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { updatePracticeSchema, createPracticeSchema } from '../../../../validationSchemas';
@@ -34,6 +34,7 @@ import {
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
+  const { fetchAllFacilityList } = useContext(ListContext)
   const { id: adminId } = user || {}
   const classes = usePublicAppointmentStyles();
   const methods = useForm<CustomPracticeInputProps>({
@@ -98,6 +99,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
+          fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
       }
