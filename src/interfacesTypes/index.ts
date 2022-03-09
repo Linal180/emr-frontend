@@ -400,7 +400,6 @@ export interface RenderInputFieldProps {
 
 export interface StepLabelType {
   title: string
-  subTitle: string
 }
 
 export interface FormVerification {

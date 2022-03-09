@@ -2,7 +2,6 @@ import {
   WHITE_FOUR,
   BLUE_ONE,
   BLACK_TWO,
-  BLUE_THREE,
   WHITE,
   WHITE_FIVE,
   BLACK_ONE,
@@ -11,6 +10,7 @@ import {
   GRAY_TWO,
   BLUE_SIX,
   BLACK_SEVEN,
+  BLUE_EIGHT,
 } from "../../theme/colors";
 import {
   createStyles,
@@ -28,21 +28,21 @@ export const CustomConnector = withStyles({
 
   active: {
     "& $line": {
-      border: `1px dashed ${WHITE_FOUR}`,
+      border: `1px solid ${BLUE_EIGHT}`,
     },
   },
 
   completed: {
     "& $line": {
-      border: `1px dashed ${WHITE_FOUR}`,
+      border: `1px solid ${BLUE_EIGHT}`,
     },
   },
 
   line: {
-    marginTop: 8,
+    marginTop: 0,
     flexDirection: "column",
     height: 50,
-    border: `1px dashed ${WHITE_FOUR}`,
+    border: `1px solid ${WHITE_FOUR}`,
     width: 2,
     marginLeft: 8,
   },
@@ -50,39 +50,41 @@ export const CustomConnector = withStyles({
 
 export const useColorLibStepIconStyles = makeStyles({
   root: {
-    backgroundColor: WHITE_SIX,
+    border: `1px solid ${WHITE_FOUR}`,
     zIndex: 1,
-    width: 40,
-    height: 40,
+    width: 24,
+    height: 24,
     color: BLACK_TWO,
     display: "flex",
-    borderRadius: 9,
+    borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
+    marginRight: 5,
+    fontSize: 12,
     fontWeight: 600,
     fontFamily: "Poppins, sans-serif",
   },
 
   active: {
-    backgroundColor: BLUE_THREE,
-    width: 40,
-    height: 40,
+    backgroundColor: BLUE_EIGHT,
+    width: 24,
+    height: 24,
     zIndex: 1,
-    fontSize: 18,
-    borderRadius: 9,
+    fontSize: 12,
+    borderRadius: 100,
     fontWeight: 600,
     color: WHITE,
   },
 
   completed: {
-    backgroundColor: WHITE_SIX,
     zIndex: 1,
     fontSize: 18,
-    color: BLUE_THREE,
+    color: BLUE_EIGHT,
+    border: `2px solid ${BLUE_EIGHT}`,
 
     "& .MuiSvgIcon-root": {
-      padding: 5,
+      padding: 2,
+      color: BLUE_EIGHT,
     },
   },
 });
@@ -93,8 +95,9 @@ export const useExternalPatientStyles = makeStyles({
   },
 
   mainGridContainer: {
-    maxHeight: "calc(100vh - 150px)",
+    maxHeight: "calc(100vh - 130px)",
     overflowY: "auto",
+    borderRadius: 12,
   },
 
   stepperContainer: {
@@ -107,6 +110,15 @@ export const useExternalPatientStyles = makeStyles({
     "& .MuiStepper-root": {
       marginTop: 40,
       padding: 30,
+
+      "& .MuiStepConnector-vertical": {
+        marginLeft: 2.5,
+        padding: 0,
+      },
+
+      "& .MuiStepLabel-iconContainer": {
+        paddingRight: 0,
+      },
 
       "@media (max-width:960px)": {
         marginTop: 0,
@@ -170,14 +182,14 @@ export const useExternalPatientStyles = makeStyles({
     "& .MuiAccordionSummary-content.Mui-expanded .MuiTypography-root": {
       fontWeight: 500,
       color: BLACK_SEVEN,
-    }
+    },
   },
 
   paymentAccordionDetail: {
-    margin: '20px auto',
-    width: '100%',
-    textAlign: 'center',
-  }
+    margin: "20px auto",
+    width: "100%",
+    textAlign: "center",
+  },
 });
 
 export const toggleButtonComponent = makeStyles({

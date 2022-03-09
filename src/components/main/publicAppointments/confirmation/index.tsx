@@ -1,16 +1,15 @@
 // packages block
 import { FC, Reducer, useEffect, useReducer } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Box, Button, Card, Typography } from '@material-ui/core';
+import { Box, Button, Card, colors, Typography } from '@material-ui/core';
 // components block
 import Alert from "../../../../components/common/Alert";
 import Backdrop from "../../../../components/common/Backdrop";
 import ConfirmationModal from "../../../../components/common/ConfirmationModal";
 // utils, styles  block, constants
 import history from "../../../../history";
-import { WHITE_TWO } from '../../../../theme';
+import { GRAY_FIVE, WHITE, WHITE_TWO } from '../../../../theme';
 import { ParamsType } from "../../../../interfacesTypes";
-import { getFormattedDate, getStandardTime } from "../../../../utils";
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles";
 import {
   AppointmentPayload, Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery
@@ -19,10 +18,10 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/appointmentReducer";
 import {
-  APPOINTMENT_NOT_FOUND, SLOT_CONFIRMATION_SUB_HEADING_TWO, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_INFORMATION, SLOT_CONFIRMATION_HEADING_TWO, SLOT_CONFIRMATION_SUB_HEADING,
-  APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND,
-  PATIENT_CANCELLED_APPOINTMENT, PATIENT_APPOINTMENT_CANCEL,
+  APPOINTMENT_NOT_FOUND, PATIENT_APPOINTMENT_FAIL,
+  PATIENT_INFORMATION, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND,
+  PATIENT_CANCELLED_APPOINTMENT, PATIENT_APPOINTMENT_CANCEL, APPOINTMENT_CONFIRMED, CANCEL_APPOINTMENT_TEXT,
+  CONTINUE_TEXT, APPOINTMENT_CONFIRM_SUBHEADING, appointmentConfirmationDescription,
 } from '../../../../constants';
 
 const AppointmentConfirmationComponent: FC = (): JSX.Element => {
@@ -108,42 +107,42 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
   };
 
   return (
-    <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75}
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Box bgcolor={WHITE_TWO} display="flex" justifyContent="center" alignItems="center">
       {(getAppointmentLoading || !appointment) ? <Backdrop loading={true} /> : (
-        <Card>
-          <Box minHeight="580px" className={classes.container}>
-            <Box maxWidth="700px">
-              <Typography component="h3" variant="h3">
-                Thank you! Your visit at {getStandardTime(scheduleStartDateTime || '')} on {getFormattedDate(scheduleStartDateTime || '')} has been confirmed.
-              </Typography>
 
-              <Typography component="h3" variant="h3">{SLOT_CONFIRMATION_HEADING_TWO}</Typography>
-            </Box>
+        <Box>
+          <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
+            <Card>
+              <Box p={3} borderBottom={`1px solid ${colors.grey[300]}`}>
+                <Typography variant="h4"><strong>{APPOINTMENT_CONFIRMED}</strong></Typography>
+              </Box>
 
-            <Box pt={3}>
-              <Typography component="h5" variant="h5">{SLOT_CONFIRMATION_SUB_HEADING}</Typography>
-              <Typography component="h5" variant="h5">{SLOT_CONFIRMATION_SUB_HEADING_TWO}</Typography>
-            </Box>
+              <Box className={classes.container}>
+                <Typography variant="h4">
+                  {appointmentConfirmationDescription(scheduleStartDateTime || '')}
+                </Typography>
 
-            <Box display="flex" gridGap={20} mt={3}>
-              <Button type="submit" variant="contained" onClick={() => handleCancelAppointment()}>
-                Cancel Booking
-              </Button>
+                <Box mb={3} />
 
-              <Button type="submit" variant="contained" className='blue-button' disabled={!!!patientId}>
-                <Link to={`${PATIENT_INFORMATION}/${patientId}`}>
-                  <Typography>
-                    Continue
-                  </Typography>
-                </Link>
-              </Button>
-            </Box>
+                <Typography component="h5" variant="h5">{APPOINTMENT_CONFIRM_SUBHEADING}</Typography>
+              </Box>
+
+              <Box mt={5} py={4} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
+                <Button type="submit" variant="outlined" color="secondary" onClick={() => handleCancelAppointment()}>{CANCEL_APPOINTMENT_TEXT}</Button>
+
+                <Box p={1} />
+
+                <Button type="submit" variant="contained" color="primary" disabled={!!!patientId}>
+                  <Link to={`${PATIENT_INFORMATION}/${patientId}`}>
+                    <Box color={WHITE}>
+                      {CONTINUE_TEXT}
+                    </Box>
+                  </Link>
+                </Button>
+              </Box>
+            </Card>
           </Box>
-        </Card>
+        </Box>
       )}
 
       <ConfirmationModal
