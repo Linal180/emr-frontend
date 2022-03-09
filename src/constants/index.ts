@@ -586,9 +586,9 @@ export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment"
 export const PASSWORD_CHANGE_TEXT = "Your password is successfully changed. Please Sign in to your account.";
 export const SLOT_CONFIRMATION_HEADING_TWO = "We've sent you a confirmation message & email for your records."
-export const appointmentChargesDescription = (amount: string) => `You will be charged $${amount} for this appointment booking.`
 export const SLOT_CONFIRMATION_SUB_HEADING = "Skip some of the paperwork at the clinic by adding more information."
 export const VERIFY_EMAIL_TEXT = "We have sent an email to example@emr.com please follow a link to verify your email";
+export const appointmentChargesDescription = (amount: string) => `You will be charged $${amount} for this appointment booking.`
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record."
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message."
@@ -760,7 +760,6 @@ export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click o
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
-
 export const CLIA_ID_NUMBER_INFO = "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN) and is used to identify a business entity";
 export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
