@@ -398,6 +398,7 @@ export const VIEW_FACILITY = "View Facility";
 export const PHONE_NUMBER = "Phone number";
 export const MOBILE_NUMBER = "Mobile number";
 export const NEW_PASSWORD = "New password";
+export const OLD_PASSWORD = "Old password";
 export const DELETE_MEDIA = "Delete Media";
 export const VERIFY_EMAIL = "Verify Email";
 export const SEARCH_PLACEHOLDER = "Search";
@@ -671,6 +672,7 @@ export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
+export const CHANGE_PASSWORD_ROUTE = "/change-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const CANCEL_APPOINTMENT = "/cancel-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
@@ -968,7 +970,7 @@ export const PROFILE_MENU_ITEMS = [
   },
   {
     name: CHANGE_PASSWORD,
-    link: UPDATE_PASSWORD_ROUTE,
+    link: CHANGE_PASSWORD_ROUTE,
   }
 ];
 
