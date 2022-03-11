@@ -16,7 +16,7 @@ import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
-  APPOINTMENT_CHARGES_DESCRIPTION,PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST,
+  appointmentChargesDescription,PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST,
 } from '../../../../constants';
 import {
   appointmentReducer, Action, initialState, State, ActionType
@@ -173,7 +173,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
         <Typography variant="h4">{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
       </Box>
 
-      <Typography variant="body1">{APPOINTMENT_CHARGES_DESCRIPTION(price || "0")}</Typography>
+      <Typography variant="body1">{appointmentChargesDescription(price || "0")}</Typography>
 
       <Grid container spacing={3} justifyContent='center' alignItems='center'>
         <Grid item md={6} sm={12} xs={12}>
