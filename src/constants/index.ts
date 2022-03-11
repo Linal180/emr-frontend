@@ -344,6 +344,7 @@ export const LOCATION_ID = "Location ID";
 export const POS = "Place of Service Code (POS)";
 export const USER_ID = "User ID";
 export const CANCEL = "Cancel";
+export const EDIT = "Edit";
 export const CVV = "CVV";
 export const PAY = "Pay";
 export const LAST_NAME = "Last Name";

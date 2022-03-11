@@ -75,3 +75,13 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
     }
   }
 }
+
+mutation updatePassword($updatePasswordInput: UpdatePasswordInput!){
+  updatePassword(updatePasswordInput: $updatePasswordInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
