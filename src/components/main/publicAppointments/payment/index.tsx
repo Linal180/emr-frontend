@@ -16,8 +16,7 @@ import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
-  appointmentChargesDescription,
-  NONE,
+  APPOINTMENT_CHARGES_DESCRIPTION,PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST,
 } from '../../../../constants';
 import {
   appointmentReducer, Action, initialState, State, ActionType
@@ -43,7 +42,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
       if (response && appointment) {
         Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
         history.push(`${SLOT_CONFIRMATION}/${appointmentId}`)
-      } else Alert.error('Cannot find appointment id')
+      } else Alert.error(APPOINTMENT_NOT_EXIST)
     },
     onError({ message }) {
       Alert.error(message)
@@ -174,7 +173,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
         <Typography variant="h4">{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
       </Box>
 
-      <Typography variant="body1">{appointmentChargesDescription(price || "0")}</Typography>
+      <Typography variant="body1">{APPOINTMENT_CHARGES_DESCRIPTION(price || "0")}</Typography>
 
       <Grid container spacing={3} justifyContent='center' alignItems='center'>
         <Grid item md={6} sm={12} xs={12}>
@@ -185,13 +184,13 @@ const ExternalPaymentComponent = (): JSX.Element => {
                   options={{
                     authorization: appointmentPaymentToken,
                     translations: {
-                      PayPal: 'Pay via PayPal',
-                      Card: 'Pay via Debit or Credit Card',
+                      PayPal: PAY_VIA_PAYPAL,
+                      Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
                       chooseAWayToPay: ''
                     },
                     paypal: {
-                      flow: 'checkout',
-                      currency: 'USD',
+                      flow: CHECKOUT,
+                      currency: USD,
                       amount: price,
                       commit: true,
                       buttonStyle: {
