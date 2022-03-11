@@ -12,6 +12,7 @@ const DocumentVerificationForm = () => {
       <CardComponent cardTitle="Document Verification">
         <Box py={2}>
           <Typography component="h4" variant="h4">Driving License</Typography>
+
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
               <DropzoneContainer imageSide="Front Side" />
@@ -25,6 +26,7 @@ const DocumentVerificationForm = () => {
 
         <Box py={2}>
           <Typography component="h4" variant="h4">Insurance Card</Typography>
+
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
               <DropzoneContainer imageSide="Front Side" />
@@ -38,6 +40,7 @@ const DocumentVerificationForm = () => {
 
         <Box py={2}>
           <Typography component="h4" variant="h4">Insurance Card <Box display="inline" color={GRAY_TWO}>(Secondary)</Box></Typography>
+
           <Grid container spacing={3}>
             <Grid item md={6} sm={12} xs={12}>
               <DropzoneContainer imageSide="Front Side" />

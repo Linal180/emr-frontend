@@ -49,9 +49,9 @@ import {
   CITY, COUNTRY, EMPTY_OPTION, PREFERRED_PHARMACY, APPOINTMENT_CONFIRMATION_PERMISSIONS,
   PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS,
-  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, FINISH, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
+  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
   PATIENT_NOT_FOUND, CANCEL_APPOINTMENT, DEMOGRAPHICS, APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, FIRST_NAME,
-  LAST_NAME, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD,
+  LAST_NAME, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, DONE,
 } from "../../../../../constants";
 
 const PatientFormComponent: FC = (): JSX.Element => {
@@ -390,7 +390,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
     if (attachment) {
       return (
-        <Box display="flex" alignItems="center" key={attachmentId} sx={{ p: 4, border: `1px solid ${GREEN}` }}>
+        <Box display="flex" alignItems="center" key={attachmentId} sx={{ p: 5, mt: 4, border: `2px dashed ${GREEN}`, borderRadius: 6 }}>
           <Box minWidth={40} className={dropzoneClasses.fileIcon}>
             <FileIcon extension={fileExtension} {...defaultStyles[fileExtension]} />
           </Box>
@@ -460,8 +460,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
                   onClick={handleFinish}
                   disabled={updatePatientLoading}
                 >
-                  {FINISH}
+                  {DONE}
                 </Button>
+                
               }
             </Box>
           </Box>
@@ -758,7 +759,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                       </Grid>
                     </Box>
 
-                    <Box py={2}>
+                    <Box py={3}>
                       <Typography component="h4" variant="h4">{INSURANCE_CARD}</Typography>
 
                       <Grid container spacing={3}>
