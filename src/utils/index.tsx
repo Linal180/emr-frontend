@@ -8,14 +8,15 @@ import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus,
-  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload, AppointmentsPayload,
-  AttachmentsPayload,
+  ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
+  AppointmentsPayload, AttachmentsPayload,
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, LAB_RESULTS_ROUTE,
-  LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, STAFF_ROUTE, TOKEN,
-  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
+  LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, STAFF_ROUTE, TOKEN,
+  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A,
 } from "../constants";
+import { ReactNode } from "react";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -26,6 +27,14 @@ export const handleLogout = () => {
 
 export const upperToNormal = (value: string) => {
   return value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+};
+
+export const formatValue = (value: string) => {
+  let formatted = ''
+
+  value.split("_").map(term => formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
+
+  return formatted;
 };
 
 export const formatServiceCode = (value: string) => {
@@ -41,13 +50,18 @@ export const formatServiceCode = (value: string) => {
   return formatted;
 };
 
-export const formatValue = (value: string) => {
-  let formatted = ''
-
-  value.split("_").map(term => formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
-
-  return formatted;
-};
+export const renderItem = (
+  name: string,
+  value: Maybe<string> | number | ReactNode | undefined,
+  noWrap?: boolean,
+) => (
+  <>
+    <Typography variant="body2">{name}</Typography>
+    <Typography component="h5" variant="h5" noWrap={noWrap}>
+      {value ? value : N_A}
+    </Typography>
+  </>
+);
 
 export const renderTh = (text: string, align?: TableAlignType) => (
   <TableCell component="th" align={align}>

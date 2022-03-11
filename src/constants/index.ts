@@ -543,17 +543,11 @@ export const PASSWORDS_MUST_MATCH = "Passwords must match";
 export const CONFIRM_YOUR_PASSWORD = "Confirm your password";
 export const ANNUAL_OPERATING_DUES = "Annual Operating Dues";
 export const NOT_FOUND_EXCEPTION_CAP = "NOT FOUND EXCEPTION";
-export const ALLOTED_NIGHTS_OF_USE = "Allotted Nights of Use";
-export const REQUEST_MEMBERSHIP_PLAN = "Request Membership Plan";
 export const SCHEDULE_APPOINTMENTS_TEXT = "Schedule Appointment";
 export const CALENDAR_VIEW_TEXT = "Calendar View";
-export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_RECORD_TEXT = "You are about delete record";
-export const THANKYOU_MESSAGE = "Thank you for your interest in BOCA+.";
-export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
-export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
@@ -633,14 +627,10 @@ export const APPOINTMENT_CONFIRM_HEADING =
 export const APPOINTMENT_CONFIRM_SUBHEADING =
   "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
 export const appointmentConfirmationDescription = (dateTime: string) =>
-  `Thank you! Your visit at ${getStandardTime(
-    dateTime || ""
-  )} on ${getFormattedDate(
-    dateTime || ""
-  )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
-  export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
-  export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
-  export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
+  `Thank you! Your visit at ${getStandardTime(dateTime || "")} on ${getFormattedDate(dateTime || "")} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
+export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
+export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
+export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
@@ -1038,11 +1028,9 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
 ];
 
-export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz
-  .names()
-  .map((timezone) => {
-    return { id: timezone, name: formatValue(timezone) };
-  });
+export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map((timezone) => {
+  return { id: timezone, name: formatValue(timezone) };
+});
 
 export const MAPPED_COUNTRIES: SelectorOption[] = [{ id: USA, name: USA }];
 export const MAPPED_STATES: SelectorOption[] = states.map(
@@ -1468,26 +1456,13 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
 export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
-  {
-    title: "Patient Information",
-  },
-  {
-    title: "Document Verification",
-  },
+  { title: "Patient Information", },
+  { title: "Document Verification", },
 ];
 
 export const AGREEMENT_POINTS = [
-  "Proin id ligula dictum, convallis enim ut, facilisis massa.Mauris a nisi ut sapien blandit imperdiet sed id lacus.Mauris auctor interdum dignissim.",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa.",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus ma",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed, posuere luctus enim. Ut sollicitudin neque at enim gravida, ut dictum est finibus. Praesent sit",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa.rtor pretium vehicula quis et ante. Aenean purus sem, pharetra et ante vel, tincidunt cursus ante.",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa.rtor pretium vehicula quis et ante. Aenean purus sem, pharetra et ante vel, tincidunt cursus ante.",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
-  "Pro in id ligula dictum, convallis enim ut, facilisis massa.Maris a nisi ut sapien blandit imperdiet sed id lacus.Mauis auctor interdum dignissim.Crasat lacus ma",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis",
+  LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15,
+  LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15,
 ];
 
 // Breadcrumb links
