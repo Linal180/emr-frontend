@@ -57,6 +57,7 @@ export const VIEW_PRACTICES = "View Practices";
 export const EIN = "EIN";
 export const ADMIN_NAME = "Admin Name";
 export const FINISH = "Finish";
+export const DONE = "Done";
 export const ALL_STAFF = "Staff";
 export const MINUTES = "minutes";
 export const USA = "United States";
@@ -69,6 +70,8 @@ export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
 export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
 export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
+export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
+export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
 export const CALENDAR = "Calendar";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
@@ -663,6 +666,7 @@ export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
+export const UPDATE_PASSWORD_ROUTE = "/update-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const CANCEL_APPOINTMENT = "/cancel-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
@@ -958,6 +962,10 @@ export const PROFILE_MENU_ITEMS = [
     name: MY_ACCOUNT_TEXT,
     link: "/",
   },
+  {
+    name: CHANGE_PASSWORD,
+    link: UPDATE_PASSWORD_ROUTE,
+  }
 ];
 
 export const BILLING_MENU_ITEMS = [

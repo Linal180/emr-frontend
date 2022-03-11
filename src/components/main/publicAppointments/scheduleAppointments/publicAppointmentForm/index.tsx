@@ -364,7 +364,7 @@ const PublicAppointmentForm = (): JSX.Element => {
                 <Box bgcolor={WHITE} mt={-1} p={3.75} className={classes.agreement_box}>
                   <FormControlLabel
                     control={
-                      <Checkbox color="primary" checked={agreed} onChange={() =>
+                      <Checkbox checked={agreed} onChange={() =>
                         dispatch({ type: ActionType.SET_AGREED, agreed: !agreed })
                       }
                       />

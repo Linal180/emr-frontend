@@ -1,5 +1,5 @@
-import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_FOUR, BLUE_ONE, GRAY_ONE, GRAY_SIX, POPPINS, WHITE } from "../../theme";
+  import { makeStyles, createStyles } from "@material-ui/core";
+import { BLACK_FOUR, BLUE_EIGHT, BLUE_ONE, GRAY_ONE, GRAY_SIX, POPPINS, WHITE } from "../../theme";
 
 export const usePublicAppointmentStyles = makeStyles(() =>
   createStyles({
@@ -34,7 +34,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         },
 
         "&:checked + label": {
-          background: BLUE_ONE,
+          background: BLUE_EIGHT,
           color: WHITE
         }
       }
@@ -89,6 +89,14 @@ export const usePublicAppointmentStyles = makeStyles(() =>
     agreement_box: {
       boxShadow: `0px -4px 10px rgba(0, 0, 0, 0.1)`,
       borderRadius: '0px 0px 8px 8px',
+
+      "& .MuiIconButton-label:before": {
+        border: `2px solid ${BLUE_EIGHT}`
+      },
+
+      "& .MuiCheckbox-root.Mui-checked .MuiSvgIcon-root": {
+        color: BLUE_EIGHT,
+      },
 
       "& .MuiFormControlLabel-label": {
         fontWeight: 600,

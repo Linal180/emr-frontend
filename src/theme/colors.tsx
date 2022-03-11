@@ -7,6 +7,7 @@ export const GRAY_FIVE = "#F5F8FA"
 export const GRAY_SIX = "#EFF2F5"
 export const GRAY_SEVEN = "#B1B3BB"
 export const GRAY_EIGHT = "#A3A3C7"
+export const GRAY_NINE = "#5E6278"
 
 export const BLACK = "#000000";
 export const BLACK_ONE = "#3F4254";
