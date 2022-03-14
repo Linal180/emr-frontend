@@ -44,7 +44,7 @@ import {
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, BILLING, PAYMENT_METHOD, CARD_NUMBER, EXPIRY_DATE, CVV,
+  MAPPED_COUNTRIES,
 } from "../../../../constants";
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -1237,67 +1237,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     </Grid>
                   </>
                 )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={BILLING}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="paymentmethod"
-                    label={PAYMENT_METHOD}
-                    value={EMPTY_OPTION}
-                    options={MAPPED_RELATIONSHIP_TYPE}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="firstName"
-                      controllerLabel={FIRST_NAME}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="lastName"
-                      controllerLabel={LAST_NAME}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="number"
-                      controllerName="cardNumber"
-                      controllerLabel={CARD_NUMBER}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="number"
-                          controllerName="expiryDate"
-                          controllerLabel={EXPIRY_DATE}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="cvv"
-                          controllerLabel={CVV}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
               </CardComponent>
             </Grid>
           </Grid>
