@@ -6,14 +6,15 @@ import Alert from "../Alert";
 import ConfirmationModal from "../ConfirmationModal";
 // graphql, constants and interfaces/types block
 import { MediaCardComponentType } from "../../../interfacesTypes";
-import { DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION } from "../../../constants";
+import { DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT } from "../../../constants";
 import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
-import { FileIcon } from "../../../assets/svgs";
-import { BLUE_ONE } from "../../../theme";
+import { FileUploadIcon } from "../../../assets/svgs";
 import { CameraAlt } from "@material-ui/icons";
 
-const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments, allAttachments, imageSide, notDescription }): JSX.Element => {
+const MediaCardComponent: FC<MediaCardComponentType> = ({ 
+  setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments, allAttachments, imageSide, notDescription 
+}): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
   const classes = documentVerificationFormStyles()
@@ -107,13 +108,13 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
 
             {!notDescription && <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>
               <Box>
-                <FileIcon />
+                <FileUploadIcon />
                 <Typography component="p" variant="body2">{imageSide}</Typography>
               </Box>
 
               <Box ml={2}>
-                <Typography component="h4" variant="h4">Drop your image here, <Box display="inline" color={BLUE_ONE}>or browse</Box></Typography>
-                <Typography component="h6" variant="body1">Supports: JPG,JPEG2000,PNG</Typography>
+                <Typography component="h4" variant="h4">{DROP_YOUR_IMAGE_TEXT}</Typography>
+                <Typography component="h6" variant="body1">{SUPPORT_DOC_TEXT}</Typography>
               </Box>
             </Box>}
           </Grid>
@@ -123,7 +124,10 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({ setOpen, isOpen, setEd
 
       {
         isDeleteOpen && (
-          <ConfirmationModal setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia} isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION} />
+          <ConfirmationModal 
+            setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia} 
+            isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION} 
+          />
         )
       }
     </>

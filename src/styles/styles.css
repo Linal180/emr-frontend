@@ -189,7 +189,7 @@ input[type="email"] {
 }
 
 .active {
-  color: #009EF6;
+  color: #204ECF;
 }
 
 .listing-header {
@@ -245,7 +245,7 @@ input[type="email"] {
 }
 
 .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected {
-  background-color: #009EF6;
+  background-color: #204ECF;
 }
 
 .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day .MuiIconButton-label > p {
@@ -255,7 +255,7 @@ input[type="email"] {
 }
 
 .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-current .MuiIconButton-label > p {
-  color: #009EF6;
+  color: #204ECF;
 }
 
 .MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected .MuiIconButton-label > p {
@@ -300,7 +300,7 @@ body .MuiTabPanel-root {
 }
 
 .billing-box {
-  color: #009EF6;
+  color: #204ECF;
   cursor: pointer;
 }
 
@@ -311,6 +311,9 @@ body .MuiTabPanel-root {
 /* Drop-in-Payment-Styling */
 .zoid-outlet {
   width: 100% !important;
+}
+.braintree-option {
+  min-height: 80px !important;
 }
 .braintree-option, .braintree-sheet, .braintree-sheet__header, .braintree-upper-container:before  {
   border: none !important;
