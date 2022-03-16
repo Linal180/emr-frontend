@@ -136,6 +136,12 @@ export type AttachmentsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The invoice payment type */
+export enum Billing_Type {
+  Insurance = 'INSURANCE',
+  SelfPay = 'SELF_PAY'
+}
+
 export type BillingAddress = {
   __typename?: 'BillingAddress';
   address?: Maybe<Scalars['String']>;
@@ -430,6 +436,15 @@ export type CreateFacilityItemInput = {
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
+};
+
+export type CreateInvoiceInputs = {
+  amount: Scalars['String'];
+  billingType: Billing_Type;
+  generatedBy?: Maybe<Scalars['String']>;
+  paymentMethod: Scalars['String'];
+  paymentTransactionId: Scalars['String'];
+  status: Status;
 };
 
 export type CreatePatientInput = {
@@ -809,6 +824,26 @@ export enum Homebound {
   Yes = 'YES'
 }
 
+export type Invoice = {
+  __typename?: 'Invoice';
+  amount: Scalars['String'];
+  billingType: Billing_Type;
+  createdAt?: Maybe<Scalars['String']>;
+  generatedBy?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  paymentMethod?: Maybe<Scalars['String']>;
+  paymentTransactionId: Scalars['String'];
+  status: Status;
+  transction?: Maybe<Transactions>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type InvoicePayload = {
+  __typename?: 'InvoicePayload';
+  invoice?: Maybe<Invoice>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type LoginUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -835,6 +870,7 @@ export type Mutation = {
   createDoctor: DoctorPayload;
   createExternalAppointment: AppointmentPayload;
   createFacility: FacilityPayload;
+  createInvoice: InvoicePayload;
   createPatient: PatientPayload;
   createPractice: PracticePayload;
   createSchedule: SchedulePayload;
@@ -929,6 +965,11 @@ export type MutationCreateExternalAppointmentArgs = {
 
 export type MutationCreateFacilityArgs = {
   createFacilityInput: CreateFacilityInput;
+};
+
+
+export type MutationCreateInvoiceArgs = {
+  createInvoiceInputs: CreateInvoiceInputs;
 };
 
 
@@ -1654,6 +1695,13 @@ export enum Sexualorientation {
   None = 'NONE'
 }
 
+/** The invoice status */
+export enum Status {
+  InsuranceClaim = 'INSURANCE_CLAIM',
+  Paid = 'PAID',
+  Pending = 'PENDING'
+}
+
 export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
@@ -1880,6 +1928,7 @@ export type Transactions = {
   facility?: Maybe<Array<Facility>>;
   facilityId: Scalars['String'];
   id: Scalars['String'];
+  invoice?: Maybe<Array<Invoice>>;
   patient?: Maybe<Array<Patient>>;
   patientId: Scalars['String'];
   status: Transactionstatus;
@@ -2298,7 +2347,7 @@ export type GetAppointmentQueryVariables = Exact<{
 }>;
 
 
-export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, token?: string | null | undefined, status: Appointmentstatus, patientId?: string | null | undefined, employment?: boolean | null | undefined, paymentType: PaymentType, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, scheduleEndDateTime?: string | null | undefined, scheduleStartDateTime?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null | undefined, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null | undefined, firstName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, serviceCode: ServiceCode } | null | undefined } | null | undefined } };
+export type GetAppointmentQuery = { __typename?: 'Query', getAppointment: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, notes?: string | null | undefined, reason?: string | null | undefined, token?: string | null | undefined, status: Appointmentstatus, patientId?: string | null | undefined, employment?: boolean | null | undefined, paymentType: PaymentType, autoAccident?: boolean | null | undefined, otherAccident?: boolean | null | undefined, primaryInsurance?: string | null | undefined, secondaryInsurance?: string | null | undefined, scheduleEndDateTime?: string | null | undefined, scheduleStartDateTime?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, billingStatus: BillingStatus, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string, duration: string, serviceType: ServiceType } | null | undefined, provider?: { __typename?: 'Doctor', id: string, lastName?: string | null | undefined, firstName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, serviceCode: ServiceCode } | null | undefined } | null | undefined } };
 
 export type RemoveAppointmentMutationVariables = Exact<{
   removeAppointment: RemoveAppointment;
@@ -2785,6 +2834,7 @@ export const GetAppointmentDocument = gql`
       scheduleStartDateTime
       createdAt
       updatedAt
+      billingStatus
       appointmentType {
         id
         name
