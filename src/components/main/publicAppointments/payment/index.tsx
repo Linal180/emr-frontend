@@ -10,47 +10,44 @@ import {
 import Alert from '../../../common/Alert';
 import BackdropLoader from '../../../common/Backdrop';
 // constants and types block
-import history from "../../../../history";
+import history from '../../../../history';
 import { WHITE_SEVEN } from '../../../../theme';
 import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
-  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION,
-  appointmentChargesDescription,PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION, appointmentChargesDescription,
+  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST,
 } from '../../../../constants';
-import {
-  appointmentReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/appointmentReducer";
-import {
-  useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery
-} from '../../../../generated/graphql';
+import { appointmentReducer, Action, initialState, State, ActionType, } from '../../../../reducers/appointmentReducer';
+import { useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, } from '../../../../generated/graphql';
 
 const ExternalPaymentComponent = (): JSX.Element => {
-  const { id } = useParams<ParamsType>()
+  const { id } = useParams<ParamsType>();
   const [instance, setInstance] = useState<any>(null);
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { appointmentPaymentToken, } = state
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
+  const { appointmentPaymentToken } = state;
   const [showPayBtn, setShowPayBtn] = useState<boolean>(false);
-  const [appointmentId, setAppointmentId] = useState<string>('');
   const [patientId, setPatientId] = useState<string>('');
   const [facilityId, setFacilityId] = useState<string>('');
   const [providerId, setProviderId] = useState<string>('');
   const [price, setPrice] = useState<string>('');
 
   const [chargePayment] = useChargeAfterAppointmentMutation({
+
     onCompleted({ chargeAfterAppointment: { appointment, response } }) {
       if (response && appointment) {
         Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
-        history.push(`${SLOT_CONFIRMATION}/${appointmentId}`)
-      } else Alert.error(APPOINTMENT_NOT_EXIST)
+        history.push(`${SLOT_CONFIRMATION}/${id}`);
+      } else Alert.error(APPOINTMENT_NOT_EXIST);
     },
+
     onError({ message }) {
-      Alert.error(message)
-    }
-  })
+      Alert.error(message);
+    },
+  });
 
   const [getToken] = useGetTokenLazyQuery({
-    fetchPolicy: "network-only",
+    fetchPolicy: 'network-only',
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
@@ -63,72 +60,76 @@ const ExternalPaymentComponent = (): JSX.Element => {
 
           dispatch({
             type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN,
-            appointmentPaymentToken: clientToken
-          })
+            appointmentPaymentToken: clientToken,
+          });
         }
       }
-
     },
 
     onError({ message }) {
-      Alert.error(message)
-    }
+      Alert.error(message);
+    },
   });
 
   const [getAppointment] = useGetAppointmentLazyQuery({
-    fetchPolicy: "network-only",
+    fetchPolicy: 'network-only',
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
     onError({ message }) {
-      Alert.error(message)
+      Alert.error(message);
     },
 
     async onCompleted(data) {
-      const { getAppointment: { response, appointment } } = data;
+      const {
+        getAppointment: { response, appointment },
+      } = data;
 
       if (response) {
-        const { status } = response
+        const { status } = response;
 
         if (appointment && status && status === 200) {
-          const { appointmentType, patientId, provider, facility, id } = appointment;
-          const { price } = appointmentType || {}
-          const { id: providerId } = provider || {}
-          const { id: facilityId } = facility || {}
+          const { appointmentType, patientId, provider, facility, billingStatus, } = appointment;
 
-          price && setPrice(price)
-          patientId && setPatientId(patientId)
-          providerId && setProviderId(providerId)
-          facilityId && setFacilityId(facilityId)
-          id && setAppointmentId(id)
+          if (billingStatus === BillingStatus.Due) {
+            const { price } = appointmentType || {};
+            const { id: providerId } = provider || {};
+            const { id: facilityId } = facility || {};
 
-          try {
-            await getToken()
-          } catch (error) { }
+            price && setPrice(price);
+            patientId && setPatientId(patientId);
+            providerId && setProviderId(providerId);
+            facilityId && setFacilityId(facilityId);
+
+            try {
+              await getToken();
+            } catch (error) { }
+          } else if (billingStatus === BillingStatus.Paid) {
+            history.push(`${SLOT_CONFIRMATION}/${id}`);
+          }
         }
       }
-    }
+    },
   });
 
   const fetchAppointment = useCallback(async () => {
-    id && await getAppointment({
-      variables: { getAppointment: { id } }
-    })
-  }, [getAppointment, id])
+    id &&
+      (await getAppointment({
+        variables: { getAppointment: { id } },
+      }));
+  }, [getAppointment, id]);
 
   useEffect(() => {
-    fetchAppointment()
+    fetchAppointment();
   }, [fetchAppointment]);
 
   const charge = (token: string) => {
     chargePayment({
       variables: {
-        paymentInput: {
-          price, patientId, providerId, facilityId, appointmentId, clientIntent: token,
-        }
-      }
-    })
-  }
+        paymentInput: { price, patientId, providerId, facilityId, appointmentId: id, clientIntent: token, },
+      },
+    });
+  };
 
   const threeDSecurePayment = () => {
     instance.requestPaymentMethod(
@@ -166,14 +167,16 @@ const ExternalPaymentComponent = (): JSX.Element => {
   };
 
   return (
-    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
+    <Box bgcolor={WHITE_SEVEN} minHeight='100vh' padding='30px 30px 30px 60px'>
       <EMRLogo />
 
       <Box mt={3} mb={1}>
-        <Typography variant="h4">{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
+        <Typography variant='h4'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
       </Box>
 
-      <Typography variant="body1">{appointmentChargesDescription(price || "0")}</Typography>
+      <Typography variant='body1'>
+        {appointmentChargesDescription(price || '0')}
+      </Typography>
 
       <Grid container spacing={3} justifyContent='center' alignItems='center'>
         <Grid item md={6} sm={12} xs={12}>
@@ -186,7 +189,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                     translations: {
                       PayPal: PAY_VIA_PAYPAL,
                       Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
-                      chooseAWayToPay: ''
+                      chooseAWayToPay: '',
                     },
                     paypal: {
                       flow: CHECKOUT,
@@ -195,7 +198,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                       commit: true,
                       buttonStyle: {
                         tagline: false,
-                      }
+                      },
                     },
                     card: {
                       cardholderName: true,

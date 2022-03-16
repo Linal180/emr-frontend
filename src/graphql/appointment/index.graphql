@@ -71,6 +71,7 @@ query GetAppointment($getAppointment: GetAppointment!){
       scheduleStartDateTime
       createdAt
       updatedAt
+      billingStatus
       
       appointmentType {
         id
@@ -187,6 +188,7 @@ query GetDoctorAppointments($getDoctorAppointment: GetDoctorAppointment!){
       scheduleEndDateTime
       createdAt
       updatedAt
+      
       
       appointmentType {
         id
