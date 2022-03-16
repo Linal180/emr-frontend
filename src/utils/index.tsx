@@ -183,7 +183,7 @@ export const renderServices = (services: ServicesPayload['services']) => {
       if (service) {
         const { id, name, duration } = service;
 
-        data.push({ id, name: `${name} \t (duration: ${duration} minutes)` })
+        data.push({ id, name: `${name} (duration: ${duration} minutes)` })
       }
     }
   }
