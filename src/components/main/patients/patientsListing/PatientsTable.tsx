@@ -58,16 +58,18 @@ const PatientsTable: FC = (): JSX.Element => {
     }
   });
 
-  const fetchAllPatients = useCallback(() => {
-    const isSuper = isSuperAdmin(roles);
-    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-    const patientsInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+  const fetchAllPatients = useCallback(async () => {
+    try {
+      const isSuper = isSuperAdmin(roles);
+      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const patientsInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
 
-    findAllPatient({
-      variables: {
-        patientInput: { ...patientsInputs }
-      },
-    })
+      await findAllPatient({
+        variables: {
+          patientInput: { ...patientsInputs }
+        },
+      })
+    } catch (error) { }
   }, [facilityId, findAllPatient, page, roles])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({

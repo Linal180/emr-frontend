@@ -77,6 +77,8 @@ const StartProjectComponent = (): JSX.Element => {
           ...style,
           backgroundColor: color,
           borderRadius: '8px',
+          whiteSpace: 'normal !important',
+          minHeight: 24,
         }}
       >
         {children}

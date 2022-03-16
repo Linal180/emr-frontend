@@ -143,6 +143,11 @@ export const CREATE_PATIENT = "Create Patient";
 export const UPDATE_FACILITY = "Update Facility";
 export const ADD_APPOINTMENT = "Add Appointment";
 export const EDIT_APPOINTMENT = "Edit Appointment";
+export const CREATE_INVOICE = "Create Invoice";
+export const NO_INVOICE = "No Invoice";
+export const UNPAID = "Unpaid";
+export const INVOICE = "Invoice";
+export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
@@ -214,6 +219,9 @@ export const DEA_TERM_DATE = "DEA Term Date";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
 export const EMAIL = "Email";
+export const DISABLED = "Disabled";
+export const ENABLED_BY = "Enabled by";
+export const ACTIVATED_ON = "Activated On";
 export const PRACTICE_IDENTIFIER = "Practice Identifier";
 export const GROWTH_CHART = "Growth Chart";
 export const PDF_TEXT = "PDF";
@@ -344,6 +352,7 @@ export const LOCATION_ID = "Location ID";
 export const POS = "Place of Service Code (POS)";
 export const USER_ID = "User ID";
 export const CANCEL = "Cancel";
+export const EDIT = "Edit";
 export const CVV = "CVV";
 export const PAY = "Pay";
 export const LAST_NAME = "Last Name";
@@ -398,6 +407,7 @@ export const VIEW_FACILITY = "View Facility";
 export const PHONE_NUMBER = "Phone number";
 export const MOBILE_NUMBER = "Mobile number";
 export const NEW_PASSWORD = "New password";
+export const OLD_PASSWORD = "Old password";
 export const DELETE_MEDIA = "Delete Media";
 export const VERIFY_EMAIL = "Verify Email";
 export const SEARCH_PLACEHOLDER = "Search";
@@ -476,16 +486,17 @@ export const LEGAL_SEX = "Legal Sex";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const ADDRESS_CTA = "Address (CTA)";
 export const EMPLOYER = "Employer";
-export const TITLE = "Title";
 export const SIZE = "Size";
-export const ACTIONS = "Actions";
-export const PENDING = "Pending";
+export const TITLE = "Title";
 export const SIGNED = "Signed";
-export const UPLOAD = "Upload";
-export const UPLOADS_DOCUMENT = "Upload Document";
-export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT =
-  "Drop your image here, or browse";
 export const DELETE = "Delete";
+export const UPLOAD = "Upload";
+export const PENDING = "Pending";
+export const ACTIONS = "Actions";
+export const REVOKE_ACCESS = "Revoke Access";
+export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
+export const UPLOADS_DOCUMENT = "Upload Document";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
 export const DECREASED_DATE = "Deceased Date";
@@ -550,9 +561,6 @@ export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const LIST_FACILITY_SERVICES_TEXT = "List Facility Services";
 export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_RECORD_TEXT = "You are about delete record";
-export const THANKYOU_MESSAGE = "Thank you for your interest in BOCA+.";
-export const ADVANCE_NIGHTS_RESERVATIONS = "Advance Nights Reservations";
-export const CONSECUTIVE_NIGHTS_ALLOWABLE = "Consecutive Nights Allowable";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const DELETE_ACCOUNT_DESCRIPTION = "Confirm to Delete";
@@ -572,22 +580,19 @@ export const DELETE_MEDIA_DESCRIPTION =
   "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION =
   "Are you sure you want to delete this request?";
-export const ANNUAL_MANAGEMENT_FEE =
-  "Annual Management Fee (based on initial capital contribution)";
-export const RELATIONSHIP_TO_PATIENT =
-  "Relationship To Patient";
-export const YOUR_NAME = "Your Name";
-export const SCHEDULE_TEXT = "Schedule";
-export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
-export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
+export const RELATIONSHIP_TO_PATIENT = "Relationship To Patient";
+export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
+export const USD = "USD";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
 export const PROFILE_TEXT = "Profile";
+export const YOUR_NAME = "Your Name";
+export const SCHEDULE_TEXT = "Schedule";
 export const CONTINUE_TEXT = "Continue";
-export const AVAILABLE_SLOTS = "Available Slots";
+export const SELECT_DATE = "Select Date";
 export const MY_ACCOUNT_TEXT = "My Account";
 export const SKIP_NOW_TEXT = "Skip for now";
-export const SELECT_DATE = "Select Date";
+export const AVAILABLE_SLOTS = "Available Slots";
 export const PATIENT_DETAILS = "Patient Details";
 export const SELECT_SERVICES = "Select Services";
 export const BOOK_APPOINTMENT = "Book Appointment";
@@ -597,12 +602,16 @@ export const PATIENT_LAST_NAME = "Patient Last Name";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const PATIENT_FIRST_NAME = "Patient First Name";
 export const APPOINTMENT_DETAILS = "Appointment Details";
+export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
+export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
 export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const BOOK_YOUR_APPOINTMENT = "1 - Book Your Appointment";
 export const PAY_VIA_PAYPAL = "Pay via PayPal";
+export const PAY_VIA_CASH = "Pay via Cash";
+export const CASH_PAID = "Cash Paid";
 export const CHECKOUT = "checkout";
-export const USD = "USD";
+export const PAY_VIA_CARD = "Pay via Card";
 export const ENABLE_ACCESS_PORTAL = "Enable Access Portal";
 export const DISABLE_ACCESS_PORTAL = "Enabled";
 export const PAY_VIA_DEBIT_OR_CREDIT_CARD = "Pay via Debit or Credit Card";
@@ -634,14 +643,10 @@ export const APPOINTMENT_CONFIRM_HEADING =
 export const APPOINTMENT_CONFIRM_SUBHEADING =
   "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
 export const appointmentConfirmationDescription = (dateTime: string) =>
-  `Thank you! Your visit at ${getStandardTime(
-    dateTime || ""
-  )} on ${getFormattedDate(
-    dateTime || ""
-  )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
-  export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
-  export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
-  export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
+  `Thank you! Your visit at ${getStandardTime(dateTime || "")} on ${getFormattedDate(dateTime || "")} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
+export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
+export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
+export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
 // Roles
 export const STAFF = "STAFF";
 export const ADMIN = "ADMIN";
@@ -673,6 +678,7 @@ export const FACILITIES_ROUTE = "/list-facilities";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
+export const CHANGE_PASSWORD_ROUTE = "/change-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const CANCEL_APPOINTMENT = "/cancel-appointment";
 export const PATIENT_INFORMATION = "/patient-information";
@@ -727,68 +733,44 @@ export const MaxLength = (fieldName: string, length: number) =>
   `${fieldName} can be up to ${length} characters long`;
 export const MinLength = (fieldName: string, length: number) =>
   `${fieldName} should be at least ${length} characters long`;
-export const USER_REQUEST_CANNOT_EDITED_NOTE =
-  "Note: Investor has not signed the document. So, this request cannot be edited.";
-export const PASSWORD_VALIDATION_MESSAGE =
-  "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
-export const PHASE_CANNOT_CHANGE_NOTE =
-  "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
+export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
+export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
+export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
-export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
-export const PAYMENT_CANT_DONE =
-  "Patient not exist in system, so payment can't be done";
-export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
-export const MAINTENANCE_ALERT = "Maintenance is in progress";
-export const CANCEL_TIME_EXPIRED_MESSAGE =
-  "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
-export const SLOT_ALREADY_BOOKED =
-  "This patient has already a booked appointment with this provider.";
-export const APPOINTMENT_SLOT_ERROR_MESSAGE =
-  "Appointment Time is required. Please select available slot!";
-export const CANT_BOOK_APPOINTMENT = "You can not book this appointment.";
-export const APPOINTMENT_BOOKED_SUCCESSFULLY =
-  "Appointment is booked successfully";
-export const APPOINTMENT_UPDATED_SUCCESSFULLY =
-  "Appointment is updated successfully";
-export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
-export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
-export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated.";
-export const FACILITY_NOT_FOUND = "Facility not found!";
-export const PRACTICE_NOT_FOUND = "Practice not found!";
-export const CANCELLED_APPOINTMENT_EDIT_MESSAGE =
-  "Cancelled appointment cant be edited!";
-export const LOCATION_NOT_FOUND = "Location not found!";
-export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
+export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
-export const SCHEDULE_NOT_FOUND = "Schedule not found!";
+export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
+export const SCHEDULE_START = "Schedule Start Time";
+export const INVALID_EMAIL = "Invalid email address";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
-export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
-export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
-export const TRY_AGAIN = "Something went wrong. Try again!";
-export const INVALID_EMAIL = "Invalid email address";
-export const SCHEDULE_START = "Schedule Start Time";
-export const SCHEDULE_END = "Schedule End Time";
-export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
-export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";
+export const FACILITY_NOT_FOUND = "Facility not found!";
+export const PRACTICE_NOT_FOUND = "Practice not found!";
+export const LOCATION_NOT_FOUND = "Location not found!";
+export const SCHEDULE_NOT_FOUND = "Schedule not found!";
+export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
+export const TRY_AGAIN = "Something went wrong. Try again!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
 export const DOCTOR_CREATED = "Doctor created successfully!";
 export const DOCTOR_UPDATED = "Doctor updated successfully!";
 export const NO_FACILITY_MESSAGE = "No facility exists yet!";
+export const APPOINTMENT_NOT_FOUND = "Appointment not found!";
 export const TOKEN_EXPIRED = "Verification token is expired.";
 export const CANT_DELETE_USER = "This user can't be deleted.";
+export const MAINTENANCE_ALERT = "Maintenance is in progress";
 export const SERVICE_CREATED = "Service created successfully!";
 export const SERVICE_UPDATED = "Service updated successfully!";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
 export const PATIENT_CREATED = "Patient created successfully!";
 export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
+export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
 export const USER_EXIST = "User already exists with this email.";
@@ -801,34 +783,48 @@ export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
 export const LOCATION_CREATED = "Location is created successfully";
 export const LOCATION_UPDATED = "Location is updated successfully";
+export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
+export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
+export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
+export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated.";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
+export const CANT_BOOK_APPOINTMENT = "You can not book this appointment.";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
+export const NOT_SUPER_ADMIN_MESSAGE = "Only Admins can access Admin Portal!";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
+export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
 export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
-export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
-export const NOT_SUPER_ADMIN_MESSAGE = "Only Admins can access Admin Portal!";
+export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
 export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
+export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully";
+export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";
 export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
 export const SET_PASSWORD_TEXT_MESSAGE = "Set your password and login to your portal";
+export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully";
+export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done";
+export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = "Cancelled appointment cant be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
 export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or invalid.";
 export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
 export const FORGOT_PASSWORD_MESSAGE = "Please enter your email to get a reset-password link.";
 export const FORGET_PASSWORD_SUCCESS = "An email has been sent to your registered email address";
+export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";
+export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
 export const PRACTICE_OR_FACILITY_ALREADY_EXISTS = "Practice/Facility already exits against provided data!";
 export const FORGOT_PASSWORD_TEXT_MESSAGE = "Enter your registered email address to get reset-password link";
 export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a email while you are logged in.";
 export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
+export const CANCEL_TIME_EXPIRED_MESSAGE = "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
 export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
 export const appointmentChargesDescription = (amount: string) => `You will be charged $${amount} for this appointment booking.`;
 export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
@@ -970,7 +966,7 @@ export const PROFILE_MENU_ITEMS = [
   },
   {
     name: CHANGE_PASSWORD,
-    link: UPDATE_PASSWORD_ROUTE,
+    link: CHANGE_PASSWORD_ROUTE,
   }
 ];
 
@@ -1038,11 +1034,9 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
 ];
 
-export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz
-  .names()
-  .map((timezone) => {
-    return { id: timezone, name: formatValue(timezone) };
-  });
+export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map((timezone) => {
+  return { id: timezone, name: formatValue(timezone) };
+});
 
 export const MAPPED_COUNTRIES: SelectorOption[] = [{ id: USA, name: USA }];
 export const MAPPED_STATES: SelectorOption[] = states.map(
@@ -1468,26 +1462,13 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
 export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
-  {
-    title: "Patient Information",
-  },
-  {
-    title: "Document Verification",
-  },
+  { title: "Patient Information", },
+  { title: "Document Verification", },
 ];
 
 export const AGREEMENT_POINTS = [
-  "Proin id ligula dictum, convallis enim ut, facilisis massa.Mauris a nisi ut sapien blandit imperdiet sed id lacus.Mauris auctor interdum dignissim.",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa.",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus ma",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis. Nullam mi tortor, auctor quis orci sed, posuere luctus enim. Ut sollicitudin neque at enim gravida, ut dictum est finibus. Praesent sit",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa.rtor pretium vehicula quis et ante. Aenean purus sem, pharetra et ante vel, tincidunt cursus ante.",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa.rtor pretium vehicula quis et ante. Aenean purus sem, pharetra et ante vel, tincidunt cursus ante.",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim ",
-  "Pro in id ligula dictum, convallis enim ut, facilisis massa.Maris a nisi ut sapien blandit imperdiet sed id lacus.Mauis auctor interdum dignissim.Crasat lacus ma",
-  "Proin id ligula dictum, convallis enim ut, facilisis massa. Mauris a nisi ut sapien blandit imperdiet sed id lacus. Mauris auctor interdum dignissim. Cras at lacus malesuada, mattis neque mattis, lacinia mauris. Nunc ornare blandit turpis, sit amet dignissim lacus egestas in. Ut in iaculis turpis, ac consequat turpis",
+  LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15,
+  LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15,
 ];
 
 // Breadcrumb links
@@ -1558,6 +1539,10 @@ export const PROFILE_TOP_TABS = [
     title: "Documents",
     value: "8",
   },
+  {
+    title: "Portal Access",
+    value: "9",
+  }
 ];
 
 export const DOCTOR_TOP_TABS = [
@@ -1690,31 +1675,23 @@ export const dummyAppointmentData = {
 
 export const dummyAppointmentSubData = [
   {
-    heading: "Appt Type",
+    heading: "Appointment Type",
     description: "General",
   },
   {
-    heading: "Location",
+    heading: "Facility Location",
     description: "Clay County Hospital",
   },
   {
-    heading: "Name",
-    description: "Dr. Jonathan Smutt",
-  },
-  {
-    heading: "P Name",
-    description: "Floyd Miles",
+    heading: "Provider Name",
+    description: "Dr. Michael Hall, MD",
   },
   {
     heading: "Reason",
     description: "High temperature",
   },
   {
-    heading: "Notes",
-    description: "Special Care Required",
-  },
-  {
-    heading: "Insurance",
+    heading: "Primary Insurance",
     description: "United Health Ins.",
   },
 ];
@@ -1927,5 +1904,32 @@ export const PROFILE_DETAIL_DATA = [
   {
     title: "Family History",
     description: LOREM_TEXT_15,
+  },
+];
+
+export const PORTAL_DUMMY_DATA = [
+  {
+    email: "willie.jennings@example.com",
+    enabledByName: "Leslie Alexander",
+    enabledByDate: "On: March 15, 2022. 2:18AM",
+    activatedOn: "March 15, 2022. 2:18AM",
+    disabledName: "Dr. Harrold Wixen",
+    disabledDate: "On: March 15, 2022. 2:18AM",
+  },
+  {
+    email: "bill.sanders@example.com",
+    enabledByName: "Bessie Cooper",
+    enabledByDate: "On: March 15, 2022. 2:18AM",
+    activatedOn: "March 15, 2022. 2:18AM",
+    disabledName: "Dr. A. H. John",
+    disabledDate: "On: March 15, 2022. 2:18AM",
+  },
+  {
+    email: "georgia.young@example.com",
+    enabledByName: "Floyd Miles",
+    enabledByDate: "On: March 15, 2022. 2:18AM",
+    activatedOn: "March 15, 2022. 2:18AM",
+    disabledName: "Floyd Miles",
+    disabledDate: "On: March 15, 2022. 2:18AM",
   },
 ];

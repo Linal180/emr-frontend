@@ -235,8 +235,7 @@ const PublicAppointmentForm = (): JSX.Element => {
       <EMRLogo />
 
       <Box mb={3} />
-
-
+      
       <Box>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>

@@ -3,7 +3,7 @@ import { WHITE } from "../theme";
 export const useProfileStyles = makeStyles(() =>
   createStyles({
     profileContainer: {
-      marginTop: 20,
+      marginTop: 50,
       padding: 50,
       background: WHITE,
       borderRadius: 12,
