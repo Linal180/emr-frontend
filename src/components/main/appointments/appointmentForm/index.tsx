@@ -89,7 +89,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       Alert.error(message)
     },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       const { getAppointment: { response, appointment } } = data;
 
       if (response) {
@@ -118,11 +118,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           otherAccident && setValue('otherAccident', otherAccident)
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
-          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
           facilityId && facilityName && setValue('facilityId', setRecord(facilityId, facilityName))
           patientId && setValue('patientId', setRecord(patientId, `${patientFN} ${patientLN}` || ''))
           providerId && setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}` || ''))
           scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
+          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
           scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
@@ -206,19 +206,21 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
+  const fetchAppointment = useCallback(async () => {
+    id && await getAppointment({
+      variables: { getAppointment: { id } }
+    })
+  }, [getAppointment, id])
+
   useEffect(() => {
     if (isEdit) {
-      if (id) {
-        getAppointment({
-          variables: { getAppointment: { id } }
-        })
-      } else Alert.error(APPOINTMENT_NOT_FOUND)
+      id ? fetchAppointment() : Alert.error(APPOINTMENT_NOT_FOUND)
     } else {
       setValue('employment', false)
       setValue('autoAccident', false)
       setValue('otherAccident', false)
     }
-  }, [getAppointment, id, isEdit, setValue])
+  }, [fetchAppointment, id, isEdit, setValue])
 
   useEffect(() => {
     if (selectedFacility && selectedProvider && selectedService && date) {

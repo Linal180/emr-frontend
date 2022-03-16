@@ -237,6 +237,11 @@ export const theme = createTheme({
           "&:hover": {
             backgroundColor: BLUE_THREE,
           }
+        },
+
+        "&.blue-button-new": {
+          backgroundColor: BLUE_EIGHT,
+          color: WHITE,
         }
       },
 
@@ -255,6 +260,11 @@ export const theme = createTheme({
             borderColor: BLUE_THREE,
             color: BLUE_THREE,
           }
+        },
+
+        "&.blue-button-new": {
+          backgroundColor: WHITE,
+          color: BLUE_EIGHT,
         }
       },
 
