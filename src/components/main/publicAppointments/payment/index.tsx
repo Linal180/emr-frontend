@@ -4,9 +4,7 @@ import { Reducer, useCallback, useEffect, useReducer, useState } from 'react';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 import DropIn from 'braintree-web-drop-in-react';
 import {
-  PaymentMethodPayload,
-  PaymentMethodRequestablePayload,
-  PaymentOptionSelectedPayload,
+  PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload,
 } from 'braintree-web-drop-in';
 // components block
 import Alert from '../../../common/Alert';
@@ -17,38 +15,16 @@ import { WHITE_SEVEN } from '../../../../theme';
 import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
-  APPOINTMENT_BOOKED_SUCCESSFULLY,
-  CHOOSE_YOUR_PAYMENT_METHOD,
-  PAY,
-  SLOT_CONFIRMATION,
-  appointmentChargesDescription,
-  PAY_VIA_PAYPAL,
-  PAY_VIA_DEBIT_OR_CREDIT_CARD,
-  CHECKOUT,
-  USD,
-  APPOINTMENT_NOT_EXIST,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION, appointmentChargesDescription,
+  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST,
 } from '../../../../constants';
-import {
-  appointmentReducer,
-  Action,
-  initialState,
-  State,
-  ActionType,
-} from '../../../../reducers/appointmentReducer';
-import {
-  useChargeAfterAppointmentMutation,
-  useGetAppointmentLazyQuery,
-  useGetTokenLazyQuery,
-  BillingStatus,
-} from '../../../../generated/graphql';
+import { appointmentReducer, Action, initialState, State, ActionType, } from '../../../../reducers/appointmentReducer';
+import { useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, } from '../../../../generated/graphql';
 
 const ExternalPaymentComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const [instance, setInstance] = useState<any>(null);
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(
-    appointmentReducer,
-    initialState
-  );
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const { appointmentPaymentToken } = state;
   const [showPayBtn, setShowPayBtn] = useState<boolean>(false);
   const [patientId, setPatientId] = useState<string>('');
@@ -57,7 +33,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
   const [price, setPrice] = useState<string>('');
 
   const [chargePayment] = useChargeAfterAppointmentMutation({
-    
+
     onCompleted({ chargeAfterAppointment: { appointment, response } }) {
       if (response && appointment) {
         Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
@@ -113,13 +89,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
         const { status } = response;
 
         if (appointment && status && status === 200) {
-          const {
-            appointmentType,
-            patientId,
-            provider,
-            facility,
-            billingStatus,
-          } = appointment;
+          const { appointmentType, patientId, provider, facility, billingStatus, } = appointment;
 
           if (billingStatus === BillingStatus.Due) {
             const { price } = appointmentType || {};
@@ -133,7 +103,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
 
             try {
               await getToken();
-            } catch (error) {}
+            } catch (error) { }
           } else if (billingStatus === BillingStatus.Paid) {
             history.push(`${SLOT_CONFIRMATION}/${id}`);
           }
