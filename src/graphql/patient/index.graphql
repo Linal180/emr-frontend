@@ -50,6 +50,7 @@ query GetPatient($getPatient: GetPatient!) {
       middleName
       lastName
       suffix
+      inviteAccepted
       firstNameUsed
       prefferedName
       previousFirstName
@@ -192,6 +193,137 @@ mutation UpdatePatient($updatePatientInput: UpdatePatientInput!){
       error
       status
       message
+    }
+  }
+}
+
+mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!){
+  sendInviteToPatient(patientInviteInput: $patientInviteInput){
+    response {
+      status
+      error
+      message
+    }
+
+    patient {
+      id
+      firstName
+      middleName
+      lastName
+      suffix
+      firstNameUsed
+      prefferedName
+      previousFirstName
+      previouslastName
+      motherMaidenName
+      inviteAccepted
+      ssn
+      gender
+      dob
+      phonePermission
+      pharmacy
+      medicationHistoryAuthority
+      releaseOfInfoBill
+      voiceCallPermission
+      registrationDepartment
+      primaryDepartment
+      registrationDate
+      deceasedDate
+      privacyNotice
+      releaseOfInfoBill
+      callToConsent
+      medicationHistoryAuthority
+      preferredCommunicationMethod
+      patientNote
+      language
+      race
+      ethnicity
+      maritialStatus
+      sexualOrientation
+      genderIdentity
+      sexAtBirth
+      pronouns
+      homeBound
+      holdStatement
+      statementDelivereOnline
+      statementNote
+      statementNoteDateFrom
+      statementNoteDateTo
+      createdAt
+      updatedAt
+
+      doctorPatients {
+        id
+        doctorId
+        currentProvider
+        
+        doctor {
+          id
+          firstName
+          lastName
+          createdAt
+          updatedAt
+        }
+      }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
+      
+      contacts {
+        id
+        fax
+        ssn
+        city
+        email
+        pager
+        phone
+        mobile
+        address
+        address2
+        state
+        zipCode
+        country
+        name
+        suffix
+        firstName
+        primaryContact
+        middleName
+        lastName
+        serviceCode
+        employerName
+        relationship
+        contactType
+        createdAt
+        updatedAt
+      }
+
+      employer {
+        id
+        name
+        email
+        phone
+        mobile
+        industry
+        usualOccupation
+        createdAt
+        updatedAt
+      }
+
+      facility {
+        id
+        name
+        isPrivate
+        serviceCode
+        updatedAt
+      } 
     }
   }
 }

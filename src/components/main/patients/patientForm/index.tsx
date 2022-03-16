@@ -368,7 +368,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, facilityId: selectedFacility || '',
-        gender: selectedGender as Genderidentity || Genderidentity.None,
+        gender: selectedGender as Genderidentity || Genderidentity.None, inviteAccepted: true,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
@@ -460,7 +460,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   };
 
   useEffect(() => {
-    console.log("Getting patient")
     if (isEdit) {
       id ?
         getPatient({ variables: { getPatient: { id } } }) : Alert.error(PATIENT_NOT_FOUND)
@@ -472,14 +471,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       usualProviderId: EMPTY_OPTION,
       facilityId: { id, name }
     });
-    console.log("Getting ====")
+
     if (id) {
       fetchAllDoctorList(id);
     }
   }, [fetchAllDoctorList, reset]);
 
   useEffect(() => {
-    console.log("setting facility")
     selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
   }, [fetchList, selectedFacility, selectedFacilityName, watch])
 
