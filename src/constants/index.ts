@@ -143,6 +143,11 @@ export const CREATE_PATIENT = "Create Patient";
 export const UPDATE_FACILITY = "Update Facility";
 export const ADD_APPOINTMENT = "Add Appointment";
 export const EDIT_APPOINTMENT = "Edit Appointment";
+export const CREATE_INVOICE = "Create Invoice";
+export const NO_INVOICE = "No Invoice";
+export const UNPAID = "Unpaid";
+export const INVOICE = "Invoice";
+export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
 export const STAFF_LISTING = "Staff Listing";
 export const PRIMARY_PROVIDER = "Primary Provider";
@@ -214,6 +219,9 @@ export const DEA_TERM_DATE = "DEA Term Date";
 export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
 export const EMAIL = "Email";
+export const DISABLED = "Disabled";
+export const ENABLED_BY = "Enabled by";
+export const ACTIVATED_ON = "Activated On";
 export const PRACTICE_IDENTIFIER = "Practice Identifier";
 export const GROWTH_CHART = "Growth Chart";
 export const PDF_TEXT = "PDF";
@@ -478,16 +486,17 @@ export const LEGAL_SEX = "Legal Sex";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const ADDRESS_CTA = "Address (CTA)";
 export const EMPLOYER = "Employer";
-export const TITLE = "Title";
 export const SIZE = "Size";
-export const ACTIONS = "Actions";
-export const PENDING = "Pending";
+export const TITLE = "Title";
 export const SIGNED = "Signed";
-export const UPLOAD = "Upload";
-export const UPLOADS_DOCUMENT = "Upload Document";
-export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT =
-  "Drop your image here, or browse";
 export const DELETE = "Delete";
+export const UPLOAD = "Upload";
+export const PENDING = "Pending";
+export const ACTIONS = "Actions";
+export const REVOKE_ACCESS = "Revoke Access";
+export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
+export const UPLOADS_DOCUMENT = "Upload Document";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
 export const DECREASED_DATE = "Deceased Date";
@@ -568,22 +577,19 @@ export const DELETE_MEDIA_DESCRIPTION =
   "Are you sure you want to delete this media?";
 export const DELETE_REQUEST_DESCRIPTION =
   "Are you sure you want to delete this request?";
-export const ANNUAL_MANAGEMENT_FEE =
-  "Annual Management Fee (based on initial capital contribution)";
-export const RELATIONSHIP_TO_PATIENT =
-  "Relationship To Patient";
-export const YOUR_NAME = "Your Name";
-export const SCHEDULE_TEXT = "Schedule";
-export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
-export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
+export const RELATIONSHIP_TO_PATIENT = "Relationship To Patient";
+export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
+export const USD = "USD";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
 export const PROFILE_TEXT = "Profile";
+export const YOUR_NAME = "Your Name";
+export const SCHEDULE_TEXT = "Schedule";
 export const CONTINUE_TEXT = "Continue";
-export const AVAILABLE_SLOTS = "Available Slots";
+export const SELECT_DATE = "Select Date";
 export const MY_ACCOUNT_TEXT = "My Account";
 export const SKIP_NOW_TEXT = "Skip for now";
-export const SELECT_DATE = "Select Date";
+export const AVAILABLE_SLOTS = "Available Slots";
 export const PATIENT_DETAILS = "Patient Details";
 export const SELECT_SERVICES = "Select Services";
 export const BOOK_APPOINTMENT = "Book Appointment";
@@ -593,12 +599,16 @@ export const PATIENT_LAST_NAME = "Patient Last Name";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const PATIENT_FIRST_NAME = "Patient First Name";
 export const APPOINTMENT_DETAILS = "Appointment Details";
+export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
+export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
 export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
 export const NOTHING_HERE_TEXT = "Seems there is nothing here";
 export const BOOK_YOUR_APPOINTMENT = "1 - Book Your Appointment";
 export const PAY_VIA_PAYPAL = "Pay via PayPal";
+export const PAY_VIA_CASH = "Pay via Cash";
+export const CASH_PAID = "Cash Paid";
 export const CHECKOUT = "checkout";
-export const USD = "USD";
+export const PAY_VIA_CARD = "Pay via Card";
 export const PAY_VIA_DEBIT_OR_CREDIT_CARD = "Pay via Debit or Credit Card";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose you Payment Method";
 export const MAINTENANCE_IN_PROGRESS = "Maintenance in progress";
@@ -1534,6 +1544,10 @@ export const PROFILE_TOP_TABS = [
     title: "Documents",
     value: "8",
   },
+  {
+    title: "Portal Access",
+    value: "9",
+  }
 ];
 
 export const DOCTOR_TOP_TABS = [
@@ -1666,31 +1680,23 @@ export const dummyAppointmentData = {
 
 export const dummyAppointmentSubData = [
   {
-    heading: "Appt Type",
+    heading: "Appointment Type",
     description: "General",
   },
   {
-    heading: "Location",
+    heading: "Facility Location",
     description: "Clay County Hospital",
   },
   {
-    heading: "Name",
-    description: "Dr. Jonathan Smutt",
-  },
-  {
-    heading: "P Name",
-    description: "Floyd Miles",
+    heading: "Provider Name",
+    description: "Dr. Michael Hall, MD",
   },
   {
     heading: "Reason",
     description: "High temperature",
   },
   {
-    heading: "Notes",
-    description: "Special Care Required",
-  },
-  {
-    heading: "Insurance",
+    heading: "Primary Insurance",
     description: "United Health Ins.",
   },
 ];
@@ -1903,5 +1909,32 @@ export const PROFILE_DETAIL_DATA = [
   {
     title: "Family History",
     description: LOREM_TEXT_15,
+  },
+];
+
+export const PORTAL_DUMMY_DATA = [
+  {
+    email: "willie.jennings@example.com",
+    enabledByName: "Leslie Alexander",
+    enabledByDate: "On: March 15, 2022. 2:18AM",
+    activatedOn: "March 15, 2022. 2:18AM",
+    disabledName: "Dr. Harrold Wixen",
+    disabledDate: "On: March 15, 2022. 2:18AM",
+  },
+  {
+    email: "bill.sanders@example.com",
+    enabledByName: "Bessie Cooper",
+    enabledByDate: "On: March 15, 2022. 2:18AM",
+    activatedOn: "March 15, 2022. 2:18AM",
+    disabledName: "Dr. A. H. John",
+    disabledDate: "On: March 15, 2022. 2:18AM",
+  },
+  {
+    email: "georgia.young@example.com",
+    enabledByName: "Floyd Miles",
+    enabledByDate: "On: March 15, 2022. 2:18AM",
+    activatedOn: "March 15, 2022. 2:18AM",
+    disabledName: "Floyd Miles",
+    disabledDate: "On: March 15, 2022. 2:18AM",
   },
 ];

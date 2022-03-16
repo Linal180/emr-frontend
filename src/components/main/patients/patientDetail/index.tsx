@@ -35,8 +35,9 @@ import {
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION,
   MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, UPLOAD,
-  SCHEDULE_APPOINTMENTS_TEXT, SIGNED, VIEW_CHART_TEXT
+  SCHEDULE_APPOINTMENTS_TEXT, SIGNED, VIEW_CHART_TEXT, ENABLE_PATIENT_ACCESS
 } from "../../../../constants";
+import PortalTable from './PortalTable';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
@@ -356,7 +357,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                       </FormProvider>
                     </>
                     }
-                    
+
                     <Box bgcolor={WHITE} p={4}>
                       <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
                         <Box className={classes.profileInfoHeading}>
@@ -397,6 +398,22 @@ const PatientDetailsComponent = (): JSX.Element => {
                 </Box>
 
                 <DocumentsTable />
+              </Box>
+            </TabPanel>
+
+            <TabPanel value="9">
+              <Box className={tableClasses.mainTableContainer}>
+                <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box className={tableClasses.searchOuterContainer}>
+                    <Search search={search} />
+                  </Box>
+
+                  <Button color="inherit" variant="outlined" className='blue-button-new'>
+                    {ENABLE_PATIENT_ACCESS}
+                  </Button>
+                </Box>
+
+                <PortalTable />
               </Box>
             </TabPanel>
           </Box>
