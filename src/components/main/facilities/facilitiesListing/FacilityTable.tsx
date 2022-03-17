@@ -12,7 +12,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { formatPhone, isUserAdmin, renderTh } from "../../../../utils";
+import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { ListContext } from "../../../../context/listContext";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
@@ -29,14 +29,16 @@ import {
 import {
   ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, PUBLIC_APPOINTMENT_ROUTE,
   STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED, PUBLIC_LINK,
-  FACILITY_SERVICES_ROUTE, SERVICES,
+  FACILITY_SERVICES_ROUTE, SERVICES, PRACTICE,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { fetchAllFacilityList } = useContext(ListContext)
-  const { facility } = user || {}
+  const { facility, roles } = user || {}
+  const isAdmin = isUserAdmin(roles)
+  const isSuper = isSuperAdmin(roles);
   const { practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
@@ -142,9 +144,6 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const search = (query: string) => { }
 
-  const { roles } = user || {}
-  const isAdmin = isUserAdmin(roles)
-
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -155,6 +154,7 @@ const FacilityTable: FC = (): JSX.Element => {
             <TableHead>
               <TableRow>
                 {renderTh(NAME)}
+                {isSuper && renderTh(PRACTICE)}
                 {renderTh(CITY)}
                 {renderTh(STATE)}
                 {renderTh(ZIP)}
@@ -173,13 +173,15 @@ const FacilityTable: FC = (): JSX.Element => {
                 </TableRow>
               ) : (
                 facilities?.map((facility: FacilityPayload['facility']) => {
-                  const { id, name, contacts } = facility || {};
+                  const { id, name, contacts, practice } = facility || {};
+                  const { name: practiceName } = practice || {};
                   const facilityContact = contacts && (contacts.filter(contact => contact.primaryContact)[0])
                   const { email, phone, zipCode, city, state } = facilityContact || {}
 
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{name}</TableCell>
+                      {isSuper && <TableCell scope="row">{practiceName}</TableCell>}
                       <TableCell scope="row">{city}</TableCell>
                       <TableCell scope="row">{state}</TableCell>
                       <TableCell scope="row">{zipCode}</TableCell>

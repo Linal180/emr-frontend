@@ -19,6 +19,7 @@ import {
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE,
   PRACTICE_NAME,
+  PRACTICE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -171,6 +172,15 @@ const usualProviderSchema = {
     id: yup.string().required()
   }).test(
     '', requiredMessage(USUAL_PROVIDER_ID), ({ id }) => !!id
+  )
+}
+
+const practiceIdSchema = {
+  practice: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test(
+    '', requiredMessage(PRACTICE), ({ id }) => !!id
   )
 }
 
@@ -368,6 +378,7 @@ export const facilitySchema = yup.object({
   ...npiSchema,
   ...contactSchema,
   ...timeZoneSchema,
+  ...practiceIdSchema,
   ...serviceCodeSchema,
   ...mammographySchema,
   ...cliaIdNumberSchema,

@@ -8,6 +8,11 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
       timeZone
       createdAt
       updatedAt
+
+      practice {
+        id
+        name
+      }
       
       contacts {
         id
@@ -52,6 +57,11 @@ query GetFacility($getFacility: GetFacility!){
       serviceCode
       createdAt
       updatedAt
+
+      practice {
+        id
+        name
+      }
       
       contacts {
         id

@@ -368,7 +368,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, facilityId: selectedFacility || '',
-        gender: selectedGender as Genderidentity || Genderidentity.None, inviteAccepted: true,
+        gender: selectedGender as Genderidentity || Genderidentity.None,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,

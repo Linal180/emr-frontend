@@ -14,6 +14,7 @@ import {
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateFacilityTimeZoneInput,
+  PracticesPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -45,6 +46,9 @@ export interface AppContextProps {
 }
 
 export interface ListContextInterface {
+  practiceList: PracticesPayload['practices'];
+  setPracticeList: Function;
+  fetchAllPracticeList: Function;
   facilityList: FacilitiesPayload['facilities'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
@@ -372,9 +376,9 @@ interface CustomBillingAddressInputs {
 }
 
 export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state" | "country">
-  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone"> & CustomBillingAddressInputs
+  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId"> & CustomBillingAddressInputs
   & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption }
-  & { state: SelectorOption } & { country: SelectorOption };
+  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };;
 
 type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
 

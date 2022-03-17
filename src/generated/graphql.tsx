@@ -136,12 +136,6 @@ export type AttachmentsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
-/** The invoice payment type */
-export enum Billing_Type {
-  Insurance = 'INSURANCE',
-  SelfPay = 'SELF_PAY'
-}
-
 export type BillingAddress = {
   __typename?: 'BillingAddress';
   address?: Maybe<Scalars['String']>;
@@ -436,15 +430,6 @@ export type CreateFacilityItemInput = {
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
-};
-
-export type CreateInvoiceInputs = {
-  amount: Scalars['String'];
-  billingType: Billing_Type;
-  generatedBy?: Maybe<Scalars['String']>;
-  paymentMethod: Scalars['String'];
-  paymentTransactionId: Scalars['String'];
-  status: Status;
 };
 
 export type CreatePatientInput = {
@@ -824,26 +809,6 @@ export enum Homebound {
   Yes = 'YES'
 }
 
-export type Invoice = {
-  __typename?: 'Invoice';
-  amount: Scalars['String'];
-  billingType: Billing_Type;
-  createdAt?: Maybe<Scalars['String']>;
-  generatedBy?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
-  paymentMethod?: Maybe<Scalars['String']>;
-  paymentTransactionId: Scalars['String'];
-  status: Status;
-  transction?: Maybe<Transactions>;
-  updatedAt?: Maybe<Scalars['String']>;
-};
-
-export type InvoicePayload = {
-  __typename?: 'InvoicePayload';
-  invoice?: Maybe<Invoice>;
-  response?: Maybe<ResponsePayload>;
-};
-
 export type LoginUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -870,7 +835,6 @@ export type Mutation = {
   createDoctor: DoctorPayload;
   createExternalAppointment: AppointmentPayload;
   createFacility: FacilityPayload;
-  createInvoice: InvoicePayload;
   createPatient: PatientPayload;
   createPractice: PracticePayload;
   createSchedule: SchedulePayload;
@@ -965,11 +929,6 @@ export type MutationCreateExternalAppointmentArgs = {
 
 export type MutationCreateFacilityArgs = {
   createFacilityInput: CreateFacilityInput;
-};
-
-
-export type MutationCreateInvoiceArgs = {
-  createInvoiceInputs: CreateInvoiceInputs;
 };
 
 
@@ -1695,17 +1654,11 @@ export enum Sexualorientation {
   None = 'NONE'
 }
 
-/** The invoice status */
-export enum Status {
-  InsuranceClaim = 'INSURANCE_CLAIM',
-  Paid = 'PAID',
-  Pending = 'PENDING'
-}
-
 export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
   doctor?: Maybe<Doctor>;
+  doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
   id: Scalars['String'];
   recurringEndDate?: Maybe<Scalars['DateTime']>;
@@ -1928,7 +1881,6 @@ export type Transactions = {
   facility?: Maybe<Array<Facility>>;
   facilityId: Scalars['String'];
   id: Scalars['String'];
-  invoice?: Maybe<Array<Invoice>>;
   patient?: Maybe<Array<Patient>>;
   patientId: Scalars['String'];
   status: Transactionstatus;
@@ -2478,14 +2430,14 @@ export type FindAllFacilitiesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFacilitiesQuery = { __typename?: 'Query', findAllFacility: { __typename?: 'FacilitiesPayload', facilities?: Array<{ __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, isPrivate?: boolean | null | undefined, timeZone?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type FindAllFacilitiesQuery = { __typename?: 'Query', findAllFacility: { __typename?: 'FacilitiesPayload', facilities?: Array<{ __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, isPrivate?: boolean | null | undefined, timeZone?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type GetFacilityQueryVariables = Exact<{
   getFacility: GetFacility;
 }>;
 
 
-export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, tamxonomyCode?: string | null | undefined, timeZone?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, practiceId?: string | null | undefined, serviceCode: ServiceCode, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null | undefined, mobile?: string | null | undefined, phone?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, tamxonomyCode?: string | null | undefined, timeZone?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, practiceId?: string | null | undefined, serviceCode: ServiceCode, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null | undefined, mobile?: string | null | undefined, phone?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type RemoveFacilityMutationVariables = Exact<{
   removeFacility: RemoveFacility;
@@ -3784,6 +3736,10 @@ export const FindAllFacilitiesDocument = gql`
       timeZone
       createdAt
       updatedAt
+      practice {
+        id
+        name
+      }
       contacts {
         id
         email
@@ -3855,6 +3811,10 @@ export const GetFacilityDocument = gql`
       serviceCode
       createdAt
       updatedAt
+      practice {
+        id
+        name
+      }
       contacts {
         id
         email
