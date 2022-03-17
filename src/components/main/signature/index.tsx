@@ -13,11 +13,7 @@ const SignatureComponent = (): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false)
   let sigCanvas = useRef<any>({});
   let data = ''
-
-  const clear = () => {
-    sigCanvas && sigCanvas.current && sigCanvas.current.clear && sigCanvas.current.clear();
-  }
-
+  
   const save = () => {
     if (sigCanvas && sigCanvas.current) {
       const { toDataURL, fromDataURL } = sigCanvas.current;
@@ -26,6 +22,10 @@ const SignatureComponent = (): JSX.Element => {
     }
   }
 
+  const clear = () => {
+    sigCanvas && sigCanvas.current && sigCanvas.current.clear && sigCanvas.current.clear();
+  }
+  
   return (
     <Box mt={5}>
       <Grid container justifyContent='center'>
