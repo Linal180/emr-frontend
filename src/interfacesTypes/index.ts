@@ -13,7 +13,7 @@ import {
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, 
+  UpdateFacilityTimeZoneInput,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -691,8 +691,16 @@ export type CustomPracticeInputProps = CreatePracticeItemInput & RegisterUserInp
   & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email"> & { facilityName: string }
   & { roleType: SelectorOption } & { country: SelectorOption } & { state: SelectorOption } & { isAdmin: boolean }
 
-  export interface PaymentProps {
-    clientToken: string;
-    amount: string;
-    chargePayment: (token: string) => void;
-  }
+export interface PaymentProps {
+  clientToken: string;
+  amount: string;
+  chargePayment: (token: string) => void;
+}
+
+export interface CountrySelectorInterface {
+  countryLabel: string;
+  stateLabel: string;
+  countryName: string;
+  stateName: string;
+  cityName: string
+}
