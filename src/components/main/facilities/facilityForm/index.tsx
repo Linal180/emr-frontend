@@ -16,8 +16,8 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
-import { isSuperAdmin, renderPractices, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
+import { isSuperAdmin, renderPractices, setRecord } from '../../../../utils';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { facilitySchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import {

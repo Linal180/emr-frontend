@@ -354,14 +354,14 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedRegistrationDepartment } = registrationDepartment;
 
       const patientItemInput = {
-        suffix: suffix || '', firstName: firstName || '', middleName: middleName || '',
+        suffix, firstName, middleName,
         lastName: lastName || '', firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '',
         previousFirstName: previousFirstName || '', previouslastName: previouslastName || '',
         motherMaidenName: motherMaidenName || '', ssn: ssn || '', dob: getTimestamps(dob || ''),
         registrationDate: getTimestamps(registrationDate || ''), language: language || '',
-        deceasedDate: getTimestamps(deceasedDate || ''), adminId: userId || '',
+        deceasedDate: getTimestamps(deceasedDate || ''),
         privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false,
-        callToConsent: callToConsent || false, usualProviderId: selectedUsualProvider || '',
+        callToConsent: callToConsent || false,
         medicationHistoryAuthority: medicationHistoryAuthority || false, patientNote: patientNote || '',
         statementNoteDateTo: getTimestamps(statementNoteDateTo || ''), email: basicEmail || '',
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
@@ -441,10 +441,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           }
         })
       } else {
+        const optionalInputs = { 
+          usualProviderId: selectedUsualProvider || '', adminId: userId || '', 
+        }
         await createPatient({
           variables: {
             createPatientInput: {
-              createPatientItemInput: { ...patientItemInput },
+              createPatientItemInput: { ...patientItemInput, ...optionalInputs },
               createContactInput: { ...contactInput },
               createEmployerInput: { ...employerInput },
               createGuardianContactInput: { ...guardianContactInput },
