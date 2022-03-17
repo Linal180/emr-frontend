@@ -34,7 +34,7 @@ import {
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { fetchAllFacilityList } = useContext(ListContext)
+  const { fetchAllPracticeList, fetchAllFacilityList } = useContext(ListContext)
   const { id: adminId } = user || {}
   const classes = usePublicAppointmentStyles();
   const methods = useForm<CustomPracticeInputProps>({
@@ -99,6 +99,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
+          fetchAllPracticeList();
           fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
@@ -120,6 +121,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
+          fetchAllPracticeList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
       }

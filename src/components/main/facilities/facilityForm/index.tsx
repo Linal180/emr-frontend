@@ -15,10 +15,11 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
 import history from "../../../../history";
-import { renderPractices, setRecord } from '../../../../utils';
+import { AuthContext } from '../../../../context';
+import { isSuperAdmin, renderPractices, setRecord } from '../../../../utils';
 import { ListContext } from '../../../../context/listContext';
-import { facilitySchema } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
+import { facilitySchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
@@ -32,16 +33,19 @@ import {
   FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED,
   MAPPED_PRACTICE_TYPES, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, CANCEL,
   FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION,
-  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, CLIA_ID_NUMBER_INFO,
-  TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, PRACTICE,
+  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE,
+  CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, 
 } from "../../../../constants";
-import { AuthContext } from '../../../../context';
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+  const { user } = useContext(AuthContext);
+  const { facility, roles } = user || {};
+  const { practiceId } = facility || {};
+  const isSuper = isSuperAdmin(roles);
   const { fetchAllFacilityList, practiceList } = useContext(ListContext)
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
-    resolver: yupResolver(facilitySchema)
+    resolver: yupResolver(isSuper ? facilitySchemaWithPractice : facilitySchema)
   });
   const { reset, handleSubmit, setValue, watch } = methods;
   const { email, zipCode, phone, fax, address, address2, city, state, country } = watch()
@@ -193,10 +197,11 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const { id: selectedPracticeType } = practiceType;
     const { id: selectedBillingState } = billingState;
     const { id: selectedBillingCountry } = billingCountry;
+    const facilityPractice = isSuper ? selectedPractice : practiceId
 
     const facilityInput = {
       name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', npi: npi || '',
-      timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '', practiceId: selectedPractice || '',
+      timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '', practiceId: facilityPractice || '',
       practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
       serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
       mammographyCertificationNumber: mammographyCertificationNumber || '',
@@ -289,7 +294,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={6}>
+                      <Grid item md={isSuper ? 6 : 12}>
                         <InputController
                           isRequired
                           fieldType="text"
@@ -298,15 +303,17 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         />
                       </Grid>
 
-                      <Grid item md={6}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={PRACTICE}
-                          name="practice"
-                          options={renderPractices(practiceList)}
-                        />
-                      </Grid>
+                      {isSuper &&
+                        <Grid item md={6}>
+                          <Selector
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={PRACTICE}
+                            name="practice"
+                            options={renderPractices(practiceList)}
+                          />
+                        </Grid>
+                      }
                     </Grid>
 
                     <Grid container spacing={3}>

@@ -374,11 +374,10 @@ export const staffSchema = yup.object({
   ...staffBasicSchema,
 })
 
-export const facilitySchema = yup.object({
+const facilityBasicSchema = {
   ...npiSchema,
   ...contactSchema,
   ...timeZoneSchema,
-  ...practiceIdSchema,
   ...serviceCodeSchema,
   ...mammographySchema,
   ...cliaIdNumberSchema,
@@ -387,6 +386,15 @@ export const facilitySchema = yup.object({
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
   name: yup.string().required(requiredMessage(NAME))
+}
+
+export const facilitySchema = yup.object({
+  ...facilityBasicSchema
+})
+
+export const facilitySchemaWithPractice = yup.object({
+  ...practiceIdSchema,
+  ...facilityBasicSchema,
 })
 
 export const basicDoctorSchema = {
