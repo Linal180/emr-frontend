@@ -549,34 +549,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       countryLabel="Country"
                       stateLabel="State"
                     />
-
-                    <Grid container spacing={3}>
-                      <Grid item md={4}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="city"
-                          controllerLabel={CITY}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          value={EMPTY_OPTION}
-                          label={STATE}
-                          name="state"
-                          options={MAPPED_STATES}
-                        />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          name="country"
-                          label={COUNTRY}
-                          value={EMPTY_OPTION}
-                          options={MAPPED_COUNTRIES}
-                        />
-                      </Grid>
-                    </Grid>
                   </>
                 )}
               </CardComponent>
