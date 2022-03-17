@@ -36,6 +36,7 @@ import {
   TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO,
 } from "../../../../constants";
 import { AuthContext } from '../../../../context';
+import CountryStateSelector from '../../../common/CountryStateSelector';
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext);
@@ -539,6 +540,14 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       fieldType="text"
                       controllerName="address2"
                       controllerLabel={ADDRESS_2}
+                    />
+
+                    <CountryStateSelector
+                      countryName="country"
+                      stateName="state"
+                      cityName="city"
+                      countryLabel="Country"
+                      stateLabel="State"
                     />
 
                     <Grid container spacing={3}>
