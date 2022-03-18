@@ -1,17 +1,15 @@
 // packages block
 import { FC, MouseEvent, useState } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Menu, MenuItem, Fade, IconButton } from '@material-ui/core';
+import { Typography, Menu, MenuItem, Fade, IconButton, } from '@material-ui/core';
 // utils and header styles block
-import { handleLogout } from "../../utils";
-import { LOGOUT_TEXT } from "../../constants";
 import { DropDownItems } from "../../interfacesTypes";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { DownArrowIcon, NewAvatarIcon } from "../../assets/svgs";
+import { DownArrowIcon, NewAvatarIcon, } from "../../assets/svgs";
 
 const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon, current }): JSX.Element => {
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const classes = useHeaderStyles();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -61,8 +59,6 @@ const DropdownMenu: FC<DropDownItems> = ({ itemName, menuItem, avatarIcon, curre
           <MenuItem onClick={handleClose}>{item.name}</MenuItem>
         </Link>
         ))}
-
-        {avatarIcon && <MenuItem onClick={handleLogout}>{LOGOUT_TEXT}</MenuItem>}
       </Menu>
     </>
   );
