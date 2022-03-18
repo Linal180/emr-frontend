@@ -4,16 +4,17 @@ import { AppointmentTooltip } from '@devexpress/dx-react-scheduler';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 // component block
 import StatusSelector from './statusSelector';
-import ConfirmationModal from '../../common/ConfirmationModal';
 import { Close } from '@material-ui/icons';
+import ConfirmationModal from '../../common/ConfirmationModal';
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse } from '@material-ui/core';
 // constant block
 import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
 import { useCalendarStyles } from '../../../styles/calendarStyles';
-import { 
-  CardAppointmentIcon, CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, 
-  InvoiceAppointmentIcon, } from '../../../assets/svgs';
+import {
+  CardAppointmentIcon, CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon,
+  InvoiceAppointmentIcon,
+} from '../../../assets/svgs';
 import {
   APPOINTMENT, APPOINTMENT_DETAILS, CASH_PAID, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
   dummyAppointmentSubData, INVOICE, NO_INVOICE, PAY, PAY_AMOUNT, PAY_VIA_CARD, PAY_VIA_CASH, UNPAID
@@ -180,9 +181,9 @@ const AppointmentCard = ({ visible, onHide }: AppointmentTooltip.LayoutProps): J
               <Typography variant="h4">$50.00</Typography>
             </Box>
 
-            <Box 
-             display="flex" justifyContent="space-between" alignItems="center" pt={3} 
-             borderTop={`1px solid ${WHITE_FOUR}`} borderBottom={`1px solid ${WHITE_FOUR}`}
+            <Box
+              display="flex" justifyContent="space-between" alignItems="center" pt={3}
+              borderTop={`1px solid ${WHITE_FOUR}`} borderBottom={`1px solid ${WHITE_FOUR}`}
             >
               <Box>
                 <Typography variant="body1">Sub-Total</Typography>

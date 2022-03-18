@@ -1,11 +1,12 @@
 // packages block
 import { FC, useEffect, useState } from 'react'
 import { Autocomplete } from '@material-ui/lab'
-import { TextField, Grid } from '@material-ui/core'
+import { TextField, Grid, FormControl, InputLabel } from '@material-ui/core'
 import { Country, State, City } from 'country-state-city';
 import { Controller, useFormContext } from 'react-hook-form';
 // constants and type/interfaces block
 import { CountrySelectorInterface } from "../../interfacesTypes";
+import { CITY } from '../../constants';
 
 /**
  * It takes an options array from parent and give a value in the form of selected option.
@@ -52,45 +53,47 @@ const CountryStateSelector: FC<CountrySelectorInterface> = ({ countryName, count
     setStateValue(value)
   }
 
-  const SelectorController: FC = (): JSX.Element => (
-    <Grid item md={4} sm={12} xs={12}>
-      <Controller
-        name={countryName}
-        control={control}
-        render={({ field: { onChange, value } }) => (
-          <Autocomplete
-            id={`${countryName}-id`}
-            options={countriesToList}
-            getOptionLabel={(option) => option.name}
-            onChange={(_, data) => {
-              const { isoCode } = data || {}
-
-              onChange(data)
-              handleCountryChange(isoCode as string)
-            }}
-            value={value}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                inputProps={{
-                  ...params.inputProps,
-                  id: `${countryName}-field`,
-                  autoComplete: 'off',
-                }}
-                label={countryLabel} variant="outlined" fullWidth
-              />
-            )}
-          />
-        )}
-      />
-    </Grid>
-  )
-
   return (
-    <>
-      <SelectorController />
+    <Grid container spacing={3}>
+      <Grid item md={4}>
+        <Controller
+          name={countryName}
+          control={control}
+          render={({ field: { onChange, value } }) => (
+            <Autocomplete
+              id={`${countryName}-id`}
+              options={countriesToList}
+              getOptionLabel={(option) => option.name}
+              onChange={(_, data) => {
+                const { isoCode } = data || {}
 
-      <Grid item md={4} sm={12} xs={12}>
+                onChange(data)
+                handleCountryChange(isoCode as string)
+              }}
+              value={value}
+              renderInput={(params) => (
+                <FormControl fullWidth margin='normal'>
+                  <InputLabel shrink>
+                    {countryLabel}
+                  </InputLabel>
+
+                  <TextField
+                    {...params}
+                    inputProps={{
+                      ...params.inputProps,
+                      id: `${countryName}-field`,
+                      autoComplete: 'off',
+                    }}
+                    variant="outlined"
+                  />
+                </FormControl>
+              )}
+            />
+          )}
+        />
+      </Grid>
+
+      <Grid item md={4}>
         <Controller
           name={stateName}
           control={control}
@@ -108,49 +111,62 @@ const CountryStateSelector: FC<CountrySelectorInterface> = ({ countryName, count
               }}
               value={value}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  inputProps={{
-                    ...params.inputProps,
-                    id: `${stateName}-field`,
-                    autoComplete: 'off',
-                  }}
-                  label={stateLabel} variant="outlined" fullWidth
-                />
+                <FormControl fullWidth margin='normal'>
+                  <InputLabel shrink>
+                    {stateLabel}
+                  </InputLabel>
+
+                  <TextField
+                    {...params}
+                    inputProps={{
+                      ...params.inputProps,
+                      id: `${stateName}-field`,
+                      autoComplete: 'off',
+                    }}
+                    variant="outlined"
+                    className='borderNone'
+                  />
+                </FormControl>
               )}
             />
           )}
         />
       </Grid>
 
-      <Grid item md={4} sm={12} xs={12}>
+      <Grid item md={4}>
         <Controller
           name={cityName}
           control={control}
           render={({ field: { onChange, value } }) => (
             <Autocomplete
-              id="selectedCityLabel"
+              id={`${cityName}-id`}
               options={selectedStateCities}
               disabled={selectedStateCities.length === 0}
               getOptionLabel={(option) => option.name}
               onChange={(_, data) => onChange(data)}
               value={value}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  inputProps={{
-                    ...params.inputProps,
-                    id: "selectedCityLabel-field",
-                    autoComplete: 'off',
-                  }}
-                  label="City" variant="outlined" fullWidth
-                />
+                <FormControl fullWidth margin='normal'>
+                  <InputLabel shrink>
+                    {CITY}
+                  </InputLabel>
+
+                  <TextField
+                    {...params}
+                    inputProps={{
+                      ...params.inputProps,
+                      id: `${cityName}-field`,
+                      autoComplete: 'off',
+                    }}
+                    variant="outlined"
+                  />
+                </FormControl>
               )}
             />
           )}
         />
       </Grid>
-    </>
+    </Grid>
   )
 }
 
