@@ -9,7 +9,7 @@ import {
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality,
+  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
   UserRole, Communicationtype, Gender,
 } from "../generated/graphql";
 
@@ -1276,12 +1276,6 @@ export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
-];
-
-export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
-  { id: RegDepartment.Lab, name: formatValue(RegDepartment.Lab) },
-  { id: RegDepartment.Clinic, name: formatValue(RegDepartment.Clinic) },
-  { id: RegDepartment.Hospital, name: formatValue(RegDepartment.Hospital) },
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [

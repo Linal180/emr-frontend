@@ -148,7 +148,10 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       if (id) {
         await updateStaff({
           variables: {
-            updateStaffInput: { id, ...staffInputs }
+            updateStaffInput: {
+              updateStaffItemInput: { id, ...staffInputs },
+              providers: []
+            }
           }
         })
       } else {
@@ -160,7 +163,12 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         const { id: role } = roleType
 
         await createStaff({
-          variables: { createStaffInput: { password: 'staff@123', roleType: role as UserRole, ...staffInputs, adminId: id } }
+          variables: {
+            createStaffInput: {
+              staffInput: { password: 'staff@123', roleType: role as UserRole, ...staffInputs, adminId: id },
+              providers: []
+            }
+          }
         })
       } else Alert.error(CANT_CREATE_STAFF)
 

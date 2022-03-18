@@ -96,11 +96,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (patient) {
           const {
             suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-            previouslastName, motherMaidenName, ssn, dob, gender, registrationDate, deceasedDate, privacyNotice,
+            previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice,
             releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
             sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
             statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo, facility,
-            medicationHistoryAuthority, doctorPatients
+            medicationHistoryAuthority, doctorPatients, registrationDate
           } = patient;
 
           if (facility) {
