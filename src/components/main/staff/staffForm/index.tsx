@@ -15,16 +15,16 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 import history from "../../../../history";
 import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
+import { getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getTimestamps, renderFacilities, requiredMessage, setRecord } from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, UserRole, useUpdateStaffMutation
 } from "../../../../generated/graphql";
 import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
-  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_STAFF_ROLES, NOT_FOUND_EXCEPTION,
-  STAFF_NOT_FOUND, CANT_UPDATE_STAFF, CANT_CREATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED,  CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER,
+  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_STAFF_ROLES,
+  NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, CANT_CREATE_STAFF,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -34,7 +34,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     mode: "all",
     resolver: yupResolver(staffSchema)
   });
-  const { reset, setValue, handleSubmit, formState: { errors } } = methods;
+  const { reset, setValue, handleSubmit } = methods;
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
     fetchPolicy: "network-only",
@@ -127,29 +127,28 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => {
     if (isEdit) {
-      if (id) {
-        getStaff({
-          variables: { getStaff: { id } }
-        })
-      } else Alert.error(STAFF_NOT_FOUND)
+      id ?
+        getStaff({ variables: { getStaff: { id } } })
+        : Alert.error(STAFF_NOT_FOUND)
     }
   }, [getStaff, id, isEdit])
 
   const onSubmit: SubmitHandler<ExtendedStaffInputProps> = async ({
-    firstName, lastName, email, username, phone, mobile, dob, gender, password,
-    facilityId, roleType
+    firstName, lastName, email, username, phone, mobile, dob, gender, facilityId, roleType
   }) => {
     const { id: staffGender } = gender
     const { id: facilityID } = facilityId
+
+    const staffInputs = {
+      firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
+      gender: staffGender as Gender, facilityId: facilityID, username,
+    };
 
     if (isEdit) {
       if (id) {
         await updateStaff({
           variables: {
-            updateStaffInput: {
-              id, firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
-              gender: staffGender as Gender, facilityId: facilityID, username
-            }
+            updateStaffInput: { id, ...staffInputs }
           }
         })
       } else {
@@ -161,26 +160,12 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         const { id: role } = roleType
 
         await createStaff({
-          variables: {
-            createStaffInput: {
-              firstName, lastName, email, password: 'staff@123', phone, mobile, roleType: role as UserRole,
-              dob: getTimestamps(dob || ''), gender: staffGender as Gender, facilityId: facilityID,
-              adminId: id, username
-            }
-          }
+          variables: { createStaffInput: { password: 'staff@123', roleType: role as UserRole, ...staffInputs, adminId: id } }
         })
       } else Alert.error(CANT_CREATE_STAFF)
+
     }
   };
-
-  const {
-    dob: { message: dobError } = {},
-    gender: { id: genderError } = {},
-    roleType: { id: roleError } = {},
-    phone: { message: phoneError } = {},
-    mobile: { message: mobileError } = {},
-    facilityId: { id: facilityError } = {},
-  } = errors;
 
   return (
     <FormProvider {...methods}>
@@ -192,27 +177,27 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={6}>
+                      <Grid item md={isEdit ? 12 : 6}>
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
-                          error={facilityError?.message && requiredMessage(FACILITY)}
                           options={renderFacilities(facilityList)}
                         />
                       </Grid>
 
-                      <Grid item md={6}>
-                        <Selector
-                          isRequired
-                          label={ROLE}
-                          name="roleType"
-                          value={EMPTY_OPTION}
-                          options={MAPPED_STAFF_ROLES}
-                          error={roleError?.message && requiredMessage(ROLE)}
-                        />
-                      </Grid>
+                      {!isEdit &&
+                        <Grid item md={6}>
+                          <Selector
+                            isRequired
+                            label={ROLE}
+                            name="roleType"
+                            value={EMPTY_OPTION}
+                            options={MAPPED_STAFF_ROLES}
+                          />
+                        </Grid>
+                      }
                     </Grid>
 
                     <Grid container spacing={3}>
@@ -242,23 +227,22 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           name="gender"
                           label={GENDER}
                           value={EMPTY_OPTION}
-                          error={genderError?.message && requiredMessage(GENDER)}
                           options={MAPPED_GENDER}
                         />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <DatePicker isRequired name="dob" label={DOB} error={dobError || ''} />
+                        <DatePicker isRequired name="dob" label={DOB} />
                       </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="phone" error={phoneError} label={PHONE} />
+                        <PhoneField name="phone" label={PHONE} />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <PhoneField name="mobile" error={mobileError} label={MOBILE} />
+                        <PhoneField name="mobile" label={MOBILE} />
                       </Grid>
                     </Grid>
                   </>
