@@ -170,6 +170,7 @@ export const VITALS_TEXT = "Vitals";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
 export const UPLOAD_PICTURE = "Upload Picture";
+export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const ALLERGIES_TEXT = "Allergies";
@@ -196,6 +197,7 @@ export const PROVIDER_MANAGEMENT = "Provider Management";
 export const STAFF_MANAGEMENT = "Staff Management";
 export const SCHEDULE = "Schedule";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
+export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION = "Edit your facility information and settings";
 export const FACILITY_MANAGEMENT_DESCRIPTION = "Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION = "Add providers and update their profiles for the EMR";
@@ -532,6 +534,7 @@ export const REVOKE_ACCESS = "Revoke Access";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const UPLOADS_DOCUMENT = "Upload Document";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
+export const AUTO_LOGOUT_DESCRIPTION = "Your account will automatically logout after a period of inactivity.";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
 export const DECREASED_DATE = "Deceased Date";
@@ -622,6 +625,7 @@ export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
 export const PROFILE_TEXT = "Profile";
 export const SIGNATURE_TEXT = "Signature";
+export const CANCELLATION_TEXT = "Cancellation";
 export const YOUR_NAME = "Your Name";
 export const SCHEDULE_TEXT = "Schedule";
 export const CONTINUE_TEXT = "Continue";
@@ -707,6 +711,8 @@ export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
+export const CANCELLATION_ROUTE = "/cancellation";
+export const AUTO_LOGOUT_ROUTE = "/autologout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
@@ -991,7 +997,7 @@ export const PROFILE_GENERAL_MENU_ITEMS = [
   },
   {
     name: CANCELLATIONS,
-    link: "/",
+    link: CANCELLATION_ROUTE,
   },
 ];
 
@@ -1006,7 +1012,7 @@ export const PROFILE_SECURITY_MENU_ITEMS = [
   },
   {
     name: AUTO_LOGOUT,
-    link: "/",
+    link: AUTO_LOGOUT_ROUTE,
   },
 ];
 
