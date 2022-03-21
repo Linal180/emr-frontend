@@ -299,6 +299,10 @@ export const theme = createTheme({
         "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {
           border: `1px solid ${BLUE_ONE}`,
         },
+
+        "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
+          border: `1px solid ${GRAY_ONE}`,
+        }
       },
 
       input: {

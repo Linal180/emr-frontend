@@ -9,7 +9,7 @@ import {
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Race, RegDepartment, RelationshipType, ServiceCode, Sexualorientation, Speciality,
+  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
   UserRole, Communicationtype, Gender,
 } from "../generated/graphql";
 
@@ -168,6 +168,7 @@ export const ACCOUNT_INFO = "Account Information";
 export const IDENTIFICATION = "Identification";
 export const VITALS_TEXT = "Vitals";
 export const SAVE_TEXT = "Save";
+export const CLEAR_TEXT = "Clear";
 export const UPLOAD_PICTURE = "Upload Picture";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
@@ -420,7 +421,7 @@ export const TOKEN_INVALID = "Token Invalid";
 export const RESET_FILTERS = "Reset Filters";
 export const NO_DATA_FOUND = "No data found";
 export const LAB_RESULTS_TEXT = "Lab Results";
-export const BACK_TO_HOME = "Return Home";
+export const BACK_TO_HOME = "Return to Home";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const EXCEPTION = "Forbidden exception";
 export const DELETE_REQUEST = "Delete Request";
@@ -525,7 +526,7 @@ export const SUBMIT = "Submit";
 export const DOB_TEXT = "DOB";
 export const PAYMENT = "Payment";
 export const MORE_INFO = "More Info";
-export const RELOAD = "Got To Home";
+export const RELOAD = "Go To Home";
 export const RELATIONSHIP = "Relationship";
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
@@ -586,6 +587,8 @@ export const USD = "USD";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
 export const PROFILE_TEXT = "Profile";
+export const SIGNATURE_TEXT = "Signature";
+export const UPDATE_SIGNATURE = "Update Signature";
 export const YOUR_NAME = "Your Name";
 export const SCHEDULE_TEXT = "Schedule";
 export const CONTINUE_TEXT = "Continue";
@@ -660,6 +663,7 @@ export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
 export const PROFILE_ROUTE = "/profile";
+export const SIGNATURE_ROUTE = "/signature";
 export const STAFF_ROUTE = "/staff";
 export const VITALS_ROUTE = "/vitals";
 export const PATIENTS_CHART = "/chart";
@@ -959,6 +963,10 @@ export const PROFILE_MENU_ITEMS = [
   {
     name: PROFILE_TEXT,
     link: PROFILE_ROUTE,
+  },
+  {
+    name: SIGNATURE_TEXT,
+    link: SIGNATURE_ROUTE,
   },
   {
     name: MY_ACCOUNT_TEXT,
@@ -1268,12 +1276,6 @@ export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
   { id: Maritialstatus.Widowed, name: formatValue(Maritialstatus.Widowed) },
   { id: Maritialstatus.Divorced, name: formatValue(Maritialstatus.Divorced) },
   { id: Maritialstatus.Separated, name: formatValue(Maritialstatus.Separated) },
-];
-
-export const MAPPED_REG_DEPARTMENT: SelectorOption[] = [
-  { id: RegDepartment.Lab, name: formatValue(RegDepartment.Lab) },
-  { id: RegDepartment.Clinic, name: formatValue(RegDepartment.Clinic) },
-  { id: RegDepartment.Hospital, name: formatValue(RegDepartment.Hospital) },
 ];
 
 export const MAPPED_HOMEBOUND: SelectorOption[] = [
