@@ -30,9 +30,8 @@ import {
 } from "../../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
-  PrimaryDepartment, Pronouns, Race, RegDepartment, RelationshipType, useGetFacilityLazyQuery,
   Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
-  FacilityPayload, BillingStatus
+  Pronouns, Race, RelationshipType, useGetFacilityLazyQuery, FacilityPayload, BillingStatus
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
@@ -207,7 +206,6 @@ const PublicAppointmentForm = (): JSX.Element => {
                 genderIdentity: Genderidentity.None, maritialStatus: Maritialstatus.Single,
                 sexualOrientation: Sexualorientation.None, race: Race.Other, email: email || '',
                 statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
-                primaryDepartment: PrimaryDepartment.Hospital, registrationDepartment: RegDepartment.Hospital,
               },
 
               createGuardianContactInput: {
@@ -235,7 +233,6 @@ const PublicAppointmentForm = (): JSX.Element => {
       <EMRLogo />
 
       <Box mb={3} />
-
 
       <Box>
         <FormProvider {...methods}>

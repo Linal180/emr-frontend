@@ -4,7 +4,7 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
   PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE,
-  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT,
+  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED_FOUR,
 } from ".";
 
 const breakpoints = createBreakpoints({})
@@ -276,6 +276,14 @@ export const theme = createTheme({
       text: {
         "& .MuiButton-label": {
           color: GRAY_TWO
+        },
+
+        "&.danger": {
+          paddingLeft: 0,
+          
+          "& .MuiButton-label": {
+            color: RED_FOUR
+          }
         }
       }
     },
@@ -291,6 +299,10 @@ export const theme = createTheme({
         "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {
           border: `1px solid ${BLUE_ONE}`,
         },
+
+        "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
+          border: `1px solid ${GRAY_ONE}`,
+        }
       },
 
       input: {

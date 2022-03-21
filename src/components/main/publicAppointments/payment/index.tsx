@@ -216,6 +216,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                         },
                       },
                     },
+
                     threeDSecure: { amount: price },
                     dataCollector: true,
                     paymentOptionPriority: ['paypal', 'card'],

@@ -7,15 +7,18 @@ import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
+import PortalTable from './PortalTable';
+import Alert from '../../../common/Alert';
+import DocumentsTable from './DocumentsTable';
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import ConfirmDocumentModal from '../../../common/ConfirmDocumentModal';
-import DocumentsTable from './DocumentsTable';
 // constants, history, styling block
 import history from '../../../../history';
 import Search from '../../../common/Search';
+import { AuthContext } from '../../../../context';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
 import { useTableStyles } from "../../../../styles/tableStyles";
@@ -35,10 +38,8 @@ import {
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION,
   MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, UPLOAD,
-  SCHEDULE_APPOINTMENTS_TEXT, SIGNED, VIEW_CHART_TEXT, ENABLE_ACCESS_PORTAL, DISABLE_ACCESS_PORTAL
+  SCHEDULE_APPOINTMENTS_TEXT, SIGNED, VIEW_CHART_TEXT, ENABLE_ACCESS_PORTAL, DISABLE_ACCESS_PORTAL, ENABLE_PATIENT_ACCESS
 } from "../../../../constants";
-import Alert from '../../../common/Alert';
-import { AuthContext } from '../../../../context';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
@@ -444,6 +445,22 @@ const PatientDetailsComponent = (): JSX.Element => {
                 </Box>
 
                 <DocumentsTable />
+              </Box>
+            </TabPanel>
+
+            <TabPanel value="9">
+              <Box className={tableClasses.mainTableContainer}>
+                <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box className={tableClasses.searchOuterContainer}>
+                    <Search search={search} />
+                  </Box>
+
+                  <Button color="inherit" variant="outlined" className='blue-button-new'>
+                    {ENABLE_PATIENT_ACCESS}
+                  </Button>
+                </Box>
+
+                <PortalTable />
               </Box>
             </TabPanel>
           </Box>

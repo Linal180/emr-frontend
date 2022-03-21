@@ -16,6 +16,7 @@ import AddResult from "../pages/main/reports/addResult";
 import AddDoctor from "../pages/main/doctors/addDoctor";
 import { SetPassword } from "../pages/auth/setPassword";
 import ProfileComponent from "../components/main/profile";
+import SignatureComponent from "../components/main/signature";
 import ViewDoctor from "../pages/main/doctors/viewDoctor";
 import ForgetPassword from "../pages/auth/forgetPassword";
 import AddPatient from "../pages/main/patients/addPatient";
@@ -59,8 +60,9 @@ import {
   LAB_RESULTS_ROUTE, CLAIMS_ROUTE, APPOINTMENTS_ROUTE, PUBLIC_APPOINTMENT_ROUTE, PATIENT_INFORMATION,
   FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PROFILE_ROUTE, MAINTENANCE_ROUTE,
   PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
-  SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE,
+  SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE,
 } from "../constants";
+import ChangePasswordComponent from "../components/main/profile/changePassword";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -88,7 +90,8 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/:id`} component={ViewPractice} />
       <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={PracticeListing} />
       <PrivateRoute exact path={PROFILE_ROUTE} component={ProfileComponent} />
-
+      <PrivateRoute exact path={SIGNATURE_ROUTE} component={SignatureComponent} />
+      <PrivateRoute exact path={CHANGE_PASSWORD_ROUTE} component={ChangePasswordComponent} />
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
       <PrivateRoute exact path={`${DASHBOARD_ROUTE}/start-project`} component={StartProject} />
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />

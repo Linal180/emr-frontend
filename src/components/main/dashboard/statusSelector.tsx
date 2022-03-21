@@ -1,6 +1,6 @@
 // packages block
 import { useState, ChangeEvent, FC } from 'react';
-import { TextField, MenuItem } from '@material-ui/core';
+import { TextField, MenuItem, Box } from '@material-ui/core';
 // constant block
 import { MAPPED_STATUS } from '../../../constants';
 import { useCalendarStyles } from '../../../styles/calendarStyles';
@@ -15,7 +15,7 @@ const StatusSelector: FC = (): JSX.Element => {
 
   return (
     <form className={classes.statusDropdown} noValidate>
-      <div>
+      <Box>
         <TextField
           id="standard-select-currency"
           select
@@ -28,7 +28,7 @@ const StatusSelector: FC = (): JSX.Element => {
             </MenuItem>
           ))}
         </TextField>
-      </div>
+      </Box>
     </form>
   );
 }

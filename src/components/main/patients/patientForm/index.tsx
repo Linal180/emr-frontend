@@ -26,8 +26,8 @@ import {
 } from "../../../../reducers/patientReducer";
 import { getDate, getTimestamps, renderDoctors, renderFacilities, setRecord } from '../../../../utils';
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PrimaryDepartment,
-  Pronouns, Race, RegDepartment, RelationshipType, Sexualorientation, useGetPatientLazyQuery,
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
+  Pronouns, Race, RelationshipType, Sexualorientation, useGetPatientLazyQuery,
   useUpdatePatientMutation, useCreatePatientMutation
 } from "../../../../generated/graphql";
 import {
@@ -38,13 +38,12 @@ import {
   MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE,
   EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
   LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS,
-  MAPPED_RELATIONSHIP_TYPE, MAPPED_REG_DEPARTMENT, MAPPED_MARITAL_STATUS, ETHNICITY, EMPTY_OPTION,
-  SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, REGISTRATION_DEPARTMENT,
-  PRIMARY_DEPARTMENT, USUAL_OCCUPATION, USUAL_INDUSTRY, GENDER_IDENTITY, MAPPED_GENDER_IDENTITY,
+  MAPPED_RELATIONSHIP_TYPE, MAPPED_MARITAL_STATUS, ETHNICITY, EMPTY_OPTION, GENDER_IDENTITY,
+  SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, USUAL_OCCUPATION, USUAL_INDUSTRY,
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, BILLING, PAYMENT_METHOD, CARD_NUMBER, EXPIRY_DATE, CVV,
+  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY,
 } from "../../../../constants";
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -95,12 +94,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { patient } = getPatient
 
         if (patient) {
-          const { suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-            previouslastName, motherMaidenName, ssn, dob, gender, registrationDepartment, primaryDepartment,
-            registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent,
-            patientNote, language, race, ethnicity, maritialStatus, sexualOrientation, genderIdentity, sexAtBirth,
-            pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
-            statementNoteDateTo, facility, contacts, employer, medicationHistoryAuthority, doctorPatients
+          const {
+            suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
+            previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice,
+            releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
+            sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
+            statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo, facility,
+            medicationHistoryAuthority, doctorPatients, registrationDate
           } = patient;
 
           if (facility) {
@@ -146,8 +146,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
           releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
-          homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
           homeBound && setIsChecked(homeBound === Homebound.Yes ? true : false)
+          homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
@@ -161,9 +161,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
           genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
           sexualOrientation && setValue("sexualOrientation", setRecord(sexualOrientation, sexualOrientation))
-          primaryDepartment && setValue("primaryDepartment", setRecord(primaryDepartment, primaryDepartment))
-          registrationDepartment &&
-            setValue("registrationDepartment", setRecord(registrationDepartment, registrationDepartment))
 
           if (contacts) {
             const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -212,8 +209,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             const guarantorContact = contacts.filter(contact => contact.contactType === ContactType.Guarandor)[0]
 
             if (guarantorContact) {
-              const { id: guarantorContactId, suffix, firstName, lastName, middleName, phone, zipCode, address, address2,
-                city, state, country, ssn, email, employerName
+              const { id: guarantorContactId, suffix, firstName, lastName, middleName, phone, zipCode, address,
+                address2, city, state, country, ssn, email, employerName
               } = guarantorContact;
 
               dispatch({ type: ActionType.SET_GUARANTOR_CONTACT_ID, guarantorContactId })
@@ -316,11 +313,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
     const {
       suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-      previouslastName, motherMaidenName, ssn, dob, gender, registrationDepartment, primaryDepartment,
-      registrationDate, deceasedDate, privacyNotice, releaseOfInfoBill, callToConsent,
-      patientNote, language, race, ethnicity, maritialStatus, sexualOrientation, genderIdentity,
-      pronouns, homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
-      statementNoteDateTo, facilityId, usualProviderId, medicationHistoryAuthority, sexAtBirth, basicCountry,
+      previouslastName, motherMaidenName, ssn, dob, gender, registrationDate, deceasedDate,
+      privacyNotice, releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity,
+      maritialStatus, sexualOrientation, genderIdentity, pronouns, homeBound, holdStatement,
+      statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo,
+      facilityId, usualProviderId, medicationHistoryAuthority, sexAtBirth, basicCountry,
       basicEmail, basicPhone, basicMobile, basicAddress, basicAddress2, basicZipCode, basicCity, basicState,
       emergencyName, emergencyRelationship, emergencyPhone, emergencyMobile,
       kinName, kinRelationship, kinMobile, kinPhone,
@@ -347,35 +344,28 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedUsualProvider } = usualProviderId;
       const { id: selectedKinRelationship } = kinRelationship;
       const { id: selectedGuarantorCountry } = guarantorCountry;
-      const { id: selectedPrimaryDepartment } = primaryDepartment;
       const { id: selectedSexualOrientation } = sexualOrientation;
       const { id: selectedGuarantorRelationship } = guarantorRelationship;
       const { id: selectedEmergencyRelationship } = emergencyRelationship;
-      const { id: selectedRegistrationDepartment } = registrationDepartment;
 
       const patientItemInput = {
-        suffix: suffix || '', firstName: firstName || '', middleName: middleName || '',
-        lastName: lastName || '', firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '',
-        previousFirstName: previousFirstName || '', previouslastName: previouslastName || '',
-        motherMaidenName: motherMaidenName || '', ssn: ssn || '', dob: getTimestamps(dob || ''),
-        registrationDate: getTimestamps(registrationDate || ''), language: language || '',
-        deceasedDate: getTimestamps(deceasedDate || ''), adminId: userId || '',
+        suffix, firstName, middleName, lastName, firstNameUsed, prefferedName,
+        previousFirstName, previouslastName, motherMaidenName, ssn, dob: getTimestamps(dob || ''),
+        registrationDate: getTimestamps(registrationDate || ''), language,
+        deceasedDate: getTimestamps(deceasedDate || ''), callToConsent: callToConsent || false,
         privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false,
-        callToConsent: callToConsent || false, usualProviderId: selectedUsualProvider || '',
-        medicationHistoryAuthority: medicationHistoryAuthority || false, patientNote: patientNote || '',
-        statementNoteDateTo: getTimestamps(statementNoteDateTo || ''), email: basicEmail || '',
+        medicationHistoryAuthority: medicationHistoryAuthority || false, patientNote,
+        statementNoteDateTo: getTimestamps(statementNoteDateTo || ''), email: basicEmail,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, facilityId: selectedFacility || '',
-        gender: selectedGender as Genderidentity || Genderidentity.None, inviteAccepted: true,
+        gender: selectedGender as Genderidentity || Genderidentity.None,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
         statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
-        primaryDepartment: selectedPrimaryDepartment as PrimaryDepartment || PrimaryDepartment.Hospital,
-        registrationDepartment: selectedRegistrationDepartment as RegDepartment || RegDepartment.Hospital,
       };
 
       const contactInput = {
@@ -441,10 +431,14 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           }
         })
       } else {
+        const optionalInputs = {
+          usualProviderId: selectedUsualProvider || '', adminId: userId || '',
+        }
+
         await createPatient({
           variables: {
             createPatientInput: {
-              createPatientItemInput: { ...patientItemInput },
+              createPatientItemInput: { ...patientItemInput, ...optionalInputs },
               createContactInput: { ...contactInput },
               createEmployerInput: { ...employerInput },
               createGuardianContactInput: { ...guardianContactInput },
@@ -472,9 +466,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       facilityId: { id, name }
     });
 
-    if (id) {
-      fetchAllDoctorList(id);
-    }
+    id && fetchAllDoctorList(id);
   }, [fetchAllDoctorList, reset]);
 
   useEffect(() => {
@@ -916,7 +908,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
+                      <Grid item md={isEdit ? 12 : 6} sm={12} xs={12}>
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
@@ -926,37 +918,17 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         />
                       </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={USUAL_PROVIDER_ID}
-                          name="usualProviderId"
-                          options={renderDoctors(doctorList)}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          name="registrationDepartment"
-                          value={EMPTY_OPTION}
-                          label={REGISTRATION_DEPARTMENT}
-                          options={MAPPED_REG_DEPARTMENT}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          name="primaryDepartment"
-                          value={EMPTY_OPTION}
-                          label={PRIMARY_DEPARTMENT}
-                          options={MAPPED_REG_DEPARTMENT}
-                        />
-                      </Grid>
+                      {!isEdit &&
+                        <Grid item md={6} sm={12} xs={12}>
+                          <Selector
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={USUAL_PROVIDER_ID}
+                            name="usualProviderId"
+                            options={renderDoctors(doctorList)}
+                          />
+                        </Grid>
+                      }
                     </Grid>
 
                     <Grid container spacing={3}>
@@ -1235,67 +1207,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     </Grid>
                   </>
                 )}
-              </CardComponent>
-
-              <Box pb={3} />
-
-              <CardComponent cardTitle={BILLING}>
-                <Grid item md={12} sm={12} xs={12}>
-                  <Selector
-                    name="paymentmethod"
-                    label={PAYMENT_METHOD}
-                    value={EMPTY_OPTION}
-                    options={MAPPED_RELATIONSHIP_TYPE}
-                  />
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="firstName"
-                      controllerLabel={FIRST_NAME}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="lastName"
-                      controllerLabel={LAST_NAME}
-                    />
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3}>
-                  <Grid item md={6} sm={12} xs={12}>
-                    <InputController
-                      fieldType="number"
-                      controllerName="cardNumber"
-                      controllerLabel={CARD_NUMBER}
-                    />
-                  </Grid>
-
-                  <Grid item md={6} sm={12} xs={12}>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="number"
-                          controllerName="expiryDate"
-                          controllerLabel={EXPIRY_DATE}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="cvv"
-                          controllerLabel={CVV}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
               </CardComponent>
             </Grid>
           </Grid>

@@ -25,12 +25,17 @@ export const useProfileDetailsStyles = makeStyles(() =>
       justifyContent: 'space-around'
     },
 
+    changePasswordContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: 'calc(100vh - 130px)',
+    },
+
     changePasswordCard: {
       background: WHITE,
-      borderRadius: 12,
-      width: '30%',
-      margin: 'auto',
-      padding: 30
+      borderRadius: 8,
+      padding: 30,
     },
 
     profileImage: {
