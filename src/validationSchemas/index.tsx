@@ -17,9 +17,7 @@ import {
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE,
-  PRACTICE_NAME,
-  PRACTICE,
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, NAME_REGEX,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -67,6 +65,12 @@ const requiredStringOnly = (label: string, min: number, max: number) => {
     .test('', invalidMessage(label), value => value ? STRING_REGEX.test(value) : false)
     .test('', MinLength(label, min), value => value ? value.length >= min : false)
     .test('', MaxLength(label, max), value => value ? value.length <= max : false)
+}
+
+const nameSchema = (label: string) => {
+  return yup.string().matches(NAME_REGEX, ValidMessage(label))
+    .min(2, MinLength(label, 2)).max(26, MaxLength(label, 26))
+    .required(requiredMessage(label))
 }
 
 const notRequiredPhone = (label: string) => {
@@ -293,13 +297,8 @@ const patientStatementDateSchema = {
 }
 
 const firstLastNameSchema = {
-  lastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
-    .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26))
-    .required(requiredMessage(LAST_NAME)),
-
-  firstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
-    .min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26))
-    .required(requiredMessage(FIRST_NAME)),
+  lastName: nameSchema(LAST_NAME),
+  firstName: nameSchema(FIRST_NAME),
 };
 
 export const loginValidationSchema = yup.object({
@@ -385,7 +384,7 @@ const facilityBasicSchema = {
   ...federalTaxIdSchema,
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
-  name: yup.string().required(requiredMessage(NAME))
+  name: nameSchema(NAME)
 }
 
 export const facilitySchema = yup.object({
@@ -438,7 +437,7 @@ export const doctorSchema = yup.object({
 
 export const facilityServicesSchema = {
   ...facilityIdSchema,
-  name: yup.string().required(requiredMessage(NAME)),
+  name: nameSchema(NAME),
   price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(2, MinLength(PRICE, 2))
     .max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
   duration: yup.string()
@@ -597,13 +596,9 @@ export const externalPatientSchema = yup.object({
 
 const registerUserSchema = {
   userPhone: notRequiredPhone(PHONE),
+  userLastName: nameSchema(FIRST_NAME),
+  userFirstName: nameSchema(LAST_NAME),
   userEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
-  userFirstName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(FIRST_NAME))
-    .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26))
-    .required(requiredMessage(LAST_NAME)),
-  userLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
-    .min(3, MinLength(FIRST_NAME, 3)).max(26, MaxLength(FIRST_NAME, 26))
-    .required(requiredMessage(FIRST_NAME)),
 }
 
 const practiceFacilitySchema = {
