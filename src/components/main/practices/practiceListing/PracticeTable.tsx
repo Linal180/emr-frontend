@@ -26,7 +26,7 @@ import {
 
 const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const { fetchAllFacilityList } = useContext(ListContext)
+  const { fetchAllPracticeList, fetchAllFacilityList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
@@ -81,6 +81,7 @@ const PracticeTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             await findAllPractices();
+            fetchAllPracticeList();
             fetchAllFacilityList();
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }

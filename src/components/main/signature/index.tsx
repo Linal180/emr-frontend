@@ -10,9 +10,9 @@ import SIGN_IMAGE from "../../../assets/images/sign-image.png";
 import { CLEAR_TEXT, SAVE_TEXT, SIGNATURE_TEXT, UPDATE_SIGNATURE } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
-  const [open, setOpen] = useState<boolean>(false)
-  let sigCanvas = useRef<any>({});
   let data = ''
+  let sigCanvas = useRef<any>({});
+  const [open, setOpen] = useState<boolean>(false)
   
   const save = () => {
     if (sigCanvas && sigCanvas.current) {
