@@ -9,11 +9,11 @@ import { AuthContext } from "../../context";
 import { MainLayoutProps } from "../../interfacesTypes";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
-  const { user } = useContext(AuthContext);
+  const { user, isLoggedIn } = useContext(AuthContext);
 
   return (
     <>
-      {user ? (<>
+      {(!user && isLoggedIn) ? <BackdropLoader loading={true} /> : (<>
         <CssBaseline />
         <Header />
 
@@ -24,7 +24,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
             </Box>
           </Box>
         </Box>
-      </>) : <BackdropLoader loading={true} />}
+      </>)}
     </>
   )
 };
