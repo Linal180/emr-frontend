@@ -1846,6 +1846,7 @@ export enum ATTACHMENT_TITLES {
   DrivingLicense2 = "Driving License 2",
   InsuranceCard1 = "Insurance Card 1",
   InsuranceCard2 = "Insurance Card 2",
+  ProviderUploads = "Provider Uploads",
 }
 
 export const MAPPED_STATUS = [
@@ -1881,41 +1882,6 @@ export const MAPPED_STATUS = [
     title: "Vacation",
     startDate: "2018-07-27T19:00:00.000Z",
     endDate: "2018-08-06T19:00:00.000Z",
-  },
-];
-
-export const DUMMY_DOCUMENTS = [
-  {
-    title: "CBCDiagnosedocument.pdf",
-    type: "Other",
-    comments: "Check when patient comes next time",
-    provider: "Dr. Clara Max",
-    date: "8 Sep, 2020",
-    size: "5KB",
-  },
-  {
-    title: "xray-analysis.pdf",
-    type: "Clinical Document",
-    comments: "It came with the patients other rec...",
-    provider: "Dr. Harrold Wixen",
-    date: "17 Oct, 2020",
-    size: "5KB",
-  },
-  {
-    title: "Bloodreport.pdf",
-    type: "Care Plan",
-    comments: "N/A",
-    provider: "Dr. A. H. John",
-    date: "24 May, 2020",
-    size: "122KB",
-  },
-  {
-    title: "fracturecondition.png",
-    type: "Chart Note",
-    comments: "N/A",
-    provider: "N/A",
-    date: "17 Oct, 2020",
-    size: "87KB",
   },
 ];
 

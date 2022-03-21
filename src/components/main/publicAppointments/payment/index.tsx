@@ -244,7 +244,6 @@ const ExternalPaymentComponent = (): JSX.Element => {
 
                   <Grid item>
                     <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
-
                   </Grid>
                 </Grid>
               </Box>

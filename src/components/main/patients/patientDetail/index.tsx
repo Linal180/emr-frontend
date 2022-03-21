@@ -1,5 +1,5 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useState, useCallback, useContext } from 'react';
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useCallback, useContext } from 'react';
 import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
@@ -14,7 +14,6 @@ import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import ConfirmDocumentModal from '../../../common/ConfirmDocumentModal';
 // constants, history, styling block
 import history from '../../../../history';
 import Search from '../../../common/Search';
@@ -33,12 +32,12 @@ import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useSendInviteToPatientMutation
 } from "../../../../generated/graphql";
 import {
-  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, UploadIcon
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
 } from "../../../../assets/svgs";
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION,
-  MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, UPLOAD,
-  SCHEDULE_APPOINTMENTS_TEXT, SIGNED, VIEW_CHART_TEXT, ENABLE_ACCESS_PORTAL, DISABLE_ACCESS_PORTAL, ENABLE_PATIENT_ACCESS
+  MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT,
+  VIEW_CHART_TEXT, ENABLE_ACCESS_PORTAL, DISABLE_ACCESS_PORTAL, ENABLE_PATIENT_ACCESS
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -50,7 +49,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const tableClasses = useTableStyles();
   const [{ anchorEl, openDelete, patientData, tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
+  const [{ attachmentUrl, attachmentData, attachmentId, attachments }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
@@ -135,6 +134,10 @@ const PatientDetailsComponent = (): JSX.Element => {
           attachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
           mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
+          attachments && mediaDispatch({
+            type: mediaActionType.SET_ATTACHMENTS,
+            attachments: attachments.filter(attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads)
+          })
         }
       }
     },
@@ -258,10 +261,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
-  const [DocumentOpen, setDocumentOpen] = useState(false);
-
-  const handleUpload = () => setDocumentOpen(true);
-
   const search = (query: string) => { }
 
   return (
@@ -298,7 +297,6 @@ const PatientDetailsComponent = (): JSX.Element => {
                     <MediaCards
                       title={ATTACHMENT_TITLES.ProfilePicture}
                       reload={() => reloadAttachment()}
-                      isProfile={true}
                       notDescription={true}
                       moduleType={AttachmentType.Patient}
                       itemId={id}
@@ -426,26 +424,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             </TabPanel>
 
             <TabPanel value="8">
-              <Box className={tableClasses.mainTableContainer}>
-                <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
-                  <Box display="flex">
-                    <Box className={tableClasses.searchOuterContainer}>
-                      <Search search={search} />
-                    </Box>
-
-                    <Box ml={3} className={tableClasses.RadioButtonsStroke}>
-                      <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>
-                      <Button size="small">{SIGNED}</Button>
-                    </Box>
-                  </Box>
-
-                  <Button color="primary" variant="contained" startIcon={<UploadIcon />} onClick={handleUpload}>
-                    {UPLOAD}
-                  </Button>
-                </Box>
-
-                <DocumentsTable />
-              </Box>
+              <DocumentsTable dispatcher={mediaDispatch} attachments={attachments} />
             </TabPanel>
 
             <TabPanel value="9">
@@ -465,8 +444,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             </TabPanel>
           </Box>
         </TabContext>
-      )
-      }
+      )}
 
       <ConfirmationModal
         title={DELETE_WIDGET_TEXT}
@@ -474,11 +452,6 @@ const PatientDetailsComponent = (): JSX.Element => {
         description={DELETE_WIDGET_DESCRIPTION}
         handleDelete={handleDeleteWidget}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
-      />
-
-      <ConfirmDocumentModal
-        isOpen={DocumentOpen}
-        setOpen={(DocumentOpen: boolean) => setDocumentOpen(DocumentOpen)}
       />
     </Box >
   )

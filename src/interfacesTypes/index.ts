@@ -5,7 +5,7 @@ import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
-import { Action } from "../reducers/locationReducer";
+import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import {
@@ -13,7 +13,7 @@ import {
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -608,14 +608,14 @@ export interface MediaModalTypes extends DialogTypes {
 export interface MediaCardsType {
   itemId: string;
   title?: string;
-  reload: Function;
+  button?: boolean;
   imageSide: string;
-  isProfile?: boolean;
   hasCollage?: boolean;
   hasHighlights?: boolean
   notDescription?: boolean;
   moduleType: AttachmentType;
   attachmentData?: Attachment;
+  reload: Function;
 }
 
 export interface DropDownItems {
@@ -636,6 +636,7 @@ export interface MediaCardComponentType {
   isEdit: boolean;
   isOpen: boolean;
   imageSide: string;
+  button?: boolean;
   imageModuleType?: string;
   notDescription?: boolean;
   attachment?: Attachment;
@@ -705,4 +706,9 @@ export interface CountrySelectorInterface {
   countryName: string;
   stateName: string;
   cityName: string
+}
+
+export interface DocumentTableProps {
+  dispatcher: Dispatch<Action>;
+  attachments: AttachmentsPayload['attachments'];
 }
