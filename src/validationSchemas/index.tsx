@@ -17,7 +17,7 @@ import {
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, NAME_REGEX,
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -68,7 +68,7 @@ const requiredStringOnly = (label: string, min: number, max: number) => {
 }
 
 const nameSchema = (label: string) => {
-  return yup.string().matches(NAME_REGEX, ValidMessage(label))
+  return yup.string().matches(ALPHABETS_REGEX, ValidMessage(label))
     .min(2, MinLength(label, 2)).max(26, MaxLength(label, 26))
     .required(requiredMessage(label))
 }
