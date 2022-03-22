@@ -376,7 +376,7 @@ const PublicAppointmentForm = (): JSX.Element => {
               </Grid >
 
               <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
-                <CardComponent cardTitle="Available Slots">
+                <CardComponent cardTitle={AVAILABLE_SLOTS}>
                   <AppointmentDatePicker date={date} setDate={setDate} />
 
                   <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
