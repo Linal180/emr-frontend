@@ -219,6 +219,12 @@ export const VACCINES_DESCRIPTION = "Create and edit vaccine inventory for your 
 export const FACILITY_SERVICES_DESCRIPTION = "Add or update all the services a facility is offering";
 export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
 export const CANCELLED_APPOINTMENT_DESCRIPTION = "View cancelled appointments and their reason";
+export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
+export const FACILITY_SCHEDULE = "Facility Schedule";
+export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
+export const CLINICALS_TEXT = "Clinicals";
+export const FORM_BUILDER = "Form Builder";
+export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
 export const TIME_ZONE_DESCRIPTION = "Set time zones";
@@ -2054,6 +2060,22 @@ export const APPOINTMENT_SETTINGS_ITEMS = [
     name: CANCELLED_APPOINTMENT,
     link: "/",
     desc: CANCELLED_APPOINTMENT_DESCRIPTION
+  },
+];
+
+export const CALENDAR_SETTINGS_ITEMS = [
+  {
+    name: FACILITY_SCHEDULE,
+    link: "/",
+    desc: FACILITY_SCHEDULE_DESCRIPTION
+  },
+];
+
+export const CLINICALS_ITEMS = [
+  {
+    name: FORM_BUILDER,
+    link: "/",
+    desc: FORM_BUILDER_DESCRIPTION
   },
 ];
 
