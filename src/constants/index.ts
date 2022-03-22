@@ -633,6 +633,7 @@ export const SELECT_DATE = "Select Date";
 export const MY_ACCOUNT_TEXT = "My Account";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
+export const USER_SETTINGS = "User Settings";
 export const AVAILABLE_SLOTS = "Available Slots";
 export const PATIENT_DETAILS = "Patient Details";
 export const SELECT_SERVICES = "Select Services";
