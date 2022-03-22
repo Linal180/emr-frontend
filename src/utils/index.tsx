@@ -17,6 +17,7 @@ import {
   START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A,
 } from "../constants";
 import { ReactNode } from "react";
+import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -155,6 +156,14 @@ export const getPracticeType = (type: PracticeType): string => {
 
 export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
+};
+
+export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
+  return date ? moment(date).format("h:mm a") : moment().format("h:mm a")
+};
+
+export const getAppointmentDate = (date: SchedulerDateTime | undefined): string => {
+  return date ? moment(date).format("MMMM Do YYYY") : moment().format("MMMM Do YYYY")
 };
 
 export const getDate = (date: string) => {
@@ -414,14 +423,23 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
 };
 
 export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
+  // debugger
   return data?.map(appointment => {
-    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType, facility, provider, reason, primaryInsurance } = appointment || {}
     const { firstName, lastName } = patient || {}
     const { color } = appointmentType || {}
+    const { contacts } = facility || {}
+    const { firstName: providerFN, lastName: providerLN } = provider || {}
+    const basicContact = contacts && contacts.filter(contact => contact.primaryContact)[0]
 
     return {
       id, color,
       title: `${firstName} ${lastName}`,
+      providerName: `${providerFN} ${providerLN}`,
+      appointmentType,
+      reason,
+      primaryInsurance,
+      basicContact,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
     }
 

@@ -511,6 +511,7 @@ export const ETHNICITY = "Ethnicity";
 export const GENDER_IDENTITY = "Gender Identity";
 export const HOLD_STATEMENT = "Hold Statement";
 export const HOMEBOUND = "Home Bound";
+export const PROVIDER_NAME = "Provider Name"
 export const LANGUAGE = "Language";
 export const REGISTRATION_DEPARTMENT = "Registration Department";
 export const PRIMARY_DEPARTMENT = "Primary Department";
@@ -1672,29 +1673,6 @@ export const dummyAppointmentData = {
   patientStatus: "Status",
   patientElg: "Eligibility Issue",
 };
-
-export const dummyAppointmentSubData = [
-  {
-    heading: "Appointment Type",
-    description: "General",
-  },
-  {
-    heading: "Facility Location",
-    description: "Clay County Hospital",
-  },
-  {
-    heading: "Provider Name",
-    description: "Dr. Michael Hall, MD",
-  },
-  {
-    heading: "Reason",
-    description: "High temperature",
-  },
-  {
-    heading: "Primary Insurance",
-    description: "United Health Ins.",
-  },
-];
 
 export const PATIENT_CHARTING_DATA = [
   {
