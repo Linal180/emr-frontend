@@ -34,7 +34,7 @@ import {
   MAPPED_PRACTICE_TYPES, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, PRACTICE_TYPE, ZIP, SERVICE_CODE, CANCEL,
   FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION,
   MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE,
-  CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, 
+  CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -192,7 +192,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const { id: selectedState } = state;
     const { name: timeZoneName } = timeZone;
     const { id: selectedCountry } = country;
-    const { id: selectedPractice } = practice;
+    const { id: selectedPractice } = practice || {};
     const { id: selectedServiceCode } = serviceCode;
     const { id: selectedPracticeType } = practiceType;
     const { id: selectedBillingState } = billingState;
@@ -200,23 +200,20 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const facilityPractice = isSuper ? selectedPractice : practiceId
 
     const facilityInput = {
-      name: name || '', cliaIdNumber: cliaIdNumber || '', federalTaxId: federalTaxId || '', npi: npi || '',
-      timeZone: timeZoneName || '', tamxonomyCode: tamxonomyCode || '', practiceId: facilityPractice || '',
-      practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital,
+      name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode, practiceId: facilityPractice,
+      practiceType: selectedPracticeType as PracticeType || PracticeType.Hospital, mammographyCertificationNumber,
       serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
-      mammographyCertificationNumber: mammographyCertificationNumber || '',
     }
 
     const contactInput = {
-      phone: phone || '', email: email || '', fax: fax || '', city: city || '',
-      state: selectedState || '', country: selectedCountry || '', zipCode: zipCode || '', address: address || '',
-      address2: address2 || '', primaryContact: true
+      phone, email, fax, city, state: selectedState, country: selectedCountry, zipCode, address,
+      address2, primaryContact: true
     }
 
     const billingAddressInput = {
-      phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '',
-      state: selectedBillingState || '', country: selectedBillingCountry || '', zipCode: billingZipCode || '',
-      city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || ''
+      phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', state: selectedBillingState || '',
+      city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || '',
+      country: selectedBillingCountry || '', zipCode: billingZipCode || '',
     }
 
     if (isEdit && id) {
