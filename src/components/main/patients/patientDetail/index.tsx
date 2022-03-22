@@ -1,5 +1,5 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useCallback, useContext } from 'react';
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
 import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
@@ -8,7 +8,6 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
 import PortalTable from './PortalTable';
-import Alert from '../../../common/Alert';
 import DocumentsTable from './DocumentsTable';
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
@@ -16,11 +15,8 @@ import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 // constants, history, styling block
 import history from '../../../../history';
-import Search from '../../../common/Search';
-import { AuthContext } from '../../../../context';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
-import { useTableStyles } from "../../../../styles/tableStyles";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
@@ -29,7 +25,7 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useSendInviteToPatientMutation
+  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
   AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
@@ -37,16 +33,13 @@ import {
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION,
   MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT,
-  VIEW_CHART_TEXT, ENABLE_ACCESS_PORTAL, DISABLE_ACCESS_PORTAL, ENABLE_PATIENT_ACCESS
+  VIEW_CHART_TEXT,
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
   const { id } = useParams<ParamsType>();
-  const { user } = useContext(AuthContext)
-  const { id: adminId } = user || {};
   const classes = useProfileDetailsStyles();
-  const tableClasses = useTableStyles();
   const [{ anchorEl, openDelete, patientData, tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [{ attachmentUrl, attachmentData, attachmentId, attachmentsData }, mediaDispatch] =
@@ -62,31 +55,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
-
-  const [sendInviteToPatient, { loading: sendInviteLoading }] = useSendInviteToPatientMutation({
-    onError({ message }) {
-      Alert.error(message)
-    },
-
-    onCompleted(data) {
-      if (data) {
-        const { sendInviteToPatient } = data;
-
-        if (sendInviteToPatient) {
-          const { response, patient } = sendInviteToPatient;
-
-          if (response) {
-            const { status, message } = response
-
-            if (patient && status && status === 200) {
-              message && Alert.success(message)
-              dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
-            }
-          }
-        }
-      }
-    },
-  });
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -244,14 +212,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-  const handleAccess = async () => {
-    try {
-      id && adminId && await sendInviteToPatient({
-        variables: { patientInviteInput: { id, adminId } }
-      })
-    } catch (error) { }
-  };
-
   const onDeleteClick = () =>
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
@@ -261,7 +221,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
-  const search = (query: string) => { }
 
   return (
     <Box>
@@ -331,16 +290,6 @@ const PatientDetailsComponent = (): JSX.Element => {
                         </Box>
                       ))}
                     </Box>
-                  </Box>
-
-                  <Box pr={1}>
-                    <Button color="inherit" variant="outlined" className='blue-button-new'
-                      onClick={() => handleAccess()}
-                      disabled={sendInviteLoading || Boolean(inviteAccepted)}>
-                      {inviteAccepted ? DISABLE_ACCESS_PORTAL : ENABLE_ACCESS_PORTAL}
-
-                      {sendInviteLoading && <CircularProgress size={20} color="inherit" />}
-                    </Button>
                   </Box>
 
                   <Box pr={1}>
@@ -428,19 +377,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             </TabPanel>
 
             <TabPanel value="9">
-              <Box className={tableClasses.mainTableContainer}>
-                <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
-                  <Box className={tableClasses.searchOuterContainer}>
-                    <Search search={search} />
-                  </Box>
-
-                  <Button color="inherit" variant="outlined" className='blue-button-new'>
-                    {ENABLE_PATIENT_ACCESS}
-                  </Button>
-                </Box>
-
-                <PortalTable />
-              </Box>
+              <PortalTable inviteAccepted={Boolean(inviteAccepted)} />
             </TabPanel>
           </Box>
         </TabContext>

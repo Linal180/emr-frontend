@@ -690,14 +690,6 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
 export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
-// Roles
-export const STAFF = "STAFF";
-export const ADMIN = "ADMIN";
-export const DOCTOR_ROLE = "DOCTOR";
-export const PATIENT_ROLE = "PATIENT";
-export const BILLING_ROLE = "BILLING";
-export const SUPER_ADMIN = "SUPER_ADMIN";
-export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 
 // routes paths
 export const ROOT_ROUTE = "/";
