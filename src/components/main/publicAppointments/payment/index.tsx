@@ -16,7 +16,7 @@ import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION, appointmentChargesDescription,
-  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST,
+  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER,
 } from '../../../../constants';
 import { appointmentReducer, Action, initialState, State, ActionType, } from '../../../../reducers/appointmentReducer';
 import { useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, } from '../../../../generated/graphql';
@@ -32,8 +32,9 @@ const ExternalPaymentComponent = (): JSX.Element => {
   const [providerId, setProviderId] = useState<string>('');
   const [price, setPrice] = useState<string>('');
 
-  const [chargePayment] = useChargeAfterAppointmentMutation({
+  const moveNext = () => history.push(`${SLOT_CONFIRMATION}/${id}`)
 
+  const [chargePayment] = useChargeAfterAppointmentMutation({
     onCompleted({ chargeAfterAppointment: { appointment, response } }) {
       if (response && appointment) {
         Alert.success(APPOINTMENT_BOOKED_SUCCESSFULLY);
@@ -105,7 +106,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
               await getToken();
             } catch (error) { }
           } else if (billingStatus === BillingStatus.Paid) {
-            history.push(`${SLOT_CONFIRMATION}/${id}`);
+            moveNext();
           }
         }
       }
@@ -152,6 +153,9 @@ const ExternalPaymentComponent = (): JSX.Element => {
     } else if (payload.paymentOption === 'paypal') {
       setShowPayBtn(false);
     }
+    else {
+      setShowPayBtn(false);
+    }
   };
 
   const onPaymentMethodRequestable = (
@@ -169,7 +173,6 @@ const ExternalPaymentComponent = (): JSX.Element => {
   return (
     <Box bgcolor={WHITE_SEVEN} minHeight='100vh' padding='30px 30px 30px 60px'>
       <EMRLogo />
-
       <Box mt={3} mb={1}>
         <Typography variant='h4'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>
       </Box>
@@ -191,6 +194,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                       Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
                       chooseAWayToPay: '',
                     },
+
                     paypal: {
                       flow: CHECKOUT,
                       currency: USD,
@@ -200,6 +204,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
                         tagline: false,
                       },
                     },
+
                     card: {
                       cardholderName: true,
                       overrides: {
@@ -221,20 +226,26 @@ const ExternalPaymentComponent = (): JSX.Element => {
                     dataCollector: true,
                     paymentOptionPriority: ['paypal', 'card'],
                   }}
+
                   onPaymentMethodRequestable={onPaymentMethodRequestable}
                   onPaymentOptionSelected={onPaymentOptionSelected}
                   onInstance={(data) => setInstance(data)}
                 />
+                <Grid container>
+                  {showPayBtn && (
+                    <Grid item>
+                      <Box pr={2}>
+                        <Button variant='contained' color='primary' onClick={threeDSecurePayment}>
+                          {PAY}
+                        </Button>
+                      </Box>
+                    </Grid>
+                  )}
 
-                {showPayBtn && (
-                  <Button
-                    onClick={threeDSecurePayment}
-                    variant='contained'
-                    color='primary'
-                  >
-                    {PAY}
-                  </Button>
-                )}
+                  <Grid item>
+                    <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
+                  </Grid>
+                </Grid>
               </Box>
             ) : (
               <BackdropLoader loading={true} />
