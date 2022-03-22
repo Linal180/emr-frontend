@@ -623,6 +623,7 @@ export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial ca
 export const USD = "USD";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
+export const ROLES_TEXT = "Roles";
 export const PROFILE_TEXT = "Profile";
 export const SIGNATURE_TEXT = "Signature";
 export const CANCELLATION_TEXT = "Cancellation";
@@ -713,6 +714,7 @@ export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
 export const CANCELLATION_ROUTE = "/cancellation";
+export const ROLES_ROUTE = "/roles";
 export const AUTO_LOGOUT_ROUTE = "/autologout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
@@ -2003,7 +2005,7 @@ export const PRACTICE_SETTINGS_ITEMS = [
   },
   {
     name: ROLES_PERMISSIONS,
-    link: "/",
+    link: ROLES_ROUTE,
     desc: ROLES_PERMISSIONS_DESCRIPTION
   },
 ];

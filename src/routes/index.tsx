@@ -18,6 +18,7 @@ import { SetPassword } from "../pages/auth/setPassword";
 import ProfileComponent from "../components/main/profile";
 import SignatureComponent from "../components/main/signature";
 import CancellationComponent from "../components/main/cancellation";
+import RolesComponent from "../components/main/roles";
 import AutoLogoutComponent from "../components/main/autoLogout";
 import ViewDoctor from "../pages/main/doctors/viewDoctor";
 import ForgetPassword from "../pages/auth/forgetPassword";
@@ -65,6 +66,7 @@ import {
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, 
   CANCELLATION_ROUTE,
   AUTO_LOGOUT_ROUTE,
+  ROLES_ROUTE,
 } from "../constants";
 import ChangePasswordComponent from "../components/main/profile/changePassword";
 
@@ -96,6 +98,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={PROFILE_ROUTE} component={ProfileComponent} />
       <PrivateRoute exact path={SIGNATURE_ROUTE} component={SignatureComponent} />
       <PrivateRoute exact path={CANCELLATION_ROUTE} component={CancellationComponent} />
+      <PrivateRoute exact path={ROLES_ROUTE} component={RolesComponent} />
       <PrivateRoute exact path={AUTO_LOGOUT_ROUTE} component={AutoLogoutComponent} />
       <PrivateRoute exact path={CHANGE_PASSWORD_ROUTE} component={ChangePasswordComponent} />
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
