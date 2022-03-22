@@ -9,11 +9,11 @@ import { Action } from "../reducers/locationReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import {
-  LoginUserInput, User, CreateStaffInput, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
+  LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -45,6 +45,9 @@ export interface AppContextProps {
 }
 
 export interface ListContextInterface {
+  practiceList: PracticesPayload['practices'];
+  setPracticeList: Function;
+  fetchAllPracticeList: Function;
   facilityList: FacilitiesPayload['facilities'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
@@ -349,7 +352,7 @@ export type ParamsType = {
   facilityId?: string;
 }
 
-export type ExtendedStaffInputProps = Omit<CreateStaffInput, "facilityId" | "roleType" | "gender">
+export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | "roleType" | "gender">
   & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
@@ -372,9 +375,9 @@ interface CustomBillingAddressInputs {
 }
 
 export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state" | "country">
-  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone"> & CustomBillingAddressInputs
+  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId"> & CustomBillingAddressInputs
   & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption }
-  & { state: SelectorOption } & { country: SelectorOption };
+  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };;
 
 type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
 
@@ -490,14 +493,13 @@ interface RegisterUserInputs {
 export type PatientInputProps = BasicContactControlInputs & EmergencyContactControlInputs & KinContactControlInputs
   & GuardianContactControlInputs & GuarantorContactControlInputs & EmployerControlInputs & RegisterUserInputs
   & Omit<CreatePatientItemInput, "gender" | "race" | "genderIdentity" | "maritialStatus" | "sexAtBirth"
-    | "primaryDepartment" | "registrationDepartment" | "pronouns" | "ethnicity" | "sexualOrientation"
+    | "pronouns" | "ethnicity" | "sexualOrientation"
     | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity" | "homeBound">
   & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption }
   & { sexualOrientation: SelectorOption } & { sexualOrientation: SelectorOption }
   & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { facilityId: SelectorOption }
-  & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { primaryDepartment: SelectorOption }
+  & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { homeBound: boolean }
   & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
-  & { registrationDepartment: SelectorOption } & { homeBound: boolean }
 
 export type ExternalPatientInputProps =
   { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption } & { race: SelectorOption }

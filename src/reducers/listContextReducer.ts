@@ -1,15 +1,15 @@
 import {
-  FacilitiesPayload, ServicesPayload, AllDoctorPayload, ContactsPayload, PatientsPayload
+  FacilitiesPayload, ServicesPayload, AllDoctorPayload, PatientsPayload, PracticesPayload
 } from "../generated/graphql"
 
 export interface State {
   practiceId: string;
+  practicePages: number;
+  practiceList: PracticesPayload['practices'];
   facilityPages: number;
   facilityList: FacilitiesPayload['facilities'];
   servicePages: number;
   serviceList: ServicesPayload['services']
-  locationPages: number;
-  locationList: ContactsPayload['contacts'];
   doctorPages: number;
   doctorList: AllDoctorPayload['doctors'];
   patientPages: number;
@@ -18,28 +18,28 @@ export interface State {
 
 export const initialState: State = {
   practiceId: '',
+  practicePages: 1,
+  practiceList: [],
   facilityPages: 1,
   facilityList: [],
   servicePages: 1,
   serviceList: [],
   doctorPages: 1,
   doctorList: [],
-  locationPages: 1,
-  locationList: [],
   patientPages: 1,
   patientList: [],
 }
 
 export enum ActionType {
   SET_PRACTICE_ID = 'setPracticeId',
+  SET_PRACTICE_PAGES = "setPracticePages",
+  SET_PRACTICE_LIST = "setPracticeList",
   SET_FACILITY_PAGES = "setFacilityPages",
   SET_FACILITY_LIST = "setFacilityList",
   SET_SERVICE_PAGES = "setServicePages",
   SET_SERVICE_LIST = "setServiceList",
   SET_DOCTOR_PAGES = "setDoctorPages",
   SET_DOCTOR_LIST = "setDoctorList",
-  SET_LOCATION_PAGES = "setLocationPages",
-  SET_LOCATION_LIST = "setLocationList",
   SET_PATIENT_PAGES = "setPatientPages",
   SET_PATIENT_LIST = "setPatientList",
 }
@@ -52,8 +52,8 @@ export type Action =
   | { type: ActionType.SET_SERVICE_LIST; serviceList: ServicesPayload['services'] }
   | { type: ActionType.SET_DOCTOR_PAGES; doctorPages: number }
   | { type: ActionType.SET_DOCTOR_LIST; doctorList: AllDoctorPayload['doctors'] }
-  | { type: ActionType.SET_LOCATION_PAGES; locationPages: number }
-  | { type: ActionType.SET_LOCATION_LIST; locationList: ContactsPayload['contacts'] }
+  | { type: ActionType.SET_PRACTICE_PAGES; practicePages: number }
+  | { type: ActionType.SET_PRACTICE_LIST; practiceList: PracticesPayload['practices'] }
   | { type: ActionType.SET_PATIENT_PAGES; patientPages: number }
   | { type: ActionType.SET_PATIENT_LIST; patientList: PatientsPayload['patients'] }
 
@@ -101,16 +101,16 @@ export const listContextReducer = (state: State, action: Action): State => {
         doctorList: action.doctorList
       }
 
-    case ActionType.SET_LOCATION_PAGES:
+    case ActionType.SET_PRACTICE_PAGES:
       return {
         ...state,
-        locationPages: action.locationPages
+        practicePages: action.practicePages
       }
 
-    case ActionType.SET_LOCATION_LIST:
+    case ActionType.SET_PRACTICE_LIST:
       return {
         ...state,
-        locationList: action.locationList
+        practiceList: action.practiceList
       }
 
     case ActionType.SET_PATIENT_PAGES:
