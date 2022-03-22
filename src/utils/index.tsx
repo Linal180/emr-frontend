@@ -9,7 +9,7 @@ import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes"
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload,
+  AppointmentsPayload, AttachmentsPayload, PracticesPayload,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
@@ -171,6 +171,22 @@ export const deleteRecordTitle = (recordType: string) => {
 
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const renderPractices = (practices: PracticesPayload['practices']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!practices) {
+    for (let practice of practices) {
+      if (practice) {
+        const { id, name } = practice;
+
+        data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
 }
 
 export const renderFacilities = (facilities: FacilitiesPayload['facilities']) => {
