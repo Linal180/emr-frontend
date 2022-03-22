@@ -406,6 +406,7 @@ export const CLINICAL_TEXT = "Clinical";
 export const INVOICES_TEXT = "Invoices";
 export const PATIENTS_TEXT = "Patients";
 export const PATIENT = "Patient";
+export const DOCUMENT = "Document";
 export const PRACTICE = "Practice";
 export const DOCTOR = "Doctor";
 export const DOCTOR_SCHEDULE = "Doctor Schedule";
@@ -609,6 +610,7 @@ export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION =
   "Confirm to delete doctor schedule";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
+export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
 export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER =
   "Mammography Certification Number";

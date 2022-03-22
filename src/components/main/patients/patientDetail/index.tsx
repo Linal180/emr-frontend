@@ -49,7 +49,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const tableClasses = useTableStyles();
   const [{ anchorEl, openDelete, patientData, tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const [{ attachmentUrl, attachmentData, attachmentId, attachments }, mediaDispatch] =
+  const [{ attachmentUrl, attachmentData, attachmentId, attachmentsData }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
@@ -135,8 +135,8 @@ const PatientDetailsComponent = (): JSX.Element => {
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
           mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
           attachments && mediaDispatch({
-            type: mediaActionType.SET_ATTACHMENTS,
-            attachments: attachments.filter(attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads)
+            type: mediaActionType.SET_ATTACHMENTS_DATA,
+            attachmentsData: attachments.filter(attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads)
           })
         }
       }
@@ -424,7 +424,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             </TabPanel>
 
             <TabPanel value="8">
-              <DocumentsTable dispatcher={mediaDispatch} attachments={attachments} />
+              <DocumentsTable dispatcher={mediaDispatch} attachments={attachmentsData} />
             </TabPanel>
 
             <TabPanel value="9">
