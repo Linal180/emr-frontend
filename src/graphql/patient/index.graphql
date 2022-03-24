@@ -64,8 +64,7 @@ query GetPatient($getPatient: GetPatient!) {
       medicationHistoryAuthority
       releaseOfInfoBill
       voiceCallPermission
-      registrationDepartment
-      primaryDepartment
+      registrationDate
       registrationDate
       deceasedDate
       privacyNotice
@@ -225,8 +224,7 @@ mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!){
       medicationHistoryAuthority
       releaseOfInfoBill
       voiceCallPermission
-      registrationDepartment
-      primaryDepartment
+      registrationDate
       registrationDate
       deceasedDate
       privacyNotice

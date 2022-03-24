@@ -1,0 +1,9 @@
+mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
+  createInvoice(createInvoiceInputs: $createInvoiceInputs){
+    response{
+      name
+      status
+      message
+    }
+  }
+}
