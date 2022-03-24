@@ -441,21 +441,23 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
 export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
   // debugger
   return data?.map(appointment => {
-    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType, facility, provider, reason, primaryInsurance } = appointment || {}
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType, facility, provider, reason, primaryInsurance, status } = appointment || {}
     const { firstName, lastName } = patient || {}
-    const { color } = appointmentType || {}
-    const { contacts } = facility || {}
+    const { color, price } = appointmentType || {}
+    const { contacts, id: facilityId } = facility || {}
     const { firstName: providerFN, lastName: providerLN } = provider || {}
     const basicContact = contacts && contacts.filter(contact => contact.primaryContact)[0]
-
+    const appointmentStatus = status && formatValue(status)
     return {
-      id, color,
+      reason,
+      facilityId,
+      basicContact,
+      appointmentType,
+      primaryInsurance,
+      id, color, price,
+      appointmentStatus,
       title: `${firstName} ${lastName}`,
       providerName: `${providerFN} ${providerLN}`,
-      appointmentType,
-      reason,
-      primaryInsurance,
-      basicContact,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
     }
 

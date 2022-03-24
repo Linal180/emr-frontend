@@ -24,6 +24,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
         name
         duration
         color
+        price
       }
       
       provider {
@@ -212,6 +213,16 @@ query GetDoctorAppointments($getDoctorAppointment: GetDoctorAppointment!){
         id
         name
       }
+    }
+  }
+}
+
+mutation UpdateAppointmentStatus($appointmentStatusInput: UpdateAppointmentStatusInput!){
+  updateAppointmentStatus(appointmentStatusInput: $appointmentStatusInput){
+    response {
+      error
+      status
+      message
     }
   }
 }
