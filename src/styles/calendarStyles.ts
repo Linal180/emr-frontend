@@ -76,14 +76,14 @@ export const useCalendarStyles = makeStyles(() =>
         margin: 1,
         minHeight: "auto",
       },
-      "& .MuiInput-underline:before": {
+      "& .MuiInput-underline:before, .MuiInput-underline:after": {
         borderBottom: "none",
       },
       "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
         borderBottom: "none",
       },
       "& .MuiSelect-select:focus": {
-        backgroundColor: WHITE,
+        backgroundColor: 'transparent',
       },
     },
   })

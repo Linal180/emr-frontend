@@ -21,12 +21,12 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
-  CANT_DELETE_PRACTICE, FACILITIES_TEXT, DATE_ADDED, 
+  CANT_DELETE_PRACTICE, DATE_ADDED, 
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const { fetchAllFacilityList } = useContext(ListContext)
+  const { fetchAllPracticeList, fetchAllFacilityList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
@@ -81,6 +81,7 @@ const PracticeTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             await findAllPractices();
+            fetchAllPracticeList();
             fetchAllFacilityList();
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
@@ -125,7 +126,6 @@ const PracticeTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(FACILITIES_TEXT)}
               {renderTh(DATE_ADDED)}
               {renderTh(ACTION, "center")}
             </TableRow>
@@ -135,7 +135,6 @@ const PracticeTable: FC = (): JSX.Element => {
             {
               practices?.map(practice => {
                 const { id, name, phone, createdAt, facilities } = practice || {};
-                const facilityCount = (facilities && facilities.length) || 0;
                 const primaryFacility = facilities?.filter(facility => facility.isPrimary)[0]
                 const { contacts } = primaryFacility || {};
                 const primaryContact = contacts?.filter(contact => contact.primaryContact)[0]
@@ -146,7 +145,6 @@ const PracticeTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{facilityCount}</TableCell>
                     <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

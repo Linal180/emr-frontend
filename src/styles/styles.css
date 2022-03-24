@@ -308,6 +308,12 @@ body .MuiTabPanel-root {
   padding-left: 5px;
 }
 
+/* Signature-pad-Styling */
+.sigCanvas {
+  width: 100%;
+  height: 150px;
+}
+
 /* Drop-in-Payment-Styling */
 .zoid-outlet {
   width: 100% !important;

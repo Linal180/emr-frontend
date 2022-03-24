@@ -4,8 +4,8 @@ import { AppointmentTooltip } from '@devexpress/dx-react-scheduler';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 // component block
 import StatusSelector from './statusSelector';
-import ConfirmationModal from '../../common/ConfirmationModal';
 import { Close } from '@material-ui/icons';
+import ConfirmationModal from '../../common/ConfirmationModal';
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse } from '@material-ui/core';
 // constant block
 import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
