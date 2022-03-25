@@ -170,6 +170,7 @@ export const VITALS_TEXT = "Vitals";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
 export const UPLOAD_PICTURE = "Upload Picture";
+export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
 export const ALLERGIES_TEXT = "Allergies";
@@ -189,6 +190,7 @@ export const PROVIDER_MANAGEMENT = "Provider Management";
 export const STAFF_MANAGEMENT = "Staff Management";
 export const SCHEDULE = "Schedule";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
+export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION = "Edit your facility information and settings";
 export const FACILITY_MANAGEMENT_DESCRIPTION = "Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION = "Add providers and update their profiles for the EMR";
@@ -210,6 +212,12 @@ export const VACCINES_DESCRIPTION = "Create and edit vaccine inventory for your 
 export const FACILITY_SERVICES_DESCRIPTION = "Add or update all the services a facility is offering";
 export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
 export const CANCELLED_APPOINTMENT_DESCRIPTION = "View cancelled appointments and their reason";
+export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
+export const FACILITY_SCHEDULE = "Facility Schedule";
+export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
+export const CLINICALS_TEXT = "Clinicals";
+export const FORM_BUILDER = "Form Builder";
+export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
 export const TIME_ZONE_DESCRIPTION = "Set time zones";
@@ -526,6 +534,7 @@ export const REVOKE_ACCESS = "Revoke Access";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const UPLOADS_DOCUMENT = "Upload Document";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
+export const AUTO_LOGOUT_DESCRIPTION = "Your account will automatically logout after a period of inactivity.";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
 export const DECREASED_DATE = "Deceased Date";
@@ -619,6 +628,7 @@ export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
 export const PROFILE_TEXT = "Profile";
 export const SIGNATURE_TEXT = "Signature";
+export const CANCELLATION_TEXT = "Cancellation";
 export const YOUR_NAME = "Your Name";
 export const SCHEDULE_TEXT = "Schedule";
 export const CONTINUE_TEXT = "Continue";
@@ -626,6 +636,7 @@ export const SELECT_DATE = "Select Date";
 export const MY_ACCOUNT_TEXT = "My Account";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
+export const USER_SETTINGS = "User Settings";
 export const AVAILABLE_SLOTS = "Available Slots";
 export const PATIENT_DETAILS = "Patient Details";
 export const SELECT_SERVICES = "Select Services";
@@ -696,6 +707,8 @@ export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
+export const CANCELLATION_ROUTE = "/cancellation";
+export const AUTO_LOGOUT_ROUTE = "/autologout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
@@ -981,7 +994,7 @@ export const PROFILE_GENERAL_MENU_ITEMS = [
   },
   {
     name: CANCELLATIONS,
-    link: "/",
+    link: CANCELLATION_ROUTE,
   },
 ];
 
@@ -996,7 +1009,7 @@ export const PROFILE_SECURITY_MENU_ITEMS = [
   },
   {
     name: AUTO_LOGOUT,
-    link: "/",
+    link: AUTO_LOGOUT_ROUTE,
   },
 ];
 
@@ -2003,6 +2016,22 @@ export const APPOINTMENT_SETTINGS_ITEMS = [
     name: CANCELLED_APPOINTMENT,
     link: "/",
     desc: CANCELLED_APPOINTMENT_DESCRIPTION
+  },
+];
+
+export const CALENDAR_SETTINGS_ITEMS = [
+  {
+    name: FACILITY_SCHEDULE,
+    link: "/",
+    desc: FACILITY_SCHEDULE_DESCRIPTION
+  },
+];
+
+export const CLINICALS_ITEMS = [
+  {
+    name: FORM_BUILDER,
+    link: "/",
+    desc: FORM_BUILDER_DESCRIPTION
   },
 ];
 
