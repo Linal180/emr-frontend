@@ -596,8 +596,8 @@ export const externalPatientSchema = yup.object({
 
 const registerUserSchema = {
   userPhone: notRequiredPhone(PHONE),
-  userLastName: nameSchema(FIRST_NAME),
-  userFirstName: nameSchema(LAST_NAME),
+  userLastName: nameSchema(LAST_NAME),
+  userFirstName: nameSchema(FIRST_NAME),
   userEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
 }
 
