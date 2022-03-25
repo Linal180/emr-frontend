@@ -31,6 +31,7 @@ import { PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSel
 import { AuthContext } from '../../../context';
 
 const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
+  // debugger
   const { user } = useContext(AuthContext)
   const { id: userId } = user || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
@@ -117,11 +118,11 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     },
   });
 
-  const id = appointmentMeta?.data.serviceId
+  const id = appointmentMeta?.data.appointmentId
   const facilityId = appointmentMeta?.data.facilityId
   const patientId = appointmentMeta?.data.patientId
   const providerId = appointmentMeta?.data.providerId
-  const appointmentId = appointmentMeta?.data.appointmentId
+  const serviceId = appointmentMeta?.data.serviceId
   const appointmentPrice = appointmentMeta?.data.price
 
   const [updateAppointmentStatus] = useUpdateAppointmentStatusMutation({
@@ -156,7 +157,11 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   };
 
   const handleClose = () => {
-    setIsOpen(!isOpen)
+    setIsAppDetail(true)
+    setIsPaid(false)
+    setIsInvoice(false)
+    setIsPayment(false)
+    onHide && onHide()
   }
 
   const editHandleClick = () => {
@@ -223,7 +228,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const charge = (token: string) => {
     chargePayment({
       variables: {
-        paymentInput: { price: appointmentPrice, patientId: patientId, providerId: providerId, facilityId: facilityId, appointmentId: appointmentId, clientIntent: token, serviceId: id },
+        paymentInput: { price: appointmentPrice, patientId: patientId, providerId: providerId, facilityId: facilityId, appointmentId: id, clientIntent: token, serviceId: serviceId },
       },
     });
   };
@@ -272,7 +277,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
   return (
     <Dialog
-      open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
+      open={isOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" disableEscapeKeyDown keepMounted
       maxWidth="sm" className={classes.dropdown}
     >
       <Box px={4} py={2} className={classes.cardContainer}>
@@ -292,7 +297,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                     <DeleteAppointmentIcon />
                   </IconButton>
 
-                  <IconButton aria-label="close" onClick={onHide}>
+                  <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
                   </IconButton>
                 </Box>
@@ -391,6 +396,9 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               title={INVOICE}
               action={
                 <Box px={2}>
+                  <IconButton aria-label="close" onClick={handleClose}>
+                    <Close />
+                  </IconButton>
                   <Button onClick={handleInvoice} type="submit" variant="contained" size="large" color="primary">{PAY}</Button>
                 </Box>
               }
