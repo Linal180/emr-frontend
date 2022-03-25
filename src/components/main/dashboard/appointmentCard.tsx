@@ -468,6 +468,13 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
             <CardHeader
               title={INVOICE}
               className={classes.cardHeader}
+              action={
+                <Box px={2}>
+                  <IconButton aria-label="close" onClick={handleClose}>
+                    <Close />
+                  </IconButton>
+                </Box>
+              }
             />
 
             <Box className={classes.cardText}>
