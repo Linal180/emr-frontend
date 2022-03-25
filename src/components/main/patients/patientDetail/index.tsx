@@ -141,7 +141,7 @@ const PatientDetailsComponent = (): JSX.Element => {
     reloadAttachment()
   }, [id, attachmentId, attachmentData, fetchAttachment, fetchPatient, reloadAttachment])
 
-  const { firstName, lastName, dob, inviteAccepted, contacts, doctorPatients, createdAt } = patientData || {}
+  const { firstName, email: patientEmail, lastName, dob, inviteAccepted, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
 
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
@@ -152,7 +152,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   if (selfContact && selfContact[0]) {
     const { phone, email, country, state } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || "--"
-    selfEmail = email || "--"
+    selfEmail = patientEmail ? patientEmail : email || "--"
     selfCurrentLocation = `${country} ${state}` || "--"
   }
 

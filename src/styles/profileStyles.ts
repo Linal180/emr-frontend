@@ -1,9 +1,8 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { WHITE } from "../theme";
+import { BLACK_THREE, WHITE } from "../theme";
 export const useProfileStyles = makeStyles(() =>
   createStyles({
     profileContainer: {
-      marginTop: 50,
       padding: 50,
       background: WHITE,
       borderRadius: 12,
@@ -21,6 +20,12 @@ export const useProfileStyles = makeStyles(() =>
         height: "100%",
         width: "100%",
         objectFit: "cover",
+      },
+    },
+
+    sidebarMenu: {
+      "& .MuiListItem-root": {
+        color: BLACK_THREE,
       },
     },
   })

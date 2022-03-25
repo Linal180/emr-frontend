@@ -128,7 +128,9 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
               </Box>
 
               <Box mt={5} py={4} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
-                <Button type="submit" variant="outlined" color="secondary" onClick={() => handleCancelAppointment()}>{CANCEL_APPOINTMENT_TEXT}</Button>
+                <Button type="submit" variant="outlined" color="secondary" 
+                onClick={() => handleCancelAppointment()}
+                >{CANCEL_APPOINTMENT_TEXT}</Button>
 
                 <Box p={1} />
 
