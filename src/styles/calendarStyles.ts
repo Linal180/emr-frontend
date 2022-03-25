@@ -86,5 +86,13 @@ export const useCalendarStyles = makeStyles(() =>
         backgroundColor: 'transparent',
       },
     },
+
+    cursor: {
+      cursor: 'pointer',
+
+      "&:hover": {
+        fontWeight: '700',
+      }
+    }
   })
 );

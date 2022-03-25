@@ -13,14 +13,13 @@ import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
 import { useCalendarStyles } from '../../../styles/calendarStyles';
 import {
-  CardAppointmentIcon, CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon,
-  InvoiceAppointmentIcon,
+  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
 } from '../../../assets/svgs';
 import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
   EMAIL_OR_USERNAME_ALREADY_EXISTS,
   EMPTY_OPTION,
-  FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE, PAY, PAY_AMOUNT, PAY_VIA_CARD, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PROVIDER_NAME, REASON, STATUS, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
+  FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PROVIDER_NAME, REASON, STATUS, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
 } from '../../../constants';
 import { getAppointmentDate, getAppointmentTime, renderItem, setRecord } from '../../../utils';
 import { Appointmentstatus, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status } from '../../../generated/graphql';
@@ -39,7 +38,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const [isInvoice, setIsInvoice] = useState<boolean>(false)
   const [isPayment, setIsPayment] = useState<boolean>(false)
   const [edit, setEdit] = useState<boolean>(false)
-  const [editOne, setEditOne] = useState<boolean>(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [patientId, setPatientId] = useState<string>('');
   const [serviceId, setServiceId] = useState<string>('');
@@ -532,8 +530,22 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               </Box>
 
               <Box mt={5} p={5}>
+                <Box bgcolor={GRAY_ONE}>
+                  <Box pt={3} px={3} display='flex' alignItems="center" onClick={() => setEdit(!edit)}>
+                    <CashAppointmentIcon />
+                    <Box p={1} />
+                    <Typography variant="h5" className={classes.cursor}>{PAY_VIA_CASH}</Typography>
+                  </Box>
+
+                  <Collapse in={edit} mountOnEnter unmountOnExit>
+                    <Box py={3} display='flex' justifyContent='center'>
+                      <Button variant="contained" size='large' color="primary">{CASH_PAID}</Button>
+                    </Box>
+                  </Collapse>
+                </Box>
+
                 {appointmentPaymentToken ? (
-                  <Box>
+                  <Box className='brain-tree-calendar-view'>
                     <DropIn
                       options={{
                         authorization: appointmentPaymentToken,
@@ -596,33 +608,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 )}
               </Box>
 
-              <Box bgcolor={GRAY_ONE} mb={3}>
-                <Box pt={3} px={3} display='flex' alignItems="center" onClick={() => setEdit(!edit)}>
-                  <CashAppointmentIcon />
-                  <Box p={1} />
-                  <Typography variant="h4">{PAY_VIA_CASH}</Typography>
-                </Box>
-
-                <Collapse in={edit} mountOnEnter unmountOnExit>
-                  <Box py={3} display='flex' justifyContent='center'>
-                    <Button variant="contained" size='large' color="primary">{CASH_PAID}</Button>
-                  </Box>
-                </Collapse>
-              </Box>
-
-              <Box bgcolor={GRAY_ONE} mb={3}>
-                <Box display='flex' alignItems="center" py={5} px={3} onClick={() => setEditOne(!editOne)}>
-                  <CardAppointmentIcon />
-                  <Box p={1} />
-                  <Typography variant="h4">{PAY_VIA_CARD}</Typography>
-                </Box>
-
-                <Collapse in={editOne} mountOnEnter unmountOnExit>
-                  <Box py={3} display='flex' justifyContent='center'>
-                    <Button variant="contained" size='large' color="primary">{CASH_PAID}</Button>
-                  </Box>
-                </Collapse>
-              </Box>
             </Box>
           </Card>}
       </Box>
