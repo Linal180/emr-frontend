@@ -3,22 +3,20 @@ import { Link } from 'react-router-dom';
 import { Box, Button, Grid, MenuItem, Typography } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 //components block
-import InputController from '../../../../controller';
-import CardComponent from "../../../common/CardComponent";
+import InputController from '../../../controller';
+import CardComponent from "../../common/CardComponent";
 // constants, history, styling block
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { WHITE } from "../../../theme";
+import { SettingsIcon, ShieldIcon } from "../../../assets/svgs";
+import { useProfileDetailsStyles } from "../../../styles/profileDetails";
 import {
   CONFIRM_PASSWORD, GENERAL, NEW_PASSWORD, OLD_PASSWORD, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
-  SAVE_TEXT, SECURITY, USER_SETTINGS
-} from "../../../../constants";
-import { SettingsIcon, ShieldIcon } from "../../../../assets/svgs";
-import { WHITE } from "../../../../theme";
+  SAVE_TEXT, SECURITY, USER_SETTINGS, CHANGE_PASSWORD,
+} from "../../../constants";
 
 const ChangePasswordComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
-  const methods = useForm<any>({
-    mode: "all",
-  });
+  const methods = useForm<any>({ mode: "all" });
   const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<any> = () => { }
@@ -36,13 +34,11 @@ const ChangePasswordComponent = (): JSX.Element => {
               </Box>
 
               <Box p={2} className={classes.sidebarMenu}>
-                {PROFILE_GENERAL_MENU_ITEMS.map((item) => {
-                  return (
-                    <Link key={`${item.link}-${item.name}`} to={item.link}>
-                      <MenuItem>{item.name}</MenuItem>
-                    </Link>
-                  )
-                })}
+                {PROFILE_GENERAL_MENU_ITEMS.map(({ name, link }) =>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
+                  </Link>
+                )}
               </Box>
 
               <Box mt={2} display="flex">
@@ -52,13 +48,11 @@ const ChangePasswordComponent = (): JSX.Element => {
               </Box>
 
               <Box p={2} className={classes.sidebarMenu}>
-                {PROFILE_SECURITY_MENU_ITEMS.map((item) => {
-                  return (
-                    <Link key={`${item.link}-${item.name}`} to={item.link}>
-                      <MenuItem>{item.name}</MenuItem>
-                    </Link>
-                  )
-                })}
+                {PROFILE_SECURITY_MENU_ITEMS.map(({ name, link }) =>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
+                  </Link>
+                )}
               </Box>
             </CardComponent>
           </Box>
@@ -67,7 +61,7 @@ const ChangePasswordComponent = (): JSX.Element => {
         <Grid item md={4} sm={12} xs={12}>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <CardComponent cardTitle="Change Password">
+              <CardComponent cardTitle={CHANGE_PASSWORD}>
                 <Box p={2}>
                   <InputController
                     isPassword

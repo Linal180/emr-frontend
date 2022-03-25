@@ -215,7 +215,7 @@ export const CANCELLED_APPOINTMENT_DESCRIPTION = "View cancelled appointments an
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
-export const CLINICALS_TEXT = "Clinicals";
+export const CLINICAL_TEXT = "Clinicals";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
@@ -402,7 +402,6 @@ export const SEND_EMAIL = "Send Email";
 export const START_TIME = "Start Time";
 export const END_TIME = "End Time";
 export const REQUESTS_TEXT = "Requests";
-export const CLINICAL_TEXT = "Clinical";
 export const INVOICES_TEXT = "Invoices";
 export const PATIENTS_TEXT = "Patients";
 export const PATIENT = "Patient";
@@ -2027,7 +2026,7 @@ export const CALENDAR_SETTINGS_ITEMS = [
   },
 ];
 
-export const CLINICALS_ITEMS = [
+export const CLINICAL_ITEMS = [
   {
     name: FORM_BUILDER,
     link: "/",
