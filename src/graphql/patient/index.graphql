@@ -46,6 +46,7 @@ query GetPatient($getPatient: GetPatient!) {
 
     patient {
       id
+      email
       firstName
       middleName
       lastName

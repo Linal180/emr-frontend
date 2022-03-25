@@ -25,9 +25,9 @@ import { FacilityContext } from "../../../../../context";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
 import { GRAY_TWO, WHITE, GREEN, WHITE_SEVEN } from "../../../../../theme";
+import { getDocumentByType, renderDoctors, setRecord } from "../../../../../utils";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
-import { getDocumentByType, getTimestamps, renderDoctors, setRecord } from "../../../../../utils";
 import {
   AntSwitch, useExternalPatientStyles
 } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
@@ -39,9 +39,9 @@ import {
   ActionType as mediaActionType
 } from "../../../../../reducers/mediaReducer";
 import {
-  AttachmentType, Communicationtype, ContactType, Ethnicity, Holdstatement, Homebound, Race, AttachmentsPayload,
+  AttachmentType, Communicationtype, ContactType, AttachmentsPayload, useUpdatePatientMutation,
   RelationshipType, useGetAttachmentsLazyQuery, useGetPatientLazyQuery, useRemoveAttachmentDataMutation,
-  useUpdatePatientMutation, Attachment,
+  Attachment,
 } from "../../../../../generated/graphql";
 import {
   MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
@@ -49,9 +49,9 @@ import {
   CITY, COUNTRY, EMPTY_OPTION, PREFERRED_PHARMACY, APPOINTMENT_CONFIRMATION_PERMISSIONS,
   PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS,
-  MAPPED_STATES, MAPPED_COUNTRIES, USA, NEXT, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
-  PATIENT_NOT_FOUND, CANCEL_APPOINTMENT, DEMOGRAPHICS, APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, FIRST_NAME,
-  LAST_NAME, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, DONE,
+  MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
+  PATIENT_NOT_FOUND, CANCEL_APPOINTMENT, DEMOGRAPHICS, APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT,
+  RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, DONE, ATTACHMENT_DELETED, NAME,
 } from "../../../../../constants";
 
 const PatientFormComponent: FC = (): JSX.Element => {
@@ -62,8 +62,8 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, activeStep,
-    isAppointment, isBilling, isVoice
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
+    activeStep, isAppointment, isBilling, isVoice
   } = state
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -100,9 +100,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const fetchDocuments = async () => {
     try {
       id && await getAttachments({
-        variables: {
-          getAttachment: { typeId: id }
-        }
+        variables: { getAttachment: { typeId: id } }
       })
     } catch (error) { }
   };
@@ -113,7 +111,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
     },
 
     async onCompleted() {
-      Alert.success('Attachment deleted successfully!');
+      Alert.success(ATTACHMENT_DELETED);
       await fetchDocuments();
     }
   })
@@ -135,9 +133,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
           const { getPatient: { patient } } = data
 
           if (patient) {
-            const { ssn, dob, callToConsent, language, race, ethnicity, maritialStatus, genderIdentity, contacts,
-              doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission, preferredCommunicationMethod,
-              releaseOfInfoBill, attachments
+            const {
+              ssn, contacts, doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission,
+              preferredCommunicationMethod, releaseOfInfoBill, attachments,
             } = patient;
 
             const { drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = getDocumentByType(attachments)
@@ -164,24 +162,15 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
               if (currentDoctor) {
                 const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
-                usualProviderId && setValue("providerId", setRecord(usualProviderId,
-                  `${firstName} ${lastName}` || ''))
+                usualProviderId && firstName && lastName &&
+                  setValue("providerId", setRecord(usualProviderId, `${firstName} ${lastName}`))
               }
             }
 
-            dob && setValue("dob", dob)
             ssn && setValue("ssn", ssn)
             pharmacy && setValue("pharmacy", pharmacy)
-            language && setValue("language", language)
-            race && setValue("race", setRecord(race, race))
-            callToConsent && setValue("callToConsent", callToConsent)
             phonePermission && setValue("phonePermission", phonePermission)
-            ethnicity && setValue("ethnicity", setRecord(ethnicity, ethnicity))
-            releaseOfInfoBill && setValue('releaseOfInfoBill', releaseOfInfoBill)
             voiceCallPermission && setValue("voiceCallPermission", voiceCallPermission)
-            maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
-            genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
-
             preferredCommunicationMethod &&
               setValue("preferredCommunicationMethod",
                 setRecord(preferredCommunicationMethod, preferredCommunicationMethod))
@@ -254,62 +243,39 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const onSubmit: SubmitHandler<ExternalPatientInputProps> = async (inputs) => {
     if (activeStep === 0) {
       const {
-        ssn, dob, callToConsent, language, race, ethnicity, pharmacy,
-        preferredCommunicationMethod, voiceCallPermission, phonePermission, emergencyName, emergencyPhone,
-        emergencyState, emergencyCity, emergencyAddress, emergencyAddress2, emergencyCountry, emergencyZipCode,
-        emergencyRelationship, address, address2, state, city, country, zipCode
+        ssn, callToConsent, pharmacy, preferredCommunicationMethod, voiceCallPermission, releaseOfInfoBill,
+        phonePermission, emergencyName, emergencyPhone, emergencyState, emergencyCity, emergencyAddress,
+        emergencyAddress2, emergencyCountry, emergencyZipCode, emergencyRelationship, address, address2,
+        state, city, country, zipCode
       } = inputs;
-      const { id: selectedRace } = race
       const { id: selectedState } = state
       const { id: selectedCountry } = country
-      const { id: selectedEthnicity } = ethnicity
       const { id: selectedRelation } = emergencyRelationship
       const { id: selectedEmergencyCountry } = emergencyCountry
       const { id: selectedEmergencyState } = emergencyState || {}
       const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
       const patientItemInput = {
-        suffix: '', firstNameUsed: '', prefferedName: '', previousFirstName: '', previouslastName: '',
-        registrationDate: getTimestamps(''), language: language || '', motherMaidenName: '', ssn: ssn || '',
-        dob: getTimestamps(dob || ''), privacyNotice: false, releaseOfInfoBill: false, deceasedDate: getTimestamps(''),
-        callToConsent: callToConsent || false, patientNote: '', statementNoteDateTo: getTimestamps(''),
-        medicationHistoryAuthority: false, phonePermission: phonePermission || false, homeBound: Homebound.No,
-        holdStatement: Holdstatement.None, statementNoteDateFrom: getTimestamps(''), email: '', pharmacy: pharmacy || '',
-        ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, voiceCallPermission: voiceCallPermission || false,
-        statementDelivereOnline: false, statementNote: '', race: selectedRace as Race || Race.White,
-        preferredCommunicationMethod: selectedCommunicationMethod as Communicationtype || Communicationtype.Email,
+        ssn, releaseOfInfoBill, callToConsent, phonePermission, pharmacy, voiceCallPermission,
+        preferredCommunicationMethod: selectedCommunicationMethod as Communicationtype
       };
 
       const contactInput = {
-        contactType: ContactType.Self, country: selectedCountry || '', email: '', city: city || '', mobile: '',
-        zipCode: zipCode || '', state: selectedState || '', phone: '', address: address || '', address2: address2 || '',
+        contactType: ContactType.Self, country: selectedCountry, city, zipCode: zipCode,
+        state: selectedState, address, address2,
       };
 
       const emergencyContactInput = {
-        contactType: ContactType.Emergency, name: emergencyName || '', phone: emergencyPhone || '',
-        mobile: '', primaryContact: false, relationship: selectedRelation as RelationshipType || RelationshipType.Ward,
-        city: emergencyCity, state: selectedEmergencyState, country: selectedEmergencyCountry, zipCode: emergencyZipCode || '',
+        contactType: ContactType.Emergency, name: emergencyName, phone: emergencyPhone, zipCode: emergencyZipCode,
+        primaryContact: false, relationship: selectedRelation as RelationshipType || RelationshipType.Ward,
+        city: emergencyCity, state: selectedEmergencyState, country: selectedEmergencyCountry,
         address: emergencyAddress, address2: emergencyAddress2,
       };
 
-      const guarantorContactInput = {
-        firstName: '', middleName: '', lastName: '', email: '', contactType: ContactType.Guarandor,
-        employerName: '', address2: '', zipCode: '', city: '', state: '', phone: '', suffix: '',
-        country: USA, ssn: '', address: '', primaryContact: false,
-      };
-
-      const guardianContactInput = {
-        firstName: '', middleName: '', primaryContact: false, lastName: '',
-        contactType: ContactType.Guardian, suffix: '',
-      };
-
-      const nextOfKinContactInput = {
-        name: '', phone: '', mobile: '', primaryContact: false,
-      };
-
-      const employerInput = {
-        name: '', email: '', phone: '', usualOccupation: '', industry: '',
-      };
+      const guarantorContactInput = { contactType: ContactType.Guarandor, primaryContact: false, };
+      const guardianContactInput = { primaryContact: false, contactType: ContactType.Guardian };
+      const nextOfKinContactInput = { primaryContact: false };
+      const employerInput = {};
 
       const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
       const contactIdInput = basicContactId ? { id: basicContactId, ...contactInput } : { ...contactInput }
@@ -374,11 +340,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: id })
 
     await removeAttachment({
-      variables: {
-        removeAttachment: {
-          id,
-        }
-      }
+      variables: { removeAttachment: { id } }
     })
   }
 
@@ -390,7 +352,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
     if (attachment) {
       return (
-        <Box display="flex" alignItems="center" key={attachmentId} sx={{ p: 5, mt: 4, border: `2px dashed ${GREEN}`, borderRadius: 6 }}>
+        <Box display="flex" alignItems="center" key={attachmentId}
+          sx={{ p: 5, mt: 4, border: `2px dashed ${GREEN}`, borderRadius: 6 }}
+        >
           <Box minWidth={40} className={dropzoneClasses.fileIcon}>
             <FileIcon extension={fileExtension} {...defaultStyles[fileExtension]} />
           </Box>
@@ -442,11 +406,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
               {activeStep < 1 ?
                 <Button
-                  variant="contained"
-                  color='primary'
+                  variant="contained" color='primary'
+                  disabled={updatePatientLoading} onClick={handleNextStep}
                   type={activeStep === 0 ? 'submit' : 'button'}
-                  disabled={updatePatientLoading}
-                  onClick={handleNextStep}
                 >
                   {NEXT}
 
@@ -454,15 +416,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 </Button>
                 :
                 <Button
-                  variant="contained"
-                  color='primary'
-                  type="button"
-                  onClick={handleFinish}
-                  disabled={updatePatientLoading}
+                  variant="contained" color='primary' type="button"
+                  onClick={handleFinish} disabled={updatePatientLoading}
                 >
                   {DONE}
                 </Button>
-                
+
               }
             </Box>
           </Box>
@@ -504,6 +463,15 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             <InputController
                               isRequired
                               fieldType="text"
+                              controllerName="zipCode"
+                              controllerLabel={ZIP_CODE}
+                            />
+                          </Grid>
+
+                          <Grid item md={3} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              fieldType="text"
                               controllerName="city"
                               controllerLabel={CITY}
                             />
@@ -519,14 +487,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             />
                           </Grid>
 
-                          <Grid item md={3} sm={12} xs={12}>
-                            <InputController
-                              isRequired
-                              fieldType="text"
-                              controllerName="zipCode"
-                              controllerLabel={ZIP_CODE}
-                            />
-                          </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
                             <Selector
@@ -579,20 +539,10 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="emergencyName"
-                              controllerLabel={FIRST_NAME}
+                              controllerLabel={NAME}
                             />
                           </Grid>
 
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="emergencyName"
-                              controllerLabel={LAST_NAME}
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <Selector
                               value={EMPTY_OPTION}
@@ -601,7 +551,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               options={MAPPED_RELATIONSHIP_TYPE}
                             />
                           </Grid>
+                        </Grid>
 
+                        <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <PhoneField label={PHONE} name='emergencyPhone' />
                           </Grid>
@@ -649,6 +601,14 @@ const PatientFormComponent: FC = (): JSX.Element => {
                           <Grid item md={3} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
+                              controllerName="emergencyZipCode"
+                              controllerLabel={ZIP_CODE}
+                            />
+                          </Grid>
+
+                          <Grid item md={3} sm={12} xs={12}>
+                            <InputController
+                              fieldType="text"
                               controllerName="emergencyCity"
                               controllerLabel={CITY}
                             />
@@ -663,13 +623,6 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             />
                           </Grid>
 
-                          <Grid item md={3} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="emergencyZipCode"
-                              controllerLabel={ZIP_CODE}
-                            />
-                          </Grid>
 
                           <Grid item md={3} sm={12} xs={12}>
                             <Selector
@@ -680,8 +633,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                             />
                           </Grid>
                         </Grid>
-                      </>
-                      }
+                      </>}
                     </CardComponent>
                   </Box>
 
@@ -729,7 +681,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                                   <label className="toggle-main">
                                     <Box color={isAppointment ? WHITE : GRAY_TWO}>Yes</Box>
-                                    <AntSwitch checked={isAppointment} onChange={(event) => { handleChange(event) }} name='phonePermission' />
+
+                                    <AntSwitch checked={isAppointment}
+                                      onChange={(event) => { handleChange(event) }}
+                                      name='phonePermission'
+                                    />
+
                                     <Box color={isAppointment ? GRAY_TWO : WHITE}>No</Box>
                                   </label>
                                 </FormControl>
