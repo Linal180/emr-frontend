@@ -136,6 +136,12 @@ export type AttachmentsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The invoice payment type */
+export enum Billing_Type {
+  Insurance = 'INSURANCE',
+  SelfPay = 'SELF_PAY'
+}
+
 export type BillingAddress = {
   __typename?: 'BillingAddress';
   address?: Maybe<Scalars['String']>;
@@ -409,6 +415,16 @@ export type CreateExternalAppointmentItemInput = {
   serviceId: Scalars['String'];
 };
 
+export type CreateExternalInvoiceInputs = {
+  amount: Scalars['String'];
+  billingType: Billing_Type;
+  facilityId: Scalars['String'];
+  generatedBy?: Maybe<Scalars['String']>;
+  paymentMethod: Scalars['String'];
+  paymentTransactionId: Scalars['String'];
+  status: Status;
+};
+
 export type CreateFacilityInput = {
   createBillingAddressInput: CreateBillingAddressInput;
   createContactInput: CreateContactInput;
@@ -430,6 +446,16 @@ export type CreateFacilityItemInput = {
   stateImmunizationId?: Maybe<Scalars['String']>;
   tamxonomyCode?: Maybe<Scalars['String']>;
   timeZone?: Maybe<Scalars['String']>;
+};
+
+export type CreateInvoiceInputs = {
+  amount: Scalars['String'];
+  billingType: Billing_Type;
+  facilityId: Scalars['String'];
+  generatedBy?: Maybe<Scalars['String']>;
+  paymentMethod?: Maybe<Scalars['String']>;
+  paymentTransactionId?: Maybe<Scalars['String']>;
+  status: Status;
 };
 
 export type CreatePatientInput = {
@@ -728,6 +754,11 @@ export enum Gender {
   Other = 'OTHER'
 }
 
+export type GetAllTransactionsInputs = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
 export type GetAppointment = {
   id: Scalars['String'];
 };
@@ -814,6 +845,45 @@ export enum Homebound {
   Yes = 'YES'
 }
 
+export type Invoice = {
+  __typename?: 'Invoice';
+  amount: Scalars['String'];
+  billingType: Billing_Type;
+  createdAt?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  generatedBy?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  invoiceNo: Scalars['String'];
+  paymentMethod?: Maybe<Scalars['String']>;
+  paymentTransactionId?: Maybe<Scalars['String']>;
+  status: Status;
+  transction?: Maybe<Transactions>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type InvoiceInputs = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type InvoicePayload = {
+  __typename?: 'InvoicePayload';
+  invoice?: Maybe<Invoice>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type InvoiceStatusInputs = {
+  id: Scalars['String'];
+  status: Status;
+};
+
+export type InvoicesPayload = {
+  __typename?: 'InvoicesPayload';
+  invoices?: Maybe<Array<Maybe<Invoice>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type LoginUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -839,7 +909,9 @@ export type Mutation = {
   createContact: ContactPayload;
   createDoctor: DoctorPayload;
   createExternalAppointment: AppointmentPayload;
+  createExternalInvoice: InvoicePayload;
   createFacility: FacilityPayload;
+  createInvoice: InvoicePayload;
   createPatient: PatientPayload;
   createPractice: PracticePayload;
   createSchedule: SchedulePayload;
@@ -849,6 +921,7 @@ export type Mutation = {
   disableDoctor: DoctorPayload;
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
+  getAllTransactions: TransactionPayload;
   login: AccessUserPayload;
   patientInfo: PatientPayload;
   registerUser: UserPayload;
@@ -873,6 +946,7 @@ export type Mutation = {
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updateFacilityTimeZone: FacilityPayload;
+  updateInvoiceStatus: InvoicePayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientProfile: PatientPayload;
@@ -932,8 +1006,18 @@ export type MutationCreateExternalAppointmentArgs = {
 };
 
 
+export type MutationCreateExternalInvoiceArgs = {
+  createExternalInvoiceInputs: CreateExternalInvoiceInputs;
+};
+
+
 export type MutationCreateFacilityArgs = {
   createFacilityInput: CreateFacilityInput;
+};
+
+
+export type MutationCreateInvoiceArgs = {
+  createInvoiceInputs: CreateInvoiceInputs;
 };
 
 
@@ -979,6 +1063,11 @@ export type MutationDisableStaffArgs = {
 
 export type MutationForgotPasswordArgs = {
   forgotPassword: ForgotPasswordInput;
+};
+
+
+export type MutationGetAllTransactionsArgs = {
+  transactionInputs: GetAllTransactionsInputs;
 };
 
 
@@ -1102,6 +1191,11 @@ export type MutationUpdateFacilityTimeZoneArgs = {
 };
 
 
+export type MutationUpdateInvoiceStatusArgs = {
+  invoiceStatusInputs: InvoiceStatusInputs;
+};
+
+
 export type MutationUpdatePasswordArgs = {
   updatePasswordInput: UpdatePasswordInput;
 };
@@ -1215,7 +1309,7 @@ export type Patient = {
   privacyNotice: Scalars['Boolean'];
   pronouns?: Maybe<Pronouns>;
   race?: Maybe<Race>;
-  registrationDate?: Maybe<Scalars['String']>;
+  registrationDate: Scalars['String'];
   releaseOfInfoBill: Scalars['Boolean'];
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
@@ -1352,6 +1446,7 @@ export type Query = {
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
+  getAllInvoices: InvoicesPayload;
   getAppointment: AppointmentPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
@@ -1421,6 +1516,11 @@ export type QueryFindAllServicesArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
+};
+
+
+export type QueryGetAllInvoicesArgs = {
+  invoiceInput: InvoiceInputs;
 };
 
 
@@ -1643,6 +1743,13 @@ export enum Sexualorientation {
   None = 'NONE'
 }
 
+/** The invoice status */
+export enum Status {
+  InsuranceClaim = 'INSURANCE_CLAIM',
+  Paid = 'PAID',
+  Pending = 'PENDING'
+}
+
 export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
@@ -1859,6 +1966,13 @@ export enum Transactionstatus {
   Refund = 'REFUND'
 }
 
+export type TransactionPayload = {
+  __typename?: 'TransactionPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  transactions?: Maybe<Array<Maybe<Transactions>>>;
+};
+
 export type Transactions = {
   __typename?: 'Transactions';
   appointment?: Maybe<Appointment>;
@@ -1869,6 +1983,7 @@ export type Transactions = {
   facility?: Maybe<Array<Facility>>;
   facilityId: Scalars['String'];
   id: Scalars['String'];
+  invoice?: Maybe<Array<Invoice>>;
   patient?: Maybe<Array<Patient>>;
   patientId: Scalars['String'];
   status: Transactionstatus;
@@ -2485,7 +2600,7 @@ export type GetPatientQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, inviteAccepted?: boolean | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, registrationDate?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, deceasedDate: string, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: Array<{ __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, inviteAccepted?: boolean | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, registrationDate: string, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, deceasedDate: string, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline: boolean, statementNote: string, statementNoteDateFrom: string, statementNoteDateTo: string, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: Array<{ __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;

@@ -2,7 +2,7 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref, UseFormReturn } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -715,4 +715,85 @@ export interface DocumentTableProps {
 
 export interface PortalTableProps {
   inviteAccepted: boolean;
+}
+
+//form builder interfaces
+export interface ColumnTypes {
+  COL_1: string;
+  COL_2: string;
+  COL_3: string;
+}
+
+export interface InputTypes {
+  TEXT: string;
+  DATE: string;
+  TIME: string;
+  SELECT: string;
+  RADIO: string;
+  CHECKBOX: string;
+  TEL: string;
+  NUMBER: string;
+  EMAIL: string;
+  COLOR: string;
+  FILE: string;
+  IMAGE: string;
+  MONTH: string;
+  PASSWORD: string;
+  RANGE: string;
+  URL: string;
+  WEEK: string;
+}
+
+export interface ItemTypes {
+  fieldId: string;
+  label: string;
+  type: string;
+  name: string;
+  css: string;
+  column: GridSize;
+  placeholder: string;
+  required: boolean;
+  defaultValue: string;
+  errorMsg: string;
+}
+
+
+export interface ItemsTypes  extends ItemTypes {
+  icon: ElementType
+}
+export interface FormInitialType extends ItemTypes {
+  list: string;
+}
+
+export interface FormValuesTypes {
+  id: string;
+  col: GridSize;
+  fields: ItemTypes[],
+}
+
+export interface SelectOptions {
+  id: number
+  name: number
+}
+
+export interface CustomSelectControlProps extends IControlLabel {
+  controllerName: string;
+  info?: string;
+  options: SelectOptions[]
+}
+
+export interface FieldEditModalProps {
+  open: boolean;
+  closeModalHanlder: () => void;
+  submitHandler: (values: any) => void;
+  selected: FormInitialType;
+  methods: UseFormReturn<FormInitialType, object>
+}
+
+
+export interface DropContainerPropsTypes {
+  formValues: FormValuesTypes[];
+  changeValues: (id: string, item: ItemTypes) => void;
+  delFieldHandler: (id: number, index: number) => void;
+  delColHandler: (index: number) => void
 }

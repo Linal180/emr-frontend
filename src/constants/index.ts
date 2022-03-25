@@ -1,11 +1,14 @@
 //packages block
 import states from "states-us";
 import moment from "moment-timezone";
+import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import { formatServiceCode, formatValue, getFormattedDate, getStandardTime } from "../utils";
-import { SelectorOption, StepLabelType } from "../interfacesTypes";
+import { SelectorOption, StepLabelType, InputTypes, ColumnTypes, ItemsTypes,SelectOptions } from "../interfacesTypes";
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon,
+  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon,
+  SelectIcon, TextAreaIcon, TextIcon
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
@@ -35,6 +38,13 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 
 // constants
 export const NOTES = "Notes";
+export const DISMISS = "Dismiss";
+export const LABEL = "Label";
+export const CSS_CLASSES = "CSS Classes";
+export const PLACEHOLDER = "Placeholder";
+export const YES_TEXT = "Yes";
+export const NO_TEXT = "No";
+export const REUIRED_TEXT = "Required?";
 export const EMPTY_OPTION = { id: "", name: "" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
@@ -693,6 +703,7 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your pe
 
 // routes paths
 export const ROOT_ROUTE = "/";
+export const FORM_BUILDER_ROUTE = "/form-builder";
 export const LOGIN_ROUTE = "/login";
 export const STAFF_ROUTE = "/staff";
 export const VITALS_ROUTE = "/vitals";
@@ -2019,4 +2030,120 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     link: "/",
     desc: TIME_ZONE_DESCRIPTION
   },
+];
+
+//form builder constants
+
+export const COL_TYPES: ColumnTypes = {
+  COL_1: 'col-1',
+  COL_2: 'col-2',
+  COL_3: 'col-3',
+};
+
+export const INPUT_TYPES: InputTypes = {
+  TEXT: 'text',
+  DATE: 'date',
+  TIME: 'time',
+  SELECT: 'select',
+  // MULTI_SELECT:'multi_select',
+  RADIO: 'radio',
+  CHECKBOX: 'checkbox',
+  TEL: 'tel',
+  NUMBER: 'number',
+  EMAIL: 'email',
+  COLOR: 'color',
+  FILE: 'file',
+  IMAGE: 'image',
+  MONTH: 'month',
+  PASSWORD: 'password',
+  RANGE: 'range',
+  URL: 'url',
+  WEEK: 'week',
+};
+
+export const ITEMS: ItemsTypes[] = [
+  {
+    icon: TextIcon,
+    fieldId: uuid(),
+    label: 'Text Input',
+    type: INPUT_TYPES.TEXT,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+  },
+  {
+    icon: DateIcon,
+    fieldId: uuid(),
+    label: 'Date Input',
+    type: INPUT_TYPES.DATE,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+  },
+  {
+    icon: NumberIcon,
+    fieldId: uuid(),
+    label: 'Number Input',
+    type: INPUT_TYPES.NUMBER,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+  },
+  {
+    icon: EmailIcon,
+    fieldId: uuid(),
+    label: 'Email',
+    type: INPUT_TYPES.EMAIL,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+  },
+  {
+    icon: FileInputIcon,
+    fieldId: uuid(),
+    label: 'File Uplaod',
+    type: INPUT_TYPES.FILE,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+  },
+];
+
+export const COLUMN_LENGTH: SelectOptions[] = [{ id: 12, name: 12 }, { id: 11, name: 11 }, { id: 10, name: 10 }, { id: 9, name: 9 }, { id: 8, name: 8 }, { id: 7, name: 7 }, { id: 6, name: 6 }, { id: 5, name: 5 }, { id: 4, name: 4 }, { id: 3, name: 3 }, { id: 2, name: 2 }, { id: 1, name: 1 }];
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+export const MENU_PROPS = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+export const COL_TYPES_ARRAY = [
+  { text: '1 Column', value: COL_TYPES.COL_1 },
+  { text: '2 Columns', value: COL_TYPES.COL_2 },
+  { text: '3 Columns', value: COL_TYPES.COL_3 },
 ];
