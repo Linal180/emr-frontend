@@ -502,16 +502,24 @@ export type PatientInputProps = BasicContactControlInputs & EmergencyContactCont
   & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
 
 export type ExternalPatientInputProps =
-  { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption } & { race: SelectorOption }
-  & { ethnicity: SelectorOption } & { providerId: SelectorOption } & { genderIdentity: SelectorOption }
-  & { state: SelectorOption } & { maritialStatus: SelectorOption } & { country: SelectorOption }
+  { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption }
+  & { state: SelectorOption } & { country: SelectorOption }
   & { emergencyCountry: SelectorOption } & { emergencyState: SelectorOption }
-  & Pick<CreatePatientItemInput, 'dob' | 'pharmacy' | 'voiceCallPermission' | 'phonePermission' | 'language'
+  & Pick<CreatePatientItemInput, 'pharmacy' | 'voiceCallPermission' | 'phonePermission'
     | 'callToConsent' | 'releaseOfInfoBill'>
   & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'zipCode' | 'ssn'>
   & Pick<EmergencyContactControlInputs, 'emergencyName' | 'emergencyRelationship' | 'emergencyPhone' |
     'emergencyCity' | 'emergencyZipCode' | 'emergencyAddress' |
     'emergencyAddress2'>
+
+export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
+  "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
+  & { serviceId: SelectorOption } & { providerId: SelectorOption };
+
+export type ExtendedExternalAppointmentInputProps = Omit<CreateExternalAppointmentItemInput, "serviceId"
+  | "providerId" | "paymentType"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
+  & Omit<CreatePatientItemInput, "sexAtBirth"> & { paymentType: SelectorOption } &
+{ sexAtBirth: SelectorOption } & GuardianContactControlInputs;
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
   & { facilityId: SelectorOption };
@@ -592,6 +600,7 @@ export interface ICreateMediaInput {
 }
 
 export interface MediaModalTypes extends DialogTypes {
+  buttonText?: string;
   itemId: string;
   title?: string;
   isProfile?: boolean;
@@ -607,6 +616,7 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
+  buttonText?: string;
   title?: string;
   button?: boolean;
   imageSide: string;
@@ -652,15 +662,6 @@ export interface DocumentModalComponentType {
   setOpen: Function;
   isOpen: boolean;
 }
-
-export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
-  "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
-  & { serviceId: SelectorOption } & { providerId: SelectorOption };
-
-export type ExtendedExternalAppointmentInputProps = Omit<CreateExternalAppointmentItemInput, "serviceId"
-  | "providerId" | "paymentType"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
-  & Omit<CreatePatientItemInput, "sexAtBirth"> & { paymentType: SelectorOption } &
-{ sexAtBirth: SelectorOption } & GuardianContactControlInputs;
 
 type Days = | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
 

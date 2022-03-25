@@ -184,14 +184,7 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_FILES = [
-  ".jpg",
-  ".jpeg",
-  ".png",
-  ".docx",
-  ".doc",
-  ".pdf",
-];
+export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf",];
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
 export const STAFF_MANAGEMENT = "Staff Management";
@@ -808,6 +801,7 @@ export const LOCATION_UPDATED = "Location is updated successfully";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
+export const ATTACHMENT_DELETED = 'Attachment deleted successfully!';
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";

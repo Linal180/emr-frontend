@@ -403,13 +403,6 @@ const PublicAppointmentForm = (): JSX.Element => {
                   )}
                 </CardComponent >
               </Grid >
-
-              <Grid item lg={12} md={12} sm={12} xs={12}>
-                <Box pt={4} display="flex" justifyContent="center" gridGap={20}>
-                  <Button type="submit" variant="contained" color="primary"
-                    disabled={!agreed} >{BOOK_APPOINTMENT}</Button>
-                </Box>
-              </Grid>
             </Grid>
           </form>
         </FormProvider>
