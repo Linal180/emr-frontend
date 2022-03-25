@@ -516,10 +516,10 @@ export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patien
   "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
   & { serviceId: SelectorOption } & { providerId: SelectorOption };
 
-export type ExtendedExternalAppointmentInputProps = Omit<CreateExternalAppointmentItemInput, "serviceId"
-  | "providerId" | "paymentType"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
-  & Omit<CreatePatientItemInput, "sexAtBirth"> & { paymentType: SelectorOption } &
-{ sexAtBirth: SelectorOption } & GuardianContactControlInputs;
+export type ExtendedExternalAppointmentInputProps = Pick<CreateExternalAppointmentItemInput, "scheduleEndDateTime"
+  | "scheduleStartDateTime"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
+  & Pick<CreatePatientItemInput, "firstName" | "lastName" | "email" | "dob"> & { phone: string } &
+{ sexAtBirth: SelectorOption }
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
   & { facilityId: SelectorOption };

@@ -50,7 +50,7 @@ import {
   PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS,
   MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, MORE_INFO, CANCEL_APPOINTMENT_TEXT,
-  PATIENT_NOT_FOUND, CANCEL_APPOINTMENT, DEMOGRAPHICS, APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, 
+  PATIENT_NOT_FOUND, CANCEL_APPOINTMENT, DEMOGRAPHICS, APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT,
   RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, DONE, ATTACHMENT_DELETED, NAME,
 } from "../../../../../constants";
 
@@ -62,7 +62,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, 
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
     activeStep, isAppointment, isBilling, isVoice
   } = state
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
@@ -100,9 +100,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const fetchDocuments = async () => {
     try {
       id && await getAttachments({
-        variables: {
-          getAttachment: { typeId: id }
-        }
+        variables: { getAttachment: { typeId: id } }
       })
     } catch (error) { }
   };
