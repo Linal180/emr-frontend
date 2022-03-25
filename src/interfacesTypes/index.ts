@@ -109,7 +109,6 @@ export interface DialogTypes {
   refetch?: Function;
   handleClose?: Function;
 }
-
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
   success?: boolean;
@@ -125,7 +124,6 @@ export interface ViewAppointmentCardProps {
   title?: string;
   setIsOpen: Function;
 }
-
 
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
@@ -271,6 +269,8 @@ export type ResetPasswordInputs = {
   password: string;
   repeatPassword: string;
 };
+
+export type updatePasswordInputs = ResetPasswordInputs & { oldPassword: string; };
 
 interface IControlLabel {
   error?: string;
