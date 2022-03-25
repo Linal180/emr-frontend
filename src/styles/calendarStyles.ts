@@ -54,6 +54,7 @@ export const useCalendarStyles = makeStyles(() =>
       "& .MuiTypography-body1": {
         color: BLUE_EIGHT,
         paddingLeft: 10,
+        cursor: 'pointer',
       }
     },
 
@@ -93,6 +94,10 @@ export const useCalendarStyles = makeStyles(() =>
       "&:hover": {
         fontWeight: '700',
       }
+    },
+
+    notCursor: {
+      cursor: 'not-allowed'
     }
   })
 );

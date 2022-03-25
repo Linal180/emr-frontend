@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useCallback, useEffect, useReducer, useState } from 'react';
+import { Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
 import { AppointmentTooltip } from '@devexpress/dx-react-scheduler';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import DropIn from 'braintree-web-drop-in-react';
@@ -19,17 +19,20 @@ import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
   EMAIL_OR_USERNAME_ALREADY_EXISTS,
   EMPTY_OPTION,
-  FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PROVIDER_NAME, REASON, STATUS, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
+  FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE, OUTSTANDING_TEXT, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME, REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
 } from '../../../constants';
-import { getAppointmentDate, getAppointmentTime, renderItem, setRecord } from '../../../utils';
-import { Appointmentstatus, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status } from '../../../generated/graphql';
+import { getAppointmentDate, getAppointmentTime, renderItem } from '../../../utils';
+import { Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status } from '../../../generated/graphql';
 import Alert from '../../common/Alert';
 import { UpdateStatusInputProps } from '../../../interfacesTypes';
 import Selector from '../../common/Selector';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import { PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload } from 'braintree-web-drop-in';
+import { AuthContext } from '../../../context';
 
 const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
+  const { user } = useContext(AuthContext)
+  const { id: userId } = user || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const { appointmentPaymentToken } = state; const [isOpen, setIsOpen] = useState<boolean>(false)
   const [isAppDetail, setIsAppDetail] = useState<boolean>(true)
@@ -39,11 +42,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const [isPayment, setIsPayment] = useState<boolean>(false)
   const [edit, setEdit] = useState<boolean>(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
-  const [patientId, setPatientId] = useState<string>('');
-  const [serviceId, setServiceId] = useState<string>('');
-  const [facilityId, setFacilityId] = useState<string>('');
-  const [providerId, setProviderId] = useState<string>('');
-  const [price, setPrice] = useState<string>('');
+  const [appInvoiceNo, setAppInvoiceNo] = useState<string>('');
   const [showPayBtn, setShowPayBtn] = useState<boolean>(false);
   const [instance, setInstance] = useState<any>(null);
   const classes = useCalendarStyles()
@@ -51,7 +50,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     mode: "all",
   });
 
-  const { setValue, handleSubmit, watch } = methods;
+  const { handleSubmit, watch } = methods;
 
   const { appointmentStatus } = watch();
 
@@ -64,7 +63,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     },
 
     onCompleted(data) {
-      const { createInvoice: { response } } = data;
+      const { createInvoice: { response, invoice } } = data;
+
+      if (invoice) {
+        const { invoiceNo } = invoice
+        setAppInvoiceNo(invoiceNo)
+      }
 
       if (response) {
         const { status } = response
@@ -113,53 +117,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     },
   });
 
-  const [getAppointment] = useGetAppointmentLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError({ message }) {
-      Alert.error(message)
-    },
-
-    async onCompleted(data) {
-      const { getAppointment: { response, appointment } } = data;
-
-      if (response) {
-        const { status } = response
-
-        if (appointment && status && status === 200) {
-          const { status, billingStatus, appointmentType, provider, facility, patientId } = appointment || {}
-          status && setValue('appointmentStatus', setRecord(status, status))
-
-          if (billingStatus === BillingStatus.Due) {
-            const { price } = appointmentType || {};
-            const { id: providerId } = provider || {};
-            const { id: facilityId } = facility || {};
-
-            price && setPrice(price);
-            patientId && setPatientId(patientId);
-            serviceId && setServiceId(serviceId);
-            providerId && setProviderId(providerId);
-            facilityId && setFacilityId(facilityId);
-
-            try {
-              await getToken();
-            } catch (error) { }
-          }
-        }
-      }
-    }
-  });
-
-  const id = appointmentMeta?.data.id
-
-  const fetchAppointment = useCallback(async () => {
-    id && await getAppointment({
-      variables: { getAppointment: { id: id.toString() } }
-    })
-  }, [getAppointment, id])
-
+  const id = appointmentMeta?.data.serviceId
+  const facilityId = appointmentMeta?.data.facilityId
+  const patientId = appointmentMeta?.data.patientId
+  const providerId = appointmentMeta?.data.providerId
+  const appointmentId = appointmentMeta?.data.appointmentId
+  const appointmentPrice = appointmentMeta?.data.price
 
   const [updateAppointmentStatus] = useUpdateAppointmentStatusMutation({
     fetchPolicy: "network-only",
@@ -221,16 +184,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     setIsPaid(false)
     setIsPayment(true)
   }
-  // const onSubmit: SubmitHandler<InvoiceInputProps> = async (inputs) => {
-  //   const { amount, billingType, facilityId, status, generatedBy, paymentMethod, paymentTransactionId
-  //   } = inputs;
-
-  //   await createInvoice({
-  //     variables: {
-  //       createInvoiceInputs: {}
-  //     }
-  //   })
-  // };
 
   const patientName = appointmentMeta?.data.title
   const appDate = getAppointmentDate(appointmentMeta?.data.startDate)
@@ -247,26 +200,20 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appointmentStatus, id, updateAppointmentStatus]);
 
-  const createAppointmentInvoice = useCallback(() => {
-    if (edit && id && appointmentStatus) {
-      createInvoice({
-        variables: { createInvoiceInputs: { amount: appointmentMeta?.data.price, billingType: Billing_Type.SelfPay, facilityId: appointmentMeta?.data.facilityId, status: Status.Pending } }
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appointmentStatus, id, updateAppointmentStatus]);
-
-  useEffect(() => {
-    createAppointmentInvoice();
-  }, [createAppointmentInvoice]);
+  const createAppointmentInvoice = () => {
+    createInvoice({
+      variables: { createInvoiceInputs: { amount: appointmentPrice, billingType: Billing_Type.SelfPay, facilityId: appointmentMeta?.data.facilityId, status: Status.Pending, generatedBy: userId, paymentMethod: 'cash', paymentTransactionId: '' } }
+    })
+    handleAppDetail()
+  }
 
   useEffect(() => {
     updateStatus();
   }, [updateStatus, watch]);
 
   useEffect(() => {
-    id && fetchAppointment()
-  }, [fetchAppointment, id])
+    id && getToken()
+  }, [getToken, id])
 
   useEffect(() => {
     typeof visible === 'boolean' && setIsOpen(visible)
@@ -274,19 +221,21 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   }, [appointmentMeta?.data.appointmentStatus, visible])
 
   const charge = (token: string) => {
-    if (id) {
-      chargePayment({
-        variables: {
-          paymentInput: { price, patientId, providerId, facilityId, appointmentId: id.toString(), clientIntent: token, serviceId },
-        },
-      });
-    }
+    chargePayment({
+      variables: {
+        paymentInput: { price: appointmentPrice, patientId: patientId, providerId: providerId, facilityId: facilityId, appointmentId: appointmentId, clientIntent: token, serviceId: id },
+      },
+    });
   };
+
+  const cashPaid = () => {
+    charge("")
+  }
 
   const threeDSecurePayment = () => {
     instance.requestPaymentMethod(
       {
-        threeDSecure: { amount: price },
+        threeDSecure: { amount: appointmentPrice },
       },
       (err: any, payload: PaymentMethodPayload) => {
         if (!err) {
@@ -320,7 +269,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       }
     }
   };
-  console.log(appointmentMeta);
+
   return (
     <Dialog
       open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
@@ -388,7 +337,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{FACILITY_LOCATION}</Typography>
 
-                <Typography variant="body2">{appointmentMeta?.data?.basicContact ?? 'NAN'}</Typography>
+                <Typography variant="body2">{appointmentMeta?.data?.facilityContact ?? 'NAN'}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
@@ -412,17 +361,17 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               {!isPaid ? <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
                 <Typography variant='body1'>{NO_INVOICE}</Typography>
 
-                <Button type="submit" onClick={handleAppDetail} variant="contained" className="blue-button-new">{CREATE_INVOICE}</Button>
+                <Button type="submit" onClick={createAppointmentInvoice} variant="contained" className="blue-button-new">{CREATE_INVOICE}</Button>
               </Box>
                 :
                 <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
-                  <Box display="flex" alignItems="center" className={classes.invoiceText}>
+                  <Box display="flex" alignItems="center" className={classes.invoiceText} onClick={handlePaid}>
                     <InvoiceAppointmentIcon />
 
-                    <Typography variant='body1'>INV-000000115</Typography>
+                    <Typography variant='body1'>{appInvoiceNo}</Typography>
                   </Box>
 
-                  <Button type="submit" onClick={handlePaid} variant="outlined" color='default'>{UNPAID}</Button>
+                  <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>{UNPAID}</Button>
                 </Box>}
 
               <ConfirmationModal
@@ -450,39 +399,29 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
             <Box className={classes.cardText}>
               <Box pb={3}>
-                <Typography variant='h5'>National Health Clinic</Typography>
+                <Typography variant='h5'>{appointmentMeta?.data?.facilityName}</Typography>
 
-                <Typography variant="body1">Green Fields, 11731</Typography>
+                <Typography variant="body1">{appointmentMeta?.data?.facilityContact ?? 'NAN'}</Typography>
 
                 <Box p={1} />
 
-                <Typography variant='h5'>William Martin</Typography>
+                <Typography variant='h5'>{patientName}</Typography>
 
-                <Typography variant="body1">Green Fields, 11731</Typography>
+                <Typography variant="body1">{appointmentMeta?.data?.patientContact ?? 'NAN'}</Typography>
               </Box>
 
               <Box my={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`} borderBottom={`1px solid ${WHITE_FOUR}`}>
-                <Typography variant='h4'>Product & Services</Typography>
+                <Typography variant='h4'>{PRODUCT_AND_SERVICES_TEXT}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pt={2}>
                 <Box>
-                  <Typography variant="body2"><strong>Sick Visit</strong></Typography>
-                  <Typography variant="body2">30 min w/ Ted David</Typography>
-                  <Typography variant="body1">Tue. Mar. 15, 2022</Typography>
+                  <Typography variant="body2"><strong>{appointmentMeta?.data?.appointmentName}</strong></Typography>
+                  <Typography variant="body2">{appStartTime} - {appEndTime}</Typography>
+                  <Typography variant="body1">{appDate}</Typography>
                 </Box>
 
-                <Typography variant="h4">$100.00</Typography>
-              </Box>
-
-              <Box display='flex' justifyContent='space-between'>
-                <Box>
-                  <Typography variant="body2"><strong>CBC Test</strong></Typography>
-                  <Typography variant="body2">15 min w/ Ted David</Typography>
-                  <Typography variant="body1">Tue. Mar. 15, 2022</Typography>
-                </Box>
-
-                <Typography variant="h4">$50.00</Typography>
+                <Typography variant="h4">{appointmentPrice ?? 'NAN'}</Typography>
               </Box>
 
               <Box
@@ -490,19 +429,19 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 borderTop={`1px solid ${WHITE_FOUR}`} borderBottom={`1px solid ${WHITE_FOUR}`}
               >
                 <Box>
-                  <Typography variant="body1">Sub-Total</Typography>
-                  <Typography variant="body1">Total</Typography>
+                  <Typography variant="body1">{SUB_TOTAL_TEXT}</Typography>
+                  <Typography variant="body1">{TOTAL_TEXT}</Typography>
                 </Box>
 
                 <Box>
-                  <Typography variant="body2">$150.00</Typography>
-                  <Typography variant="body2">$150.00</Typography>
+                  <Typography variant="body2">{appointmentPrice ?? 'NAN'}</Typography>
+                  <Typography variant="body2">{appointmentPrice ?? 'NAN'}</Typography>
                 </Box>
               </Box>
 
               <Box display="flex" justifyContent="space-between" alignItems="center" my={3} borderBottom={`1px solid ${WHITE_FOUR}`}>
-                <Typography variant="h5"><strong>Outstanding</strong></Typography>
-                <Typography variant="h4">$150.00</Typography>
+                <Typography variant="h5"><strong>{OUTSTANDING_TEXT}</strong></Typography>
+                <Typography variant="h4">{appointmentPrice ?? 'NAN'}</Typography>
               </Box>
 
               <Box mt={5} px={3}>
@@ -510,7 +449,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               </Box>
 
               <Box py={2} borderTop={`1px solid ${WHITE_FOUR}`} maxWidth={250} textAlign="center">
-                <Typography variant="h5"><strong>Floyed Miles</strong></Typography>
+                <Typography variant="h5"><strong>{patientName}</strong></Typography>
               </Box>
             </Box>
           </Card>}
@@ -526,7 +465,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
             <Box className={classes.cardText}>
               <Box display='flex' justifyContent='space-between' borderBottom={`1px solid ${WHITE_FOUR}`}>
                 <Typography variant="body1"><strong>{PAY_AMOUNT}</strong></Typography>
-                <Typography variant="h6"><strong>$150.00</strong></Typography>
+                <Typography variant="h6"><strong>{appointmentPrice ?? 'NAN'}</strong></Typography>
               </Box>
 
               <Box mt={5} p={5}>
@@ -539,7 +478,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
                   <Collapse in={edit} mountOnEnter unmountOnExit>
                     <Box py={3} display='flex' justifyContent='center'>
-                      <Button variant="contained" size='large' color="primary">{CASH_PAID}</Button>
+                      <Button variant="contained" size='large' color="primary" onClick={cashPaid}>{CASH_PAID}</Button>
                     </Box>
                   </Collapse>
                 </Box>
@@ -558,7 +497,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                         paypal: {
                           flow: CHECKOUT,
                           currency: USD,
-                          amount: price,
+                          amount: appointmentPrice,
                           commit: true,
                           buttonStyle: {
                             tagline: false,
@@ -582,7 +521,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                           },
                         },
 
-                        threeDSecure: { amount: price },
+                        threeDSecure: { amount: appointmentPrice },
                         dataCollector: true,
                         paymentOptionPriority: ['paypal', 'card'],
                       }}

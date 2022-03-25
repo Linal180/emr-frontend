@@ -441,20 +441,29 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
 export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
   // debugger
   return data?.map(appointment => {
-    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType, facility, provider, reason, primaryInsurance, status } = appointment || {}
-    const { firstName, lastName } = patient || {}
-    const { color, price } = appointmentType || {}
-    const { contacts, id: facilityId } = facility || {}
-    const { firstName: providerFN, lastName: providerLN } = provider || {}
-    const basicContact = contacts && contacts.filter(contact => contact.primaryContact)[0]
+    const { scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider, reason, primaryInsurance, status } = appointment || {}
+    const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
+    const { color, price, name: appointmentName, id: serviceId } = appointmentType || {}
+    const { contacts: fContact, id: facilityId, name: facilityName } = facility || {}
+    const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
+    const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
     const appointmentStatus = status && formatValue(status)
+    const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
+
     return {
       reason,
       facilityId,
-      basicContact,
+      patientId,
+      serviceId,
+      providerId,
+      appointmentId,
+      facilityName,
+      facilityContact,
+      patientContact,
       appointmentType,
       primaryInsurance,
-      id, color, price,
+      color, price,
+      appointmentName,
       appointmentStatus,
       title: `${firstName} ${lastName}`,
       providerName: `${providerFN} ${providerLN}`,

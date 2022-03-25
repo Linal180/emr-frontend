@@ -37,11 +37,19 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
         id
         firstName
         lastName
+
+         contacts {
+           address
+        }
       }
       
       facility {
         id
         name
+
+        contacts {
+           address
+        }
       }
     }
   }

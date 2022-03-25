@@ -5,5 +5,9 @@ mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
       status
       message
     }
+
+    invoice {
+      invoiceNo
+    }
   }
 }
