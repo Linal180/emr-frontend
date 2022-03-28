@@ -3,7 +3,7 @@ import { useState, MouseEvent } from 'react';
 import { v4 as uuid } from 'uuid';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Grid, Box, Button, Typography, Menu, MenuItem } from '@material-ui/core';
-import { useForm,FormProvider } from 'react-hook-form';
+import { useForm, FormProvider } from 'react-hook-form';
 //components block
 // import FormPreview from './FormPreview';
 import EditModal from './EditModal';
@@ -15,6 +15,7 @@ import {
 	INPUT_TYPES,
 	ITEMS,
 	COL_TYPES_ARRAY,
+	MAPPED_FORM_TYPES,
 } from '../../../../constants';
 import {
 	FormValuesTypes,
@@ -25,8 +26,7 @@ import { SubmitHandler } from 'react-hook-form';
 import { AddWidgetIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import InputController from '../../../../controller';
-import Selector from '../../../common/Select';
-import {FormType} from '../../../../generated/graphql'
+import Selector from '../../../common/Selector';
 
 const initialValues: FormInitialType = {
 	fieldId: '',
@@ -316,24 +316,24 @@ const AddForm = () => {
 							</Button>
 						</Box>
 					</Box>
+					<Grid container spacing={2}>
+						<Grid item xs={6} sm={6}>
+							<InputController
+								fieldType="text"
+								controllerName="name"
+								controllerLabel={'Form name'}
+							/>
+						</Grid>
+						<Grid item xs={6} sm={6}>
+							<Selector
+								label={'Select a form type'}
+								name="type"
+								options={MAPPED_FORM_TYPES}
+							/>
+						</Grid>
+					</Grid>
 					<Grid container>
 						<Grid item md={8}>
-							<Grid container>
-								<Grid item xs={6} sm={6}>
-								<InputController
-                  fieldType="text"
-                  controllerName="name"
-                  controllerLabel={'Form name'}
-                />
-								</Grid>
-								<Grid item xs={6} sm={6}>
-								{/* <Selector
-                  controllerLabel={'Select a form type'}
-                  controllerName="column"
-                  options={}
-                /> */}
-								</Grid>
-							</Grid>
 							<DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
 							<Grid container>
 								<Grid item md={6}>

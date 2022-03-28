@@ -182,6 +182,7 @@ export interface PageHeaderProps {
   openModal?: () => void;
   setTableData?: Function;
   tableData?: ServicesPayload['services'];
+  startIcon?: JSX.Element;
 }
 
 export interface IDropzoneImage {

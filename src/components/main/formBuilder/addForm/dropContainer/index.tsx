@@ -15,7 +15,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
     <Box className={classes.main}>
       <Grid container >
         {formValues?.map((list, i) => (
-          <Grid item key={list?.id} xs={list?.col || 12} sm={list?.col || 12} md={list?.col || 12} lg={list?.col || 12} xl={list?.col || 12} spacing={1}>
+          <Grid item key={list?.id} xs={list?.col || 12} sm={list?.col || 12} md={list?.col || 12} lg={list?.col || 12} xl={list?.col || 12}>
             {formValues?.length > 1 &&
               <Box display={'flex'} justifyContent={'flex-end'}>
                 <Box marginX={2}>

@@ -13,7 +13,7 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  UserRole, Communicationtype, Gender,
+  UserRole, Communicationtype, Gender,FormType
 } from "../generated/graphql";
 
 // regex
@@ -2041,7 +2041,7 @@ export const CALENDAR_SETTINGS_ITEMS = [
 export const CLINICAL_ITEMS = [
   {
     name: FORM_BUILDER,
-    link: "/",
+    link: FORM_BUILDER_ROUTE,
     desc: FORM_BUILDER_DESCRIPTION
   },
 ];
@@ -2168,4 +2168,11 @@ export const COL_TYPES_ARRAY = [
   { text: '1 Column', value: COL_TYPES.COL_1 },
   { text: '2 Columns', value: COL_TYPES.COL_2 },
   { text: '3 Columns', value: COL_TYPES.COL_3 },
+];
+
+export const MAPPED_FORM_TYPES: SelectorOption[] = [
+  { id: FormType.Appointment, name: formatValue(FormType.Appointment) },
+  { id: FormType.Doctor, name: formatValue(FormType.Doctor) },
+  { id: FormType.Patient, name: formatValue(FormType.Patient) },
+  { id: FormType.Staff, name: formatValue(FormType.Staff) },
 ];
