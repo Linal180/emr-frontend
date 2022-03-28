@@ -4,8 +4,8 @@ import { GRAY_ONE, WHITE } from '../../theme'
 export const useFormBuilderSidebarStyles = makeStyles((theme) => ({
     main: {
         padding: theme.spacing(2),
-        borderRadius: theme.spacing(2),
-        margin: theme.spacing(1),
+        borderRadius: theme.spacing(1),
+        margin: theme.spacing(0.5),
         backgroundColor: WHITE,
         minHeight: 100,
         border: `1px solid ${GRAY_ONE}`

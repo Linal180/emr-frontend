@@ -772,8 +772,8 @@ export interface FormValuesTypes {
 }
 
 export interface SelectOptions {
-  id: number
-  name: number
+  id: number | string
+  name: number | string
 }
 
 export interface CustomSelectControlProps extends IControlLabel {
@@ -785,9 +785,9 @@ export interface CustomSelectControlProps extends IControlLabel {
 export interface FieldEditModalProps {
   open: boolean;
   closeModalHanlder: () => void;
-  submitHandler: (values: any) => void;
+  setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
-  methods: UseFormReturn<FormInitialType, object>
+  // methods: UseFormReturn<FormInitialType, object>
 }
 
 

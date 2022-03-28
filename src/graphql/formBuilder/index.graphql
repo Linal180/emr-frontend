@@ -1,0 +1,11 @@
+mutation createForm($createFormInput: CreateFormInput!) {
+  createForm(createFormInput: $createFormInput) {
+    response{
+      status
+    }
+    form{
+      id
+      name
+    }
+  }
+}

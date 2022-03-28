@@ -53,6 +53,7 @@ import { AppointmentConfirmation } from "../pages/main/publicAppointments/confir
 import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
 import { VitalsCards } from "../pages/main/patients/patientDetail/patientChart/patientChartCards/patientVitals";
 import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
+import { FormBuilderListing } from "../pages/main/formBuilder/formListing";
 // constants
 import { AuthContext } from "../context";
 import {
@@ -124,7 +125,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
-      <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={Settings} />
+      <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
       <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/add`} component={AddFormBuilder} />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />

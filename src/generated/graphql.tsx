@@ -136,12 +136,6 @@ export type AttachmentsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
-/** The invoice payment type */
-export enum Billing_Type {
-  Insurance = 'INSURANCE',
-  SelfPay = 'SELF_PAY'
-}
-
 export type BillingAddress = {
   __typename?: 'BillingAddress';
   address?: Maybe<Scalars['String']>;
@@ -415,16 +409,6 @@ export type CreateExternalAppointmentItemInput = {
   serviceId: Scalars['String'];
 };
 
-export type CreateExternalInvoiceInputs = {
-  amount: Scalars['String'];
-  billingType: Billing_Type;
-  facilityId: Scalars['String'];
-  generatedBy?: Maybe<Scalars['String']>;
-  paymentMethod: Scalars['String'];
-  paymentTransactionId: Scalars['String'];
-  status: Status;
-};
-
 export type CreateFacilityInput = {
   createBillingAddressInput: CreateBillingAddressInput;
   createContactInput: CreateContactInput;
@@ -448,14 +432,12 @@ export type CreateFacilityItemInput = {
   timeZone?: Maybe<Scalars['String']>;
 };
 
-export type CreateInvoiceInputs = {
-  amount: Scalars['String'];
-  billingType: Billing_Type;
-  facilityId: Scalars['String'];
-  generatedBy?: Maybe<Scalars['String']>;
-  paymentMethod?: Maybe<Scalars['String']>;
-  paymentTransactionId?: Maybe<Scalars['String']>;
-  status: Status;
+export type CreateFormInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  isSystemForm?: Maybe<Scalars['Boolean']>;
+  layout: LayoutJsonInputType;
+  name: Scalars['String'];
+  type: FormType;
 };
 
 export type CreatePatientInput = {
@@ -668,6 +650,28 @@ export enum Ethnicity {
   None = 'NONE'
 }
 
+export type Element = {
+  __typename?: 'Element';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  type: ElementType;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ElementInputs = {
+  type: ElementType;
+};
+
+/** The form's element types */
+export enum ElementType {
+  Date = 'DATE',
+  Dropdown = 'DROPDOWN',
+  File = 'FILE',
+  Number = 'NUMBER',
+  Radio = 'RADIO',
+  Text = 'TEXT'
+}
+
 export type Employer = {
   __typename?: 'Employer';
   createdAt: Scalars['String'];
@@ -728,12 +732,83 @@ export type FacilityPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type FieldsInputs = {
+  column: Scalars['Int'];
+  columnName?: Maybe<Scalars['String']>;
+  css?: Maybe<Scalars['String']>;
+  defaultValue?: Maybe<Scalars['String']>;
+  errorMsg?: Maybe<Scalars['String']>;
+  fieldId: Scalars['String'];
+  label?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  placeholder?: Maybe<Scalars['String']>;
+  required?: Maybe<Scalars['Boolean']>;
+  tableName?: Maybe<Scalars['String']>;
+  type: ElementType;
+};
+
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
 
 export type ForgotPasswordPayload = {
   __typename?: 'ForgotPasswordPayload';
+  response?: Maybe<ResponsePayload>;
+};
+
+export type Form = {
+  __typename?: 'Form';
+  createdAt?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  formElements?: Maybe<Array<FormElement>>;
+  id: Scalars['String'];
+  isSystemForm?: Maybe<Scalars['Boolean']>;
+  layout: Scalars['String'];
+  name: Scalars['String'];
+  type: FormType;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type FormElement = {
+  __typename?: 'FormElement';
+  columnName?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  defaultValue?: Maybe<Scalars['String']>;
+  element?: Maybe<Element>;
+  errorMsg?: Maybe<Scalars['String']>;
+  fieldId: Scalars['String'];
+  id: Scalars['String'];
+  name: Scalars['String'];
+  placeholder?: Maybe<Scalars['String']>;
+  required?: Maybe<Scalars['Boolean']>;
+  sectionId: Scalars['String'];
+  tableName?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type FormInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type FormPayload = {
+  __typename?: 'FormPayload';
+  form?: Maybe<Form>;
+  response?: Maybe<ResponsePayload>;
+};
+
+/** The form's types */
+export enum FormType {
+  Appointment = 'APPOINTMENT',
+  Doctor = 'DOCTOR',
+  Patient = 'PATIENT',
+  Staff = 'STAFF'
+}
+
+export type FormsPayload = {
+  __typename?: 'FormsPayload';
+  forms?: Maybe<Array<Maybe<Form>>>;
+  pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
 };
 
@@ -753,11 +828,6 @@ export enum Gender {
   Male = 'MALE',
   Other = 'OTHER'
 }
-
-export type GetAllTransactionsInputs = {
-  facilityId?: Maybe<Scalars['String']>;
-  paginationOptions: PaginationInput;
-};
 
 export type GetAppointment = {
   id: Scalars['String'];
@@ -791,6 +861,10 @@ export type GetDoctorSlots = {
 };
 
 export type GetFacility = {
+  id: Scalars['String'];
+};
+
+export type GetForm = {
   id: Scalars['String'];
 };
 
@@ -845,43 +919,8 @@ export enum Homebound {
   Yes = 'YES'
 }
 
-export type Invoice = {
-  __typename?: 'Invoice';
-  amount: Scalars['String'];
-  billingType: Billing_Type;
-  createdAt?: Maybe<Scalars['String']>;
-  facilityId?: Maybe<Scalars['String']>;
-  generatedBy?: Maybe<Scalars['String']>;
-  id: Scalars['String'];
-  invoiceNo: Scalars['String'];
-  paymentMethod?: Maybe<Scalars['String']>;
-  paymentTransactionId?: Maybe<Scalars['String']>;
-  status: Status;
-  transction?: Maybe<Transactions>;
-  updatedAt?: Maybe<Scalars['String']>;
-};
-
-export type InvoiceInputs = {
-  facilityId?: Maybe<Scalars['String']>;
-  paginationOptions: PaginationInput;
-};
-
-export type InvoicePayload = {
-  __typename?: 'InvoicePayload';
-  invoice?: Maybe<Invoice>;
-  response?: Maybe<ResponsePayload>;
-};
-
-export type InvoiceStatusInputs = {
-  id: Scalars['String'];
-  status: Status;
-};
-
-export type InvoicesPayload = {
-  __typename?: 'InvoicesPayload';
-  invoices?: Maybe<Array<Maybe<Invoice>>>;
-  pagination?: Maybe<PaginationPayload>;
-  response?: Maybe<ResponsePayload>;
+export type LayoutJsonInputType = {
+  sections: Array<SectionsInputs>;
 };
 
 export type LoginUserInput = {
@@ -908,10 +947,10 @@ export type Mutation = {
   createAttachmentData: AttachmentPayload;
   createContact: ContactPayload;
   createDoctor: DoctorPayload;
+  createElement: Element;
   createExternalAppointment: AppointmentPayload;
-  createExternalInvoice: InvoicePayload;
   createFacility: FacilityPayload;
-  createInvoice: InvoicePayload;
+  createForm: FormPayload;
   createPatient: PatientPayload;
   createPractice: PracticePayload;
   createSchedule: SchedulePayload;
@@ -921,7 +960,6 @@ export type Mutation = {
   disableDoctor: DoctorPayload;
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
-  getAllTransactions: TransactionPayload;
   login: AccessUserPayload;
   patientInfo: PatientPayload;
   registerUser: UserPayload;
@@ -930,6 +968,7 @@ export type Mutation = {
   removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
+  removeForm: FormPayload;
   removePatient: PatientPayload;
   removePractice: PracticePayload;
   removeSchedule: SchedulePayload;
@@ -946,7 +985,7 @@ export type Mutation = {
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updateFacilityTimeZone: FacilityPayload;
-  updateInvoiceStatus: InvoicePayload;
+  updateForm: FormPayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientProfile: PatientPayload;
@@ -1001,13 +1040,13 @@ export type MutationCreateDoctorArgs = {
 };
 
 
-export type MutationCreateExternalAppointmentArgs = {
-  createExternalAppointmentInput: CreateExternalAppointmentInput;
+export type MutationCreateElementArgs = {
+  inputs: ElementInputs;
 };
 
 
-export type MutationCreateExternalInvoiceArgs = {
-  createExternalInvoiceInputs: CreateExternalInvoiceInputs;
+export type MutationCreateExternalAppointmentArgs = {
+  createExternalAppointmentInput: CreateExternalAppointmentInput;
 };
 
 
@@ -1016,8 +1055,8 @@ export type MutationCreateFacilityArgs = {
 };
 
 
-export type MutationCreateInvoiceArgs = {
-  createInvoiceInputs: CreateInvoiceInputs;
+export type MutationCreateFormArgs = {
+  createFormInput: CreateFormInput;
 };
 
 
@@ -1066,11 +1105,6 @@ export type MutationForgotPasswordArgs = {
 };
 
 
-export type MutationGetAllTransactionsArgs = {
-  transactionInputs: GetAllTransactionsInputs;
-};
-
-
 export type MutationLoginArgs = {
   loginUser: LoginUserInput;
 };
@@ -1108,6 +1142,11 @@ export type MutationRemoveDoctorArgs = {
 
 export type MutationRemoveFacilityArgs = {
   removeFacility: RemoveFacility;
+};
+
+
+export type MutationRemoveFormArgs = {
+  removeForm: RemoveForm;
 };
 
 
@@ -1191,8 +1230,8 @@ export type MutationUpdateFacilityTimeZoneArgs = {
 };
 
 
-export type MutationUpdateInvoiceStatusArgs = {
-  invoiceStatusInputs: InvoiceStatusInputs;
+export type MutationUpdateFormArgs = {
+  updateFormInput: UpdateFormInput;
 };
 
 
@@ -1441,12 +1480,12 @@ export type Query = {
   findAllContacts: ContactsPayload;
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
+  findAllForms: FormsPayload;
   findAllPatient: PatientsPayload;
   findAllPractices: PracticesPayload;
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
-  getAllInvoices: InvoicesPayload;
   getAppointment: AppointmentPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
@@ -1456,6 +1495,7 @@ export type Query = {
   getDoctorSchedule: SchedulesPayload;
   getDoctorSlots: DoctorSlotsPayload;
   getFacility: FacilityPayload;
+  getForm: FormPayload;
   getPatient: PatientPayload;
   getPatientAppointment: AppointmentsPayload;
   getPractice: PracticePayload;
@@ -1494,6 +1534,11 @@ export type QueryFindAllFacilityArgs = {
 };
 
 
+export type QueryFindAllFormsArgs = {
+  formInput: FormInput;
+};
+
+
 export type QueryFindAllPatientArgs = {
   patientInput: PatientInput;
 };
@@ -1516,11 +1561,6 @@ export type QueryFindAllServicesArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
-};
-
-
-export type QueryGetAllInvoicesArgs = {
-  invoiceInput: InvoiceInputs;
 };
 
 
@@ -1566,6 +1606,11 @@ export type QueryGetDoctorSlotsArgs = {
 
 export type QueryGetFacilityArgs = {
   getFacility: GetFacility;
+};
+
+
+export type QueryGetFormArgs = {
+  getForm: GetForm;
 };
 
 
@@ -1683,6 +1728,10 @@ export type RemoveFacility = {
   id: Scalars['String'];
 };
 
+export type RemoveForm = {
+  id: Scalars['String'];
+};
+
 export type RemovePatient = {
   id: Scalars['String'];
 };
@@ -1743,13 +1792,6 @@ export enum Sexualorientation {
   None = 'NONE'
 }
 
-/** The invoice status */
-export enum Status {
-  InsuranceClaim = 'INSURANCE_CLAIM',
-  Paid = 'PAID',
-  Pending = 'PENDING'
-}
-
 export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
@@ -1789,6 +1831,12 @@ export type SchedulesPayload = {
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   schedules?: Maybe<Array<Maybe<Schedule>>>;
+};
+
+export type SectionsInputs = {
+  col: Scalars['Int'];
+  fields?: Maybe<Array<FieldsInputs>>;
+  id: Scalars['String'];
 };
 
 export type Service = {
@@ -1966,13 +2014,6 @@ export enum Transactionstatus {
   Refund = 'REFUND'
 }
 
-export type TransactionPayload = {
-  __typename?: 'TransactionPayload';
-  pagination?: Maybe<PaginationPayload>;
-  response?: Maybe<ResponsePayload>;
-  transactions?: Maybe<Array<Maybe<Transactions>>>;
-};
-
 export type Transactions = {
   __typename?: 'Transactions';
   appointment?: Maybe<Appointment>;
@@ -1983,7 +2024,6 @@ export type Transactions = {
   facility?: Maybe<Array<Facility>>;
   facilityId: Scalars['String'];
   id: Scalars['String'];
-  invoice?: Maybe<Array<Invoice>>;
   patient?: Maybe<Array<Patient>>;
   patientId: Scalars['String'];
   status: Transactionstatus;
@@ -2171,6 +2211,15 @@ export type UpdateFacilityItemInput = {
 export type UpdateFacilityTimeZoneInput = {
   id: Scalars['String'];
   timeZone?: Maybe<Scalars['String']>;
+};
+
+export type UpdateFormInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isSystemForm?: Maybe<Scalars['Boolean']>;
+  layout?: Maybe<LayoutJsonInputType>;
+  name?: Maybe<Scalars['String']>;
+  type?: Maybe<FormType>;
 };
 
 export type UpdatePasswordInput = {
@@ -2566,6 +2615,13 @@ export type CreateFacilityMutationVariables = Exact<{
 
 
 export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type CreateFormMutationVariables = Exact<{
+  createFormInput: CreateFormInput;
+}>;
+
+
+export type CreateFormMutation = { __typename?: 'Mutation', createForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string } | null | undefined } };
 
 export type CreateAttachmentDataMutationVariables = Exact<{
   createAttachmentInput: CreateAttachmentInput;
@@ -4101,6 +4157,45 @@ export function useCreateFacilityMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateFacilityMutationHookResult = ReturnType<typeof useCreateFacilityMutation>;
 export type CreateFacilityMutationResult = Apollo.MutationResult<CreateFacilityMutation>;
 export type CreateFacilityMutationOptions = Apollo.BaseMutationOptions<CreateFacilityMutation, CreateFacilityMutationVariables>;
+export const CreateFormDocument = gql`
+    mutation createForm($createFormInput: CreateFormInput!) {
+  createForm(createFormInput: $createFormInput) {
+    response {
+      status
+    }
+    form {
+      id
+      name
+    }
+  }
+}
+    `;
+export type CreateFormMutationFn = Apollo.MutationFunction<CreateFormMutation, CreateFormMutationVariables>;
+
+/**
+ * __useCreateFormMutation__
+ *
+ * To run a mutation, you first call `useCreateFormMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFormMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFormMutation, { data, loading, error }] = useCreateFormMutation({
+ *   variables: {
+ *      createFormInput: // value for 'createFormInput'
+ *   },
+ * });
+ */
+export function useCreateFormMutation(baseOptions?: Apollo.MutationHookOptions<CreateFormMutation, CreateFormMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFormMutation, CreateFormMutationVariables>(CreateFormDocument, options);
+      }
+export type CreateFormMutationHookResult = ReturnType<typeof useCreateFormMutation>;
+export type CreateFormMutationResult = Apollo.MutationResult<CreateFormMutation>;
+export type CreateFormMutationOptions = Apollo.BaseMutationOptions<CreateFormMutation, CreateFormMutationVariables>;
 export const CreateAttachmentDataDocument = gql`
     mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
   createAttachmentData(createAttachmentInput: $createAttachmentInput) {

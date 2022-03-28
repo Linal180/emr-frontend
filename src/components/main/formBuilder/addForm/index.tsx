@@ -3,7 +3,7 @@ import { useState, MouseEvent } from 'react';
 import { v4 as uuid } from 'uuid';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Grid, Box, Button, Typography, Menu, MenuItem } from '@material-ui/core';
-import { useForm } from 'react-hook-form';
+import { useForm,FormProvider } from 'react-hook-form';
 //components block
 // import FormPreview from './FormPreview';
 import EditModal from './EditModal';
@@ -24,7 +24,9 @@ import {
 import { SubmitHandler } from 'react-hook-form';
 import { AddWidgetIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
-// import { PlusIcon } from './PlusIcon';
+import InputController from '../../../../controller';
+import Selector from '../../../common/Select';
+import {FormType} from '../../../../generated/graphql'
 
 const initialValues: FormInitialType = {
 	fieldId: '',
@@ -49,6 +51,11 @@ const formInitialValues: FormValuesTypes[] = [
 	},
 ]
 
+const formBuilderFormInitialValues = {
+	name: "",
+	type: ""
+}
+
 //component
 const AddForm = () => {
 	//states
@@ -59,12 +66,9 @@ const AddForm = () => {
 
 	//hooks
 
-	const methods = useForm<FormInitialType>({
-		defaultValues: initialValues,
-		// resolver: yupResolver(loginValidationSchema)
-	});
+	const methods = useForm({ defaultValues: formBuilderFormInitialValues });
 	const classes = useProfileDetailsStyles();
-
+	const { handleSubmit } = methods
 	//drag end
 
 	const onDragEnd = (result: DropResult) => {
@@ -239,8 +243,7 @@ const AddForm = () => {
 
 	//submit handler
 
-	const submitHandler: SubmitHandler<FormInitialType> = (values) => {
-
+	const setFieldValuesHandler: SubmitHandler<FormInitialType> = (values) => {
 		const arr1 = formValues?.map((item) => {
 			if (values?.list === item.id) {
 				const fields = item?.fields?.map((field) =>
@@ -264,7 +267,7 @@ const AddForm = () => {
 
 		setFormValues(arr1);
 		closeModalHanlder();
-	};
+	}
 
 	//del field handler
 
@@ -287,75 +290,90 @@ const AddForm = () => {
 
 
 	//menu handlers
-
 	const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setColMenu(event.currentTarget);
 	const handleMenuClose = () => setColMenu(null);
-
-	//
-
+	//section handler
 	const delColHandler = (index: number) => {
 		const arr = formValues?.filter((item, i) => i !== index)
 		setFormValues(arr)
 	}
-
 	//render
 
 	return (
 		<DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
-			<Box display={'flex'} justifyContent={'space-between'}>
-				<Typography variant='h4'>Form Builder</Typography>
-				<Box display={'flex'} justifyContent={'flex-start'}>
-					<Box marginX={2}>
-						<Button onClick={clearHandler} variant={'outlined'}>
-							Clear
-						</Button>
-					</Box>
-					<Button onClick={saveHandler} variant={'contained'} color={'primary'}>
-						Save
-					</Button>
-				</Box>
-			</Box>
-			<Grid container>
-				<Grid item md={8}>
-					<DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
-					<Grid container>
-						<Grid item md={6}>
-							<Box
-								my={2}
-								aria-haspopup="true"
-								aria-controls={'add-column-layout'}
-								className={classes.addSlot}
-								aria-label="widget's patient"
-								onClick={handleMenuOpen}
-							>
-								<AddWidgetIcon />
-								<Typography component='h1' variant="h4">
-									Add Columns
-								</Typography>
+			<FormProvider {...methods}>
+				<form onSubmit={handleSubmit(saveHandler)}>
+					<Box display={'flex'} justifyContent={'space-between'}>
+						<Typography variant='h4'>Form Builder</Typography>
+						<Box display={'flex'} justifyContent={'flex-start'}>
+							<Box marginX={2}>
+								<Button onClick={clearHandler} variant={'outlined'}>
+									Clear
+								</Button>
 							</Box>
-							<Menu open={Boolean(colMenu)} anchorEl={colMenu} id="add-column-layout" onClose={handleMenuClose}>
-								{COL_TYPES_ARRAY?.map((item, index) => (
-									<MenuItem
-										key={`${index}-add-${item.value}-column-${item.text}`}
-										onClick={() => addList(item.value)}
+							<Button onClick={saveHandler} variant={'contained'} color={'primary'}>
+								Save
+							</Button>
+						</Box>
+					</Box>
+					<Grid container>
+						<Grid item md={8}>
+							<Grid container>
+								<Grid item xs={6} sm={6}>
+								<InputController
+                  fieldType="text"
+                  controllerName="name"
+                  controllerLabel={'Form name'}
+                />
+								</Grid>
+								<Grid item xs={6} sm={6}>
+								{/* <Selector
+                  controllerLabel={'Select a form type'}
+                  controllerName="column"
+                  options={}
+                /> */}
+								</Grid>
+							</Grid>
+							<DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
+							<Grid container>
+								<Grid item md={6}>
+									<Box
+										my={2}
+										aria-haspopup="true"
+										aria-controls={'add-column-layout'}
+										className={classes.addSlot}
+										aria-label="widget's patient"
+										onClick={handleMenuOpen}
 									>
-										{item.text}
-									</MenuItem>
-								))}
-							</Menu>
+										<AddWidgetIcon />
+										<Typography component='h1' variant="h4">
+											Add Columns
+										</Typography>
+									</Box>
+									<Menu open={Boolean(colMenu)} anchorEl={colMenu} id="add-column-layout" onClose={handleMenuClose}>
+										{COL_TYPES_ARRAY?.map((item, index) => (
+											<MenuItem
+												key={`${index}-add-${item.value}-column-${item.text}`}
+												onClick={() => addList(item.value)}
+											>
+												{item.text}
+											</MenuItem>
+										))}
+									</Menu>
+								</Grid>
+							</Grid>
+						</Grid>
+						<Grid item md={4}>
+							<Sidebar />
 						</Grid>
 					</Grid>
-				</Grid>
-				<Grid item md={4}>
-					<Sidebar />
-				</Grid>
-			</Grid>
+				</form>
+			</FormProvider>
 			<EditModal
 				open={open}
 				closeModalHanlder={closeModalHanlder}
-				submitHandler={submitHandler}
+				setFieldValuesHandler={setFieldValuesHandler}
 				selected={selected}
-				methods={methods}
 			/>
 		</DragDropContext>
 	);

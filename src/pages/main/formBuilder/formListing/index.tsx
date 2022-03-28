@@ -1,8 +1,8 @@
 // packages block
 import { FC } from "react";
 // components block
-import AddFacilityComponent from "../../../../components/main/facilities/addFacility";
+import FormsListing from "../../../../components/main/formBuilder/formsListing";
 
-const AddFacility: FC = (): JSX.Element => <AddFacilityComponent />;
+export const FormBuilderListing: FC = (): JSX.Element => <FormsListing />;
 
-export default AddFacility;
+ 

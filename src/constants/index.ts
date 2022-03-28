@@ -40,6 +40,7 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 export const NOTES = "Notes";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
+export const FORMS = "Forms";
 export const CSS_CLASSES = "CSS Classes";
 export const PLACEHOLDER = "Placeholder";
 export const YES_TEXT = "Yes";
