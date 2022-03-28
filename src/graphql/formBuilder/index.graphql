@@ -1,11 +1,32 @@
 mutation createForm($createFormInput: CreateFormInput!) {
   createForm(createFormInput: $createFormInput) {
-    response{
+    response {
       status
     }
-    form{
+    form {
       id
       name
+    }
+  }
+}
+
+query findAllForms($formInput: FormInput!) {
+  findAllForms(formInput: $formInput) {
+    response {
+      status
+    }
+    forms {
+      id
+      name
+      layout
+      type
+      facilityId
+    }
+    pagination {
+      page
+      limit
+      totalCount
+      totalPages
     }
   }
 }

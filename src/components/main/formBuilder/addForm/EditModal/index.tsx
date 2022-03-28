@@ -20,12 +20,13 @@ import { COLUMN_LENGTH, CSS_CLASSES, DISMISS, LABEL, NAME, NO_TEXT, PLACEHOLDER,
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import { GRAY_TWO, WHITE } from '../../../../../theme';
 import { SAVE_TEXT } from '../../../../../constants';
+import {ElementType} from '../../../../../generated/graphql'
 //styles
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 const initialValues: FormInitialType = {
 	fieldId: '',
 	label: '',
-	type: '',
+	type:ElementType.Text,
 	name: '',
 	css: '',
 	column: 12,

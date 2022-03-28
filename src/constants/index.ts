@@ -4,7 +4,9 @@ import moment from "moment-timezone";
 import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import { formatServiceCode, formatValue, getFormattedDate, getStandardTime } from "../utils";
-import { SelectorOption, StepLabelType, InputTypes, ColumnTypes, ItemsTypes,SelectOptions } from "../interfacesTypes";
+import {
+  SelectorOption, StepLabelType, InputTypes, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial, FormInitialType
+} from "../interfacesTypes";
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon,
   CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon,
@@ -13,7 +15,7 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  UserRole, Communicationtype, Gender,FormType
+  UserRole, Communicationtype, Gender, FormType, SectionsInputs, ElementType,
 } from "../generated/graphql";
 
 // regex
@@ -45,6 +47,7 @@ export const PLACEHOLDER = "Placeholder";
 export const YES_TEXT = "Yes";
 export const NO_TEXT = "No";
 export const REUIRED_TEXT = "Required?";
+export const CREATE_FORM_BUILDER = "Form is created successfully.";
 export const EMPTY_OPTION = { id: "", name: "" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
@@ -2088,7 +2091,7 @@ export const ITEMS: ItemsTypes[] = [
     icon: TextIcon,
     fieldId: uuid(),
     label: 'Text Input',
-    type: INPUT_TYPES.TEXT,
+    type: ElementType.Text,
     name: uuid(),
     css: '',
     column: 12,
@@ -2101,7 +2104,7 @@ export const ITEMS: ItemsTypes[] = [
     icon: DateIcon,
     fieldId: uuid(),
     label: 'Date Input',
-    type: INPUT_TYPES.DATE,
+    type: ElementType.Date,
     name: uuid(),
     css: '',
     column: 12,
@@ -2114,7 +2117,7 @@ export const ITEMS: ItemsTypes[] = [
     icon: NumberIcon,
     fieldId: uuid(),
     label: 'Number Input',
-    type: INPUT_TYPES.NUMBER,
+    type: ElementType.Number,
     name: uuid(),
     css: '',
     column: 12,
@@ -2127,7 +2130,7 @@ export const ITEMS: ItemsTypes[] = [
     icon: EmailIcon,
     fieldId: uuid(),
     label: 'Email',
-    type: INPUT_TYPES.EMAIL,
+    type: ElementType.Email,
     name: uuid(),
     css: '',
     column: 12,
@@ -2140,7 +2143,7 @@ export const ITEMS: ItemsTypes[] = [
     icon: FileInputIcon,
     fieldId: uuid(),
     label: 'File Uplaod',
-    type: INPUT_TYPES.FILE,
+    type: ElementType.File,
     name: uuid(),
     css: '',
     column: 12,
@@ -2176,3 +2179,37 @@ export const MAPPED_FORM_TYPES: SelectorOption[] = [
   { id: FormType.Patient, name: formatValue(FormType.Patient) },
   { id: FormType.Staff, name: formatValue(FormType.Staff) },
 ];
+
+export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
+  name: "",
+  type: {
+    name: "",
+    id: ""
+  },
+  facilityId: {
+    name: "",
+    id: ""
+  }
+}
+
+export const FORM_BUILDER_FIELDS_VALUES: SectionsInputs[] = [
+  {
+    id: uuid(),
+    col: 12,
+    fields: [],
+  },
+]
+
+export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
+  fieldId: '',
+  label: '',
+  type: ElementType.Text,
+  name: '',
+  css: '',
+  column: 12,
+  placeholder: '',
+  required: false,
+  list: '',
+  errorMsg: '',
+  defaultValue: ''
+};

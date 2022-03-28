@@ -3,9 +3,11 @@ import { Box, Grid, IconButton, TextField, Typography } from '@material-ui/core'
 import { Edit as EditIcon, Close as DeleteIcon } from '@material-ui/icons'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 //contants block
-import { ItemTypes, DropContainerPropsTypes } from '../../../../../interfacesTypes';
+import { FieldsInputs } from '../../../../../generated/graphql';
+import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
 import { useFormBuilderContainerStyles } from '../../../../../styles/formbuilder/dropContainer';
 import { BLACK, GRAY_FOUR, WHITE } from '../../../../../theme';
+import { parseColumnGrid } from '../../../../../utils'
 //component
 const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandler }: DropContainerPropsTypes) => {
   //classes
@@ -15,7 +17,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
     <Box className={classes.main}>
       <Grid container >
         {formValues?.map((list, i) => (
-          <Grid item key={list?.id} xs={list?.col || 12} sm={list?.col || 12} md={list?.col || 12} lg={list?.col || 12} xl={list?.col || 12}>
+          <Grid item key={list?.id} xs={parseColumnGrid(list?.col) || 12} sm={parseColumnGrid(list?.col) || 12} md={parseColumnGrid(list?.col) || 12} lg={parseColumnGrid(list?.col) || 12} xl={parseColumnGrid(list?.col) || 12}>
             {formValues?.length > 1 &&
               <Box display={'flex'} justifyContent={'flex-end'}>
                 <Box marginX={2}>
@@ -33,10 +35,10 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                 >
                   <Grid container spacing={1}>
                     {list?.fields
-                      ? list?.fields?.map((item: ItemTypes, index: number) => (
+                      ? list?.fields?.map((item: FieldsInputs, index: number) => (
                         <Draggable key={item.fieldId} draggableId={item.fieldId} index={index} >
                           {(provided, snapshot) => (
-                            <Grid item xs={item.column || 12} sm={item.column || 12} md={item.column || 12} lg={item.column || 12} xl={item.column || 12}>
+                            <Grid item xs={parseColumnGrid(item.column) || 12} sm={parseColumnGrid(item.column) || 12} md={parseColumnGrid(item.column) || 12} lg={parseColumnGrid(item.column) || 12} xl={parseColumnGrid(item.column) || 12}>
                               <div
                                 ref={provided.innerRef}
                                 className=''
@@ -79,7 +81,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                                     fullWidth
                                     variant="outlined"
                                     id={item.fieldId}
-                                    placeholder={item.placeholder}
+                                    placeholder={item?.placeholder ? item?.placeholder : ""}
                                     type={item.type}
                                   />
                                 </Box>

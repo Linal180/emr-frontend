@@ -10,32 +10,31 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext, ListContext } from "../../../../context";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
+import { AuthContext } from "../../../../context";
+import {  renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import {
-  useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation
+  useFindAllFormsLazyQuery, FormsPayload, useRemovePatientMutation, FormPayload
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION,
-  PATIENTS_ROUTE, NAME, CITY, COUNTRY, PATIENT
+  ACTION, PAGE_LIMIT, DELETE_PATIENT_DESCRIPTION,
+  FORM_BUILDER_ROUTE, NAME, FACILITY_NAME, PATIENT, TYPE
 } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
-  const { roles, facility } = user || {};
+  const { facility } = user || {};
   const { id: facilityId } = facility || {}
-  const { fetchAllPatientList } = useContext(ListContext)
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [searchQuery,] = useState<string>('');
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [deletePatientId, setDeletePatientId] = useState<string>("");
-  const [patients, setPatients] = useState<PatientsPayload['patients']>([]);
+  const [deleteFormId, setDeleteFormId] = useState<string>("");
+  const [forms, setPatients] = useState<FormsPayload['forms']>([]);
 
-  const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
+  const [findAllForms, { loading, error }] = useFindAllFormsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -44,13 +43,13 @@ const PatientsTable: FC = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { findAllPatient } = data || {};
+      const { findAllForms } = data || {};
 
-      if (findAllPatient) {
-        const { pagination, patients } = findAllPatient
-        patients && setPatients(patients as PatientsPayload['patients'])
+      if (findAllForms) {
+        const { forms, response, pagination } = findAllForms
+        forms && setPatients(forms as FormsPayload['forms'])
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && setTotalPages(totalPages)
         }
@@ -58,68 +57,42 @@ const PatientsTable: FC = (): JSX.Element => {
     }
   });
 
-  const fetchAllPatients = useCallback(async () => {
+  const fetchAllForms = useCallback(async () => {
     try {
-      const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const patientsInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
-
-      await findAllPatient({
+      const formInputs = { ...pageInputs }
+      // const patientsInputs =  {facilityId, ...pageInputs }
+      await findAllForms({
         variables: {
-          patientInput: { ...patientsInputs }
+          formInput: { ...formInputs }
         },
       })
     } catch (error) { }
-  }, [facilityId, findAllPatient, page, roles])
+  }, [facilityId, findAllForms, page])
 
-  const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: "network-only",
-
-    onError() {
-      Alert.error(CANT_DELETE_PATIENT)
-      setOpenDelete(false)
-    },
-
-    onCompleted(data) {
-      if (data) {
-        const { removePatient: { response } } = data
-
-        if (response) {
-          const { message } = response
-          message && Alert.success(message);
-          setOpenDelete(false)
-          fetchAllPatients();
-          fetchAllPatientList();
-        }
-      }
-    }
-  });
-
-  useEffect(() => { }, [user]);
 
   useEffect(() => {
-    !searchQuery && fetchAllPatients()
-  }, [page, searchQuery, fetchAllPatients]);
+    !searchQuery && fetchAllForms()
+  }, [page, searchQuery, fetchAllForms]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setDeletePatientId(id)
+      setDeleteFormId(id)
       setOpenDelete(true)
     }
   };
 
-  const handleDeletePatient = async () => {
-    if (deletePatientId) {
-      await removePatient({
-        variables: {
-          removePatient: {
-            id: deletePatientId
-          }
-        }
-      })
+  const handleDeleteForm = async () => {
+    if (deleteFormId) {
+      // await removePatient({
+      //   variables: {
+      //     removePatient: {
+      //       id: deleteFormId
+      //     }
+      //   }
+      // })
     }
   };
 
@@ -134,10 +107,8 @@ const PatientsTable: FC = (): JSX.Element => {
           <TableHead>
             <TableRow>
               {renderTh(NAME)}
-              {renderTh(EMAIL)}
-              {renderTh(PHONE)}
-              {renderTh(CITY)}
-              {renderTh(COUNTRY)}
+              {renderTh(TYPE)}
+              {renderTh(FACILITY_NAME)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -150,31 +121,22 @@ const PatientsTable: FC = (): JSX.Element => {
                 </TableCell>
               </TableRow>
             ) : (
-              patients?.map((record: PatientPayload['patient'], index: number) => {
-                const { id, firstName, lastName, email, contacts } = record || {};
-
-                const patientContact = contacts && contacts.filter(contact => contact.primaryContact)[0];
-                const { phone, city, country } = patientContact || {};
-
+              forms?.map((record: FormPayload['form'], index: number) => {
+                const { id, type, name, facilityId } = record || {};
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
-                      <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
-                        {`${firstName} ${lastName}`}
-                      </Link>
+                      {name}
                     </TableCell>
-                    <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{city}</TableCell>
-                    <TableCell scope="row">{country}</TableCell>
+                    <TableCell scope="row">{type}</TableCell>
+                    <TableCell scope="row">{facilityId}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${PATIENTS_ROUTE}/${id}`}>
+                        <Link to={`${FORM_BUILDER_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
                             <EditIcon />
                           </Box>
                         </Link>
-
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
                         </Box>
@@ -187,7 +149,7 @@ const PatientsTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && !patients?.length) || error) && (
+        {((!loading && !forms?.length) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>
@@ -207,9 +169,9 @@ const PatientsTable: FC = (): JSX.Element => {
         <ConfirmationModal
           title={PATIENT}
           isOpen={openDelete}
-          isLoading={deletePatientLoading}
+          // isLoading={deletePatientLoading}
           description={DELETE_PATIENT_DESCRIPTION}
-          handleDelete={handleDeletePatient}
+          handleDelete={handleDeleteForm}
           setOpen={(open: boolean) => setOpenDelete(open)}
         />
       </Box>

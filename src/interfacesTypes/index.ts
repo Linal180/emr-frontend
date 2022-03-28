@@ -2,7 +2,7 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues, Ref, UseFormReturn } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -13,7 +13,7 @@ import {
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -746,36 +746,22 @@ export interface InputTypes {
   WEEK: string;
 }
 
-export interface ItemTypes {
-  fieldId: string;
-  label: string;
-  type: string;
-  name: string;
-  css: string;
-  column: GridSize;
-  placeholder: string;
-  required: boolean;
-  defaultValue: string;
-  errorMsg: string;
-}
-
-
-export interface ItemsTypes  extends ItemTypes {
+export interface ItemsTypes  extends FieldsInputs {
   icon: ElementType
 }
-export interface FormInitialType extends ItemTypes {
+export interface FormInitialType extends FieldsInputs {
   list: string;
 }
 
 export interface FormValuesTypes {
   id: string;
-  col: GridSize;
-  fields: ItemTypes[],
+  col: number;
+  fields: FieldsInputs[],
 }
 
 export interface SelectOptions {
-  id: number | string
-  name: number | string
+  id: number 
+  name: number
 }
 
 export interface CustomSelectControlProps extends IControlLabel {
@@ -789,13 +775,29 @@ export interface FieldEditModalProps {
   closeModalHanlder: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
-  // methods: UseFormReturn<FormInitialType, object>
 }
 
 
 export interface DropContainerPropsTypes {
   formValues: FormValuesTypes[];
-  changeValues: (id: string, item: ItemTypes) => void;
+  changeValues: (id: string, item: FieldsInputs) => void;
   delFieldHandler: (id: number, index: number) => void;
   delColHandler: (index: number) => void
+}
+
+
+export interface FormBuilderFormInitial {
+  name: string;
+  type: {
+    name: string;
+    id: string;
+  },
+  facilityId: {
+    name: string;
+    id: string;
+  },
+}
+
+export interface LoaderProps{
+  open: boolean
 }

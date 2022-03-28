@@ -1,11 +1,11 @@
 // packages block
 import moment from "moment";
-import { Typography, Box, TableCell } from "@material-ui/core";
+import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
+import { DaySchedule, LoaderProps, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
@@ -16,7 +16,7 @@ import {
   LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, STAFF_ROUTE, TOKEN,
   START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A,
 } from "../constants";
-import { ReactNode } from "react";
+import { memo, ReactNode } from "react";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -464,3 +464,16 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
     drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2
   }
 };
+
+
+export const parseColumnGrid = (col: number): GridSize => {
+  return col as GridSize;
+}
+
+export const LoaderBackdrop = memo (({ open }: LoaderProps): JSX.Element => (
+  <Backdrop
+    open={open}
+  >
+    <CircularProgress size={20} color="inherit" />
+  </Backdrop>
+))
