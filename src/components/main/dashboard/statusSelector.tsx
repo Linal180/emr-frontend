@@ -22,15 +22,15 @@ const StatusSelector: FC = (): JSX.Element => {
           value={status}
           onChange={handleChange}
         >
-          {MAPPED_STATUS.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+          {MAPPED_STATUS.map((option, index) =>
+            <MenuItem key={`${option.value}-${index}`} value={option.value}>
               {option.label}
             </MenuItem>
-          ))}
+          )}
         </TextField>
       </Box>
     </form>
   );
 }
 
-export default StatusSelector
+export default StatusSelector;
