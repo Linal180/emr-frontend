@@ -3,7 +3,7 @@ import { Close } from '@material-ui/icons';
 import DropIn from 'braintree-web-drop-in-react';
 import { AppointmentTooltip } from '@devexpress/dx-react-scheduler';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse, Grid } from '@material-ui/core';
 import { PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload } from 'braintree-web-drop-in';
 // component block
@@ -17,42 +17,65 @@ import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
 import { UpdateStatusInputProps } from '../../../interfacesTypes';
 import { useCalendarStyles } from '../../../styles/calendarStyles';
-import { getAppointmentDate, getAppointmentTime, renderItem } from '../../../utils';
+import { getAppointmentDate, getAppointmentTime, getISOTime, renderItem, setRecord } from '../../../utils';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
 } from '../../../assets/svgs';
 import {
-  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
+  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE,
-  OUTSTANDING_TEXT, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME,
+  OUTSTANDING_TEXT, PAGE_LIMIT, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME,
   REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
 } from '../../../constants';
-import { Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status } from '../../../generated/graphql';
+import { Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useRemoveAppointmentMutation, useFindAllAppointmentsLazyQuery, AppointmentsPayload, useGetAppointmentLazyQuery } from '../../../generated/graphql';
+import moment from 'moment';
 
 const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
+  const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
   const { id: userId } = user || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
-  const { appointmentPaymentToken } = state; const [isOpen, setIsOpen] = useState<boolean>(false)
-  const [isAppDetail, setIsAppDetail] = useState<boolean>(true)
-  const [isPaid, setIsPaid] = useState<boolean>(false)
-  const [appStatus, setAppStatus] = useState<string>('')
-  const [isInvoice, setIsInvoice] = useState<boolean>(false)
-  const [isPayment, setIsPayment] = useState<boolean>(false)
-  const [edit, setEdit] = useState<boolean>(false)
-  const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
-  const [appInvoiceNo, setAppInvoiceNo] = useState<string>('');
-  const [showPayBtn, setShowPayBtn] = useState<boolean>(false);
-  const [instance, setInstance] = useState<any>(null);
-  const classes = useCalendarStyles()
+  const {
+    appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
+    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, page, openDelete } = state;
   const methods = useForm<UpdateStatusInputProps>({
     mode: "all",
   });
 
-  const { handleSubmit, watch } = methods;
+  const { handleSubmit, watch, setValue } = methods;
 
   const { appointmentStatus } = watch();
+
+  const [findAllAppointments] = useFindAllAppointmentsLazyQuery({
+    variables: {
+      appointmentInput: {
+        paginationOptions: {
+          page, limit: PAGE_LIMIT
+        }
+      }
+    },
+
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {
+      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+    },
+
+    onCompleted(data) {
+      const { findAllAppointments } = data || {};
+
+      if (findAllAppointments) {
+        const { appointments } = findAllAppointments
+        dispatch({
+          type: ActionType.SET_APPOINTMENTS,
+          appointments: appointments as AppointmentsPayload['appointments']
+        });
+      }
+    }
+  });
 
   const [createInvoice] = useCreateInvoiceMutation({
     onError({ message }) {
@@ -67,7 +90,8 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
       if (invoice) {
         const { invoiceNo } = invoice
-        setAppInvoiceNo(invoiceNo)
+        dispatch({ type: ActionType.SET_APP_INVOICE_NUMBER, appInvoiceNumber: invoiceNo })
+
       }
 
       if (response) {
@@ -84,6 +108,16 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     onCompleted({ chargePayment: { transaction, response } }) {
       if (response && transaction) {
         Alert.success(TRANSACTION_PAID_SUCCESSFULLY);
+        dispatch({ type: ActionType.SET_APP_DETAIL, appDetail: true })
+        dispatch({ type: ActionType.SET_APP_PAID, appPaid: false })
+        dispatch({ type: ActionType.SET_APP_INVOICE, appInvoice: false })
+        dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: false })
+        dispatch({ type: ActionType.SET_APP_EDIT, appEdit: false })
+        fetchAppointment()
+        const { status } = transaction || {}
+        if (status === 'PAID') {
+
+        }
       }
     },
 
@@ -123,6 +157,46 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const providerId = appointmentMeta?.data.providerId
   const serviceId = appointmentMeta?.data.serviceId
   const appointmentPrice = appointmentMeta?.data.price
+  const patientName = appointmentMeta?.data.title
+  const appDate = getAppointmentDate(appointmentMeta?.data.startDate)
+  const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
+  const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
+  const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
+
+  const [getAppointment] = useGetAppointmentLazyQuery({
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      Alert.error(message);
+    },
+
+    async onCompleted(data) {
+      const {
+        getAppointment: { response, appointment },
+      } = data;
+
+      if (response) {
+        const { status } = response;
+        if (appointment && status && status === 200) {
+          const { invoice, status } = appointment;
+          const { invoiceNo } = invoice || {}
+          invoiceNo && dispatch({ type: ActionType.SET_APP_INVOICE_NUMBER, appInvoiceNumber: invoiceNo })
+          status && setValue('appointmentStatus', setRecord(status, status))
+          dispatch({ type: ActionType.SET_APP_STATUS, appStatus: status })
+        }
+      }
+    },
+  });
+
+  const fetchAppointment = useCallback(async () => {
+    id && await getAppointment({
+      variables: {
+        getAppointment: { id: id.toString() }
+      },
+    });
+  }, [getAppointment, id]);
 
   const [updateAppointmentStatus] = useUpdateAppointmentStatusMutation({
     fetchPolicy: "network-only",
@@ -131,13 +205,14 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       Alert.error(message)
     },
 
-    onCompleted(data) {
-      const { updateAppointmentStatus: { response } } = data;
+    async onCompleted(data) {
+      const { updateAppointmentStatus: { response, appointment } } = data;
 
       if (response) {
         const { status } = response
-
-        if (status && status === 200) {
+        const { status: appointmentStatus } = appointment || {}
+        if (appointmentStatus && status && status === 200) {
+          dispatch({ type: ActionType.SET_APP_STATUS, appStatus: appointmentStatus })
           Alert.success(APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY);
         }
       }
@@ -156,46 +231,75 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   };
 
   const handleClose = () => {
-    setIsAppDetail(true)
-    setIsPaid(false)
-    setIsInvoice(false)
-    setIsPayment(false)
+    dispatch({ type: ActionType.SET_APP_DETAIL, appDetail: true })
+    dispatch({ type: ActionType.SET_APP_PAID, appPaid: false })
+    dispatch({ type: ActionType.SET_APP_INVOICE, appInvoice: false })
+    dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: false })
+    dispatch({ type: ActionType.SET_APP_EDIT, appEdit: false })
     onHide && onHide()
   }
 
   const editHandleClick = () => {
-    setEdit(true)
+    dispatch({ type: ActionType.SET_APP_EDIT, appEdit: true })
   }
 
-  const deleteHandleClick = () => {
-    setIsDeleteOpen(true)
-  }
+  const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
+    onError() {
+      Alert.error(CANT_CANCELLED_APPOINTMENT)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+    },
 
-  const handleAppDetail = () => {
-    setIsPaid(true)
-  }
+    async onCompleted(data) {
+      if (data) {
+        const { removeAppointment: { response } } = data
+
+        if (response) {
+          const { message } = response
+
+          message && Alert.success(message);
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+          try {
+            await findAllAppointments()
+          } catch (error) { }
+        }
+      }
+    }
+  });
+
+  const handleCancelAppointment = async () => {
+    deleteAppointmentId && await removeAppointment({
+      variables: {
+        removeAppointment: { id: deleteAppointmentId }
+      }
+    })
+  };
+
+  const onDeleteClick = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_DELETE_APPOINTMENT_ID, deleteAppointmentId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+    }
+  };
+
+  const handleAppDetail = () => dispatch({ type: ActionType.SET_APP_PAID, appPaid: true })
+
 
   const handlePaid = () => {
-    setIsInvoice(true)
-    setIsPaid(false)
-    setIsAppDetail(false)
-    setIsPayment(false)
+    dispatch({ type: ActionType.SET_APP_INVOICE, appInvoice: true })
+    dispatch({ type: ActionType.SET_APP_PAID, appPaid: false })
+    dispatch({ type: ActionType.SET_APP_DETAIL, appDetail: false })
+    dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: false })
   }
 
   const handleInvoice = () => {
-    setIsAppDetail(false)
-    setIsInvoice(false)
-    setIsPaid(false)
-    setIsPayment(true)
+    dispatch({ type: ActionType.SET_APP_DETAIL, appDetail: false })
+    dispatch({ type: ActionType.SET_APP_INVOICE, appInvoice: false })
+    dispatch({ type: ActionType.SET_APP_PAID, appPaid: false })
+    dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: true })
   }
 
-  const patientName = appointmentMeta?.data.title
-  const appDate = getAppointmentDate(appointmentMeta?.data.startDate)
-  const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
-  const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
-
   const updateStatus = useCallback(() => {
-    if (edit && id && appointmentStatus) {
+    if (appEdit && id && appointmentStatus) {
 
       updateAppointmentStatus({
         variables: { appointmentStatusInput: { id: id.toString(), status: appointmentStatus.id as Appointmentstatus } }
@@ -206,23 +310,35 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
   const createAppointmentInvoice = () => {
     createInvoice({
-      variables: { createInvoiceInputs: { amount: appointmentPrice, billingType: Billing_Type.SelfPay, facilityId: appointmentMeta?.data.facilityId, status: Status.Pending, generatedBy: userId, paymentMethod: 'cash', paymentTransactionId: '' } }
+      variables: {
+        createInvoiceInputs: {
+          amount: appointmentPrice, billingType: Billing_Type.SelfPay, facilityId: appointmentMeta?.data.facilityId,
+          status: Status.Pending, generatedBy: userId, paymentMethod: 'cash', paymentTransactionId: '', appointmentId: id ? id?.toString() : ''
+        }
+      }
     })
     handleAppDetail()
   }
 
   useEffect(() => {
-    updateStatus();
-  }, [updateStatus, watch]);
+    id && fetchAppointment()
+  }, [id, fetchAppointment]);
+
+  useEffect(() => {
+    id && appEdit && updateStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, updateStatus, watch]);
+
+  useEffect(() => {
+    console.log("VISBLE", visible, "appointmentMeta?.data.appointmentStatus", appointmentMeta?.data.appointmentStatus)
+    typeof visible === 'boolean' && dispatch({ type: ActionType.SET_APP_OPEN, appOpen: visible })
+    dispatch({ type: ActionType.SET_APP_STATUS, appStatus: appointmentMeta?.data.appointmentStatus })
+  }, [appointmentMeta?.data.appointmentStatus, visible, appStatus])
 
   useEffect(() => {
     id && getToken()
   }, [getToken, id])
 
-  useEffect(() => {
-    typeof visible === 'boolean' && setIsOpen(visible)
-    setAppStatus(appointmentMeta?.data.appointmentStatus)
-  }, [appointmentMeta?.data.appointmentStatus, visible])
 
   const charge = (token: string) => {
     chargePayment({
@@ -253,12 +369,13 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
   const onPaymentOptionSelected = (payload: PaymentOptionSelectedPayload) => {
     if (payload.paymentOption === 'card') {
-      setShowPayBtn(true);
+      dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: true })
     } else if (payload.paymentOption === 'paypal') {
-      setShowPayBtn(false);
+      dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
+
     }
     else {
-      setShowPayBtn(false);
+      dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
     }
   };
 
@@ -269,20 +386,20 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       if (payload.type === 'PayPalAccount') {
         threeDSecurePayment();
       } else if (payload.type === 'CreditCard') {
-        setShowPayBtn(false);
+        dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
       }
     }
   };
 
   return (
     <Dialog
-      open={isOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" disableEscapeKeyDown keepMounted
+      open={appOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" disableEscapeKeyDown keepMounted
       maxWidth="sm" className={classes.dropdown}
     >
       <Box px={4} py={2} className={classes.cardContainer}>
 
         {/* CARD1 */}
-        {isAppDetail &&
+        {appDetail &&
           <Card>
             <CardHeader
               title={APPOINTMENT}
@@ -292,7 +409,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                     <EditAppointmentIcon />
                   </IconButton>
 
-                  <IconButton onClick={deleteHandleClick}>
+                  <IconButton onClick={() => {
+                    moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
+                      Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
+                  }}>
                     <DeleteAppointmentIcon />
                   </IconButton>
 
@@ -317,7 +437,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                       <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
                     </Box>
 
-                    {edit ? (
+                    {appEdit ? (
                       <Grid item md={4}>
                         <Selector
                           isRequired
@@ -357,7 +477,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 <Typography variant="body2">{appointmentMeta?.data?.primaryInsurance ?? 'NAN'}</Typography>
               </Box>
 
-              {!isPaid ? (<Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
+              {!appPaid ? (<Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
                 <Typography variant='body1'>{NO_INVOICE}</Typography>
 
                 <Button type="submit" onClick={createAppointmentInvoice} variant="contained" className="blue-button-new">{CREATE_INVOICE}</Button>
@@ -366,7 +486,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
                   <Box display="flex" alignItems="center" className={classes.invoiceText} onClick={handlePaid}>
                     <InvoiceAppointmentIcon />
-                    <Typography variant='body1'>{appInvoiceNo}</Typography>
+                    <Typography variant='body1'>{appInvoiceNumber}</Typography>
                   </Box>
 
                   <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>{UNPAID}</Button>
@@ -375,16 +495,17 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
               <ConfirmationModal
                 title={APPOINTMENT_DETAILS}
-                isOpen={isDeleteOpen}
+                isOpen={openDelete}
+                isLoading={deleteAppointmentLoading}
                 description={DELETE_APPOINTMENT_DESCRIPTION}
-                setOpen={(open: boolean) => setIsDeleteOpen(open)}
-                handleDelete={() => { }}
+                setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+                handleDelete={handleCancelAppointment}
               />
             </Box>
           </Card>}
 
         {/* CARD2 */}
-        {isInvoice &&
+        {appInvoice &&
           <Card>
             <CardHeader
               title={INVOICE}
@@ -455,7 +576,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
           </Card>}
 
         {/* CARD3 */}
-        {isPayment &&
+        {appPayment &&
           <Card>
             <CardHeader
               title={INVOICE}
@@ -477,13 +598,13 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
               <Box mt={5} p={5}>
                 <Box bgcolor={GRAY_ONE}>
-                  <Box pt={3} px={3} display='flex' alignItems="center" onClick={() => setEdit(!edit)}>
+                  <Box pt={3} px={3} display='flex' alignItems="center" onClick={() => dispatch({ type: ActionType.SET_APP_EDIT, appEdit: !appEdit })}>
                     <CashAppointmentIcon />
                     <Box p={1} />
                     <Typography variant="h5" className={classes.cursor}>{PAY_VIA_CASH}</Typography>
                   </Box>
 
-                  <Collapse in={edit} mountOnEnter unmountOnExit>
+                  <Collapse in={appEdit} mountOnEnter unmountOnExit>
                     <Box py={3} display='flex' justifyContent='center'>
                       <Button variant="contained" size='large' color="primary" onClick={cashPaid}>{CASH_PAID}</Button>
                     </Box>
@@ -535,10 +656,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
                       onPaymentMethodRequestable={onPaymentMethodRequestable}
                       onPaymentOptionSelected={onPaymentOptionSelected}
-                      onInstance={(data) => setInstance(data)}
+                      onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
                     />
                     <Grid container>
-                      {showPayBtn && (
+                      {appShowPayBtn && (
                         <Grid item>
                           <Box pr={2}>
                             <Button variant='contained' color='primary' onClick={threeDSecurePayment}>

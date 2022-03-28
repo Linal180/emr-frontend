@@ -108,6 +108,10 @@ query GetAppointment($getAppointment: GetAppointment!){
         practiceType
         serviceCode
       }
+
+       invoice {
+        invoiceNo
+      }
     }
   }
 }
@@ -231,6 +235,11 @@ mutation UpdateAppointmentStatus($appointmentStatusInput: UpdateAppointmentStatu
       error
       status
       message
+    }
+
+    appointment {
+      id
+      status
     }
   }
 }

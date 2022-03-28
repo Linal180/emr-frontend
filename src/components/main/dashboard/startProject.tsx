@@ -18,7 +18,7 @@ import { appointmentReducer, Action, initialState, State, ActionType } from "../
 const StartProjectComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, searchQuery, appointments } = state;
+  const { page, appointments } = state;
 
 
   const [findAllAppointments, { loading: appointmentsLoading }] = useFindAllAppointmentsLazyQuery({
@@ -39,20 +39,16 @@ const StartProjectComponent = (): JSX.Element => {
     },
 
     onCompleted(data) {
+      console.log("ppppppppppppppppppppppppppppppppppppppp")
       const { findAllAppointments } = data || {};
 
       if (findAllAppointments) {
-        const { appointments, pagination } = findAllAppointments || {}
+        const { appointments } = findAllAppointments || {}
 
-        if (!searchQuery && pagination) {
-          const { totalPages } = pagination
-
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-          dispatch({
-            type: ActionType.SET_APPOINTMENTS,
-            appointments: appointments as AppointmentsPayload['appointments']
-          });
-        }
+        dispatch({
+          type: ActionType.SET_APPOINTMENTS,
+          appointments: appointments as AppointmentsPayload['appointments']
+        });
       }
     }
   });
