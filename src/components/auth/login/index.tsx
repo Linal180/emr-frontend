@@ -51,7 +51,6 @@ const LoginComponent = (): JSX.Element => {
           }
 
           if (status === 200 && access_token && roles) {
-            console.log(roles, "ROLES")
             const userRoles = roles.map(role => role.role)
             const isAdmin = userRoles.filter(role => role === UserRole.SuperAdmin || role === UserRole.Admin
               || role === UserRole.Staff || role === UserRole.Doctor

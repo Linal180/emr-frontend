@@ -1,37 +1,36 @@
 // packages block
-import { Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import { Close } from '@material-ui/icons';
+import DropIn from 'braintree-web-drop-in-react';
 import { AppointmentTooltip } from '@devexpress/dx-react-scheduler';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import DropIn from 'braintree-web-drop-in-react';
-import { Close } from '@material-ui/icons';
+import { Reducer, useCallback, useContext, useEffect, useReducer, useState } from 'react';
+import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse, Grid } from '@material-ui/core';
+import { PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload } from 'braintree-web-drop-in';
 // component block
+import Alert from '../../common/Alert';
+import Selector from '../../common/Selector';
 import BackdropLoader from '../../common/Backdrop';
 import ConfirmationModal from '../../common/ConfirmationModal';
-import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse, Grid } from '@material-ui/core';
-// constant block
+// constant, assets and styles block
+import { AuthContext } from '../../../context';
 import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
+import { UpdateStatusInputProps } from '../../../interfacesTypes';
 import { useCalendarStyles } from '../../../styles/calendarStyles';
+import { getAppointmentDate, getAppointmentTime, renderItem } from '../../../utils';
+import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
 } from '../../../assets/svgs';
 import {
-  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
-  EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  EMPTY_OPTION,
-  FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE, OUTSTANDING_TEXT, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME, REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
+  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE,
+  OUTSTANDING_TEXT, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME,
+  REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
 } from '../../../constants';
-import { getAppointmentDate, getAppointmentTime, renderItem } from '../../../utils';
 import { Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status } from '../../../generated/graphql';
-import Alert from '../../common/Alert';
-import { UpdateStatusInputProps } from '../../../interfacesTypes';
-import Selector from '../../common/Selector';
-import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
-import { PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload } from 'braintree-web-drop-in';
-import { AuthContext } from '../../../context';
 
 const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
-  // debugger
   const { user } = useContext(AuthContext)
   const { id: userId } = user || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
@@ -315,14 +314,14 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                       <Box p={0.5} />
 
                       <Typography variant="body1">{appDate}</Typography>
-
                       <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
                     </Box>
+
                     {edit ? (
                       <Grid item md={4}>
                         <Selector
                           isRequired
-                          label={APPOINTMENT_STATUS}
+                          label={STATUS}
                           name="appointmentStatus"
                           value={EMPTY_OPTION}
                           options={MAPPED_APPOINTMENT_STATUS}
@@ -335,49 +334,44 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{APPOINTMENT_TYPE}</Typography>
-
                 <Typography variant="body2">{appointmentMeta?.data?.appointmentType?.name}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{FACILITY_LOCATION}</Typography>
-
                 <Typography variant="body2">{appointmentMeta?.data?.facilityContact ?? 'NAN'}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{PROVIDER_NAME}</Typography>
-
                 <Typography variant="body2">{appointmentMeta?.data?.providerName}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{REASON}</Typography>
-
                 <Typography variant="body2">{appointmentMeta?.data?.reason ?? 'NAN'}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{PRIMARY_INSURANCE}</Typography>
-
                 <Typography variant="body2">{appointmentMeta?.data?.primaryInsurance ?? 'NAN'}</Typography>
               </Box>
 
-              {!isPaid ? <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
+              {!isPaid ? (<Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
                 <Typography variant='body1'>{NO_INVOICE}</Typography>
 
                 <Button type="submit" onClick={createAppointmentInvoice} variant="contained" className="blue-button-new">{CREATE_INVOICE}</Button>
               </Box>
-                :
+              ) : (
                 <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
                   <Box display="flex" alignItems="center" className={classes.invoiceText} onClick={handlePaid}>
                     <InvoiceAppointmentIcon />
-
                     <Typography variant='body1'>{appInvoiceNo}</Typography>
                   </Box>
 
                   <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>{UNPAID}</Button>
-                </Box>}
+                </Box>
+              )}
 
               <ConfirmationModal
                 title={APPOINTMENT_DETAILS}
@@ -408,13 +402,11 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
             <Box className={classes.cardText}>
               <Box pb={3}>
                 <Typography variant='h5'>{appointmentMeta?.data?.facilityName}</Typography>
-
                 <Typography variant="body1">{appointmentMeta?.data?.facilityContact ?? 'NAN'}</Typography>
 
                 <Box p={1} />
 
                 <Typography variant='h5'>{patientName}</Typography>
-
                 <Typography variant="body1">{appointmentMeta?.data?.patientContact ?? 'NAN'}</Typography>
               </Box>
 
@@ -561,7 +553,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                   <BackdropLoader loading={true} />
                 )}
               </Box>
-
             </Box>
           </Card>}
       </Box>

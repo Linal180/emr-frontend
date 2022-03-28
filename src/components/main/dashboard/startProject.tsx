@@ -1,19 +1,19 @@
 // packages block
-import { Reducer, useEffect, useReducer, useState } from "react";
 import { Box, Card } from "@material-ui/core";
 import { ViewState } from '@devexpress/dx-react-scheduler';
+import { Reducer, useEffect, useReducer, useState } from "react";
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator,
   DayView, WeekView, AppointmentTooltip, ViewSwitcher,
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
+import Backdrop from "../../common/Backdrop";
 import AppointmentCard from "./appointmentCard";
 // styles, constants  block
 import { PAGE_LIMIT } from "../../../constants";
 import { mapAppointmentData } from "../../../utils"
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
 import { AppointmentsPayload, useFindAllAppointmentsLazyQuery } from "../../../generated/graphql";
-import Backdrop from "../../common/Backdrop";
+import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
 
 const StartProjectComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())

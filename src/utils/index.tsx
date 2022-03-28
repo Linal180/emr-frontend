@@ -439,7 +439,6 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
 };
 
 export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
-  // debugger
   return data?.map(appointment => {
     const { scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider, reason, primaryInsurance, status } = appointment || {}
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
