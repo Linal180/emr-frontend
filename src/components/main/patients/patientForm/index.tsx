@@ -94,7 +94,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (patient) {
           const {
-            suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
+            suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName, email,
             previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice,
             releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
             sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
@@ -178,13 +178,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             const basicContact = contacts.filter(contact => contact.primaryContact)[0]
 
             if (basicContact) {
-              const { id: basicContactId, email, address, address2, zipCode, city, state,
+              const { id: basicContactId, email: contactEmail, address, address2, zipCode, city, state,
                 country, phone, mobile
               } = basicContact;
 
               dispatch({ type: ActionType.SET_BASIC_CONTACT_ID, basicContactId })
               city && setValue("basicCity", city)
-              email && setValue("basicEmail", email)
               phone && setValue("basicPhone", phone)
               mobile && setValue("basicMobile", mobile)
               address && setValue("basicAddress", address)
@@ -192,6 +191,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address2 && setValue("basicAddress2", address2)
               state && setValue("basicState", setRecord(state, state))
               country && setValue("basicCountry", setRecord(country, country))
+              setValue("basicEmail", (contactEmail ? contactEmail : email) || '')
             }
 
             const kinContact = contacts.filter(contact => contact.contactType === ContactType.NextOfKin)[0]
@@ -349,14 +349,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill } = state
 
       const patientItemInput = {
-        suffix, firstName, middleName, lastName, firstNameUsed, prefferedName,
-        previousFirstName, previouslastName, motherMaidenName, ssn,
-        statementNote, language, patientNote, email: basicEmail, facilityId: selectedFacility,
-        callToConsent, privacyNotice, releaseOfInfoBill, medicationHistoryAuthority,
-        homeBound: homeBound ? Homebound.Yes : Homebound.No,
-        holdStatement: holdStatement || Holdstatement.None,
+        suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
+        previouslastName, motherMaidenName, ssn, statementNote, language, patientNote, email: basicEmail,
+        facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill,
+        medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
+        homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
-        ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         gender: selectedGender as Genderidentity || Genderidentity.None,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
