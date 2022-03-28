@@ -134,7 +134,6 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
       doctorId, servicesIds: [selectedService] || [],
       startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
-
     if (doctorId) {
       if (isEdit) {
         id ?

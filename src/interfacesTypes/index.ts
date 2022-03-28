@@ -8,6 +8,7 @@ import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as PatientAction } from "../reducers/patientReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
@@ -116,6 +117,10 @@ export interface ConfirmationTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
+}
+
+export interface GraphModalProps extends DialogTypes{
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface ViewAppointmentCardProps {

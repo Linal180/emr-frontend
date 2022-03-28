@@ -262,6 +262,7 @@ const scheduleTimeSchema = {
   startAt: yup.string().test('', invalidMessage(START_TIME), value => !!value),
 
   endAt: yup.string().test('', invalidMessage(END_TIME), (value, { parent: { startAt } }) => {
+    console.log("value>>>", value)
     if (!value) return false
 
     return timeValidation(value, startAt)
