@@ -39,7 +39,7 @@ const PublicFormPreview = () => {
         if (response) {
           const { status } = response;
           if (form && status && status === 200) {
-            const { name, type, layout } = form;
+            const { name, layout } = form;
             name && setFormName(name);
             const parsedLayout = getFormElements(layout)
             parsedLayout?.length > 0 && setFormValues(parsedLayout)
