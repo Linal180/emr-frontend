@@ -100,9 +100,12 @@ export type AppointmentsPayload = {
 
 export type Attachment = {
   __typename?: 'Attachment';
+  attachmentName?: Maybe<Scalars['String']>;
+  comments?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
+  providerName?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
   typeId: Scalars['String'];
@@ -269,7 +272,10 @@ export type CreateAppointmentInput = {
 };
 
 export type CreateAttachmentInput = {
+  attachmentName?: Maybe<Scalars['String']>;
+  comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  providerName?: Maybe<Scalars['String']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -363,8 +369,8 @@ export type CreateDoctorItemInput = {
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
-  /** Send doctor Type from the ENUM - Sign-up */
-  roleType?: Maybe<UserRole>;
+  /** Send doctor Type from the string - Sign-up */
+  roleType?: Maybe<Scalars['String']>;
   /** Doctor speciality */
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
@@ -545,7 +551,7 @@ export type CreateStaffItemInput = {
   password: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
   /** Send Investor Type from the ENUM - Sign-up */
-  roleType?: Maybe<UserRole>;
+  roleType?: Maybe<Scalars['String']>;
   username: Scalars['String'];
 };
 
@@ -775,7 +781,15 @@ export type GetPatientAppointmentInput = {
   patientId: Scalars['String'];
 };
 
+export type GetPermission = {
+  id?: Maybe<Scalars['String']>;
+};
+
 export type GetPractice = {
+  id?: Maybe<Scalars['String']>;
+};
+
+export type GetRole = {
   id?: Maybe<Scalars['String']>;
 };
 
@@ -831,6 +845,7 @@ export enum Maritialstatus {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
+  assignPermissionToRole: PermissionPayload;
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
   chargePayment: AppointmentPayload;
@@ -841,7 +856,9 @@ export type Mutation = {
   createExternalAppointment: AppointmentPayload;
   createFacility: FacilityPayload;
   createPatient: PatientPayload;
+  createPermission: PermissionPayload;
   createPractice: PracticePayload;
+  createRole: RolePayload;
   createSchedule: SchedulePayload;
   createService: ServicePayload;
   createStaff: StaffPayload;
@@ -858,7 +875,9 @@ export type Mutation = {
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removePatient: PatientPayload;
+  removePermission: PermissionPayload;
   removePractice: PracticePayload;
+  removeRole: RolePayload;
   removeSchedule: SchedulePayload;
   removeService: ServicePayload;
   removeStaff: StaffPayload;
@@ -868,6 +887,7 @@ export type Mutation = {
   sendInviteToPatient: PatientPayload;
   updateAppointment: AppointmentPayload;
   updateAppointmentBillingStatus: AppointmentPayload;
+  updateAppointmentStatus: AppointmentPayload;
   updateAttachmentData: AttachmentPayload;
   updateContact: ContactPayload;
   updateDoctor: DoctorPayload;
@@ -877,6 +897,7 @@ export type Mutation = {
   updatePatient: PatientPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
+  updatePermission: PermissionPayload;
   updatePractice: PracticePayload;
   updateRole: UserPayload;
   updateSchedule: SchedulePayload;
@@ -889,6 +910,11 @@ export type Mutation = {
 
 export type MutationActivateUserArgs = {
   user: UserIdInput;
+};
+
+
+export type MutationAssignPermissionToRoleArgs = {
+  rolePermissionItemInput: RolePermissionItemInput;
 };
 
 
@@ -942,8 +968,18 @@ export type MutationCreatePatientArgs = {
 };
 
 
+export type MutationCreatePermissionArgs = {
+  permissionItemInput: PermissionItemInput;
+};
+
+
 export type MutationCreatePracticeArgs = {
   createPracticeInput: CreatePracticeInput;
+};
+
+
+export type MutationCreateRoleArgs = {
+  roleItemInput: RoleItemInput;
 };
 
 
@@ -1027,8 +1063,18 @@ export type MutationRemovePatientArgs = {
 };
 
 
+export type MutationRemovePermissionArgs = {
+  removePermission: RemovePermission;
+};
+
+
 export type MutationRemovePracticeArgs = {
   removePractice: RemovePractice;
+};
+
+
+export type MutationRemoveRoleArgs = {
+  removeRole: RemoveRole;
 };
 
 
@@ -1077,6 +1123,11 @@ export type MutationUpdateAppointmentBillingStatusArgs = {
 };
 
 
+export type MutationUpdateAppointmentStatusArgs = {
+  appointmentStatusInput: UpdateAppointmentStatusInput;
+};
+
+
 export type MutationUpdateAttachmentDataArgs = {
   updateAttachmentInput: UpdateAttachmentInput;
 };
@@ -1119,6 +1170,11 @@ export type MutationUpdatePatientProfileArgs = {
 
 export type MutationUpdatePatientProviderArgs = {
   updatePatientProvider: UpdatePatientProvider;
+};
+
+
+export type MutationUpdatePermissionArgs = {
+  updatePermissionItemInput: UpdatePermissionItemInput;
 };
 
 
@@ -1297,6 +1353,40 @@ export enum PaymentType {
   Self = 'SELF'
 }
 
+export type Permission = {
+  __typename?: 'Permission';
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  moduleType?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  rolePermissions?: Maybe<Array<RolePermission>>;
+  status?: Maybe<Scalars['Boolean']>;
+  updatedAt: Scalars['String'];
+};
+
+export type PermissionInput = {
+  paginationOptions: PaginationInput;
+};
+
+export type PermissionItemInput = {
+  moduleType: Scalars['String'];
+  name: Scalars['String'];
+  roleId?: Maybe<Scalars['String']>;
+};
+
+export type PermissionPayload = {
+  __typename?: 'PermissionPayload';
+  permission?: Maybe<Permission>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type PermissionsPayload = {
+  __typename?: 'PermissionsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  permissions?: Maybe<Array<Maybe<Permission>>>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type Practice = {
   __typename?: 'Practice';
   champus?: Maybe<Scalars['String']>;
@@ -1340,6 +1430,7 @@ export type PracticesPayload = {
 
 export type Query = {
   __typename?: 'Query';
+  GetPermission: PermissionPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
   fetchUser: UserPayload;
@@ -1348,10 +1439,12 @@ export type Query = {
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllPatient: PatientsPayload;
+  findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
+  getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
@@ -1364,6 +1457,7 @@ export type Query = {
   getPatient: PatientPayload;
   getPatientAppointment: AppointmentsPayload;
   getPractice: PracticePayload;
+  getRole: RolePayload;
   getSchedule: SchedulePayload;
   getService: ServicePayload;
   getStaff: StaffPayload;
@@ -1371,6 +1465,11 @@ export type Query = {
   getUser: UserPayload;
   me: UserPayload;
   searchUser: UsersPayload;
+};
+
+
+export type QueryGetPermissionArgs = {
+  getPermission: GetPermission;
 };
 
 
@@ -1404,6 +1503,11 @@ export type QueryFindAllPatientArgs = {
 };
 
 
+export type QueryFindAllPermissionsArgs = {
+  permissionInput: PermissionInput;
+};
+
+
 export type QueryFindAllPracticesArgs = {
   facilityInput: PracticeInput;
 };
@@ -1421,6 +1525,11 @@ export type QueryFindAllServicesArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
+};
+
+
+export type QueryGetAllRolesArgs = {
+  roleInput: RoleInput;
 };
 
 
@@ -1484,6 +1593,11 @@ export type QueryGetPracticeArgs = {
 };
 
 
+export type QueryGetRoleArgs = {
+  getRole: GetRole;
+};
+
+
 export type QueryGetScheduleArgs = {
   getSchedule: GetSchedule;
 };
@@ -1527,8 +1641,8 @@ export type RegisterUserInput = {
   lastName?: Maybe<Scalars['String']>;
   password: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
-  /** Send Investor Type from the ENUM - Sign-up */
-  roleType?: Maybe<UserRole>;
+  /** string type role - Sign-up */
+  roleType?: Maybe<Scalars['String']>;
   zipCode?: Maybe<Scalars['String']>;
 };
 
@@ -1587,7 +1701,15 @@ export type RemovePatient = {
   id: Scalars['String'];
 };
 
+export type RemovePermission = {
+  id?: Maybe<Scalars['String']>;
+};
+
 export type RemovePractice = {
+  id?: Maybe<Scalars['String']>;
+};
+
+export type RemoveRole = {
   id?: Maybe<Scalars['String']>;
 };
 
@@ -1622,14 +1744,48 @@ export type ResponsePayload = {
 
 export type Role = {
   __typename?: 'Role';
+  createdAt?: Maybe<Scalars['String']>;
+  customRole?: Maybe<Scalars['Boolean']>;
+  id: Scalars['String'];
+  role?: Maybe<Scalars['String']>;
+  rolePermissions?: Maybe<Array<RolePermission>>;
+  updatedAt?: Maybe<Scalars['String']>;
+  users?: Maybe<User>;
+};
+
+export type RoleInput = {
+  paginationOptions: PaginationInput;
+};
+
+export type RoleItemInput = {
+  customRole?: Maybe<Scalars['Boolean']>;
+  role: Scalars['String'];
+};
+
+export type RolePayload = {
+  __typename?: 'RolePayload';
+  response?: Maybe<ResponsePayload>;
+  role?: Maybe<Role>;
+};
+
+export type RolePermission = {
+  __typename?: 'RolePermission';
   createdAt: Scalars['String'];
   id: Scalars['String'];
-  role: UserRole;
+  isMutable?: Maybe<Scalars['Boolean']>;
+  permission?: Maybe<Permission>;
+  role?: Maybe<Role>;
   updatedAt: Scalars['String'];
+};
+
+export type RolePermissionItemInput = {
+  permissionsId?: Maybe<Array<Scalars['String']>>;
+  roleId: Scalars['String'];
 };
 
 export type RolesPayload = {
   __typename?: 'RolesPayload';
+  pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
   roles?: Maybe<Array<Maybe<Role>>>;
 };
@@ -1904,9 +2060,17 @@ export type UpdateAppointmentInput = {
   serviceId?: Maybe<Scalars['String']>;
 };
 
+export type UpdateAppointmentStatusInput = {
+  id: Scalars['String'];
+  status: Appointmentstatus;
+};
+
 export type UpdateAttachmentInput = {
+  attachmentName?: Maybe<Scalars['String']>;
+  comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
+  providerName?: Maybe<Scalars['String']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -2003,8 +2167,8 @@ export type UpdateDoctorItemInput = {
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
-  /** Send doctor Type from the ENUM - Sign-up */
-  roleType?: Maybe<UserRole>;
+  /** Send doctor Type from the string - Sign-up */
+  roleType?: Maybe<Scalars['String']>;
   /** Doctor speciality */
   speciality?: Maybe<Speciality>;
   specialityLicense?: Maybe<Scalars['String']>;
@@ -2139,6 +2303,13 @@ export type UpdatePatientProvider = {
   providerId: Scalars['String'];
 };
 
+export type UpdatePermissionItemInput = {
+  id?: Maybe<Scalars['String']>;
+  moduleType?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  roleId?: Maybe<Scalars['String']>;
+};
+
 export type UpdatePracticeInput = {
   champus?: Maybe<Scalars['String']>;
   ein?: Maybe<Scalars['String']>;
@@ -2153,7 +2324,7 @@ export type UpdatePracticeInput = {
 
 export type UpdateRoleInput = {
   id: Scalars['String'];
-  roles: Array<UserRole>;
+  roles: Array<Scalars['String']>;
 };
 
 export type UpdateScheduleInput = {
@@ -2196,7 +2367,7 @@ export type UpdateStaffItemInput = {
   password?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
   /** Send Investor Type from the ENUM - Sign-up */
-  roleType?: Maybe<UserRole>;
+  roleType?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
 };
 
@@ -2242,20 +2413,6 @@ export type UserPayload = {
   user?: Maybe<User>;
 };
 
-/** The user role assigned */
-export enum UserRole {
-  Admin = 'ADMIN',
-  Billing = 'BILLING',
-  Doctor = 'DOCTOR',
-  DoctorAssistant = 'DOCTOR_ASSISTANT',
-  Nurse = 'NURSE',
-  NursePractitioner = 'NURSE_PRACTITIONER',
-  OfficeManager = 'OFFICE_MANAGER',
-  Patient = 'PATIENT',
-  Staff = 'STAFF',
-  SuperAdmin = 'SUPER_ADMIN'
-}
-
 /** The user status */
 export enum UserStatus {
   Active = 'ACTIVE',
@@ -2264,7 +2421,7 @@ export enum UserStatus {
 
 export type UsersInput = {
   paginationOptions: PaginationInput;
-  role?: Maybe<UserRole>;
+  role?: Maybe<Scalars['String']>;
   status?: Maybe<UserStatus>;
 };
 
@@ -2354,12 +2511,12 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role: UserRole, createdAt: string, updatedAt: string }> | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
 
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string, roles?: Array<{ __typename?: 'Role', id: string, role: UserRole, createdAt: string, updatedAt: string } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, status: UserStatus, userId: string, userType: string, inviteSentAt: string, emailVerified: boolean, inviteAcceptedAt: string, createdAt: string, updatedAt: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type ForgetPasswordMutationVariables = Exact<{
   forgotPasswordInput: ForgotPasswordInput;
@@ -2562,6 +2719,13 @@ export type RemovePracticeMutationVariables = Exact<{
 
 export type RemovePracticeMutation = { __typename?: 'Mutation', removePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
+export type FindAllRolesQueryVariables = Exact<{
+  roleInput: RoleInput;
+}>;
+
+
+export type FindAllRolesQuery = { __typename?: 'Query', getAllRoles: { __typename?: 'RolesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', id: string, permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+
 export type CreateScheduleMutationVariables = Exact<{
   createScheduleInput: CreateScheduleInput;
 }>;
@@ -2665,7 +2829,7 @@ export type GetStaffQueryVariables = Exact<{
 }>;
 
 
-export type GetStaffQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, staff?: { __typename?: 'Staff', id: string, dob?: string | null | undefined, email: string, phone?: string | null | undefined, mobile?: string | null | undefined, gender: Gender, lastName: string, username?: string | null | undefined, firstName: string, facilityId?: string | null | undefined, createdAt: string, updatedAt: string, user?: { __typename?: 'User', roles?: Array<{ __typename?: 'Role', id: string, role: UserRole } | null | undefined> | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined } };
+export type GetStaffQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, staff?: { __typename?: 'Staff', id: string, dob?: string | null | undefined, email: string, phone?: string | null | undefined, mobile?: string | null | undefined, gender: Gender, lastName: string, username?: string | null | undefined, firstName: string, facilityId?: string | null | undefined, createdAt: string, updatedAt: string, user?: { __typename?: 'User', roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined } };
 
 export type RemoveStaffMutationVariables = Exact<{
   removeStaff: RemoveStaff;
@@ -4911,6 +5075,60 @@ export function useRemovePracticeMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemovePracticeMutationHookResult = ReturnType<typeof useRemovePracticeMutation>;
 export type RemovePracticeMutationResult = Apollo.MutationResult<RemovePracticeMutation>;
 export type RemovePracticeMutationOptions = Apollo.BaseMutationOptions<RemovePracticeMutation, RemovePracticeMutationVariables>;
+export const FindAllRolesDocument = gql`
+    query FindAllRoles($roleInput: RoleInput!) {
+  getAllRoles(roleInput: $roleInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    roles {
+      id
+      role
+      rolePermissions {
+        id
+        permission {
+          id
+          name
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllRolesQuery__
+ *
+ * To run a query within a React component, call `useFindAllRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllRolesQuery({
+ *   variables: {
+ *      roleInput: // value for 'roleInput'
+ *   },
+ * });
+ */
+export function useFindAllRolesQuery(baseOptions: Apollo.QueryHookOptions<FindAllRolesQuery, FindAllRolesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllRolesQuery, FindAllRolesQueryVariables>(FindAllRolesDocument, options);
+      }
+export function useFindAllRolesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllRolesQuery, FindAllRolesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllRolesQuery, FindAllRolesQueryVariables>(FindAllRolesDocument, options);
+        }
+export type FindAllRolesQueryHookResult = ReturnType<typeof useFindAllRolesQuery>;
+export type FindAllRolesLazyQueryHookResult = ReturnType<typeof useFindAllRolesLazyQuery>;
+export type FindAllRolesQueryResult = Apollo.QueryResult<FindAllRolesQuery, FindAllRolesQueryVariables>;
 export const CreateScheduleDocument = gql`
     mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
   createSchedule(createScheduleInput: $createScheduleInput) {

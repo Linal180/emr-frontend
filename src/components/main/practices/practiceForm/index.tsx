@@ -22,7 +22,7 @@ import {
   practiceReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/practiceReducer';
 import {
-  useCreatePracticeMutation, useGetPracticeLazyQuery, UserRole, useUpdatePracticeMutation
+  useCreatePracticeMutation, useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, USER_DETAILS_TEXT, ZIP_CODE,
@@ -31,10 +31,11 @@ import {
   NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
   IS_ADMIN, MAPPED_PRACTICE_ROLES, CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, COUNTRY,
 } from "../../../../constants";
+import { renderRoles } from '../../../../utils';
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { fetchAllPracticeList, fetchAllFacilityList } = useContext(ListContext)
+  const { fetchAllPracticeList, fetchAllFacilityList, roleList } = useContext(ListContext)
   const { id: adminId } = user || {}
   const classes = usePublicAppointmentStyles();
   const methods = useForm<CustomPracticeInputProps>({
@@ -166,7 +167,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             registerUserInput: {
               isAdmin: true, email: userEmail || '', password: SYSTEM_PASSWORD, firstName: userFirstName || '',
               lastName: userLastName || '', phone: userPhone || '',
-              roleType: selectedRole as UserRole || UserRole.Doctor, adminId: adminId || '',
+              roleType: selectedRole || 'doctor', adminId: adminId || '',
             },
           }
         }
@@ -231,7 +232,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
-                          options={MAPPED_PRACTICE_ROLES}
+                          options={renderRoles(roleList)}
                         />
                       </Grid>
                     </Grid>

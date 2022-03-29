@@ -24,8 +24,8 @@ import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  FacilityPayload,
-  PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
+  FacilityPayload, PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery,
+  useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
   ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING,

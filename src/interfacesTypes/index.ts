@@ -13,7 +13,7 @@ import {
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, RolesPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -45,6 +45,9 @@ export interface AppContextProps {
 }
 
 export interface ListContextInterface {
+  roleList: RolesPayload['roles'];
+  setRoleList: Function;
+  fetchAllRoleList: Function;
   practiceList: PracticesPayload['practices'];
   setPracticeList: Function;
   fetchAllPracticeList: Function;

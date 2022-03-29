@@ -18,7 +18,7 @@ import { AuthContext, ListContext } from '../../../../context';
 import { getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  Gender, useCreateStaffMutation, useGetStaffLazyQuery, UserRole, useUpdateStaffMutation
+  Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
 } from "../../../../generated/graphql";
 import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
@@ -165,7 +165,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         await createStaff({
           variables: {
             createStaffInput: {
-              staffInput: { password: 'staff@123', roleType: role as UserRole, ...staffInputs, adminId: id },
+              staffInput: { password: 'staff@123', roleType: role, ...staffInputs, adminId: id },
               providers: []
             }
           }
