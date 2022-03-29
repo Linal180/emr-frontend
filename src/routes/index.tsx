@@ -64,8 +64,9 @@ import {
   FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PROFILE_ROUTE, MAINTENANCE_ROUTE,
   PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE,
-  SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE,
+  SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, LOCK_ROUTE,
 } from "../constants";
+import { Lock } from "../pages/auth/lock";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -127,6 +128,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
+      <PrivateRoute path={LOCK_ROUTE} component={Lock} exact />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
 
