@@ -1,11 +1,12 @@
 //package block
-import { useState, MouseEvent, useContext } from 'react';
+import { useState, MouseEvent, useContext, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Grid, Box, Button, Typography, Menu, MenuItem } from '@material-ui/core';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler } from 'react-hook-form';
+import { useParams } from 'react-router';
 //components block
 import EditModal from './EditModal';
 import Sidebar from './sidebar';
@@ -14,18 +15,18 @@ import DropContainer from './dropContainer';
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION,
   FORM_BUILDER_INITIAL_VALUES, FORM_BUILDER_FIELDS_VALUES, FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION,
-  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER
+  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, FORM_NOT_FOUND, FORM_UPDATED
 } from '../../../../constants';
-import { FormInitialType, FormBuilderFormInitial } from '../../../../interfacesTypes';
+import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { AddWidgetIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import InputController from '../../../../controller';
 import Selector from '../../../common/Selector';
 import Alert from '../../../common/Alert';
 import { createFormBuilderSchema } from '../../../../validationSchemas';
-import { FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType } from '../../../../generated/graphql';
+import { FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation } from '../../../../generated/graphql';
 import { ListContext } from '../../../../context/listContext'
-import { LoaderBackdrop, renderFacilities } from '../../../../utils';
+import { LoaderBackdrop, renderFacilities, setRecord, getFormElements } from '../../../../utils';
 import history from '../../../../history';
 //component
 const AddForm = () => {
@@ -35,9 +36,12 @@ const AddForm = () => {
   const [selected, setSelected] = useState<FormInitialType>(FIELD_EDIT_INITIAL_VALUES);
   const [colMenu, setColMenu] = useState<null | HTMLElement>(null)
   //hooks
-  const methods = useForm({ defaultValues: FORM_BUILDER_INITIAL_VALUES, resolver: yupResolver(createFormBuilderSchema) });
+  const methods = useForm<FormBuilderFormInitial>({ defaultValues: FORM_BUILDER_INITIAL_VALUES, resolver: yupResolver(createFormBuilderSchema) });
+  const { handleSubmit, setValue } = methods
+  const { id } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
   const { facilityList } = useContext(ListContext)
+  //mutations & query
   const [createForm, { loading }] = useCreateFormMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
@@ -59,8 +63,58 @@ const AddForm = () => {
       }
     }
   })
-  //constants destructuring
-  const { handleSubmit } = methods
+  const [getForm, { loading: getFormLoader }] = useGetFormLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+    onCompleted(data) {
+      const { getForm } = data || {}
+      if (getForm) {
+        const { form, response } = getForm || {}
+        if (response) {
+          const { status } = response
+
+          if (form && status && status === 200) {
+            const { name, type, layout, facilityId } = form
+
+
+            name && setValue('name', name)
+            type && setValue('type', setRecord(type, type))
+            facilityId && setValue('facilityId', setRecord(facilityId, facilityId))
+            const parsedLayout = getFormElements(layout)
+            parsedLayout?.length > 0 && setFormValues(parsedLayout)
+            const facilityName = getFacilityNameHandler(facilityId)
+            if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
+          }
+        }
+      }
+    },
+    onError({ message }) {
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(FORM_BUILDER_ROUTE)
+    }
+  })
+
+  const [updateForm, { loading: updateLoading }] = useUpdateFormMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+    onCompleted(data) {
+      const { updateForm: { response } } = data;
+      if (response) {
+        const { status } = response
+        if (status && status === 200) {
+          Alert.success(FORM_UPDATED);
+          history.push(FORM_BUILDER_ROUTE)
+        }
+      }
+    }
+  })
+
+  useEffect(() => {
+    id && getForm({ variables: { getForm: { id } } })
+  }, [getForm, id])
+
   //drag end handler
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
@@ -197,26 +251,14 @@ const AddForm = () => {
   const saveHandler: SubmitHandler<FormBuilderFormInitial> = (values) => {
     const isFieldFound = formValues?.some((item) => item.fields.length > 0);
     if (isFieldFound) {
-      ///call backend mutation
       const { name, type, facilityId } = values || {};
       const { id: typeId } = type;
-      const { id } = facilityId
-      createForm({
-        variables: {
-          createFormInput: {
-            name,
-            type: typeId as FormType,
-            facilityId: id,
-            layout: {
-              sections: formValues
-            }
-          }
-        }
-      })
+      const { id: facility } = facilityId;
+      const data = { name, type: typeId as FormType, facilityId: facility, layout: { sections: formValues } }
+      id ? createForm({ variables: { createFormInput: data } }) : updateForm({ variables: { updateFormInput: { ...data, id } } })
     }
-    else {
-      Alert.error('Please drap alteast one field')
-    }
+    else Alert.error('Please drap alteast one field')
+
   };
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
@@ -280,6 +322,12 @@ const AddForm = () => {
   const delColHandler = (index: number) => {
     const arr = formValues?.filter((item, i) => i !== index)
     setFormValues(arr)
+  }
+  //get facility name
+  const getFacilityNameHandler = (facilityId: string) => {
+    const facility = facilityList?.find((item) => item?.id === facilityId)
+    const { name } = facility || {}
+    return name;
   }
   //render
   return (
@@ -370,7 +418,7 @@ const AddForm = () => {
         setFieldValuesHandler={setFieldValuesHandler}
         selected={selected}
       />
-      <LoaderBackdrop open={loading} />
+      <LoaderBackdrop open={loading || getFormLoader || updateLoading} />
     </DragDropContext>
   );
 };

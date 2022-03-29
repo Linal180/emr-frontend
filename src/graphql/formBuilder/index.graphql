@@ -30,3 +30,41 @@ query findAllForms($formInput: FormInput!) {
     }
   }
 }
+
+mutation removeForm($removeForm: RemoveForm!) {
+  removeForm(removeForm: $removeForm) {
+    response {
+      status
+      message
+    }
+  }
+}
+
+query getForm($getForm: GetForm!) {
+  getForm(getForm: $getForm) {
+    response {
+      status
+      message
+    }
+    form {
+      id
+      name
+      layout
+      type
+      facilityId
+    }
+  }
+}
+
+
+mutation updateForm($updateFormInput: UpdateFormInput!) {
+  updateForm(updateFormInput: $updateFormInput) {
+    response {
+      status
+    }
+    form {
+      id
+      name
+    }
+  }
+}

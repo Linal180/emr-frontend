@@ -9,7 +9,7 @@ import { DaySchedule, LoaderProps, SelectorOption, TableAlignType } from "../int
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, PracticesPayload,
+  AppointmentsPayload, AttachmentsPayload, PracticesPayload, SectionsInputs
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
@@ -470,10 +470,17 @@ export const parseColumnGrid = (col: number): GridSize => {
   return col as GridSize;
 }
 
-export const LoaderBackdrop = memo (({ open }: LoaderProps): JSX.Element => (
+export const LoaderBackdrop = memo(({ open }: LoaderProps): JSX.Element => (
   <Backdrop
     open={open}
   >
     <CircularProgress size={20} color="inherit" />
   </Backdrop>
 ))
+
+export const getFormElements = (layout: string): SectionsInputs[] => {
+  const parsedLayout = JSON.parse(layout);
+  const { sections } = parsedLayout
+
+  return sections?.length > 0 ? sections : []
+}

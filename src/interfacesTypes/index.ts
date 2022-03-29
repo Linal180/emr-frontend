@@ -14,6 +14,7 @@ import {
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  SectionsInputs
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -282,6 +283,7 @@ interface IControlLabel {
   isPassword?: boolean;
   placeholder?: string;
   controllerLabel?: string;
+  className?: string;
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -746,7 +748,7 @@ export interface InputTypes {
   WEEK: string;
 }
 
-export interface ItemsTypes  extends FieldsInputs {
+export interface ItemsTypes extends FieldsInputs {
   icon: ElementType
 }
 export interface FormInitialType extends FieldsInputs {
@@ -760,7 +762,7 @@ export interface FormValuesTypes {
 }
 
 export interface SelectOptions {
-  id: number 
+  id: number
   name: number
 }
 
@@ -788,16 +790,16 @@ export interface DropContainerPropsTypes {
 
 export interface FormBuilderFormInitial {
   name: string;
-  type: {
-    name: string;
-    id: string;
-  },
-  facilityId: {
-    name: string;
-    id: string;
-  },
+  type: SelectorOption;
+  facilityId: SelectorOption;
 }
 
-export interface LoaderProps{
+export interface LoaderProps {
   open: boolean
+}
+
+export interface FormBuilderPreviewProps {
+  open: Boolean;
+  closeModalHanlder: () => void;
+  data: SectionsInputs[];
 }

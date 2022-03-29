@@ -10,42 +10,42 @@ import {
   InputLabel,
   DialogTitle,
 } from '@material-ui/core';
-import { Controller, FormProvider,SubmitHandler,useForm, } from 'react-hook-form'
+import { Controller, FormProvider, SubmitHandler, useForm, } from 'react-hook-form'
 //components block
 import InputController from '../../../../../controller';
 import Selector from '../../../../common/Select';
 import { AntSwitch } from '../../../../../styles/publicAppointmentStyles/externalPatientStyles';
-//constants & intefaces
+//constants & interfaces
 import { COLUMN_LENGTH, CSS_CLASSES, DISMISS, LABEL, NAME, NO_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, YES_TEXT, } from '../../../../../constants';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import { GRAY_TWO, WHITE } from '../../../../../theme';
 import { SAVE_TEXT } from '../../../../../constants';
-import {ElementType} from '../../../../../generated/graphql'
+import { ElementType } from '../../../../../generated/graphql'
 //styles
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 const initialValues: FormInitialType = {
-	fieldId: '',
-	label: '',
-	type:ElementType.Text,
-	name: '',
-	css: '',
-	column: 12,
-	placeholder: '',
-	required: false,
-	list: '',
-	errorMsg: '',
-	defaultValue: ''
+  fieldId: '',
+  label: '',
+  type: ElementType.Text,
+  name: '',
+  css: '',
+  column: 12,
+  placeholder: '',
+  required: false,
+  list: '',
+  errorMsg: '',
+  defaultValue: ''
 };
 //component
-const EditModal = ({ open, closeModalHanlder,setFieldValuesHandler, selected }: FieldEditModalProps) => {
+const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }: FieldEditModalProps) => {
   //states
   const [isChecked, setIsChecked] = useState(false);
   //hooks
   const classes = usePublicAppointmentStyles();
   const methods = useForm<FormInitialType>({
-		defaultValues: initialValues,
-		// resolver: yupResolver(loginValidationSchema)
-	});
+    defaultValues: initialValues,
+    // resolver: yupResolver(loginValidationSchema)
+  });
   const { setValue, handleSubmit, control } = methods;
   //life cycle hook
   useEffect(() => {
@@ -73,8 +73,8 @@ const EditModal = ({ open, closeModalHanlder,setFieldValuesHandler, selected }: 
   };
   //form submit handler
   const submitHandler: SubmitHandler<FormInitialType> = (values) => {
-    setFieldValuesHandler(values)	
-	};
+    setFieldValuesHandler(values)
+  };
   //render
   return (
     <Dialog open={!!open} onClose={closeModalHanlder} fullWidth maxWidth={'sm'}>
