@@ -29,7 +29,7 @@ import {
   FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER,
   PRACTICE_NAME, ROLE, PRACTICE_MANAGEMENT_ROUTE, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION,
   NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
-  IS_ADMIN, MAPPED_PRACTICE_ROLES, CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, COUNTRY,
+  IS_ADMIN, CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, COUNTRY,
 } from "../../../../constants";
 import { renderRoles } from '../../../../utils';
 
@@ -167,7 +167,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             registerUserInput: {
               isAdmin: true, email: userEmail || '', password: SYSTEM_PASSWORD, firstName: userFirstName || '',
               lastName: userLastName || '', phone: userPhone || '',
-              roleType: selectedRole || 'doctor', adminId: adminId || '',
+              roleType: selectedRole, adminId: adminId || '',
             },
           }
         }

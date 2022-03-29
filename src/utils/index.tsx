@@ -188,9 +188,9 @@ export const renderRoles = (roles: RolesPayload['roles']) => {
   if (!!roles) {
     for (let role of roles) {
       if (role) {
-        const { id, role: name } = role;
+        const { role: name } = role;
 
-        data.push({ id, name })
+        name && data.push({ id: name, name: formatValue(name) })
       }
     }
   }

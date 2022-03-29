@@ -1034,12 +1034,6 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
   { id: "four", name: "four" },
 ];
 
-export const MAPPED_ROLES: SelectorOption[] = [];
-
-export const MAPPED_STAFF_ROLES: SelectorOption[] = [];
-
-export const MAPPED_PRACTICE_ROLES: SelectorOption[] = [];
-
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
   { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
