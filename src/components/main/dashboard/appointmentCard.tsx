@@ -12,7 +12,7 @@ import Selector from '../../common/Selector';
 import BackdropLoader from '../../common/Backdrop';
 import ConfirmationModal from '../../common/ConfirmationModal';
 // constant, assets and styles block
-import { AuthContext } from '../../../context';
+import { AppointmentContext, AuthContext } from '../../../context';
 import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
 import { UpdateStatusInputProps } from '../../../interfacesTypes';
@@ -25,20 +25,21 @@ import {
 import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE,
-  OUTSTANDING_TEXT, PAGE_LIMIT, PAID, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME,
+  OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME,
   REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
 } from '../../../constants';
-import { Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useRemoveAppointmentMutation, useFindAllAppointmentsLazyQuery, AppointmentsPayload, useGetAppointmentLazyQuery } from '../../../generated/graphql';
+import { Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useRemoveAppointmentMutation, useGetAppointmentLazyQuery } from '../../../generated/graphql';
 import moment from 'moment';
 
 const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
   const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
+  const { fetchAllAppointmentList } = useContext(AppointmentContext)
   const { id: userId } = user || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
-    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, page, openDelete, isInvoiceNumber } = state;
+    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, openDelete, isInvoiceNumber } = state;
   const methods = useForm<UpdateStatusInputProps>({
     mode: "all",
   });
@@ -46,36 +47,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const { handleSubmit, watch, setValue } = methods;
 
   const { appointmentStatus } = watch();
-
-  const [findAllAppointments] = useFindAllAppointmentsLazyQuery({
-    variables: {
-      appointmentInput: {
-        paginationOptions: {
-          page, limit: PAGE_LIMIT
-        }
-      }
-    },
-
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() {
-      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
-    },
-
-    onCompleted(data) {
-      const { findAllAppointments } = data || {};
-
-      if (findAllAppointments) {
-        const { appointments } = findAllAppointments
-        dispatch({
-          type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments as AppointmentsPayload['appointments']
-        });
-      }
-    }
-  });
 
   const [createInvoice] = useCreateInvoiceMutation({
     onError({ message }) {
@@ -182,6 +153,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
         if (appointment && status && status === 200) {
           const { invoice, status } = appointment;
           const { invoiceNo } = invoice || {}
+
           if (invoiceNo) {
             dispatch({ type: ActionType.SET_APP_INVOICE_NUMBER, appInvoiceNumber: invoiceNo })
             dispatch({ type: ActionType.SET_IS_INVOICE_NUMBER, isInvoiceNumber: true })
@@ -202,19 +174,16 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   }, [getAppointment, id]);
 
   const [updateAppointmentStatus] = useUpdateAppointmentStatusMutation({
-    fetchPolicy: "network-only",
-
     onError({ message }) {
       Alert.error(message)
     },
 
     async onCompleted(data) {
-      const { updateAppointmentStatus: { response, appointment } } = data;
+      const { updateAppointmentStatus: { appointment } } = data;
 
-      if (response) {
-        const { status } = response
+      if (appointment) {
         const { status: appointmentStatus } = appointment || {}
-        if (appointmentStatus && status && status === 200) {
+        if (appointmentStatus) {
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: appointmentStatus })
           Alert.success(APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY);
         }
@@ -223,8 +192,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   });
 
   const onSubmit: SubmitHandler<UpdateStatusInputProps> = async (inputs) => {
-    const { appointmentStatus
-    } = inputs;
+    const { appointmentStatus } = inputs;
 
     if (id) {
       await updateAppointmentStatus({
@@ -262,7 +230,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           try {
-            await findAllAppointments()
+            await fetchAllAppointmentList()
           } catch (error) { }
         }
       }
@@ -336,9 +304,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   }, [id, updateStatus, watch]);
 
   useEffect(() => {
-    console.log("VISBLE", visible, "appointmentMeta?.data.appointmentStatus", appointmentMeta?.data.appointmentStatus)
     typeof visible === 'boolean' && dispatch({ type: ActionType.SET_APP_OPEN, appOpen: visible })
-    dispatch({ type: ActionType.SET_APP_STATUS, appStatus: appointmentMeta?.data.appointmentStatus })
   }, [appointmentMeta?.data.appointmentStatus, visible, appStatus])
 
   useEffect(() => {
