@@ -74,6 +74,7 @@ const Routes: FC = (): JSX.Element => {
   return (
     <Switch>
       <PublicRoute path={LOGIN_ROUTE} component={Login} exact />
+      <PublicRoute path={LOCK_ROUTE} component={Lock} exact />
       <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
       <PublicRoute path={SET_PASSWORD_ROUTE} component={SetPassword} exact />
       <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />
@@ -128,7 +129,6 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
-      <PrivateRoute path={LOCK_ROUTE} component={Lock} exact />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
 

@@ -13,7 +13,7 @@ import { LOCK_ROUTE, ROUTE } from "../../constants";
 import history from "../../history";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
-  const [timeout] = useState<number>(2000)
+  const [timeout] = useState<number>(30000)
   const { user, isLoggedIn } = useContext(AuthContext);
   const { pathname } = useLocation()
   console.log(pathname);
@@ -21,7 +21,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const onIdle = () => {
     console.log('user is idle')
     const route = pathname
-    localStorage.setItem(ROUTE, route);
+    sessionStorage.setItem(ROUTE, route);
     history.push(LOCK_ROUTE);
   }
 
