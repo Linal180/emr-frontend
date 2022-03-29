@@ -42,6 +42,7 @@ export interface State {
   appInvoiceNumber: string;
   appShowPayBtn: boolean;
   appDetail: boolean;
+  isInvoiceNumber: boolean;
 }
 
 export const initialState: State = {
@@ -84,6 +85,7 @@ export const initialState: State = {
   appInvoiceNumber: '',
   appShowPayBtn: false,
   appDetail: true,
+  isInvoiceNumber: false
 }
 
 export enum ActionType {
@@ -119,6 +121,7 @@ export enum ActionType {
   SET_APP_INVOICE_NUMBER = 'setAppInvoiceNumber',
   SET_APP_SHOW_PAY_BTN = 'setAppShowPayBtn',
   SET_APP_DETAIL = 'setAppDetail',
+  SET_IS_INVOICE_NUMBER = 'setIsInvoiceNumber'
 }
 
 export type Action =
@@ -162,6 +165,7 @@ export type Action =
   | { type: ActionType.SET_APP_INVOICE_NUMBER; appInvoiceNumber: string }
   | { type: ActionType.SET_APP_SHOW_PAY_BTN; appShowPayBtn: boolean }
   | { type: ActionType.SET_APP_DETAIL; appDetail: boolean }
+  | { type: ActionType.SET_IS_INVOICE_NUMBER; isInvoiceNumber: boolean }
 
 
 export const appointmentReducer = (state: State, action: Action): State => {
@@ -344,6 +348,11 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         appDetail: action.appDetail
+      }
+    case ActionType.SET_IS_INVOICE_NUMBER:
+      return {
+        ...state,
+        isInvoiceNumber: action.isInvoiceNumber
       }
   }
 };

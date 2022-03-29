@@ -147,6 +147,7 @@ export const INVENTORY = "Inventory";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const NO_INVOICE = "No Invoice";
 export const UNPAID = "Unpaid";
+export const PAID = "Paid";
 export const INVOICE = "Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";

@@ -25,7 +25,7 @@ import {
 import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
   EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE,
-  OUTSTANDING_TEXT, PAGE_LIMIT, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME,
+  OUTSTANDING_TEXT, PAGE_LIMIT, PAID, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME,
   REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
 } from '../../../constants';
 import { Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useRemoveAppointmentMutation, useFindAllAppointmentsLazyQuery, AppointmentsPayload, useGetAppointmentLazyQuery } from '../../../generated/graphql';
@@ -38,7 +38,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
-    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, page, openDelete } = state;
+    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, page, openDelete, isInvoiceNumber } = state;
   const methods = useForm<UpdateStatusInputProps>({
     mode: "all",
   });
@@ -182,7 +182,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
         if (appointment && status && status === 200) {
           const { invoice, status } = appointment;
           const { invoiceNo } = invoice || {}
-          invoiceNo && dispatch({ type: ActionType.SET_APP_INVOICE_NUMBER, appInvoiceNumber: invoiceNo })
+          if (invoiceNo) {
+            dispatch({ type: ActionType.SET_APP_INVOICE_NUMBER, appInvoiceNumber: invoiceNo })
+            dispatch({ type: ActionType.SET_IS_INVOICE_NUMBER, isInvoiceNumber: true })
+          }
           status && setValue('appointmentStatus', setRecord(status, status))
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: status })
         }
@@ -281,7 +284,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     }
   };
 
-  const handleAppDetail = () => dispatch({ type: ActionType.SET_APP_PAID, appPaid: true })
+  const handleAppDetail = () => {
+    dispatch({ type: ActionType.SET_APP_PAID, appPaid: true })
+    dispatch({ type: ActionType.SET_APP_PAID, appPaid: true })
+  }
 
 
   const handlePaid = () => {
@@ -477,12 +483,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 <Typography variant="body2">{appointmentMeta?.data?.primaryInsurance ?? 'NAN'}</Typography>
               </Box>
 
-              {!appPaid ? (<Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
+              {!appPaid && !isInvoiceNumber ? (<Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
                 <Typography variant='body1'>{NO_INVOICE}</Typography>
 
                 <Button type="submit" onClick={createAppointmentInvoice} variant="contained" className="blue-button-new">{CREATE_INVOICE}</Button>
               </Box>
-              ) : (
+              ) : !isInvoiceNumber && (
                 <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
                   <Box display="flex" alignItems="center" className={classes.invoiceText} onClick={handlePaid}>
                     <InvoiceAppointmentIcon />
@@ -490,6 +496,17 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                   </Box>
 
                   <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>{UNPAID}</Button>
+                </Box>
+              )}
+
+              {isInvoiceNumber && (
+                <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
+                  <Box display="flex" alignItems="center" className={classes.invoiceText} onClick={handlePaid}>
+                    <InvoiceAppointmentIcon />
+                    <Typography variant='body1'>{appInvoiceNumber}</Typography>
+                  </Box>
+
+                  <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>{PAID}</Button>
                 </Box>
               )}
 
@@ -514,7 +531,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
                   </IconButton>
-                  <Button onClick={handleInvoice} type="submit" variant="contained" size="large" color="primary">{PAY}</Button>
+                  {!isInvoiceNumber && <Button onClick={handleInvoice} type="submit" variant="contained" size="large" color="primary">{PAY}</Button>}
                 </Box>
               }
               className={classes.cardHeader}
