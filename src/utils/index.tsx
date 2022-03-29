@@ -1,6 +1,8 @@
 // packages block
+import { ReactNode } from "react";
 import moment from "moment";
 import { Typography, Box, TableCell } from "@material-ui/core";
+import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
@@ -16,9 +18,6 @@ import {
   LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, STAFF_ROUTE, TOKEN,
   START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A,
 } from "../constants";
-import { ReactNode } from "react";
-import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
-import { Token } from "graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);

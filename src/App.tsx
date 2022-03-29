@@ -11,7 +11,6 @@ import { theme } from "./theme/theme";
 import { AuthContextProvider, AppContextProvider, ListContextProvider, FacilityContextProvider } from './context'
 import 'rc-time-picker/assets/index.css';
 import './styles/styles.css'
-import { AppointmentContextProvider } from "./context/appointmentContext";
 
 const App = () => {
   return (
@@ -25,9 +24,7 @@ const App = () => {
             <AppContextProvider>
               <ListContextProvider>
                 <FacilityContextProvider>
-                  <AppointmentContextProvider>
-                    <AppContainer />
-                  </AppointmentContextProvider>
+                  <AppContainer />
                 </FacilityContextProvider>
               </ListContextProvider>
             </AppContextProvider>
