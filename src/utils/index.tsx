@@ -296,20 +296,13 @@ export const dateValidation = (endDate: string, startDate: string): boolean => {
 
 export const timeValidation = (endTime: string, startTime: string): boolean => {
   if (endTime && startTime) {
-    const start = new Date(getTimestamps(startTime))
-    const end = new Date(getTimestamps(endTime))
-    const startHour = start.getHours()
-    const startMinutes = start.getMinutes()
-    const endHour = end.getHours()
-    const endMinutes = end.getMinutes()
+    const start = new Date(moment(startTime,"hh:mm a").format('lll').toString())
+    const end = new Date(moment(endTime,"hh:mm a").format('lll').toString())
 
-    if (endHour > startHour) {
-      return true
-    } else if (endHour === startHour) {
-      return endMinutes > startMinutes
-    } else
-      return false
-  } else return false;
+    return end > start
+  }
+
+  return false;
 };
 
 export const dateValidationMessage = (endDateName: string, startDateName: string): string => {
@@ -366,10 +359,12 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
 };
 
 export const setTimeDay = (time: string, day: string): string => {
-  const date = new Date(time)
+  const validTime = moment(time,"hh:mm").format('lll').toString()
+  const date = new Date(validTime)
   const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
   const selectedDay = days.findIndex(weekDay => weekDay === day);
-  const currentDay = new Date(time).getDay()
+  const currentDay = new Date(validTime).getDay()
+
   let x = 0
   let result = moment(date).format().toString();
 
@@ -382,7 +377,7 @@ export const setTimeDay = (time: string, day: string): string => {
 
     result = moment(date.setDate(date.getDate() - (x % 7))).format().toString()
   }
-
+  
   return result
 };
 

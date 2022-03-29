@@ -10,6 +10,7 @@ export interface State {
   totalPages: number;
   activeStep: number;
   isBilling: boolean;
+  openGraph: boolean;
   openDelete: boolean;
   searchQuery: string;
   isEditCard: boolean;
@@ -50,6 +51,7 @@ export const initialState: State = {
   paymentMethod: '',
   attachmentUrl: '',
   openDelete: false,
+  openGraph: false,
   basicContactId: '',
   attachmentsData: [],
   deletePatientId: '',
@@ -66,6 +68,7 @@ export const initialState: State = {
 export enum ActionType {
   SET_PAGE = 'setPage',
   SET_IS_OPEN = "setIsOpen",
+  SET_OPEN_GRAPH = "setOpenGraph",
   SET_IS_VOICE = 'setIsVoice',
   SET_PATIENTS = 'setPatients',
   SET_TAB_VALUE = 'setTabValue',
@@ -102,6 +105,7 @@ export type Action =
   | { type: ActionType.SET_SELECTION; selection: string }
   | { type: ActionType.SET_PATIENT_ID; patientId: string }
   | { type: ActionType.SET_IS_BILLING, isBilling: boolean }
+  | { type: ActionType.SET_OPEN_GRAPH, openGraph: boolean }
   | { type: ActionType.SET_EMPLOYER_ID; employerId: string }
   | { type: ActionType.SET_TOTAL_PAGES; totalPages: number }
   | { type: ActionType.SET_ACTIVE_STEP; activeStep: number }
@@ -182,6 +186,12 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         openDelete: action.openDelete
+      }
+
+    case ActionType.SET_OPEN_GRAPH:
+      return {
+        ...state,
+        openGraph: action.openGraph
       }
 
     case ActionType.SET_PATIENTS:

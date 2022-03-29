@@ -47,8 +47,10 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const CDC = "CDC";
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
+export const BMI_FOR_AGE = "BMI for Age";
 export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
 export const VIEW = "View";
