@@ -12,8 +12,8 @@ import {
   AppointmentsPayload, AttachmentsPayload, PracticesPayload,
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
-  LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, STAFF_ROUTE, TOKEN,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
+  LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
   START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A,
 } from "../constants";
 import { ReactNode } from "react";
@@ -389,10 +389,8 @@ export const activeClass = (pathname: string): string => {
     case START_PROJECT_ROUTE:
       return "inAppointment"
 
-    case DOCTORS_ROUTE:
     case PATIENTS_ROUTE:
-    case STAFF_ROUTE:
-      return "inUser"
+      return "inPatient"
 
     case FACILITIES_ROUTE:
       return "inFacility"

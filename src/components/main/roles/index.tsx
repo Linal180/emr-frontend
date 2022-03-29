@@ -1,9 +1,9 @@
 // packages block
 // component block
-// constants, history, styling block
-import { ADD_NEW_TEXT, ROLES_TEXT, } from '../../../constants';
-import PageHeader from '../../common/PageHeader';
 import RolesTable from './RolesTable';
+import PageHeader from '../../common/PageHeader';
+// constants, history, styling block
+import { ADD_NEW_TEXT, ADD_ROLES_ROUTE, ROLES_TEXT, } from '../../../constants';
 
 
 const RolesComponent = (): JSX.Element => {
@@ -14,7 +14,7 @@ const RolesComponent = (): JSX.Element => {
         title={ROLES_TEXT}
         hasComponent
         buttonText={ADD_NEW_TEXT}
-        linkToPage={''}
+        linkToPage={ADD_ROLES_ROUTE}
       />
 
       <RolesTable />

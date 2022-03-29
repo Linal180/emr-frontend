@@ -142,6 +142,7 @@ export const ADD_APPOINTMENT = "Add Appointment";
 export const EDIT_APPOINTMENT = "Edit Appointment";
 export const CREATE_INVOICE = "Create Invoice";
 export const PRACTICE_SETTINGS = "Practice Settings";
+export const USERS_MANAGEMENT = "Users Management";
 export const INVENTORY = "Inventory";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const NO_INVOICE = "No Invoice";
@@ -465,6 +466,13 @@ export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const APPOINTMENT_TEXT = "Appointment";
 export const SETTINGS_TEXT = "Settings";
+export const ADD_ROLE_TEXT = "Add Role";
+export const ROLE_DETAILS_TEXT = "Role Details";
+export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
+export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
+export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
+export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
+export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
 export const CLAIM_FEED_TEXT = "Claim Feed";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
@@ -704,6 +712,7 @@ export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
 export const STAFF_ROUTE = "/staff";
+export const ROLES_ROUTE = "/roles";
 export const VITALS_ROUTE = "/vitals";
 export const PATIENTS_CHART = "/chart";
 export const PROFILE_ROUTE = "/profile";
@@ -713,16 +722,16 @@ export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
-export const CANCELLATION_ROUTE = "/cancellation";
-export const ROLES_ROUTE = "/roles";
 export const AUTO_LOGOUT_ROUTE = "/autologout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FACILITIES_ROUTE = "/list-facilities";
+export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
@@ -964,10 +973,10 @@ export const USER_MENU_ITEMS = [
     name: DOCTORS_TEXT,
     link: DOCTORS_ROUTE,
   },
-  {
-    name: PATIENTS_TEXT,
-    link: PATIENTS_ROUTE,
-  },
+  // {
+  //   name: PATIENTS_TEXT,
+  //   link: PATIENTS_ROUTE,
+  // },
   {
     name: STAFF_TEXT,
     link: STAFF_ROUTE,
@@ -1927,6 +1936,49 @@ export const DUMMY_DOCUMENTS = [
   },
 ];
 
+export const ROLES_DUMMY_DATA = [
+  {
+    name: "Director of Operations",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Medical or Health Services Manager",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Advanced Practice Registered Nurse",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Physical Therapist Assistant",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Receptionist",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Neonatal Intensive Care Registered Nurse",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Health Services Manager",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Medical Office Specialist",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Nurse Consultant ",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Registered Nurse (RN) Medical Inpatient Services",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  }
+];
+
 export const PROFILE_DETAIL_DATA = [
   {
     title: "Allergies",
@@ -2066,3 +2118,9 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     desc: TIME_ZONE_DESCRIPTION
   },
 ];
+
+// export const APPOINTMENT_PERMISSIONS_ITEMS = [
+//   {
+//     name: 'Create and Update Patients',
+//   },
+// ]

@@ -1,4 +1,4 @@
 // components block
 import ProfileComponent from "../../../components/main/profile";
 
-export const PatientDetail = () => <ProfileComponent />;
+export const Profile = () => <ProfileComponent />;
