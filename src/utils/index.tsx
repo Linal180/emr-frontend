@@ -438,39 +438,41 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
   };
 };
 
-export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => data?.map(appointment => {
-  const {
-    scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-    reason, primaryInsurance, status
-  } = appointment || {};
-  const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
-  const { color, price, name: appointmentName, id: serviceId } = appointmentType || {}
-  const { contacts: fContact, id: facilityId, name: facilityName } = facility || {}
-  const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
-  const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
-  const appointmentStatus = status && formatValue(status)
-  const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
+export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
+  data?.map(appointment => {
+    const {
+      scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
+      reason, primaryInsurance, status
+    } = appointment || {};
 
-  return {
-    reason,
-    facilityId,
-    patientId,
-    serviceId,
-    providerId,
-    appointmentId,
-    facilityName,
-    facilityContact,
-    patientContact,
-    appointmentType,
-    primaryInsurance,
-    color, price,
-    appointmentName,
-    appointmentStatus,
-    title: `${firstName} ${lastName}`,
-    providerName: `${providerFN} ${providerLN}`,
-    ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
-  }
-})
+    const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
+    const { color, price, name: appointmentName, id: serviceId } = appointmentType || {}
+    const { contacts: fContact, id: facilityId, name: facilityName } = facility || {}
+    const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
+    const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
+    const appointmentStatus = status && formatValue(status)
+    const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
+
+    return {
+      reason,
+      facilityId,
+      patientId,
+      serviceId,
+      providerId,
+      appointmentId,
+      facilityName,
+      facilityContact,
+      patientContact,
+      appointmentType,
+      primaryInsurance,
+      color, price,
+      appointmentName,
+      appointmentStatus,
+      title: `${firstName} ${lastName}`,
+      providerName: `${providerFN} ${providerLN}`,
+      ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
+    }
+  })
 
 export const appointmentStatus = (status: string) => {
   const cancelled = status === Appointmentstatus.Cancelled;

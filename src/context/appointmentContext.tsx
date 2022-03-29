@@ -62,7 +62,7 @@ export const AppointmentContextProvider: FC = ({ children }): JSX.Element => {
     } catch { }
   }, [findAllAppointments])
 
-  useEffect(() => { hasToken && fetchAllAppointmentList(appointmentPages) }, [fetchAllAppointmentList, hasToken, appointmentPages])
+  // useEffect(() => { hasToken && fetchAllAppointmentList(appointmentPages) }, [fetchAllAppointmentList, hasToken, appointmentPages])
 
   const setAppointmentList = (appointments: AppointmentsPayload['appointments']) => dispatch({
     type: ActionType.SET_APPOINTMENT_LIST, appointmentList: appointments

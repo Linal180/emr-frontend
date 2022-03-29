@@ -2,11 +2,11 @@
 import { Box, Button, Grid } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 //components block
-import InputController from '../../../../controller';
-import CardComponent from "../../../common/CardComponent";
+import InputController from '../../../controller';
+import CardComponent from "../../common/CardComponent";
 // constants, history, styling block
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { CONFIRM_PASSWORD, NEW_PASSWORD, OLD_PASSWORD, SAVE_TEXT } from "../../../../constants";
+import { useProfileDetailsStyles } from "../../../styles/profileDetails";
+import { CONFIRM_PASSWORD, NEW_PASSWORD, OLD_PASSWORD, SAVE_TEXT } from "../../../constants";
 
 const ChangePasswordComponent = (): JSX.Element => {
   const classes = useProfileDetailsStyles()

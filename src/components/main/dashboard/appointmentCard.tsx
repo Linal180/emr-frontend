@@ -1,18 +1,21 @@
 // packages block
+import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
+import moment from 'moment';
 import { Close } from '@material-ui/icons';
 import DropIn from 'braintree-web-drop-in-react';
 import { AppointmentTooltip } from '@devexpress/dx-react-scheduler';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse, Grid } from '@material-ui/core';
-import { PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload } from 'braintree-web-drop-in';
+import {
+  PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload
+} from 'braintree-web-drop-in';
 // component block
 import Alert from '../../common/Alert';
 import Selector from '../../common/Selector';
 import BackdropLoader from '../../common/Backdrop';
 import ConfirmationModal from '../../common/ConfirmationModal';
 // constant, assets and styles block
-import { AppointmentContext, AuthContext } from '../../../context';
+import { AuthContext } from '../../../context';
 import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
 import { UpdateStatusInputProps } from '../../../interfacesTypes';
@@ -23,29 +26,29 @@ import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
 } from '../../../assets/svgs';
 import {
-  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE, CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE, DELETE_APPOINTMENT_DESCRIPTION,
-  EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FACILITY_LOCATION, FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE,
-  OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME,
-  REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, TRANSACTION_PAID_SUCCESSFULLY, UNPAID, USD
+  Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
+  useCreateInvoiceMutation, Billing_Type, Status, useRemoveAppointmentMutation, useGetAppointmentLazyQuery
+} from '../../../generated/graphql';
+import {
+  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE,
+  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE,
+  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FACILITY_LOCATION,
+  FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE, OUTSTANDING_TEXT,
+  PAID, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE,
+  PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME, REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD,
+  TRANSACTION_PAID_SUCCESSFULLY,
 } from '../../../constants';
-import { Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation, useCreateInvoiceMutation, Billing_Type, Status, useRemoveAppointmentMutation, useGetAppointmentLazyQuery } from '../../../generated/graphql';
-import moment from 'moment';
 
 const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
   const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
-  const { fetchAllAppointmentList } = useContext(AppointmentContext)
   const { id: userId } = user || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
     appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, openDelete, isInvoiceNumber } = state;
-  const methods = useForm<UpdateStatusInputProps>({
-    mode: "all",
-  });
-
+  const methods = useForm<UpdateStatusInputProps>({ mode: "all", });
   const { handleSubmit, watch, setValue } = methods;
-
   const { appointmentStatus } = watch();
 
   const [createInvoice] = useCreateInvoiceMutation({
@@ -76,6 +79,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   });
 
   const [chargePayment] = useChargePaymentMutation({
+    onError({ message }) {
+      Alert.error(message);
+    },
+
     onCompleted({ chargePayment: { transaction, response } }) {
       if (response && transaction) {
         Alert.success(TRANSACTION_PAID_SUCCESSFULLY);
@@ -85,22 +92,18 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
         dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: false })
         dispatch({ type: ActionType.SET_APP_EDIT, appEdit: false })
         fetchAppointment()
-        const { status } = transaction || {}
-        if (status === 'PAID') {
-
-        }
       }
-    },
-
-    onError({ message }) {
-      Alert.error(message);
-    },
+    }
   });
 
   const [getToken] = useGetTokenLazyQuery({
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
+
+    onError({ message }) {
+      Alert.error(message);
+    },
 
     onCompleted(data) {
       if (data) {
@@ -115,11 +118,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
           });
         }
       }
-    },
-
-    onError({ message }) {
-      Alert.error(message);
-    },
+    }
   });
 
   const id = appointmentMeta?.data.appointmentId
@@ -167,9 +166,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
   const fetchAppointment = useCallback(async () => {
     id && await getAppointment({
-      variables: {
-        getAppointment: { id: id.toString() }
-      },
+      variables: { getAppointment: { id: id.toString() } },
     });
   }, [getAppointment, id]);
 
@@ -182,7 +179,8 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       const { updateAppointmentStatus: { appointment } } = data;
 
       if (appointment) {
-        const { status: appointmentStatus } = appointment || {}
+        const { status: appointmentStatus } = appointment
+
         if (appointmentStatus) {
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: appointmentStatus })
           Alert.success(APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY);
@@ -194,11 +192,13 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const onSubmit: SubmitHandler<UpdateStatusInputProps> = async (inputs) => {
     const { appointmentStatus } = inputs;
 
-    if (id) {
-      await updateAppointmentStatus({
-        variables: { appointmentStatusInput: { id: id.toString(), status: appointmentStatus.name as Appointmentstatus } }
-      })
-    }
+    id && await updateAppointmentStatus({
+      variables: {
+        appointmentStatusInput: {
+          id: id.toString(), status: appointmentStatus.name as Appointmentstatus
+        }
+      }
+    })
   };
 
   const handleClose = () => {
@@ -230,7 +230,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           try {
-            await fetchAllAppointmentList()
+            // await fetchAllAppointmentList()
           } catch (error) { }
         }
       }
@@ -272,25 +272,30 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: true })
   }
 
-  const updateStatus = useCallback(() => {
+  const updateStatus = useCallback(async () => {
     if (appEdit && id && appointmentStatus) {
 
-      updateAppointmentStatus({
-        variables: { appointmentStatusInput: { id: id.toString(), status: appointmentStatus.id as Appointmentstatus } }
+      await updateAppointmentStatus({
+        variables: {
+          appointmentStatusInput: {
+            id: id.toString(), status: appointmentStatus.id as Appointmentstatus
+          }
+        }
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [appointmentStatus, id, updateAppointmentStatus]);
 
-  const createAppointmentInvoice = () => {
-    createInvoice({
+  const createAppointmentInvoice = async () => {
+    id && await createInvoice({
       variables: {
         createInvoiceInputs: {
-          amount: appointmentPrice, billingType: Billing_Type.SelfPay, facilityId: appointmentMeta?.data.facilityId,
-          status: Status.Pending, generatedBy: userId, paymentMethod: 'cash', paymentTransactionId: '', appointmentId: id ? id?.toString() : ''
+          amount: appointmentPrice, billingType: Billing_Type.SelfPay, facilityId, appointmentId: id.toString(),
+          status: Status.Pending, generatedBy: userId, paymentMethod: 'cash', paymentTransactionId: '',
         }
       }
-    })
+    });
+
     handleAppDetail()
   }
 
@@ -315,7 +320,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const charge = (token: string) => {
     chargePayment({
       variables: {
-        paymentInput: { price: appointmentPrice, patientId: patientId, providerId: providerId, facilityId: facilityId, appointmentId: id, clientIntent: token, serviceId: serviceId },
+        paymentInput: {
+          price: appointmentPrice, patientId: patientId, providerId: providerId,
+          facilityId: facilityId, appointmentId: id, clientIntent: token, serviceId: serviceId
+        },
       },
     });
   };
@@ -325,52 +333,42 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   }
 
   const threeDSecurePayment = () => {
-    instance.requestPaymentMethod(
-      {
-        threeDSecure: { amount: appointmentPrice },
-      },
+    instance.requestPaymentMethod({ threeDSecure: { amount: appointmentPrice } },
       (err: any, payload: PaymentMethodPayload) => {
-        if (!err) {
-          charge(payload.nonce);
+        if (err) {
+          const { message } = err;
+          Alert.error(message);
         } else {
-          Alert.error(err?.message);
+          const { nonce } = payload
+          charge(nonce);
         }
       }
     );
   };
 
   const onPaymentOptionSelected = (payload: PaymentOptionSelectedPayload) => {
-    if (payload.paymentOption === 'card') {
-      dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: true })
-    } else if (payload.paymentOption === 'paypal') {
-      dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
+    const { paymentOption } = payload
 
-    }
-    else {
-      dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
-    }
+    dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: paymentOption === 'card' })
   };
 
-  const onPaymentMethodRequestable = (
-    payload: PaymentMethodRequestablePayload
-  ) => {
-    if (payload.paymentMethodIsSelected) {
-      if (payload.type === 'PayPalAccount') {
-        threeDSecurePayment();
-      } else if (payload.type === 'CreditCard') {
-        dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
-      }
+  const onPaymentMethodRequestable = (payload: PaymentMethodRequestablePayload) => {
+    const { paymentMethodIsSelected, type } = payload
+
+    if (paymentMethodIsSelected) {
+      if (type === 'PayPalAccount') threeDSecurePayment();
+      else if (type === 'CreditCard') dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
     }
   };
 
   return (
     <Dialog
-      open={appOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" disableEscapeKeyDown keepMounted
+      open={appOpen} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description"
+      disableEscapeKeyDown keepMounted
       maxWidth="sm" className={classes.dropdown}
     >
       <Box px={4} py={2} className={classes.cardContainer}>
 
-        {/* CARD1 */}
         {appDetail &&
           <Card>
             <CardHeader
@@ -449,30 +447,44 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 <Typography variant="body2">{appointmentMeta?.data?.primaryInsurance ?? 'NAN'}</Typography>
               </Box>
 
-              {!appPaid && !isInvoiceNumber ? (<Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
+              {!appPaid && !isInvoiceNumber ? (<Box display="flex" justifyContent="space-between"
+                alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}
+              >
                 <Typography variant='body1'>{NO_INVOICE}</Typography>
 
-                <Button type="submit" onClick={createAppointmentInvoice} variant="contained" className="blue-button-new">{CREATE_INVOICE}</Button>
+                <Button type="submit" onClick={createAppointmentInvoice}
+                  variant="contained" className="blue-button-new"
+                >
+                  {CREATE_INVOICE}
+                </Button>
               </Box>
               ) : !isInvoiceNumber && (
-                <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3}
+                  borderTop={`1px solid ${WHITE_FOUR}`}
+                >
                   <Box display="flex" alignItems="center" className={classes.invoiceText} onClick={handlePaid}>
                     <InvoiceAppointmentIcon />
                     <Typography variant='body1'>{appInvoiceNumber}</Typography>
                   </Box>
 
-                  <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>{UNPAID}</Button>
+                  <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>
+                    {UNPAID}
+                  </Button>
                 </Box>
               )}
 
               {isInvoiceNumber && (
-                <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3} borderTop={`1px solid ${WHITE_FOUR}`}>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} pt={3}
+                  borderTop={`1px solid ${WHITE_FOUR}`}
+                >
                   <Box display="flex" alignItems="center" className={classes.invoiceText} onClick={handlePaid}>
                     <InvoiceAppointmentIcon />
                     <Typography variant='body1'>{appInvoiceNumber}</Typography>
                   </Box>
 
-                  <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>{PAID}</Button>
+                  <Button className={classes.notCursor} type="submit" variant="outlined" color='default'>
+                    {PAID}
+                  </Button>
                 </Box>
               )}
 
@@ -485,9 +497,9 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 handleDelete={handleCancelAppointment}
               />
             </Box>
-          </Card>}
+          </Card>
+        }
 
-        {/* CARD2 */}
         {appInvoice &&
           <Card>
             <CardHeader
@@ -497,7 +509,11 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
                   </IconButton>
-                  {!isInvoiceNumber && <Button onClick={handleInvoice} type="submit" variant="contained" size="large" color="primary">{PAY}</Button>}
+                  {!isInvoiceNumber && <Button onClick={handleInvoice} type="submit" variant="contained"
+                    size="large" color="primary"
+                  >
+                    {PAY}
+                  </Button>}
                 </Box>
               }
               className={classes.cardHeader}
@@ -543,7 +559,9 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 </Box>
               </Box>
 
-              <Box display="flex" justifyContent="space-between" alignItems="center" my={3} borderBottom={`1px solid ${WHITE_FOUR}`}>
+              <Box display="flex" justifyContent="space-between" alignItems="center" my={3}
+                borderBottom={`1px solid ${WHITE_FOUR}`}
+              >
                 <Typography variant="h5"><strong>{OUTSTANDING_TEXT}</strong></Typography>
                 <Typography variant="h4">{appointmentPrice ?? 'NAN'}</Typography>
               </Box>
@@ -556,9 +574,9 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 <Typography variant="h5"><strong>{patientName}</strong></Typography>
               </Box>
             </Box>
-          </Card>}
+          </Card>
+        }
 
-        {/* CARD3 */}
         {appPayment &&
           <Card>
             <CardHeader
@@ -589,7 +607,9 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
                   <Collapse in={appEdit} mountOnEnter unmountOnExit>
                     <Box py={3} display='flex' justifyContent='center'>
-                      <Button variant="contained" size='large' color="primary" onClick={cashPaid}>{CASH_PAID}</Button>
+                      <Button variant="contained" size='large' color="primary" onClick={cashPaid}>
+                        {CASH_PAID}
+                      </Button>
                     </Box>
                   </Collapse>
                 </Box>
@@ -641,6 +661,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                       onPaymentOptionSelected={onPaymentOptionSelected}
                       onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
                     />
+
                     <Grid container>
                       {appShowPayBtn && (
                         <Grid item>
@@ -658,7 +679,8 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 )}
               </Box>
             </Box>
-          </Card>}
+          </Card>
+        }
       </Box>
     </Dialog>
   );
