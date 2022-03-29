@@ -670,6 +670,7 @@ export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
+export const APPOINTMENT_CANCEL_REASON = "Admin/Staff cancelled appointment";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PASSWORD_CHANGE_TEXT =
   "Your password is successfully changed. Please Sign in to your account.";

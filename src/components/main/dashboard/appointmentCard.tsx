@@ -27,7 +27,7 @@ import {
 } from '../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useRemoveAppointmentMutation, useGetAppointmentLazyQuery
+  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation
 } from '../../../generated/graphql';
 import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE,
@@ -36,7 +36,7 @@ import {
   FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE, OUTSTANDING_TEXT,
   PAID, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE,
   PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME, REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD,
-  TRANSACTION_PAID_SUCCESSFULLY,
+  TRANSACTION_PAID_SUCCESSFULLY, APPOINTMENT_CANCEL_REASON,
 } from '../../../constants';
 
 const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
@@ -46,7 +46,8 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
-    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, openDelete, isInvoiceNumber } = state;
+    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, openDelete, isInvoiceNumber, 
+   } = state;
   const methods = useForm<UpdateStatusInputProps>({ mode: "all", });
   const { handleSubmit, watch, setValue } = methods;
   const { appointmentStatus } = watch();
@@ -122,6 +123,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   });
 
   const id = appointmentMeta?.data.appointmentId
+  const token = appointmentMeta?.data.token
   const facilityId = appointmentMeta?.data.facilityId
   const patientId = appointmentMeta?.data.patientId
   const providerId = appointmentMeta?.data.providerId
@@ -131,7 +133,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const appDate = getAppointmentDate(appointmentMeta?.data.startDate)
   const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
   const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
-  const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
+  const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime  
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -156,7 +158,11 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
           if (invoiceNo) {
             dispatch({ type: ActionType.SET_APP_INVOICE_NUMBER, appInvoiceNumber: invoiceNo })
             dispatch({ type: ActionType.SET_IS_INVOICE_NUMBER, isInvoiceNumber: true })
+          } else {
+            dispatch({ type: ActionType.SET_APP_INVOICE_NUMBER, appInvoiceNumber: '' })
+            dispatch({ type: ActionType.SET_IS_INVOICE_NUMBER, isInvoiceNumber: false })
           }
+
           status && setValue('appointmentStatus', setRecord(status, status))
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: status })
         }
@@ -214,33 +220,30 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     dispatch({ type: ActionType.SET_APP_EDIT, appEdit: true })
   }
 
-  const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
-    onError() {
+  const [cancelAppointment, { loading: cancelAppointmentLoading }] = useCancelAppointmentMutation({
+    onError({message}) {
       Alert.error(CANT_CANCELLED_APPOINTMENT)
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
     async onCompleted(data) {
       if (data) {
-        const { removeAppointment: { response } } = data
+        const { cancelAppointment: { response } } = data
 
         if (response) {
           const { message } = response
 
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          try {
-            // await fetchAllAppointmentList()
-          } catch (error) { }
         }
       }
     }
   });
 
   const handleCancelAppointment = async () => {
-    deleteAppointmentId && await removeAppointment({
+    deleteAppointmentId && await cancelAppointment({
       variables: {
-        removeAppointment: { id: deleteAppointmentId }
+        cancelAppointment: { token: deleteAppointmentId, reason: APPOINTMENT_CANCEL_REASON }
       }
     })
   };
@@ -316,7 +319,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     id && getToken()
   }, [getToken, id])
 
-
   const charge = (token: string) => {
     chargePayment({
       variables: {
@@ -381,7 +383,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
                   <IconButton onClick={() => {
                     moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
-                      Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
+                      Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(token || '')
                   }}>
                     <DeleteAppointmentIcon />
                   </IconButton>
@@ -491,7 +493,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               <ConfirmationModal
                 title={APPOINTMENT_DETAILS}
                 isOpen={openDelete}
-                isLoading={deleteAppointmentLoading}
+                isLoading={cancelAppointmentLoading}
                 description={DELETE_APPOINTMENT_DESCRIPTION}
                 setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
                 handleDelete={handleCancelAppointment}

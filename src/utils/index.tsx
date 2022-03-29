@@ -18,6 +18,7 @@ import {
 } from "../constants";
 import { ReactNode } from "react";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
+import { Token } from "graphql";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -442,7 +443,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
     const {
       scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status
+      reason, primaryInsurance, status, token
     } = appointment || {};
 
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
@@ -454,6 +455,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
     const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
 
     return {
+      token,
       reason,
       facilityId,
       patientId,

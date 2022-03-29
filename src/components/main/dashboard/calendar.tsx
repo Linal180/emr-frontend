@@ -39,7 +39,6 @@ const CalendarComponent = (): JSX.Element => {
 
       if (findAllAppointments) {
         const { appointments } = findAllAppointments
-
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
           appointments: appointments as AppointmentsPayload['appointments']
