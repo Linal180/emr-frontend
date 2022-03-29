@@ -68,3 +68,20 @@ mutation updateForm($updateFormInput: UpdateFormInput!) {
     }
   }
 }
+
+query getPublicForm($getForm: GetForm!) {
+  getPublicForm(getForm: $getForm) {
+    response {
+      status
+      message
+    }
+    form {
+      id
+      name
+      layout
+      type
+      facilityId
+    }
+  }
+}
+

@@ -1616,6 +1616,7 @@ export type Query = {
   getPatient: PatientPayload;
   getPatientAppointment: AppointmentsPayload;
   getPractice: PracticePayload;
+  getPublicForm: FormPayload;
   getSchedule: SchedulePayload;
   getService: ServicePayload;
   getStaff: StaffPayload;
@@ -1748,6 +1749,11 @@ export type QueryGetPatientAppointmentArgs = {
 
 export type QueryGetPracticeArgs = {
   getPractice: GetPractice;
+};
+
+
+export type QueryGetPublicFormArgs = {
+  getForm: GetForm;
 };
 
 
@@ -2799,6 +2805,13 @@ export type UpdateFormMutationVariables = Exact<{
 
 
 export type UpdateFormMutation = { __typename?: 'Mutation', updateForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string } | null | undefined } };
+
+export type GetPublicFormQueryVariables = Exact<{
+  getForm: GetForm;
+}>;
+
+
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, layout: string, type: FormType, facilityId: string } | null | undefined } };
 
 export type CreateAttachmentDataMutationVariables = Exact<{
   createAttachmentInput: CreateAttachmentInput;
@@ -4543,6 +4556,51 @@ export function useUpdateFormMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateFormMutationHookResult = ReturnType<typeof useUpdateFormMutation>;
 export type UpdateFormMutationResult = Apollo.MutationResult<UpdateFormMutation>;
 export type UpdateFormMutationOptions = Apollo.BaseMutationOptions<UpdateFormMutation, UpdateFormMutationVariables>;
+export const GetPublicFormDocument = gql`
+    query getPublicForm($getForm: GetForm!) {
+  getPublicForm(getForm: $getForm) {
+    response {
+      status
+      message
+    }
+    form {
+      id
+      name
+      layout
+      type
+      facilityId
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPublicFormQuery__
+ *
+ * To run a query within a React component, call `useGetPublicFormQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicFormQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicFormQuery({
+ *   variables: {
+ *      getForm: // value for 'getForm'
+ *   },
+ * });
+ */
+export function useGetPublicFormQuery(baseOptions: Apollo.QueryHookOptions<GetPublicFormQuery, GetPublicFormQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicFormQuery, GetPublicFormQueryVariables>(GetPublicFormDocument, options);
+      }
+export function useGetPublicFormLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicFormQuery, GetPublicFormQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicFormQuery, GetPublicFormQueryVariables>(GetPublicFormDocument, options);
+        }
+export type GetPublicFormQueryHookResult = ReturnType<typeof useGetPublicFormQuery>;
+export type GetPublicFormLazyQueryHookResult = ReturnType<typeof useGetPublicFormLazyQuery>;
+export type GetPublicFormQueryResult = Apollo.QueryResult<GetPublicFormQuery, GetPublicFormQueryVariables>;
 export const CreateAttachmentDataDocument = gql`
     mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
   createAttachmentData(createAttachmentInput: $createAttachmentInput) {

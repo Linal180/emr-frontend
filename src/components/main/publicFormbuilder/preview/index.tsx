@@ -9,7 +9,7 @@ import Alert from '../../../common/Alert';
 //interfaces & constants
 import { ParamsType } from '../../../../interfacesTypes'
 import { getFormElements, LoaderBackdrop, parseColumnGrid } from '../../../../utils';
-import { SectionsInputs, useGetFormLazyQuery } from '../../../../generated/graphql';
+import { SectionsInputs, useGetPublicFormLazyQuery } from '../../../../generated/graphql';
 import { FORM_BUILDER_FIELDS_VALUES, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
@@ -28,14 +28,14 @@ const PublicFormPreview = () => {
   //constants destructuring
   const { handleSubmit, reset } = methods;
   //mutation
-  const [getForm, { loading: getFormLoader }] = useGetFormLazyQuery({
+  const [getForm, { loading: getFormLoader }] = useGetPublicFormLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
     onCompleted(data) {
-      const { getForm } = data || {};
-      if (getForm) {
-        const { form, response } = getForm || {};
+      const { getPublicForm } = data || {};
+      if (getPublicForm) {
+        const { form, response } = getPublicForm || {};
         if (response) {
           const { status } = response;
           if (form && status && status === 200) {
