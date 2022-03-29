@@ -114,10 +114,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
   });
 
   const fetchAppointment = useCallback(async () => {
-    id &&
-      (await getAppointment({
-        variables: { getAppointment: { id } },
-      }));
+    id && await getAppointment({ variables: { getAppointment: { id } } });
   }, [getAppointment, id]);
 
   useEffect(() => {
@@ -127,7 +124,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
   const charge = (token: string) => {
     chargePayment({
       variables: {
-        paymentInput: { price, patientId, providerId, facilityId, appointmentId: id, clientIntent: token, },
+        paymentInput: { price, patientId, providerId, facilityId, appointmentId: id, clientIntent: token },
       },
     });
   };

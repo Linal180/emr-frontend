@@ -1,8 +1,21 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK, BLACK_ONE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
+import { BLACK, BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
+    changePasswordContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: 'calc(100vh - 130px)',
+    },
+
+    changePasswordCard: {
+      background: WHITE,
+      borderRadius: 8,
+      padding: 30,
+    },
+    
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
     },
@@ -23,19 +36,6 @@ export const useProfileDetailsStyles = makeStyles(() =>
       width: '60%',
       margin: 'auto',
       justifyContent: 'space-around'
-    },
-
-    changePasswordContainer: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      minHeight: 'calc(100vh - 130px)',
-    },
-
-    changePasswordCard: {
-      background: WHITE,
-      borderRadius: 8,
-      padding: 30,
     },
 
     profileImage: {
@@ -137,6 +137,12 @@ export const useProfileDetailsStyles = makeStyles(() =>
     profileCardItemMasonry: {
       breakInside: 'avoid',
       margin: '24px 5px'
-    }
+    },
+
+    sidebarMenu: {
+      "& .MuiListItem-root": {
+        color: BLACK_THREE,
+      },
+    },
   })
 );

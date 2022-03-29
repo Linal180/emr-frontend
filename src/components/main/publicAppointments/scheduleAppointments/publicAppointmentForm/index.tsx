@@ -8,7 +8,6 @@ import { Box, Button, Checkbox, colors, FormControlLabel, Grid, Typography } fro
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
-import PhoneField from '../../../../common/PhoneInput';
 import DatePicker from "../../../../common/DatePicker";
 import InputController from "../../../../../controller";
 import CardComponent from "../../../../common/CardComponent";
@@ -26,19 +25,17 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
 import {
-  formatValue, getStandardTime, getTimestamps, renderDoctors, renderServices
+  getStandardTime, getTimestamps, renderDoctors, renderServices
 } from "../../../../../utils";
 import {
-  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, PaymentType,
-  Sexualorientation, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
-  Pronouns, Race, RelationshipType, useGetFacilityLazyQuery, FacilityPayload, BillingStatus
+  ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
+  useGetFacilityLazyQuery, FacilityPayload, BillingStatus
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
-  MAPPED_GENDER_IDENTITY, MAPPED_RELATIONSHIP_TYPE, PATIENT_DETAILS, PHONE, SELECT_SERVICES,
-  SELECT_PROVIDER, BOOK_APPOINTMENT, AVAILABLE_SLOTS, RELATIONSHIP_WITH_PATIENT, YOUR_NAME,
-  FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, NO_SLOT_AVAILABLE,
-  BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT,
+  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, SELECT_PROVIDER, BOOK_APPOINTMENT,
+  AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
+  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT,
 } from "../../../../../constants";
 
 const PublicAppointmentForm = (): JSX.Element => {
@@ -46,7 +43,7 @@ const PublicAppointmentForm = (): JSX.Element => {
   const { id: facilityId } = useParams<ParamsType>();
   const { serviceList, doctorList, fetchAllDoctorList, fetchAllServicesList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { facility, availableSlots, currentDate, offset, agreed, } = state;
+  const { facility, availableSlots, currentDate, offset, agreed } = state;
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
@@ -56,7 +53,6 @@ const PublicAppointmentForm = (): JSX.Element => {
   const {
     serviceId: { id: selectedService } = {},
     providerId: { id: selectedProvider } = {},
-    paymentType: { name: selectedPaymentType } = {},
   } = watch();
 
   const [getFacility] = useGetFacilityLazyQuery({
@@ -138,14 +134,6 @@ const PublicAppointmentForm = (): JSX.Element => {
   }, [facilityId, getFacility])
 
   useEffect(() => {
-    if (selectedPaymentType) {
-      dispatch({
-        type: ActionType.SET_IS_INSURANCE, isInsurance: selectedPaymentType === formatValue(PaymentType.Insurance)
-      })
-    }
-  }, [selectedPaymentType, watch])
-
-  useEffect(() => {
     if (selectedProvider && selectedService && date) {
       getDoctorSlots({
         variables: {
@@ -157,13 +145,8 @@ const PublicAppointmentForm = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const {
-      suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-      previouslastName, motherMaidenName, ssn, dob, email, registrationDate, deceasedDate,
-      privacyNotice, releaseOfInfoBill, callToConsent, patientNote, language, serviceId,
-      homeBound, holdStatement, statementDelivereOnline, statementNote, statementNoteDateFrom,
-      statementNoteDateTo, medicationHistoryAuthority, sexAtBirth, scheduleStartDateTime,
-      scheduleEndDateTime, membershipID, paymentType, guardianName, guardianRelationship,
-      providerId
+      firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime,
+      scheduleEndDateTime, providerId
     } = inputs;
 
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
@@ -174,44 +157,21 @@ const PublicAppointmentForm = (): JSX.Element => {
         const { id: selectedService } = serviceId || {};
         const { id: selectedProvider } = providerId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
-        const { id: selectedPaymentType } = paymentType || {};
-        const { id: selectedGuardianRelationship } = guardianRelationship || {};
 
         await createExternalAppointment({
           variables: {
             createExternalAppointmentInput: {
+              createGuardianContactInput: { contactType: ContactType.Guardian },
               createExternalAppointmentItemInput: {
-                serviceId: selectedService || '', providerId: selectedProvider, facilityId, membershipID,
-                paymentType: selectedPaymentType as PaymentType || PaymentType.Self,
+                serviceId: selectedService, providerId: selectedProvider, facilityId, paymentType: PaymentType.Self,
                 scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
                 scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },
 
               createPatientItemInput: {
-                suffix: suffix || '', firstName: firstName || '', middleName: middleName || '',
-                lastName: lastName || '', firstNameUsed: firstNameUsed || '', prefferedName: prefferedName || '',
-                previousFirstName: previousFirstName || '', previouslastName: previouslastName || '',
-                motherMaidenName: motherMaidenName || '', ssn: ssn || '', dob: getTimestamps(dob || ''),
-                registrationDate: getTimestamps(registrationDate || ''),
-                deceasedDate: getTimestamps(deceasedDate || ''),
-                privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false,
-                callToConsent: callToConsent || false, usualProviderId: selectedProvider || '',
-                medicationHistoryAuthority: medicationHistoryAuthority || false,
-                patientNote: patientNote || '', language: language || '',
-                statementNoteDateTo: getTimestamps(statementNoteDateTo || ''),
-                homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
-                statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
-                pronouns: Pronouns.None, ethnicity: Ethnicity.None, facilityId, gender: Genderidentity.None,
-                sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
-                genderIdentity: Genderidentity.None, maritialStatus: Maritialstatus.Single,
-                sexualOrientation: Sexualorientation.None, race: Race.Other, email: email || '',
-                statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
+                email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId,
+                usualProviderId: selectedProvider, sexAtBirth: selectedSexAtBirth as Genderidentity,
               },
-
-              createGuardianContactInput: {
-                name: guardianName, contactType: ContactType.Guardian,
-                relationship: selectedGuardianRelationship as RelationshipType || RelationshipType.Other,
-              }
             }
           }
         })
@@ -318,29 +278,6 @@ const PublicAppointmentForm = (): JSX.Element => {
                         label={DOB_TEXT}
                       />
                     </Grid>
-
-                    <Grid item md={4} sm={12} xs={12}>
-                      <PhoneField name="phone" label={PHONE} />
-                    </Grid>
-                  </Grid>
-
-                  <Grid container spacing={3}>
-                    <Grid item md={6} sm={12} xs={12}>
-                      <Selector
-                        name="guardianRelationship"
-                        label={RELATIONSHIP_WITH_PATIENT}
-                        value={EMPTY_OPTION}
-                        options={MAPPED_RELATIONSHIP_TYPE}
-                      />
-                    </Grid>
-
-                    <Grid item md={6} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="guardianName"
-                        controllerLabel={YOUR_NAME}
-                      />
-                    </Grid>
                   </Grid>
                 </CardComponent>
 
@@ -403,13 +340,6 @@ const PublicAppointmentForm = (): JSX.Element => {
                   )}
                 </CardComponent >
               </Grid >
-
-              <Grid item lg={12} md={12} sm={12} xs={12}>
-                <Box pt={4} display="flex" justifyContent="center" gridGap={20}>
-                  <Button type="submit" variant="contained" color="primary"
-                    disabled={!agreed} >{BOOK_APPOINTMENT}</Button>
-                </Box>
-              </Grid>
             </Grid>
           </form>
         </FormProvider>

@@ -17,7 +17,7 @@ import { AuthContext } from "../../context";
 import { EditIcon, TrashIcon } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
-import { getFormattedDate, renderTh, getISOTime, isSuperAdmin, appointmentStatus } from "../../utils";
+import { getFormattedDate, renderTh, getISOTime, isSuperAdmin, appointmentStatus, getStandardTime } from "../../utils";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
 import {
   AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery,
@@ -75,7 +75,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
-  const [getDoctorAppointment, { loading: getDoctorAppointmentLoading, error: doctorAppointmentError }] = useGetDoctorAppointmentsLazyQuery({
+  const [getDoctorAppointment, {
+    loading: getDoctorAppointmentLoading, error: doctorAppointmentError
+  }] = useGetDoctorAppointmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -231,7 +233,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
 
                     <TableCell scope="row">
-                      {getFormattedDate(scheduleStartDateTime || '')}
+                      {getFormattedDate(scheduleStartDateTime || '')} {getStandardTime(scheduleStartDateTime || '')}
                     </TableCell>
 
                     <TableCell scope="row">{duration} {MINUTES}</TableCell>
