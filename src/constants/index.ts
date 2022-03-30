@@ -9,8 +9,8 @@ import {
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  UserRole, Communicationtype, Gender, Appointmentstatus,
+  Appointmentstatus, Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
+  Communicationtype, Gender,
 } from "../generated/graphql";
 
 // regex
@@ -32,6 +32,9 @@ export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
+// roles
+export const SUPER_ADMIN = 'super-admin';
+export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
 export const EMPTY_OPTION = { id: "", name: "" };
@@ -45,8 +48,10 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const CDC = "CDC";
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
+export const BMI_FOR_AGE = "BMI for Age";
 export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
 export const VIEW = "View";
@@ -1039,46 +1044,6 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
   { id: "two", name: "two" },
   { id: "three", name: "three" },
   { id: "four", name: "four" },
-];
-
-export const MAPPED_ROLES: SelectorOption[] = [
-  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Doctor, name: "Physician" },
-  { id: UserRole.Billing, name: "Biller" },
-  { id: UserRole.DoctorAssistant, name: "Physician Assistant" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
-];
-
-export const MAPPED_STAFF_ROLES: SelectorOption[] = [
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: "Biller" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
-  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
-];
-
-export const MAPPED_PRACTICE_ROLES: SelectorOption[] = [
-  { id: UserRole.Doctor, name: "Physician" },
-  { id: UserRole.DoctorAssistant, name: "Physician Assistant" },
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: "Biller" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
 ];
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [

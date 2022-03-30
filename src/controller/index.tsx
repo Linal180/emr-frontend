@@ -62,6 +62,8 @@ const InputController: FC<CustomInputControlProps> = ({
                 passwordType={passwordType}
                 handleShowPassword={handleClickShowPassword}
               />,
+            } : fieldType === 'number' ? {
+              inputProps: { step: '5' }
             } : undefined}
           />
         </FormControl>

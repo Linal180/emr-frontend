@@ -1,0 +1,28 @@
+query FindAllRoles($roleInput: RoleInput!){
+  getAllRoles(roleInput: $roleInput){
+    response {
+      status
+      error
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
+    }
+
+    roles {
+      id
+      role
+      
+      rolePermissions {
+        id
+
+        permission { 
+          id
+          name
+        }
+      }
+    }
+  }
+}

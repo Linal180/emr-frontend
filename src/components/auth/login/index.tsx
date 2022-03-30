@@ -14,7 +14,7 @@ import { requiredLabel } from "../../../utils";
 import { AuthContext } from "../../../context";
 import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
-import { LoginUserInput, useLoginMutation, UserRole } from "../../../generated/graphql";
+import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
@@ -52,9 +52,7 @@ const LoginComponent = (): JSX.Element => {
 
           if (status === 200 && access_token && roles) {
             const userRoles = roles.map(role => role.role)
-            const isAdmin = userRoles.filter(role => role === UserRole.SuperAdmin || role === UserRole.Admin
-              || role === UserRole.Staff || role === UserRole.Doctor
-            )
+            const isAdmin = userRoles.filter(role => role !== 'patient')
 
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
