@@ -8,9 +8,9 @@ import { PageNotFound } from "../pages/404";
 import Settings from "../pages/main/settings";
 import Dashboard from "../pages/main/dashboard";
 import { Maintenance } from "../pages/maintenance";
+import { Signature } from "../pages/main/signature";
 import AddStaff from "../pages/main/staff/addStaff";
 import AddBill from "../pages/main/billing/addBill";
-import { Signature } from "../pages/main/signature";
 import Staff from "../pages/main/staff/staffListing";
 import ViewStaff from "../pages/main/staff/viewStaff";
 import { AutoLogout } from "../pages/main/autoLogout";
@@ -23,11 +23,12 @@ import ViewDoctor from "../pages/main/doctors/viewDoctor";
 import ForgetPassword from "../pages/auth/forgetPassword";
 import AddPatient from "../pages/main/patients/addPatient";
 import Doctors from "../pages/main/doctors/doctorsListing";
+import { Calendar } from "../pages/main/dashboard/calendar";
 import { ResetPassword } from "../pages/auth/resetPassword";
 import Invoices from "../pages/main/billing/invoicesListing";
 import ViewPatient from "../pages/main/patients/viewPatient";
-import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import { ChangePassword } from "../pages/main/changePassword";
+import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import LabResults from "../pages/main/reports/labResultsListing";
@@ -35,7 +36,6 @@ import ViewFacility from "../pages/main/facilities/viewFacility";
 import PatientDetail from "../pages/main/patients/patientDetail";
 import { AddPractice } from "../pages/main/practices/addPractice";
 import Facilities from "../pages/main/facilities/facilitiesListing";
-import { StartProject } from "../pages/main/dashboard/startProject";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
 import { PublicAppointment } from "../pages/main/publicAppointments";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
@@ -64,7 +64,7 @@ import {
   FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PROFILE_ROUTE, MAINTENANCE_ROUTE,
   PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE,
-  SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE,
+  CALENDAR_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE,
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -98,7 +98,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={AUTO_LOGOUT_ROUTE} component={AutoLogout} />
       <PrivateRoute exact path={CHANGE_PASSWORD_ROUTE} component={ChangePassword} />
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
-      <PrivateRoute exact path={`${DASHBOARD_ROUTE}/start-project`} component={StartProject} />
+      <PrivateRoute exact path={`${CALENDAR_ROUTE}`} component={Calendar} />
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />

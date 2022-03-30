@@ -2,6 +2,7 @@
 import { ReactNode } from "react";
 import moment from "moment";
 import { Typography, Box, TableCell } from "@material-ui/core";
+import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
@@ -148,6 +149,14 @@ export const getPracticeType = (type: PracticeType): string => {
 
 export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
+};
+
+export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
+  return date ? moment(date).format("h:mm a") : moment().format("h:mm a")
+};
+
+export const getAppointmentDate = (date: SchedulerDateTime | undefined): string => {
+  return date ? moment(date).format("MMMM Do YYYY") : moment().format("MMMM Do YYYY")
 };
 
 export const getDate = (date: string) => {
@@ -433,20 +442,42 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
   };
 };
 
-export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
-  return data?.map(appointment => {
-    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
-    const { firstName, lastName } = patient || {}
-    const { color } = appointmentType || {}
+export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
+  data?.map(appointment => {
+    const {
+      scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
+      reason, primaryInsurance, status, token
+    } = appointment || {};
+
+    const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
+    const { color, price, name: appointmentName, id: serviceId } = appointmentType || {}
+    const { contacts: fContact, id: facilityId, name: facilityName } = facility || {}
+    const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
+    const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
+    const appointmentStatus = status && formatValue(status)
+    const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
 
     return {
-      id, color,
+      token,
+      reason,
+      facilityId,
+      patientId,
+      serviceId,
+      providerId,
+      appointmentId,
+      facilityName,
+      facilityContact,
+      patientContact,
+      appointmentType,
+      primaryInsurance,
+      color, price,
+      appointmentName,
+      appointmentStatus,
       title: `${firstName} ${lastName}`,
+      providerName: `${providerFN} ${providerLN}`,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
     }
-
   })
-}
 
 export const appointmentStatus = (status: string) => {
   const cancelled = status === Appointmentstatus.Cancelled;

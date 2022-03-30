@@ -3,6 +3,19 @@ import { BLACK, BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHIT
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
+    changePasswordContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: 'calc(100vh - 130px)',
+    },
+
+    changePasswordCard: {
+      background: WHITE,
+      borderRadius: 8,
+      padding: 30,
+    },
+    
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
     },

@@ -25,13 +25,24 @@ export interface State {
   appointment: AppointmentPayload['appointment'];
   appointments: AppointmentsPayload['appointments'];
   externalAppointment: {
-    id: string ;
+    id: string;
     price: string;
     facilityId: string;
     patientId: string;
     providerId: string;
   };
   appointmentPaymentToken: string;
+  appEdit: boolean;
+  instance: any;
+  appOpen: boolean;
+  appPaid: boolean;
+  appStatus: string;
+  appInvoice: boolean;
+  appPayment: boolean;
+  appInvoiceNumber: string;
+  appShowPayBtn: boolean;
+  appDetail: boolean;
+  isInvoiceNumber: boolean;
 }
 
 export const initialState: State = {
@@ -64,6 +75,17 @@ export const initialState: State = {
   },
   appointmentPaymentToken: "",
   date: new Date() as MaterialUiPickersDate,
+  appEdit: false,
+  instance: null,
+  appOpen: false,
+  appPaid: false,
+  appStatus: '',
+  appInvoice: false,
+  appPayment: false,
+  appInvoiceNumber: '',
+  appShowPayBtn: false,
+  appDetail: true,
+  isInvoiceNumber: false
 }
 
 export enum ActionType {
@@ -89,6 +111,17 @@ export enum ActionType {
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_EXTERNAL_APPOINTMENT = 'setExternalAppointment',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
+  SET_APP_EDIT = 'setAppEdit',
+  SET_INSTANCE = 'setInstance',
+  SET_APP_OPEN = 'setAppOpen',
+  SET_APP_PAID = 'setAppPaid',
+  SET_APP_STATUS = 'setAppStatus',
+  SET_APP_INVOICE = 'setAppInvoice',
+  SET_APP_PAYMENT = 'setAppPayment',
+  SET_APP_INVOICE_NUMBER = 'setAppInvoiceNumber',
+  SET_APP_SHOW_PAY_BTN = 'setAppShowPayBtn',
+  SET_APP_DETAIL = 'setAppDetail',
+  SET_IS_INVOICE_NUMBER = 'setIsInvoiceNumber'
 }
 
 export type Action =
@@ -112,14 +145,28 @@ export type Action =
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: DoctorSlotsPayload['slots'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
-  | { type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
-    id: string,
-    price: string,
-    facilityId: string,
-    patientId: string,
-    providerId: string,
-  } }
-  | { type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN; appointmentPaymentToken: string}
+  | {
+    type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {
+      id: string,
+      price: string,
+      facilityId: string,
+      patientId: string,
+      providerId: string,
+    }
+  }
+  | { type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN; appointmentPaymentToken: string }
+  | { type: ActionType.SET_APP_EDIT; appEdit: boolean }
+  | { type: ActionType.SET_INSTANCE; instance: any }
+  | { type: ActionType.SET_APP_OPEN; appOpen: boolean }
+  | { type: ActionType.SET_APP_PAID; appPaid: boolean }
+  | { type: ActionType.SET_APP_STATUS; appStatus: string }
+  | { type: ActionType.SET_APP_INVOICE; appInvoice: boolean }
+  | { type: ActionType.SET_APP_PAYMENT; appPayment: boolean }
+  | { type: ActionType.SET_APP_INVOICE_NUMBER; appInvoiceNumber: string }
+  | { type: ActionType.SET_APP_SHOW_PAY_BTN; appShowPayBtn: boolean }
+  | { type: ActionType.SET_APP_DETAIL; appDetail: boolean }
+  | { type: ActionType.SET_IS_INVOICE_NUMBER; isInvoiceNumber: boolean }
+
 
 export const appointmentReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -251,6 +298,61 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         appointmentPaymentToken: action.appointmentPaymentToken
+      }
+    case ActionType.SET_APP_EDIT:
+      return {
+        ...state,
+        appEdit: action.appEdit
+      }
+    case ActionType.SET_INSTANCE:
+      return {
+        ...state,
+        instance: action.instance
+      }
+    case ActionType.SET_APP_OPEN:
+      return {
+        ...state,
+        appOpen: action.appOpen
+      }
+    case ActionType.SET_APP_PAID:
+      return {
+        ...state,
+        appPaid: action.appPaid
+      }
+    case ActionType.SET_APP_STATUS:
+      return {
+        ...state,
+        appStatus: action.appStatus
+      }
+    case ActionType.SET_APP_INVOICE:
+      return {
+        ...state,
+        appInvoice: action.appInvoice
+      }
+    case ActionType.SET_APP_PAYMENT:
+      return {
+        ...state,
+        appPayment: action.appPayment
+      }
+    case ActionType.SET_APP_INVOICE_NUMBER:
+      return {
+        ...state,
+        appInvoiceNumber: action.appInvoiceNumber
+      }
+    case ActionType.SET_APP_SHOW_PAY_BTN:
+      return {
+        ...state,
+        appShowPayBtn: action.appShowPayBtn
+      }
+    case ActionType.SET_APP_DETAIL:
+      return {
+        ...state,
+        appDetail: action.appDetail
+      }
+    case ActionType.SET_IS_INVOICE_NUMBER:
+      return {
+        ...state,
+        isInvoiceNumber: action.isInvoiceNumber
       }
   }
 };

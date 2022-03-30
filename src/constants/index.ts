@@ -9,7 +9,8 @@ import {
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
+  Appointmentstatus, Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
+  Communicationtype, Gender,
 } from "../generated/graphql";
 
 // regex
@@ -150,6 +151,7 @@ export const INVENTORY = "Inventory";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const NO_INVOICE = "No Invoice";
 export const UNPAID = "Unpaid";
+export const PAID = "Paid";
 export const INVOICE = "Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
@@ -552,6 +554,7 @@ export const ETHNICITY = "Ethnicity";
 export const GENDER_IDENTITY = "Gender Identity";
 export const HOLD_STATEMENT = "Hold Statement";
 export const HOMEBOUND = "Home Bound";
+export const PROVIDER_NAME = "Provider Name"
 export const LANGUAGE = "Language";
 export const REGISTRATION_DEPARTMENT = "Registration Department";
 export const PRIMARY_DEPARTMENT = "Primary Department";
@@ -582,6 +585,10 @@ export const GROUP_NUMBER = "Policy / Group number";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits"
 export const ISSUE_DATE = "Issue Date";
 export const EXPIRATION_DATE = "Expiration Date";
+export const PRODUCT_AND_SERVICES_TEXT = "Product & Services";
+export const SUB_TOTAL_TEXT = "Sub-Total";
+export const TOTAL_TEXT = "Total";
+export const OUTSTANDING_TEXT = "Outstanding";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
@@ -670,6 +677,7 @@ export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
+export const APPOINTMENT_CANCEL_REASON = "Admin/Staff cancelled appointment";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PASSWORD_CHANGE_TEXT =
   "Your password is successfully changed. Please Sign in to your account.";
@@ -719,6 +727,7 @@ export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FACILITIES_ROUTE = "/list-facilities";
+export const CALENDAR_ROUTE = "/dashboard/calendar";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
@@ -808,6 +817,7 @@ export const FACILITY_UPDATED = "Facility updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
+export const INVOICE_CREATED = "Invoice created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
@@ -836,11 +846,13 @@ export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
 export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully";
+export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";
 export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
 export const SET_PASSWORD_TEXT_MESSAGE = "Set your password and login to your portal";
 export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully";
+export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY = "Appointment status is updated successfully";
 export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done";
 export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = "Cancelled appointment cant be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
@@ -1038,6 +1050,12 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
   { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
+];
+
+export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
+  { id: Appointmentstatus.Cancelled, name: formatValue(Appointmentstatus.Cancelled) },
+  { id: Appointmentstatus.Completed, name: formatValue(Appointmentstatus.Completed) },
+  { id: Appointmentstatus.Initiated, name: formatValue(Appointmentstatus.Initiated) },
 ];
 
 export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map((timezone) => {
@@ -1672,29 +1690,6 @@ export const dummyAppointmentData = {
   patientStatus: "Status",
   patientElg: "Eligibility Issue",
 };
-
-export const dummyAppointmentSubData = [
-  {
-    heading: "Appointment Type",
-    description: "General",
-  },
-  {
-    heading: "Facility Location",
-    description: "Clay County Hospital",
-  },
-  {
-    heading: "Provider Name",
-    description: "Dr. Michael Hall, MD",
-  },
-  {
-    heading: "Reason",
-    description: "High temperature",
-  },
-  {
-    heading: "Primary Insurance",
-    description: "United Health Ins.",
-  },
-];
 
 export const PATIENT_CHARTING_DATA = [
   {

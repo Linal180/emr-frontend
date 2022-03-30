@@ -21,3 +21,19 @@ mutation ChargeAfterAppointment($paymentInput: PaymentInputsAfterAppointment!){
     }
   }
 }
+
+mutation ChargePayment($paymentInput: PaymentInput!){
+  chargePayment(paymentInput: $paymentInput){
+    response {
+      error
+      status
+      message
+      name
+    }
+    
+    transaction {
+      id
+      status
+    }
+  }
+}

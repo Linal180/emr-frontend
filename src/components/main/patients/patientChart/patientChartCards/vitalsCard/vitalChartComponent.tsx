@@ -45,7 +45,6 @@ const VitalsChartingTable: FC = (): JSX.Element => {
     })[0];
 
     if (currentDoctor) {
-      debugger
       const { firstName, lastName } = currentDoctor || {};
       providerName = `${firstName} ${lastName}` || "--"
     }
