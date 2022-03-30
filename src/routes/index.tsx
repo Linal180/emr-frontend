@@ -39,6 +39,7 @@ import Facilities from "../pages/main/facilities/facilitiesListing";
 import { StartProject } from "../pages/main/dashboard/startProject";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
 import { PublicAppointment } from "../pages/main/publicAppointments";
+import { DetailPractice } from "../pages/main/practices/detailPractice";
 import AddFacilityComponent from "../pages/main/facilities/addFacility";
 import { AppointmentFail } from "../pages/main/publicAppointments/fail";
 import { PracticeListing } from "../pages/main/practices/practiceListing";
@@ -65,7 +66,7 @@ import {
   FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PROFILE_ROUTE, MAINTENANCE_ROUTE,
   PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE,
-  SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, EMERGENCY_ACCESS_ROUTE,
+  SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, EMERGENCY_ACCESS_ROUTE, PRACTICE_DETAILS_ROUTE,
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -95,6 +96,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={PracticeListing} />
       <PrivateRoute exact path={PROFILE_ROUTE} component={ProfileComponent} />
       <PrivateRoute exact path={EMERGENCY_ACCESS_ROUTE} component={EmergencyAccess} />
+      <PrivateRoute exact path={PRACTICE_DETAILS_ROUTE} component={DetailPractice} />
       <PrivateRoute exact path={SIGNATURE_ROUTE} component={Signature} />
       <PrivateRoute exact path={CANCELLATION_ROUTE} component={Cancellation} />
       <PrivateRoute exact path={AUTO_LOGOUT_ROUTE} component={AutoLogout} />

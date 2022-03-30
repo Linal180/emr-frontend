@@ -194,6 +194,7 @@ export const VITALS_TEXT = "Vitals";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
 export const UPLOAD_PICTURE = "Upload Picture";
+export const UPLOAD_LOGO = "Upload Logo";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
 export const PROBLEMS_TEXT = "Problems";
@@ -451,6 +452,7 @@ export const FIRST_NAME = "First Name";
 export const CARD_NUMBER = "Card Number";
 export const EXPIRY_DATE = "Expiry Date";
 export const PRACTICE_NAME = "Practice Name";
+export const PRACTICE_NPI = "Practice NPI";
 export const FACILITY_NAME = "Facility Name";
 export const SEND_EMAIL = "Send Email";
 export const START_TIME = "Start Time";
@@ -787,6 +789,7 @@ export const CHANGE_PASSWORD_ROUTE = "/change-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const CANCEL_APPOINTMENT = "/cancel-appointment";
 export const EMERGENCY_ACCESS_ROUTE = "/emergency-access";
+export const PRACTICE_DETAILS_ROUTE = "/practice-details";
 export const PATIENT_INFORMATION = "/patient-information";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
@@ -2098,7 +2101,7 @@ export const PORTAL_DUMMY_DATA = [
 export const PRACTICE_SETTINGS_ITEMS = [
   {
     name: PRACTICE_DETAILS_TEXT,
-    link: "/",
+    link: PRACTICE_DETAILS_ROUTE,
     desc: PRACTICE_DETAILS_DESCRIPTION,
   },
   {

@@ -618,3 +618,4 @@ export const CardAppointmentIcon = () => (
     <path d="M25 18H33V15H25V18Z" fill="#D4E3F4" />
   </svg>
 )
+
