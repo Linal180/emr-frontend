@@ -9,7 +9,7 @@ import { DaySchedule, LoaderProps, SelectorOption, TableAlignType } from "../int
 import {
   Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, PracticesPayload, SectionsInputs, FieldsInputs, ElementType
+  AppointmentsPayload, AttachmentsPayload, PracticesPayload, ElementType
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
@@ -478,22 +478,18 @@ export const LoaderBackdrop = memo(({ open }: LoaderProps): JSX.Element => (
   </Backdrop>
 ))
 
-export const getFormElements = (layout: string): SectionsInputs[] => {
-  const parsedLayout = JSON.parse(layout);
-  const { sections } = parsedLayout
 
-  return sections?.length > 0 ? sections?.map((item: SectionsInputs) => {
-    if (item?.fields?.length > 0) {
-      const fields = item?.fields?.map((field: FieldsInputs) => ({ ...field, type: field.type as ElementType }))
-      return { ...item, fields };
-    }
-    else { return item }
-  }) : []
-}
-
-export const setFieldType = (type: string) => {
-  switch(type){
-    case 'text':
+export const getFieldType = (type: ElementType) => {
+  switch (type) {
+    case ElementType.Checkbox:
       return ElementType.Text
+
+    case ElementType.Select:
+      return ElementType.Text
+
+    case ElementType.Radio:
+      return ElementType.Text
+    default:
+      return type as ElementType
   }
 }

@@ -771,6 +771,17 @@ export type FacilityPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type FieldOptionsInputType = {
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type FieldOptionsType = {
+  __typename?: 'FieldOptionsType';
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
 export type FieldsInputs = {
   column: Scalars['Int'];
   columnName?: Maybe<Scalars['String']>;
@@ -780,6 +791,7 @@ export type FieldsInputs = {
   fieldId: Scalars['String'];
   label: Scalars['String'];
   name: Scalars['String'];
+  options?: Maybe<Array<FieldOptionsInputType>>;
   placeholder: Scalars['String'];
   required: Scalars['Boolean'];
   tableName?: Maybe<Scalars['String']>;
@@ -796,6 +808,7 @@ export type FieldsTypes = {
   fieldId: Scalars['String'];
   label: Scalars['String'];
   name: Scalars['String'];
+  options?: Maybe<Array<FieldOptionsType>>;
   placeholder: Scalars['String'];
   required: Scalars['Boolean'];
   tableName?: Maybe<Scalars['String']>;

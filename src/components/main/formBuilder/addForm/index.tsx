@@ -146,6 +146,7 @@ const AddForm = () => {
             name: uuid(),
             errorMsg: itemField?.defaultValue ?? '',
             defaultValue: itemField?.defaultValue ?? '',
+            options: itemField?.options
           };
 
           item?.fields?.push(newField);
@@ -261,8 +262,8 @@ const AddForm = () => {
   };
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
-    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue } = item;
-    setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id });
+    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options } = item;
+    setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id, options });
     modalOpenHandler();
   };
   //modal handlers
@@ -287,6 +288,7 @@ const AddForm = () => {
               column: values?.column,
               placeholder: values?.placeholder,
               required: values?.required,
+              options: values?.options
             }
             : field
         );
@@ -333,7 +335,7 @@ const AddForm = () => {
     <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
-          
+
           <Box display={'flex'} justifyContent={'space-between'}>
             <Typography variant='h4'>Form Builder</Typography>
             <Box display={'flex'} justifyContent={'flex-start'}>

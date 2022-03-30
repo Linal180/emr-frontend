@@ -15,7 +15,7 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  UserRole, Communicationtype, Gender, FormType, SectionsInputs, ElementType,
+  UserRole, Communicationtype, Gender, FormType, ElementType,
 } from "../generated/graphql";
 
 // regex
@@ -2160,6 +2160,20 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     defaultValue: '',
     errorMsg: '',
+  },
+  {
+    icon: SelectIcon,
+    fieldId: uuid(),
+    label: 'Select',
+    type: ElementType.Select,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    options: [{ name: "option 1", value: 'option_1' }, { name: "option 2", value: 'option_2' }]
   },
 ];
 
