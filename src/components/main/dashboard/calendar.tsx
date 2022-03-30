@@ -71,7 +71,7 @@ const CalendarComponent = (): JSX.Element => {
   const fetchAppointments = useCallback(async () => {
     await findAllAppointments();
   }, [findAllAppointments]);
-  
+
   useEffect(() => {
     fetchAppointments()
   }, [fetchAppointments]);
