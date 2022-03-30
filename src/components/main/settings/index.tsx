@@ -16,7 +16,6 @@ const search = (query: string) => { }
 
 export const SettingsComponent = () => (
   <>
-    sss
     <Grid container justifyContent='center'>
       <Grid item md={7} sm={12} xs={12}>
         <PageHeader title={SETTINGS_TEXT} />

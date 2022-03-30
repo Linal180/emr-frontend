@@ -2,15 +2,36 @@
 import states from "states-us";
 import moment from "moment-timezone";
 // graphql and interfaces block
-import { formatServiceCode, formatValue, getFormattedDate, getStandardTime } from "../utils";
+import {
+  formatServiceCode,
+  formatValue,
+  getFormattedDate,
+  getStandardTime,
+} from "../utils";
 import { SelectorOption, StepLabelType } from "../interfacesTypes";
 import {
-  UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon,
+  UsersIcon,
+  AppointmentsIcon,
+  FacilitiesIcon,
+  ReportsIcon,
+  BillingIcon,
 } from "../assets/svgs";
 import {
-  Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  UserRole, Communicationtype, Gender,
+  Ethnicity,
+  Genderidentity,
+  Homebound,
+  Maritialstatus,
+  PaymentType,
+  PracticeType,
+  Pronouns,
+  Race,
+  RelationshipType,
+  ServiceCode,
+  Sexualorientation,
+  Speciality,
+  UserRole,
+  Communicationtype,
+  Gender,
 } from "../generated/graphql";
 
 // regex
@@ -30,7 +51,8 @@ export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
-export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // constants
 export const NOTES = "Notes";
@@ -110,9 +132,11 @@ export const DOCUMENT_VERIFICATION = "Document Verification";
 export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
 export const CONTACT_METHOD = "How we can contact you?";
-export const RELEASE_BILLING_INFO_PERMISSIONS = "Can we release medical and billing information to this contact?";
+export const RELEASE_BILLING_INFO_PERMISSIONS =
+  "Can we release medical and billing information to this contact?";
 export const VOICE_MAIL_PERMISSIONS = "Is it okay for us to leave a voicemail?";
-export const APPOINTMENT_CONFIRMATION_PERMISSIONS = "May we phone, email, or send a text to you to confirm appointments?";
+export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
+  "May we phone, email, or send a text to you to confirm appointments?";
 export const EDIT_STAFF = "Edit Staff";
 export const CANT_UPDATE_STAFF = "Staff cant be updated";
 export const CANT_CREATE_STAFF = "Can't create staff";
@@ -184,37 +208,66 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf",];
+export const ACCEPTABLE_FILES = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".docx",
+  ".doc",
+  ".pdf",
+];
+export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
 export const STAFF_MANAGEMENT = "Staff Management";
-export const SCHEDULE = "Schedule";
+export const EMERGENCY_ACCESS = "Emergency Access";
+export const ACCESS_ACTIVATED = "Access Activated";
+export const EMERGENCY_ACCESS_DENIED = "Emergency Access Denied";
+export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
-export const PRACTICE_DETAILS_DESCRIPTION = "Edit your facility information and settings";
-export const FACILITY_MANAGEMENT_DESCRIPTION = "Add and edit your facility information and settings";
-export const PROVIDER_MANAGEMENT_DESCRIPTION = "Add providers and update their profiles for the EMR";
-export const STAFF_MANAGEMENT_DESCRIPTION = "Add staff and update their profiles for the EMR";
+export const PRACTICE_DETAILS_DESCRIPTION =
+  "Edit your facility information and settings";
+export const FACILITY_MANAGEMENT_DESCRIPTION =
+  "Add and edit your facility information and settings";
+export const PROVIDER_MANAGEMENT_DESCRIPTION =
+  "Add providers and update their profiles for the EMR";
+export const STAFF_MANAGEMENT_DESCRIPTION =
+  "Add staff and update their profiles for the EMR";
 export const SCHEDULE_DESCRIPTION = "Add or update provider’s schedule";
 export const ROLES_PERMISSIONS_DESCRIPTION = "Add or update staff roles and their permissions";
+export const EMERGENCY_ACCESS_DESCRIPTION = "View and manage the users with emergency access";
+export const TEMPORARY_EMERGENCY_ACCESS = "Temporary Emergency Administrator Access";
+export const ACTIVATE_EMERGENCY_ACCESS_MODE = "Activate Emergency Access Mode";
+export const DEACTIVATE_EMERGENCY_ACCESS_MODE = "Deactivate Emergency Access Mode";
+export const TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION = "Emergency access mode gives practice members temporary administrator permissions in the event of an emergency or crisis. Access is secure and only available to pre-selected practice members designated by a practice administrator.";
 export const ICT_TEN = "ICT-10 Codes";
 export const ICT_NINE = "ICT-9 Codes";
 export const CPT_CODES = "CPT Codes";
 export const MEDICINES = "Medicines";
 export const TESTS = "Tests";
 export const VACCINES = "Vaccines";
-export const ICT_TEN_DESCRIPTION = "Create and edit ICT-10 codes inventory for your practice";
-export const ICT_NINE_DESCRIPTION = "Create and edit ICT-9 codes inventory for your practice";
-export const CPT_CODES_DESCRIPTION = "Create and edit CPT codes inventory for your practice";
-export const MEDICINES_DESCRIPTION = "Create and edit medicine inventory for your practice";
-export const TESTS_DESCRIPTION = "Create and edit lab tests inventory for your practice";
-export const VACCINES_DESCRIPTION = "Create and edit vaccine inventory for your practice";
-export const FACILITY_SERVICES_DESCRIPTION = "Add or update all the services a facility is offering";
+export const ICT_TEN_DESCRIPTION =
+  "Create and edit ICT-10 codes inventory for your practice";
+export const ICT_NINE_DESCRIPTION =
+  "Create and edit ICT-9 codes inventory for your practice";
+export const CPT_CODES_DESCRIPTION =
+  "Create and edit CPT codes inventory for your practice";
+export const MEDICINES_DESCRIPTION =
+  "Create and edit medicine inventory for your practice";
+export const TESTS_DESCRIPTION =
+  "Create and edit lab tests inventory for your practice";
+export const VACCINES_DESCRIPTION =
+  "Create and edit vaccine inventory for your practice";
+export const FACILITY_SERVICES_DESCRIPTION =
+  "Add or update all the services a facility is offering";
 export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
-export const CANCELLED_APPOINTMENT_DESCRIPTION = "View cancelled appointments and their reason";
+export const CANCELLED_APPOINTMENT_DESCRIPTION =
+  "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const FACILITY_SCHEDULE = "Facility Schedule";
-export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
+export const FACILITY_SCHEDULE_DESCRIPTION =
+  "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinicals";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
@@ -222,7 +275,8 @@ export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
 export const TIME_ZONE_DESCRIPTION = "Set time zones";
 
-export const DELETE_WIDGET_DESCRIPTION = " Are you sure you want to remove this widget?";
+export const DELETE_WIDGET_DESCRIPTION =
+  " Are you sure you want to remove this widget?";
 export const DELETE_WIDGET_TEXT = "Delete Widget";
 export const VIEW_CHART_TEXT = "View Chart";
 export const NON_AVAILABILITY_TEXT = "Non-Availability";
@@ -532,8 +586,10 @@ export const ACTIONS = "Actions";
 export const REVOKE_ACCESS = "Revoke Access";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const UPLOADS_DOCUMENT = "Upload Document";
-export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
-export const AUTO_LOGOUT_DESCRIPTION = "Your account will automatically logout after a period of inactivity.";
+export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT =
+  "Drop your image here, or browse";
+export const AUTO_LOGOUT_DESCRIPTION =
+  "Your account will automatically logout after a period of inactivity.";
 export const SAVE_APPOINTMENT = "Save Appointment";
 export const REGISTRATION_DATE = "Registration Date";
 export const DECREASED_DATE = "Deceased Date";
@@ -573,9 +629,10 @@ export const INDUSTRY = "Industry";
 export const STATEMENT_DELIVERED_ONLINE = "Statement delivered online only";
 export const STATEMENT_NOTE = "Statement note";
 export const ID_NUMBER = "ID Number";
-export const PRIVACY_NOTICE = "Privacy Notice"
+export const PRIVACY_NOTICE = "Privacy Notice";
 export const GROUP_NUMBER = "Policy / Group number";
-export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits"
+export const RELEASE_OF_BILLING_INFO =
+  "Release of Billing Information and Assignment of Benefits";
 export const ISSUE_DATE = "Issue Date";
 export const EXPIRATION_DATE = "Expiration Date";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
@@ -621,7 +678,8 @@ export const DELETE_MEDIA_DESCRIPTION =
 export const DELETE_REQUEST_DESCRIPTION =
   "Are you sure you want to delete this request?";
 export const RELATIONSHIP_TO_PATIENT = "Relationship To Patient";
-export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial capital contribution)";
+export const ANNUAL_MANAGEMENT_FEE =
+  "Annual Management Fee (based on initial capital contribution)";
 export const USD = "USD";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
@@ -688,10 +746,17 @@ export const APPOINTMENT_CONFIRM_HEADING =
 export const APPOINTMENT_CONFIRM_SUBHEADING =
   "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
 export const appointmentConfirmationDescription = (dateTime: string) =>
-  `Thank you! Your visit at ${getStandardTime(dateTime || "")} on ${getFormattedDate(dateTime || "")} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
-export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
-export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
-export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
+  `Thank you! Your visit at ${getStandardTime(
+    dateTime || ""
+  )} on ${getFormattedDate(
+    dateTime || ""
+  )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
+export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING =
+  "Thank you! When you arrive, Please make sure to have these documents with you.";
+export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 =
+  "Please bring a valid photo ID and any insurance cards (if applicable).";
+export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 =
+  "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
 
 // routes paths
 export const ROOT_ROUTE = "/";
@@ -706,11 +771,11 @@ export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
-export const CANCELLATION_ROUTE = "/cancellation";
 export const AUTO_LOGOUT_ROUTE = "/autologout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
@@ -721,6 +786,7 @@ export const UPDATE_PASSWORD_ROUTE = "/update-password";
 export const CHANGE_PASSWORD_ROUTE = "/change-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const CANCEL_APPOINTMENT = "/cancel-appointment";
+export const EMERGENCY_ACCESS_ROUTE = "/emergency-access";
 export const PATIENT_INFORMATION = "/patient-information";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
@@ -745,23 +811,40 @@ export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
-export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optional";
-export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
-export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
-export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
-export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
-export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be less that 100-years";
-export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
-export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
-export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
-export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
-export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;
-export const MaxLength = (fieldName: string, length: number) => `${fieldName} can be up to ${length} characters long`;
-export const MinLength = (fieldName: string, length: number) => `${fieldName} should be at least ${length} characters long`;
-export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
-export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
-export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
-export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
+export const EIN_VALIDATION_MESSAGE =
+  "EIN should be NN-NNNNNNN, dash is optional";
+export const PLEASE_ADD_DOCUMENT =
+  "Please upload or drag and drop the documents here";
+export const PLEASE_CLICK_TO_UPDATE_DOCUMENT =
+  "Please click here to update the documents";
+export const UPIN_VALIDATION_MESSAGE =
+  "UPIN should be six-place alpha numeric identifiers";
+export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE =
+  "Doctor's age should be more that 20-years";
+export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE =
+  "Doctor's age should be less that 100-years";
+export const REVENUE_CODE_VALIDATION_MESSAGE =
+  "Revenue code should be a 4-digit combination";
+export const DELETE_USER_INFO =
+  "This will delete all the information associated with the user.";
+export const FACILITY_CODE_VALIDATION_MESSAGE =
+  "Facility code can only be capital alphabets 2-5 in length";
+export const MAMMOGRAPHY_VALIDATION_MESSAGE =
+  "Valid mammography certification Number format is like REF-EW-111111";
+export const ValidMessage = (fieldName: string, Example?: string) =>
+  `Please enter valid ${fieldName.toLowerCase()}`;
+export const MaxLength = (fieldName: string, length: number) =>
+  `${fieldName} can be up to ${length} characters long`;
+export const MinLength = (fieldName: string, length: number) =>
+  `${fieldName} should be at least ${length} characters long`;
+export const USER_REQUEST_CANNOT_EDITED_NOTE =
+  "Note: Investor has not signed the document. So, this request cannot be edited.";
+export const TAXONOMY_VALIDATION_MESSAGE =
+  "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
+export const PASSWORD_VALIDATION_MESSAGE =
+  "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
+export const PHASE_CANNOT_CHANGE_NOTE =
+  "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
 export const SCHEDULE_END = "Schedule End Time";
@@ -812,7 +895,7 @@ export const LOCATION_UPDATED = "Location is updated successfully";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
-export const ATTACHMENT_DELETED = 'Attachment deleted successfully!';
+export const ATTACHMENT_DELETED = "Attachment deleted successfully!";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
@@ -828,43 +911,78 @@ export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
 export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
-export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
-export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
-export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
-export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully";
-export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";
-export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
-export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
-export const SET_PASSWORD_TEXT_MESSAGE = "Set your password and login to your portal";
-export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully";
-export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done";
-export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = "Cancelled appointment cant be edited!";
-export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
-export const INVALID_OR_EXPIRED_TOKEN_MESSAGE = "Sorry! Your token is expired or invalid.";
-export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD = "Please log out before resetting password";
-export const FORGOT_PASSWORD_MESSAGE = "Please enter your email to get a reset-password link.";
-export const FORGET_PASSWORD_SUCCESS = "An email has been sent to your registered email address";
-export const SLOT_ALREADY_BOOKED = "This patient has already a booked appointment with this provider.";
-export const APPOINTMENT_SLOT_ERROR_MESSAGE = "Appointment Time is required. Please select available slot!";
-export const PRACTICE_OR_FACILITY_ALREADY_EXISTS = "Practice/Facility already exits against provided data!";
-export const FORGOT_PASSWORD_TEXT_MESSAGE = "Enter your registered email address to get reset-password link";
-export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE = "You can't verify a email while you are logged in.";
-export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE = "Email changed or not verified, please verify your email";
-export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE = "Sorry! Your verification token is expired or invalid";
-export const CANCEL_TIME_EXPIRED_MESSAGE = "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
-export const EXPIRE_TOKEN_MESSAGE = "Your token has been expired. Please click on the button below to get an email again.";
-export const appointmentChargesDescription = (amount: string) => `You will be charged $${amount} for this appointment booking.`;
-export const LOREM_TEXT_15 = "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
+export const PRECONDITION_FAILED_EXCEPTION_MESSAGE =
+  "Resource can't be deleted.";
+export const WRONG_EMAIL_OR_PASSWORD =
+  "You have entered wrong email or password";
+export const LOGIN_TEXT_MESSAGE =
+  "Enter your credentials to login to your portal";
+export const APPOINTMENT_BOOKED_SUCCESSFULLY =
+  "Appointment is booked successfully";
+export const APPOINTMENT_CANCEL_TEXT =
+  "Your appointment is cancelled successfully";
+export const RESET_PASSWORD_SUCCESS =
+  "Your password has been changed successfully.";
+export const LOGIN_MESSAGE =
+  "Please sign in to explore all that BOCA+ has to offer.";
+export const SET_PASSWORD_TEXT_MESSAGE =
+  "Set your password and login to your portal";
+export const APPOINTMENT_UPDATED_SUCCESSFULLY =
+  "Appointment is updated successfully";
+export const PAYMENT_CANT_DONE =
+  "Patient not exist in system, so payment can't be done";
+export const CANCELLED_APPOINTMENT_EDIT_MESSAGE =
+  "Cancelled appointment cant be edited!";
+export const RESET_PASSWORD_TEXT_MESSAGE =
+  "Reset your password and login to your portal";
+export const INVALID_OR_EXPIRED_TOKEN_MESSAGE =
+  "Sorry! Your token is expired or invalid.";
+export const LOGGED_OUT_BEFORE_RESETTING_PASSWORD =
+  "Please log out before resetting password";
+export const FORGOT_PASSWORD_MESSAGE =
+  "Please enter your email to get a reset-password link.";
+export const FORGET_PASSWORD_SUCCESS =
+  "An email has been sent to your registered email address";
+export const SLOT_ALREADY_BOOKED =
+  "This patient has already a booked appointment with this provider.";
+export const APPOINTMENT_SLOT_ERROR_MESSAGE =
+  "Appointment Time is required. Please select available slot!";
+export const PRACTICE_OR_FACILITY_ALREADY_EXISTS =
+  "Practice/Facility already exits against provided data!";
+export const FORGOT_PASSWORD_TEXT_MESSAGE =
+  "Enter your registered email address to get reset-password link";
+export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE =
+  "You can't verify a email while you are logged in.";
+export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE =
+  "Email changed or not verified, please verify your email";
+export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
+  "Sorry! Your verification token is expired or invalid";
+export const CANCEL_TIME_EXPIRED_MESSAGE =
+  "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
+export const EXPIRE_TOKEN_MESSAGE =
+  "Your token has been expired. Please click on the button below to get an email again.";
+export const appointmentChargesDescription = (amount: string) =>
+  `You will be charged $${amount} for this appointment booking.`;
+export const LOREM_TEXT_15 =
+  "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Sapiente atque explicabo debitis inventore delectus quos!";
 
 // INFO MESSAGES
-export const FEDERAL_TAX_ID_INFO = "Known as Employer Identification Number (EIN) and is used to identify a business entity";
-export const NPI_INFO = "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
-export const TAXONOMY_CODE_INFO = " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
-export const EIN_INFO = "An Employer Identification Number (EIN) is a nine-digit number that IRS assigns in the following format: XX-XXXXXXX";
-export const TAX_ID_INFO = "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
-export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO = "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
-export const UPIN_INFO = "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
-export const CLIA_ID_NUMBER_INFO = "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
+export const FEDERAL_TAX_ID_INFO =
+  "Known as Employer Identification Number (EIN) and is used to identify a business entity";
+export const NPI_INFO =
+  "The NPI is a unique identification number for covered health care providers and is a unique 10-digit number";
+export const TAXONOMY_CODE_INFO =
+  " Taxonomy code is a unique 10-character code that designates your classification and specialization.";
+export const EIN_INFO =
+  "An Employer Identification Number (EIN) is a nine-digit number that IRS assigns in the following format: XX-XXXXXXX";
+export const TAX_ID_INFO =
+  "A Tax Identification Number is a nine-digit number used as a tracking number by the Internal Revenue Service (IRS).";
+export const MAMOGRAPHY_CERTIFICATION_NUMBER_INFO =
+  "The Mammography Certification Number is required on Medicare claims for all mammography services. Format is REF*EW*111111";
+export const UPIN_INFO =
+  "A unique physician identification number (UPIN) was a six-character alpha-numeric identifier used by Medicare to identify doctors in the United States.";
+export const CLIA_ID_NUMBER_INFO =
+  "This number is used to identify and track your laboratory throughout its entire history. Each CLIA number consists of ten alphanumeric digits";
 
 export const APP_MENU_ITEMS = [
   {
@@ -903,7 +1021,7 @@ export const APP_MENU_ITEMS = [
       },
       {
         name: SCHEDULE_APPOINTMENTS_TEXT,
-        link: `${APPOINTMENTS_ROUTE}/new`
+        link: `${APPOINTMENTS_ROUTE}/new`,
       },
     ],
   },
@@ -974,7 +1092,7 @@ export const APPOINTMENT_MENU_ITEMS = [
   },
   {
     name: SCHEDULE_APPOINTMENTS_TEXT,
-    link: `${APPOINTMENTS_ROUTE}/new`
+    link: `${APPOINTMENTS_ROUTE}/new`,
   },
   {
     name: CALENDAR_VIEW_TEXT,
@@ -1076,9 +1194,11 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
 ];
 
-export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map((timezone) => {
-  return { id: timezone, name: formatValue(timezone) };
-});
+export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz
+  .names()
+  .map((timezone) => {
+    return { id: timezone, name: formatValue(timezone) };
+  });
 
 export const MAPPED_COUNTRIES: SelectorOption[] = [{ id: USA, name: USA }];
 export const MAPPED_STATES: SelectorOption[] = states.map(
@@ -1387,7 +1507,10 @@ export const MAPPED_GENDER_IDENTITY: SelectorOption[] = [
   { id: Genderidentity.None, name: formatValue(Genderidentity.None) },
   { id: Genderidentity.Male, name: formatValue(Genderidentity.Male) },
   { id: Genderidentity.Female, name: formatValue(Genderidentity.Female) },
-  { id: Genderidentity.NotExclusive, name: formatValue(Genderidentity.NotExclusive) },
+  {
+    id: Genderidentity.NotExclusive,
+    name: formatValue(Genderidentity.NotExclusive),
+  },
 ];
 
 export const MAPPED_PAYMENT_METHOD: SelectorOption[] = [
@@ -1498,48 +1621,84 @@ export const MAPPED_RELATIONSHIP_TYPE: SelectorOption[] = [
 export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
-  { title: "Patient Information", },
-  { title: "Document Verification", },
+  { title: "Patient Information" },
+  { title: "Document Verification" },
 ];
 
 export const AGREEMENT_POINTS = [
-  LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15,
-  LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15, LOREM_TEXT_15,
+  LOREM_TEXT_15,
+  LOREM_TEXT_15,
+  LOREM_TEXT_15,
+  LOREM_TEXT_15,
+  LOREM_TEXT_15,
+  LOREM_TEXT_15,
+  LOREM_TEXT_15,
+  LOREM_TEXT_15,
 ];
 
 // Breadcrumb links
-export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE }
-export const FACILITY_SERVICES_BREAD = { text: FACILITY_SERVICES_TEXT, link: FACILITY_SERVICES_ROUTE }
-export const FACILITY_NEW_BREAD = { text: ADD_FACILITY, link: `${FACILITIES_ROUTE}/new` }
-export const FACILITY_EDIT_BREAD = { text: EDIT_FACILITY, link: '' }
-export const FACILITY_LOCATIONS_BREAD = { text: FACILITY_LOCATIONS_TEXT, link: FACILITY_LOCATIONS_ROUTE }
-export const FACILITY_LOCATION_NEW_BREAD = { text: ADD_LOCATION, link: '' }
-export const FACILITY_LOCATION_EDIT_BREAD = { text: EDIT_LOCATION, link: '' }
-export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: '' }
-export const FACILITY_SERVICE_EDIT_BREAD = { text: EDIT_SERVICE, link: '' }
-export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE }
-export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE }
-export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new` }
-export const APPOINTMENT_NEW_BREAD = { text: ADD_APPOINTMENT, link: `${APPOINTMENTS_ROUTE}/new` }
-export const APPOINTMENT_EDIT_BREAD = { text: EDIT_APPOINTMENT, link: '' }
-export const RESULT_NEW_BREAD = { text: ADD_RESULT, link: `${LAB_RESULTS_ROUTE}/new` }
-export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE }
-export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: '' }
-export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE }
-export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new` }
-export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: '' }
-export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` }
-export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: '' }
-export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE }
-export const USERS_BREAD = { text: USERS_TEXT, link: '' }
-export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: '' }
-export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE }
-export const BILLING_BREAD = { text: BILLING_TEXT, link: '' }
-export const REPORTS_BREAD = { text: REPORTS_TEXT, link: '' }
-export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE }
-export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE }
-export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE }
-export const VIEW_APPOINTMENTS_BREAD = { text: VIEW_APPOINTMENTS_TEXT, link: VIEW_APPOINTMENTS_ROUTE }
+export const FACILITIES_BREAD = {
+  text: FACILITIES_LISTING,
+  link: FACILITIES_ROUTE,
+};
+export const FACILITY_SERVICES_BREAD = {
+  text: FACILITY_SERVICES_TEXT,
+  link: FACILITY_SERVICES_ROUTE,
+};
+export const FACILITY_NEW_BREAD = {
+  text: ADD_FACILITY,
+  link: `${FACILITIES_ROUTE}/new`,
+};
+export const FACILITY_EDIT_BREAD = { text: EDIT_FACILITY, link: "" };
+export const FACILITY_LOCATIONS_BREAD = {
+  text: FACILITY_LOCATIONS_TEXT,
+  link: FACILITY_LOCATIONS_ROUTE,
+};
+export const FACILITY_LOCATION_NEW_BREAD = { text: ADD_LOCATION, link: "" };
+export const FACILITY_LOCATION_EDIT_BREAD = { text: EDIT_LOCATION, link: "" };
+export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: "" };
+export const FACILITY_SERVICE_EDIT_BREAD = { text: EDIT_SERVICE, link: "" };
+export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE };
+export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE };
+export const DOCTOR_NEW_BREAD = {
+  text: ADD_DOCTOR,
+  link: `${DOCTORS_ROUTE}/new`,
+};
+export const APPOINTMENT_NEW_BREAD = {
+  text: ADD_APPOINTMENT,
+  link: `${APPOINTMENTS_ROUTE}/new`,
+};
+export const APPOINTMENT_EDIT_BREAD = { text: EDIT_APPOINTMENT, link: "" };
+export const RESULT_NEW_BREAD = {
+  text: ADD_RESULT,
+  link: `${LAB_RESULTS_ROUTE}/new`,
+};
+export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE };
+export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: "" };
+export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE };
+export const PATIENT_NEW_BREAD = {
+  text: ADD_PATIENT,
+  link: `${PATIENTS_ROUTE}/new`,
+};
+export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: "" };
+export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` };
+export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: "" };
+export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE };
+export const USERS_BREAD = { text: USERS_TEXT, link: "" };
+export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: "" };
+export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE };
+export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
+export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
+export const LAB_RESULTS_BREAD = {
+  text: LAB_RESULTS_TEXT,
+  link: LAB_RESULTS_ROUTE,
+};
+export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
+export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE };
+export const VIEW_APPOINTMENTS_BREAD = {
+  text: VIEW_APPOINTMENTS_TEXT,
+  link: VIEW_APPOINTMENTS_ROUTE,
+};
 
 // profile top tabs
 export const PROFILE_TOP_TABS = [
@@ -1578,7 +1737,7 @@ export const PROFILE_TOP_TABS = [
   {
     title: "Portal Access",
     value: "9",
-  }
+  },
 ];
 
 export const DOCTOR_TOP_TABS = [
@@ -1940,32 +2099,37 @@ export const PRACTICE_SETTINGS_ITEMS = [
   {
     name: PRACTICE_DETAILS_TEXT,
     link: "/",
-    desc: PRACTICE_DETAILS_DESCRIPTION
+    desc: PRACTICE_DETAILS_DESCRIPTION,
   },
   {
     name: FACILITY_MANAGEMENT,
     link: "/",
-    desc: FACILITY_MANAGEMENT_DESCRIPTION
+    desc: FACILITY_MANAGEMENT_DESCRIPTION,
   },
   {
     name: PROVIDER_MANAGEMENT,
     link: "/",
-    desc: PROVIDER_MANAGEMENT_DESCRIPTION
+    desc: PROVIDER_MANAGEMENT_DESCRIPTION,
   },
   {
     name: STAFF_MANAGEMENT,
     link: "/",
-    desc: STAFF_MANAGEMENT_DESCRIPTION
+    desc: STAFF_MANAGEMENT_DESCRIPTION,
   },
   {
     name: SCHEDULE,
     link: "/",
-    desc: SCHEDULE_DESCRIPTION
+    desc: SCHEDULE_DESCRIPTION,
   },
   {
     name: ROLES_PERMISSIONS,
     link: "/",
-    desc: ROLES_PERMISSIONS_DESCRIPTION
+    desc: ROLES_PERMISSIONS_DESCRIPTION,
+  },
+  {
+    name: EMERGENCY_ACCESS,
+    link: EMERGENCY_ACCESS_ROUTE,
+    desc: EMERGENCY_ACCESS_DESCRIPTION,
   },
 ];
 
@@ -1973,32 +2137,32 @@ export const INVENTORY_ITEMS = [
   {
     name: ICT_TEN,
     link: "/",
-    desc: ICT_TEN_DESCRIPTION
+    desc: ICT_TEN_DESCRIPTION,
   },
   {
     name: ICT_NINE,
     link: "/",
-    desc: ICT_NINE_DESCRIPTION
+    desc: ICT_NINE_DESCRIPTION,
   },
   {
     name: CPT_CODES,
     link: "/",
-    desc: CPT_CODES_DESCRIPTION
+    desc: CPT_CODES_DESCRIPTION,
   },
   {
     name: MEDICINES,
     link: "/",
-    desc: MEDICINES_DESCRIPTION
+    desc: MEDICINES_DESCRIPTION,
   },
   {
     name: TESTS,
     link: "/",
-    desc: TESTS_DESCRIPTION
+    desc: TESTS_DESCRIPTION,
   },
   {
     name: VACCINES,
     link: "/",
-    desc: VACCINES_DESCRIPTION
+    desc: VACCINES_DESCRIPTION,
   },
 ];
 
@@ -2006,7 +2170,7 @@ export const SERVICES_ITEMS = [
   {
     name: FACILITY_SERVICES_TEXT,
     link: "/",
-    desc: FACILITY_SERVICES_DESCRIPTION
+    desc: FACILITY_SERVICES_DESCRIPTION,
   },
 ];
 
@@ -2014,7 +2178,7 @@ export const APPOINTMENT_SETTINGS_ITEMS = [
   {
     name: CANCELLED_APPOINTMENT,
     link: "/",
-    desc: CANCELLED_APPOINTMENT_DESCRIPTION
+    desc: CANCELLED_APPOINTMENT_DESCRIPTION,
   },
 ];
 
@@ -2022,7 +2186,7 @@ export const CALENDAR_SETTINGS_ITEMS = [
   {
     name: FACILITY_SCHEDULE,
     link: "/",
-    desc: FACILITY_SCHEDULE_DESCRIPTION
+    desc: FACILITY_SCHEDULE_DESCRIPTION,
   },
 ];
 
@@ -2030,7 +2194,7 @@ export const CLINICAL_ITEMS = [
   {
     name: FORM_BUILDER,
     link: "/",
-    desc: FORM_BUILDER_DESCRIPTION
+    desc: FORM_BUILDER_DESCRIPTION,
   },
 ];
 
@@ -2038,6 +2202,33 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
   {
     name: TIME_ZONE,
     link: "/",
-    desc: TIME_ZONE_DESCRIPTION
+    desc: TIME_ZONE_DESCRIPTION,
+  },
+];
+
+export const EMERGENCY_ACCESS_DUMMY_DATA = [
+  {
+    name: "Cody Fisher",
+    accessDate: "Sep 3, 2020 6:57 AM",
+    drName: "",
+    actionDate: "",
+  },
+  {
+    name: "Ronald Richards",
+    accessDate: "Aug 12, 2020 9:37 AM",
+    drName: "Dr. Harrold Wixen",
+    actionDate: "On: March 15, 2022. 2:18AM",
+  },
+  {
+    name: "Bessie Cooper",
+    accessDate: "Sep 3, 2020 6:57 AM",
+    drName: "Dr. A. H. John",
+    actionDate: "On: March 15, 2022. 2:18AM",
+  },
+  {
+    name: "Darlene Robertson",
+    accessDate: "Sep 3, 2020 6:57 AM",
+    drName: "Floyd Miles",
+    actionDate: "On: March 15, 2022. 2:18AM",
   },
 ];

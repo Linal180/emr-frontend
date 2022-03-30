@@ -307,6 +307,9 @@ body .MuiTabPanel-root {
 .billing-box .MuiTypography-root {
   padding-left: 5px;
 }
+.danger {
+  color: #DD1010;
+}
 
 /* Signature-pad-Styling */
 .sigCanvas {
