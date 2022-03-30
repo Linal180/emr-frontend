@@ -14,8 +14,8 @@ import DropContainer from './dropContainer';
 // constants block
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION,
-  FORM_BUILDER_INITIAL_VALUES, FORM_BUILDER_FIELDS_VALUES, FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION,
-  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, FORM_NOT_FOUND, FORM_UPDATED
+  FORM_BUILDER_INITIAL_VALUES, getForminitialValues, FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION,
+  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, FORM_UPDATED
 } from '../../../../constants';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { AddWidgetIcon } from '../../../../assets/svgs';
@@ -26,19 +26,19 @@ import Alert from '../../../common/Alert';
 import { createFormBuilderSchema } from '../../../../validationSchemas';
 import { FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation } from '../../../../generated/graphql';
 import { ListContext } from '../../../../context/listContext'
-import { LoaderBackdrop, renderFacilities, setRecord, getFormElements } from '../../../../utils';
+import { LoaderBackdrop, renderFacilities, setRecord } from '../../../../utils';
 import history from '../../../../history';
 //component
 const AddForm = () => {
   //states
-  const [formValues, setFormValues] = useState<SectionsInputs[]>(FORM_BUILDER_FIELDS_VALUES);
+  const [formValues, setFormValues] = useState<SectionsInputs[]>(getForminitialValues());
   const [open, setOpen] = useState<boolean>(false);
   const [selected, setSelected] = useState<FormInitialType>(FIELD_EDIT_INITIAL_VALUES);
   const [colMenu, setColMenu] = useState<null | HTMLElement>(null)
   //hooks
   const methods = useForm<FormBuilderFormInitial>({ defaultValues: FORM_BUILDER_INITIAL_VALUES, resolver: yupResolver(createFormBuilderSchema) });
   const { handleSubmit, setValue } = methods
-  const { id } = useParams<ParamsType>()
+  const { id: formId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
   const { facilityList } = useContext(ListContext)
   //mutations & query
@@ -57,6 +57,7 @@ const AddForm = () => {
       if (response) {
         const { status } = response
         if (status && status === 200) {
+          setFormValues(getForminitialValues())
           Alert.success(CREATE_FORM_BUILDER);
           history.push(FORM_BUILDER_ROUTE)
         }
@@ -76,13 +77,11 @@ const AddForm = () => {
 
           if (form && status && status === 200) {
             const { name, type, layout, facilityId } = form
-
-
             name && setValue('name', name)
             type && setValue('type', setRecord(type, type))
             facilityId && setValue('facilityId', setRecord(facilityId, facilityId))
-            const parsedLayout = getFormElements(layout)
-            parsedLayout?.length > 0 && setFormValues(parsedLayout)
+            const { sections } = layout
+            sections?.length > 0 && setFormValues(sections)
             const facilityName = getFacilityNameHandler(facilityId)
             if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
           }
@@ -112,8 +111,8 @@ const AddForm = () => {
   })
 
   useEffect(() => {
-    id && getForm({ variables: { getForm: { id } } })
-  }, [getForm, id])
+    formId && getForm({ variables: { getForm: { id: formId } } })
+  }, [getForm, formId])
 
   //drag end handler
   const onDragEnd = (result: DropResult) => {
@@ -138,7 +137,7 @@ const AddForm = () => {
           );
           const newField: FieldsInputs = {
             label: itemField?.label ?? '',
-            type: itemField?.type ?? ElementType.Text,
+            type: itemField?.type as ElementType ?? ElementType.Text,
             css: itemField?.css ?? '',
             column: itemField?.column ?? 12,
             placeholder: itemField?.placeholder ?? '',
@@ -164,7 +163,7 @@ const AddForm = () => {
           );
           const newField: FieldsInputs = {
             label: itemField?.label ?? '',
-            type: itemField?.type ?? ElementType.Text,
+            type: itemField?.type as ElementType ?? ElementType.Text,
             css: itemField?.css ?? '',
             column: itemField?.column ?? 12,
             placeholder: itemField?.placeholder ?? '',
@@ -255,7 +254,7 @@ const AddForm = () => {
       const { id: typeId } = type;
       const { id: facility } = facilityId;
       const data = { name, type: typeId as FormType, facilityId: facility, layout: { sections: formValues } }
-      id ? createForm({ variables: { createFormInput: data } }) : updateForm({ variables: { updateFormInput: { ...data, id } } })
+      formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
     else Alert.error('Please drap alteast one field')
 
@@ -263,7 +262,7 @@ const AddForm = () => {
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
     const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue } = item;
-    setSelected({ fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, list: id });
+    setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id });
     modalOpenHandler();
   };
   //modal handlers
@@ -313,7 +312,7 @@ const AddForm = () => {
   }
   //clear form values handler
   const clearHandler = () => {
-    setFormValues(FORM_BUILDER_FIELDS_VALUES)
+    setFormValues(getForminitialValues())
   };
   //menu handlers
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setColMenu(event.currentTarget);
@@ -334,6 +333,7 @@ const AddForm = () => {
     <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
+          
           <Box display={'flex'} justifyContent={'space-between'}>
             <Typography variant='h4'>Form Builder</Typography>
             <Box display={'flex'} justifyContent={'flex-start'}>

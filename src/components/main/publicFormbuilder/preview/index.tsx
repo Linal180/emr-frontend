@@ -8,9 +8,9 @@ import InputController from '../../../../controller';
 import Alert from '../../../common/Alert';
 //interfaces & constants
 import { ParamsType } from '../../../../interfacesTypes'
-import { getFormElements, LoaderBackdrop, parseColumnGrid } from '../../../../utils';
+import {  LoaderBackdrop, parseColumnGrid } from '../../../../utils';
 import { SectionsInputs, useGetPublicFormLazyQuery } from '../../../../generated/graphql';
-import { FORM_BUILDER_FIELDS_VALUES, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION } from '../../../../constants';
+import { getForminitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
 import { WHITE_SEVEN } from '../../../../theme';
@@ -23,7 +23,7 @@ const PublicFormPreview = () => {
   const methods = useForm<any>({ defaultValues: initialValues });
   const { id } = useParams<ParamsType>()
   //states
-  const [formValues, setFormValues] = useState<SectionsInputs[]>(FORM_BUILDER_FIELDS_VALUES);
+  const [formValues, setFormValues] = useState<SectionsInputs[]>(getForminitialValues());
   const [formName, setFormName] = useState('')
   //constants destructuring
   const { handleSubmit, reset } = methods;
@@ -41,8 +41,8 @@ const PublicFormPreview = () => {
           if (form && status && status === 200) {
             const { name, layout } = form;
             name && setFormName(name);
-            const parsedLayout = getFormElements(layout)
-            parsedLayout?.length > 0 && setFormValues(parsedLayout)
+            const { sections} = layout;
+            sections?.length > 0 && setFormValues(sections)
 
           }
         }

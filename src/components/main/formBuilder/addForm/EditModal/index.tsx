@@ -60,7 +60,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
     setValue("placeholder", placeholder)
     setValue("css", css)
     setValue("fieldId", fieldId)
-    setValue("type", type)
+    setValue("type", type as ElementType)
     setValue("list", list)
     setValue("errorMsg", errorMsg)
     setValue("defaultValue", defaultValue)

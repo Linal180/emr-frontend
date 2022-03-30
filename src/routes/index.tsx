@@ -67,7 +67,7 @@ import {
   FACILITY_SERVICES_ROUTE, SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PROFILE_ROUTE, MAINTENANCE_ROUTE,
   PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
   FORM_BUILDER_ROUTE, SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE,
-  SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE,
+  SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE, FORM_BUILDER_EDIT_ROUTE,
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -134,7 +134,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
       <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/add`} component={AddFormBuilder} />
-      <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/:id`} component={AddFormBuilder} />
+      <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />
 
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
 

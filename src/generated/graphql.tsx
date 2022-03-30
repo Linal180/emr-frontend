@@ -786,6 +786,22 @@ export type FieldsInputs = {
   type: ElementType;
 };
 
+export type FieldsTypes = {
+  __typename?: 'FieldsTypes';
+  column: Scalars['Int'];
+  columnName?: Maybe<Scalars['String']>;
+  css: Scalars['String'];
+  defaultValue: Scalars['String'];
+  errorMsg: Scalars['String'];
+  fieldId: Scalars['String'];
+  label: Scalars['String'];
+  name: Scalars['String'];
+  placeholder: Scalars['String'];
+  required: Scalars['Boolean'];
+  tableName?: Maybe<Scalars['String']>;
+  type: ElementType;
+};
+
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
@@ -802,7 +818,7 @@ export type Form = {
   formElements?: Maybe<Array<FormElement>>;
   id: Scalars['String'];
   isSystemForm?: Maybe<Scalars['Boolean']>;
-  layout: Scalars['String'];
+  layout: LayoutJsonType;
   name: Scalars['String'];
   type: FormType;
   updatedAt?: Maybe<Scalars['String']>;
@@ -1005,6 +1021,11 @@ export type InvoicesPayload = {
 
 export type LayoutJsonInputType = {
   sections: Array<SectionsInputs>;
+};
+
+export type LayoutJsonType = {
+  __typename?: 'LayoutJSONType';
+  sections: Array<SectionsTypes>;
 };
 
 export type LoginUserInput = {
@@ -1974,6 +1995,13 @@ export type SectionsInputs = {
   id: Scalars['String'];
 };
 
+export type SectionsTypes = {
+  __typename?: 'SectionsTypes';
+  col: Scalars['Int'];
+  fields: Array<FieldsTypes>;
+  id: Scalars['String'];
+};
+
 export type Service = {
   __typename?: 'Service';
   color?: Maybe<Scalars['String']>;
@@ -2783,7 +2811,7 @@ export type FindAllFormsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms?: Array<{ __typename?: 'Form', id: string, name: string, layout: string, type: FormType, facilityId: string } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms?: Array<{ __typename?: 'Form', id: string, name: string, type: FormType, facilityId: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string }> }> } } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type RemoveFormMutationVariables = Exact<{
   removeForm: RemoveForm;
@@ -2797,7 +2825,7 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, layout: string, type: FormType, facilityId: string } | null | undefined } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, type: FormType, facilityId: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string }> }> } } | null | undefined } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
@@ -2811,7 +2839,7 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, layout: string, type: FormType, facilityId: string } | null | undefined } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, type: FormType, facilityId: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string }> }> } } | null | undefined } };
 
 export type CreateAttachmentDataMutationVariables = Exact<{
   createAttachmentInput: CreateAttachmentInput;
@@ -4395,7 +4423,26 @@ export const FindAllFormsDocument = gql`
     forms {
       id
       name
-      layout
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+          }
+        }
+      }
       type
       facilityId
     }
@@ -4482,7 +4529,26 @@ export const GetFormDocument = gql`
     form {
       id
       name
-      layout
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+          }
+        }
+      }
       type
       facilityId
     }
@@ -4566,7 +4632,26 @@ export const GetPublicFormDocument = gql`
     form {
       id
       name
-      layout
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+          }
+        }
+      }
       type
       facilityId
     }

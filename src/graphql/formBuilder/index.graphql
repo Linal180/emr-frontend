@@ -18,7 +18,26 @@ query findAllForms($formInput: FormInput!) {
     forms {
       id
       name
-      layout
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+          }
+        }
+      }
       type
       facilityId
     }
@@ -49,13 +68,31 @@ query getForm($getForm: GetForm!) {
     form {
       id
       name
-      layout
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+          }
+        }
+      }
       type
       facilityId
     }
   }
 }
-
 
 mutation updateForm($updateFormInput: UpdateFormInput!) {
   updateForm(updateFormInput: $updateFormInput) {
@@ -78,10 +115,28 @@ query getPublicForm($getForm: GetForm!) {
     form {
       id
       name
-      layout
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+          }
+        }
+      }
       type
       facilityId
     }
   }
 }
-

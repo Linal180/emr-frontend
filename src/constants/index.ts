@@ -53,6 +53,7 @@ export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
 export const FORM_NOT_FOUND = "Form not found!";
 export const FORM_UPDATED = "Form updated successfully!";
+export const PUBLIC_FORM_LINK = "Public form preview Link";
 export const EMPTY_OPTION = { id: "", name: "" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
@@ -715,6 +716,7 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your pe
 // routes paths
 export const ROOT_ROUTE = "/";
 export const FORM_BUILDER_ROUTE = "/form-builder";
+export const FORM_BUILDER_EDIT_ROUTE = "/form-builder/edit";
 export const PUBLIC_FORM_BUILDER_ROUTE = "/public/form";
 export const PUBLIC_FORM_BUILDER_FAIL_ROUTE = "/public/form-form/fail";
 export const LOGIN_ROUTE = "/login";
@@ -2199,7 +2201,7 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   }
 }
 
-export const FORM_BUILDER_FIELDS_VALUES: SectionsInputs[] = [
+export const getForminitialValues = () => [
   {
     id: uuid(),
     col: 12,

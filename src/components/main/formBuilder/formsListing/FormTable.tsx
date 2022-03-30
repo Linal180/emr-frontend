@@ -14,12 +14,15 @@ import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
 import { renderTh } from "../../../../utils";
-import { useTableStyles ,DetailTooltip} from "../../../../styles/tableStyles";
+import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
-import { useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, SectionsInputs } from "../../../../generated/graphql";
 import {
-  ACTION, PAGE_LIMIT, DELETE_PATIENT_DESCRIPTION, FORM_BUILDER_ROUTE, NAME, FACILITY_NAME, FORM_TEXT,
-  TYPE, CANT_DELETE_FORM, PUBLIC_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE
+  useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, SectionsInputs,
+  LayoutJsonType
+} from "../../../../generated/graphql";
+import {
+  ACTION, PAGE_LIMIT, DELETE_PATIENT_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
+  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE
 } from "../../../../constants";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
@@ -97,7 +100,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
         },
       })
     } catch (error) { }
-  }, [ findAllForms, page])
+  }, [findAllForms, page])
 
 
   useEffect(() => {
@@ -125,10 +128,12 @@ const FormBuilderTable: FC = (): JSX.Element => {
     }
   };
 
-  const onViewClick = (layout: string) => {
-    const section = JSON.parse(layout);
-    section?.sections?.length > 0 && setFormPreviewData(section?.sections)
-    setOpenPreview(true)
+  const onViewClick = (layout: LayoutJsonType | undefined) => {
+    if (layout) {
+      const { sections } = layout;
+      sections?.length > 0 && setFormPreviewData(sections)
+      setOpenPreview(true)
+    }
   }
 
   const previewCloseHanlder = () => {
@@ -180,12 +185,12 @@ const FormBuilderTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{facilityId}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                        <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_FORM_LINK}>
                           <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
                             <InsertLinkIcon />
                           </Box>
                         </DetailTooltip>
-                        <Link to={`${FORM_BUILDER_ROUTE}/${id}`}>
+                        <Link to={`${FORM_BUILDER_EDIT_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
                             <EditIcon />
                           </Box>
@@ -193,7 +198,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashIcon />
                         </Box>
-                        <Box className={classes.iconsBackground} onClick={() => onViewClick(layout || '')}>
+                        <Box className={classes.iconsBackground} onClick={() => onViewClick(layout)}>
                           <VisibilityIcon />
                         </Box>
                       </Box>

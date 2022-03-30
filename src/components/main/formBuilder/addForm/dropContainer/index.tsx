@@ -1,6 +1,7 @@
 //packages block
 import { Box, Grid, IconButton, TextField, Typography } from '@material-ui/core';
 import { Edit as EditIcon, Close as DeleteIcon } from '@material-ui/icons'
+import { memo } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd'
 //contants block
 import { FieldsInputs } from '../../../../../generated/graphql';
@@ -110,4 +111,4 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
   )
 }
 
-export default DropContainer
+export default memo(DropContainer)
