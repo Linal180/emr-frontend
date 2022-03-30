@@ -1,6 +1,6 @@
 import moment from "moment";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { AppointmentPayload, AppointmentsPayload, DoctorSlotsPayload, FacilityPayload } from "../generated/graphql"
+import { AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload } from "../generated/graphql"
 
 export interface State {
   page: number;
@@ -21,7 +21,7 @@ export interface State {
   deleteAppointmentId: string;
   date: MaterialUiPickersDate;
   facility: FacilityPayload['facility'];
-  availableSlots: DoctorSlotsPayload['slots'];
+  availableSlots: SlotsPayload['slots'];
   appointment: AppointmentPayload['appointment'];
   appointments: AppointmentsPayload['appointments'];
   externalAppointment: {
@@ -143,7 +143,7 @@ export type Action =
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
-  | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: DoctorSlotsPayload['slots'] }
+  | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: SlotsPayload['slots'] }
   | { type: ActionType.SET_APPOINTMENTS; appointments: AppointmentsPayload['appointments'] }
   | {
     type: ActionType.SET_EXTERNAL_APPOINTMENT; externalAppointment: {

@@ -28,7 +28,7 @@ import {
   getStandardTime, getTimestamps, renderDoctors, renderServices
 } from "../../../../../utils";
 import {
-  ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation, useGetDoctorSlotsLazyQuery,
+  ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation, useGetSlotsLazyQuery,
   useGetFacilityLazyQuery, FacilityPayload, BillingStatus
 } from "../../../../../generated/graphql";
 import {
@@ -81,7 +81,7 @@ const PublicAppointmentForm = (): JSX.Element => {
     }
   });
 
-  const [getDoctorSlots, { loading: getSlotsLoading }] = useGetDoctorSlotsLazyQuery({
+  const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -91,10 +91,10 @@ const PublicAppointmentForm = (): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { getDoctorSlots } = data || {}
+      const { getSlots } = data || {}
 
-      if (getDoctorSlots) {
-        const { slots } = getDoctorSlots;
+      if (getSlots) {
+        const { slots } = getSlots;
 
         slots ?
           dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots })
@@ -135,13 +135,16 @@ const PublicAppointmentForm = (): JSX.Element => {
 
   useEffect(() => {
     if (selectedProvider && selectedService && date) {
-      getDoctorSlots({
+      getSlots({
         variables: {
-          getDoctorSlots: { id: selectedProvider, offset, currentDate: date.toString(), serviceId: selectedService }
+          getSlots: {
+            providerId: selectedProvider, offset, currentDate: date.toString(),
+            serviceId: selectedService, facilityId
+          }
         }
       })
     }
-  }, [currentDate, getDoctorSlots, offset, selectedProvider, date, selectedService, watch])
+  }, [date, facilityId, getSlots, offset, selectedProvider, selectedService, currentDate])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const {

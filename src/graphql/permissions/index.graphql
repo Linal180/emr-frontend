@@ -1,0 +1,26 @@
+query FindAllPermission($permissionInput: PermissionInput!){
+  findAllPermissions(permissionInput: $permissionInput){
+    response {
+      error
+      status
+      message
+    }
+    
+    permissions {
+      id
+      name
+      moduleType
+      status
+    }
+  }
+}
+
+mutation AssignPermissionToRole($rolePermissionItemInput: RolePermissionItemInput!){
+  assignPermissionToRole(rolePermissionItemInput: $rolePermissionItemInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
