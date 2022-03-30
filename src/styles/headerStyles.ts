@@ -1,12 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import {
-  BLACK,
-  BLACK_SEVEN,
-  BLACK_THREE,
-  BLUE_EIGHT,
-  GRAY_FIVE,
-  WHITE,
-  WHITE_FOUR,
+  BLACK, BLACK_SEVEN, BLACK_THREE, BLUE_EIGHT, GRAY_FIVE, WHITE, WHITE_FOUR,
 } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({

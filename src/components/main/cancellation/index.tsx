@@ -7,22 +7,18 @@ import Selector from '../../common/Selector';
 import CardComponent from '../../common/CardComponent';
 import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid, MenuItem, Typography, } from '@material-ui/core';
 // constants, history, styling block
+import { WHITE } from '../../../theme';
+import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
+import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   ALLOW_CANCELLATION, CANCELLATIONS, EMPTY_OPTION, GENERAL, NOTICE_REQUIRED_TEXT, PROFILE_GENERAL_MENU_ITEMS,
   PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY, USER_SETTINGS,
 } from '../../../constants';
-import { WHITE } from '../../../theme';
-import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
-import { useHeaderStyles } from " ../../../src/styles/headerStyles";
-
 
 const CancellationComponent = (): JSX.Element => {
   const classes = useHeaderStyles();
   const [state, setState] = useState({ one: false })
-
-  const methods = useForm<any>({
-    mode: "all",
-  });
+  const methods = useForm<any>({ mode: "all" });
   const { handleSubmit } = methods;
 
   const onSubmit: SubmitHandler<any> = () => { }
@@ -46,13 +42,11 @@ const CancellationComponent = (): JSX.Element => {
               </Box>
 
               <Box p={2} className={classes.sidebarMenu}>
-                {PROFILE_GENERAL_MENU_ITEMS.map((item) => {
-                  return (
-                    <Link key={`${item.link}-${item.name}`} to={item.link}>
-                      <MenuItem>{item.name}</MenuItem>
-                    </Link>
-                  )
-                })}
+                {PROFILE_GENERAL_MENU_ITEMS.map(({ name, link }) =>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
+                  </Link>
+                )}
               </Box>
 
               <Box mt={2} display="flex">
@@ -62,13 +56,11 @@ const CancellationComponent = (): JSX.Element => {
               </Box>
 
               <Box p={2} className={classes.sidebarMenu}>
-                {PROFILE_SECURITY_MENU_ITEMS.map((item) => {
-                  return (
-                    <Link key={`${item.link}-${item.name}`} to={item.link}>
-                      <MenuItem>{item.name}</MenuItem>
-                    </Link>
-                  )
-                })}
+                {PROFILE_SECURITY_MENU_ITEMS.map(({ name, link }) =>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
+                  </Link>
+                )}
               </Box>
             </CardComponent>
           </Box>

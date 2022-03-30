@@ -5,6 +5,7 @@ export interface State {
   isOpen: boolean
   isEdit: boolean
   fileUrl: string
+  openDelete: boolean
   attachmentId: string
   attachmentUrl: string
   isEditModalOpen: boolean
@@ -29,6 +30,7 @@ export const initialState: State = {
   isEdit: false,
   attachments: [],
   attachmentId: '',
+  openDelete: false,
   attachmentUrl: '',
   attachmentsData: [],
   mediaData: undefined,
@@ -50,6 +52,7 @@ export enum ActionType {
   SET_FILE_URL = 'setFileUrl',
   SET_MEDIA_DATA = 'setMediaData',
   SET_ATTACHMENT = 'setAttachment',
+  SET_OPEN_DELETE = 'setOpenDelete',
   SET_ATTACHMENTS = 'setAttachments',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
@@ -67,6 +70,7 @@ export type Action =
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_FILE_URL; fileUrl: string }
+  | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
@@ -87,6 +91,12 @@ export const mediaReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isOpen: action.isOpen
+      }
+
+    case ActionType.SET_OPEN_DELETE:
+      return {
+        ...state,
+        openDelete: action.openDelete
       }
 
     case ActionType.SET_DRIVING_LICENSE_1:

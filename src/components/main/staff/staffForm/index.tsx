@@ -15,21 +15,21 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 import history from "../../../../history";
 import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
-import { getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
+import { getTimestamps, renderFacilities, renderRoles, setRecord } from "../../../../utils";
 import {
-  Gender, useCreateStaffMutation, useGetStaffLazyQuery, UserRole, useUpdateStaffMutation
+  Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
 } from "../../../../generated/graphql";
 import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
-  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, MAPPED_STAFF_ROLES,
+  DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, CANT_CREATE_STAFF,
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, 
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
-  const { facilityList } = useContext(ListContext)
+  const { facilityList, roleList } = useContext(ListContext)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(staffSchema)
@@ -165,7 +165,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         await createStaff({
           variables: {
             createStaffInput: {
-              staffInput: { password: 'staff@123', roleType: role as UserRole, ...staffInputs, adminId: id },
+              staffInput: { password: 'staff@123', roleType: role, ...staffInputs, adminId: id },
               providers: []
             }
           }
@@ -202,7 +202,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             label={ROLE}
                             name="roleType"
                             value={EMPTY_OPTION}
-                            options={MAPPED_STAFF_ROLES}
+                            options={renderRoles(roleList)}
                           />
                         </Grid>
                       }

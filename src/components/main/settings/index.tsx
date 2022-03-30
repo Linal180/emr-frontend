@@ -7,15 +7,16 @@ import CardComponent from "../../common/CardComponent";
 // constants block
 import Search from '../../common/Search';
 import {
-  APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS, MISCELLANEOUS_SETTINGS_ITEMS,
-  PRACTICE_SETTINGS, PRACTICE_SETTINGS_ITEMS, SERVICES, SERVICES_ITEMS, SETTINGS_TEXT, USERS_MANAGEMENT, USER_MENU_ITEMS
+  APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS, CALENDAR_SETTINGS_ITEMS, CALENDAR_SETTINGS_TEXT,
+  CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS, SETTINGS_TEXT,
+  MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS, PRACTICE_SETTINGS_ITEMS, SERVICES, SERVICES_ITEMS, 
+  USERS_MANAGEMENT, USER_MENU_ITEMS,
 } from "../../../constants";
 
 const search = (query: string) => { }
 
 export const SettingsComponent = () => (
   <>
-
     <Grid container justifyContent='center'>
       <Grid item md={7} sm={12} xs={12}>
         <PageHeader title={SETTINGS_TEXT} />
@@ -61,16 +62,16 @@ export const SettingsComponent = () => (
 
         <CardComponent cardTitle={INVENTORY}>
           <Box pb={3}>
-            {INVENTORY_ITEMS.map((item) => {
+            {INVENTORY_ITEMS.map(({ name, link, desc }) => {
               return (
                 <Box display="flex" alignItems="center" flexWrap="wrap">
-                  <Link key={`${item.link}-${item.name}`} to={item.link}>
-                    <MenuItem>{item.name}</MenuItem>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
                   </Link>
 
                   <Box pr={2}>-</Box>
 
-                  <Typography variant="body1">{item.desc}</Typography>
+                  <Typography variant="body1">{desc}</Typography>
                 </Box>
               )
             })}
@@ -81,16 +82,16 @@ export const SettingsComponent = () => (
 
         <CardComponent cardTitle={SERVICES}>
           <Box pb={3}>
-            {SERVICES_ITEMS.map((item) => {
+            {SERVICES_ITEMS.map(({ name, link, desc }) => {
               return (
                 <Box display="flex" alignItems="center" flexWrap="wrap">
-                  <Link key={`${item.link}-${item.name}`} to={item.link}>
-                    <MenuItem>{item.name}</MenuItem>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
                   </Link>
 
                   <Box pr={2}>-</Box>
 
-                  <Typography variant="body1">{item.desc}</Typography>
+                  <Typography variant="body1">{desc}</Typography>
                 </Box>
               )
             })}
@@ -101,16 +102,56 @@ export const SettingsComponent = () => (
 
         <CardComponent cardTitle={APPOINTMENT_SETTINGS}>
           <Box pb={3}>
-            {APPOINTMENT_SETTINGS_ITEMS.map((item) => {
+            {APPOINTMENT_SETTINGS_ITEMS.map(({ name, link, desc }) => {
               return (
                 <Box display="flex" alignItems="center" flexWrap="wrap">
-                  <Link key={`${item.link}-${item.name}`} to={item.link}>
-                    <MenuItem>{item.name}</MenuItem>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
                   </Link>
 
                   <Box pr={2}>-</Box>
 
-                  <Typography variant="body1">{item.desc}</Typography>
+                  <Typography variant="body1">{desc}</Typography>
+                </Box>
+              )
+            })}
+          </Box>
+        </CardComponent>
+
+        <Box p={2} />
+
+        <CardComponent cardTitle={CALENDAR_SETTINGS_TEXT}>
+          <Box pb={3}>
+            {CALENDAR_SETTINGS_ITEMS.map(({ name, link, desc }) => {
+              return (
+                <Box display="flex" alignItems="center" flexWrap="wrap">
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
+                  </Link>
+
+                  <Box pr={2}>-</Box>
+
+                  <Typography variant="body1">{desc}</Typography>
+                </Box>
+              )
+            })}
+          </Box>
+        </CardComponent>
+
+        <Box p={2} />
+
+        <CardComponent cardTitle={CLINICAL_TEXT}>
+          <Box pb={3}>
+            {CLINICAL_ITEMS.map(({ name, link, desc }) => {
+              return (
+                <Box display="flex" alignItems="center" flexWrap="wrap">
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
+                  </Link>
+
+                  <Box pr={2}>-</Box>
+
+                  <Typography variant="body1">{desc}</Typography>
                 </Box>
               )
             })}
@@ -121,16 +162,16 @@ export const SettingsComponent = () => (
 
         <CardComponent cardTitle={MISCELLANEOUS_SETTINGS}>
           <Box pb={3}>
-            {MISCELLANEOUS_SETTINGS_ITEMS.map((item) => {
+            {MISCELLANEOUS_SETTINGS_ITEMS.map(({ name, link, desc }) => {
               return (
                 <Box display="flex" alignItems="center" flexWrap="wrap">
-                  <Link key={`${item.link}-${item.name}`} to={item.link}>
-                    <MenuItem>{item.name}</MenuItem>
+                  <Link key={`${link}-${name}`} to={link}>
+                    <MenuItem>{name}</MenuItem>
                   </Link>
 
                   <Box pr={2}>-</Box>
 
-                  <Typography variant="body1">{item.desc}</Typography>
+                  <Typography variant="body1">{desc}</Typography>
                 </Box>
               )
             })}

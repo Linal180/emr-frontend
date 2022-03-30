@@ -1,22 +1,29 @@
 // packages block
+import { ReactNode } from "react";
 import moment from "moment";
 import { Typography, Box, TableCell } from "@material-ui/core";
+import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
 import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
-  Maybe, UserRole, Role, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus,
+  Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, PracticesPayload,
+  AppointmentsPayload, AttachmentsPayload,
 } from "../generated/graphql"
 import {
+<<<<<<< HEAD
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
   LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
   START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A,
+=======
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
+  LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, STAFF_ROUTE, TOKEN,
+  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A, ADMIN, SUPER_ADMIN,
+>>>>>>> 7c878b0b25e2a4b82c449e2aed68bec0229d37a6
 } from "../constants";
-import { ReactNode } from "react";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
@@ -83,14 +90,12 @@ export const requiredLabel = (label: string) => {
   )
 }
 
-export const isCurrentUserCanMakeAdmin = (currentUserRole: Maybe<Maybe<Role>[]> | undefined) => {
+export const isCurrentUserCanMakeAdmin = (currentUserRole: RolesPayload['roles']) => {
   let isSuperAdmin: boolean = true
 
   if (currentUserRole) {
     for (let role of currentUserRole) {
-      if (role?.role === UserRole.Admin) {
-        isSuperAdmin = false
-      }
+      isSuperAdmin = !(role?.role === ADMIN)
     }
   }
 
@@ -102,9 +107,7 @@ export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) 
 
   if (currentUserRole) {
     for (let role of currentUserRole) {
-      if (role?.role === UserRole.Admin || role?.role === UserRole.SuperAdmin) {
-        isAdmin = true
-      }
+      isAdmin = role?.role === ADMIN || role?.role === SUPER_ADMIN
     }
   }
 
@@ -113,13 +116,10 @@ export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) 
 
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   let isSupeAdmin: boolean = false
-
+  
   if (roles) {
     for (let role of roles) {
-      if (role?.role === UserRole.SuperAdmin) {
-        isSupeAdmin = true
-        break
-      }
+      isSupeAdmin = role?.role === SUPER_ADMIN
     }
   }
 
@@ -157,6 +157,14 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
 };
 
+export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
+  return date ? moment(date).format("h:mm a") : moment().format("h:mm a")
+};
+
+export const getAppointmentDate = (date: SchedulerDateTime | undefined): string => {
+  return date ? moment(date).format("MMMM Do YYYY") : moment().format("MMMM Do YYYY")
+};
+
 export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
 };
@@ -182,6 +190,22 @@ export const renderPractices = (practices: PracticesPayload['practices']) => {
         const { id, name } = practice;
 
         data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderRoles = (roles: RolesPayload['roles']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!roles) {
+    for (let role of roles) {
+      if (role) {
+        const { role: name } = role;
+
+        name && data.push({ id: name, name: formatValue(name) })
       }
     }
   }
@@ -287,20 +311,13 @@ export const dateValidation = (endDate: string, startDate: string): boolean => {
 
 export const timeValidation = (endTime: string, startTime: string): boolean => {
   if (endTime && startTime) {
-    const start = new Date(getTimestamps(startTime))
-    const end = new Date(getTimestamps(endTime))
-    const startHour = start.getHours()
-    const startMinutes = start.getMinutes()
-    const endHour = end.getHours()
-    const endMinutes = end.getMinutes()
+    const start = new Date(moment(startTime,"hh:mm a").format('lll').toString())
+    const end = new Date(moment(endTime,"hh:mm a").format('lll').toString())
 
-    if (endHour > startHour) {
-      return true
-    } else if (endHour === startHour) {
-      return endMinutes > startMinutes
-    } else
-      return false
-  } else return false;
+    return end > start
+  }
+
+  return false;
 };
 
 export const dateValidationMessage = (endDateName: string, startDateName: string): string => {
@@ -357,10 +374,12 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
 };
 
 export const setTimeDay = (time: string, day: string): string => {
-  const date = new Date(time)
+  const validTime = moment(time,"hh:mm").format('lll').toString()
+  const date = new Date(validTime)
   const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
   const selectedDay = days.findIndex(weekDay => weekDay === day);
-  const currentDay = new Date(time).getDay()
+  const currentDay = new Date(validTime).getDay()
+
   let x = 0
   let result = moment(date).format().toString();
 
@@ -373,7 +392,7 @@ export const setTimeDay = (time: string, day: string): string => {
 
     result = moment(date.setDate(date.getDate() - (x % 7))).format().toString()
   }
-
+  
   return result
 };
 
@@ -427,20 +446,42 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
   };
 };
 
-export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
-  return data?.map(appointment => {
-    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
-    const { firstName, lastName } = patient || {}
-    const { color } = appointmentType || {}
+export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
+  data?.map(appointment => {
+    const {
+      scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
+      reason, primaryInsurance, status, token
+    } = appointment || {};
+
+    const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
+    const { color, price, name: appointmentName, id: serviceId } = appointmentType || {}
+    const { contacts: fContact, id: facilityId, name: facilityName } = facility || {}
+    const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
+    const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
+    const appointmentStatus = status && formatValue(status)
+    const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
 
     return {
-      id, color,
+      token,
+      reason,
+      facilityId,
+      patientId,
+      serviceId,
+      providerId,
+      appointmentId,
+      facilityName,
+      facilityContact,
+      patientContact,
+      appointmentType,
+      primaryInsurance,
+      color, price,
+      appointmentName,
+      appointmentStatus,
       title: `${firstName} ${lastName}`,
+      providerName: `${providerFN} ${providerLN}`,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
     }
-
   })
-}
 
 export const appointmentStatus = (status: string) => {
   const cancelled = status === Appointmentstatus.Cancelled;

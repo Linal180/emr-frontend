@@ -5,15 +5,17 @@ import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
-import { Action } from "../reducers/locationReducer";
+import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as PatientAction } from "../reducers/patientReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput,
+  UpdateAppointmentInput, AppointmentsPayload, UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, 
+  AttachmentsPayload, RolesPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -45,6 +47,9 @@ export interface AppContextProps {
 }
 
 export interface ListContextInterface {
+  roleList: RolesPayload['roles'];
+  setRoleList: Function;
+  fetchAllRoleList: Function;
   practiceList: PracticesPayload['practices'];
   setPracticeList: Function;
   fetchAllPracticeList: Function;
@@ -72,6 +77,12 @@ export interface FacilityContextInterface {
   patientList: PatientsPayload['patients'];
   setPatientList: Function;
   fetchAllPatientList: Function;
+}
+
+export interface AppointmentContextInterface {
+  appointmentList: AppointmentsPayload['appointments'];
+  setAppointmentList: Function;
+  fetchAllAppointmentList: Function;
 }
 
 export interface Children {
@@ -109,7 +120,6 @@ export interface DialogTypes {
   refetch?: Function;
   handleClose?: Function;
 }
-
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
   success?: boolean;
@@ -119,13 +129,16 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
+export interface GraphModalProps extends DialogTypes{
+  dispatcher: Dispatch<PatientAction>;
+}
+
 export interface ViewAppointmentCardProps {
   isLoading?: boolean;
   isOpen: boolean;
   title?: string;
   setIsOpen: Function;
 }
-
 
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
@@ -272,6 +285,8 @@ export type ResetPasswordInputs = {
   repeatPassword: string;
 };
 
+export type updatePasswordInputs = ResetPasswordInputs & { oldPassword: string; };
+
 interface IControlLabel {
   error?: string;
   fieldType?: string;
@@ -377,7 +392,7 @@ interface CustomBillingAddressInputs {
 export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state" | "country">
   & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId"> & CustomBillingAddressInputs
   & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption }
-  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };;
+  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };
 
 type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
 
@@ -502,16 +517,24 @@ export type PatientInputProps = BasicContactControlInputs & EmergencyContactCont
   & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
 
 export type ExternalPatientInputProps =
-  { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption } & { race: SelectorOption }
-  & { ethnicity: SelectorOption } & { providerId: SelectorOption } & { genderIdentity: SelectorOption }
-  & { state: SelectorOption } & { maritialStatus: SelectorOption } & { country: SelectorOption }
+  { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption }
+  & { state: SelectorOption } & { country: SelectorOption }
   & { emergencyCountry: SelectorOption } & { emergencyState: SelectorOption }
-  & Pick<CreatePatientItemInput, 'dob' | 'pharmacy' | 'voiceCallPermission' | 'phonePermission' | 'language'
+  & Pick<CreatePatientItemInput, 'pharmacy' | 'voiceCallPermission' | 'phonePermission'
     | 'callToConsent' | 'releaseOfInfoBill'>
   & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'zipCode' | 'ssn'>
   & Pick<EmergencyContactControlInputs, 'emergencyName' | 'emergencyRelationship' | 'emergencyPhone' |
     'emergencyCity' | 'emergencyZipCode' | 'emergencyAddress' |
     'emergencyAddress2'>
+
+export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
+  "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
+  & { serviceId: SelectorOption } & { providerId: SelectorOption };
+
+export type ExtendedExternalAppointmentInputProps = Pick<CreateExternalAppointmentItemInput, "scheduleEndDateTime"
+  | "scheduleStartDateTime"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
+  & Pick<CreatePatientItemInput, "firstName" | "lastName" | "email" | "dob"> & { phone: string } &
+{ sexAtBirth: SelectorOption }
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
   & { facilityId: SelectorOption };
@@ -592,6 +615,7 @@ export interface ICreateMediaInput {
 }
 
 export interface MediaModalTypes extends DialogTypes {
+  buttonText?: string;
   itemId: string;
   title?: string;
   isProfile?: boolean;
@@ -607,15 +631,16 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
+  buttonText?: string;
   title?: string;
-  reload: Function;
+  button?: boolean;
   imageSide: string;
-  isProfile?: boolean;
   hasCollage?: boolean;
   hasHighlights?: boolean
   notDescription?: boolean;
   moduleType: AttachmentType;
   attachmentData?: Attachment;
+  reload: Function;
 }
 
 export interface DropDownItems {
@@ -636,6 +661,7 @@ export interface MediaCardComponentType {
   isEdit: boolean;
   isOpen: boolean;
   imageSide: string;
+  button?: boolean;
   imageModuleType?: string;
   notDescription?: boolean;
   attachment?: Attachment;
@@ -651,15 +677,6 @@ export interface DocumentModalComponentType {
   setOpen: Function;
   isOpen: boolean;
 }
-
-export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
-  "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
-  & { serviceId: SelectorOption } & { providerId: SelectorOption };
-
-export type ExtendedExternalAppointmentInputProps = Omit<CreateExternalAppointmentItemInput, "serviceId"
-  | "providerId" | "paymentType"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
-  & Omit<CreatePatientItemInput, "sexAtBirth"> & { paymentType: SelectorOption } &
-{ sexAtBirth: SelectorOption } & GuardianContactControlInputs;
 
 type Days = | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
 
@@ -706,3 +723,15 @@ export interface CountrySelectorInterface {
   stateName: string;
   cityName: string
 }
+
+export interface DocumentTableProps {
+  dispatcher: Dispatch<Action>;
+  attachments: AttachmentsPayload['attachments'];
+}
+
+export interface PortalTableProps {
+  inviteAccepted: boolean;
+}
+
+
+export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };

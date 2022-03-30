@@ -9,8 +9,8 @@ import {
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  UserRole, Communicationtype, Gender,
+  Appointmentstatus, Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
+  Communicationtype, Gender,
 } from "../generated/graphql";
 
 // regex
@@ -22,7 +22,6 @@ export const EIN_REGEX = /^\d{2}-?\d{7}$/;
 export const STRING_REGEX = /^[A-Za-z\s]+$/;
 export const REVENUE_CODE_REGEX = /^\d{4}$/;
 export const UPIN_REGEX = /^[A-Za-z0-9]{6}$/;
-export const NAME_REGEX = /^[A-Za-b]{2,10}$/;
 export const CLIA_REGEX = /^[A-Za-z0-9]{10}$/;
 export const SSN_REGEX = /^\d{3}-\d{2}-\d{4}$/;
 export const FACILITY_CODE_REGEX = /^[A-Z]{2,5}$/;
@@ -33,6 +32,9 @@ export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
+// roles
+export const SUPER_ADMIN = 'super-admin';
+export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
 export const EMPTY_OPTION = { id: "", name: "" };
@@ -46,8 +48,10 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const CDC = "CDC";
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
+export const BMI_FOR_AGE = "BMI for Age";
 export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
 export const VIEW = "View";
@@ -72,6 +76,7 @@ export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
 export const CALENDAR = "Calendar";
+export const PAY_LATER = "Pay Later";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
@@ -147,6 +152,7 @@ export const INVENTORY = "Inventory";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const NO_INVOICE = "No Invoice";
 export const UNPAID = "Unpaid";
+export const PAID = "Paid";
 export const INVOICE = "Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
@@ -185,14 +191,7 @@ export const IMPLANT_HISTORY_TEXT = "Implant History";
 export const AVAILABILITY_TEXT = "Availability";
 export const ADD_MORE_RECORDS_TEXT = "Add more records";
 export const ADD_WIDGET_TEXT = "Add Widget";
-export const ACCEPTABLE_FILES = [
-  ".jpg",
-  ".jpeg",
-  ".png",
-  ".docx",
-  ".doc",
-  ".pdf",
-];
+export const ACCEPTABLE_FILES = [".jpg", ".jpeg", ".png", ".docx", ".doc", ".pdf",];
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
 export const STAFF_MANAGEMENT = "Staff Management";
@@ -220,6 +219,12 @@ export const VACCINES_DESCRIPTION = "Create and edit vaccine inventory for your 
 export const FACILITY_SERVICES_DESCRIPTION = "Add or update all the services a facility is offering";
 export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
 export const CANCELLED_APPOINTMENT_DESCRIPTION = "View cancelled appointments and their reason";
+export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
+export const FACILITY_SCHEDULE = "Facility Schedule";
+export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
+export const CLINICAL_TEXT = "Clinicals";
+export const FORM_BUILDER = "Form Builder";
+export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
 export const TIME_ZONE_DESCRIPTION = "Set time zones";
@@ -404,10 +409,10 @@ export const SEND_EMAIL = "Send Email";
 export const START_TIME = "Start Time";
 export const END_TIME = "End Time";
 export const REQUESTS_TEXT = "Requests";
-export const CLINICAL_TEXT = "Clinical";
 export const INVOICES_TEXT = "Invoices";
 export const PATIENTS_TEXT = "Patients";
 export const PATIENT = "Patient";
+export const DOCUMENT = "Document";
 export const PRACTICE = "Practice";
 export const DOCTOR = "Doctor";
 export const DOCTOR_SCHEDULE = "Doctor Schedule";
@@ -557,6 +562,7 @@ export const ETHNICITY = "Ethnicity";
 export const GENDER_IDENTITY = "Gender Identity";
 export const HOLD_STATEMENT = "Hold Statement";
 export const HOMEBOUND = "Home Bound";
+export const PROVIDER_NAME = "Provider Name"
 export const LANGUAGE = "Language";
 export const REGISTRATION_DEPARTMENT = "Registration Department";
 export const PRIMARY_DEPARTMENT = "Primary Department";
@@ -582,9 +588,15 @@ export const INDUSTRY = "Industry";
 export const STATEMENT_DELIVERED_ONLINE = "Statement delivered online only";
 export const STATEMENT_NOTE = "Statement note";
 export const ID_NUMBER = "ID Number";
+export const PRIVACY_NOTICE = "Privacy Notice"
 export const GROUP_NUMBER = "Policy / Group number";
+export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits"
 export const ISSUE_DATE = "Issue Date";
 export const EXPIRATION_DATE = "Expiration Date";
+export const PRODUCT_AND_SERVICES_TEXT = "Product & Services";
+export const SUB_TOTAL_TEXT = "Sub-Total";
+export const TOTAL_TEXT = "Total";
+export const OUTSTANDING_TEXT = "Outstanding";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
@@ -619,6 +631,7 @@ export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION =
   "Confirm to delete doctor schedule";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
+export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
 export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER =
   "Mammography Certification Number";
@@ -673,6 +686,7 @@ export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
+export const APPOINTMENT_CANCEL_REASON = "Admin/Staff cancelled appointment";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PASSWORD_CHANGE_TEXT =
   "Your password is successfully changed. Please Sign in to your account.";
@@ -699,14 +713,6 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
 export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid photo ID and any insurance cards (if applicable).";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
-// Roles
-export const STAFF = "STAFF";
-export const ADMIN = "ADMIN";
-export const DOCTOR_ROLE = "DOCTOR";
-export const PATIENT_ROLE = "PATIENT";
-export const BILLING_ROLE = "BILLING";
-export const SUPER_ADMIN = "SUPER_ADMIN";
-export const DOCTOR_ASSISTANT_ROLE = "DOCTOR_ASSISTANT";
 
 // routes paths
 export const ROOT_ROUTE = "/";
@@ -732,6 +738,7 @@ export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FACILITIES_ROUTE = "/list-facilities";
 export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
+export const CALENDAR_ROUTE = "/dashboard/calendar";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
@@ -821,6 +828,7 @@ export const FACILITY_UPDATED = "Facility updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
+export const INVOICE_CREATED = "Invoice created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
@@ -829,6 +837,7 @@ export const LOCATION_UPDATED = "Location is updated successfully";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
+export const ATTACHMENT_DELETED = 'Attachment deleted successfully!';
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
@@ -848,11 +857,13 @@ export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
 export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully";
+export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";
 export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
 export const SET_PASSWORD_TEXT_MESSAGE = "Set your password and login to your portal";
 export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully";
+export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY = "Appointment status is updated successfully";
 export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done";
 export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = "Cancelled appointment cant be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
@@ -1042,50 +1053,16 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
   { id: "four", name: "four" },
 ];
 
-export const MAPPED_ROLES: SelectorOption[] = [
-  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Doctor, name: "Physician" },
-  { id: UserRole.Billing, name: "Biller" },
-  { id: UserRole.DoctorAssistant, name: "Physician Assistant" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
-];
-
-export const MAPPED_STAFF_ROLES: SelectorOption[] = [
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: "Biller" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
-  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
-];
-
-export const MAPPED_PRACTICE_ROLES: SelectorOption[] = [
-  { id: UserRole.Doctor, name: "Physician" },
-  { id: UserRole.DoctorAssistant, name: "Physician Assistant" },
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: "Biller" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
-];
-
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
   { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
+];
+
+export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
+  { id: Appointmentstatus.Cancelled, name: formatValue(Appointmentstatus.Cancelled) },
+  { id: Appointmentstatus.Completed, name: formatValue(Appointmentstatus.Completed) },
+  { id: Appointmentstatus.Initiated, name: formatValue(Appointmentstatus.Initiated) },
 ];
 
 export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map((timezone) => {
@@ -1721,29 +1698,6 @@ export const dummyAppointmentData = {
   patientElg: "Eligibility Issue",
 };
 
-export const dummyAppointmentSubData = [
-  {
-    heading: "Appointment Type",
-    description: "General",
-  },
-  {
-    heading: "Facility Location",
-    description: "Clay County Hospital",
-  },
-  {
-    heading: "Provider Name",
-    description: "Dr. Michael Hall, MD",
-  },
-  {
-    heading: "Reason",
-    description: "High temperature",
-  },
-  {
-    heading: "Primary Insurance",
-    description: "United Health Ins.",
-  },
-];
-
 export const PATIENT_CHARTING_DATA = [
   {
     title: "Allergies",
@@ -1859,6 +1813,7 @@ export enum ATTACHMENT_TITLES {
   DrivingLicense2 = "Driving License 2",
   InsuranceCard1 = "Insurance Card 1",
   InsuranceCard2 = "Insurance Card 2",
+  ProviderUploads = "Provider Uploads",
 }
 
 export const MAPPED_STATUS = [
@@ -1894,41 +1849,6 @@ export const MAPPED_STATUS = [
     title: "Vacation",
     startDate: "2018-07-27T19:00:00.000Z",
     endDate: "2018-08-06T19:00:00.000Z",
-  },
-];
-
-export const DUMMY_DOCUMENTS = [
-  {
-    title: "CBCDiagnosedocument.pdf",
-    type: "Other",
-    comments: "Check when patient comes next time",
-    provider: "Dr. Clara Max",
-    date: "8 Sep, 2020",
-    size: "5KB",
-  },
-  {
-    title: "xray-analysis.pdf",
-    type: "Clinical Document",
-    comments: "It came with the patients other rec...",
-    provider: "Dr. Harrold Wixen",
-    date: "17 Oct, 2020",
-    size: "5KB",
-  },
-  {
-    title: "Bloodreport.pdf",
-    type: "Care Plan",
-    comments: "N/A",
-    provider: "Dr. A. H. John",
-    date: "24 May, 2020",
-    size: "122KB",
-  },
-  {
-    title: "fracturecondition.png",
-    type: "Chart Note",
-    comments: "N/A",
-    provider: "N/A",
-    date: "17 Oct, 2020",
-    size: "87KB",
   },
 ];
 
@@ -2104,6 +2024,22 @@ export const APPOINTMENT_SETTINGS_ITEMS = [
     name: CANCELLED_APPOINTMENT,
     link: "/",
     desc: CANCELLED_APPOINTMENT_DESCRIPTION
+  },
+];
+
+export const CALENDAR_SETTINGS_ITEMS = [
+  {
+    name: FACILITY_SCHEDULE,
+    link: "/",
+    desc: FACILITY_SCHEDULE_DESCRIPTION
+  },
+];
+
+export const CLINICAL_ITEMS = [
+  {
+    name: FORM_BUILDER,
+    link: "/",
+    desc: FORM_BUILDER_DESCRIPTION
   },
 ];
 

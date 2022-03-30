@@ -11,10 +11,13 @@ import {
 import {
   AllDoctorPayload, useFindAllDoctorLazyQuery, FacilitiesPayload, useFindAllFacilitiesLazyQuery,
   ServicesPayload, useFindAllServicesLazyQuery, useFindAllPatientLazyQuery, PatientsPayload,
-  useFindAllPracticesLazyQuery, PracticesPayload,
+  useFindAllPracticesLazyQuery, PracticesPayload, useFindAllRolesLazyQuery, RolesPayload,
 } from "../generated/graphql";
 
 export const ListContext = createContext<ListContextInterface>({
+  roleList: [],
+  setRoleList: () => { },
+  fetchAllRoleList: () => { },
   practiceList: [],
   setPracticeList: () => { },
   fetchAllPracticeList: () => { },
@@ -39,9 +42,35 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(listContextReducer, initialState)
   const {
-    doctorPages, doctorList, facilityPages, facilityList, servicePages,
-    serviceList, patientList, patientPages, practiceId, practicePages, practiceList
+    doctorPages, doctorList, facilityPages, facilityList, servicePages, serviceList, patientList,
+    patientPages, practiceId, practicePages, practiceList, rolePages, roleList
   } = state;
+
+  const [getAllRoles] = useFindAllRolesLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      return null;
+    },
+
+    onCompleted(data) {
+      if (data) {
+        const { getAllRoles: { pagination, roles } } = data
+
+        if (pagination) {
+          const { totalPages } = pagination;
+
+          if (totalPages ? rolePages !== totalPages : false) {
+            setRolePages(rolePages + 1)
+          }
+        }
+
+        !!roles && !!roleList &&
+          setRoleList([...roleList, ...roles] as RolesPayload['roles'])
+      }
+    }
+  })
 
   const [findAllPractices] = useFindAllPracticesLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -173,6 +202,17 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     }
   })
 
+  const fetchAllRoleList = useCallback(async (page = 1) => {
+    try {
+      dispatch({ type: ActionType.SET_ROLE_LIST, roleList: [] })
+      const pageInputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } };
+
+      await getAllRoles({
+        variables: { roleInput: pageInputs },
+      });
+    } catch (error) { }
+  }, [getAllRoles])
+
   const fetchAllPracticeList = useCallback(async (page = 1) => {
     try {
       dispatch({ type: ActionType.SET_PRACTICE_LIST, practiceList: [] })
@@ -263,17 +303,20 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
       dispatch({ type: ActionType.SET_PRACTICE_ID, practiceId: '' })
   }, [parentId, roles, hasToken]);
 
+  useEffect(() => { hasToken && fetchAllRoleList(rolePages) }, [fetchAllRoleList, hasToken, rolePages])
   useEffect(() => { hasToken && fetchAllPracticeList(practicePages) }, [fetchAllPracticeList, hasToken, practicePages])
   useEffect(() => { hasToken && fetchAllFacilityList(facilityPages) }, [fetchAllFacilityList, hasToken, facilityPages])
   useEffect(() => { hasToken && fetchAllDoctorList(doctorPages) }, [fetchAllDoctorList, hasToken, doctorPages])
   useEffect(() => { hasToken && fetchAllPatientList(patientPages) }, [fetchAllPatientList, hasToken, patientPages])
   useEffect(() => { hasToken && fetchAllServicesList(servicePages) }, [fetchAllServicesList, hasToken, servicePages])
 
+  const setRoleList = (roles: RolesPayload['roles']) => dispatch({ type: ActionType.SET_ROLE_LIST, roleList: roles });
   const setPracticeList = (practices: PracticesPayload['practices']) => dispatch({ type: ActionType.SET_PRACTICE_LIST, practiceList: practices });
   const setFacilityList = (facilities: FacilitiesPayload['facilities']) => dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: facilities });
   const setDoctorList = (doctors: AllDoctorPayload['doctors']) => dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: doctors });
   const setServicesList = (services: ServicesPayload['services']) => dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: services });
   const setPatientList = (patients: PatientsPayload['patients']) => dispatch({ type: ActionType.SET_PATIENT_LIST, patientList: patients });
+  const setRolePages = (pageNumber: number) => dispatch({ type: ActionType.SET_ROLE_PAGES, rolePages: pageNumber });
   const setPracticePages = (pageNumber: number) => dispatch({ type: ActionType.SET_PRACTICE_PAGES, practicePages: pageNumber });
   const setFacilityPages = (pageNumber: number) => dispatch({ type: ActionType.SET_FACILITY_PAGES, facilityPages: pageNumber });
   const setDoctorPages = (pageNumber: number) => dispatch({ type: ActionType.SET_DOCTOR_PAGES, doctorPages: pageNumber });
@@ -287,6 +330,9 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
         practiceList,
         setPracticeList,
         fetchAllPracticeList,
+        roleList,
+        setRoleList,
+        fetchAllRoleList,
         facilityList,
         setFacilityList,
         fetchAllFacilityList,

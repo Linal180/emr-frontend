@@ -2,18 +2,18 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import SignatureCanvas from 'react-signature-canvas';
+import { Box, Button, Collapse, Grid, MenuItem, Typography } from '@material-ui/core';
 // component block
 import CardComponent from '../../common/CardComponent';
-import { Box, Button, Collapse, Grid, MenuItem, Typography } from '@material-ui/core';
 // constants, history, styling block
 import { WHITE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
+import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
+import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
   SIGNATURE_TEXT, UPDATE_SIGNATURE, USER_SETTINGS
 } from '../../../constants';
-import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
-import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 
 const SignatureComponent = (): JSX.Element => {
   const classes = useHeaderStyles();
@@ -46,10 +46,10 @@ const SignatureComponent = (): JSX.Element => {
               </Box>
 
               <Box p={2} className={classes.sidebarMenu}>
-                {PROFILE_GENERAL_MENU_ITEMS.map((item) => {
+                {PROFILE_GENERAL_MENU_ITEMS.map(({ name, link }) => {
                   return (
-                    <Link key={`${item.link}-${item.name}`} to={item.link}>
-                      <MenuItem>{item.name}</MenuItem>
+                    <Link key={`${link}-${name}`} to={link}>
+                      <MenuItem>{name}</MenuItem>
                     </Link>
                   )
                 })}
@@ -62,10 +62,10 @@ const SignatureComponent = (): JSX.Element => {
               </Box>
 
               <Box p={2} className={classes.sidebarMenu}>
-                {PROFILE_SECURITY_MENU_ITEMS.map((item) => {
+                {PROFILE_SECURITY_MENU_ITEMS.map(({ name, link }) => {
                   return (
-                    <Link key={`${item.link}-${item.name}`} to={item.link}>
-                      <MenuItem>{item.name}</MenuItem>
+                    <Link key={`${link}-${name}`} to={link}>
+                      <MenuItem>{name}</MenuItem>
                     </Link>
                   )
                 })}
@@ -82,7 +82,9 @@ const SignatureComponent = (): JSX.Element => {
               </Box>
 
               <Box mb={4} onClick={() => setOpen(!open)}>
-                <Button type="submit" variant="outlined" color='inherit' className="blue-button-new">{UPDATE_SIGNATURE}</Button>
+                <Button type="submit" variant="outlined" color='inherit' className="blue-button-new">
+                  {UPDATE_SIGNATURE}
+                </Button>
               </Box>
             </Collapse>
 
@@ -106,5 +108,6 @@ const SignatureComponent = (): JSX.Element => {
       </Grid>
     </Box>
   )
-}
+};
+
 export default SignatureComponent;

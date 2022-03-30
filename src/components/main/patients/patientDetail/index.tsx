@@ -1,5 +1,5 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useState, useCallback, useContext } from 'react';
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect, useCallback } from 'react';
 import moment from "moment";
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
@@ -8,20 +8,15 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
 import PortalTable from './PortalTable';
-import Alert from '../../../common/Alert';
 import DocumentsTable from './DocumentsTable';
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
-import ConfirmDocumentModal from '../../../common/ConfirmDocumentModal';
 // constants, history, styling block
 import history from '../../../../history';
-import Search from '../../../common/Search';
-import { AuthContext } from '../../../../context';
 import { ParamsType } from "../../../../interfacesTypes";
 import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
-import { useTableStyles } from "../../../../styles/tableStyles";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { formatPhone, getTimestamps, getFormattedDate } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
@@ -30,27 +25,24 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery, useSendInviteToPatientMutation
+  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
-  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon, UploadIcon
+  AddWidgetIcon, AtIcon, DeleteWidgetIcon, HashIcon, LocationIcon, ProfileUserIcon
 } from "../../../../assets/svgs";
 import {
   ADD_WIDGET_TEXT, ATTACHMENT_TITLES, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EDIT_PATIENT, EMPTY_OPTION,
-  MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PENDING, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, UPLOAD,
-  SCHEDULE_APPOINTMENTS_TEXT, SIGNED, VIEW_CHART_TEXT, ENABLE_ACCESS_PORTAL, DISABLE_ACCESS_PORTAL, ENABLE_PATIENT_ACCESS
+  MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT,
+  VIEW_CHART_TEXT,
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
   const { id } = useParams<ParamsType>();
-  const { user } = useContext(AuthContext)
-  const { id: adminId } = user || {};
   const classes = useProfileDetailsStyles();
-  const tableClasses = useTableStyles();
   const [{ anchorEl, openDelete, patientData, tabValue }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
+  const [{ attachmentUrl, attachmentData, attachmentId, attachmentsData }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
@@ -63,31 +55,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
-
-  const [sendInviteToPatient, { loading: sendInviteLoading }] = useSendInviteToPatientMutation({
-    onError({ message }) {
-      Alert.error(message)
-    },
-
-    onCompleted(data) {
-      if (data) {
-        const { sendInviteToPatient } = data;
-
-        if (sendInviteToPatient) {
-          const { response, patient } = sendInviteToPatient;
-
-          if (response) {
-            const { status, message } = response
-
-            if (patient && status && status === 200) {
-              message && Alert.success(message)
-              dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
-            }
-          }
-        }
-      }
-    },
-  });
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -135,6 +102,10 @@ const PatientDetailsComponent = (): JSX.Element => {
           attachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
           mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
+          attachments && mediaDispatch({
+            type: mediaActionType.SET_ATTACHMENTS_DATA,
+            attachmentsData: attachments.filter(attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads)
+          })
         }
       }
     },
@@ -170,7 +141,7 @@ const PatientDetailsComponent = (): JSX.Element => {
     reloadAttachment()
   }, [id, attachmentId, attachmentData, fetchAttachment, fetchPatient, reloadAttachment])
 
-  const { firstName, lastName, dob, inviteAccepted, contacts, doctorPatients, createdAt } = patientData || {}
+  const { firstName, email: patientEmail, lastName, dob, inviteAccepted, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
 
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
@@ -181,7 +152,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   if (selfContact && selfContact[0]) {
     const { phone, email, country, state } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || "--"
-    selfEmail = email || "--"
+    selfEmail = patientEmail ? patientEmail : email || "--"
     selfCurrentLocation = `${country} ${state}` || "--"
   }
 
@@ -241,14 +212,6 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   ]
 
-  const handleAccess = async () => {
-    try {
-      id && adminId && await sendInviteToPatient({
-        variables: { patientInviteInput: { id, adminId } }
-      })
-    } catch (error) { }
-  };
-
   const onDeleteClick = () =>
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
@@ -258,11 +221,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const isLoading = getPatientLoading || getAttachmentLoading
 
-  const [DocumentOpen, setDocumentOpen] = useState(false);
-
-  const handleUpload = () => setDocumentOpen(true);
-
-  const search = (query: string) => { }
 
   return (
     <Box>
@@ -298,7 +256,6 @@ const PatientDetailsComponent = (): JSX.Element => {
                     <MediaCards
                       title={ATTACHMENT_TITLES.ProfilePicture}
                       reload={() => reloadAttachment()}
-                      isProfile={true}
                       notDescription={true}
                       moduleType={AttachmentType.Patient}
                       itemId={id}
@@ -333,16 +290,6 @@ const PatientDetailsComponent = (): JSX.Element => {
                         </Box>
                       ))}
                     </Box>
-                  </Box>
-
-                  <Box pr={1}>
-                    <Button color="inherit" variant="outlined" className='blue-button-new'
-                      onClick={() => handleAccess()}
-                      disabled={sendInviteLoading || Boolean(inviteAccepted)}>
-                      {inviteAccepted ? DISABLE_ACCESS_PORTAL : ENABLE_ACCESS_PORTAL}
-
-                      {sendInviteLoading && <CircularProgress size={20} color="inherit" />}
-                    </Button>
                   </Box>
 
                   <Box pr={1}>
@@ -426,47 +373,15 @@ const PatientDetailsComponent = (): JSX.Element => {
             </TabPanel>
 
             <TabPanel value="8">
-              <Box className={tableClasses.mainTableContainer}>
-                <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
-                  <Box display="flex">
-                    <Box className={tableClasses.searchOuterContainer}>
-                      <Search search={search} />
-                    </Box>
-
-                    <Box ml={3} className={tableClasses.RadioButtonsStroke}>
-                      <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>
-                      <Button size="small">{SIGNED}</Button>
-                    </Box>
-                  </Box>
-
-                  <Button color="primary" variant="contained" startIcon={<UploadIcon />} onClick={handleUpload}>
-                    {UPLOAD}
-                  </Button>
-                </Box>
-
-                <DocumentsTable />
-              </Box>
+              <DocumentsTable dispatcher={mediaDispatch} attachments={attachmentsData} />
             </TabPanel>
 
             <TabPanel value="9">
-              <Box className={tableClasses.mainTableContainer}>
-                <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
-                  <Box className={tableClasses.searchOuterContainer}>
-                    <Search search={search} />
-                  </Box>
-
-                  <Button color="inherit" variant="outlined" className='blue-button-new'>
-                    {ENABLE_PATIENT_ACCESS}
-                  </Button>
-                </Box>
-
-                <PortalTable />
-              </Box>
+              <PortalTable inviteAccepted={Boolean(inviteAccepted)} />
             </TabPanel>
           </Box>
         </TabContext>
-      )
-      }
+      )}
 
       <ConfirmationModal
         title={DELETE_WIDGET_TEXT}
@@ -475,12 +390,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         handleDelete={handleDeleteWidget}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-
-      <ConfirmDocumentModal
-        isOpen={DocumentOpen}
-        setOpen={(DocumentOpen: boolean) => setDocumentOpen(DocumentOpen)}
-      />
-    </Box>
+    </Box >
   )
 }
 
