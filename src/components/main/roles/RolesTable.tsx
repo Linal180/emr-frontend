@@ -48,6 +48,7 @@ const RolesTable: FC = (): JSX.Element => {
         <Pagination
           count={10}
           shape="rounded"
+          variant="outlined"
           page={page}
           onChange={handleChange}
         />
