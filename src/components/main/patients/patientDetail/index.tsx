@@ -480,7 +480,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         isOpen={DocumentOpen}
         setOpen={(DocumentOpen: boolean) => setDocumentOpen(DocumentOpen)}
       />
-    </Box >
+    </Box>
   )
 }
 

@@ -371,7 +371,7 @@ const PublicAppointmentForm = (): JSX.Element => {
                     labelPlacement="end"
                   />
                 </Box>
-              </Grid >
+              </Grid>
 
               <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
                 <CardComponent cardTitle="Available Slots">
@@ -401,8 +401,8 @@ const PublicAppointmentForm = (): JSX.Element => {
                       )}
                     </ul>
                   )}
-                </CardComponent >
-              </Grid >
+                </CardComponent>
+              </Grid>
 
               <Grid item lg={12} md={12} sm={12} xs={12}>
                 <Box pt={4} display="flex" justifyContent="center" gridGap={20}>

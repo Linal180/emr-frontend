@@ -973,10 +973,6 @@ export const USER_MENU_ITEMS = [
     name: DOCTORS_TEXT,
     link: DOCTORS_ROUTE,
   },
-  // {
-  //   name: PATIENTS_TEXT,
-  //   link: PATIENTS_ROUTE,
-  // },
   {
     name: STAFF_TEXT,
     link: STAFF_ROUTE,
@@ -2118,9 +2114,3 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     desc: TIME_ZONE_DESCRIPTION
   },
 ];
-
-// export const APPOINTMENT_PERMISSIONS_ITEMS = [
-//   {
-//     name: 'Create and Update Patients',
-//   },
-// ]
