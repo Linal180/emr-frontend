@@ -91,7 +91,7 @@ const AddRoleComponent = (): JSX.Element => {
                     <FormGroup>
                       <FormControlLabel
                         control={
-                          <Checkbox color="default" checked={state.one} onChange={handleChangeForCheckBox("one")} />
+                          <Checkbox color="primary" checked={state.one} onChange={handleChangeForCheckBox("one")} />
                         }
                         label='Create and Update Patients'
                       />
@@ -135,7 +135,7 @@ const AddRoleComponent = (): JSX.Element => {
                     <FormGroup>
                       <FormControlLabel
                         control={
-                          <Checkbox color="default" checked={state.five} onChange={handleChangeForCheckBox("five")} />
+                          <Checkbox color="primary" checked={state.five} onChange={handleChangeForCheckBox("five")} />
                         }
                         label='Access Scheduling'
                       />
