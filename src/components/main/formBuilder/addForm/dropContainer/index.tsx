@@ -1,14 +1,16 @@
 //packages block
 import { memo } from 'react';
-import { Box, Grid, IconButton, MenuItem, TextField, Typography } from '@material-ui/core';
+import { Box, Grid, IconButton, Typography } from '@material-ui/core';
 import { Edit as EditIcon, Close as DeleteIcon } from '@material-ui/icons'
-import { Droppable, Draggable } from 'react-beautiful-dnd'
+import { Droppable, Draggable } from 'react-beautiful-dnd';
+//component
+import FieldRenderer from '../../../../common/FieldRenderer'
 //contants block
-import { ElementType, FieldsInputs } from '../../../../../generated/graphql';
+import { FieldsInputs } from '../../../../../generated/graphql';
 import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
 import { useFormBuilderContainerStyles } from '../../../../../styles/formbuilder/dropContainer';
 import { BLACK, GRAY_FOUR, WHITE } from '../../../../../theme';
-import { parseColumnGrid, getFieldType } from '../../../../../utils'
+import { parseColumnGrid } from '../../../../../utils'
 //component
 const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandler }: DropContainerPropsTypes) => {
   //classes
@@ -78,23 +80,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                                       </Box>
                                     </Box>
                                   </Box>
-                                  <TextField
-                                    fullWidth
-                                    variant="outlined"
-                                    select={item.type === ElementType.Select}
-                                    defaultValue={''}
-                                    id={item.fieldId}
-                                    SelectProps={{
-                                      displayEmpty: true
-                                    }}
-                                    placeholder={item?.placeholder ? item?.placeholder : ""}
-                                    type={getFieldType(item.type)}
-                                  >
-                                    <MenuItem value={''} disabled>{item?.placeholder}</MenuItem>
-                                    {item?.options?.map((option, index) => (
-                                      <MenuItem key={`${index}-${item.fieldId}-${option.value}`} value={option.value}>{option.name} </MenuItem>
-                                    ))}
-                                  </TextField>
+                                  <FieldRenderer item={item} isCreating />
                                 </Box>
                               </div>
                             </Grid>

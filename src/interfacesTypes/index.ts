@@ -2,7 +2,7 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref, ControllerRenderProps } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -802,4 +802,10 @@ export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHanlder: () => void;
   data: SectionsInputs[];
+}
+
+export interface FieldComponentProps {
+	item: FieldsInputs;
+  field?: ControllerRenderProps;
+  isCreating?: boolean;
 }

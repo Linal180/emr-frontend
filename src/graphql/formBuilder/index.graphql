@@ -35,6 +35,11 @@ query findAllForms($formInput: FormInput!) {
             tableName
             columnName
             fieldId
+            textArea
+            options {
+              name
+              value
+            }
           }
         }
       }
@@ -85,6 +90,11 @@ query getForm($getForm: GetForm!) {
             tableName
             columnName
             fieldId
+            textArea
+            options {
+              name
+              value
+            }
           }
         }
       }
@@ -132,6 +142,11 @@ query getPublicForm($getForm: GetForm!) {
             tableName
             columnName
             fieldId
+            textArea
+            options {
+              name
+              value
+            }
           }
         }
       }

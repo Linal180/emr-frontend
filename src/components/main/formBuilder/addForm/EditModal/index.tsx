@@ -2,45 +2,29 @@
 import { useState, useEffect, ChangeEvent } from 'react';
 import { Dialog, DialogContent, Grid, Box, Button, FormControl, InputLabel, DialogTitle, IconButton, } from '@material-ui/core';
 import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm, } from 'react-hook-form'
-import { Add as AddIcon, Delete as DeleteIcon } from '@material-ui/icons';
+import { Add as AddIcon } from '@material-ui/icons';
 //components block
 import LabledInputController from '../../../../../controller';
-import InputController from '../../../../../controller/TextField';
+import InputController from '../../../../../controller';
 import Selector from '../../../../common/Select';
 import { AntSwitch } from '../../../../../styles/publicAppointmentStyles/externalPatientStyles';
 //constants & interfaces
-import { COLUMN_LENGTH, CSS_CLASSES, DISMISS, LABEL, NAME, NO_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, YES_TEXT, } from '../../../../../constants';
+import { COLUMN_LENGTH, CSS_CLASSES, DISMISS, EditFieldFormInitialValues, LABEL, NAME, NO_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, YES_TEXT, } from '../../../../../constants';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import { GRAY_TWO, WHITE } from '../../../../../theme';
 import { SAVE_TEXT } from '../../../../../constants';
 import { ElementType } from '../../../../../generated/graphql'
 //styles
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
-import { useTableStyles } from '../../../../../styles/tableStyles';
 import { TrashIcon } from '../../../../../assets/svgs';
-const initialValues: FormInitialType = {
-  fieldId: '',
-  label: '',
-  type: ElementType.Text,
-  name: '',
-  css: '',
-  column: 12,
-  placeholder: '',
-  required: false,
-  list: '',
-  errorMsg: '',
-  defaultValue: '',
-  options: []
-};
 //component
 const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }: FieldEditModalProps) => {
   //states
   const [isChecked, setIsChecked] = useState(false);
   //hooks
   const classes = usePublicAppointmentStyles();
-  const tableclasses = useTableStyles()
   const methods = useForm<FormInitialType>({
-    defaultValues: initialValues,
+    defaultValues: EditFieldFormInitialValues,
     // resolver: yupResolver(loginValidationSchema)
   });
   const { setValue, handleSubmit, control } = methods;
@@ -53,8 +37,9 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
   useEffect(() => {
     selected && setFormInitialValues();
   }, [selected]);
+  //set form values
   const setFormInitialValues = () => {
-    const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options } = selected;
+    const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea } = selected;
     setValue("name", name)
     setValue("label", label)
     setValue("required", required)
@@ -67,6 +52,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
     setValue("errorMsg", errorMsg)
     setValue("defaultValue", defaultValue)
     setValue("options", options)
+    setValue("textArea", textArea)
     setIsChecked(required)
   }
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -186,7 +172,6 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                       ))}
                     </tbody>
                   </table>
-
                   <Box sx={{
                     display: "flex",
                     justifyContent: "flex-end"
@@ -204,7 +189,6 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                       {DISMISS}
                     </Button>
                   </Box>
-
                   <Button type='submit' variant={'contained'} color="primary">
                     {SAVE_TEXT}
                   </Button>

@@ -5,7 +5,7 @@ import { v4 as uuid } from "uuid";
 // graphql and interfaces block
 import { formatServiceCode, formatValue, getFormattedDate, getStandardTime } from "../utils";
 import {
-  SelectorOption, StepLabelType, InputTypes, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial, FormInitialType
+  SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial, FormInitialType
 } from "../interfacesTypes";
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon,
@@ -15,7 +15,7 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  UserRole, Communicationtype, Gender, FormType, ElementType,
+  UserRole, Communicationtype, Gender, FormType, ElementType, FieldOptionsInputType,
 } from "../generated/graphql";
 
 // regex
@@ -2074,26 +2074,7 @@ export const COL_TYPES: ColumnTypes = {
   COL_3: 'col-3',
 };
 
-export const INPUT_TYPES: InputTypes = {
-  TEXT: 'text',
-  DATE: 'date',
-  TIME: 'time',
-  SELECT: 'select',
-  // MULTI_SELECT:'multi_select',
-  RADIO: 'radio',
-  CHECKBOX: 'checkbox',
-  TEL: 'tel',
-  NUMBER: 'number',
-  EMAIL: 'email',
-  COLOR: 'color',
-  FILE: 'file',
-  IMAGE: 'image',
-  MONTH: 'month',
-  PASSWORD: 'password',
-  RANGE: 'range',
-  URL: 'url',
-  WEEK: 'week',
-};
+export const options: FieldOptionsInputType[] = [{ name: "option 1", value: 'option_1' }, { name: "option 2", value: 'option_2' }]
 
 export const ITEMS: ItemsTypes[] = [
   {
@@ -2108,6 +2089,38 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     errorMsg: '',
     defaultValue: '',
+    options: [],
+    textArea: false
+  },
+  {
+    icon: RadioGroupIcon,
+    fieldId: uuid(),
+    label: 'Radio Group',
+    type: ElementType.Radio,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+    options: options,
+    textArea: false
+  },
+  {
+    icon: CheckboxIcon,
+    fieldId: uuid(),
+    label: 'Checkbox',
+    type: ElementType.Checkbox,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+    options: options,
+    textArea: false
   },
   {
     icon: DateIcon,
@@ -2121,6 +2134,8 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     errorMsg: '',
     defaultValue: '',
+    textArea: false,
+    options: []
   },
   {
     icon: NumberIcon,
@@ -2134,6 +2149,8 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     errorMsg: '',
     defaultValue: '',
+    textArea: false,
+    options: []
   },
   {
     icon: EmailIcon,
@@ -2147,6 +2164,8 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     defaultValue: '',
     errorMsg: '',
+    textArea: false,
+    options: []
   },
   {
     icon: FileInputIcon,
@@ -2160,6 +2179,8 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     defaultValue: '',
     errorMsg: '',
+    textArea: false,
+    options: []
   },
   {
     icon: SelectIcon,
@@ -2173,8 +2194,25 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     defaultValue: '',
     errorMsg: '',
-    options: [{ name: "option 1", value: 'option_1' }, { name: "option 2", value: 'option_2' }]
+    textArea: false,
+    options: options
   },
+  {
+    icon: TextAreaIcon,
+    fieldId: uuid(),
+    label: 'Text Area',
+    type: ElementType.Text,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    textArea: true,
+    options: []
+  },
+
 ];
 
 export const COLUMN_LENGTH: SelectOptions[] = [{ id: 12, name: 12 }, { id: 11, name: 11 }, { id: 10, name: 10 }, { id: 9, name: 9 }, { id: 8, name: 8 }, { id: 7, name: 7 }, { id: 6, name: 6 }, { id: 5, name: 5 }, { id: 4, name: 4 }, { id: 3, name: 3 }, { id: 2, name: 2 }, { id: 1, name: 1 }];
@@ -2234,5 +2272,23 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   required: false,
   list: '',
   errorMsg: '',
-  defaultValue: ''
+  defaultValue: '',
+  textArea: false,
+  options: []
+};
+
+export const EditFieldFormInitialValues: FormInitialType = {
+  fieldId: '',
+  label: '',
+  type: ElementType.Text,
+  name: '',
+  css: '',
+  column: 12,
+  placeholder: '',
+  required: false,
+  list: '',
+  errorMsg: '',
+  defaultValue: '',
+  options: [],
+  textArea: false
 };

@@ -146,7 +146,8 @@ const AddForm = () => {
             name: uuid(),
             errorMsg: itemField?.defaultValue ?? '',
             defaultValue: itemField?.defaultValue ?? '',
-            options: itemField?.options
+            options: itemField?.options ?? [],
+            textArea: itemField?.textArea ?? false
           };
 
           item?.fields?.push(newField);
@@ -173,6 +174,8 @@ const AddForm = () => {
             name: uuid(),
             errorMsg: itemField?.errorMsg ?? '',
             defaultValue: itemField?.defaultValue ?? '',
+            options: itemField?.options ?? [],
+            textArea: itemField?.textArea ?? false
           };
           item?.fields?.push(newField);
           return item;
@@ -262,8 +265,8 @@ const AddForm = () => {
   };
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
-    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options } = item;
-    setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id, options });
+    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options,textArea } = item;
+    setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id, options, textArea });
     modalOpenHandler();
   };
   //modal handlers

@@ -4,11 +4,11 @@ import { Button, Grid, Box } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 //components block
-import InputController from '../../../../controller';
+import InputController from '../../../common/FormFieldController';
 import Alert from '../../../common/Alert';
 //interfaces & constants
 import { ParamsType } from '../../../../interfacesTypes'
-import {  LoaderBackdrop, parseColumnGrid } from '../../../../utils';
+import { LoaderBackdrop, parseColumnGrid } from '../../../../utils';
 import { SectionsInputs, useGetPublicFormLazyQuery } from '../../../../generated/graphql';
 import { getForminitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION } from '../../../../constants';
 import history from '../../../../history';
@@ -41,7 +41,7 @@ const PublicFormPreview = () => {
           if (form && status && status === 200) {
             const { name, layout } = form;
             name && setFormName(name);
-            const { sections} = layout;
+            const { sections } = layout;
             sections?.length > 0 && setFormValues(sections)
 
           }
@@ -55,6 +55,7 @@ const PublicFormPreview = () => {
   })
   //form submit handler
   const submitHandler = (values: any) => {
+    debugger 
     closeHandler()
   };
   //close handler
@@ -87,14 +88,7 @@ const PublicFormPreview = () => {
                           md={parseColumnGrid(field?.column)}
                           key={`${item?.id}-${field?.fieldId}`}
                         >
-                          <InputController
-                            fieldType={field?.type}
-                            controllerName={field?.name}
-                            controllerLabel={field?.label}
-                            placeholder={field?.placeholder}
-                            isRequired={field?.required || false}
-                            className={field?.css}
-                          />
+                          <InputController item={field} />
                         </Grid>
                       ))}
                     </Grid>
