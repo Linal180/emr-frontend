@@ -496,3 +496,9 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
     drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2
   }
 };
+
+export const formatPermissionName = (name: string) => {
+  const [text, ...rest] = name.split(/(?=[A-Z])/)
+
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `;
+}

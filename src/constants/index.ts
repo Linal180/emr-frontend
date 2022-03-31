@@ -222,13 +222,12 @@ export const CANCELLED_APPOINTMENT_DESCRIPTION = "View cancelled appointments an
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
-export const CLINICAL_TEXT = "Clinicals";
+export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
 export const TIME_ZONE_DESCRIPTION = "Set time zones";
-
 export const DELETE_WIDGET_DESCRIPTION = " Are you sure you want to remove this widget?";
 export const DELETE_WIDGET_TEXT = "Delete Widget";
 export const VIEW_CHART_TEXT = "View Chart";
@@ -475,6 +474,7 @@ export const SETTINGS_TEXT = "Settings";
 export const ADD_ROLE_TEXT = "Add Role";
 export const ROLE_DETAILS_TEXT = "Role Details";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
+export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
 export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
 export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
@@ -803,6 +803,8 @@ export const LOCATION_NOT_FOUND = "Location not found!";
 export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
+export const ROLE_CREATED = "Role is created successfully";
+export const ROLE_UPDATED = "Role is updated successfully";
 export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const TRY_AGAIN = "Something went wrong. Try again!";
@@ -833,8 +835,6 @@ export const INVOICE_CREATED = "Invoice created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
-export const LOCATION_CREATED = "Location is created successfully";
-export const LOCATION_UPDATED = "Location is updated successfully";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
@@ -1818,8 +1818,11 @@ export enum ATTACHMENT_TITLES {
 }
 
 export enum MODULE_TYPES {
+  User = 'User',
   Staff = 'Staff',
   Patient = 'Patient',
+  Service = 'Service',
+  Services = 'Services',
   Practice = 'Practice',
   Facility = 'Facility',
   Provider = 'Provider',

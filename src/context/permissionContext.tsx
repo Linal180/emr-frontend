@@ -11,6 +11,8 @@ import {
 export const PermissionContext = createContext<PermissionContextInterface>({
   permissions: [],
   staffPermissions: [],
+  userPermissions: [],
+  servicePermissions: [],
   patientPermissions: [],
   practicePermissions: [],
   schedulePermissions: [],
@@ -24,7 +26,7 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(permissionContextReducer, initialState)
   const {
     permissions, practicePermissions, facilityPermissions, providerPermissions, staffPermissions,
-    patientPermissions, appointmentPermissions, schedulePermissions, page
+    patientPermissions, appointmentPermissions, schedulePermissions, page, userPermissions, servicePermissions
   } = state;
 
   const [findAllPermissions] = useFindAllPermissionsLazyQuery({
@@ -35,7 +37,7 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
       return null;
     },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       if (data) {
         const { findAllPermissions: { permissions, pagination } } = data
 
@@ -43,51 +45,60 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
           const { totalPages } = pagination
 
           if (totalPages ? page !== totalPages : false) {
-            dispatch({ type: ActionType.SET_PAGE, page: page + 1})
+            dispatch({ type: ActionType.SET_PAGE, page: page + 1 })
           }
         }
 
-        permissions && updateList(permissions as PermissionsPayload['permissions'])
+        permissions && await updateList(permissions as PermissionsPayload['permissions'])
       }
     }
   })
 
-  const updateList = (list: PermissionsPayload['permissions']) => {
+  const updateList = async (list: PermissionsPayload['permissions']) => {
     list?.map(permission => {
       const { moduleType } = permission || {}
 
       switch (moduleType) {
         case MODULE_TYPES.Permission:
-          permissions && dispatch({ type: ActionType.SET_PERMISSIONS, permissions: [...permissions, permission] })
+          permissions && dispatch({ type: ActionType.SET_PERMISSIONS, permissions: [permission, ...permissions] })
           break;
 
         case MODULE_TYPES.Practice:
-          practicePermissions && dispatch({ type: ActionType.SET_PRACTICE_PERMISSIONS, practicePermissions: [...practicePermissions, permission] })
+          practicePermissions && dispatch({ type: ActionType.SET_PRACTICE_PERMISSIONS, practicePermissions: [permission, ...practicePermissions] })
           break;
 
         case MODULE_TYPES.Facility:
-          facilityPermissions && dispatch({ type: ActionType.SET_FACILITY_PERMISSIONS, facilityPermissions: [...facilityPermissions, permission] })
+          facilityPermissions && dispatch({ type: ActionType.SET_FACILITY_PERMISSIONS, facilityPermissions: [permission, ...facilityPermissions] })
           break;
 
         case MODULE_TYPES.Provider:
-          providerPermissions && dispatch({ type: ActionType.SET_PROVIDER_PERMISSIONS, providerPermissions: [...providerPermissions, permission] })
+          providerPermissions && dispatch({ type: ActionType.SET_PROVIDER_PERMISSIONS, providerPermissions: [permission, ...providerPermissions] })
           break;
 
         case MODULE_TYPES.Staff:
-          staffPermissions && dispatch({ type: ActionType.SET_STAFF_PERMISSIONS, staffPermissions: [...staffPermissions, permission] })
+          staffPermissions && dispatch({ type: ActionType.SET_STAFF_PERMISSIONS, staffPermissions: [permission, ...staffPermissions] })
           break;
 
         case MODULE_TYPES.Patient:
-          patientPermissions && dispatch({ type: ActionType.SET_PATIENT_PERMISSIONS, patientPermissions: [...patientPermissions, permission] })
+          patientPermissions && dispatch({ type: ActionType.SET_PATIENT_PERMISSIONS, patientPermissions: [permission, ...patientPermissions] })
           break;
 
         case MODULE_TYPES.Schedule:
         case MODULE_TYPES.Schedules:
-          schedulePermissions && dispatch({ type: ActionType.SET_SCHEDULE_PERMISSIONS, schedulePermissions: [...schedulePermissions, permission] })
+          schedulePermissions && dispatch({ type: ActionType.SET_SCHEDULE_PERMISSIONS, schedulePermissions: [permission, ...schedulePermissions] })
           break;
 
         case MODULE_TYPES.Appointment:
-          appointmentPermissions && dispatch({ type: ActionType.SET_APPOINTMENT_PERMISSIONS, appointmentPermissions: [...appointmentPermissions, permission] })
+          appointmentPermissions && dispatch({ type: ActionType.SET_APPOINTMENT_PERMISSIONS, appointmentPermissions: [permission, ...appointmentPermissions] })
+          break;
+
+        case MODULE_TYPES.User:
+          userPermissions && dispatch({ type: ActionType.SET_USER_PERMISSIONS, userPermissions: [permission, ...userPermissions] })
+          break;
+
+        case MODULE_TYPES.Service:
+        case MODULE_TYPES.Services:
+          servicePermissions && dispatch({ type: ActionType.SET_SERVICE_PERMISSIONS, servicePermissions: [permission, ...servicePermissions] })
           break;
       }
       // eslint-disable-next-line array-callback-return
@@ -109,8 +120,10 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
     <PermissionContext.Provider
       value={{
         permissions,
+        userPermissions,
         staffPermissions,
         patientPermissions,
+        servicePermissions,
         practicePermissions,
         schedulePermissions,
         facilityPermissions,

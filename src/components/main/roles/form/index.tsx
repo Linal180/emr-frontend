@@ -7,19 +7,18 @@ import { Box, Card, Grid, Typography, Checkbox, FormControlLabel, FormGroup, } f
 import Alert from '../../../common/Alert';
 import InputController from '../../../../controller';
 // constants and types block
-import { roleSchema } from '../../../../validationSchemas';
+import history from '../../../../history';
 import { PermissionContext } from '../../../../context';
-import { RoleItemInput } from '../../../../generated/graphql';
+import { formatPermissionName } from '../../../../utils';
+import { roleSchema } from '../../../../validationSchemas';
+import { RoleItemInput, useAssignPermissionToRoleMutation, useCreateRoleMutation, useUpdateRoleMutation } from '../../../../generated/graphql';
 import { GeneralFormProps } from '../../../../interfacesTypes';
 import {
-  APPOINTMENT_PERMISSIONS_TEXT, DESCRIPTION, ROLE_DETAILS_TEXT, ROLE_NAME,
+  APPOINTMENT_PERMISSIONS_TEXT, DESCRIPTION, PRACTICE_PERMISSIONS_TEXT, ROLES_ROUTE, ROLE_CREATED, ROLE_DETAILS_TEXT, ROLE_NAME,
 } from "../../../../constants";
 
-const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
-  const {
-    facilityPermissions, providerPermissions, appointmentPermissions, patientPermissions, permissions,
-    practicePermissions, schedulePermissions
-  } = useContext(PermissionContext)
+const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
+  const { practicePermissions } = useContext(PermissionContext)
 
   const [state, setState] = useState({
     one: false,
@@ -39,7 +38,7 @@ const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
   const methods = useForm<RoleItemInput>({
     mode: "all", resolver: yupResolver(roleSchema)
   });
-  const { handleSubmit } = methods;
+  const { handleSubmit, reset } = methods;
 
   const handleChangeForCheckBox = (name: string) => (
     event: ChangeEvent<HTMLInputElement>
@@ -47,7 +46,81 @@ const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
     setState({ ...state, [name]: event.target.checked });
   };
 
-  const onSubmit: SubmitHandler<RoleItemInput> = ({ role, description }) => { }
+  const [assignPermissionsRoles] = useAssignPermissionToRoleMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { assignPermissionToRole: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          reset()
+          Alert.success(ROLE_CREATED);
+          history.push(ROLES_ROUTE)
+        }
+      }
+    }
+  });
+
+  const assignPermissions = async (roleId: string) => {
+    roleId && assignPermissionsRoles({
+      variables: { rolePermissionItemInput: { roleId, permissionsId: [] } }
+    })
+  }
+
+  const [createRole] = useCreateRoleMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { createRole: { response, role } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          const { id: roleId } = role || {}
+          roleId && assignPermissions(roleId)
+        }
+      }
+    }
+  });
+
+  const [updateRole] = useUpdateRoleMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updateRole: { response, role } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          const { id: roleId } = role || {}
+          roleId && assignPermissions(roleId)
+        }
+      }
+    }
+  });
+
+  const onSubmit: SubmitHandler<RoleItemInput> = async ({ role, description }) => {
+    if (isEdit) {
+      id && await updateRole({
+        variables: { updateRoleItemInput: { id, role, description } }
+      })
+    } else {
+      await createRole({
+        variables: { roleItemInput: { role, description, customRole: true } }
+      })
+    }
+  }
 
   return (
     <>
@@ -83,31 +156,31 @@ const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
             <Box p={2} />
 
             <Card>
-              <Box p={4}>
-                <Typography variant="h4">{APPOINTMENT_PERMISSIONS_TEXT}</Typography>
-                <Box p={2} />
+              {practicePermissions && practicePermissions.length > 0 &&
+                <Box p={4}>
+                  <Typography variant="h4">{PRACTICE_PERMISSIONS_TEXT}</Typography>
+                  <Box p={2} />
 
-                <Grid container spacing={0}>
-                  {appointmentPermissions?.map(permission => {
-                    const { id, name } = permission || {}
+                  <Grid container spacing={0}>
+                    {practicePermissions.map(permission => {
+                      const { id, name } = permission || {}
 
-                    return (
-                      <Grid item md={3} sm={6}>
-                        <FormGroup>
-                          <FormControlLabel
-                            control={
-                              <Checkbox color="primary" checked={state.one} onChange={handleChangeForCheckBox("one")} />
-                            }
-                            label='Create and Update Patients'
-                          />
-                        </FormGroup>
-                      </Grid>
-                    )
-                  })}
-                </Grid>
-
-
-              </Box>
+                      return (
+                        <Grid item md={3} sm={6}>
+                          <FormGroup>
+                            <FormControlLabel
+                              control={
+                                <Checkbox color="primary" checked={state.one} onChange={handleChangeForCheckBox(id || '')} />
+                              }
+                              label={formatPermissionName(name || '')}
+                            />
+                          </FormGroup>
+                        </Grid>
+                      )
+                    })}
+                  </Grid>
+                </Box>
+              }
             </Card>
 
             <Card>
