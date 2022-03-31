@@ -17,7 +17,7 @@ import {
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD,
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -628,4 +628,8 @@ export const updatePasswordSchema = yup.object({
   ...passwordAndRepeatPasswordSchema,
   oldPassword: yup.string().required(requiredMessage(OLD_PASSWORD))
     .matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
+})
+
+export const roleSchema = yup.object({
+  role: nameSchema(ROLE_NAME)
 })

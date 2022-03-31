@@ -2918,12 +2918,12 @@ export type ChargePaymentMutationVariables = Exact<{
 
 export type ChargePaymentMutation = { __typename?: 'Mutation', chargePayment: { __typename?: 'TransactionPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, name?: string | null | undefined } | null | undefined, transaction: { __typename?: 'Transactions', id: string, status: Transactionstatus } } };
 
-export type FindAllPermissionQueryVariables = Exact<{
+export type FindAllPermissionsQueryVariables = Exact<{
   permissionInput: PermissionInput;
 }>;
 
 
-export type FindAllPermissionQuery = { __typename?: 'Query', findAllPermissions: { __typename?: 'PermissionsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, permissions?: Array<{ __typename?: 'Permission', id: string, name?: string | null | undefined, moduleType?: string | null | undefined, status?: boolean | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPermissionsQuery = { __typename?: 'Query', findAllPermissions: { __typename?: 'PermissionsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, permissions?: Array<{ __typename?: 'Permission', id: string, name?: string | null | undefined, moduleType?: string | null | undefined, status?: boolean | null | undefined } | null | undefined> | null | undefined } };
 
 export type AssignPermissionToRoleMutationVariables = Exact<{
   rolePermissionItemInput: RolePermissionItemInput;
@@ -3001,6 +3001,13 @@ export type RemoveRoleMutationVariables = Exact<{
 
 
 export type RemoveRoleMutation = { __typename?: 'Mutation', removeRole: { __typename?: 'RolePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type FindAllPermissionQueryVariables = Exact<{
+  permissionInput: PermissionInput;
+}>;
+
+
+export type FindAllPermissionQuery = { __typename?: 'Query', findAllPermissions: { __typename?: 'PermissionsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, permissions?: Array<{ __typename?: 'Permission', id: string, name?: string | null | undefined, moduleType?: string | null | undefined, status?: boolean | null | undefined } | null | undefined> | null | undefined } };
 
 export type CreateScheduleMutationVariables = Exact<{
   createScheduleInput: CreateScheduleInput;
@@ -5242,13 +5249,18 @@ export function useChargePaymentMutation(baseOptions?: Apollo.MutationHookOption
 export type ChargePaymentMutationHookResult = ReturnType<typeof useChargePaymentMutation>;
 export type ChargePaymentMutationResult = Apollo.MutationResult<ChargePaymentMutation>;
 export type ChargePaymentMutationOptions = Apollo.BaseMutationOptions<ChargePaymentMutation, ChargePaymentMutationVariables>;
-export const FindAllPermissionDocument = gql`
-    query FindAllPermission($permissionInput: PermissionInput!) {
+export const FindAllPermissionsDocument = gql`
+    query FindAllPermissions($permissionInput: PermissionInput!) {
   findAllPermissions(permissionInput: $permissionInput) {
     response {
       error
       status
       message
+    }
+    pagination {
+      page
+      totalCount
+      totalPages
     }
     permissions {
       id
@@ -5261,32 +5273,32 @@ export const FindAllPermissionDocument = gql`
     `;
 
 /**
- * __useFindAllPermissionQuery__
+ * __useFindAllPermissionsQuery__
  *
- * To run a query within a React component, call `useFindAllPermissionQuery` and pass it any options that fit your needs.
- * When your component renders, `useFindAllPermissionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFindAllPermissionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPermissionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useFindAllPermissionQuery({
+ * const { data, loading, error } = useFindAllPermissionsQuery({
  *   variables: {
  *      permissionInput: // value for 'permissionInput'
  *   },
  * });
  */
-export function useFindAllPermissionQuery(baseOptions: Apollo.QueryHookOptions<FindAllPermissionQuery, FindAllPermissionQueryVariables>) {
+export function useFindAllPermissionsQuery(baseOptions: Apollo.QueryHookOptions<FindAllPermissionsQuery, FindAllPermissionsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<FindAllPermissionQuery, FindAllPermissionQueryVariables>(FindAllPermissionDocument, options);
+        return Apollo.useQuery<FindAllPermissionsQuery, FindAllPermissionsQueryVariables>(FindAllPermissionsDocument, options);
       }
-export function useFindAllPermissionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPermissionQuery, FindAllPermissionQueryVariables>) {
+export function useFindAllPermissionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPermissionsQuery, FindAllPermissionsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<FindAllPermissionQuery, FindAllPermissionQueryVariables>(FindAllPermissionDocument, options);
+          return Apollo.useLazyQuery<FindAllPermissionsQuery, FindAllPermissionsQueryVariables>(FindAllPermissionsDocument, options);
         }
-export type FindAllPermissionQueryHookResult = ReturnType<typeof useFindAllPermissionQuery>;
-export type FindAllPermissionLazyQueryHookResult = ReturnType<typeof useFindAllPermissionLazyQuery>;
-export type FindAllPermissionQueryResult = Apollo.QueryResult<FindAllPermissionQuery, FindAllPermissionQueryVariables>;
+export type FindAllPermissionsQueryHookResult = ReturnType<typeof useFindAllPermissionsQuery>;
+export type FindAllPermissionsLazyQueryHookResult = ReturnType<typeof useFindAllPermissionsLazyQuery>;
+export type FindAllPermissionsQueryResult = Apollo.QueryResult<FindAllPermissionsQuery, FindAllPermissionsQueryVariables>;
 export const AssignPermissionToRoleDocument = gql`
     mutation AssignPermissionToRole($rolePermissionItemInput: RolePermissionItemInput!) {
   assignPermissionToRole(rolePermissionItemInput: $rolePermissionItemInput) {
@@ -5796,6 +5808,51 @@ export function useRemoveRoleMutation(baseOptions?: Apollo.MutationHookOptions<R
 export type RemoveRoleMutationHookResult = ReturnType<typeof useRemoveRoleMutation>;
 export type RemoveRoleMutationResult = Apollo.MutationResult<RemoveRoleMutation>;
 export type RemoveRoleMutationOptions = Apollo.BaseMutationOptions<RemoveRoleMutation, RemoveRoleMutationVariables>;
+export const FindAllPermissionDocument = gql`
+    query FindAllPermission($permissionInput: PermissionInput!) {
+  findAllPermissions(permissionInput: $permissionInput) {
+    response {
+      error
+      status
+      message
+    }
+    permissions {
+      id
+      name
+      moduleType
+      status
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPermissionQuery__
+ *
+ * To run a query within a React component, call `useFindAllPermissionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPermissionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPermissionQuery({
+ *   variables: {
+ *      permissionInput: // value for 'permissionInput'
+ *   },
+ * });
+ */
+export function useFindAllPermissionQuery(baseOptions: Apollo.QueryHookOptions<FindAllPermissionQuery, FindAllPermissionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPermissionQuery, FindAllPermissionQueryVariables>(FindAllPermissionDocument, options);
+      }
+export function useFindAllPermissionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPermissionQuery, FindAllPermissionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPermissionQuery, FindAllPermissionQueryVariables>(FindAllPermissionDocument, options);
+        }
+export type FindAllPermissionQueryHookResult = ReturnType<typeof useFindAllPermissionQuery>;
+export type FindAllPermissionLazyQueryHookResult = ReturnType<typeof useFindAllPermissionLazyQuery>;
+export type FindAllPermissionQueryResult = Apollo.QueryResult<FindAllPermissionQuery, FindAllPermissionQueryVariables>;
 export const CreateScheduleDocument = gql`
     mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
   createSchedule(createScheduleInput: $createScheduleInput) {

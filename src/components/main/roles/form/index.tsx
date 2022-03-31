@@ -1,16 +1,26 @@
 // packages block
-import { useState, ChangeEvent, FC } from 'react';
+import { useState, ChangeEvent, FC, useContext } from 'react';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Card, Grid, Typography, Checkbox, FormControlLabel, FormGroup, } from "@material-ui/core";
 // components block
+import Alert from '../../../common/Alert';
 import InputController from '../../../../controller';
 // constants and types block
+import { roleSchema } from '../../../../validationSchemas';
+import { PermissionContext } from '../../../../context';
+import { RoleItemInput } from '../../../../generated/graphql';
 import { GeneralFormProps } from '../../../../interfacesTypes';
 import {
-  APPOINTMENT_PERMISSIONS_TEXT, DESCRIPTION, NAME, ROLE_DETAILS_TEXT,
+  APPOINTMENT_PERMISSIONS_TEXT, DESCRIPTION, ROLE_DETAILS_TEXT, ROLE_NAME,
 } from "../../../../constants";
 
 const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
+  const {
+    facilityPermissions, providerPermissions, appointmentPermissions, patientPermissions, permissions,
+    practicePermissions, schedulePermissions
+  } = useContext(PermissionContext)
+
   const [state, setState] = useState({
     one: false,
     two: false,
@@ -26,17 +36,18 @@ const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
     twelve: false,
     thirteen: false,
   })
+  const methods = useForm<RoleItemInput>({
+    mode: "all", resolver: yupResolver(roleSchema)
+  });
+  const { handleSubmit } = methods;
+
   const handleChangeForCheckBox = (name: string) => (
     event: ChangeEvent<HTMLInputElement>
   ) => {
     setState({ ...state, [name]: event.target.checked });
   };
 
-  const methods = useForm<any>({
-    mode: "all",
-  });
-  const { handleSubmit } = methods;
-  const onSubmit: SubmitHandler<any> = () => { }
+  const onSubmit: SubmitHandler<RoleItemInput> = ({ role, description }) => { }
 
   return (
     <>
@@ -53,8 +64,8 @@ const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
                   <Grid item md={6} sm={12}>
                     <InputController
                       fieldType="text"
-                      controllerName="name"
-                      controllerLabel={NAME}
+                      controllerName="role"
+                      controllerLabel={ROLE_NAME}
                     />
                   </Grid>
 
@@ -70,6 +81,34 @@ const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
             </Card>
 
             <Box p={2} />
+
+            <Card>
+              <Box p={4}>
+                <Typography variant="h4">{APPOINTMENT_PERMISSIONS_TEXT}</Typography>
+                <Box p={2} />
+
+                <Grid container spacing={0}>
+                  {appointmentPermissions?.map(permission => {
+                    const { id, name } = permission || {}
+
+                    return (
+                      <Grid item md={3} sm={6}>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Checkbox color="primary" checked={state.one} onChange={handleChangeForCheckBox("one")} />
+                            }
+                            label='Create and Update Patients'
+                          />
+                        </FormGroup>
+                      </Grid>
+                    )
+                  })}
+                </Grid>
+
+
+              </Box>
+            </Card>
 
             <Card>
               <Box p={4}>

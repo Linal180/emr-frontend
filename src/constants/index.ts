@@ -322,6 +322,7 @@ export const TYPE = "Type";
 export const CODE = "Code";
 export const TRUE = "TRUE";
 export const TEXT = "text";
+export const ROLE_NAME = "Role name";
 export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
@@ -1815,6 +1816,18 @@ export enum ATTACHMENT_TITLES {
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
 }
+
+export enum MODULE_TYPES {
+  Staff = 'Staff',
+  Patient = 'Patient',
+  Practice = 'Practice',
+  Facility = 'Facility',
+  Provider = 'Provider',
+  Schedule = 'Schedule',
+  Schedules = 'Schedules',
+  Permission = 'Permission',
+  Appointment = 'Appointment',
+ }
 
 export const MAPPED_STATUS = [
   {

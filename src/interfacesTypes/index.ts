@@ -14,8 +14,8 @@ import {
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, 
-  AttachmentsPayload, RolesPayload,
+  UpdateAppointmentInput, AppointmentsPayload, UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput,
+  AttachmentsPayload, RolesPayload, PermissionsPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -79,6 +79,17 @@ export interface FacilityContextInterface {
   fetchAllPatientList: Function;
 }
 
+export interface PermissionContextInterface {
+  permissions: PermissionsPayload['permissions'],
+  staffPermissions: PermissionsPayload['permissions'],
+  patientPermissions: PermissionsPayload['permissions'],
+  practicePermissions: PermissionsPayload['permissions'],
+  schedulePermissions: PermissionsPayload['permissions'],
+  facilityPermissions: PermissionsPayload['permissions'],
+  providerPermissions: PermissionsPayload['permissions'],
+  appointmentPermissions: PermissionsPayload['permissions'],
+}
+
 export interface AppointmentContextInterface {
   appointmentList: AppointmentsPayload['appointments'];
   setAppointmentList: Function;
@@ -120,6 +131,7 @@ export interface DialogTypes {
   refetch?: Function;
   handleClose?: Function;
 }
+
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
   success?: boolean;
@@ -129,7 +141,7 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
-export interface GraphModalProps extends DialogTypes{
+export interface GraphModalProps extends DialogTypes {
   dispatcher: Dispatch<PatientAction>;
 }
 
@@ -733,5 +745,5 @@ export interface PortalTableProps {
   inviteAccepted: boolean;
 }
 
-
 export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
+
