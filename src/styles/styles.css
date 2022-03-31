@@ -120,7 +120,6 @@ body {
 }
 .list-item-text > span  {
   font-weight: 600 !important;
-
 }
 
 .overflow-visible {
@@ -318,19 +317,24 @@ body .MuiTabPanel-root {
 .zoid-outlet {
   width: 100% !important;
 }
+
 .braintree-option {
   min-height: 80px !important;
 }
+
 .braintree-option, .braintree-sheet, .braintree-sheet__header, .braintree-upper-container:before  {
   border: none !important;
   background-color: #ffffff !important;
 }
+
 .braintree-options-list {
   background-color: #f3f4f6 !important;
 }
+
 .braintree-option:first-child, .braintree-sheet__container, .braintree-large-button {
   margin-bottom: 2rem;
 }
+
 .braintree-sheet__content--form .braintree-form__field-group .braintree-form__field .braintree-form__hosted-field {
   border: none !important;
   background-color: #f3f4f6 !important;

@@ -9,8 +9,8 @@ import {
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  UserRole, Communicationtype, Gender,
+  Appointmentstatus, Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
+  Communicationtype, Gender,
 } from "../generated/graphql";
 
 // regex
@@ -32,6 +32,9 @@ export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
+// roles
+export const SUPER_ADMIN = 'super-admin';
+export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
 export const EMPTY_OPTION = { id: "", name: "" };
@@ -45,8 +48,10 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const CDC = "CDC";
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
+export const BMI_FOR_AGE = "BMI for Age";
 export const SYSTEM_PASSWORD = "admin@123";
 export const NEXT = "Next";
 export const VIEW = "View";
@@ -142,10 +147,12 @@ export const ADD_APPOINTMENT = "Add Appointment";
 export const EDIT_APPOINTMENT = "Edit Appointment";
 export const CREATE_INVOICE = "Create Invoice";
 export const PRACTICE_SETTINGS = "Practice Settings";
+export const USERS_MANAGEMENT = "Users Management";
 export const INVENTORY = "Inventory";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const NO_INVOICE = "No Invoice";
 export const UNPAID = "Unpaid";
+export const PAID = "Paid";
 export const INVOICE = "Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
@@ -315,6 +322,7 @@ export const TYPE = "Type";
 export const CODE = "Code";
 export const TRUE = "TRUE";
 export const TEXT = "text";
+export const ROLE_NAME = "Role name";
 export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
@@ -464,6 +472,13 @@ export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const APPOINTMENT_TEXT = "Appointment";
 export const SETTINGS_TEXT = "Settings";
+export const ADD_ROLE_TEXT = "Add Role";
+export const ROLE_DETAILS_TEXT = "Role Details";
+export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
+export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
+export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
+export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
+export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
 export const CLAIM_FEED_TEXT = "Claim Feed";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
@@ -548,6 +563,7 @@ export const ETHNICITY = "Ethnicity";
 export const GENDER_IDENTITY = "Gender Identity";
 export const HOLD_STATEMENT = "Hold Statement";
 export const HOMEBOUND = "Home Bound";
+export const PROVIDER_NAME = "Provider Name"
 export const LANGUAGE = "Language";
 export const REGISTRATION_DEPARTMENT = "Registration Department";
 export const PRIMARY_DEPARTMENT = "Primary Department";
@@ -578,6 +594,10 @@ export const GROUP_NUMBER = "Policy / Group number";
 export const RELEASE_OF_BILLING_INFO = "Release of Billing Information and Assignment of Benefits"
 export const ISSUE_DATE = "Issue Date";
 export const EXPIRATION_DATE = "Expiration Date";
+export const PRODUCT_AND_SERVICES_TEXT = "Product & Services";
+export const SUB_TOTAL_TEXT = "Sub-Total";
+export const TOTAL_TEXT = "Total";
+export const OUTSTANDING_TEXT = "Outstanding";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PAY_PAYPAL_TEXT = "Pay via Paypal";
 export const COINSURANCE_PERCENTAGE = "Coinsurance percentage";
@@ -625,6 +645,7 @@ export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial ca
 export const USD = "USD";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
+export const ROLES_TEXT = "Roles";
 export const PROFILE_TEXT = "Profile";
 export const SIGNATURE_TEXT = "Signature";
 export const CANCELLATION_TEXT = "Cancellation";
@@ -666,6 +687,7 @@ export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const AGREEMENT_HEADING = "User data privacy & TOS agreement.";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
+export const APPOINTMENT_CANCEL_REASON = "Admin/Staff cancelled appointment";
 export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PASSWORD_CHANGE_TEXT =
   "Your password is successfully changed. Please Sign in to your account.";
@@ -697,6 +719,7 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your pe
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
 export const STAFF_ROUTE = "/staff";
+export const ROLES_ROUTE = "/roles";
 export const VITALS_ROUTE = "/vitals";
 export const PATIENTS_CHART = "/chart";
 export const PROFILE_ROUTE = "/profile";
@@ -706,15 +729,17 @@ export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
-export const CANCELLATION_ROUTE = "/cancellation";
 export const AUTO_LOGOUT_ROUTE = "/autologout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FACILITIES_ROUTE = "/list-facilities";
+export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
+export const CALENDAR_ROUTE = "/dashboard/calendar";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
 export const UPDATE_PASSWORD_ROUTE = "/update-password";
@@ -810,6 +835,7 @@ export const FACILITY_UPDATED = "Facility updated successfully!";
 export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
+export const INVOICE_CREATED = "Invoice created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
@@ -838,11 +864,13 @@ export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
 export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully";
+export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";
 export const RESET_PASSWORD_SUCCESS = "Your password has been changed successfully.";
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
 export const SET_PASSWORD_TEXT_MESSAGE = "Set your password and login to your portal";
 export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully";
+export const APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY = "Appointment status is updated successfully";
 export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done";
 export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = "Cancelled appointment cant be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
@@ -964,10 +992,6 @@ export const USER_MENU_ITEMS = [
     link: DOCTORS_ROUTE,
   },
   {
-    name: PATIENTS_TEXT,
-    link: PATIENTS_ROUTE,
-  },
-  {
     name: STAFF_TEXT,
     link: STAFF_ROUTE,
   },
@@ -1036,50 +1060,16 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
   { id: "four", name: "four" },
 ];
 
-export const MAPPED_ROLES: SelectorOption[] = [
-  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Doctor, name: "Physician" },
-  { id: UserRole.Billing, name: "Biller" },
-  { id: UserRole.DoctorAssistant, name: "Physician Assistant" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
-];
-
-export const MAPPED_STAFF_ROLES: SelectorOption[] = [
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Admin, name: formatValue(UserRole.Admin) },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: "Biller" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
-  { id: UserRole.DoctorAssistant, name: formatValue(UserRole.DoctorAssistant) },
-];
-
-export const MAPPED_PRACTICE_ROLES: SelectorOption[] = [
-  { id: UserRole.Doctor, name: "Physician" },
-  { id: UserRole.DoctorAssistant, name: "Physician Assistant" },
-  { id: UserRole.Staff, name: "Office Staff" },
-  { id: UserRole.Nurse, name: formatValue(UserRole.Nurse) },
-  { id: UserRole.Billing, name: "Biller" },
-  {
-    id: UserRole.NursePractitioner,
-    name: formatValue(UserRole.NursePractitioner),
-  },
-  { id: UserRole.OfficeManager, name: formatValue(UserRole.OfficeManager) },
-];
-
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
   { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
+];
+
+export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
+  { id: Appointmentstatus.Cancelled, name: formatValue(Appointmentstatus.Cancelled) },
+  { id: Appointmentstatus.Completed, name: formatValue(Appointmentstatus.Completed) },
+  { id: Appointmentstatus.Initiated, name: formatValue(Appointmentstatus.Initiated) },
 ];
 
 export const MAPPED_TIME_ZONES: SelectorOption[] = moment.tz.names().map((timezone) => {
@@ -1715,29 +1705,6 @@ export const dummyAppointmentData = {
   patientElg: "Eligibility Issue",
 };
 
-export const dummyAppointmentSubData = [
-  {
-    heading: "Appointment Type",
-    description: "General",
-  },
-  {
-    heading: "Facility Location",
-    description: "Clay County Hospital",
-  },
-  {
-    heading: "Provider Name",
-    description: "Dr. Michael Hall, MD",
-  },
-  {
-    heading: "Reason",
-    description: "High temperature",
-  },
-  {
-    heading: "Primary Insurance",
-    description: "United Health Ins.",
-  },
-];
-
 export const PATIENT_CHARTING_DATA = [
   {
     title: "Allergies",
@@ -1856,6 +1823,18 @@ export enum ATTACHMENT_TITLES {
   ProviderUploads = "Provider Uploads",
 }
 
+export enum MODULE_TYPES {
+  Staff = 'Staff',
+  Patient = 'Patient',
+  Practice = 'Practice',
+  Facility = 'Facility',
+  Provider = 'Provider',
+  Schedule = 'Schedule',
+  Schedules = 'Schedules',
+  Permission = 'Permission',
+  Appointment = 'Appointment',
+}
+
 export const MAPPED_STATUS = [
   {
     value: "status",
@@ -1890,6 +1869,49 @@ export const MAPPED_STATUS = [
     startDate: "2018-07-27T19:00:00.000Z",
     endDate: "2018-08-06T19:00:00.000Z",
   },
+];
+
+export const ROLES_DUMMY_DATA = [
+  {
+    name: "Director of Operations",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Medical or Health Services Manager",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Advanced Practice Registered Nurse",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Physical Therapist Assistant",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Receptionist",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Neonatal Intensive Care Registered Nurse",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Health Services Manager",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Medical Office Specialist",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Nurse Consultant ",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Registered Nurse (RN) Medical Inpatient Services",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  }
 ];
 
 export const PROFILE_DETAIL_DATA = [
@@ -1970,7 +1992,7 @@ export const PRACTICE_SETTINGS_ITEMS = [
   },
   {
     name: ROLES_PERMISSIONS,
-    link: "/",
+    link: ROLES_ROUTE,
     desc: ROLES_PERMISSIONS_DESCRIPTION
   },
 ];

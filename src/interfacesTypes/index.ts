@@ -8,12 +8,14 @@ import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as PatientAction } from "../reducers/patientReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload,
+  UpdateAppointmentInput, AppointmentsPayload, UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput,
+  AttachmentsPayload, RolesPayload, PermissionsPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -45,6 +47,9 @@ export interface AppContextProps {
 }
 
 export interface ListContextInterface {
+  roleList: RolesPayload['roles'];
+  setRoleList: Function;
+  fetchAllRoleList: Function;
   practiceList: PracticesPayload['practices'];
   setPracticeList: Function;
   fetchAllPracticeList: Function;
@@ -72,6 +77,23 @@ export interface FacilityContextInterface {
   patientList: PatientsPayload['patients'];
   setPatientList: Function;
   fetchAllPatientList: Function;
+}
+
+export interface PermissionContextInterface {
+  permissions: PermissionsPayload['permissions'],
+  staffPermissions: PermissionsPayload['permissions'],
+  patientPermissions: PermissionsPayload['permissions'],
+  practicePermissions: PermissionsPayload['permissions'],
+  schedulePermissions: PermissionsPayload['permissions'],
+  facilityPermissions: PermissionsPayload['permissions'],
+  providerPermissions: PermissionsPayload['permissions'],
+  appointmentPermissions: PermissionsPayload['permissions'],
+}
+
+export interface AppointmentContextInterface {
+  appointmentList: AppointmentsPayload['appointments'];
+  setAppointmentList: Function;
+  fetchAllAppointmentList: Function;
 }
 
 export interface Children {
@@ -109,6 +131,7 @@ export interface DialogTypes {
   refetch?: Function;
   handleClose?: Function;
 }
+
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
   success?: boolean;
@@ -116,6 +139,10 @@ export interface ConfirmationTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
+}
+
+export interface GraphModalProps extends DialogTypes {
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface ViewAppointmentCardProps {
@@ -377,7 +404,7 @@ interface CustomBillingAddressInputs {
 export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state" | "country">
   & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId"> & CustomBillingAddressInputs
   & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption }
-  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };;
+  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };
 
 type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
 
@@ -717,3 +744,6 @@ export interface DocumentTableProps {
 export interface PortalTableProps {
   inviteAccepted: boolean;
 }
+
+export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
+

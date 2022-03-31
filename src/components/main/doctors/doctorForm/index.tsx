@@ -19,7 +19,7 @@ import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes"
 import { getDate, getTimestamps, renderFacilities, setRecord } from "../../../../utils";
 import { doctorReducer, State, Action, initialState, ActionType } from '../../../../reducers/doctorReducer';
 import {
-  DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, UserRole, useUpdateDoctorMutation
+  DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, useUpdateDoctorMutation
 } from "../../../../generated/graphql";
 import {
   FACILITY, FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, NOT_FOUND_EXCEPTION,
@@ -232,7 +232,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         firstName: firstName || "", middleName: middleName || "", lastName: lastName || "",
         prefix: prefix || "", suffix: suffix || "", email: email || "", password: password || "",
         facilityId: selectedFacility || "", providerIntials: providerIntials || "",
-        degreeCredentials: degreeCredentials || "", roleType: UserRole.Doctor,
+        degreeCredentials: degreeCredentials || "", roleType: 'doctor',
         speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology,
         dob: getTimestamps(dob || ''), ssn: ssn || "", languagesSpoken: languagesSpoken || "",
         taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",

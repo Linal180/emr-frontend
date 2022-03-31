@@ -1,9 +1,11 @@
 import {
-  FacilitiesPayload, ServicesPayload, AllDoctorPayload, PatientsPayload, PracticesPayload
+  FacilitiesPayload, ServicesPayload, AllDoctorPayload, PatientsPayload, PracticesPayload, RolesPayload
 } from "../generated/graphql"
 
 export interface State {
   practiceId: string;
+  rolePages: number;
+  roleList: RolesPayload['roles'];
   practicePages: number;
   practiceList: PracticesPayload['practices'];
   facilityPages: number;
@@ -18,6 +20,8 @@ export interface State {
 
 export const initialState: State = {
   practiceId: '',
+  rolePages: 1,
+  roleList: [],
   practicePages: 1,
   practiceList: [],
   facilityPages: 1,
@@ -32,6 +36,8 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_PRACTICE_ID = 'setPracticeId',
+  SET_ROLE_PAGES = "setRolePages",
+  SET_ROLE_LIST = "setRoleList",
   SET_PRACTICE_PAGES = "setPracticePages",
   SET_PRACTICE_LIST = "setPracticeList",
   SET_FACILITY_PAGES = "setFacilityPages",
@@ -46,6 +52,8 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PRACTICE_ID, practiceId: string }
+  | { type: ActionType.SET_ROLE_PAGES; rolePages: number }
+  | { type: ActionType.SET_ROLE_LIST; roleList: RolesPayload['roles'] }
   | { type: ActionType.SET_FACILITY_PAGES; facilityPages: number }
   | { type: ActionType.SET_FACILITY_LIST; facilityList: FacilitiesPayload['facilities'] }
   | { type: ActionType.SET_SERVICE_PAGES; servicePages: number }
@@ -59,6 +67,18 @@ export type Action =
 
 export const listContextReducer = (state: State, action: Action): State => {
   switch (action.type) {
+    case ActionType.SET_ROLE_PAGES:
+      return {
+        ...state,
+        rolePages: action.rolePages
+      }
+
+    case ActionType.SET_ROLE_LIST:
+      return {
+        ...state,
+        roleList: action.roleList
+      }
+
     case ActionType.SET_FACILITY_PAGES:
       return {
         ...state,
