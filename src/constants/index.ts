@@ -221,6 +221,7 @@ export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
 export const CANCELLED_APPOINTMENT_DESCRIPTION = "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const FACILITY_SCHEDULE = "Facility Schedule";
+export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinicals";
 export const FORM_BUILDER = "Form Builder";
@@ -275,6 +276,8 @@ export const PRACTICE_TYPE = "Practice Type";
 export const PICK_DAY_TEXT = "Pick Day";
 export const PICK_TIME_TEXT = "Pick Time";
 export const FEDERAL_TAX_ID = "Federal Tax ID";
+export const FACILITY_HOURS_START = "Facility hours start";
+export const FACILITY_HOURS_END = "Facility hours end";
 export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
 export const CHECK_PAYABLE_TO = "Check Payable To";
 export const BANK_ACCOUNT = "Bank Account";
@@ -1590,6 +1593,17 @@ export const DOCTOR_TOP_TABS = [
     title: "Doctors Appointments",
     value: "3",
   },
+];
+
+export const FACILITY_TOP_TABS = [
+  {
+    title: FACILITY_REGISTRATION,
+    value: "1",
+  },
+  {
+    title: FACILITY_SCHEDULE,
+    value: "2",
+  }
 ];
 
 export const WEEK_DAYS: SelectorOption[] = [

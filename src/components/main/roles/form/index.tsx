@@ -4,7 +4,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Card, Grid, Typography, Checkbox, FormControlLabel, FormGroup, } from "@material-ui/core";
 // components block
-import Alert from '../../../common/Alert';
 import InputController from '../../../../controller';
 // constants and types block
 import { roleSchema } from '../../../../validationSchemas';
@@ -16,10 +15,7 @@ import {
 } from "../../../../constants";
 
 const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
-  const {
-    facilityPermissions, providerPermissions, appointmentPermissions, patientPermissions, permissions,
-    practicePermissions, schedulePermissions
-  } = useContext(PermissionContext)
+  const { appointmentPermissions } = useContext(PermissionContext)
 
   const [state, setState] = useState({
     one: false,
@@ -89,8 +85,6 @@ const RoleForm: FC<GeneralFormProps> = (): JSX.Element => {
 
                 <Grid container spacing={0}>
                   {appointmentPermissions?.map(permission => {
-                    const { id, name } = permission || {}
-
                     return (
                       <Grid item md={3} sm={6}>
                         <FormGroup>

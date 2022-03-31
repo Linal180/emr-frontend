@@ -7,6 +7,10 @@ export const useFacilityStyles = makeStyles(() => ({
     backgroundColor: WHITE,
     boxShadow: 'none',
     borderRadius: 12,
-    height: 'fit-content'
+    height: 'fit-content',
+    position: 'sticky',
+    top: 120,
+    maxWidth: 327,
+    width: '100%'
   },
 }));
