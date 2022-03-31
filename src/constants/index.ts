@@ -733,6 +733,12 @@ export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
 
+// Facility Routes
+export const FACILITY_INFO_ROUTE = "facility-information";
+export const FACILITY_LOCATION_ROUTE = "facility-location";
+export const BILLING_PROFILE_ROUTE = "billing-profile";
+export const FACILITY_SCHEDULE_ROUTE = "facility-schedule";
+
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const REQUIRED_MESSAGE = "This field is required";
@@ -2040,4 +2046,23 @@ export const MISCELLANEOUS_SETTINGS_ITEMS = [
     link: "/",
     desc: TIME_ZONE_DESCRIPTION
   },
+];
+
+export const FacilityMenuNav = [
+  {
+    title: FACILITY_INFO,
+    linkTo: FACILITY_INFO_ROUTE,
+  },
+  {
+    title: FACILITY_LOCATION,
+    linkTo: FACILITY_LOCATION_ROUTE,
+  },
+  {
+    title: BILLING_PROFILE,
+    linkTo: BILLING_PROFILE_ROUTE,
+  },
+  {
+    title: FACILITY_SCHEDULE,
+    linkTo: FACILITY_SCHEDULE_ROUTE,
+  }
 ];
