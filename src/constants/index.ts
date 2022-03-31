@@ -2102,3 +2102,35 @@ export const FacilityMenuNav = [
     linkTo: FACILITY_SCHEDULE_ROUTE,
   }
 ];
+
+
+export const MAPPED_WEEK_DAYS = [
+  {
+    id: "Monday",
+    name: "Monday",
+  },
+  {
+    id: "Tuesday",
+    name: "Tuesday",
+  },
+  {
+    id: "Wednesday",
+    name: "Wednesday",
+  },
+  {
+    id: "Thursday",
+    name: "Thursday",
+  },
+  {
+    id: "Friday",
+    name: "Friday",
+  },
+  {
+    id: "Saturday",
+    name: "Saturday",
+  },
+  {
+    id: "Sunday",
+    name: "Sunday",
+  }
+]

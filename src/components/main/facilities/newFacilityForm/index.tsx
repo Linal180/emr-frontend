@@ -38,12 +38,15 @@ import {
   SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO,
   NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
   BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FACILITY_SCHEDULE, FacilityMenuNav, FACILITY_TOP_TABS,
-  FACILITY_HOURS_END, FACILITY_HOURS_START,
+  FACILITY_HOURS_END, FACILITY_HOURS_START, MAPPED_WEEK_DAYS, AVAILABILITY_TEXT,
 } from "../../../../constants";
+import { DaysEditIcon } from '../../../../assets/svgs';
+import ConfirmationDaysModal from '../../../common/ConfirmationDaysModal';
 
 const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext);
   const [tabValue, setTabValue] = useState<string>('1')
+  const [openEditModal, setOpenEditModal] = useState<boolean>(false)
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
@@ -289,6 +292,10 @@ const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     setTabValue(newValue)
+
+  const onEditModalClick = (id: string) => {
+    setOpenEditModal(true)
+  };
 
   const path = history.location?.hash;
 
@@ -685,7 +692,36 @@ const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             </Box>
           </Box>
         </TabPanel>
+
+        <TabPanel value='2'>
+          <CardComponent cardTitle={AVAILABILITY_TEXT} >
+            <Grid container spacing={3}>
+              {MAPPED_WEEK_DAYS.map((item) => {
+                return (
+                  <>
+                    <Grid item md={6} key={item.id}>
+                      <Box my={2} className={classes.addSlot}>
+                        <Typography component='h1' variant="h5">
+                          {item.name}
+                        </Typography>
+
+                        <Box onClick={() => onEditModalClick(id || '')}>
+                          <DaysEditIcon />
+                        </Box>
+                      </Box>
+                    </Grid>
+                  </>
+                )
+              })}
+            </Grid>
+          </CardComponent>
+        </TabPanel>
       </TabContext>
+      <ConfirmationDaysModal
+        title="Monday"
+        isOpen={openEditModal}
+        setOpen={(open: boolean) => setOpenEditModal(open)}
+      />
     </>
   );
 };

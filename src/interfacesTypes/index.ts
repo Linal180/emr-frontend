@@ -141,6 +141,13 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
+export interface ConfirmationDaysTypes extends DialogTypes {
+  title?: string;
+  success?: boolean;
+  actionText?: string;
+  isLoading?: boolean;
+}
+
 export interface GraphModalProps extends DialogTypes {
   dispatcher: Dispatch<PatientAction>;
 }
