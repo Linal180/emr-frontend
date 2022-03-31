@@ -519,12 +519,21 @@ export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const APPOINTMENT_TEXT = "Appointment";
+export const TEST_DATE_TIME = "Test Date/Time";
+export const DOCTOR_SIGNOFF = "Doctor Signoff";
 export const SETTINGS_TEXT = "Settings";
 export const CLAIM_FEED_TEXT = "Claim Feed";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
 export const MEMBERSHIP_NAME = "Membership name";
 export const CHANGE_PASSWORD = "Change password";
+export const LOINC_CODE = "LOINC Code";
+export const RESULT_VALUE = "Result Value";
+export const RESULT_UNITS = "Result Units";
+export const NORMAL_RANGE = "Normal Range";
+export const NORMAL_RANGE_UNIT = "Normal Range Unit";
+export const ABNORMAL_FLAG = "Abnormal Flag";
+export const SCANNED_IN_RESULTS = "Scanned in Results";
 export const TWO_FA_TEXT = "2-FA";
 export const AUTO_LOGOUT = "Auto Logout";
 export const LOCK_SCREEN = "Lock Screen";
@@ -585,6 +594,8 @@ export const DELETE = "Delete";
 export const UPLOAD = "Upload";
 export const PENDING = "Pending";
 export const ACTIONS = "Actions";
+export const MANUAL_ENTRY = "Manual Entry";
+export const LAB_ORDER = "Lab Order";
 export const REVOKE_ACCESS = "Revoke Access";
 export const ENABLE_PATIENT_ACCESS = "Enable Patient Access";
 export const UPLOADS_DOCUMENT = "Upload Document";
@@ -1741,6 +1752,10 @@ export const PROFILE_TOP_TABS = [
     title: "Portal Access",
     value: "9",
   },
+  {
+    title: "Lab Orders",
+    value: "10",
+  },
 ];
 
 export const DOCTOR_TOP_TABS = [
@@ -2095,6 +2110,29 @@ export const PORTAL_DUMMY_DATA = [
     activatedOn: "March 15, 2022. 2:18AM",
     disabledName: "Floyd Miles",
     disabledDate: "On: March 15, 2022. 2:18AM",
+  },
+];
+
+export const LAB_ORDERS_DUMMY_DATA = [
+  {
+    appointment: "2020-04-18 07:31 AM",
+    test: "Blood Sugar Test",
+    date: "2020-03-15 09:06 AM",
+  },
+  {
+    appointment: "2020-06-26 12:10 AM",
+    test: "Vitamin D Test",
+    date: "2020-03-15 09:06 AM",
+  },
+  {
+    appointment: "2020-01-04 02:46 PM",
+    test: "Thallium Scan",
+    date: "2020-02-08 07:31 AM",
+  },
+  {
+    appointment: "2020-01-04 02:46 PM",
+    test: "Vitamin E Test",
+    date: "2020-06-27 01:23 PM",
   },
 ];
 

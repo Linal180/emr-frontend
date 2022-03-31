@@ -9,6 +9,7 @@ import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } fr
 //components block
 import PortalTable from './PortalTable';
 import DocumentsTable from './DocumentsTable';
+import LabOrdersTable from './LabOrdersTable';
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
@@ -378,6 +379,10 @@ const PatientDetailsComponent = (): JSX.Element => {
 
             <TabPanel value="9">
               <PortalTable inviteAccepted={Boolean(inviteAccepted)} />
+            </TabPanel>
+
+            <TabPanel value="10">
+              <LabOrdersTable />
             </TabPanel>
           </Box>
         </TabContext>
