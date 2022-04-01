@@ -36,6 +36,7 @@ import {
   MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT,
   VIEW_CHART_TEXT,
 } from "../../../../constants";
+import Insurance from './Insurance';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
@@ -371,6 +372,10 @@ const PatientDetailsComponent = (): JSX.Element => {
                   </Grid>
                 ))}
               </Grid>
+            </TabPanel>
+
+            <TabPanel value="2">
+              <Insurance />
             </TabPanel>
 
             <TabPanel value="8">
