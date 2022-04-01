@@ -80,16 +80,7 @@ export interface FacilityContextInterface {
 }
 
 export interface PermissionContextInterface {
-  permissions: PermissionsPayload['permissions'],
-  userPermissions: PermissionsPayload['permissions'],
-  staffPermissions: PermissionsPayload['permissions'],
-  patientPermissions: PermissionsPayload['permissions'],
-  servicePermissions: PermissionsPayload['permissions'],
-  practicePermissions: PermissionsPayload['permissions'],
-  schedulePermissions: PermissionsPayload['permissions'],
-  facilityPermissions: PermissionsPayload['permissions'],
-  providerPermissions: PermissionsPayload['permissions'],
-  appointmentPermissions: PermissionsPayload['permissions'],
+  permissions: PermissionsPayload['permissions']
 }
 
 export interface AppointmentContextInterface {

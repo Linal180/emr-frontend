@@ -512,7 +512,9 @@ export const APPOINTMENTS_TEXT = "Appointments";
 export const APPOINTMENT_TEXT = "Appointment";
 export const SETTINGS_TEXT = "Settings";
 export const ADD_ROLE_TEXT = "Add Role";
+export const EDIT_ROLE_TEXT = "Update Role";
 export const ROLE_DETAILS_TEXT = "Role Details";
+export const PERMISSIONS = "Permissions";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
@@ -780,7 +782,7 @@ export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
-export const AUTO_LOGOUT_ROUTE = "/autologout";
+export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
@@ -843,6 +845,7 @@ export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since use
 // ALERT MESSAGES
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
+export const ROLE_NOT_FOUND = "Role not found!";
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
 export const SCHEDULE_START = "Schedule Start Time";
 export const INVALID_EMAIL = "Invalid email address";
@@ -887,6 +890,7 @@ export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
+export const PERMISSIONS_SET = "Role Permissions set successfully";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
@@ -1931,6 +1935,8 @@ export enum MODULE_TYPES {
   Appointment = 'Appointment',
 }
 
+export const MODULES = ['User', 'Staff', 'Patient', 'Service', 'Practice', 'Facility', 'Provider', 'Schedule', 'Permission', 'Appointment']
+
 export const MAPPED_STATUS = [
   {
     value: "status",
@@ -1965,49 +1971,6 @@ export const MAPPED_STATUS = [
     startDate: "2018-07-27T19:00:00.000Z",
     endDate: "2018-08-06T19:00:00.000Z",
   },
-];
-
-export const ROLES_DUMMY_DATA = [
-  {
-    name: "Director of Operations",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Medical or Health Services Manager",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Advanced Practice Registered Nurse",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Physical Therapist Assistant",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Receptionist",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Neonatal Intensive Care Registered Nurse",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Health Services Manager",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Medical Office Specialist",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Nurse Consultant ",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Registered Nurse (RN) Medical Inpatient Services",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  }
 ];
 
 export const PROFILE_DETAIL_DATA = [

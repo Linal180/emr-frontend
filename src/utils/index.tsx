@@ -14,9 +14,9 @@ import {
   AppointmentsPayload, AttachmentsPayload,
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN, 
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, 
+  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES,
 } from "../constants";
 
 export const handleLogout = () => {
@@ -110,7 +110,7 @@ export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) 
 
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   let isSupeAdmin: boolean = false
-  
+
   if (roles) {
     for (let role of roles) {
       isSupeAdmin = role?.role === SUPER_ADMIN
@@ -304,8 +304,8 @@ export const dateValidation = (endDate: string, startDate: string): boolean => {
 
 export const timeValidation = (endTime: string, startTime: string): boolean => {
   if (endTime && startTime) {
-    const start = new Date(moment(startTime,"hh:mm a").format('lll').toString())
-    const end = new Date(moment(endTime,"hh:mm a").format('lll').toString())
+    const start = new Date(moment(startTime, "hh:mm a").format('lll').toString())
+    const end = new Date(moment(endTime, "hh:mm a").format('lll').toString())
 
     return end > start
   }
@@ -367,7 +367,7 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
 };
 
 export const setTimeDay = (time: string, day: string): string => {
-  const validTime = moment(time,"hh:mm").format('lll').toString()
+  const validTime = moment(time, "hh:mm").format('lll').toString()
   const date = new Date(validTime)
   const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
   const selectedDay = days.findIndex(weekDay => weekDay === day);
@@ -385,7 +385,7 @@ export const setTimeDay = (time: string, day: string): string => {
 
     result = moment(date.setDate(date.getDate() - (x % 7))).format().toString()
   }
-  
+
   return result
 };
 
@@ -499,6 +499,12 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
 
 export const formatPermissionName = (name: string) => {
   const [text, ...rest] = name.split(/(?=[A-Z])/)
-
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `;
+  const updateName = `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `
+  return updateName.replaceAll(',', ' ');
 }
+
+export const formatRoleName = (name: string) => {
+  const text = name.split(/[-_\s]+/)
+
+  return text.map(str => `${str.charAt(0).toUpperCase()}${str.slice(1)} `)
+};
