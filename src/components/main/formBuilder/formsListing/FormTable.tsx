@@ -3,12 +3,13 @@ import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "r
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
-import { Visibility as VisibilityIcon, InsertLink as InsertLinkIcon } from '@material-ui/icons'
+import { Visibility as VisibilityIcon, InsertLink as InsertLinkIcon, Share as ShareIcon } from '@material-ui/icons'
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import ShareModal from "../../../common/ShareModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -21,7 +22,7 @@ import {
   LayoutJsonType
 } from "../../../../generated/graphql";
 import {
-  ACTION, PAGE_LIMIT, DELETE_PATIENT_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
+  ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
   TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE
 } from "../../../../constants";
 //component
@@ -30,16 +31,19 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facility } = user || {};
   const { id: facilityId } = facility || {}
+  //states
+  const [formEmbedUrl, setFormEmbedUrl] = useState('')
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [searchQuery,] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
+  const [openShare, setOpenShare] = useState<boolean>(false);
   const [deleteFormId, setDeleteFormId] = useState<string>("");
   const [forms, setForms] = useState<FormsPayload['forms']>([]);
   const [formPreviewData, setFormPreviewData] = useState<SectionsInputs[]>([]);
   const [openPreview, setOpenPreview] = useState<boolean>(false)
-
+  //mutation & query
   const [findAllForms, { loading, error }] = useFindAllFormsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -149,6 +153,18 @@ const FormBuilderTable: FC = (): JSX.Element => {
     }
   };
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(
+      `<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`
+    )
+    setOpenShare(false)
+  }
+
+  const onShareClick = (id: string) => {
+    setFormEmbedUrl(`${process.env.REACT_APP_URL}${PUBLIC_FORM_BUILDER_ROUTE}/${id}`)
+    setOpenShare(true)
+  }
+
   const search = (query: string) => { }
 
   return (
@@ -201,6 +217,9 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         <Box className={classes.iconsBackground} onClick={() => onViewClick(layout)}>
                           <VisibilityIcon />
                         </Box>
+                        <Box className={classes.iconsBackground} onClick={() => onShareClick(id || '')}>
+                          <ShareIcon />
+                        </Box>
                       </Box>
                     </TableCell>
                   </TableRow>
@@ -222,7 +241,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
           </Box>
         )}
 
-        <ConfirmationModal title={FORM_TEXT} isOpen={openDelete} isLoading={deleteFormLoading} description={DELETE_PATIENT_DESCRIPTION} handleDelete={handleDeleteForm} setOpen={(open: boolean) => setOpenDelete(open)} />
+        <ConfirmationModal title={FORM_TEXT} isOpen={openDelete} isLoading={deleteFormLoading} description={DELETE_FORM_DESCRIPTION} handleDelete={handleDeleteForm} setOpen={(open: boolean) => setOpenDelete(open)} />
+        <ShareModal title={'Embed your form builder'} isOpen={openShare} description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`} handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
         <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHanlder={previewCloseHanlder} />
       </Box>
     </Box>

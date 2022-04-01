@@ -809,3 +809,10 @@ export interface FieldComponentProps {
   field?: ControllerRenderProps;
   isCreating?: boolean;
 }
+
+export interface ShareModalTypes extends DialogTypes {
+  title?: string;
+  actionText?: string;
+  description?: string;
+  handleCopy: () => void;
+}

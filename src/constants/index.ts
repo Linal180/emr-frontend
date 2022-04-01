@@ -43,6 +43,7 @@ export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
 export const FORM_TEXT = "Form";
+export const FORM_COPY= "Copy form";
 export const CSS_CLASSES = "CSS Classes";
 export const PLACEHOLDER = "Placeholder";
 export const YES_TEXT = "Yes";
