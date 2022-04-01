@@ -10,12 +10,13 @@ import { GeneralFormProps } from "../../../../interfacesTypes";
 import { useFacilityStyles } from "../../../../styles/facilityStyles";
 import { AVAILABILITY_TEXT, MAPPED_WEEK_DAYS } from "../../../../constants";
 
-
 const FacilityScheduleCard: FC<GeneralFormProps> = (): JSX.Element => {
   const [openEditModal, setOpenEditModal] = useState<boolean>(false)
+  const [dayName, setDayName] = useState<string>('')
   const classes = useFacilityStyles()
 
-  const onEditModalClick = (id: string) => {
+  const onEditModalClick = (name: string) => {
+    setDayName(name)
     setOpenEditModal(true)
   };
 
@@ -31,20 +32,19 @@ const FacilityScheduleCard: FC<GeneralFormProps> = (): JSX.Element => {
                     {item.name}
                   </Typography>
 
-                  <Box onClick={() => onEditModalClick(item.id || '')}>
+                  <Box onClick={() => onEditModalClick(item.name || '')}>
                     <DaysEditIcon />
                   </Box>
                 </Box>
               </Grid>
-              <ConfirmationDaysModal
-                key={item.id}
-                title={item.name}
-                isOpen={openEditModal}
-                setOpen={(open: boolean) => setOpenEditModal(open)}
-              />
             </>
           )
         })}
+        <ConfirmationDaysModal
+          title={dayName}
+          isOpen={openEditModal}
+          setOpen={(open: boolean) => setOpenEditModal(open)}
+        />
       </Grid>
     </CardComponent>
   )

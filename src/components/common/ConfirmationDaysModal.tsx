@@ -10,7 +10,7 @@ import { AddTimeIcon, DeleteTimeIcon } from '../../assets/svgs'
 import { SAVE_TEXT, SERIAL_NO, TIME_FROM, TIME_TO } from "../../constants";
 import { ConfirmationDaysTypes, WeekTimeItem } from "../../interfacesTypes";
 
-const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, key }): JSX.Element => {
+const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title }): JSX.Element => {
   const [list, setList] = useState<WeekTimeItem[]>([])
   const methods = useForm({ mode: "all" });
   const classes = useFacilityStyles()
@@ -37,7 +37,7 @@ const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, 
   const onSubmit = () => { }
 
   return (
-    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth key={key} className={classes.disableBackdropStyle}>
+    <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth className={classes.disableBackdropStyle}>
       <DialogTitle id="alert-dialog-title"> {title}</DialogTitle>
       <Box>
         <Table aria-label="customized table">

@@ -143,7 +143,6 @@ export interface ConfirmationTypes extends DialogTypes {
 
 export interface ConfirmationDaysTypes extends DialogTypes {
   title?: string;
-  key?: string;
 }
 
 export interface GraphModalProps extends DialogTypes {
