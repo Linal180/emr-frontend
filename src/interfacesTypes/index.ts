@@ -143,9 +143,7 @@ export interface ConfirmationTypes extends DialogTypes {
 
 export interface ConfirmationDaysTypes extends DialogTypes {
   title?: string;
-  success?: boolean;
-  actionText?: string;
-  isLoading?: boolean;
+  key?: string;
 }
 
 export interface GraphModalProps extends DialogTypes {
@@ -754,3 +752,7 @@ export interface PortalTableProps {
 
 export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
 
+export interface WeekTimeItem {
+  id: number
+  value: string
+}

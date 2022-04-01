@@ -25,4 +25,18 @@ export const useFacilityStyles = makeStyles(() => ({
     borderRadius: 6,
     cursor: 'pointer',
   },
+
+  cursor: {
+    cursor: 'pointer'
+  },
+
+  disableBackdropStyle: {
+    "& .MuiBackdrop-root": {
+      backgroundColor: '#1211110d'
+    },
+
+    "& .MuiPaper-elevation24": {
+      boxShadow: '0px 11px 1px -8px rgb(0 0 0 / 0%), 0px 5px 17px 3px rgb(0 0 0 / 0%), 0px 0px 3px -4px rgb(0 0 0 / 12%)'
+    }
+  }
 }));

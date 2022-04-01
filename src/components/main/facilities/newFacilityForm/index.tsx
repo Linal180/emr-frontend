@@ -38,15 +38,13 @@ import {
   SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO,
   NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
   BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FACILITY_SCHEDULE, FacilityMenuNav, FACILITY_TOP_TABS,
-  FACILITY_HOURS_END, FACILITY_HOURS_START, MAPPED_WEEK_DAYS, AVAILABILITY_TEXT,
+  FACILITY_HOURS_END, FACILITY_HOURS_START
 } from "../../../../constants";
-import { DaysEditIcon } from '../../../../assets/svgs';
-import ConfirmationDaysModal from '../../../common/ConfirmationDaysModal';
+import FacilityScheduleCard from './FacilityScheduleCard';
 
 const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext);
   const [tabValue, setTabValue] = useState<string>('1')
-  const [openEditModal, setOpenEditModal] = useState<boolean>(false)
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
@@ -293,292 +291,151 @@ const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     setTabValue(newValue)
 
-  const onEditModalClick = (id: string) => {
-    setOpenEditModal(true)
-  };
-
   const path = history.location?.hash;
 
   return (
-    <>
-      <TabContext value={tabValue}>
-        <TabList onChange={handleChange} aria-label="Profile top tabs">
-          {FACILITY_TOP_TABS.map(item => (
-            <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
-          ))}
-        </TabList>
-        <TabPanel value="1">
-          <Box display='flex' position='relative'>
-            <Box mr={2} ml={2} pl={2} pr={2} pb={4} display='flex' className={classes.navbar}>
-              <List>
-                {FacilityMenuNav.map((item, index) => {
-                  console.log("item link", item.linkTo)
-                  return (
-                    <a href={`#${item.linkTo}`} className={`#${item.linkTo}` === path ? 'active' : ''}>
-                      <Box display='flex'>
-                        <Timeline>
-                          <TimelineItem>
-                            <TimelineSeparator>
-                              <TimelineDot className={`#${item.linkTo}` === path ? 'facilityActive' : ''} />
-                              {item.title !== FACILITY_SCHEDULE && <TimelineConnector />}
-                            </TimelineSeparator>
-                            <TimelineContent />
-                          </TimelineItem>
-                        </Timeline>
-                        <ListItem
-                          button
-                          className={`#${item.linkTo}` === path ? 'active' : ''}
+    <TabContext value={tabValue}>
+      <TabList onChange={handleChange} aria-label="Profile top tabs">
+        {FACILITY_TOP_TABS.map(item => (
+          <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+        ))}
+      </TabList>
+      <TabPanel value="1">
+        <Box display='flex' position='relative'>
+          <Box mr={2} ml={2} pl={2} pr={2} pb={4} display='flex' className={classes.navbar}>
+            <List>
+              {FacilityMenuNav.map((item, index) => {
+                console.log("item link", item.linkTo)
+                return (
+                  <a href={`#${item.linkTo}`} className={`#${item.linkTo}` === path ? 'active' : ''}>
+                    <Box display='flex'>
+                      <Timeline>
+                        <TimelineItem>
+                          <TimelineSeparator>
+                            <TimelineDot className={`#${item.linkTo}` === path ? 'facilityActive' : ''} />
+                            {item.title !== FACILITY_SCHEDULE && <TimelineConnector />}
+                          </TimelineSeparator>
+                          <TimelineContent />
+                        </TimelineItem>
+                      </Timeline>
+                      <ListItem
+                        button
+                        className={`#${item.linkTo}` === path ? 'active' : ''}
 
-                        >
-                          <Typography variant='h5'>
-                            {item.title}
+                      >
+                        <Typography variant='h5'>
+                          {item.title}
 
-                          </Typography>
-                        </ListItem>
-                      </Box>
-                    </a>
-                  )
-                })}
-              </List>
-            </Box>
+                        </Typography>
+                      </ListItem>
+                    </Box>
+                  </a>
+                )
+              })}
+            </List>
+          </Box>
 
-
-            <Box width='100%' maxHeight="calc(100vh - 248px)" className="overflowY-auto">
-              <FormProvider {...methods}>
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <Box>
-                    <Grid spacing={3}>
-                      <Grid md={12} id={FACILITY_INFO_ROUTE}>
-                        <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
-                          {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                            <>
-                              <Grid container spacing={3}>
-                                <Grid item md={isSuper ? 6 : 12}>
-                                  <InputController
-                                    isRequired
-                                    fieldType="text"
-                                    controllerName="name"
-                                    controllerLabel={NAME}
-                                  />
-                                </Grid>
-
-                                {isSuper &&
-                                  <Grid item md={6}>
-                                    <Selector
-                                      isRequired
-                                      value={EMPTY_OPTION}
-                                      label={PRACTICE}
-                                      name="practice"
-                                      options={renderPractices(practiceList)}
-                                    />
-                                  </Grid>
-                                }
+          <Box width='100%' maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+            <FormProvider {...methods}>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Box>
+                  <Grid spacing={3}>
+                    <Grid md={12} id={FACILITY_INFO_ROUTE}>
+                      <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
+                        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
+                          <>
+                            <Grid container spacing={3}>
+                              <Grid item md={isSuper ? 6 : 12}>
+                                <InputController
+                                  isRequired
+                                  fieldType="text"
+                                  controllerName="name"
+                                  controllerLabel={NAME}
+                                />
                               </Grid>
 
-                              <Grid container spacing={3}>
+                              {isSuper &&
                                 <Grid item md={6}>
                                   <Selector
                                     isRequired
                                     value={EMPTY_OPTION}
-                                    label={SERVICE_CODE}
-                                    name="serviceCode"
-                                    options={MAPPED_SERVICE_CODES}
+                                    label={PRACTICE}
+                                    name="practice"
+                                    options={renderPractices(practiceList)}
                                   />
                                 </Grid>
+                              }
+                            </Grid>
 
-                                <Grid item md={6}>
-                                  <Selector
-                                    isRequired
-                                    value={EMPTY_OPTION}
-                                    label={TIME_ZONE_TEXT}
-                                    name="timeZone"
-                                    options={MAPPED_TIME_ZONES}
-                                  />
-                                </Grid>
+                            <Grid container spacing={3}>
+                              <Grid item md={6}>
+                                <Selector
+                                  isRequired
+                                  value={EMPTY_OPTION}
+                                  label={SERVICE_CODE}
+                                  name="serviceCode"
+                                  options={MAPPED_SERVICE_CODES}
+                                />
                               </Grid>
-                            </>
-                          )}
-                        </CardComponent>
-                      </Grid>
 
-                      <Box pb={3} />
-
-                      <Grid md={12} id={FACILITY_LOCATION_ROUTE}>
-                        <CardComponent cardTitle={BILLING_PROFILE} isEdit={true}>
-                          {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                            <>
-                              <Collapse in={!addBilling} mountOnEnter unmountOnExit>
-                                <Box pb={3}
-                                  onClick={() => dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })}
-                                  className="billing-box" display="flex" alignItems="center"
-                                >
-                                  <AddCircleOutline color='inherit' />
-
-                                  <Typography>{ADD_FACILITY_BILLING}</Typography>
-                                </Box>
-                              </Collapse>
-
-                              <Collapse in={addBilling} mountOnEnter unmountOnExit>
-                                <Box display="flex" alignItems="center" justifyContent="space-between" onClick={cancelBilling}>
-                                  <Typography component="p" variant='h5'>{PAYABLE_ADDRESS}</Typography>
-                                  <Button color='secondary' variant='contained' className='blue-button'>{CANCEL}</Button>
-                                </Box>
-
-                                <FormControl component="fieldset">
-                                  <FormGroup>
-                                    <Box mr={3} mb={2} mt={2}>
-                                      <FormControlLabel
-                                        label={SAME_AS_FACILITY_LOCATION}
-                                        control={
-                                          <Checkbox color="primary" checked={sameAddress}
-                                            onChange={({ target: { checked } }) => handleSameAddress(checked)}
-                                          />
-                                        }
-                                      />
-                                    </Box>
-                                  </FormGroup>
-                                </FormControl>
-
-                                <Grid container spacing={3}>
-                                  <Grid item md={8}>
-                                    <InputController
-                                      fieldType="text"
-                                      controllerName="billingEmail"
-                                      controllerLabel={EMAIL}
-                                    />
-                                  </Grid>
-
-                                  <Grid item md={4}>
-                                    <InputController
-                                      fieldType="text"
-                                      controllerName="billingZipCode"
-                                      controllerLabel={ZIP}
-                                    />
-                                  </Grid>
-                                </Grid>
-
-                                <Grid container spacing={3}>
-                                  <Grid item md={6} sm={12} xs={12}>
-                                    <PhoneField name="billingPhone" label={PHONE} />
-                                  </Grid>
-
-                                  <Grid item md={6} sm={12} xs={12}>
-                                    <PhoneField name="billingFax" label={FAX} />
-                                  </Grid>
-                                </Grid>
-
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="billingAddress"
-                                  controllerLabel={ADDRESS}
+                              <Grid item md={6}>
+                                <Selector
+                                  isRequired
+                                  value={EMPTY_OPTION}
+                                  label={TIME_ZONE_TEXT}
+                                  name="timeZone"
+                                  options={MAPPED_TIME_ZONES}
                                 />
+                              </Grid>
+                            </Grid>
+                          </>
+                        )}
+                      </CardComponent>
+                    </Grid>
 
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="billingAddress2"
-                                  controllerLabel={ADDRESS_2}
-                                />
+                    <Box pb={3} />
 
-                                <Grid container spacing={3}>
-                                  <Grid item md={4}>
-                                    <InputController
-                                      fieldType="text"
-                                      controllerName="billingCity"
-                                      controllerLabel={CITY}
+                    <Grid md={12} id={FACILITY_LOCATION_ROUTE}>
+                      <CardComponent cardTitle={BILLING_PROFILE} isEdit={true}>
+                        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
+                          <>
+                            <Collapse in={!addBilling} mountOnEnter unmountOnExit>
+                              <Box pb={3}
+                                onClick={() => dispatch({ type: ActionType.SET_ADD_BILLING, addBilling: !addBilling })}
+                                className="billing-box" display="flex" alignItems="center"
+                              >
+                                <AddCircleOutline color='inherit' />
+
+                                <Typography>{ADD_FACILITY_BILLING}</Typography>
+                              </Box>
+                            </Collapse>
+
+                            <Collapse in={addBilling} mountOnEnter unmountOnExit>
+                              <Box display="flex" alignItems="center" justifyContent="space-between" onClick={cancelBilling}>
+                                <Typography component="p" variant='h5'>{PAYABLE_ADDRESS}</Typography>
+                                <Button color='secondary' variant='contained' className='blue-button'>{CANCEL}</Button>
+                              </Box>
+
+                              <FormControl component="fieldset">
+                                <FormGroup>
+                                  <Box mr={3} mb={2} mt={2}>
+                                    <FormControlLabel
+                                      label={SAME_AS_FACILITY_LOCATION}
+                                      control={
+                                        <Checkbox color="primary" checked={sameAddress}
+                                          onChange={({ target: { checked } }) => handleSameAddress(checked)}
+                                        />
+                                      }
                                     />
-                                  </Grid>
+                                  </Box>
+                                </FormGroup>
+                              </FormControl>
 
-                                  <Grid item md={4}>
-                                    <Selector
-                                      value={EMPTY_OPTION}
-                                      label={STATE}
-                                      name="billingState"
-                                      options={MAPPED_STATES}
-                                    />
-                                  </Grid>
-
-                                  <Grid item md={4}>
-                                    <Selector
-                                      label={COUNTRY}
-                                      value={EMPTY_OPTION}
-                                      name="billingCountry"
-                                      options={MAPPED_COUNTRIES}
-                                    />
-                                  </Grid>
-                                </Grid>
-
-                                <Box py={2}>
-                                  <Typography component="p" variant='h5'>{BILLING_IDENTIFIER}</Typography>
-                                </Box>
-
-                                <Grid container spacing={3}>
-                                  <Grid item md={6}>
-                                    <InputController
-                                      info={CLIA_ID_NUMBER_INFO}
-                                      fieldType="text"
-                                      controllerName="cliaIdNumber"
-                                      controllerLabel={CLIA_ID_NUMBER}
-                                    />
-                                  </Grid>
-
-                                  <Grid item md={6}>
-                                    <InputController
-                                      info={FEDERAL_TAX_ID_INFO}
-                                      fieldType="text"
-                                      controllerName="federalTaxId"
-                                      controllerLabel={FEDERAL_TAX_ID}
-                                    />
-                                  </Grid>
-                                </Grid>
-
-                                <Grid container spacing={3}>
-                                  <Grid item md={6}>
-                                    <InputController
-                                      info={TAXONOMY_CODE_INFO}
-                                      fieldType="text"
-                                      controllerName="tamxonomyCode"
-                                      controllerLabel={TAXONOMY_CODE}
-                                    />
-                                  </Grid>
-
-                                  <Grid item md={6}>
-                                    <InputController
-                                      info={NPI_INFO}
-                                      fieldType="text"
-                                      controllerName="npi"
-                                      controllerLabel={NPI}
-                                    />
-                                  </Grid>
-                                </Grid>
-
-                                <Grid container spacing={3}>
-                                  <Grid item md={6}>
-                                    <InputController
-                                      info={MAMOGRAPHY_CERTIFICATION_NUMBER_INFO}
-                                      fieldType="text"
-                                      controllerName="mammographyCertificationNumber"
-                                      controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
-                                    />
-                                  </Grid>
-                                </Grid>
-                              </Collapse>
-                            </>
-                          )}
-                        </CardComponent>
-                      </Grid>
-
-                      <Box pb={3} />
-
-                      <Grid md={12} id={BILLING_PROFILE_ROUTE}>
-                        <CardComponent cardTitle={FACILITY_LOCATION} isEdit={true}>
-                          {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                            <>
                               <Grid container spacing={3}>
                                 <Grid item md={8}>
                                   <InputController
-                                    isRequired
                                     fieldType="text"
-                                    controllerName="email"
+                                    controllerName="billingEmail"
                                     controllerLabel={EMAIL}
                                   />
                                 </Grid>
@@ -586,7 +443,7 @@ const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                 <Grid item md={4}>
                                   <InputController
                                     fieldType="text"
-                                    controllerName="zipCode"
+                                    controllerName="billingZipCode"
                                     controllerLabel={ZIP}
                                   />
                                 </Grid>
@@ -594,23 +451,23 @@ const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                               <Grid container spacing={3}>
                                 <Grid item md={6} sm={12} xs={12}>
-                                  <PhoneField name="phone" label={PHONE} />
+                                  <PhoneField name="billingPhone" label={PHONE} />
                                 </Grid>
 
                                 <Grid item md={6} sm={12} xs={12}>
-                                  <PhoneField name="fax" label={FAX} />
+                                  <PhoneField name="billingFax" label={FAX} />
                                 </Grid>
                               </Grid>
 
                               <InputController
                                 fieldType="text"
-                                controllerName="address"
+                                controllerName="billingAddress"
                                 controllerLabel={ADDRESS}
                               />
 
                               <InputController
                                 fieldType="text"
-                                controllerName="address2"
+                                controllerName="billingAddress2"
                                 controllerLabel={ADDRESS_2}
                               />
 
@@ -618,7 +475,7 @@ const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                 <Grid item md={4}>
                                   <InputController
                                     fieldType="text"
-                                    controllerName="city"
+                                    controllerName="billingCity"
                                     controllerLabel={CITY}
                                   />
                                 </Grid>
@@ -627,102 +484,211 @@ const NewFacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                   <Selector
                                     value={EMPTY_OPTION}
                                     label={STATE}
-                                    name="state"
+                                    name="billingState"
                                     options={MAPPED_STATES}
                                   />
                                 </Grid>
 
                                 <Grid item md={4}>
                                   <Selector
-                                    name="country"
                                     label={COUNTRY}
                                     value={EMPTY_OPTION}
+                                    name="billingCountry"
                                     options={MAPPED_COUNTRIES}
                                   />
                                 </Grid>
                               </Grid>
-                            </>
-                          )}
-                        </CardComponent>
-                      </Grid>
 
-                      <Box pb={3} />
+                              <Box py={2}>
+                                <Typography component="p" variant='h5'>{BILLING_IDENTIFIER}</Typography>
+                              </Box>
 
-                      <Grid md={12} id={FACILITY_SCHEDULE_ROUTE}>
-                        <CardComponent cardTitle={FACILITY_SCHEDULE} isEdit={true}>
-                          {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                            <>
                               <Grid container spacing={3}>
                                 <Grid item md={6}>
                                   <InputController
-                                    controllerName=''
-                                    controllerLabel={FACILITY_HOURS_START}
-                                    fieldType='time'
+                                    info={CLIA_ID_NUMBER_INFO}
+                                    fieldType="text"
+                                    controllerName="cliaIdNumber"
+                                    controllerLabel={CLIA_ID_NUMBER}
                                   />
                                 </Grid>
 
                                 <Grid item md={6}>
                                   <InputController
-                                    controllerName=''
-                                    controllerLabel={FACILITY_HOURS_END}
-                                    fieldType='time'
+                                    info={FEDERAL_TAX_ID_INFO}
+                                    fieldType="text"
+                                    controllerName="federalTaxId"
+                                    controllerLabel={FEDERAL_TAX_ID}
                                   />
                                 </Grid>
                               </Grid>
-                            </>
-                          )}
-                        </CardComponent>
-                      </Grid>
+
+                              <Grid container spacing={3}>
+                                <Grid item md={6}>
+                                  <InputController
+                                    info={TAXONOMY_CODE_INFO}
+                                    fieldType="text"
+                                    controllerName="tamxonomyCode"
+                                    controllerLabel={TAXONOMY_CODE}
+                                  />
+                                </Grid>
+
+                                <Grid item md={6}>
+                                  <InputController
+                                    info={NPI_INFO}
+                                    fieldType="text"
+                                    controllerName="npi"
+                                    controllerLabel={NPI}
+                                  />
+                                </Grid>
+                              </Grid>
+
+                              <Grid container spacing={3}>
+                                <Grid item md={6}>
+                                  <InputController
+                                    info={MAMOGRAPHY_CERTIFICATION_NUMBER_INFO}
+                                    fieldType="text"
+                                    controllerName="mammographyCertificationNumber"
+                                    controllerLabel={MAMMOGRAPHY_CERTIFICATION_NUMBER}
+                                  />
+                                </Grid>
+                              </Grid>
+                            </Collapse>
+                          </>
+                        )}
+                      </CardComponent>
                     </Grid>
-                  </Box>
 
-                  <Box display="flex" justifyContent="flex-end" pt={2}>
-                    <Button type="submit" variant="contained" color="primary"
-                      disabled={createFacilityLoading || updateFacilityLoading}
-                    >
-                      {isEdit ? UPDATE_FACILITY : CREATE_FACILITY}
+                    <Box pb={3} />
 
-                      {(createFacilityLoading || updateFacilityLoading) &&
-                        <CircularProgress size={20} color="inherit" />
-                      }
-                    </Button>
-                  </Box>
-                </form>
-              </FormProvider>
-            </Box>
+                    <Grid md={12} id={BILLING_PROFILE_ROUTE}>
+                      <CardComponent cardTitle={FACILITY_LOCATION} isEdit={true}>
+                        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
+                          <>
+                            <Grid container spacing={3}>
+                              <Grid item md={8}>
+                                <InputController
+                                  isRequired
+                                  fieldType="text"
+                                  controllerName="email"
+                                  controllerLabel={EMAIL}
+                                />
+                              </Grid>
+
+                              <Grid item md={4}>
+                                <InputController
+                                  fieldType="text"
+                                  controllerName="zipCode"
+                                  controllerLabel={ZIP}
+                                />
+                              </Grid>
+                            </Grid>
+
+                            <Grid container spacing={3}>
+                              <Grid item md={6} sm={12} xs={12}>
+                                <PhoneField name="phone" label={PHONE} />
+                              </Grid>
+
+                              <Grid item md={6} sm={12} xs={12}>
+                                <PhoneField name="fax" label={FAX} />
+                              </Grid>
+                            </Grid>
+
+                            <InputController
+                              fieldType="text"
+                              controllerName="address"
+                              controllerLabel={ADDRESS}
+                            />
+
+                            <InputController
+                              fieldType="text"
+                              controllerName="address2"
+                              controllerLabel={ADDRESS_2}
+                            />
+
+                            <Grid container spacing={3}>
+                              <Grid item md={4}>
+                                <InputController
+                                  fieldType="text"
+                                  controllerName="city"
+                                  controllerLabel={CITY}
+                                />
+                              </Grid>
+
+                              <Grid item md={4}>
+                                <Selector
+                                  value={EMPTY_OPTION}
+                                  label={STATE}
+                                  name="state"
+                                  options={MAPPED_STATES}
+                                />
+                              </Grid>
+
+                              <Grid item md={4}>
+                                <Selector
+                                  name="country"
+                                  label={COUNTRY}
+                                  value={EMPTY_OPTION}
+                                  options={MAPPED_COUNTRIES}
+                                />
+                              </Grid>
+                            </Grid>
+                          </>
+                        )}
+                      </CardComponent>
+                    </Grid>
+
+                    <Box pb={3} />
+
+                    <Grid md={12} id={FACILITY_SCHEDULE_ROUTE}>
+                      <CardComponent cardTitle={FACILITY_SCHEDULE} isEdit={true}>
+                        {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
+                          <>
+                            <Grid container spacing={3}>
+                              <Grid item md={6}>
+                                <InputController
+                                  controllerName=''
+                                  controllerLabel={FACILITY_HOURS_START}
+                                  fieldType='time'
+                                />
+                              </Grid>
+
+                              <Grid item md={6}>
+                                <InputController
+                                  controllerName=''
+                                  controllerLabel={FACILITY_HOURS_END}
+                                  fieldType='time'
+                                />
+                              </Grid>
+                            </Grid>
+                          </>
+                        )}
+                      </CardComponent>
+                    </Grid>
+                  </Grid>
+                </Box>
+
+                <Box display="flex" justifyContent="flex-end" pt={2}>
+                  <Button type="submit" variant="contained" color="primary"
+                    disabled={createFacilityLoading || updateFacilityLoading}
+                  >
+                    {isEdit ? UPDATE_FACILITY : CREATE_FACILITY}
+
+                    {(createFacilityLoading || updateFacilityLoading) &&
+                      <CircularProgress size={20} color="inherit" />
+                    }
+                  </Button>
+                </Box>
+              </form>
+            </FormProvider>
           </Box>
-        </TabPanel>
+        </Box>
+      </TabPanel>
 
-        <TabPanel value='2'>
-          <CardComponent cardTitle={AVAILABILITY_TEXT} >
-            <Grid container spacing={3}>
-              {MAPPED_WEEK_DAYS.map((item) => {
-                return (
-                  <>
-                    <Grid item md={6} key={item.id}>
-                      <Box my={2} className={classes.addSlot}>
-                        <Typography component='h1' variant="h5">
-                          {item.name}
-                        </Typography>
-
-                        <Box onClick={() => onEditModalClick(id || '')}>
-                          <DaysEditIcon />
-                        </Box>
-                      </Box>
-                    </Grid>
-                  </>
-                )
-              })}
-            </Grid>
-          </CardComponent>
-        </TabPanel>
-      </TabContext>
-      <ConfirmationDaysModal
-        title="Monday"
-        isOpen={openEditModal}
-        setOpen={(open: boolean) => setOpenEditModal(open)}
-      />
-    </>
+      <TabPanel value='2'>
+        <FacilityScheduleCard />
+      </TabPanel>
+    </TabContext>
   );
 };
 
