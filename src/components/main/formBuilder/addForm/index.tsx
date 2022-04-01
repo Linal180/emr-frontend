@@ -117,20 +117,24 @@ const AddForm = () => {
   //drag end handler
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
+    console.log('result => ', result)
     // dropped outside the list
     if (!destination) {
       return;
     }
     if (destination.droppableId === source.droppableId) {
-      // setFormValues((prev) => ({
-      //   [destination.droppableId]: reorder(
-      //     formValues[destination.droppableId],
-      //     source.index,
-      //     destination.index
-      //   ),
-      // }));
+      formValues?.map((item) => {
+        if (destination.droppableId === item.id) {
+          const { fields } = item
+          const [removed] = fields?.splice(source.index, 1);
+          fields?.splice(destination.index, 0, removed);
+          return item;
+        } else {
+          return item;
+        }
+      });
     } else if (source.droppableId === 'ITEMS') {
-      const arr = formValues?.map((item) => {
+      formValues?.map((item) => {
         if (destination.droppableId === item.id) {
           const itemField = ITEMS?.find(
             (item) => item?.fieldId === draggableId
@@ -149,41 +153,14 @@ const AddForm = () => {
             options: itemField?.options ?? [],
             textArea: itemField?.textArea ?? false
           };
-
-          item?.fields?.push(newField);
+          item?.fields?.splice(destination.index, 0, newField);
           return item;
         } else {
           return item;
         }
       });
-      setFormValues(arr);
-    } else {
-      const arr = formValues?.map((item) => {
-        if (destination.droppableId === item.id) {
-          const itemField = ITEMS?.find(
-            (item) => item?.fieldId === draggableId
-          );
-          const newField: FieldsInputs = {
-            label: itemField?.label ?? '',
-            type: itemField?.type as ElementType ?? ElementType.Text,
-            css: itemField?.css ?? '',
-            column: itemField?.column ?? 12,
-            placeholder: itemField?.placeholder ?? '',
-            required: itemField?.required ?? false,
-            fieldId: uuid(),
-            name: uuid(),
-            errorMsg: itemField?.errorMsg ?? '',
-            defaultValue: itemField?.defaultValue ?? '',
-            options: itemField?.options ?? [],
-            textArea: itemField?.textArea ?? false
-          };
-          item?.fields?.push(newField);
-          return item;
-        } else {
-          return item;
-        }
-      });
-      setFormValues(arr);
+    } else if (destination.droppableId !== source.droppableId) {
+      return;
     }
   };
   //add list
@@ -265,7 +242,7 @@ const AddForm = () => {
   };
   //select field for edit handler
   const changeValues = (id: string, item: FieldsInputs) => {
-    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options,textArea } = item;
+    const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea } = item;
     setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id, options, textArea });
     modalOpenHandler();
   };

@@ -1,7 +1,7 @@
 //packages block
 import { memo } from 'react';
 import { Box, Grid, IconButton, Typography } from '@material-ui/core';
-import { Edit as EditIcon, Close as DeleteIcon } from '@material-ui/icons'
+import { Edit as EditIcon, Close as DeleteIcon,AcUnit as DragIcon } from '@material-ui/icons'
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 //component
 import FieldRenderer from '../../../../common/FieldRenderer'
@@ -45,6 +45,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                               <div
                                 ref={provided.innerRef}
                                 className=''
+
                                 style={{
                                   ...provided.draggableProps.style,
                                   padding: '0.5rem',
@@ -57,6 +58,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
 
                                 }}
                                 {...provided.draggableProps}
+                                {...provided.dragHandleProps}
                               >
                                 <Box
                                   sx={{
@@ -69,6 +71,11 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                                     <Typography>
                                       {item.required ? `${item.label} *` : item.label}
                                     </Typography>
+                                    <Box>
+                                      <IconButton>
+                                        <DragIcon />
+                                      </IconButton>
+                                    </Box>
                                     <Box display={'flex'}>
                                       <Box paddingX={1}>
                                         <IconButton size='small' onClick={() => changeValues(list.id, item)}><EditIcon /></IconButton>
