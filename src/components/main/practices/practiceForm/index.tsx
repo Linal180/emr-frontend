@@ -429,7 +429,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           </Box>
         </Box>
       </form>
-    </FormProvider >
+    </FormProvider>
   );
 };
 

@@ -39,7 +39,7 @@ import {
   TRANSACTION_PAID_SUCCESSFULLY,
 } from '../../../constants';
 
-const AppointmentCard = ({ visible, onHide, appointmentMeta, onDeleteButtonClick }: AppointmentTooltip.LayoutProps): JSX.Element => {
+const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
   const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
   const { id: userId } = user || {}

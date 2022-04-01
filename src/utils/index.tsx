@@ -14,9 +14,9 @@ import {
   AppointmentsPayload, AttachmentsPayload,
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
-  LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, STAFF_ROUTE, TOKEN,
-  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A, ADMIN, SUPER_ADMIN,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN, 
+  SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
+  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, 
 } from "../constants";
 
 export const handleLogout = () => {
@@ -127,7 +127,6 @@ export const recordNotFound = (record: string = "Record"): string => {
 export const getToken = () => {
   return localStorage.getItem(TOKEN);
 };
-
 
 export const requiredMessage = (fieldName: string) => `${fieldName} is required`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
@@ -402,10 +401,8 @@ export const activeClass = (pathname: string): string => {
     case START_PROJECT_ROUTE:
       return "inAppointment"
 
-    case DOCTORS_ROUTE:
     case PATIENTS_ROUTE:
-    case STAFF_ROUTE:
-      return "inUser"
+      return "inPatient"
 
     case FACILITIES_ROUTE:
       return "inFacility"
@@ -499,3 +496,9 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
     drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2
   }
 };
+
+export const formatPermissionName = (name: string) => {
+  const [text, ...rest] = name.split(/(?=[A-Z])/)
+
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `;
+}

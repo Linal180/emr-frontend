@@ -147,6 +147,7 @@ export const ADD_APPOINTMENT = "Add Appointment";
 export const EDIT_APPOINTMENT = "Edit Appointment";
 export const CREATE_INVOICE = "Create Invoice";
 export const PRACTICE_SETTINGS = "Practice Settings";
+export const USERS_MANAGEMENT = "Users Management";
 export const INVENTORY = "Inventory";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const NO_INVOICE = "No Invoice";
@@ -221,13 +222,12 @@ export const CANCELLED_APPOINTMENT_DESCRIPTION = "View cancelled appointments an
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
-export const CLINICAL_TEXT = "Clinicals";
+export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
 export const TIME_ZONE_DESCRIPTION = "Set time zones";
-
 export const DELETE_WIDGET_DESCRIPTION = " Are you sure you want to remove this widget?";
 export const DELETE_WIDGET_TEXT = "Delete Widget";
 export const VIEW_CHART_TEXT = "View Chart";
@@ -321,6 +321,7 @@ export const TYPE = "Type";
 export const CODE = "Code";
 export const TRUE = "TRUE";
 export const TEXT = "text";
+export const ROLE_NAME = "Role name";
 export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
@@ -470,6 +471,14 @@ export const EMAIL_VERIFIED = "Email Verified?";
 export const APPOINTMENTS_TEXT = "Appointments";
 export const APPOINTMENT_TEXT = "Appointment";
 export const SETTINGS_TEXT = "Settings";
+export const ADD_ROLE_TEXT = "Add Role";
+export const ROLE_DETAILS_TEXT = "Role Details";
+export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
+export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
+export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
+export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
+export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
+export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
 export const CLAIM_FEED_TEXT = "Claim Feed";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
@@ -636,6 +645,7 @@ export const ANNUAL_MANAGEMENT_FEE = "Annual Management Fee (based on initial ca
 export const USD = "USD";
 export const HOME_TEXT = "Home";
 export const HELLO_TEXT = "Hello";
+export const ROLES_TEXT = "Roles";
 export const PROFILE_TEXT = "Profile";
 export const SIGNATURE_TEXT = "Signature";
 export const CANCELLATION_TEXT = "Cancellation";
@@ -709,6 +719,7 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your pe
 export const ROOT_ROUTE = "/";
 export const LOGIN_ROUTE = "/login";
 export const STAFF_ROUTE = "/staff";
+export const ROLES_ROUTE = "/roles";
 export const VITALS_ROUTE = "/vitals";
 export const PATIENTS_CHART = "/chart";
 export const PROFILE_ROUTE = "/profile";
@@ -718,15 +729,16 @@ export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
-export const CANCELLATION_ROUTE = "/cancellation";
 export const AUTO_LOGOUT_ROUTE = "/autologout";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
+export const CANCELLATION_ROUTE = "/cancellation";
 export const SET_PASSWORD_ROUTE = "/set-password";
 export const APPOINTMENTS_ROUTE = "/appointments";
 export const VERIFY_EMAIL_ROUTE = "/verify-email";
 export const FACILITIES_ROUTE = "/list-facilities";
+export const ADD_ROLES_ROUTE = `${ROLES_ROUTE}/new`;
 export const CALENDAR_ROUTE = "/dashboard/calendar";
 export const FACILITY_LOCATIONS_ROUTE = "/locations";
 export const RESET_PASSWORD_ROUTE = "/reset-password";
@@ -791,6 +803,8 @@ export const LOCATION_NOT_FOUND = "Location not found!";
 export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
+export const ROLE_CREATED = "Role is created successfully";
+export const ROLE_UPDATED = "Role is updated successfully";
 export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
 export const TRY_AGAIN = "Something went wrong. Try again!";
@@ -821,8 +835,6 @@ export const INVOICE_CREATED = "Invoice created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
-export const LOCATION_CREATED = "Location is created successfully";
-export const LOCATION_UPDATED = "Location is updated successfully";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
@@ -972,10 +984,6 @@ export const USER_MENU_ITEMS = [
   {
     name: DOCTORS_TEXT,
     link: DOCTORS_ROUTE,
-  },
-  {
-    name: PATIENTS_TEXT,
-    link: PATIENTS_ROUTE,
   },
   {
     name: STAFF_TEXT,
@@ -1809,6 +1817,21 @@ export enum ATTACHMENT_TITLES {
   ProviderUploads = "Provider Uploads",
 }
 
+export enum MODULE_TYPES {
+  User = 'User',
+  Staff = 'Staff',
+  Patient = 'Patient',
+  Service = 'Service',
+  Services = 'Services',
+  Practice = 'Practice',
+  Facility = 'Facility',
+  Provider = 'Provider',
+  Schedule = 'Schedule',
+  Schedules = 'Schedules',
+  Permission = 'Permission',
+  Appointment = 'Appointment',
+ }
+
 export const MAPPED_STATUS = [
   {
     value: "status",
@@ -1843,6 +1866,49 @@ export const MAPPED_STATUS = [
     startDate: "2018-07-27T19:00:00.000Z",
     endDate: "2018-08-06T19:00:00.000Z",
   },
+];
+
+export const ROLES_DUMMY_DATA = [
+  {
+    name: "Director of Operations",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Medical or Health Services Manager",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Advanced Practice Registered Nurse",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Physical Therapist Assistant",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Receptionist",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Neonatal Intensive Care Registered Nurse",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Health Services Manager",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Medical Office Specialist",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Nurse Consultant ",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  },
+  {
+    name: "Registered Nurse (RN) Medical Inpatient Services",
+    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
+  }
 ];
 
 export const PROFILE_DETAIL_DATA = [
@@ -1923,7 +1989,7 @@ export const PRACTICE_SETTINGS_ITEMS = [
   },
   {
     name: ROLES_PERMISSIONS,
-    link: "/",
+    link: ROLES_ROUTE,
     desc: ROLES_PERMISSIONS_DESCRIPTION
   },
 ];

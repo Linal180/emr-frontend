@@ -20,8 +20,8 @@ import { AppointmentsTableProps } from "../../interfacesTypes";
 import { getFormattedDate, renderTh, getISOTime, isSuperAdmin, appointmentStatus, getStandardTime } from "../../utils";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
 import {
-  AppointmentPayload, AppointmentsPayload, FacilityPayload, useFindAllAppointmentsLazyQuery,
-  useRemoveAppointmentMutation, useGetDoctorAppointmentsLazyQuery
+  AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
+  useGetAppointmentsLazyQuery
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, PUBLIC_LINK,
@@ -34,10 +34,11 @@ dotenv.config()
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
+  const { facility, roles } = user || {}
+  const { id: facilityId } = facility || {}
+  const isSuper = isSuperAdmin(roles)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, copied, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
-  const { facility, roles } = user || {}
-  const { id: facilityId } = (facility as FacilityPayload['facility']) || {}
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     variables: {
@@ -75,9 +76,9 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
-  const [getDoctorAppointment, {
-    loading: getDoctorAppointmentLoading, error: doctorAppointmentError
-  }] = useGetDoctorAppointmentsLazyQuery({
+  const [getAppointments, {
+    loading: getAppointmentsLoading, error: doctorAppointmentError
+  }] = useGetAppointmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -87,10 +88,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     },
 
     onCompleted(data) {
-      const { getDoctorAppointment } = data || {};
+      const { getAppointments } = data || {};
 
-      if (getDoctorAppointment) {
-        const { appointments } = getDoctorAppointment
+      if (getAppointments) {
+        const { appointments } = getAppointments
 
         if (!searchQuery) {
           dispatch({
@@ -128,19 +129,18 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const fetchAppointments = useCallback(async () => {
     try {
       doctorId ?
-        await getDoctorAppointment({
-          variables: { getDoctorAppointment: { doctorId } }
+        await getAppointments({
+          variables: { getAppointments: { doctorId, facilityId } }
         })
-        :
-        await findAllAppointments()
+        : await findAllAppointments()
     } catch (error) { }
-  }, [doctorId, findAllAppointments, getDoctorAppointment])
+  }, [doctorId, getAppointments, facilityId, findAllAppointments])
 
   useEffect(() => {
     if (!searchQuery) {
       fetchAppointments();
     }
-  }, [page, findAllAppointments, searchQuery, doctorId, getDoctorAppointment, fetchAppointments]);
+  }, [page, searchQuery, fetchAppointments]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
     type: ActionType.SET_PAGE, page: value
@@ -157,9 +157,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     if (deleteAppointmentId) {
       await removeAppointment({
         variables: {
-          removeAppointment: {
-            id: deleteAppointmentId
-          }
+          removeAppointment: { id: deleteAppointmentId }
         }
       })
     }
@@ -175,7 +173,6 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const search = (query: string) => { }
 
-  const isSuper = isSuperAdmin(roles)
   return (
     <Box className={classes.mainTableContainer}>
       <Box className={classes.searchContainer}>
@@ -209,7 +206,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </TableRow>
           </TableHead>
           <TableBody>
-            {(loading || getDoctorAppointmentLoading) ? (
+            {(loading || getAppointmentsLoading) ? (
               <TableRow>
                 <TableCell colSpan={10}>
                   <TableLoader numberOfRows={10} numberOfColumns={5} />
@@ -267,7 +264,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           </TableBody>
         </Table>
 
-        {((!loading && !getDoctorAppointmentLoading && appointments?.length === 0) || error || doctorAppointmentError) && (
+        {((!loading && !getAppointmentsLoading && appointments?.length === 0) || error || doctorAppointmentError) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

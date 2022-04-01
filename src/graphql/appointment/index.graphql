@@ -181,8 +181,8 @@ mutation CancelAppointment($cancelAppointment: CancelAppointment!){
   }
 }
 
-query GetDoctorAppointments($getDoctorAppointment: GetDoctorAppointment!){
-  getDoctorAppointment(getDoctorAppointment: $getDoctorAppointment){
+query GetAppointments($getAppointments: GetAppointments!){
+  getAppointments(getAppointments: $getAppointments){
     response {
       error
       status
