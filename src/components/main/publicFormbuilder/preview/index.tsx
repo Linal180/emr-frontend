@@ -10,7 +10,7 @@ import Alert from '../../../common/Alert';
 import { ParamsType } from '../../../../interfacesTypes'
 import { LoaderBackdrop, parseColumnGrid } from '../../../../utils';
 import { SectionsInputs, useGetPublicFormLazyQuery } from '../../../../generated/graphql';
-import { getForminitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION } from '../../../../constants';
+import { getForminitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
 import { WHITE_SEVEN } from '../../../../theme';
@@ -55,7 +55,6 @@ const PublicFormPreview = () => {
   })
   //form submit handler
   const submitHandler = (values: any) => {
-    debugger 
     closeHandler()
   };
   //close handler
@@ -96,21 +95,19 @@ const PublicFormPreview = () => {
                 ))}
               </Grid>
             </CardComponent>
-
             <Box marginY={2} display={'flex'} justifyContent={'flex-end'}>
               <Box marginX={2}>
                 <Button variant={'contained'} >
-                  Cancel
+                  {CANCEL_TEXT}
                 </Button>
               </Box>
               <Box>
                 <Button type={'submit'} variant={'contained'} color={'primary'}>
-                  Form Submit
+                  {FORM_SUBMIT_TEXT}
                 </Button>
               </Box>
             </Box>
           </form>
-
         </FormProvider>
         <LoaderBackdrop open={getFormLoader} />
       </Box>

@@ -9,7 +9,7 @@ import InputController from '../../../../../controller';
 import Selector from '../../../../common/Select';
 import { AntSwitch } from '../../../../../styles/publicAppointmentStyles/externalPatientStyles';
 //constants & interfaces
-import { COLUMN_LENGTH, CSS_CLASSES, DISMISS, EditFieldFormInitialValues, LABEL, NAME, NO_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, YES_TEXT, } from '../../../../../constants';
+import { ACTION, COLUMN_LENGTH, CSS_CLASSES, DISMISS, EditFieldFormInitialValues, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, } from '../../../../../constants';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import { GRAY_TWO, WHITE } from '../../../../../theme';
 import { SAVE_TEXT } from '../../../../../constants';
@@ -123,7 +123,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
               </Grid>
               <Grid item md={12}>
                 <Selector
-                  controllerLabel={'Select a column'}
+                  controllerLabel={SELECT_COLUMN_TEXT}
                   controllerName="column"
                   options={COLUMN_LENGTH}
                 />
@@ -136,9 +136,9 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                   }} >
                     <thead>
                       <tr>
-                        <th >Name</th>
-                        <th >Value</th>
-                        {fields?.length > 1 && <th >action</th>}
+                        <th >{NAME}</th>
+                        <th >{VALUE}</th>
+                        {fields?.length > 1 && <th >{ACTION}</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -148,15 +148,12 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                             <InputController
                               fieldType="text"
                               controllerName={`options.${index}.name`}
-                              controllerLabel={'name'}
                             />
                           </td>
                           <td >
                             <InputController
                               fieldType="text"
                               controllerName={`options.${index}.value`}
-                              controllerLabel={'value'}
-
                             />
                           </td>
                           {fields?.length > 1 &&
@@ -177,7 +174,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                     justifyContent: "flex-end"
                   }}>
                     <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />} >
-                      Option
+                      {OPTION_TEXT}
                     </Button>
                   </Box>
                 </Grid>

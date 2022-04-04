@@ -11,6 +11,7 @@ import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
 import { useFormBuilderContainerStyles } from '../../../../../styles/formbuilder/dropContainer';
 import { BLACK, GRAY_FOUR, WHITE } from '../../../../../theme';
 import { parseColumnGrid } from '../../../../../utils'
+import { DROP_ITEM_TEXT } from '../../../../../constants';
 //component
 const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandler }: DropContainerPropsTypes) => {
   //classes
@@ -99,7 +100,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                         <Box
                           className={classes.placeholderContainer}
                         >
-                          Drop items here
+                          {DROP_ITEM_TEXT}
                         </Box>
                       )}
                     {provided.placeholder}

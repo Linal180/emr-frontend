@@ -23,7 +23,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
-  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE
+  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_EMBED_TITLE
 } from "../../../../constants";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
@@ -244,7 +244,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
         )}
 
         <ConfirmationModal title={FORM_TEXT} isOpen={openDelete} isLoading={deleteFormLoading} description={DELETE_FORM_DESCRIPTION} handleDelete={handleDeleteForm} setOpen={(open: boolean) => setOpenDelete(open)} />
-        <ShareModal title={'Embed your form builder'} isOpen={openShare} description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`} handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
+        <ShareModal title={FORM_EMBED_TITLE} isOpen={openShare} description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`} handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
         <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHanlder={previewCloseHanlder} />
       </Box>
     </Box>

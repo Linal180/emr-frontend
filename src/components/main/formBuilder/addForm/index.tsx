@@ -15,7 +15,7 @@ import DropContainer from './dropContainer';
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION,
   FORM_BUILDER_INITIAL_VALUES, getForminitialValues, FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION,
-  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, FORM_UPDATED
+  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, SAVE_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER
 } from '../../../../constants';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { AddWidgetIcon } from '../../../../assets/svgs';
@@ -323,15 +323,15 @@ const AddForm = () => {
         <form onSubmit={handleSubmit(saveHandler)}>
 
           <Box display={'flex'} justifyContent={'space-between'}>
-            <Typography variant='h4'>Form Builder</Typography>
+            <Typography variant='h4'>{FORM_BUILDER}</Typography>
             <Box display={'flex'} justifyContent={'flex-start'}>
               <Box marginX={2}>
                 <Button onClick={clearHandler} variant={'outlined'}>
-                  Clear
+                  {CLEAR_TEXT}
                 </Button>
               </Box>
               <Button type='submit' variant={'contained'} color={'primary'}>
-                Save
+                {SAVE_TEXT}
               </Button>
             </Box>
           </Box>
@@ -350,12 +350,12 @@ const AddForm = () => {
                 fieldType="text"
                 isRequired
                 controllerName="name"
-                controllerLabel={'Form name'}
+                controllerLabel={FORM_NAME}
               />
             </Grid>
             <Grid item xs={6} sm={6}>
               <Selector
-                label={'Select a form type'}
+                label={FORM_TYPE}
                 name="type"
                 isRequired
                 value={EMPTY_OPTION}
@@ -378,7 +378,7 @@ const AddForm = () => {
                   >
                     <AddWidgetIcon />
                     <Typography component='h1' variant="h4">
-                      Add Columns
+                      {ADD_COLUMNS_TEXT}
                     </Typography>
                   </Box>
                   <Menu open={Boolean(colMenu)} anchorEl={colMenu} id="add-column-layout" onClose={handleMenuClose}>
