@@ -20,6 +20,7 @@ import {
 } from '../../../../constants';
 import { appointmentReducer, Action, initialState, State, ActionType, } from '../../../../reducers/appointmentReducer';
 import { useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, } from '../../../../generated/graphql';
+import ACHModal from '../achModal'
 
 const ExternalPaymentComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -167,6 +168,10 @@ const ExternalPaymentComponent = (): JSX.Element => {
     }
   };
 
+  const achClickHandler = () => {
+    debugger
+  }
+
   return (
     <Box bgcolor={WHITE_SEVEN} minHeight='100vh' padding='30px 30px 30px 60px'>
       <EMRLogo />
@@ -240,6 +245,11 @@ const ExternalPaymentComponent = (): JSX.Element => {
                   )}
 
                   <Grid item>
+                    <Box pr={2}>
+                      <Button variant='contained' onClick={achClickHandler} color={'primary'}>Pay via ACH</Button>
+                    </Box>
+                  </Grid>
+                  <Grid item>
                     <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
                   </Grid>
                 </Grid>
@@ -250,6 +260,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
           </Box>
         </Grid>
       </Grid>
+      <ACHModal open={true} onClose={() => { }} />
     </Box>
   );
 };
