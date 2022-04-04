@@ -38,7 +38,6 @@ import PatientDetail from "../pages/main/patients/patientDetail";
 import { AddPractice } from "../pages/main/practices/addPractice";
 import { AddFacility } from "../pages/main/facilities/addFacility";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
-import AddFacilityNew from "../pages/main/facilities/addFacilityNew";
 import { PublicAppointment } from "../pages/main/publicAppointments";
 import { ViewFacility } from "../pages/main/facilities/viewFacility";
 import { Facilities } from "../pages/main/facilities/facilitiesListing";
@@ -127,7 +126,6 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
       <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacility} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/facilityNew`} component={AddFacilityNew} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_SERVICES_ROUTE}`} component={Services} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />

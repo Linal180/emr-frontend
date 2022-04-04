@@ -75,6 +75,7 @@ export type Appointment = {
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  patientProblem?: Maybe<Array<PatientProblems>>;
   paymentType: PaymentType;
   primaryInsurance?: Maybe<Scalars['String']>;
   provider?: Maybe<Doctor>;
@@ -555,6 +556,18 @@ export type CreatePracticeItemInput = {
   upin?: Maybe<Scalars['String']>;
 };
 
+export type CreateProblemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  icdCodeId: Scalars['String'];
+  note?: Maybe<Scalars['String']>;
+  patientId: Scalars['String'];
+  problemSeverity?: Maybe<ProblemSeverity>;
+  problemStartDate?: Maybe<Scalars['String']>;
+  problemType?: Maybe<ProblemType>;
+  providerId?: Maybe<Scalars['String']>;
+  staffId?: Maybe<Scalars['String']>;
+};
+
 export type CreateScheduleInput = {
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
@@ -635,6 +648,7 @@ export type Doctor = {
   medicareGrpNumber?: Maybe<Scalars['String']>;
   middleName?: Maybe<Scalars['String']>;
   npi?: Maybe<Scalars['String']>;
+  patientProblem?: Maybe<Array<PatientProblems>>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
@@ -823,6 +837,10 @@ export type GetPatientAppointmentInput = {
   patientId: Scalars['String'];
 };
 
+export type GetPatientProblem = {
+  id: Scalars['String'];
+};
+
 export type GetPermission = {
   id?: Maybe<Scalars['String']>;
 };
@@ -877,6 +895,16 @@ export enum Homebound {
   No = 'NO',
   Yes = 'YES'
 }
+
+export type IcdCodes = {
+  __typename?: 'ICDCodes';
+  code: Scalars['String'];
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+  version?: Maybe<Scalars['String']>;
+};
 
 export type Invoice = {
   __typename?: 'Invoice';
@@ -935,6 +963,7 @@ export enum Maritialstatus {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
+  addPatientProblem: PatientProblemPayload;
   assignPermissionToRole: PermissionPayload;
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
@@ -968,6 +997,7 @@ export type Mutation = {
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removePatient: PatientPayload;
+  removePatientProblem: PatientProblemPayload;
   removePermission: PermissionPayload;
   removePractice: PracticePayload;
   removeRole: RolePayload;
@@ -991,6 +1021,7 @@ export type Mutation = {
   updateInvoiceStatus: InvoicePayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
+  updatePatientProblem: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
   updatePermission: PermissionPayload;
@@ -1008,6 +1039,11 @@ export type Mutation = {
 
 export type MutationActivateUserArgs = {
   user: UserIdInput;
+};
+
+
+export type MutationAddPatientProblemArgs = {
+  createProblemInput: CreateProblemInput;
 };
 
 
@@ -1176,6 +1212,11 @@ export type MutationRemovePatientArgs = {
 };
 
 
+export type MutationRemovePatientProblemArgs = {
+  removeProblem: RemoveProblem;
+};
+
+
 export type MutationRemovePermissionArgs = {
   removePermission: RemovePermission;
 };
@@ -1291,6 +1332,11 @@ export type MutationUpdatePatientArgs = {
 };
 
 
+export type MutationUpdatePatientProblemArgs = {
+  updateProblemInput: UpdateProblemInput;
+};
+
+
 export type MutationUpdatePatientProfileArgs = {
   updatePatientProfileInput: UpdatePatientProfileInput;
 };
@@ -1399,6 +1445,7 @@ export type Patient = {
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
   patientNote?: Maybe<Scalars['String']>;
+  patientProblems?: Maybe<Array<PatientProblems>>;
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission: Scalars['Boolean'];
@@ -1457,6 +1504,41 @@ export type PatientInviteInput = {
 export type PatientPayload = {
   __typename?: 'PatientPayload';
   patient?: Maybe<Patient>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type PatientProblemInput = {
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type PatientProblemPayload = {
+  __typename?: 'PatientProblemPayload';
+  patientProblem?: Maybe<PatientProblems>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type PatientProblems = {
+  __typename?: 'PatientProblems';
+  ICDCode?: Maybe<IcdCodes>;
+  appointment?: Maybe<Appointment>;
+  createdAt?: Maybe<Scalars['String']>;
+  doctor?: Maybe<Doctor>;
+  id: Scalars['String'];
+  note?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  problemSeverity: ProblemSeverity;
+  problemStartDate?: Maybe<Scalars['String']>;
+  problemType: ProblemType;
+  staff?: Maybe<Staff>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PatientProblemsPayload = {
+  __typename?: 'PatientProblemsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  patientProblems?: Maybe<Array<Maybe<PatientProblems>>>;
   response?: Maybe<ResponsePayload>;
 };
 
@@ -1568,6 +1650,18 @@ export type PracticesPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The patient's problem severity type assigned */
+export enum ProblemSeverity {
+  Acute = 'ACUTE',
+  Chronic = 'CHRONIC'
+}
+
+/** The patient's problem type assigned */
+export enum ProblemType {
+  Active = 'ACTIVE',
+  Historic = 'HISTORIC'
+}
+
 export type Query = {
   __typename?: 'Query';
   GetPermission: PermissionPayload;
@@ -1579,6 +1673,7 @@ export type Query = {
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllPatient: PatientsPayload;
+  findAllPatientProblem: PatientProblemsPayload;
   findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
   findAllSchedules: SchedulesPayload;
@@ -1597,6 +1692,7 @@ export type Query = {
   getFacilitySchedule: SchedulesPayload;
   getPatient: PatientPayload;
   getPatientAppointment: AppointmentsPayload;
+  getPatientProblem: PatientProblemPayload;
   getPractice: PracticePayload;
   getRole: RolePayload;
   getSchedule: SchedulePayload;
@@ -1642,6 +1738,11 @@ export type QueryFindAllFacilityArgs = {
 
 export type QueryFindAllPatientArgs = {
   patientInput: PatientInput;
+};
+
+
+export type QueryFindAllPatientProblemArgs = {
+  patientProblemInput: PatientProblemInput;
 };
 
 
@@ -1732,6 +1833,11 @@ export type QueryGetPatientArgs = {
 
 export type QueryGetPatientAppointmentArgs = {
   getPatientAppointmentInput: GetPatientAppointmentInput;
+};
+
+
+export type QueryGetPatientProblemArgs = {
+  getPatientProblem: GetPatientProblem;
 };
 
 
@@ -1859,6 +1965,10 @@ export type RemovePermission = {
 
 export type RemovePractice = {
   id?: Maybe<Scalars['String']>;
+};
+
+export type RemoveProblem = {
+  id: Scalars['String'];
 };
 
 export type RemoveRole = {
@@ -2166,6 +2276,7 @@ export type Staff = {
   id: Scalars['String'];
   lastName: Scalars['String'];
   mobile?: Maybe<Scalars['String']>;
+  patientProblem?: Maybe<Array<PatientProblems>>;
   phone?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
@@ -2520,6 +2631,15 @@ export type UpdatePracticeInput = {
   upin?: Maybe<Scalars['String']>;
 };
 
+export type UpdateProblemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  note?: Maybe<Scalars['String']>;
+  problemSeverity?: Maybe<ProblemSeverity>;
+  problemStartDate?: Maybe<Scalars['String']>;
+  problemType?: Maybe<ProblemType>;
+};
+
 export type UpdateRoleInput = {
   id: Scalars['String'];
   roles: Array<Scalars['String']>;
@@ -2806,7 +2926,7 @@ export type GetFacilityQueryVariables = Exact<{
 }>;
 
 
-export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, tamxonomyCode?: string | null | undefined, timeZone?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, practiceId?: string | null | undefined, serviceCode: ServiceCode, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null | undefined, mobile?: string | null | undefined, phone?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type GetFacilityQuery = { __typename?: 'Query', getFacility: { __typename?: 'FacilityPayload', facility?: { __typename?: 'Facility', id: string, name: string, practiceType?: PracticeType | null | undefined, cliaIdNumber?: string | null | undefined, federalTaxId?: string | null | undefined, isPrivate?: boolean | null | undefined, tamxonomyCode?: string | null | undefined, timeZone?: string | null | undefined, mammographyCertificationNumber?: string | null | undefined, npi?: string | null | undefined, practiceId?: string | null | undefined, serviceCode: ServiceCode, startTime?: string | null | undefined, endTime?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null | undefined, mobile?: string | null | undefined, phone?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type RemoveFacilityMutationVariables = Exact<{
   removeFacility: RemoveFacility;
@@ -2827,7 +2947,7 @@ export type CreateFacilityMutationVariables = Exact<{
 }>;
 
 
-export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string } | null | undefined } };
 
 export type CreateInvoiceMutationVariables = Exact<{
   createInvoiceInputs: CreateInvoiceInputs;
@@ -4300,6 +4420,8 @@ export const GetFacilityDocument = gql`
       npi
       practiceId
       serviceCode
+      startTime
+      endTime
       createdAt
       updatedAt
       practice {
@@ -4455,6 +4577,9 @@ export const CreateFacilityDocument = gql`
       name
       status
       message
+    }
+    facility {
+      id
     }
   }
 }

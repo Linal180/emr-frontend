@@ -143,6 +143,8 @@ export interface ConfirmationTypes extends DialogTypes {
 
 export interface ConfirmationDaysTypes extends DialogTypes {
   title?: string;
+  id?: string
+  isEdit?: boolean
 }
 
 export interface GraphModalProps extends DialogTypes {
@@ -755,3 +757,6 @@ export interface WeekTimeItem {
   id: number
   value: string
 }
+
+export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
+  & { serviceId: SelectorOption };

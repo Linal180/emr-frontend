@@ -387,13 +387,34 @@ const facilityBasicSchema = {
   name: nameSchema(NAME)
 }
 
+const facilitySchedulerBasicSchema = {
+  ...npiSchema,
+  ...contactSchema,
+  ...timeZoneSchema,
+  ...serviceCodeSchema,
+  ...mammographySchema,
+  ...cliaIdNumberSchema,
+  ...federalTaxIdSchema,
+  ...tamxonomyCodeSchema,
+  ...billingAddressSchema,
+  name: nameSchema(NAME)
+}
+
+export const facilitySchedulerSchema = yup.object({
+  ...facilitySchedulerBasicSchema
+})
+
+export const facilityTimeSchedulerSchema = yup.object({
+  ...scheduleTimeSchema
+})
+
 export const facilitySchema = yup.object({
   ...facilityBasicSchema
 })
 
 export const facilitySchemaWithPractice = yup.object({
   ...practiceIdSchema,
-  ...facilityBasicSchema,
+  ...facilitySchedulerBasicSchema,
 })
 
 export const basicDoctorSchema = {

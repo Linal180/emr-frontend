@@ -341,7 +341,7 @@ const PublicAppointmentForm = (): JSX.Element => {
                       )}
                     </ul>
                   )}
-                </CardComponent >
+                </CardComponent>
               </Grid >
             </Grid>
           </form>

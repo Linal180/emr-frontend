@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, WHITE } from "../theme";
+import { BLACK, GRAY_ELEVEN, WHITE } from "../theme";
 
 export const useFacilityStyles = makeStyles(() => ({
   navbar: {
@@ -32,7 +32,7 @@ export const useFacilityStyles = makeStyles(() => ({
 
   disableBackdropStyle: {
     "& .MuiBackdrop-root": {
-      backgroundColor: '#1211110d'
+      backgroundColor: GRAY_ELEVEN
     },
 
     "& .MuiPaper-elevation24": {

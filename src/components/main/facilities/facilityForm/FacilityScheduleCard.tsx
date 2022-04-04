@@ -10,6 +10,7 @@ import { GeneralFormProps } from "../../../../interfacesTypes";
 import { useFacilityStyles } from "../../../../styles/facilityStyles";
 import { AVAILABILITY_TEXT, MAPPED_WEEK_DAYS } from "../../../../constants";
 
+
 const FacilityScheduleCard: FC<GeneralFormProps> = (): JSX.Element => {
   const [openEditModal, setOpenEditModal] = useState<boolean>(false)
   const [dayName, setDayName] = useState<string>('')

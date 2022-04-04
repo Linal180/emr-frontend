@@ -1598,17 +1598,6 @@ export const DOCTOR_TOP_TABS = [
   },
 ];
 
-export const FACILITY_TOP_TABS = [
-  {
-    title: FACILITY_REGISTRATION,
-    value: "1",
-  },
-  {
-    title: FACILITY_SCHEDULE,
-    value: "2",
-  }
-];
-
 export const WEEK_DAYS: SelectorOption[] = [
   { id: DAYS.Monday, name: DAYS.Monday },
   { id: DAYS.Tuesday, name: DAYS.Tuesday },
