@@ -1,5 +1,5 @@
 //packages block
-import { useState, useEffect, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent, useCallback } from 'react';
 import { Dialog, DialogContent, Grid, Box, Button, FormControl, InputLabel, DialogTitle, IconButton, } from '@material-ui/core';
 import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm, } from 'react-hook-form'
 import { Add as AddIcon } from '@material-ui/icons';
@@ -33,12 +33,8 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
     name: "options"
 
   });
-  //life cycle hook
-  useEffect(() => {
-    selected && setFormInitialValues();
-  }, [selected]);
   //set form values
-  const setFormInitialValues = () => {
+  const setFormInitialValues = useCallback(() => {
     const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea } = selected;
     setValue("name", name)
     setValue("label", label)
@@ -54,7 +50,12 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
     setValue("options", options)
     setValue("textArea", textArea)
     setIsChecked(required)
-  }
+  }, [setValue, selected])
+  //life cycle hook
+  useEffect(() => {
+    selected && setFormInitialValues();
+  }, [selected, setFormInitialValues]);
+  //toggle handler
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked } } = event
     setIsChecked(checked);
