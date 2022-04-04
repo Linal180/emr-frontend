@@ -916,6 +916,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
+export const PRACTICE_USER_ALREADY_EXISTS = "User with this email already exists";
 export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully";
 export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";

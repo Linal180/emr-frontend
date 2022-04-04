@@ -323,6 +323,12 @@ export const getTimeFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getTimeString = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+};
+
 export const getISOTime = (timestamp: string) => {
   if (!timestamp) return "";
 

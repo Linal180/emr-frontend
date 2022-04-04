@@ -16,7 +16,7 @@ import { ActionType } from "../../../../reducers/doctorReducer";
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
-  getDayFromTimestamps, getISOTime, renderServices, setRecord, setTimeDay
+  getDayFromTimestamps, getTimeString, renderServices, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
@@ -58,9 +58,8 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
           const { startAt, endAt, scheduleServices } = schedule || {};
           const { service } = (scheduleServices && scheduleServices[0]) || {}
           const { id: serviceId, name: serviceName } = (service && service) || {}
-
-          endAt && setValue('endAt', getISOTime(endAt))
-          startAt && setValue('startAt', getISOTime(startAt))
+          endAt && setValue('endAt', getTimeString(endAt))
+          startAt && setValue('startAt', getTimeString(startAt))
           serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
           startAt && setValue('day', setRecord(getDayFromTimestamps(startAt), getDayFromTimestamps(startAt)))
         }
