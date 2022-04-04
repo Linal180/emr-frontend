@@ -630,13 +630,21 @@ export const updatePasswordSchema = yup.object({
     .matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
 })
 //form builder validation schema
-export const createFormBuilderSchema = yup.object({
+export const createFormBuilderSchemaWithFacility = yup.object({
   name: yup.string().required('Required'),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', 'required', ({ id }) => !!id),
   facilityId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+});
+
+export const createFormBuilderSchema = yup.object({
+  name: yup.string().required('Required'),
+  type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', 'required', ({ id }) => !!id),

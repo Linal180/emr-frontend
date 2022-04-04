@@ -23,11 +23,12 @@ import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import InputController from '../../../../controller';
 import Selector from '../../../common/Selector';
 import Alert from '../../../common/Alert';
-import { createFormBuilderSchema } from '../../../../validationSchemas';
+import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
 import { FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation } from '../../../../generated/graphql';
 import { ListContext } from '../../../../context/listContext'
-import { LoaderBackdrop, renderFacilities, setRecord } from '../../../../utils';
+import { isSuperAdmin, LoaderBackdrop, renderFacilities, setRecord } from '../../../../utils';
 import history from '../../../../history';
+import { AuthContext } from '../../../../context';
 //component
 const AddForm = () => {
   //states
@@ -36,11 +37,15 @@ const AddForm = () => {
   const [selected, setSelected] = useState<FormInitialType>(FIELD_EDIT_INITIAL_VALUES);
   const [colMenu, setColMenu] = useState<null | HTMLElement>(null)
   //hooks
-  const methods = useForm<FormBuilderFormInitial>({ defaultValues: FORM_BUILDER_INITIAL_VALUES, resolver: yupResolver(createFormBuilderSchema) });
-  const { handleSubmit, setValue } = methods
   const { id: formId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
   const { facilityList } = useContext(ListContext)
+  const { user } = useContext(AuthContext);
+  const { roles, facility } = user || {};
+  const { id: facilityId } = facility || {};
+  const isSuper = isSuperAdmin(roles);
+  const methods = useForm<FormBuilderFormInitial>({ defaultValues: FORM_BUILDER_INITIAL_VALUES, resolver: yupResolver(isSuper ? createFormBuilderSchemaWithFacility : createFormBuilderSchema) });
+  const { handleSubmit, setValue } = methods
   //mutations & query
   const [createForm, { loading }] = useCreateFormMutation({
     onError({ message }) {
@@ -231,10 +236,11 @@ const AddForm = () => {
   const saveHandler: SubmitHandler<FormBuilderFormInitial> = (values) => {
     const isFieldFound = formValues?.some((item) => item.fields.length > 0);
     if (isFieldFound) {
-      const { name, type, facilityId } = values || {};
+      const { name, type, facilityId: selectedFacility } = values || {};
       const { id: typeId } = type;
-      const { id: facility } = facilityId;
-      const data = { name, type: typeId as FormType, facilityId: facility, layout: { sections: formValues } }
+      const { id: facility } = selectedFacility;
+      const selectedFacilityId = isSuper ? facility : facilityId ? facilityId : '';
+      const data = { name, type: typeId as FormType, facilityId: selectedFacilityId, layout: { sections: formValues } }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
     else Alert.error('Please drap alteast one field')
@@ -330,7 +336,7 @@ const AddForm = () => {
             </Box>
           </Box>
           <Grid container spacing={2}>
-            <Grid item xs={6} sm={6} >
+            {isSuper && <Grid item xs={6} sm={6} >
               <Selector
                 isRequired
                 value={EMPTY_OPTION}
@@ -338,7 +344,7 @@ const AddForm = () => {
                 name="facilityId"
                 options={renderFacilities(facilityList)}
               />
-            </Grid>
+            </Grid>}
             <Grid item xs={6} sm={6}>
               <InputController
                 fieldType="text"

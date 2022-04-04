@@ -14,7 +14,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { renderTh } from "../../../../utils";
+import { isSuperAdmin, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import {
@@ -29,8 +29,9 @@ import {
 const FormBuilderTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
-  const { facility } = user || {};
+  const { roles, facility } = user || {};
   const { id: facilityId } = facility || {}
+  const isSuper = isSuperAdmin(roles);
   //states
   const [formEmbedUrl, setFormEmbedUrl] = useState('')
   const [page, setPage] = useState<number>(1);
@@ -97,14 +98,14 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = { ...pageInputs }
+      const formInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
         },
       })
     } catch (error) { }
-  }, [findAllForms, page])
+  }, [findAllForms, page, facilityId, isSuper])
 
 
   useEffect(() => {
@@ -177,7 +178,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
             <TableRow>
               {renderTh(NAME)}
               {renderTh(TYPE)}
-              {renderTh(FACILITY_NAME)}
+              {isSuper && renderTh(FACILITY_NAME)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -198,7 +199,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       {name}
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    <TableCell scope="row">{facilityId}</TableCell>
+                    {isSuper && <TableCell scope="row">{facilityId}</TableCell>}
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_FORM_LINK}>
