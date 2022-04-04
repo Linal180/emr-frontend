@@ -13,8 +13,8 @@ import ShareModal from "../../../common/ShareModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../../../context";
-import { isSuperAdmin, renderTh } from "../../../../utils";
+import { AuthContext, ListContext } from "../../../../context";
+import { isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import {
@@ -29,6 +29,7 @@ import {
 const FormBuilderTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
+  const { facilityList } = useContext(ListContext)
   const { roles, facility } = user || {};
   const { id: facilityId } = facility || {}
   const isSuper = isSuperAdmin(roles);
@@ -199,7 +200,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       {name}
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {isSuper && <TableCell scope="row">{facilityId}</TableCell>}
+                    {isSuper && facilityId && <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell>}
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_FORM_LINK}>

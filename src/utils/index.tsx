@@ -493,3 +493,12 @@ export const getFieldType = (type: ElementType) => {
       return type as ElementType
   }
 }
+
+export const renderFacility = (facilityId: string, facilities: FacilitiesPayload['facilities']): string => {
+  if (!!facilities) {
+    const facility = facilities.find((val) => val?.id === facilityId);
+    const { name } = facility || {}
+    return name ? name : "";
+  }
+  return ""
+}
