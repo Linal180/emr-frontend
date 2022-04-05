@@ -6,6 +6,7 @@ import {
   PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE,
   BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED_FOUR,
 } from ".";
+import { BLACK_NINE, GRAY_TEN } from "./colors";
 
 const breakpoints = createBreakpoints({})
 const customTheme = createTheme()
@@ -86,27 +87,39 @@ export const theme = createTheme({
             transition: '.3s all ease-in'
           },
 
-
           "& .MuiPagination-ul": {
             "& li": {
               "& button": {
-                height: 28,
-                minWidth: 28,
-                borderRadius: 6,
-                color: BLACK_TWO,
+                height: 36,
+                minWidth: 36,
+                borderRadius: 0,
+                color: BLACK_NINE,
                 fontSize: 14,
-                fontWeight: 500,
+                margin: 0,
               },
 
               "& .Mui-selected": {
-                backgroundColor: BLUE_THREE,
+                backgroundColor: BLUE_EIGHT,
+                color: WHITE,
+              },
+
+              "& .Mui-selected:hover": {
+                backgroundColor: BLUE_EIGHT,
                 color: WHITE,
               }
             },
 
-            "& li:first-child, & li:last-child": {
+            "& li:first-child": {
               "& button": {
-                backgroundColor: WHITE,
+                color: BLACK_NINE,
+                borderRadius: '8px 0 0 8px',
+              }
+            },
+
+            "& li:last-child": {
+              "& button": {
+                color: BLACK_NINE,
+                borderRadius: "0 8px 8px 0",
               }
             }
           },
@@ -192,20 +205,20 @@ export const theme = createTheme({
 
           "&:before": {
             content: `""`,
-            height: 24,
-            width: 24,
+            height: 20,
+            width: 20,
             position: "absolute",
-            background: WHITE_THREE,
+            background: WHITE,
             zIndex: 9,
-            borderRadius: 6,
-            border: `2px solid ${ORANGE_ONE}`,
+            borderRadius: 3,
+            border: `2px solid ${GRAY_TEN}`,
           },
         },
 
         "& .MuiSvgIcon-root": {
-          height: 32,
-          width: 32,
-          borderRadius: 6,
+          height: 24,
+          width: 24,
+          borderRadius: 3,
         },
 
         "&[class*=PrivateSwitchBase-checked]": {
@@ -216,7 +229,7 @@ export const theme = createTheme({
           },
 
           "& .MuiSvgIcon-root": {
-            color: BLUE_THREE
+            color: BLUE_EIGHT
           }
         }
       }

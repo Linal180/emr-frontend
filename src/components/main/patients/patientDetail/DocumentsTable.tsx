@@ -232,7 +232,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
         }
       />
-    </Box >
+    </Box>
   );
 };
 

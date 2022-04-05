@@ -24,8 +24,8 @@ import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  FacilityPayload,
-  PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
+  FacilityPayload, PracticeType, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery,
+  useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
   ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING,
@@ -42,7 +42,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
-  const { fetchAllFacilityList, practiceList } = useContext(ListContext)
+  const { fetchAllFacilityList, practiceList, setFacilityList } = useContext(ListContext)
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
     resolver: yupResolver(isSuper ? facilitySchemaWithPractice : facilitySchema)
@@ -145,6 +145,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (status && status === 200) {
           reset()
           Alert.success(FACILITY_CREATED);
+          setFacilityList([])
           fetchAllFacilityList()
           history.push(FACILITIES_ROUTE)
         }
@@ -166,6 +167,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (status && status === 200) {
           reset()
           Alert.success(FACILITY_UPDATED);
+          setFacilityList([])
           fetchAllFacilityList();
           history.push(FACILITIES_ROUTE)
         }

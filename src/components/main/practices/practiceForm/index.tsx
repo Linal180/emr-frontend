@@ -12,6 +12,7 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
+import { renderRoles } from '../../../../utils';
 import { GRAY_TWO, WHITE } from '../../../../theme';
 import { AuthContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
@@ -22,19 +23,19 @@ import {
   practiceReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/practiceReducer';
 import {
-  useCreatePracticeMutation, useGetPracticeLazyQuery, UserRole, useUpdatePracticeMutation
+  useCreatePracticeMutation, useGetPracticeLazyQuery, useUpdatePracticeMutation
 } from '../../../../generated/graphql';
 import {
   ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, USER_DETAILS_TEXT, ZIP_CODE,
   FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER,
-  PRACTICE_NAME, ROLE, PRACTICE_MANAGEMENT_ROUTE, EMAIL_OR_USERNAME_ALREADY_EXISTS, FORBIDDEN_EXCEPTION,
+  PRACTICE_NAME, ROLE, PRACTICE_MANAGEMENT_ROUTE, FORBIDDEN_EXCEPTION, COUNTRY, PRACTICE_USER_ALREADY_EXISTS,
   NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
-  IS_ADMIN, MAPPED_PRACTICE_ROLES, CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, COUNTRY,
+  IS_ADMIN, CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD,
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { fetchAllPracticeList, fetchAllFacilityList } = useContext(ListContext)
+  const { fetchAllPracticeList, fetchAllFacilityList, roleList, setPracticeList } = useContext(ListContext)
   const { id: adminId } = user || {}
   const classes = usePublicAppointmentStyles();
   const methods = useForm<CustomPracticeInputProps>({
@@ -83,7 +84,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const [createPractice, { loading: createPracticeLoading }] = useCreatePracticeMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION)
-        Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
+        Alert.error(PRACTICE_USER_ALREADY_EXISTS)
       else if (message === CONFLICT_EXCEPTION)
         Alert.error(PRACTICE_OR_FACILITY_ALREADY_EXISTS)
       else
@@ -99,6 +100,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
+          setPracticeList([])
           fetchAllPracticeList();
           fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
@@ -121,6 +123,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
+          setPracticeList([])
           fetchAllPracticeList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
@@ -166,7 +169,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             registerUserInput: {
               isAdmin: true, email: userEmail || '', password: SYSTEM_PASSWORD, firstName: userFirstName || '',
               lastName: userLastName || '', phone: userPhone || '',
-              roleType: selectedRole as UserRole || UserRole.Doctor, adminId: adminId || '',
+              roleType: selectedRole, adminId: adminId || '',
             },
           }
         }
@@ -231,7 +234,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
-                          options={MAPPED_PRACTICE_ROLES}
+                          options={renderRoles(roleList)}
                         />
                       </Grid>
                     </Grid>
@@ -428,7 +431,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           </Box>
         </Box>
       </form>
-    </FormProvider >
+    </FormProvider>
   );
 };
 
