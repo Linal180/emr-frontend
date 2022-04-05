@@ -1,17 +1,17 @@
 // packages block
-import { ReactNode } from "react";
+import { ReactNode ,memo} from "react";
 import moment from "moment";
-import { Typography, Box, TableCell } from "@material-ui/core";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
+import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
+import { DaySchedule, LoaderProps, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload,
+  AppointmentsPayload, AttachmentsPayload, ElementType
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
@@ -514,3 +514,40 @@ export const formatRoleName = (name: string) => {
 
   return text.map(str => `${str.charAt(0).toUpperCase()}${str.slice(1)} `)
 };
+
+export const parseColumnGrid = (col: number): GridSize => {
+  return col as GridSize;
+}
+
+export const LoaderBackdrop = memo(({ open }: LoaderProps): JSX.Element => (
+  <Backdrop
+    open={open}
+  >
+    <CircularProgress size={20} color="inherit" />
+  </Backdrop>
+))
+
+
+export const getFieldType = (type: ElementType) => {
+  switch (type) {
+    case ElementType.Checkbox:
+      return ElementType.Text
+
+    case ElementType.Select:
+      return ElementType.Text
+
+    case ElementType.Radio:
+      return ElementType.Text
+    default:
+      return type as ElementType
+  }
+}
+
+export const renderFacility = (facilityId: string, facilities: FacilitiesPayload['facilities']): string => {
+  if (!!facilities) {
+    const facility = facilities.find((val) => val?.id === facilityId);
+    const { name } = facility || {}
+    return name ? name : "";
+  }
+  return ""
+}

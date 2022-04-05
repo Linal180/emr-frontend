@@ -2,7 +2,7 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref, ControllerRenderProps } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -14,8 +14,9 @@ import {
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput,
-  AttachmentsPayload, RolesPayload, PermissionsPayload,
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  SectionsInputs
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -202,6 +203,7 @@ export interface PageHeaderProps {
   openModal?: () => void;
   setTableData?: Function;
   tableData?: ServicesPayload['services'];
+  startIcon?: JSX.Element;
 }
 
 export interface IDropzoneImage {
@@ -301,6 +303,7 @@ interface IControlLabel {
   isPassword?: boolean;
   placeholder?: string;
   controllerLabel?: string;
+  className?: string;
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -740,3 +743,78 @@ export interface PortalTableProps {
 
 export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
 
+//form builder interfaces
+export interface ColumnTypes {
+  COL_1: string;
+  COL_2: string;
+  COL_3: string;
+}
+
+export interface ItemsTypes extends FieldsInputs {
+  icon: ElementType
+}
+export interface FormInitialType extends FieldsInputs {
+  list: string;
+}
+
+export interface FormValuesTypes {
+  id: string;
+  col: number;
+  fields: FieldsInputs[],
+}
+
+export interface SelectOptions {
+  id: number
+  name: number
+}
+
+export interface CustomSelectControlProps extends IControlLabel {
+  controllerName: string;
+  info?: string;
+  options: SelectOptions[]
+}
+
+export interface FieldEditModalProps {
+  open: boolean;
+  closeModalHanlder: () => void;
+  setFieldValuesHandler: (values: any) => void;
+  selected: FormInitialType;
+}
+
+
+export interface DropContainerPropsTypes {
+  formValues: FormValuesTypes[];
+  changeValues: (id: string, item: FieldsInputs) => void;
+  delFieldHandler: (id: number, index: number) => void;
+  delColHandler: (index: number) => void
+}
+
+
+export interface FormBuilderFormInitial {
+  name: string;
+  type: SelectorOption;
+  facilityId: SelectorOption;
+}
+
+export interface LoaderProps {
+  open: boolean
+}
+
+export interface FormBuilderPreviewProps {
+  open: Boolean;
+  closeModalHanlder: () => void;
+  data: SectionsInputs[];
+}
+
+export interface FieldComponentProps {
+	item: FieldsInputs;
+  field?: ControllerRenderProps;
+  isCreating?: boolean;
+}
+
+export interface ShareModalTypes extends DialogTypes {
+  title?: string;
+  actionText?: string;
+  description?: string;
+  handleCopy: () => void;
+}

@@ -1,25 +1,21 @@
 //packages block
 import states from "states-us";
 import moment from "moment-timezone";
+import { v4 as uuid } from "uuid";
 // graphql and interfaces block
+import { formatServiceCode, formatValue, getFormattedDate, getStandardTime } from "../utils";
 import {
-  formatServiceCode,
-  formatValue,
-  getFormattedDate,
-  getStandardTime,
-} from "../utils";
-import { SelectorOption, StepLabelType } from "../interfacesTypes";
+  SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial, FormInitialType
+} from "../interfacesTypes";
 import {
-  UsersIcon,
-  AppointmentsIcon,
-  FacilitiesIcon,
-  ReportsIcon,
-  BillingIcon,
+  UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon,
+  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon,
+  SelectIcon, TextAreaIcon, TextIcon
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
-  Appointmentstatus, Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  Communicationtype, Gender,
+  Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
+  Communicationtype, Gender, FormType, ElementType, FieldOptionsInputType, Appointmentstatus,
 } from "../generated/graphql";
 
 // regex
@@ -47,6 +43,33 @@ export const SUPER_ADMIN = 'super-admin';
 export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
+export const DISMISS = "Dismiss";
+export const LABEL = "Label";
+export const FORMS = "Forms";
+export const OPTION_TEXT = "Option";
+export const FORM_TEXT = "Form";
+export const FORM_COPY = "Copy form";
+export const FORM_NAME = "Form name";
+export const THANK_YOU_TEXT = "Thank you!";
+export const FORM_SUBMIT_TEXT = "Form Submit";
+export const FORM_TYPE = "Select a form type";
+export const ADD_COLUMNS_TEXT = "Add Columns";
+export const FORM_EMBED_TITLE = 'Embed your form builder';
+export const CSS_CLASSES = "CSS Classes";
+export const PLACEHOLDER = "Placeholder";
+export const DROP_ITEM_TEXT = "Drop items here";
+export const SELECT_COLUMN_TEXT = "Select a column";
+export const YES_TEXT = "Yes";
+export const NO_TEXT = "No";
+export const CANCEL_TEXT = "Cancel";
+export const REUIRED_TEXT = "Required?";
+export const CREATE_FORM_BUILDER = "Form is created successfully.";
+export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
+export const CANT_DELETE_FORM = "Form can't be deleted.";
+export const FORM_NOT_FOUND = "Form not found!";
+export const FORM_UPDATED = "Form updated successfully!";
+export const PUBLIC_FORM_LINK = "Public form preview Link";
+export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
 export const EMPTY_OPTION = { id: "", name: "" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
@@ -365,6 +388,7 @@ export const ROLE_NAME = "Role name";
 export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
+export const VALUE = "Value";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 8;
 export const ROLES = "Roles";
@@ -771,6 +795,10 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 =
 
 // routes paths
 export const ROOT_ROUTE = "/";
+export const FORM_BUILDER_ROUTE = "/form-builder";
+export const FORM_BUILDER_EDIT_ROUTE = "/form-builder/edit";
+export const PUBLIC_FORM_BUILDER_ROUTE = "/public/form";
+export const PUBLIC_FORM_BUILDER_FAIL_ROUTE = "/public/form-form/fail";
 export const LOGIN_ROUTE = "/login";
 export const STAFF_ROUTE = "/staff";
 export const ROLES_ROUTE = "/roles";
@@ -2125,8 +2153,8 @@ export const CALENDAR_SETTINGS_ITEMS = [
 export const CLINICAL_ITEMS = [
   {
     name: FORM_BUILDER,
-    link: "/",
-    desc: FORM_BUILDER_DESCRIPTION,
+    link: FORM_BUILDER_ROUTE,
+    desc: FORM_BUILDER_DESCRIPTION
   },
 ];
 
@@ -2164,3 +2192,212 @@ export const EMERGENCY_ACCESS_DUMMY_DATA = [
     actionDate: "On: March 15, 2022. 2:18AM",
   },
 ];
+
+export const COL_TYPES: ColumnTypes = {
+  COL_1: 'col-1',
+  COL_2: 'col-2',
+  COL_3: 'col-3',
+};
+
+export const OPTIONS: FieldOptionsInputType[] = [{ name: "option 1", value: 'option_1' }, { name: "option 2", value: 'option_2' }]
+
+export const ITEMS: ItemsTypes[] = [
+  {
+    icon: TextIcon,
+    fieldId: uuid(),
+    label: 'Text Input',
+    type: ElementType.Text,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+    options: [],
+    textArea: false
+  },
+  {
+    icon: RadioGroupIcon,
+    fieldId: uuid(),
+    label: 'Radio Group',
+    type: ElementType.Radio,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+    options: OPTIONS,
+    textArea: false
+  },
+  {
+    icon: CheckboxIcon,
+    fieldId: uuid(),
+    label: 'Checkbox',
+    type: ElementType.Checkbox,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+    options: OPTIONS,
+    textArea: false
+  },
+  {
+    icon: DateIcon,
+    fieldId: uuid(),
+    label: 'Date Input',
+    type: ElementType.Date,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+    textArea: false,
+    options: []
+  },
+  {
+    icon: NumberIcon,
+    fieldId: uuid(),
+    label: 'Number Input',
+    type: ElementType.Number,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    errorMsg: '',
+    defaultValue: '',
+    textArea: false,
+    options: []
+  },
+  {
+    icon: EmailIcon,
+    fieldId: uuid(),
+    label: 'Email',
+    type: ElementType.Email,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    textArea: false,
+    options: []
+  },
+  {
+    icon: FileInputIcon,
+    fieldId: uuid(),
+    label: 'File Uplaod',
+    type: ElementType.File,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    textArea: false,
+    options: []
+  },
+  {
+    icon: SelectIcon,
+    fieldId: uuid(),
+    label: 'Select',
+    type: ElementType.Select,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    textArea: false,
+    options: OPTIONS
+  },
+  {
+    icon: TextAreaIcon,
+    fieldId: uuid(),
+    label: 'Text Area',
+    type: ElementType.Text,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    textArea: true,
+    options: []
+  },
+];
+
+export const COLUMN_LENGTH: SelectOptions[] = [{ id: 12, name: 12 }, { id: 11, name: 11 }, { id: 10, name: 10 }, { id: 9, name: 9 }, { id: 8, name: 8 }, { id: 7, name: 7 }, { id: 6, name: 6 }, { id: 5, name: 5 }, { id: 4, name: 4 }, { id: 3, name: 3 }, { id: 2, name: 2 }, { id: 1, name: 1 }];
+
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+export const MENU_PROPS = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
+export const COL_TYPES_ARRAY = [
+  { text: '1 Column', value: COL_TYPES.COL_1 },
+  { text: '2 Columns', value: COL_TYPES.COL_2 },
+  { text: '3 Columns', value: COL_TYPES.COL_3 },
+];
+
+export const MAPPED_FORM_TYPES: SelectorOption[] = [
+  { id: FormType.Appointment, name: formatValue(FormType.Appointment) },
+  { id: FormType.Doctor, name: formatValue(FormType.Doctor) },
+  { id: FormType.Patient, name: formatValue(FormType.Patient) },
+  { id: FormType.Staff, name: formatValue(FormType.Staff) },
+];
+
+export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
+  name: "",
+  type: {
+    name: "",
+    id: ""
+  },
+  facilityId: {
+    name: "",
+    id: ""
+  }
+}
+
+export const getForminitialValues = () => [
+  {
+    id: uuid(),
+    col: 12,
+    fields: [],
+  },
+]
+
+export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
+  fieldId: '',
+  label: '',
+  type: ElementType.Text,
+  name: '',
+  css: '',
+  column: 12,
+  placeholder: '',
+  required: false,
+  list: '',
+  errorMsg: '',
+  defaultValue: '',
+  textArea: false,
+  options: []
+};
+

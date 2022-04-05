@@ -1,3 +1,11 @@
+//components
+import {
+  CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon,
+  RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon
+} from './FormBuilder';
+//component exports
+export { CheckboxIcon, DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon, TextAreaIcon, TextIcon }
+
 export const Deactivate = () => (
   <svg
     aria-hidden="true"

@@ -634,3 +634,23 @@ export const updatePasswordSchema = yup.object({
 export const roleSchema = yup.object({
   role: nameSchema(ROLE_NAME)
 })
+
+export const createFormBuilderSchemaWithFacility = yup.object({
+  name: yup.string().required(),
+  type: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+  facilityId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+});
+
+export const createFormBuilderSchema = yup.object({
+  name: yup.string().required(),
+  type: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+});
