@@ -1,19 +1,26 @@
 // packages block
 import { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import SignatureCanvas from 'react-signature-canvas';
+import { Box, Button, Collapse, Grid, MenuItem, Typography } from '@material-ui/core';
 // component block
 import CardComponent from '../../common/CardComponent';
-import { Box, Button, Collapse, Grid, Typography } from '@material-ui/core';
 // constants, history, styling block
-import { WHITE_FOUR } from '../../../theme';
+import { WHITE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
-import { CLEAR_TEXT, SAVE_TEXT, SIGNATURE_TEXT, UPDATE_SIGNATURE } from '../../../constants';
+import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
+import { useHeaderStyles } from " ../../../src/styles/headerStyles";
+import {
+  CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
+  SIGNATURE_TEXT, UPDATE_SIGNATURE, USER_SETTINGS
+} from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
+  const classes = useHeaderStyles();
   let data = ''
   let sigCanvas = useRef<any>({});
   const [open, setOpen] = useState<boolean>(false)
-  
+
   const save = () => {
     if (sigCanvas && sigCanvas.current) {
       const { toDataURL, fromDataURL } = sigCanvas.current;
@@ -25,10 +32,48 @@ const SignatureComponent = (): JSX.Element => {
   const clear = () => {
     sigCanvas && sigCanvas.current && sigCanvas.current.clear && sigCanvas.current.clear();
   }
-  
+
   return (
     <Box mt={5}>
-      <Grid container justifyContent='center'>
+      <Grid container spacing={3}>
+        <Grid item md={3} sm={12} xs={12}>
+          <Box minHeight="calc(100vh - 170px)" bgcolor={WHITE}>
+            <CardComponent cardTitle={USER_SETTINGS}>
+              <Box display="flex">
+                <SettingsIcon />
+                <Box p={1} />
+                <Typography variant='h6'>{GENERAL}</Typography>
+              </Box>
+
+              <Box p={2} className={classes.sidebarMenu}>
+                {PROFILE_GENERAL_MENU_ITEMS.map(({ name, link }) => {
+                  return (
+                    <Link key={`${link}-${name}`} to={link}>
+                      <MenuItem>{name}</MenuItem>
+                    </Link>
+                  )
+                })}
+              </Box>
+
+              <Box mt={2} display="flex">
+                <ShieldIcon />
+                <Box p={1} />
+                <Typography variant='h6'>{SECURITY}</Typography>
+              </Box>
+
+              <Box p={2} className={classes.sidebarMenu}>
+                {PROFILE_SECURITY_MENU_ITEMS.map(({ name, link }) => {
+                  return (
+                    <Link key={`${link}-${name}`} to={link}>
+                      <MenuItem>{name}</MenuItem>
+                    </Link>
+                  )
+                })}
+              </Box>
+            </CardComponent>
+          </Box>
+        </Grid>
+
         <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={SIGNATURE_TEXT}>
             <Collapse in={!open} mountOnEnter unmountOnExit>
@@ -37,7 +82,9 @@ const SignatureComponent = (): JSX.Element => {
               </Box>
 
               <Box mb={4} onClick={() => setOpen(!open)}>
-                <Button type="submit" variant="outlined" color='inherit' className="blue-button-new">{UPDATE_SIGNATURE}</Button>
+                <Button type="submit" variant="outlined" color='inherit' className="blue-button-new">
+                  {UPDATE_SIGNATURE}
+                </Button>
               </Box>
             </Collapse>
 
@@ -61,5 +108,6 @@ const SignatureComponent = (): JSX.Element => {
       </Grid>
     </Box>
   )
-}
+};
+
 export default SignatureComponent;

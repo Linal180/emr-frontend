@@ -61,10 +61,10 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
             facilityId && setCurrentFacility(facilityId)
             name && setValue('name', name)
             price && setValue('price', price)
-            duration && setValue('duration', duration)
-            isActive && setValue('isActive', isActive as boolean)
-            isActive && setChecked(isActive as boolean)
             color && setValue('color', color)
+            duration && setValue('duration', duration)
+            isActive && setChecked(isActive as boolean)
+            isActive && setValue('isActive', isActive as boolean)
           }
         }
       }

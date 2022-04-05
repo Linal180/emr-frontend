@@ -28,7 +28,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
   const { id: facilityId } = facility || {}
-  const { fetchAllDoctorList } = useContext(ListContext)
+  const { fetchAllDoctorList, setDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
 
@@ -58,16 +58,16 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   });
 
-  const fetchAllDoctors = useCallback(() => {
-    const isSuper = isSuperAdmin(roles);
-    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-    const doctorInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
-
-    findAllDoctor({
-      variables: {
-        doctorInput: { ...doctorInputs }
-      },
-    })
+  const fetchAllDoctors = useCallback(async () => {
+    try {
+      const isSuper = isSuperAdmin(roles);
+      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const doctorInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      
+      await findAllDoctor({
+        variables: { doctorInput: { ...doctorInputs } }
+      })
+    } catch (error) { }
   }, [facilityId, findAllDoctor, page, roles])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
@@ -84,6 +84,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           fetchAllDoctors()
+          setDoctorList([]);
           fetchAllDoctorList();
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }

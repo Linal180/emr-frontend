@@ -54,6 +54,7 @@ export const useCalendarStyles = makeStyles(() =>
       "& .MuiTypography-body1": {
         color: BLUE_EIGHT,
         paddingLeft: 10,
+        cursor: 'pointer',
       }
     },
 
@@ -72,19 +73,35 @@ export const useCalendarStyles = makeStyles(() =>
         paddingLeft: 8,
         paddingRight: 8,
       },
+
       "& .MuiSelect-selectMenu": {
         margin: 1,
         minHeight: "auto",
       },
+
       "& .MuiInput-underline:before, .MuiInput-underline:after": {
         borderBottom: "none",
       },
+
       "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
         borderBottom: "none",
       },
+
       "& .MuiSelect-select:focus": {
         backgroundColor: 'transparent',
       },
     },
+
+    cursor: {
+      cursor: 'pointer',
+
+      "&:hover": {
+        fontWeight: '700',
+      }
+    },
+
+    notCursor: {
+      cursor: 'not-allowed'
+    }
   })
 );

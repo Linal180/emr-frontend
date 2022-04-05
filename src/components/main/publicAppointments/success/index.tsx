@@ -1,11 +1,12 @@
-
+// packages block
 import { Box, Card, colors, Typography } from '@material-ui/core';
+// styles and constants block
+import { WHITE_TWO } from '../../../../theme';
+import { successStyles } from '../../../../styles/publicAppointmentStyles/successStyles';
 import {
-  APPOINTMENT_CONFIRMED, APPOINTMENT_SUCCESS_DOCUMENTS_HEADING, APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1, 
+  APPOINTMENT_CONFIRMED, APPOINTMENT_SUCCESS_DOCUMENTS_HEADING, APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1,
   APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2,
 } from '../../../../constants';
-import { successStyles } from '../../../../styles/publicAppointmentStyles/successStyles';
-import { WHITE_TWO } from '../../../../theme';
 
 const AppointmentSuccessComponent = () => {
   const classes = successStyles();
@@ -21,14 +22,11 @@ const AppointmentSuccessComponent = () => {
           <Typography variant="h4">{APPOINTMENT_SUCCESS_DOCUMENTS_HEADING}</Typography>
 
           <Box mb={3} />
+
           <Typography component="h5" variant="h5">
             <ul>
-              <li>
-                {APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1}
-              </li>
-              <li>
-                {APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2}
-              </li>
+              <li>{APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1}</li>
+              <li>{APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2}</li>
             </ul>
           </Typography>
         </Box>

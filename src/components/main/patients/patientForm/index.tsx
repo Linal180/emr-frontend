@@ -48,17 +48,16 @@ import {
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList, fetchAllPatientList } = useContext(ListContext)
+  const { facilityList, fetchAllPatientList, setPatientList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
-    one: false,
-    two: false,
-    three: false,
-    four: false,
-    five: false
+    privacyNotice: false,
+    releaseOfInfoBill: false,
+    callToConsent: false,
+    medicationHistoryAuthority: false,
   })
 
   const [isChecked, setIsChecked] = useState(false);
@@ -95,7 +94,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (patient) {
           const {
-            suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
+            suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName, email,
             previouslastName, motherMaidenName, ssn, dob, gender, deceasedDate, privacyNotice,
             releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
             sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
@@ -136,8 +135,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           patientNote && setValue("patientNote", patientNote)
           deceasedDate && setValue("deceasedDate", deceasedDate)
           firstNameUsed && setValue("firstNameUsed", firstNameUsed)
-          privacyNotice && setValue("privacyNotice", privacyNotice)
-          callToConsent && setValue("callToConsent", callToConsent)
           prefferedName && setValue("prefferedName", prefferedName)
           holdStatement && setValue("holdStatement", holdStatement)
           statementNote && setValue("statementNote", statementNote)
@@ -145,14 +142,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
-          releaseOfInfoBill && setValue("releaseOfInfoBill", releaseOfInfoBill)
           homeBound && setIsChecked(homeBound === Homebound.Yes ? true : false)
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
-          medicationHistoryAuthority && setValue("medicationHistoryAuthority", medicationHistoryAuthority)
-
           race && setValue("race", setRecord(race, race))
           gender && setValue("gender", setRecord(gender, gender))
           pronouns && setValue("pronouns", setRecord(pronouns, pronouns))
@@ -161,6 +155,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
           genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
           sexualOrientation && setValue("sexualOrientation", setRecord(sexualOrientation, sexualOrientation))
+          setState({
+            ...state, callToConsent: callToConsent || false,
+            privacyNotice: privacyNotice || false,
+            releaseOfInfoBill: releaseOfInfoBill || false,
+            medicationHistoryAuthority: medicationHistoryAuthority || false,
+          })
 
           if (contacts) {
             const emergencyContact = contacts.filter(contact => contact.contactType === ContactType.Emergency)[0]
@@ -178,13 +178,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             const basicContact = contacts.filter(contact => contact.primaryContact)[0]
 
             if (basicContact) {
-              const { id: basicContactId, email, address, address2, zipCode, city, state,
+              const { id: basicContactId, email: contactEmail, address, address2, zipCode, city, state,
                 country, phone, mobile
               } = basicContact;
 
               dispatch({ type: ActionType.SET_BASIC_CONTACT_ID, basicContactId })
               city && setValue("basicCity", city)
-              email && setValue("basicEmail", email)
               phone && setValue("basicPhone", phone)
               mobile && setValue("basicMobile", mobile)
               address && setValue("basicAddress", address)
@@ -192,6 +191,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               address2 && setValue("basicAddress2", address2)
               state && setValue("basicState", setRecord(state, state))
               country && setValue("basicCountry", setRecord(country, country))
+              setValue("basicEmail", (contactEmail ? contactEmail : email) || '')
             }
 
             const kinContact = contacts.filter(contact => contact.contactType === ContactType.NextOfKin)[0]
@@ -273,6 +273,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
+          setPatientList([])
           fetchAllPatientList();
           Alert.success(PATIENT_CREATED);
           history.push(PATIENTS_ROUTE)
@@ -296,6 +297,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
+          setPatientList([])
           fetchAllPatientList();
           Alert.success(PATIENT_UPDATED);
           history.push(PATIENTS_ROUTE)
@@ -314,10 +316,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const {
       suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
       previouslastName, motherMaidenName, ssn, dob, gender, registrationDate, deceasedDate,
-      privacyNotice, releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity,
+      patientNote, language, race, ethnicity, facilityId, usualProviderId, sexAtBirth, basicCountry,
       maritialStatus, sexualOrientation, genderIdentity, pronouns, homeBound, holdStatement,
       statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo,
-      facilityId, usualProviderId, medicationHistoryAuthority, sexAtBirth, basicCountry,
       basicEmail, basicPhone, basicMobile, basicAddress, basicAddress2, basicZipCode, basicCity, basicState,
       emergencyName, emergencyRelationship, emergencyPhone, emergencyMobile,
       kinName, kinRelationship, kinMobile, kinPhone,
@@ -338,84 +339,87 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedCountry } = basicCountry;
       const { id: selectedSexAtBirth } = sexAtBirth;
       const { id: selectedBasicState } = basicState;
-      const { id: selectedGuarantorState } = guarantorState;
       const { id: selectedMaritalStatus } = maritialStatus;
       const { id: selectedGenderIdentity } = genderIdentity;
+      const { id: selectedGuarantorState } = guarantorState;
       const { id: selectedUsualProvider } = usualProviderId;
       const { id: selectedKinRelationship } = kinRelationship;
       const { id: selectedGuarantorCountry } = guarantorCountry;
       const { id: selectedSexualOrientation } = sexualOrientation;
       const { id: selectedGuarantorRelationship } = guarantorRelationship;
       const { id: selectedEmergencyRelationship } = emergencyRelationship;
+      const { privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill } = state
 
       const patientItemInput = {
-        suffix, firstName, middleName, lastName, firstNameUsed, prefferedName,
-        previousFirstName, previouslastName, motherMaidenName, ssn, dob: getTimestamps(dob || ''),
-        registrationDate: getTimestamps(registrationDate || ''), language,
-        deceasedDate: getTimestamps(deceasedDate || ''), callToConsent: callToConsent || false,
-        privacyNotice: privacyNotice || false, releaseOfInfoBill: releaseOfInfoBill || false,
-        medicationHistoryAuthority: medicationHistoryAuthority || false, patientNote,
-        statementNoteDateTo: getTimestamps(statementNoteDateTo || ''), email: basicEmail,
+        suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
+        previouslastName, motherMaidenName, ssn, statementNote, language, patientNote, email: basicEmail,
+        facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill,
+        medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
-        statementNoteDateFrom: getTimestamps(statementNoteDateFrom || ''),
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
-        ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None, facilityId: selectedFacility || '',
         gender: selectedGender as Genderidentity || Genderidentity.None,
         sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None,
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
-        statementDelivereOnline: statementDelivereOnline || false, statementNote: statementNote || '',
+        statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestamps(dob) : '',
+        deceasedDate: deceasedDate ? getTimestamps(deceasedDate) : '',
+        registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
+        statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
+        statementNoteDateFrom: statementNoteDateFrom ? getTimestamps(statementNoteDateFrom) : '',
       };
 
       const contactInput = {
-        contactType: ContactType.Self, country: selectedCountry || '', primaryContact: true,
-        email: basicEmail || '', city: basicCity || '', zipCode: basicZipCode || '',
-        state: selectedBasicState || '', facilityId: selectedFacility || '', phone: basicPhone || '',
-        mobile: basicMobile || '', address2: basicAddress2 || '', address: basicAddress || '',
+        contactType: ContactType.Self, country: selectedCountry, primaryContact: true,
+        email: basicEmail, city: basicCity, zipCode: basicZipCode,
+        state: selectedBasicState, facilityId: selectedFacility, phone: basicPhone,
+        mobile: basicMobile, address2: basicAddress2, address: basicAddress,
       };
 
       const emergencyContactInput = {
-        contactType: ContactType.Emergency, name: emergencyName || '',
-        phone: emergencyPhone || '', mobile: emergencyMobile || '', primaryContact: false,
+        contactType: ContactType.Emergency, name: emergencyName,
+        phone: emergencyPhone, mobile: emergencyMobile, primaryContact: false,
         relationship: selectedEmergencyRelationship as RelationshipType || RelationshipType.Other,
       };
 
       const guarantorContactInput = {
-        firstName: guarantorFirstName || '', middleName: guarantorMiddleName || '',
-        lastName: guarantorLastName || '', email: guarantorEmail || '', contactType: ContactType.Guarandor,
+        firstName: guarantorFirstName, middleName: guarantorMiddleName,
+        lastName: guarantorLastName, email: guarantorEmail, contactType: ContactType.Guarandor,
         relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
-        employerName: guarantorEmployerName || '', address2: guarantorAddress2 || '',
-        zipCode: guarantorZipCode || '', city: guarantorCity || '', state: selectedGuarantorState || '',
-        phone: guarantorPhone || '', suffix: guarantorSuffix || '', country: selectedGuarantorCountry || '',
-        userId: userId || '', ssn: guarantorSsn || '', primaryContact: false,
-        address: guarantorAddress || '',
+        employerName: guarantorEmployerName, address2: guarantorAddress2,
+        zipCode: guarantorZipCode, city: guarantorCity, state: selectedGuarantorState,
+        phone: guarantorPhone, suffix: guarantorSuffix, country: selectedGuarantorCountry,
+        userId: userId, ssn: guarantorSsn, primaryContact: false, address: guarantorAddress,
       };
 
       const guardianContactInput = {
-        firstName: guardianFirstName || '', middleName: guardianMiddleName || '',
-        lastName: guardianLastName || '', contactType: ContactType.Guardian, suffix: guardianSuffix || '',
-        userId: userId || '', primaryContact: false,
+        firstName: guardianFirstName, middleName: guardianMiddleName, userId: userId, primaryContact: false,
+        lastName: guardianLastName, contactType: ContactType.Guardian, suffix: guardianSuffix,
       };
 
       const nextOfKinContactInput = {
-        contactType: ContactType.NextOfKin, name: kinName || '', phone: kinPhone || '',
-        mobile: kinMobile || '', primaryContact: false,
+        contactType: ContactType.NextOfKin, name: kinName, phone: kinPhone,
         relationship: selectedKinRelationship as RelationshipType || RelationshipType.Other,
+        mobile: kinMobile, primaryContact: false,
       };
 
       const employerInput = {
-        name: employerName || '', email: employerEmail || '', phone: employerPhone || '',
-        usualOccupation: employerUsualOccupation || '', industry: employerIndustry || '',
+        name: employerName, email: employerEmail, phone: employerPhone,
+        usualOccupation: employerUsualOccupation, industry: employerIndustry,
       };
 
       if (isEdit && id) {
         const employerIdInput = employerId ? { id: employerId, ...employerInput } : { ...employerInput }
-        const contactIdInput = basicContactId ? { id: basicContactId, ...contactInput } : { ...contactInput }
-        const kinContactIdInput = kinContactId ? { id: kinContactId, ...nextOfKinContactInput } : { ...nextOfKinContactInput }
-        const guardianIdInput = guardianContactId ? { id: guardianContactId, ...guardianContactInput } : { ...guardianContactInput }
-        const emergencyIdInput = emergencyContactId ? { id: emergencyContactId, ...emergencyContactInput } : { ...emergencyContactInput }
-        const guarantorIdInput = guarantorContactId ? { id: guarantorContactId, ...guarantorContactInput } : { ...guarantorContactInput }
+        const contactIdInput = basicContactId ?
+          { id: basicContactId, ...contactInput } : { ...contactInput }
+        const kinContactIdInput = kinContactId ?
+          { id: kinContactId, ...nextOfKinContactInput } : { ...nextOfKinContactInput }
+        const guardianIdInput = guardianContactId ?
+          { id: guardianContactId, ...guardianContactInput } : { ...guardianContactInput }
+        const emergencyIdInput = emergencyContactId ?
+          { id: emergencyContactId, ...emergencyContactInput } : { ...emergencyContactInput }
+        const guarantorIdInput = guarantorContactId ?
+          { id: guarantorContactId, ...guarantorContactInput } : { ...guarantorContactInput }
 
         await updatePatient({
           variables: {
@@ -967,8 +971,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             control={
                               <Checkbox
                                 color="primary"
-                                checked={state.one}
-                                onChange={handleChangeForCheckBox("one")}
+                                checked={state.privacyNotice}
+                                onChange={handleChangeForCheckBox("privacyNotice")}
                               />
                             }
                             label="Privacy Notice"
@@ -976,7 +980,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                           <FormControlLabel
                             control={
-                              <Checkbox color="primary" checked={state.two} onChange={handleChangeForCheckBox("two")} />
+                              <Checkbox color="primary" checked={state.releaseOfInfoBill} onChange={handleChangeForCheckBox("releaseOfInfoBill")} />
                             }
                             label="Release of Billing Information and Assignment of Benefits"
                           />
@@ -990,7 +994,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               <FormLabel component="legend">{CONSENT_TO_CALL}</FormLabel>
                               <FormControlLabel
                                 control={
-                                  <Checkbox color="primary" checked={state.three} onChange={handleChangeForCheckBox("three")} />
+                                  <Checkbox color="primary" checked={state.callToConsent} onChange={handleChangeForCheckBox("callToConsent")} />
                                 }
                                 label="Granted"
                               />
@@ -1006,8 +1010,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                 control={
                                   <Checkbox
                                     color="primary"
-                                    checked={state.four}
-                                    onChange={handleChangeForCheckBox("four")}
+                                    checked={state.medicationHistoryAuthority}
+                                    onChange={handleChangeForCheckBox("medicationHistoryAuthority")}
                                   />
                                 }
                                 label="Granted"

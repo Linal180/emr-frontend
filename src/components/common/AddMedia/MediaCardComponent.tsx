@@ -6,14 +6,15 @@ import Alert from "../Alert";
 import ConfirmationModal from "../ConfirmationModal";
 // graphql, constants and interfaces/types block
 import { MediaCardComponentType } from "../../../interfacesTypes";
-import { DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT } from "../../../constants";
+import { DELETE, DELETE_MEDIA, DELETE_MEDIA_DESCRIPTION, DROP_YOUR_IMAGE_TEXT, SUPPORT_DOC_TEXT, UPLOAD } from "../../../constants";
 import { Attachment, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { documentVerificationFormStyles } from "../../../styles/publicAppointmentStyles/documentVerificationStyles";
-import { FileUploadIcon } from "../../../assets/svgs";
+import { FileUploadIcon, UploadIcon } from "../../../assets/svgs";
 import { CameraAlt } from "@material-ui/icons";
 
-const MediaCardComponent: FC<MediaCardComponentType> = ({ 
-  setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments, allAttachments, imageSide, notDescription 
+const MediaCardComponent: FC<MediaCardComponentType> = ({
+  setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments,
+  allAttachments, imageSide, notDescription, button
 }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
@@ -93,7 +94,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
                       <Button size="small" color="primary" onClick={() => handleEditClick(attachment)}>Edit</Button>
 
                       <Button size="small" color="secondary" onClick={() => handleDeleteModal(id)}>
-                        Delete
+                        {DELETE}
                       </Button>
                     </CardActions>
                   </Card>
@@ -102,6 +103,11 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
             })}
 
           <Grid md={12} xs={12}>
+            {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
+              startIcon={<UploadIcon />}>
+              {UPLOAD}
+            </Button>}
+
             {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
               <CameraAlt color="primary" />
             </Typography>}
@@ -124,9 +130,9 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
 
       {
         isDeleteOpen && (
-          <ConfirmationModal 
-            setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia} 
-            isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION} 
+          <ConfirmationModal
+            setOpen={setIsDeleteOpen} isOpen={isDeleteOpen} handleDelete={handleDeleteMedia}
+            isLoading={loading} title={DELETE_MEDIA} description={DELETE_MEDIA_DESCRIPTION}
           />
         )
       }

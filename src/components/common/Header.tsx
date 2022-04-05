@@ -4,18 +4,18 @@ import { Link } from "react-router-dom";
 import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
 // Components block
 import DropdownMenu from "./DropdownMenu";
+import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
-import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { AuthContext } from "../../context";
-import { activeClass, formatValue, isSuperAdmin } from "../../utils";
+import { activeClass, isSuperAdmin } from "../../utils";
+import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import {
-  BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, USER_MENU_ITEMS,
-  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT,
-  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SUPER_ADMIN, ADMIN, SETTINGS_ROUTE
+  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, ADMIN,
+  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE, 
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT,
 } from "../../constants";
-import ProfileDropdownMenu from "./ProfileDropdownMenu";
 
 const HeaderNew: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
@@ -61,11 +61,13 @@ const HeaderNew: FC = (): JSX.Element => {
             current={currentRoute === 'inAppointment'}
           />
 
-          <DropdownMenu
-            itemName={USERS_TEXT}
-            menuItem={USER_MENU_ITEMS}
-            current={currentRoute === 'inUser'}
-          />
+          <Typography
+            component={Link}
+            to={PATIENTS_ROUTE}
+            className={currentRoute === 'inPatient' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+          >
+            {PATIENTS_TEXT}
+          </Typography>
 
           <DropdownMenu
             itemName={BILLING_TEXT}
@@ -105,7 +107,7 @@ const HeaderNew: FC = (): JSX.Element => {
               className={classes.profileItemName}
             >
               <Typography>{HELLO_TEXT}</Typography>
-              <Typography variant="h6">{isSuper ? formatValue(SUPER_ADMIN) : formatValue(ADMIN)}</Typography>
+              <Typography variant="h6">{isSuper ? SUPER_ADMIN : ADMIN}</Typography>
             </Box>
 
             <ProfileDropdownMenu />

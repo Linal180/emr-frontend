@@ -8,7 +8,7 @@ import { SnackbarUtilsConfigrator, CloseButton } from "./components/common/Alert
 // graphql, constants, context, apollo, and theme block
 import client from './apollo'
 import { theme } from "./theme/theme";
-import { AuthContextProvider, AppContextProvider, ListContextProvider , FacilityContextProvider } from './context'
+import { AuthContextProvider, AppContextProvider, ListContextProvider, FacilityContextProvider, PermissionContextProvider } from './context'
 import 'rc-time-picker/assets/index.css';
 import './styles/styles.css'
 
@@ -22,11 +22,13 @@ const App = () => {
         <ThemeProvider theme={theme}>
           <AuthContextProvider>
             <AppContextProvider>
-              <ListContextProvider>
-                <FacilityContextProvider>
-                  <AppContainer />
-                </FacilityContextProvider>
-              </ListContextProvider>
+              <PermissionContextProvider>
+                <ListContextProvider>
+                  <FacilityContextProvider>
+                    <AppContainer />
+                  </FacilityContextProvider>
+                </ListContextProvider>
+              </PermissionContextProvider>
             </AppContextProvider>
           </AuthContextProvider>
         </ThemeProvider>

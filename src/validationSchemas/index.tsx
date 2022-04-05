@@ -17,7 +17,7 @@ import {
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE,
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -384,7 +384,7 @@ const facilityBasicSchema = {
   ...federalTaxIdSchema,
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
-  name: nameSchema(NAME)
+  name: yup.string().required(requiredMessage(PRACTICE_NAME))
 }
 
 export const facilitySchema = yup.object({
@@ -596,8 +596,8 @@ export const externalPatientSchema = yup.object({
 
 const registerUserSchema = {
   userPhone: notRequiredPhone(PHONE),
-  userLastName: nameSchema(FIRST_NAME),
-  userFirstName: nameSchema(LAST_NAME),
+  userLastName: nameSchema(LAST_NAME),
+  userFirstName: nameSchema(FIRST_NAME),
   userEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
 }
 
@@ -613,6 +613,7 @@ const practiceFacilitySchema = {
 
 export const createPracticeSchema = yup.object({
   ...emailSchema,
+  ...roleTypeSchema,
   ...registerUserSchema,
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),
@@ -623,3 +624,33 @@ export const createPracticeSchema = yup.object({
 export const updatePracticeSchema = yup.object({
   ...practiceFacilitySchema
 })
+
+export const updatePasswordSchema = yup.object({
+  ...passwordAndRepeatPasswordSchema,
+  oldPassword: yup.string().required(requiredMessage(OLD_PASSWORD))
+    .matches(PASSWORD_REGEX, PASSWORD_VALIDATION_MESSAGE),
+})
+
+export const roleSchema = yup.object({
+  role: nameSchema(ROLE_NAME)
+})
+
+export const createFormBuilderSchemaWithFacility = yup.object({
+  name: yup.string().required(),
+  type: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+  facilityId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+});
+
+export const createFormBuilderSchema = yup.object({
+  name: yup.string().required(),
+  type: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+});

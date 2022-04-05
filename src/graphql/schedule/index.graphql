@@ -108,9 +108,8 @@ query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!){
   }
 }
 
-
-query GetDoctorSlots($getDoctorSlots: GetDoctorSlots!){
-  getDoctorSlots(getDoctorSlots: $getDoctorSlots){
+query GetSlots($getSlots: GetSlots!){
+  getSlots(getSlots: $getSlots){
     response {
       error
       status
