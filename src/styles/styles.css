@@ -116,9 +116,10 @@ body {
 }
 
 .list-item-text {
-  color: #4A4B68 ;
+  color: #4A4B68;
 }
-.list-item-text > span  {
+
+.list-item-text>span {
   font-weight: 600 !important;
 }
 
@@ -134,19 +135,19 @@ body {
   font-size: 20px;
 }
 
-.RoleMultiSelectorStyles > div > div {
+.RoleMultiSelectorStyles>div>div {
   border: none !important;
   box-shadow: none !important;
   background-color: transparent;
   padding: 10px 5px;
 }
 
-.RoleMultiSelectorStyles > div > div > div {
+.RoleMultiSelectorStyles>div>div>div {
   height: 40px;
   overflow-y: auto;
 }
 
-.RoleMultiSelectorStyles > div > div + div {
+.RoleMultiSelectorStyles>div>div+div {
   background-color: #fff;
   padding: 0;
   border: 1px solid rgba(0, 0, 0, 0.23) !important;
@@ -154,12 +155,12 @@ body {
   margin: 0;
 }
 
-.RoleMultiSelectorStyles > div > div + div > div {
+.RoleMultiSelectorStyles>div>div+div>div {
   height: auto !important;
 }
 
 .customHeaderBadge .MuiBadge-badge {
-  background:#fff;
+  background: #fff;
   color: #000;
 }
 
@@ -227,7 +228,7 @@ input[type="email"] {
   padding: 5px;
 }
 
-.MuiPickersBasePicker-pickerView .MuiPickersCalendarHeader-switchHeader .MuiPickersSlideTransition-transitionContainer > p {
+.MuiPickersBasePicker-pickerView .MuiPickersCalendarHeader-switchHeader .MuiPickersSlideTransition-transitionContainer>p {
   font-size: 16px;
   color: #333;
   font-weight: 600;
@@ -247,17 +248,17 @@ input[type="email"] {
   background-color: #204ECF;
 }
 
-.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day .MuiIconButton-label > p {
+.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-day .MuiIconButton-label>p {
   font-size: 15px;
   color: #666666;
   font-weight: 500;
 }
 
-.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-current .MuiIconButton-label > p {
+.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-current .MuiIconButton-label>p {
   color: #204ECF;
 }
 
-.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected .MuiIconButton-label > p {
+.MuiPickersBasePicker-pickerView .MuiPickersSlideTransition-transitionContainer .MuiPickersDay-daySelected .MuiIconButton-label>p {
   color: #fff;
 }
 
@@ -266,7 +267,7 @@ body .MuiTabPanel-root {
 }
 
 .react-tel-input {
-  font-family: "Poppins, sans-serif"; 
+  font-family: "Poppins, sans-serif";
   font-size: 14px;
 }
 
@@ -312,13 +313,13 @@ body .MuiTabPanel-root {
 }
 
 .logo-container {
-border: 2px solid rgba(0, 0, 0, 0.3);
-border-radius: 8px;
-width: 160px;
-height: 160px;
-object-fit: contain;
-overflow: hidden;
-padding: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  overflow: hidden;
+  padding: 10px;
 }
 
 .button-link {
@@ -329,7 +330,8 @@ padding: 10px;
   max-height: 42px;
   border-radius: 6px;
 }
-.button-link a{
+
+.button-link a {
   color: #ffffff !important;
   font-size: 14px;
   font-weight: 600;
@@ -350,7 +352,7 @@ padding: 10px;
   min-height: 80px !important;
 }
 
-.braintree-option, .braintree-sheet, .braintree-sheet__header, .braintree-upper-container:before  {
+.braintree-option, .braintree-sheet, .braintree-sheet__header, .braintree-upper-container:before {
   border: none !important;
   background-color: #ffffff !important;
 }

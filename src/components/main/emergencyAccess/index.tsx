@@ -1,19 +1,22 @@
 // packages block
+import {
+  Box, Button, Card, colors, Typography, Table, TableBody, TableHead, TableRow, TableCell
+} from "@material-ui/core";
 // component block
-import { Box, Button, Card, colors, Typography, Table, TableBody, TableHead, TableRow, TableCell, } from "@material-ui/core";
 import Search from "../../common/Search";
 import PageHeader from "../../common/PageHeader";
 // constants, history, styling block
 import { renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
 import {
-  ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS, EMERGENCY_ACCESS_DENIED,
+  ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS, 
   EMERGENCY_ACCESS_DUMMY_DATA, EMERGENCY_ACCESS_ENABLED, NAME, REVOKE_ACCESS, STATUS, TEMPORARY_EMERGENCY_ACCESS,
-  TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION
+  TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION, EMERGENCY_ACCESS_DENIED,
 } from "../../../constants";
 
 const EmergencyAccessComponent = (): JSX.Element => {
   const classes = useTableStyles();
+  
   return (
     <>
       <PageHeader
