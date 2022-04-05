@@ -9,7 +9,7 @@ import InputController from '../../../../../controller';
 import Selector from '../../../../common/Select';
 import { AntSwitch } from '../../../../../styles/publicAppointmentStyles/externalPatientStyles';
 //constants & interfaces
-import { ACTION, COLUMN_LENGTH, CSS_CLASSES, DISMISS, EditFieldFormInitialValues, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, } from '../../../../../constants';
+import { ACTION, COLUMN_LENGTH, CSS_CLASSES, DISMISS, FIELD_EDIT_INITIAL_VALUES, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, } from '../../../../../constants';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import { GRAY_TWO, WHITE } from '../../../../../theme';
 import { SAVE_TEXT } from '../../../../../constants';
@@ -17,22 +17,17 @@ import { ElementType } from '../../../../../generated/graphql'
 //styles
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import { TrashIcon } from '../../../../../assets/svgs';
-//component
+/**
+ * Opens edit modal
+ * @param { open, closeModalHanlder, setFieldValuesHandler, selected } 
+ * @returns  
+ */
 const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }: FieldEditModalProps) => {
-  //states
   const [isChecked, setIsChecked] = useState(false);
-  //hooks
   const classes = usePublicAppointmentStyles();
-  const methods = useForm<FormInitialType>({
-    defaultValues: EditFieldFormInitialValues,
-    // resolver: yupResolver(loginValidationSchema)
-  });
+  const methods = useForm<FormInitialType>({ defaultValues: FIELD_EDIT_INITIAL_VALUES });
   const { setValue, handleSubmit, control } = methods;
-  const { fields, remove, append } = useFieldArray({
-    control: control,
-    name: "options"
-
-  });
+  const { fields, remove, append } = useFieldArray({ control: control, name: "options" });
   //set form values
   const setFormInitialValues = useCallback(() => {
     const { name, label, required, column, placeholder, css, fieldId, type, list, errorMsg, defaultValue, options, textArea } = selected;
@@ -84,7 +79,6 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                       className={classes.toggleContainer}
                     >
                       <InputLabel shrink>{REUIRED_TEXT}</InputLabel>
-
                       <label className="toggle-main">
                         <Box color={isChecked ? WHITE : GRAY_TWO}>{YES_TEXT}</Box>
                         <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='required' />

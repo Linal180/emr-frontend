@@ -3,6 +3,7 @@ mutation createForm($createFormInput: CreateFormInput!) {
     response {
       status
     }
+
     form {
       id
       name
@@ -15,13 +16,18 @@ query findAllForms($formInput: FormInput!) {
     response {
       status
     }
+
     forms {
       id
+      type
+      facilityId
       name
+
       layout {
         sections {
           id
           col
+
           fields {
             label
             name
@@ -36,6 +42,7 @@ query findAllForms($formInput: FormInput!) {
             columnName
             fieldId
             textArea
+
             options {
               name
               value
@@ -43,9 +50,8 @@ query findAllForms($formInput: FormInput!) {
           }
         }
       }
-      type
-      facilityId
     }
+    
     pagination {
       page
       limit
@@ -70,13 +76,18 @@ query getForm($getForm: GetForm!) {
       status
       message
     }
+
     form {
       id
       name
+      type
+      facilityId
+      
       layout {
         sections {
           id
           col
+
           fields {
             label
             name
@@ -91,6 +102,7 @@ query getForm($getForm: GetForm!) {
             columnName
             fieldId
             textArea
+
             options {
               name
               value
@@ -98,8 +110,6 @@ query getForm($getForm: GetForm!) {
           }
         }
       }
-      type
-      facilityId
     }
   }
 }
@@ -109,6 +119,7 @@ mutation updateForm($updateFormInput: UpdateFormInput!) {
     response {
       status
     }
+
     form {
       id
       name
@@ -122,13 +133,18 @@ query getPublicForm($getForm: GetForm!) {
       status
       message
     }
+
     form {
       id
+      type
+      facilityId
       name
+
       layout {
         sections {
           id
           col
+
           fields {
             label
             name
@@ -143,6 +159,7 @@ query getPublicForm($getForm: GetForm!) {
             columnName
             fieldId
             textArea
+
             options {
               name
               value
@@ -150,8 +167,6 @@ query getPublicForm($getForm: GetForm!) {
           }
         }
       }
-      type
-      facilityId
     }
   }
 }

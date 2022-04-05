@@ -142,9 +142,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
     }
   }
 
-  const previewCloseHanlder = () => {
-    setOpenPreview(false)
-  }
+  const previewCloseHanlder = () => setOpenPreview(false)
 
   const handleClipboard = (id: string) => {
     if (id) {
@@ -243,8 +241,12 @@ const FormBuilderTable: FC = (): JSX.Element => {
           </Box>
         )}
 
-        <ConfirmationModal title={FORM_TEXT} isOpen={openDelete} isLoading={deleteFormLoading} description={DELETE_FORM_DESCRIPTION} handleDelete={handleDeleteForm} setOpen={(open: boolean) => setOpenDelete(open)} />
-        <ShareModal title={FORM_EMBED_TITLE} isOpen={openShare} description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`} handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
+        <ConfirmationModal title={FORM_TEXT} isOpen={openDelete} isLoading={deleteFormLoading}
+          description={DELETE_FORM_DESCRIPTION} handleDelete={handleDeleteForm}
+          setOpen={(open: boolean) => setOpenDelete(open)} />
+        <ShareModal title={FORM_EMBED_TITLE} isOpen={openShare}
+          description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`}
+          handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
         <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHanlder={previewCloseHanlder} />
       </Box>
     </Box>

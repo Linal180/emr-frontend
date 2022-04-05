@@ -49,9 +49,9 @@ const InputController: FC<CustomSelectControlProps> = ({
             helperText={error ? error : message}
             {...field}
           >
-            <MenuItem value={''} disabled >{placeholder ? placeholder : ""}</MenuItem>
+            <MenuItem value={''} disabled>{placeholder ? placeholder : ""}</MenuItem>
             {options?.map((item) => (
-              <MenuItem value={item?.id}  >
+              <MenuItem value={item?.id}>
                 {item?.name}
               </MenuItem>
             ))}

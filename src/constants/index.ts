@@ -2087,7 +2087,7 @@ export const COL_TYPES: ColumnTypes = {
   COL_3: 'col-3',
 };
 
-export const options: FieldOptionsInputType[] = [{ name: "option 1", value: 'option_1' }, { name: "option 2", value: 'option_2' }]
+export const OPTIONS: FieldOptionsInputType[] = [{ name: "option 1", value: 'option_1' }, { name: "option 2", value: 'option_2' }]
 
 export const ITEMS: ItemsTypes[] = [
   {
@@ -2117,7 +2117,7 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     errorMsg: '',
     defaultValue: '',
-    options: options,
+    options: OPTIONS,
     textArea: false
   },
   {
@@ -2132,7 +2132,7 @@ export const ITEMS: ItemsTypes[] = [
     required: false,
     errorMsg: '',
     defaultValue: '',
-    options: options,
+    options: OPTIONS,
     textArea: false
   },
   {
@@ -2208,7 +2208,7 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: false,
-    options: options
+    options: OPTIONS
   },
   {
     icon: TextAreaIcon,
@@ -2225,7 +2225,6 @@ export const ITEMS: ItemsTypes[] = [
     textArea: true,
     options: []
   },
-
 ];
 
 export const COLUMN_LENGTH: SelectOptions[] = [{ id: 12, name: 12 }, { id: 11, name: 11 }, { id: 10, name: 10 }, { id: 9, name: 9 }, { id: 8, name: 8 }, { id: 7, name: 7 }, { id: 6, name: 6 }, { id: 5, name: 5 }, { id: 4, name: 4 }, { id: 3, name: 3 }, { id: 2, name: 2 }, { id: 1, name: 1 }];
@@ -2290,18 +2289,3 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   options: []
 };
 
-export const EditFieldFormInitialValues: FormInitialType = {
-  fieldId: '',
-  label: '',
-  type: ElementType.Text,
-  name: '',
-  css: '',
-  column: 12,
-  placeholder: '',
-  required: false,
-  list: '',
-  errorMsg: '',
-  defaultValue: '',
-  options: [],
-  textArea: false
-};

@@ -12,7 +12,8 @@ import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled, multiline, info, placeholder,className
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
+  disabled, multiline, info, placeholder, className
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();

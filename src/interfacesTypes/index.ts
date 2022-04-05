@@ -728,26 +728,6 @@ export interface ColumnTypes {
   COL_3: string;
 }
 
-export interface InputTypes {
-  TEXT: string;
-  DATE: string;
-  TIME: string;
-  SELECT: string;
-  RADIO: string;
-  CHECKBOX: string;
-  TEL: string;
-  NUMBER: string;
-  EMAIL: string;
-  COLOR: string;
-  FILE: string;
-  IMAGE: string;
-  MONTH: string;
-  PASSWORD: string;
-  RANGE: string;
-  URL: string;
-  WEEK: string;
-}
-
 export interface ItemsTypes extends FieldsInputs {
   icon: ElementType
 }
