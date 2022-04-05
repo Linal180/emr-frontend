@@ -4,7 +4,6 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import Login from "../pages/auth/login";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
-import { Roles } from "../pages/main/roles";
 import { PageNotFound } from "../pages/404";
 import Settings from "../pages/main/settings";
 import Dashboard from "../pages/main/dashboard";
@@ -18,8 +17,10 @@ import { AddRole } from "../pages/main/roles/addRole";
 import ViewStaff from "../pages/main/staff/viewStaff";
 import { AutoLogout } from "../pages/main/autoLogout";
 import AddResult from "../pages/main/reports/addResult";
+import { EditRole } from "../pages/main/roles/viewRole";
 import AddDoctor from "../pages/main/doctors/addDoctor";
 import { SetPassword } from "../pages/auth/setPassword";
+import { Roles } from "../pages/main/roles/roleListing";
 import ViewDoctor from "../pages/main/doctors/viewDoctor";
 import ForgetPassword from "../pages/auth/forgetPassword";
 import { Cancellation } from "../pages/main/cancellation";
@@ -69,7 +70,7 @@ import {
   PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE,
   SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, EMERGENCY_ACCESS_ROUTE, PRACTICE_DETAILS_ROUTE,
-   ROLES_ROUTE, CALENDAR_ROUTE, CHECK_IN_ROUTE,
+  ROLES_ROUTE, CALENDAR_ROUTE, CHECK_IN_ROUTE
 } from "../constants";
 import { CheckIn } from "../pages/main/checkIn";
 
@@ -105,6 +106,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={CANCELLATION_ROUTE} component={Cancellation} />
       <PrivateRoute exact path={ROLES_ROUTE} component={Roles} />
       <PrivateRoute exact path={`${ROLES_ROUTE}/new`} component={AddRole} />
+      <PrivateRoute exact path={`${ROLES_ROUTE}/:id`} component={EditRole} />
       <PrivateRoute exact path={AUTO_LOGOUT_ROUTE} component={AutoLogout} />
       <PrivateRoute exact path={CHANGE_PASSWORD_ROUTE} component={ChangePassword} />
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />

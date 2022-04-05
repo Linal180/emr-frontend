@@ -26,8 +26,6 @@ const TimePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element =
             type="time"
             defaultValue="07:30"
             error={invalid}
-            // helperText={invalid && message}
-            // InputLabelProps={{ shrink: true, }}
             inputProps={{ step: 300, }}
           />
 

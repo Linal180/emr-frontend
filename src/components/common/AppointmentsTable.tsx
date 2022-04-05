@@ -4,8 +4,7 @@ import dotenv from 'dotenv';
 import moment from "moment";
 import { Link } from "react-router-dom";
 import { Pagination } from "@material-ui/lab";
-import { InsertLink } from '@material-ui/icons';
-import { Box, IconButton, Table, TableBody, TableHead, TableRow, TableCell, Button } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 import Search from "./Search";
@@ -17,16 +16,15 @@ import { AuthContext } from "../../context";
 import { EditIcon, TrashIcon } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
-import { getFormattedDate, renderTh, getISOTime, isSuperAdmin, appointmentStatus, getStandardTime } from "../../utils";
+import { getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime } from "../../utils";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
   useGetAppointmentsLazyQuery
 } from "../../generated/graphql";
 import {
-  ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, PUBLIC_LINK,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES, PUBLIC_APPOINTMENT_ROUTE,
-  LINK_COPIED, CANCEL_TIME_EXPIRED_MESSAGE, STATUS,
+  ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS,
+  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES, CANCEL_TIME_EXPIRED_MESSAGE,
 } from "../../constants";
 
 dotenv.config()
@@ -34,11 +32,10 @@ dotenv.config()
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
-  const { facility, roles } = user || {}
+  const { facility } = user || {}
   const { id: facilityId } = facility || {}
-  const isSuper = isSuperAdmin(roles)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, copied, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
+  const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     variables: {
@@ -163,32 +160,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   };
 
-  const handleClipboard = () => {
-    navigator.clipboard.writeText(
-      `${process.env.REACT_APP_URL}${PUBLIC_APPOINTMENT_ROUTE}/${facilityId}`
-    )
-
-    dispatch({ type: ActionType.SET_COPIED, copied: true })
-  };
-
   const search = (query: string) => { }
 
   return (
     <Box className={classes.mainTableContainer}>
       <Box className={classes.searchContainer}>
         <Search search={search} />
-
-        {facilityId && !isSuper &&
-          <Button variant="contained" className="blue-button"
-            onClick={handleClipboard}
-          >
-            <IconButton color="default">
-              <InsertLink />
-            </IconButton>
-
-            {copied ? LINK_COPIED : PUBLIC_LINK}
-          </Button>
-        }
       </Box>
 
       <Box className="table-overflow">

@@ -501,6 +501,8 @@ export const UPDATE_FACILITY_SERVICE = "Update Service";
 export const LOCATION = "Location";
 export const ADD_LOCATION = "Add Location";
 export const EDIT_LOCATION = "Edit Location";
+export const PERMISSIONS = "Permissions";
+export const UPDATE_LOCATION = "Update Location";
 export const PHONE_NUMBER = "Phone number";
 export const NEW_PASSWORD = "New password";
 export const OLD_PASSWORD = "Old password";
@@ -535,14 +537,15 @@ export const SETTINGS_TEXT = "Settings";
 export const ADD_ROLE_TEXT = "Add Role";
 export const CLAIM_FEED_TEXT = "Claim Feed";
 export const ROLE_DETAILS_TEXT = "Role Details";
-export const UPDATE_LOCATION = "Update Location";
 export const APPOINTMENT_INFO = "Appointment Info";
+export const EDIT_ROLE_TEXT = "Update Role";
+export const  SET_PERMISSIONS = "Set Permissions";
+export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
+export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
 export const PATIENT_PAYMENT_TYPE = "Patient Payment Type";
 export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
-export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
-export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
 export const DETAIL_OVERVIEW = "Detail overview";
 export const MEMBERSHIP_PLAN = "Membership Plan";
@@ -866,44 +869,28 @@ export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
-export const EIN_VALIDATION_MESSAGE =
-  "EIN should be NN-NNNNNNN, dash is optional";
-export const PLEASE_ADD_DOCUMENT =
-  "Please upload or drag and drop the documents here";
-export const PLEASE_CLICK_TO_UPDATE_DOCUMENT =
-  "Please click here to update the documents";
-export const UPIN_VALIDATION_MESSAGE =
-  "UPIN should be six-place alpha numeric identifiers";
-export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE =
-  "Doctor's age should be more that 20-years";
-export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE =
-  "Doctor's age should be less that 100-years";
-export const REVENUE_CODE_VALIDATION_MESSAGE =
-  "Revenue code should be a 4-digit combination";
-export const DELETE_USER_INFO =
-  "This will delete all the information associated with the user.";
-export const FACILITY_CODE_VALIDATION_MESSAGE =
-  "Facility code can only be capital alphabets 2-5 in length";
-export const MAMMOGRAPHY_VALIDATION_MESSAGE =
-  "Valid mammography certification Number format is like REF-EW-111111";
-export const ValidMessage = (fieldName: string, Example?: string) =>
-  `Please enter valid ${fieldName.toLowerCase()}`;
-export const MaxLength = (fieldName: string, length: number) =>
-  `${fieldName} can be up to ${length} characters long`;
-export const MinLength = (fieldName: string, length: number) =>
-  `${fieldName} should be at least ${length} characters long`;
-export const USER_REQUEST_CANNOT_EDITED_NOTE =
-  "Note: Investor has not signed the document. So, this request cannot be edited.";
-export const TAXONOMY_VALIDATION_MESSAGE =
-  "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
-export const PASSWORD_VALIDATION_MESSAGE =
-  "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
-export const PHASE_CANNOT_CHANGE_NOTE =
-  "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
+export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optional";
+export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
+export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
+export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
+export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
+export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be less that 100-years";
+export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
+export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
+export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
+export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
+export const ValidMessage = (fieldName: string, Example?: string) => `Please enter valid ${fieldName.toLowerCase()}`;
+export const MaxLength = (fieldName: string, length: number) => `${fieldName} can be up to ${length} characters long`;
+export const MinLength = (fieldName: string, length: number) => `${fieldName} should be at least ${length} characters long`;
+export const USER_REQUEST_CANNOT_EDITED_NOTE = "Note: Investor has not signed the document. So, this request cannot be edited.";
+export const TAXONOMY_VALIDATION_MESSAGE = "Taxonomy code should be combination of 10 alphanumerics with capital alphabets and ending with 'X'";
+export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, one uppercase, one lowercase, one number and one special case character";
+export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
+export const ROLE_NOT_FOUND = "Role not found!";
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
 export const SCHEDULE_START = "Schedule Start Time";
 export const INVALID_EMAIL = "Invalid email address";
@@ -933,10 +920,11 @@ export const MAINTENANCE_ALERT = "Maintenance is in progress";
 export const SERVICE_CREATED = "Service created successfully!";
 export const SERVICE_UPDATED = "Service updated successfully!";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
+export const INVOICE_CREATED = "Invoice created successfully!";
 export const PATIENT_CREATED = "Patient created successfully!";
+export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
-export const INVOICE_CREATED = "Invoice created successfully!";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
 export const CANT_DELETE_PRACTICE = "Practice can't be deleted.";
 export const LOCATION_DELETED_SUCCESSFULLY = "Location deleted.";
@@ -948,6 +936,7 @@ export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
+export const PERMISSIONS_SET = "Role Permissions set successfully";
 export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
@@ -957,6 +946,7 @@ export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
 export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated.";
 export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
+export const ROLE_ALREADY_EXIST = "Role already exists with this name!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment.";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
@@ -970,6 +960,7 @@ export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE = "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD = "You have entered wrong email or password";
+export const PRACTICE_USER_ALREADY_EXISTS = "User with this email already exists";
 export const LOGIN_TEXT_MESSAGE = "Enter your credentials to login to your portal";
 export const APPOINTMENT_BOOKED_SUCCESSFULLY = "Appointment is booked successfully";
 export const APPOINTMENT_CANCEL_TEXT = "Your appointment is cancelled successfully";
@@ -1994,7 +1985,9 @@ export enum MODULE_TYPES {
   Schedules = 'Schedules',
   Permission = 'Permission',
   Appointment = 'Appointment',
- }
+}
+
+export const MODULES = ['User', 'Staff', 'Patient', 'Service', 'Practice', 'Facility', 'Provider', 'Schedule', 'Permission', 'Appointment']
 
 export const MAPPED_STATUS = [
   {
@@ -2030,49 +2023,6 @@ export const MAPPED_STATUS = [
     startDate: "2018-07-27T19:00:00.000Z",
     endDate: "2018-08-06T19:00:00.000Z",
   },
-];
-
-export const ROLES_DUMMY_DATA = [
-  {
-    name: "Director of Operations",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Medical or Health Services Manager",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Advanced Practice Registered Nurse",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Physical Therapist Assistant",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Receptionist",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Neonatal Intensive Care Registered Nurse",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Health Services Manager",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Medical Office Specialist",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Nurse Consultant ",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  },
-  {
-    name: "Registered Nurse (RN) Medical Inpatient Services",
-    description: "You are responsible for operations, service, or customer support and face challenges trying to communicate complex ...",
-  }
 ];
 
 export const PROFILE_DETAIL_DATA = [
@@ -2178,6 +2128,11 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: ROLES_PERMISSIONS,
     link: ROLES_ROUTE,
     desc: ROLES_PERMISSIONS_DESCRIPTION
+  },
+  {
+    name: EMERGENCY_ACCESS,
+    link: EMERGENCY_ACCESS_ROUTE,
+    desc: EMERGENCY_ACCESS_DESCRIPTION,
   },
 ];
 

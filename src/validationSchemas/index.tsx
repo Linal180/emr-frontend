@@ -384,7 +384,7 @@ const facilityBasicSchema = {
   ...federalTaxIdSchema,
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
-  name: nameSchema(NAME)
+  name: yup.string().required(requiredMessage(PRACTICE_NAME))
 }
 
 export const facilitySchema = yup.object({
@@ -613,6 +613,7 @@ const practiceFacilitySchema = {
 
 export const createPracticeSchema = yup.object({
   ...emailSchema,
+  ...roleTypeSchema,
   ...registerUserSchema,
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),

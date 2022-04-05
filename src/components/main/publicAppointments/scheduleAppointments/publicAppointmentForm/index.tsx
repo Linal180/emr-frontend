@@ -139,7 +139,7 @@ const PublicAppointmentForm = (): JSX.Element => {
         variables: {
           getSlots: {
             providerId: selectedProvider, offset, currentDate: date.toString(),
-            serviceId: selectedService, facilityId
+            serviceId: selectedService,
           }
         }
       })
