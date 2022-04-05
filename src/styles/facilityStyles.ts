@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, GRAY_ELEVEN, WHITE } from "../theme";
+import { BLACK, GRAY_ELEVEN, GRAY_SIX, WHITE } from "../theme";
 
 export const useFacilityStyles = makeStyles(() => ({
   navbar: {
@@ -38,5 +38,11 @@ export const useFacilityStyles = makeStyles(() => ({
     "& .MuiPaper-elevation24": {
       boxShadow: '0px 11px 1px -8px rgb(0 0 0 / 0%), 0px 5px 17px 3px rgb(0 0 0 / 0%), 0px 0px 3px -4px rgb(0 0 0 / 12%)'
     }
+  },
+
+  borderBottom: {
+    paddingBottom: 4,
+    paddingTop: 4,
+    borderBottom: `1px solid ${GRAY_SIX}`,
   }
 }));

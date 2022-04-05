@@ -1,27 +1,47 @@
 // packages block
 import { useParams } from "react-router";
-import { FC, useEffect, useState } from "react";
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { Button, Dialog, DialogTitle, TextField, Box, Table, TableHead, TableRow, TableBody, TableCell } from "@material-ui/core";
+import { FC, useEffect } from "react";
+import { useForm, useFieldArray } from 'react-hook-form'
+import { Button, Dialog, DialogTitle, TextField, Box, Grid } from "@material-ui/core";
 // components block
 import Alert from "../common/Alert";
 // interfaces, theme, utils and constants
-import { renderTh, getISOTime } from '../../utils'
 import { useFacilityStyles } from '../../styles/facilityStyles'
 import { AddTimeIcon, DeleteTimeIcon } from '../../assets/svgs'
-import { ConfirmationDaysTypes, WeekTimeItem, FacilityScheduleInputProps, ParamsType } from "../../interfacesTypes";
+import { ConfirmationDaysTypes, FacilityScheduleInputProps, ParamsType } from "../../interfacesTypes";
 import { useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation } from "../../generated/graphql";
 import {
   CANT_CREATE_SCHEDULE, CANT_UPDATE_SCHEDULE, SAVE_TEXT, SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_NOT_FOUND, SCHEDULE_UPDATED_SUCCESSFULLY, SERIAL_NO, TIME_FROM, TIME_TO
 } from "../../constants";
+type FormValues = {
+  cart: {
+    startAt: string;
+    endAt: string;
+  }[];
+};
 
 const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, isEdit, id }): JSX.Element => {
-  const { facilityId } = useParams<ParamsType>();
-  const [list, setList] = useState<WeekTimeItem[]>([])
+  const { id: facilityId } = useParams<ParamsType>();
   const classes = useFacilityStyles()
-  const methods = useForm<FacilityScheduleInputProps>({ mode: "all" });
-  const { setValue } = methods;
-  let count = 0
+  const methods = useForm<FormValues>({
+    mode: "onBlur", defaultValues: {
+      cart: []
+    }
+  });
+
+  const { setValue, register, handleSubmit, control, watch } = methods;
+  const { fields, append, remove } = useFieldArray({
+    name: "cart",
+    control
+  });
+  const watchFieldArray = watch("cart");
+
+  const controlledFields = fields.map((field, index) => {
+    return {
+      ...field,
+      ...watchFieldArray[index]
+    };
+  });
 
   const [getSchedule] = useGetScheduleLazyQuery({
     fetchPolicy: "network-only",
@@ -39,11 +59,9 @@ const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, 
         const { status } = response
 
         if (schedule && status && status === 200) {
-
-          const { startAt, endAt } = schedule || {};
-
-          endAt && setValue('endAt', getISOTime(endAt))
-          startAt && setValue('startAt', getISOTime(startAt))
+          // const { startAt, endAt } = schedule || {};
+          // endAt && setValue('endAt', getISOTime(endAt))
+          // startAt && setValue('startAt', getISOTime(startAt))
         }
       }
     }
@@ -89,46 +107,40 @@ const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, 
     }
   });
 
-  const onSubmit: SubmitHandler<FacilityScheduleInputProps> = async ({ endAt, serviceId, startAt }) => {
-    const scheduleInput = {
-      facilityId, servicesIds: [],
-      startAt: getISOTime(startAt), endAt: getISOTime(endAt),
-    };
-    if (facilityId) {
-      if (isEdit) {
-        id ?
-          await updateSchedule({
-            variables: {
-              updateScheduleInput: { id, ...scheduleInput }
-            }
-          }) : Alert.error(SCHEDULE_NOT_FOUND)
-      } else {
-        await createSchedule({
-          variables: {
-            createScheduleInput: { ...scheduleInput }
-          }
-        })
-      }
-    } else
-      Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
+  const onSubmit = async (data: FormValues) => {
+    console.log(data);
+    const { cart } = data
+    const facilitySchedule = cart.map(item => {
+      const scheduleInput = {
+        facilityId, servicesIds: [],
+        startAt: item.startAt, endAt: item.endAt,
+      };
+      return (
+        scheduleInput
+      )
+    })
+
+    // if (facilityId) {
+    //   if (isEdit) {
+    //     id ?
+    //       await updateSchedule({
+    //         variables: {
+    //           updateScheduleInput: { id, ...facilitySchedule }
+    //         }
+    //       }) : Alert.error(SCHEDULE_NOT_FOUND)
+    //   } else {
+    //     await createSchedule({
+    //       variables: {
+    //         createScheduleInput: { ...facilitySchedule }
+    //       }
+    //     })
+    //   }
+    // } else
+    //   Alert.error(isEdit ? CANT_UPDATE_SCHEDULE : CANT_CREATE_SCHEDULE)
   };
 
   const handleClose = () => {
     setOpen && setOpen(!isOpen)
-  }
-
-  const handleChange = (value: string, id: WeekTimeItem['id']) => {
-    setList(prev => prev.map(item => item.id === id ? { ...item, value } : item))
-  }
-
-  const handleDelete = (id: number) => {
-    debugger
-    setList(prev => prev.filter((item, index) => index !== id))
-  }
-
-  const handleAdd = (index: number) => {
-    const newItem = { id: count++, value: '' }
-    setList(prev => [...prev.slice(0, index + 1), newItem, ...prev.slice(index + 1)])
   }
 
   useEffect(() => {
@@ -140,62 +152,85 @@ const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, 
   }, [getSchedule, id, isEdit])
 
   const disableSubmit = createScheduleLoading || updateScheduleLoading
+  console.log('disableSubmit', disableSubmit);
+
 
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth className={classes.disableBackdropStyle}>
       <DialogTitle id="alert-dialog-title"> {title}</DialogTitle>
-      <Box>
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {renderTh(SERIAL_NO)}
-              {renderTh(TIME_FROM)}
-              {renderTh(TIME_TO)}
-            </TableRow>
-          </TableHead>
+      <Box pl={4} pr={2}>
+        <Box className={classes.borderBottom}>
+          <Grid container spacing={3} alignItems="center">
+            <Grid item md={1}>{SERIAL_NO}</Grid>
+            <Grid item md={5}>{TIME_FROM}</Grid>
+            <Grid item md={5}>{TIME_TO}</Grid>
+          </Grid>
+        </Box>
 
-          <TableBody>
-            <TableRow>
-              <TableCell>#</TableCell>
-              <TableCell>
-                <TextField type='time' disabled />
-              </TableCell>
+        <Box className={classes.borderBottom}>
+          <Grid container spacing={3} alignItems="center">
+            <Grid item md={1}>#</Grid>
+            <Grid item md={5}>
+              <TextField type='time' disabled name="startAt" />
+            </Grid>
 
-              <TableCell>
-                <TextField type='time' disabled />
-              </TableCell>
-
-              <Box onClick={() => handleAdd(0)} pt={3} className={classes.cursor}>
+            <Grid item md={5}>
+              <TextField type='time' disabled name="endAt" />
+            </Grid>
+            <Grid item md={1}>
+              <Box onClick={() => append({ startAt: "", endAt: "" })} pt={3} className={classes.cursor}>
                 <AddTimeIcon />
               </Box>
 
-            </TableRow>
-            {list.map((item, index) => (
-              <TableRow key={index}>
-                <TableCell scope="row">{`${index + 1}`}</TableCell>
-                <TableCell scope="row">
-                  <TextField type='time' value={item.value} onChange={e => handleChange(e.currentTarget.value, item.id)} />
-                </TableCell>
+            </Grid>
+          </Grid>
+        </Box>
 
-                <TableCell scope="row">
-                  <TextField type='time' value={item.value} onChange={e => handleChange(e.currentTarget.value, item.id)} />
-                </TableCell>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          {controlledFields.map((field, index) => {
+            return (
+              <Box className={classes.borderBottom}>
+                <Grid key={field.id} container spacing={3} alignItems="center">
+                  <Grid item md={1}>{`${index + 1}`}</Grid>
+                  <Grid item md={5}>
+                    <input
+                      type="time"
+                      {...register(`cart.${index}.startAt` as const, {
+                        required: true
+                      })}
+                      defaultValue={field.startAt}
+                    />
+                  </Grid>
 
-                <Box onClick={() => handleDelete(index)} pt={3} pl={1} className={classes.cursor}>
-                  <DeleteTimeIcon />
-                </Box>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                  <Grid item md={5}>
+                    <input
+                      placeholder="end date"
+                      type="time"
+                      {...register(`cart.${index}.endAt` as const, {
+                        required: true
+                      })}
+                      defaultValue={field.endAt}
+                    />
+                  </Grid>
+
+                  <Grid item md={1}>
+                    <Box onClick={() => remove(index)} pt={3} pl={1} className={classes.cursor}>
+                      <DeleteTimeIcon />
+                    </Box>
+
+                  </Grid>
+                </Grid>
+              </Box>
+            )
+          })}
+          <Box pb={2} pt={2}>
+            <Button type="submit" variant="contained" color="primary">
+              {SAVE_TEXT}
+            </Button>
+          </Box>
+        </form>
       </Box>
-
-      <Box pl={2} pt={4} pb={2}>
-        <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
-          {SAVE_TEXT}
-        </Button>
-      </Box>
-    </Dialog>
+    </Dialog >
   );
 };
 

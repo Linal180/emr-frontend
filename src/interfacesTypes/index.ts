@@ -753,10 +753,5 @@ export interface PortalTableProps {
 
 export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
 
-export interface WeekTimeItem {
-  id: number
-  value: string
-}
-
 export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
   & { serviceId: SelectorOption };
