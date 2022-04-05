@@ -121,8 +121,9 @@ const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, 
     setList(prev => prev.map(item => item.id === id ? { ...item, value } : item))
   }
 
-  const handleDelete = (id: WeekTimeItem['id']) => {
-    setList(prev => prev.filter(item => item.id !== id))
+  const handleDelete = (id: number) => {
+    debugger
+    setList(prev => prev.filter((item, index) => index !== id))
   }
 
   const handleAdd = (index: number) => {
@@ -171,7 +172,7 @@ const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, 
             </TableRow>
             {list.map((item, index) => (
               <TableRow key={index}>
-                <TableCell scope="row">{`${item.id + 1}`}</TableCell>
+                <TableCell scope="row">{`${index + 1}`}</TableCell>
                 <TableCell scope="row">
                   <TextField type='time' value={item.value} onChange={e => handleChange(e.currentTarget.value, item.id)} />
                 </TableCell>
@@ -180,7 +181,7 @@ const ConfirmationModal: FC<ConfirmationDaysTypes> = ({ setOpen, isOpen, title, 
                   <TextField type='time' value={item.value} onChange={e => handleChange(e.currentTarget.value, item.id)} />
                 </TableCell>
 
-                <Box onClick={() => handleDelete(item.id)} pt={3} pl={1} className={classes.cursor}>
+                <Box onClick={() => handleDelete(index)} pt={3} pl={1} className={classes.cursor}>
                   <DeleteTimeIcon />
                 </Box>
               </TableRow>
