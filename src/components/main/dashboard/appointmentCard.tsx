@@ -11,7 +11,6 @@ import {
 } from 'braintree-web-drop-in';
 // component block
 import Alert from '../../common/Alert';
-import Selector from '../../common/Selector';
 import BackdropLoader from '../../common/Backdrop';
 import ConfirmationModal from '../../common/ConfirmationModal';
 // constant, assets and styles block
@@ -20,7 +19,7 @@ import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
 import { UpdateStatusInputProps } from '../../../interfacesTypes';
 import { useCalendarStyles } from '../../../styles/calendarStyles';
-import { getAppointmentDate, getAppointmentTime, getISOTime, renderItem, setRecord } from '../../../utils';
+import { getAppointmentDate, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
@@ -32,12 +31,12 @@ import {
 import {
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMPTY_OPTION, FACILITY_LOCATION,
-  FORBIDDEN_EXCEPTION, INVOICE, INVOICE_CREATED, MAPPED_APPOINTMENT_STATUS, NO_INVOICE, OUTSTANDING_TEXT,
-  PAID, PAY, PAY_AMOUNT, PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE,
-  PRODUCT_AND_SERVICES_TEXT, PROVIDER_NAME, REASON, STATUS, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD,
-  TRANSACTION_PAID_SUCCESSFULLY,
+  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_LOCATION, INVOICE, 
+  FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT, 
+  PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PROVIDER_NAME,
+   PRODUCT_AND_SERVICES_TEXT,  REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD, TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE,
 } from '../../../constants';
+import { Link } from 'react-router-dom';
 
 const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
   const classes = useCalendarStyles()
@@ -406,17 +405,9 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                       <Typography variant="body1">{appStartTime} - {appEndTime}</Typography>
                     </Box>
 
-                    {appEdit ? (
-                      <Grid item md={4}>
-                        <Selector
-                          isRequired
-                          label={STATUS}
-                          name="appointmentStatus"
-                          value={EMPTY_OPTION}
-                          options={MAPPED_APPOINTMENT_STATUS}
-                        />
-                      </Grid>
-                    ) : renderItem(STATUS, appStatus)}
+                    <Box className='button-link'>
+                      <Typography component={Link} to={`${APPOINTMENTS_ROUTE}/${id}${CHECK_IN_ROUTE}`}>{CHECK_IN}</Typography>
+                    </Box>
                   </Box>
                 </form>
               </FormProvider>

@@ -31,6 +31,10 @@ export interface BackdropInputType {
   loading: boolean
 }
 
+export interface CalendarChart {
+  isCalendar: boolean
+}
+
 export interface AuthContextProps {
   user: User | null;
   isLoggedIn: boolean;

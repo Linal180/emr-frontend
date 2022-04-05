@@ -206,144 +206,146 @@ const PublicAppointmentForm = (): JSX.Element => {
               <Button variant="contained" type="submit" color="primary" disabled={!agreed}>{BOOK_APPOINTMENT}</Button>
             </Box>
 
-            <Grid container spacing={3}>
-              <Grid lg={9} md={8} sm={6} xs={12} item>
-                <CardComponent cardTitle={SELECT_SERVICES}>
-                  <Grid container spacing={3}>
-                    <Grid item md={6} sm={12} xs={12}>
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={APPOINTMENT_TYPE}
-                        name="serviceId"
-                        options={renderServices(serviceList)}
-                      />
+            <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+              <Grid container spacing={3}>
+                <Grid lg={9} md={8} sm={6} xs={12} item>
+                  <CardComponent cardTitle={SELECT_SERVICES}>
+                    <Grid container spacing={3}>
+                      <Grid item md={6} sm={12} xs={12}>
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={APPOINTMENT_TYPE}
+                          name="serviceId"
+                          options={renderServices(serviceList)}
+                        />
+                      </Grid>
+
+                      <Grid item md={6} sm={12} xs={12}>
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={SELECT_PROVIDER}
+                          name="providerId"
+                          options={renderDoctors(doctorList)}
+                        />
+                      </Grid>
+                    </Grid>
+                  </CardComponent>
+
+                  <Box pt={3} />
+
+                  <CardComponent cardTitle={PATIENT_DETAILS}>
+                    <Grid container spacing={3}>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <InputController
+                          isRequired
+                          fieldType="text"
+                          controllerName="firstName"
+                          controllerLabel={FIRST_NAME}
+                        />
+                      </Grid>
+
+                      <Grid item md={4} sm={12} xs={12}>
+                        <InputController
+                          isRequired
+                          fieldType="text"
+                          controllerName="lastName"
+                          controllerLabel={LAST_NAME}
+                        />
+                      </Grid>
+
+                      <Grid item md={4} sm={12} xs={12}>
+                        <InputController
+                          isRequired
+                          fieldType="text"
+                          controllerName="email"
+                          controllerLabel={EMAIL}
+                        />
+                      </Grid>
                     </Grid>
 
-                    <Grid item md={6} sm={12} xs={12}>
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={SELECT_PROVIDER}
-                        name="providerId"
-                        options={renderDoctors(doctorList)}
-                      />
+                    <Grid container spacing={3}>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <Selector
+                          name="sexAtBirth"
+                          label={SEX}
+                          value={EMPTY_OPTION}
+                          options={MAPPED_GENDER_IDENTITY}
+                        />
+                      </Grid>
+
+                      <Grid item md={4} sm={12} xs={12}>
+                        <DatePicker
+                          isRequired
+                          name="dob"
+                          label={DOB_TEXT}
+                        />
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </CardComponent>
+                  </CardComponent>
 
-                <Box pt={3} />
+                  <Box pt={3} />
 
-                <CardComponent cardTitle={PATIENT_DETAILS}>
-                  <Grid container spacing={3}>
-                    <Grid item md={4} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="firstName"
-                        controllerLabel={FIRST_NAME}
-                      />
-                    </Grid>
-
-                    <Grid item md={4} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="lastName"
-                        controllerLabel={LAST_NAME}
-                      />
-                    </Grid>
-
-                    <Grid item md={4} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
-                        controllerName="email"
-                        controllerLabel={EMAIL}
-                      />
-                    </Grid>
-                  </Grid>
-
-                  <Grid container spacing={3}>
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Selector
-                        name="sexAtBirth"
-                        label={SEX}
-                        value={EMPTY_OPTION}
-                        options={MAPPED_GENDER_IDENTITY}
-                      />
-                    </Grid>
-
-                    <Grid item md={4} sm={12} xs={12}>
-                      <DatePicker
-                        isRequired
-                        name="dob"
-                        label={DOB_TEXT}
-                      />
-                    </Grid>
-                  </Grid>
-                </CardComponent>
-
-                <Box pt={3} />
-
-                <CardComponent cardTitle={AGREEMENT_HEADING}>
-                  <Box maxHeight={400} pl={2} mb={3} overflow="auto">
-                    <ul>
-                      {AGREEMENT_POINTS.map((point, index) => (
-                        <li key={index}>
-                          <Typography variant="subtitle1" component="p">{point}</Typography>
-                        </li>
-                      ))}
-                    </ul>
-                  </Box>
-                </CardComponent>
-
-                <Box bgcolor={WHITE} mt={-1} p={3.75} className={classes.agreement_box}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox checked={agreed} onChange={() =>
-                        dispatch({ type: ActionType.SET_AGREED, agreed: !agreed })
-                      }
-                      />
-                    }
-
-                    label={AGREEMENT_TEXT}
-                    labelPlacement="end"
-                  />
-                </Box>
-              </Grid>
-
-              <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
-                <CardComponent cardTitle="Available Slots">
-                  <AppointmentDatePicker date={date} setDate={setDate} />
-
-                  <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
-                    <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
-                  </Box>
-
-                  {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
-                    <ul className={classes.timeSlots}>
-                      {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
-                        const { startTime, endTime } = slot || {}
-
-                        return (
-                          <li key={index} onClick={() => handleSlot(slot)}>
-                            <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
-
-                            <label htmlFor={`timeSlot-${index}`}>
-                              {getStandardTime(new Date(startTime || '').getTime().toString())} -
-                              {getStandardTime(new Date(endTime || '').getTime().toString())}
-                            </label>
+                  <CardComponent cardTitle={AGREEMENT_HEADING}>
+                    <Box maxHeight={400} pl={2} mb={3} overflow="auto">
+                      <ul>
+                        {AGREEMENT_POINTS.map((point, index) => (
+                          <li key={index}>
+                            <Typography variant="subtitle1" component="p">{point}</Typography>
                           </li>
-                        )
-                      }) : (
-                        <Typography>{NO_SLOT_AVAILABLE}</Typography>
-                      )}
-                    </ul>
-                  )}
-                </CardComponent >
-              </Grid >
-            </Grid>
+                        ))}
+                      </ul>
+                    </Box>
+                  </CardComponent>
+
+                  <Box bgcolor={WHITE} mt={-1} p={3.75} className={classes.agreement_box}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox checked={agreed} onChange={() =>
+                          dispatch({ type: ActionType.SET_AGREED, agreed: !agreed })
+                        }
+                        />
+                      }
+
+                      label={AGREEMENT_TEXT}
+                      labelPlacement="end"
+                    />
+                  </Box>
+                </Grid>
+
+                <Grid item lg={3} md={4} sm={6} xs={12} className="custom-calendar">
+                  <CardComponent cardTitle="Available Slots">
+                    <AppointmentDatePicker date={date} setDate={setDate} />
+
+                    <Box pb={2} mb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
+                      <Typography variant="h4">{AVAILABLE_SLOTS}</Typography>
+                    </Box>
+
+                    {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+                      <ul className={classes.timeSlots}>
+                        {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
+                          const { startTime, endTime } = slot || {}
+
+                          return (
+                            <li key={index} onClick={() => handleSlot(slot)}>
+                              <input type="radio" name="scheduleStartDateTime" id={`timeSlot-${index}`} />
+
+                              <label htmlFor={`timeSlot-${index}`}>
+                                {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                                {getStandardTime(new Date(endTime || '').getTime().toString())}
+                              </label>
+                            </li>
+                          )
+                        }) : (
+                          <Typography>{NO_SLOT_AVAILABLE}</Typography>
+                        )}
+                      </ul>
+                    )}
+                  </CardComponent>
+                </Grid>
+              </Grid>
+            </Box>
           </form>
         </FormProvider>
       </Box>
