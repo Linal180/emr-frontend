@@ -6,7 +6,7 @@ import {
   PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE,
   BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED_FOUR,
 } from ".";
-import { BLACK_NINE, GRAY_TEN } from "./colors";
+import { BLACK_NINE, GRAY_EIGHT, GRAY_TEN } from "./colors";
 
 const breakpoints = createBreakpoints({})
 const customTheme = createTheme()
@@ -208,7 +208,7 @@ export const theme = createTheme({
             height: 20,
             width: 20,
             position: "absolute",
-            background: WHITE,
+            background: GRAY_EIGHT,
             zIndex: 9,
             borderRadius: 3,
             border: `2px solid ${GRAY_TEN}`,
@@ -293,7 +293,7 @@ export const theme = createTheme({
 
         "&.danger": {
           paddingLeft: 0,
-          
+
           "& .MuiButton-label": {
             color: RED_FOUR
           }
