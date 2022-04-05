@@ -9,6 +9,7 @@ import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } fr
 //components block
 import PortalTable from './PortalTable';
 import DocumentsTable from './DocumentsTable';
+import LabOrdersTable from './LabOrdersTable';
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
@@ -35,6 +36,7 @@ import {
   MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT,
   VIEW_CHART_TEXT,
 } from "../../../../constants";
+import Insurance from './Insurance';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
@@ -372,12 +374,20 @@ const PatientDetailsComponent = (): JSX.Element => {
               </Grid>
             </TabPanel>
 
+            <TabPanel value="2">
+              <Insurance />
+            </TabPanel>
+
             <TabPanel value="8">
               <DocumentsTable dispatcher={mediaDispatch} attachments={attachmentsData} />
             </TabPanel>
 
             <TabPanel value="9">
               <PortalTable inviteAccepted={Boolean(inviteAccepted)} />
+            </TabPanel>
+
+            <TabPanel value="10">
+              <LabOrdersTable />
             </TabPanel>
           </Box>
         </TabContext>
