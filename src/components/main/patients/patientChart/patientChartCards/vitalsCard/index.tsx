@@ -19,7 +19,7 @@ const VitalChartComponent: FC = (): JSX.Element => {
         id={id}
       />
 
-      <VitalsChartingTable />
+      <VitalsChartingTable isCalendar={true} />
     </>
   )
 };

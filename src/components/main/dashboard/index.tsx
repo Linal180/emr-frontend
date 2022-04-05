@@ -5,7 +5,7 @@ import { Box, Button, Typography } from "@material-ui/core";
 // svgs block
 import { EMRIcon } from "../../../assets/svgs";
 import DASHBOARD_IMAGE from "../../../assets/images/dashboard-image.svg"
-import { CALENDAR, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, LOREM_TEXT_15 } from "../../../constants";
+import { CALENDAR, CALENDAR_ROUTE, LOGIN_SUCCESSFULLY, LOREM_TEXT_15 } from "../../../constants";
 
 const DashboardComponent: FC = (): JSX.Element => (
   <Box sx={{ p: 5 }}>
@@ -19,7 +19,7 @@ const DashboardComponent: FC = (): JSX.Element => (
 
     <Box className="subHeading">{LOREM_TEXT_15}</Box>
 
-    <Link to={`${DASHBOARD_ROUTE}/start-project`}>
+    <Link to={`${CALENDAR_ROUTE}`}>
       <Button color="primary" variant="contained" className="blue-button">{CALENDAR}</Button>
     </Link>
 

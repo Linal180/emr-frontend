@@ -2,18 +2,21 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref, ControllerRenderProps } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as PatientAction } from "../reducers/patientReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload,
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  SectionsInputs
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -26,6 +29,10 @@ export interface CloseSnackbarProps { id: Key; }
 
 export interface BackdropInputType {
   loading: boolean
+}
+
+export interface CalendarChart {
+  isCalendar: boolean
 }
 
 export interface AuthContextProps {
@@ -45,6 +52,9 @@ export interface AppContextProps {
 }
 
 export interface ListContextInterface {
+  roleList: RolesPayload['roles'];
+  setRoleList: Function;
+  fetchAllRoleList: Function;
   practiceList: PracticesPayload['practices'];
   setPracticeList: Function;
   fetchAllPracticeList: Function;
@@ -72,6 +82,16 @@ export interface FacilityContextInterface {
   patientList: PatientsPayload['patients'];
   setPatientList: Function;
   fetchAllPatientList: Function;
+}
+
+export interface PermissionContextInterface {
+  permissions: PermissionsPayload['permissions']
+}
+
+export interface AppointmentContextInterface {
+  appointmentList: AppointmentsPayload['appointments'];
+  setAppointmentList: Function;
+  fetchAllAppointmentList: Function;
 }
 
 export interface Children {
@@ -109,6 +129,7 @@ export interface DialogTypes {
   refetch?: Function;
   handleClose?: Function;
 }
+
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
   success?: boolean;
@@ -116,6 +137,10 @@ export interface ConfirmationTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
+}
+
+export interface GraphModalProps extends DialogTypes {
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface ViewAppointmentCardProps {
@@ -182,6 +207,7 @@ export interface PageHeaderProps {
   openModal?: () => void;
   setTableData?: Function;
   tableData?: ServicesPayload['services'];
+  startIcon?: JSX.Element;
 }
 
 export interface IDropzoneImage {
@@ -281,6 +307,7 @@ interface IControlLabel {
   isPassword?: boolean;
   placeholder?: string;
   controllerLabel?: string;
+  className?: string;
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -377,7 +404,7 @@ interface CustomBillingAddressInputs {
 export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state" | "country">
   & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId"> & CustomBillingAddressInputs
   & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption }
-  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };;
+  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };
 
 type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
 
@@ -716,4 +743,82 @@ export interface DocumentTableProps {
 
 export interface PortalTableProps {
   inviteAccepted: boolean;
+}
+
+export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
+
+//form builder interfaces
+export interface ColumnTypes {
+  COL_1: string;
+  COL_2: string;
+  COL_3: string;
+}
+
+export interface ItemsTypes extends FieldsInputs {
+  icon: ElementType
+}
+export interface FormInitialType extends FieldsInputs {
+  list: string;
+}
+
+export interface FormValuesTypes {
+  id: string;
+  col: number;
+  fields: FieldsInputs[],
+}
+
+export interface SelectOptions {
+  id: number
+  name: number
+}
+
+export interface CustomSelectControlProps extends IControlLabel {
+  controllerName: string;
+  info?: string;
+  options: SelectOptions[]
+}
+
+export interface FieldEditModalProps {
+  open: boolean;
+  closeModalHanlder: () => void;
+  setFieldValuesHandler: (values: any) => void;
+  selected: FormInitialType;
+}
+
+
+export interface DropContainerPropsTypes {
+  formValues: FormValuesTypes[];
+  changeValues: (id: string, item: FieldsInputs) => void;
+  delFieldHandler: (id: number, index: number) => void;
+  delColHandler: (index: number) => void
+}
+
+
+export interface FormBuilderFormInitial {
+  name: string;
+  type: SelectorOption;
+  facilityId: SelectorOption;
+}
+
+export interface LoaderProps {
+  open: boolean
+}
+
+export interface FormBuilderPreviewProps {
+  open: Boolean;
+  closeModalHanlder: () => void;
+  data: SectionsInputs[];
+}
+
+export interface FieldComponentProps {
+	item: FieldsInputs;
+  field?: ControllerRenderProps;
+  isCreating?: boolean;
+}
+
+export interface ShareModalTypes extends DialogTypes {
+  title?: string;
+  actionText?: string;
+  description?: string;
+  handleCopy: () => void;
 }

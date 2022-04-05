@@ -1,0 +1,115 @@
+query FindAllRoles($roleInput: RoleInput!){
+  getAllRoles(roleInput: $roleInput){
+    response {
+      status
+      error
+      message
+    }
+    
+    pagination {
+      page
+      totalPages
+    }
+    
+    roles {
+      id
+      role
+      description
+      
+      rolePermissions {
+        id
+
+        permission { 
+          id
+          name
+        }
+      }
+    }
+  }
+}
+
+query GetRole($getRole: GetRole!){
+  getRole(getRole: $getRole){
+    response {
+      error
+      status
+      message
+    }
+    
+    role {
+      id
+      role
+      customRole
+      description
+      
+      rolePermissions {
+        id
+
+        permission {
+          id
+          name
+          moduleType
+          status
+        }
+      }
+    }
+  }
+}
+
+mutation CreateRole($roleItemInput: RoleItemInput!){
+  createRole(roleItemInput: $roleItemInput){
+    response {
+      error
+      status
+      message
+    }
+    
+    role {
+      id
+      role
+    }
+  }
+}
+
+mutation UpdateRole($updateRoleItemInput: UpdateRoleItemInput!){
+ updateRole(updateRoleItemInput: $updateRoleItemInput){
+    response {
+      status
+      error
+      message
+    }
+  
+    role {
+      id
+      role
+      description
+    }
+  }
+}
+
+mutation RemoveRole($removeRole: RemoveRole!){
+  removeRole(removeRole: $removeRole){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+query FindAllPermission($permissionInput: PermissionInput!){
+  findAllPermissions(permissionInput: $permissionInput){
+    response {
+      error
+      status
+      message
+    }
+    
+    permissions {
+      id
+      name
+      moduleType
+      status
+    }
+  }
+}
