@@ -54,10 +54,10 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
         const { status } = response
 
         if (schedule && status && status === 200) {
-
           const { startAt, endAt, scheduleServices } = schedule || {};
           const { service } = (scheduleServices && scheduleServices[0]) || {}
           const { id: serviceId, name: serviceName } = (service && service) || {}
+
           endAt && setValue('endAt', getTimeString(endAt))
           startAt && setValue('startAt', getTimeString(startAt))
           serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
@@ -117,13 +117,14 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
   useEffect(() => {
     fetchAllServicesList(doctorFacilityId)
-
+    reset()
+    
     if (isEdit && id) {
       getSchedule({
         variables: { getSchedule: { id } }
       })
     }
-  }, [doctorFacilityId, fetchAllServicesList, getSchedule, id, isEdit])
+  }, [doctorFacilityId, fetchAllServicesList, getSchedule, id, isEdit, reset])
 
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day }) => {
     const { id: selectedService } = serviceId || {}
