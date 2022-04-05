@@ -46,6 +46,7 @@ export const NOTES = "Notes";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
+export const TIME = "Time";
 export const OPTION_TEXT = "Option";
 export const FORM_TEXT = "Form";
 export const FORM_COPY = "Copy form";
