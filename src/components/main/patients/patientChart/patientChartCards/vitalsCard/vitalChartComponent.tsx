@@ -1,11 +1,12 @@
 // packages block
-import { FC, useState } from "react";
+import { FC, Reducer, useReducer, useState } from "react";
 import moment from "moment";
 import {
   Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Avatar
 } from "@material-ui/core";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
+import GraphModal from "./graphModal";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { renderTh } from "../../../../../../utils";
 import { getDate } from "../../../../../../utils";
@@ -14,14 +15,17 @@ import { ProfileUserIcon } from "../../../../../../assets/svgs";
 import {
   EMAIL, PHONE, NAME, SPECIALTY, FACILITY, dummyVitalsChartingList, GROWTH_CHART, PDF_TEXT
 } from "../../../../../../constants";
+import { patientReducer, State, initialState, Action, ActionType } from "../../../../../../reducers/patientReducer";
 import InputController from "../../../../../../controller";
 import { useProfileDetailsStyles } from "../../../../../../styles/profileDetails";
+import { CalendarChart } from "../../../../../../interfacesTypes";
 
-const VitalsChartingTable: FC = (): JSX.Element => {
+const VitalsChartingTable: FC<CalendarChart> = ({isCalendar}): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const [patientData] = useState<Patient | null>();
   const { firstName, lastName, dob, doctorPatients } = patientData || {}
   const PATIENT_AGE = moment().diff(getDate(dob || ''), 'years');
+  const [{ openGraph }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const ProfileDetails = [
     {
@@ -42,7 +46,6 @@ const VitalsChartingTable: FC = (): JSX.Element => {
     })[0];
 
     if (currentDoctor) {
-      debugger
       const { firstName, lastName } = currentDoctor || {};
       providerName = `${firstName} ${lastName}` || "--"
     }
@@ -62,7 +65,8 @@ const VitalsChartingTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <Box className={classes.profileCard}>
+      {isCalendar === true
+       && <Box className={classes.profileCard}>
         <Box display="flex" alignItems="center">
           <Box pl={1}>
             <Box pr={3.75}>
@@ -100,11 +104,11 @@ const VitalsChartingTable: FC = (): JSX.Element => {
             <Button color="primary" variant="contained" className="blue-button">Schedule Appointment</Button>
           </Box>
         </Box>
-      </Box>
+      </Box>}
 
       <Box pt={3} pb={2} pl={3} display='flex'>
         <Box pr={1}>
-          <Button color="secondary" variant="contained">
+          <Button color="secondary" variant="contained" onClick={() => dispatch({ type: ActionType.SET_OPEN_GRAPH, openGraph: true })}>
             {GROWTH_CHART}
           </Button>
         </Box>
@@ -158,6 +162,8 @@ const VitalsChartingTable: FC = (): JSX.Element => {
           </Table>
         </Box>
       </Box>
+
+      <GraphModal isOpen={openGraph} dispatcher={dispatch} />
     </>
   );
 };

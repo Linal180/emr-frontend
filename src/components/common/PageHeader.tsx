@@ -9,6 +9,7 @@ import { PageHeaderProps } from "../../interfacesTypes";
 import { BLACK_TWO } from "../../theme";
 import { PageBackIcon } from "../../assets/svgs";
 import { PATIENTS_ROUTE } from "../../constants";
+import AddIcon from '@material-ui/icons/Add';
 
 const PageHeader: FC<PageHeaderProps> = ({ title, subTitle, buttonText, hasComponent, linkToPage, noAdd, path, openModal, isIcon, id }): JSX.Element => {
   return (
@@ -38,7 +39,10 @@ const PageHeader: FC<PageHeaderProps> = ({ title, subTitle, buttonText, hasCompo
         <>
           {hasComponent ?
             <Button color="primary" variant="contained" component={Link} to={linkToPage || ""}>
-              {buttonText || ""}
+              <Box display="flex" alignItems="center">
+                <AddIcon />
+                {buttonText || ""}
+              </Box>
             </Button>
             :
             (buttonText &&

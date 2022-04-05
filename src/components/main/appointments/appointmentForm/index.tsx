@@ -29,7 +29,7 @@ import {
 } from "../../../../utils";
 import {
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
-  useGetDoctorSlotsLazyQuery, Appointmentstatus, DoctorSlotsPayload, BillingStatus,
+  useGetSlotsLazyQuery, Appointmentstatus, SlotsPayload, BillingStatus,
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -47,7 +47,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident } = state
+  const {
+    date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident
+  } = state
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -137,7 +139,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const [getDoctorSlots, { loading: getSlotsLoading }] = useGetDoctorSlotsLazyQuery({
+  const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -146,17 +148,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     },
 
     onCompleted(data) {
-      const { getDoctorSlots } = data || {}
+      const { getSlots } = data || {}
 
-      if (getDoctorSlots) {
-        const { slots } = getDoctorSlots;
-        if (slots) {
+      if (getSlots) {
+        const { slots } = getSlots;
+
+        slots ?
           dispatch({
-            type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSlotsPayload['slots']
-          });
-        } else {
-          dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
-        }
+            type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as SlotsPayload['slots']
+          })
+          : dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
       }
     }
   });
@@ -224,16 +225,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => {
     if (selectedFacility && selectedProvider && selectedService && date) {
-      getDoctorSlots({
+      getSlots({
         variables: {
-          getDoctorSlots: { id: selectedProvider, offset, currentDate: date.toString(), serviceId: selectedService }
+          getSlots: {
+            providerId: selectedProvider, offset, currentDate: date.toString(), serviceId: selectedService,
+            facilityId: selectedFacility
+          }
         }
       })
     }
-  }, [
-    currentDate, getDoctorSlots, id, offset, selectedFacility, date, selectedProvider, selectedService,
-    serviceId, watch
-  ])
+  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -269,29 +270,23 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       const { id: selectedFacility } = facilityId || {};
 
       const appointmentInput = {
-        reason: reason || '',
-        scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
-        scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
-        autoAccident: autoAccident || false, otherAccident: otherAccident || false,
-        primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
-        notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
-        serviceId: selectedService, providerId: selectedProvider, employment: employment || false,
-        paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
+        reason: reason, scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
+        scheduleEndDateTime: getTimestamps(scheduleEndDateTime), autoAccident: autoAccident || false,
+        otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
+        notes, facilityId: selectedFacility, patientId: selectedPatient, serviceId: selectedService,
+        providerId: selectedProvider, employment: employment || false, paymentType: PaymentType.Self,
+        billingStatus: BillingStatus.Due
       };
 
       if (isEdit) {
-        if (id) {
+        id ?
           await updateAppointment({
             variables: { updateAppointmentInput: { id, ...appointmentInput } }
           })
-        } else {
-          Alert.error(CANT_UPDATE_APPOINTMENT)
-        }
+          : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
-          variables: {
-            createAppointmentInput: { ...appointmentInput, }
-          }
+          variables: { createAppointmentInput: { ...appointmentInput } }
         })
       }
     }

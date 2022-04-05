@@ -4,43 +4,45 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import Login from "../pages/auth/login";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
+import { Roles } from "../pages/main/roles";
 import { PageNotFound } from "../pages/404";
 import Settings from "../pages/main/settings";
 import Dashboard from "../pages/main/dashboard";
+import { Profile } from "../pages/main/profile";
 import { Maintenance } from "../pages/maintenance";
+import { Signature } from "../pages/main/signature";
 import AddStaff from "../pages/main/staff/addStaff";
 import AddBill from "../pages/main/billing/addBill";
-import { Signature } from "../pages/main/signature";
 import Staff from "../pages/main/staff/staffListing";
+import { AddRole } from "../pages/main/roles/addRole";
 import ViewStaff from "../pages/main/staff/viewStaff";
 import { AutoLogout } from "../pages/main/autoLogout";
 import AddResult from "../pages/main/reports/addResult";
 import AddDoctor from "../pages/main/doctors/addDoctor";
 import { SetPassword } from "../pages/auth/setPassword";
-import ProfileComponent from "../components/main/profile";
-import { Cancellation } from "../pages/main/cancellation";
 import ViewDoctor from "../pages/main/doctors/viewDoctor";
 import ForgetPassword from "../pages/auth/forgetPassword";
+import { Cancellation } from "../pages/main/cancellation";
 import AddPatient from "../pages/main/patients/addPatient";
 import Doctors from "../pages/main/doctors/doctorsListing";
+import { Calendar } from "../pages/main/dashboard/calendar";
 import { ResetPassword } from "../pages/auth/resetPassword";
 import Invoices from "../pages/main/billing/invoicesListing";
 import ViewPatient from "../pages/main/patients/viewPatient";
-import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import { ChangePassword } from "../pages/main/changePassword";
+import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import { EmergencyAccess } from "../pages/main/emergencyAccess";
 import LabResults from "../pages/main/reports/labResultsListing";
-import ViewFacility from "../pages/main/facilities/viewFacility";
 import PatientDetail from "../pages/main/patients/patientDetail";
 import { AddPractice } from "../pages/main/practices/addPractice";
-import Facilities from "../pages/main/facilities/facilitiesListing";
-import { StartProject } from "../pages/main/dashboard/startProject";
+import { AddFacility } from "../pages/main/facilities/addFacility";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
 import { PublicAppointment } from "../pages/main/publicAppointments";
 import { DetailPractice } from "../pages/main/practices/detailPractice";
-import AddFacilityComponent from "../pages/main/facilities/addFacility";
+import { ViewFacility } from "../pages/main/facilities/viewFacility";
+import { Facilities } from "../pages/main/facilities/facilitiesListing";
 import { AppointmentFail } from "../pages/main/publicAppointments/fail";
 import { PracticeListing } from "../pages/main/practices/practiceListing";
 import { AddService } from "../pages/main/facilities/services/addService";
@@ -67,7 +69,9 @@ import {
   PATIENT_APPOINTMENT_CANCEL, PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT,
   SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE,
   SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, EMERGENCY_ACCESS_ROUTE, PRACTICE_DETAILS_ROUTE,
+   ROLES_ROUTE, CALENDAR_ROUTE, CHECK_IN_ROUTE,
 } from "../constants";
+import { CheckIn } from "../pages/main/checkIn";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -94,15 +98,17 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} />
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/:id`} component={ViewPractice} />
       <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={PracticeListing} />
-      <PrivateRoute exact path={PROFILE_ROUTE} component={ProfileComponent} />
+      <PrivateRoute exact path={PROFILE_ROUTE} component={Profile} />
       <PrivateRoute exact path={EMERGENCY_ACCESS_ROUTE} component={EmergencyAccess} />
       <PrivateRoute exact path={PRACTICE_DETAILS_ROUTE} component={DetailPractice} />
       <PrivateRoute exact path={SIGNATURE_ROUTE} component={Signature} />
       <PrivateRoute exact path={CANCELLATION_ROUTE} component={Cancellation} />
+      <PrivateRoute exact path={ROLES_ROUTE} component={Roles} />
+      <PrivateRoute exact path={`${ROLES_ROUTE}/new`} component={AddRole} />
       <PrivateRoute exact path={AUTO_LOGOUT_ROUTE} component={AutoLogout} />
       <PrivateRoute exact path={CHANGE_PASSWORD_ROUTE} component={ChangePassword} />
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
-      <PrivateRoute exact path={`${DASHBOARD_ROUTE}/start-project`} component={StartProject} />
+      <PrivateRoute exact path={`${CALENDAR_ROUTE}`} component={Calendar} />
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} />
@@ -115,6 +121,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
       <PrivateRoute exact path={VIEW_APPOINTMENTS_ROUTE} component={Appointments} />
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/new`} component={AddAppointment} />
+      <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id${CHECK_IN_ROUTE}`} component={CheckIn} />
       <PrivateRoute exact path={`${APPOINTMENTS_ROUTE}/:id`} component={ViewAppointment} />
       <PrivateRoute exact path={LAB_RESULTS_ROUTE} component={LabResults} />
       <PrivateRoute exact path={`${LAB_RESULTS_ROUTE}/new`} component={AddResult} />
@@ -125,7 +132,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${STAFF_ROUTE}/new`} component={AddStaff} />
       <PrivateRoute exact path={`${STAFF_ROUTE}/:id`} component={ViewStaff} />
       <PrivateRoute exact path={FACILITIES_ROUTE} component={Facilities} />
-      <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacilityComponent} />
+      <PrivateRoute exact path={`${FACILITIES_ROUTE}/new`} component={AddFacility} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id`} component={ViewFacility} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:id${FACILITY_SERVICES_ROUTE}`} component={Services} />
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/new`} component={AddService} />

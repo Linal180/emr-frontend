@@ -18,6 +18,8 @@ export const BLACK_FOUR = "#181C32";
 export const BLACK_FIVE = "#333333";
 export const BLACK_SIX = "#6C7293";
 export const BLACK_SEVEN = "#262D3D";
+export const BLACK_EIGHT = "#6B7280";
+export const BLACK_NINE = "#202020";
 
 export const WHITE = "#FFFFFF";
 export const WHITE_ONE = "#F2F3F5";
