@@ -564,7 +564,7 @@ export const CLAIM_FEED_TEXT = "Claim Feed";
 export const ROLE_DETAILS_TEXT = "Role Details";
 export const APPOINTMENT_INFO = "Appointment Info";
 export const EDIT_ROLE_TEXT = "Update Role";
-export const  SET_PERMISSIONS = "Set Permissions";
+export const SET_PERMISSIONS = "Set Permissions";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const LAB_PERMISSIONS_TEXT = "Lab Permissions";
@@ -997,6 +997,7 @@ export const RESET_PASSWORD_SUCCESS = "Your password has been changed successful
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
 export const SET_PASSWORD_TEXT_MESSAGE = "Set your password and login to your portal";
 export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully";
+export const PERMISSION_DENIED = "You don't have permission to access these resources";
 export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done";
 export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = "Cancelled appointment cant be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
@@ -2478,34 +2479,34 @@ export const CHECK_IN_STEPS = [
 ];
 
 export const APPOINTMENT_INFO_DATA = [
-{
-  name: APPOINTMENT_TYPE,
-  description: GENERAL,
-},
-{
-  name: FACILITY_LOCATION,
-  description: "Clay County Hospital",
-},
-{
-  name: PROVIDER_NAME,
-  description: "Dr. Michael Hall, MD",
-},
-{
-  name: REASON,
-  description: "High temperature",
-},
-{
-  name: "Checked in at",
-  description: "3:44 PM",
-},
-{
-  name: "Self Check in",
-  description: "No",
-},
-{
-  name: "Primary Insurance",
-  description: "United Health Ins.",
-},
+  {
+    name: APPOINTMENT_TYPE,
+    description: GENERAL,
+  },
+  {
+    name: FACILITY_LOCATION,
+    description: "Clay County Hospital",
+  },
+  {
+    name: PROVIDER_NAME,
+    description: "Dr. Michael Hall, MD",
+  },
+  {
+    name: REASON,
+    description: "High temperature",
+  },
+  {
+    name: "Checked in at",
+    description: "3:44 PM",
+  },
+  {
+    name: "Self Check in",
+    description: "No",
+  },
+  {
+    name: "Primary Insurance",
+    description: "United Health Ins.",
+  },
 ]
 
 export const ICD_TEN_CODES_DATA = [
@@ -2518,3 +2519,82 @@ export const ICD_TEN_CODES_DATA = [
     description: "Staphylococcal polyarthritis",
   }
 ]
+
+export enum USER_PERMISSIONS {
+  fetchAllUsers = 'fetchAllUsers',
+  fetchUser = 'fetchUser',
+  getUser = 'getUser',
+  searchUser = 'searchUser',
+  forgotPassword = 'forgotPassword',
+  deactivateUser = 'deactivateUser',
+  removeUser = 'removeUser',
+  updateUser = 'updateUser',
+  updateUserRole = 'updateUserRole',
+  createRole = 'createRole',
+  updateRole = 'updateRole',
+  getAllRoles = 'getAllRoles',
+  getRole = 'getRole',
+  removeRole = 'removeRole',
+  createAppointment = 'createAppointment',
+  createExternalAppointment = 'createExternalAppointment',
+  updateAppointment = 'updateAppointment',
+  updateAppointmentBillingStatus = 'updateAppointmentBillingStatus',
+  findAllAppointments = 'findAllAppointments',
+  getAppointment = 'getAppointment',
+  getDoctorAppointment = 'getDoctorAppointment',
+  removeAppointment = 'removeAppointment',
+  cancelAppointment = 'cancelAppointment',
+  getPatientAppointment = 'getPatientAppointment',
+  createFacility = 'createFacility',
+  updateFacility = 'updateFacility',
+  updateFacilityTimeZone = 'updateFacilityTimeZone',
+  findAllFacility = 'findAllFacility',
+  getFacility = 'getFacility',
+  removeFacility = 'removeFacility',
+  createService = 'createService',
+  updateService = 'updateService',
+  findAllServices = 'findAllServices',
+  getService = 'getService',
+  removeService = 'removeService',
+  createPatient = 'createPatient',
+  updatePatient = 'updatePatient',
+  patientInfo = 'patientInfo',
+  updatePatientProfile = 'updatePatientProfile',
+  sendInviteToPatient = 'sendInviteToPatient',
+  updatePatientProvider = 'updatePatientProvider',
+  findAllPatient = 'findAllPatient',
+  getPatient = 'getPatient',
+  removePatient = 'removePatient',
+  createPractice = 'createPractice',
+  updatePractice = 'updatePractice',
+  findAllPractices = 'findAllPractices',
+  getPractice = 'getPractice',
+  removePractice = 'removePractice',
+  createDoctor = 'createDoctor',
+  updateDoctor = 'updateDoctor',
+  findAllDoctor = 'findAllDoctor',
+  getDoctor = 'getDoctor',
+  removeDoctor = 'removeDoctor',
+  disableDoctor = 'disableDoctor',
+  createStaff = 'createStaff',
+  updateStaff = 'updateStaff',
+  findAllStaff = 'findAllStaff',
+  getStaff = 'getStaff',
+  removeStaff = 'removeStaff',
+  disableStaff = 'disableStaff',
+  createSchedule = 'createSchedule',
+  getDoctorSchedule = 'getDoctorSchedule',
+  getFacilitySchedule = 'getFacilitySchedule',
+  updateSchedule = 'updateSchedule',
+  findAllSchedules = 'findAllSchedules',
+  getSchedule = 'getSchedule',
+  getSlots = 'getSlots',
+  removeSchedule = 'removeSchedule',
+  addPatientProblem = 'addPatientProblem',
+  updatePatientProblem = 'updatePatientProblem',
+  findAllPatientProblem = 'findAllPatientProblem',
+  searchIcdCodes = 'searchIcdCodes',
+  searchSnoMedCodeByIcdCodes = 'searchSnoMedCodeByIcdCodes',
+  getPatientProblem = 'getPatientProblem',
+  removePatientProblem = 'removePatientProblem'
+}

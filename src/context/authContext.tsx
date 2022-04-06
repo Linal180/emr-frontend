@@ -2,7 +2,7 @@
 import { createContext, FC, useCallback, useEffect, useState } from "react";
 // graphql, interfaces/types and constants block
 import { TOKEN } from "../constants";
-import { getUserRole } from "../utils";
+import { getUserRole, isUserAdmin } from "../utils";
 import { AuthContextProps } from "../interfacesTypes";
 import {
   User, useGetLoggedInUserLazyQuery, Doctor, Staff, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery,
@@ -26,11 +26,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
 
-    onError() {
-    },
+    onError() { },
 
     onCompleted(data) {
       const { getDoctor } = data || {};
@@ -51,8 +48,6 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   const [getStaff] = useGetStaffUserLazyQuery({
     fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
 
     onError() { },
 
@@ -73,7 +68,6 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
     }
   });
 
-
   const [fetchUser, { loading }] = useGetLoggedInUserLazyQuery({
     nextFetchPolicy: "network-only",
 
@@ -92,21 +86,24 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
             const { roles, userId } = user;
 
             if (roles && userId) {
-              if (getUserRole(roles as RolesPayload['roles']) === 'doctor') {
-                await getDoctor({
-                  variables: { getDoctor: { id: userId } }
-                })
-              } else {
-                await getStaff({
-                  variables: { getStaff: { id: userId } }
-                })
-              }
+              try {
+                if (!isUserAdmin(roles as RolesPayload['roles'])) {
+                  if (getUserRole(roles as RolesPayload['roles']) === 'doctor') {
+                    await getDoctor({
+                      variables: { getDoctor: { id: userId } }
+                    })
+                  } else {
+                    await getStaff({
+                      variables: { getStaff: { id: userId } }
+                    })
+                  }
+                }
+              } catch (error) { }
 
               roles.map(role => {
                 const { rolePermissions } = role || {};
 
                 let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
-
                 return permissionsList && setUserPermissions(permissionsList as string[])
               })
             }
@@ -137,11 +134,11 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
     <AuthContext.Provider
       value={{
         user,
-        currentUser,
-        userPermissions,
         setUser,
         isLoggedIn,
+        currentUser,
         setIsLoggedIn,
+        userPermissions,
       }}
     >
       {children}

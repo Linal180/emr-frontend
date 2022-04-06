@@ -563,3 +563,7 @@ export const renderFacility = (facilityId: string, facilities: FacilitiesPayload
   }
   return ""
 }
+
+export const checkPermission = (permissions: string[], query: string): boolean => {
+  return permissions.includes(query)
+};

@@ -119,11 +119,8 @@ const AddForm = () => {
     formId && getForm({ variables: { getForm: { id: formId } } })
   }, [getForm, formId])
 
-  //drag end handler
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
-    console.log('result => ', result)
-    // dropped outside the list
     if (!destination) {
       return;
     }
