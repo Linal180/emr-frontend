@@ -4,6 +4,7 @@ import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { Control, ValidationRule, FieldValues, Ref, ControllerRenderProps } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { usStreet } from "smartystreets-javascript-sdk";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
@@ -821,4 +822,15 @@ export interface ShareModalTypes extends DialogTypes {
   actionText?: string;
   description?: string;
   handleCopy: () => void;
+}
+
+export interface SmartyUserData {
+  street: string;
+  address: string;
+}
+export interface SmartyModalComponentType {
+  setOpen: Function;
+  isOpen: boolean;
+  data: usStreet.Candidate[];
+  userData: SmartyUserData
 }
