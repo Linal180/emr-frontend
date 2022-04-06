@@ -300,6 +300,7 @@ export const CANCELLED_APPOINTMENT_DESCRIPTION =
   "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
 export const FACILITY_SCHEDULE = "Facility Schedule";
+export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
@@ -354,6 +355,8 @@ export const PRACTICE_TYPE = "Practice Type";
 export const PICK_DAY_TEXT = "Pick Day";
 export const PICK_TIME_TEXT = "Pick Time";
 export const FEDERAL_TAX_ID = "Federal Tax ID";
+export const FACILITY_HOURS_START = "Facility hours start";
+export const FACILITY_HOURS_END = "Facility hours end";
 export const RELATIONSHIP_WITH_PATIENT = "Relationship With Patient";
 export const CHECK_PAYABLE_TO = "Check Payable To";
 export const BANK_ACCOUNT = "Bank Account";
@@ -405,6 +408,9 @@ export const TEXT = "text";
 export const PLAN = "Plan";
 export const NONE = "None";
 export const NAME = "Name";
+export const SERIAL_NO = "S.No";
+export const TIME_FROM = "TIME:FROM";
+export const TIME_TO = "TIME:TO";
 export const VALUE = "Value";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 8;
@@ -743,6 +749,8 @@ export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const DELETE_DOCTOR_DESCRIPTION = "Confirm to delete doctor";
 export const DELETE_DOCTOR_SCHEDULE_DESCRIPTION =
   "Confirm to delete doctor schedule";
+export const DELETE_FACILITY_SCHEDULE_DESCRIPTION =
+  "Confirm to delete facility schedule";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
 export const DELETE_PATIENT_DESCRIPTION = "Confirm to delete patient";
 export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
@@ -884,6 +892,12 @@ export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
 export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointment-cancel`;
+
+// Facility Routes
+export const FACILITY_INFO_ROUTE = "facility-information";
+export const FACILITY_LOCATION_ROUTE = "facility-location";
+export const BILLING_PROFILE_ROUTE = "billing-profile";
+export const FACILITY_SCHEDULE_ROUTE = "facility-schedule";
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -2477,6 +2491,57 @@ export const CHECK_IN_STEPS = [
   CHECK_IN, PATIENT_INFO, INSURANCE, VITALS_TEXT, CHART_TEXT, BILLING_TEXT
 ];
 
+export const FacilityMenuNav = [
+  {
+    title: FACILITY_INFO,
+    linkTo: FACILITY_INFO_ROUTE,
+  },
+  {
+    title: FACILITY_LOCATION,
+    linkTo: FACILITY_LOCATION_ROUTE,
+  },
+  {
+    title: BILLING_PROFILE,
+    linkTo: BILLING_PROFILE_ROUTE,
+  },
+  {
+    title: FACILITY_SCHEDULE,
+    linkTo: FACILITY_SCHEDULE_ROUTE,
+  }
+];
+
+
+export const MAPPED_WEEK_DAYS = [
+  {
+    id: "Monday",
+    name: "Monday",
+  },
+  {
+    id: "Tuesday",
+    name: "Tuesday",
+  },
+  {
+    id: "Wednesday",
+    name: "Wednesday",
+  },
+  {
+    id: "Thursday",
+    name: "Thursday",
+  },
+  {
+    id: "Friday",
+    name: "Friday",
+  },
+  {
+    id: "Saturday",
+    name: "Saturday",
+  },
+  {
+    id: "Sunday",
+    name: "Sunday",
+  }
+]
+
 export const APPOINTMENT_INFO_DATA = [
   {
     name: APPOINTMENT_TYPE,
@@ -2505,8 +2570,7 @@ export const APPOINTMENT_INFO_DATA = [
   {
     name: "Primary Insurance",
     description: "United Health Ins.",
-  },
-]
+  }]
 
 export const ICD_TEN_CODES_DATA = [
   {
@@ -2515,7 +2579,7 @@ export const ICD_TEN_CODES_DATA = [
   },
   {
     code: "M00.09 ",
-    description: "Staphylococcal polyarthritis",
+    description: "Staphylococcal poly arthritis",
   }
 ]
 

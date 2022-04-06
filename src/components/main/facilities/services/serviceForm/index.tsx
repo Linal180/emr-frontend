@@ -28,7 +28,7 @@ import {
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
-  const [checked, setChecked] = useState(false);
+  const [checked, setChecked] = useState(true);
   const { facilityList } = useContext(ListContext)
   const methods = useForm<extendedServiceInput>({
     mode: "all",

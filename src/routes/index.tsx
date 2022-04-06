@@ -150,6 +150,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/add`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />
 
+
       <PublicRoute path={MAINTENANCE_ROUTE} component={Maintenance} exact />
 
       <Route component={PageNotFound} />

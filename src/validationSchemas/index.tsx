@@ -388,13 +388,34 @@ const facilityBasicSchema = {
   name: yup.string().required(requiredMessage(PRACTICE_NAME))
 }
 
+const facilitySchedulerBasicSchema = {
+  ...npiSchema,
+  ...contactSchema,
+  ...timeZoneSchema,
+  ...serviceCodeSchema,
+  ...mammographySchema,
+  ...cliaIdNumberSchema,
+  ...federalTaxIdSchema,
+  ...tamxonomyCodeSchema,
+  ...billingAddressSchema,
+  name: nameSchema(NAME)
+}
+
+export const facilitySchedulerSchema = yup.object({
+  ...facilitySchedulerBasicSchema
+})
+
+export const facilityTimeSchedulerSchema = yup.object({
+  ...scheduleTimeSchema
+})
+
 export const facilitySchema = yup.object({
   ...facilityBasicSchema
 })
 
 export const facilitySchemaWithPractice = yup.object({
   ...practiceIdSchema,
-  ...facilityBasicSchema,
+  ...facilitySchedulerBasicSchema,
 })
 
 export const basicDoctorSchema = {
@@ -550,7 +571,6 @@ export const settingSchema = yup.object({
 export const appointmentSchema = yup.object({
   ...patientIdSchema,
   ...serviceIdSchema,
-  ...providerIdSchema,
   ...facilityIdSchema,
   notes: yup.string(),
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
@@ -655,3 +675,11 @@ export const createFormBuilderSchema = yup.object({
     id: yup.string().required()
   }).test('', 'required', ({ id }) => !!id),
 });
+
+export const facilityScheduleSchema = yup.object({
+  ...scheduleTimeSchema,
+  day: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', requiredMessage(DAY), ({ id }) => !!id),
+})

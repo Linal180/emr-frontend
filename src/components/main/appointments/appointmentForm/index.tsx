@@ -224,12 +224,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [fetchAppointment, id, isEdit, setValue])
 
   useEffect(() => {
-    if (selectedFacility && selectedProvider && selectedService && date) {
+    if (selectedFacility && selectedService && date) {
+      const slotsInput = { offset, currentDate: date.toString(), serviceId: selectedService };
+
       getSlots({
         variables: {
-          getSlots: {
-            providerId: selectedProvider, offset, currentDate: date.toString(), serviceId: selectedService
-          }
+          getSlots: selectedProvider ? { providerId: selectedProvider, ...slotsInput } : { facilityId: selectedFacility, ...slotsInput }
         }
       })
     }
@@ -273,19 +273,20 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         scheduleEndDateTime: getTimestamps(scheduleEndDateTime), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: selectedFacility, patientId: selectedPatient, serviceId: selectedService,
-        providerId: selectedProvider, employment: employment || false, paymentType: PaymentType.Self,
-        billingStatus: BillingStatus.Due
+        employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
       };
+
+      const payload = selectedProvider ? { ...appointmentInput, providerId: selectedProvider } : { ...appointmentInput }
 
       if (isEdit) {
         id ?
           await updateAppointment({
-            variables: { updateAppointmentInput: { id, ...appointmentInput } }
+            variables: { updateAppointmentInput: { id, ...payload } }
           })
           : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
-          variables: { createAppointmentInput: { ...appointmentInput } }
+          variables: { createAppointmentInput: { ...payload } }
         })
       }
     }
@@ -340,7 +341,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <Selector
-                          isRequired
                           value={EMPTY_OPTION}
                           label={PROVIDER}
                           name="providerId"

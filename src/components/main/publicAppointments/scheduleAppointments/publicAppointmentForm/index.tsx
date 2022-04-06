@@ -206,7 +206,7 @@ const PublicAppointmentForm = (): JSX.Element => {
               <Button variant="contained" type="submit" color="primary" disabled={!agreed}>{BOOK_APPOINTMENT}</Button>
             </Box>
 
-            <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+            <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
               <Grid container spacing={3}>
                 <Grid lg={9} md={8} sm={6} xs={12} item>
                   <CardComponent cardTitle={SELECT_SERVICES}>
