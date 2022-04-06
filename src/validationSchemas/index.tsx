@@ -11,13 +11,13 @@ import {
   DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, USUAL_PROVIDER_ID, PATIENT,
   NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE, RELATIONSHIP, DAY,
   TIME_ZONE_TEXT, PREFERRED_NAME, PROVIDER, SSN_REGEX, SSN_VALIDATION_MESSAGE, ADDRESS_REGEX,
-  TAXONOMY_VALIDATION_MESSAGE, TID_VALIDATION_MESSAGE, MAX_DOCTOR_DOB_VALIDATION_MESSAGE, EIN_REGEX,
+  TAXONOMY_VALIDATION_MESSAGE, TID_VALIDATION_MESSAGE, EIN_REGEX, PREVIOUS_FIRST_NAME, SEX_AT_BIRTH,
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX, PHONE, MOBILE, ZIP_REGEX,
-  STRING_REGEX, MIDDLE_NAME, PREVIOUS_FIRST_NAME, MIN_DOCTOR_DOB_VALIDATION_MESSAGE, SEX_AT_BIRTH,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME,
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, minDobValidMessage, maxDobValidMessage,
+  STRING_REGEX, MIDDLE_NAME, DOCTOR, STAFF_TEXT, SERVICE_NAME_TEXT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -118,11 +118,11 @@ const dobSchema = {
     value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
 }
 
-const doctorDobSchema = {
-  dob: yup.string()
-    .test('', MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
+const doctorDobSchema = (label: string) => {
+  return yup.string()
+    .test('', minDobValidMessage(label),
       value => moment().diff(moment(value), 'years') >= 20)
-    .test('', MAX_DOCTOR_DOB_VALIDATION_MESSAGE,
+    .test('', maxDobValidMessage(label),
       value => moment().diff(moment(value), 'years') < 100)
 }
 
@@ -320,6 +320,7 @@ export const contactSchema = {
   fax: notRequiredPhone(FAX),
   country: countrySchema(false),
   phone: notRequiredPhone(PHONE),
+  mobile: notRequiredPhone(MOBILE),
   city: notRequiredStringOnly(CITY),
   address: addressValidation(ADDRESS, false),
   address2: addressValidation(ADDRESS, false),
@@ -358,12 +359,12 @@ export const extendedContactSchema = yup.object({
 })
 
 const staffBasicSchema = {
-  ...dobSchema,
   ...genderSchema,
   ...roleTypeSchema,
   ...facilityIdSchema,
   ...firstLastNameSchema,
   username: yup.string(),
+  dob: doctorDobSchema(STAFF_TEXT),
   phone: notRequiredPhone(PHONE),
   mobile: yup.string().min(10, MinLength(MOBILE_NUMBER, 10)).max(15, MaxLength(MOBILE_NUMBER, 15)),
 }
@@ -422,7 +423,6 @@ export const basicDoctorSchema = {
   ...npiSchema,
   ...upinSchema,
   ...deaDateSchema,
-  ...doctorDobSchema,
   ...specialtySchema,
   ...facilityIdSchema,
   ...licenseDateSchema,
@@ -435,6 +435,7 @@ export const basicDoctorSchema = {
   dpsCtpNumber: yup.string(),
   stateLicense: yup.string(),
   emcProviderId: yup.string(),
+  dob: doctorDobSchema(DOCTOR),
   campusGrpNumber: yup.string(),
   blueShildNumber: yup.string(),
   providerIntials: yup.string(),
@@ -458,7 +459,7 @@ export const doctorSchema = yup.object({
 
 export const facilityServicesSchema = {
   ...facilityIdSchema,
-  name: nameSchema(NAME),
+  name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
   price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(2, MinLength(PRICE, 2))
     .max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
   duration: yup.string()

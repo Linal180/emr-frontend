@@ -12,13 +12,12 @@ import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PatientAction } from "../reducers/patientReducer";
 import {
-  LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
+  LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
-  SectionsInputs
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor, 
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, 
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -40,6 +39,8 @@ export interface CalendarChart {
 export interface AuthContextProps {
   user: User | null;
   isLoggedIn: boolean;
+  currentUser: Doctor | Staff | null;
+  userPermissions: string[],
   setUser: (user: User | null) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
 }

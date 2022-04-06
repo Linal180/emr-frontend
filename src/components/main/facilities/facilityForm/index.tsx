@@ -34,7 +34,7 @@ import {
   SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO,
   NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
   BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FACILITY_SCHEDULE, FacilityMenuNav, FACILITY_HOURS_END,
-  FACILITY_HOURS_START, START_TIME, FACILITY_REGISTRATION
+  FACILITY_HOURS_START, FACILITY_REGISTRATION
 } from "../../../../constants";
 import DoctorScheduleForm from './schedules';
 
@@ -80,7 +80,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               tamxonomyCode, serviceCode, timeZone, billingAddress, contacts, practice, startTime, endTime
             } = facility;
             const { name: practiceName } = practice || {};
-            console.log(START_TIME, startTime);
 
             dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
 

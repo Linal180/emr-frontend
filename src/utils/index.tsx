@@ -16,7 +16,7 @@ import {
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES,
+  USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE,
 } from "../constants";
 
 export const handleLogout = () => {
@@ -118,6 +118,18 @@ export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   }
 
   return isSupeAdmin;
+}
+
+export const getUserRole = (roles: RolesPayload['roles']) => {
+  if (roles) {
+    for (let role of roles) {
+      const {role: roleName} = role || {};
+
+      if (roleName === 'doctor') return 'doctor';
+    }
+  }
+  
+  return 'staff'
 }
 
 export const recordNotFound = (record: string = "Record"): string => {
@@ -409,7 +421,7 @@ export const activeClass = (pathname: string): string => {
       return 'inPractice';
 
     case VIEW_APPOINTMENTS_ROUTE:
-    case START_PROJECT_ROUTE:
+    case CALENDAR_ROUTE:
       return "inAppointment"
 
     case PATIENTS_ROUTE:
@@ -556,3 +568,7 @@ export const renderFacility = (facilityId: string, facilities: FacilitiesPayload
   }
   return ""
 }
+
+export const checkPermission = (permissions: string[], query: string): boolean => {
+  return permissions.includes(query)
+};

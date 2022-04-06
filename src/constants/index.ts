@@ -53,6 +53,7 @@ export const YOU_ENTER = "You have entered:";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
+export const TIME = "Time";
 export const OPTION_TEXT = "Option";
 export const FORM_TEXT = "Form";
 export const FORM_COPY = "Copy form";
@@ -893,7 +894,6 @@ export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
-export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
@@ -922,8 +922,8 @@ export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optiona
 export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
 export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
 export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
-export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
-export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be less that 100-years";
+export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
+export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
@@ -1017,6 +1017,7 @@ export const RESET_PASSWORD_SUCCESS = "Your password has been changed successful
 export const LOGIN_MESSAGE = "Please sign in to explore all that BOCA+ has to offer.";
 export const SET_PASSWORD_TEXT_MESSAGE = "Set your password and login to your portal";
 export const APPOINTMENT_UPDATED_SUCCESSFULLY = "Appointment is updated successfully";
+export const PERMISSION_DENIED = "You don't have permission to access these resources";
 export const PAYMENT_CANT_DONE = "Patient not exist in system, so payment can't be done";
 export const CANCELLED_APPOINTMENT_EDIT_MESSAGE = "Cancelled appointment cant be edited!";
 export const RESET_PASSWORD_TEXT_MESSAGE = "Reset your password and login to your portal";
@@ -1163,7 +1164,7 @@ export const APPOINTMENT_MENU_ITEMS = [
   },
   {
     name: CALENDAR_VIEW_TEXT,
-    link: START_PROJECT_ROUTE,
+    link: CALENDAR_ROUTE,
   },
 ];
 
@@ -2588,3 +2589,82 @@ export const ICD_TEN_CODES_DATA = [
     description: "Staphylococcal poly arthritis",
   }
 ]
+
+export enum USER_PERMISSIONS {
+  fetchAllUsers = 'fetchAllUsers',
+  fetchUser = 'fetchUser',
+  getUser = 'getUser',
+  searchUser = 'searchUser',
+  forgotPassword = 'forgotPassword',
+  deactivateUser = 'deactivateUser',
+  removeUser = 'removeUser',
+  updateUser = 'updateUser',
+  updateUserRole = 'updateUserRole',
+  createRole = 'createRole',
+  updateRole = 'updateRole',
+  getAllRoles = 'getAllRoles',
+  getRole = 'getRole',
+  removeRole = 'removeRole',
+  createAppointment = 'createAppointment',
+  createExternalAppointment = 'createExternalAppointment',
+  updateAppointment = 'updateAppointment',
+  updateAppointmentBillingStatus = 'updateAppointmentBillingStatus',
+  findAllAppointments = 'findAllAppointments',
+  getAppointment = 'getAppointment',
+  getDoctorAppointment = 'getDoctorAppointment',
+  removeAppointment = 'removeAppointment',
+  cancelAppointment = 'cancelAppointment',
+  getPatientAppointment = 'getPatientAppointment',
+  createFacility = 'createFacility',
+  updateFacility = 'updateFacility',
+  updateFacilityTimeZone = 'updateFacilityTimeZone',
+  findAllFacility = 'findAllFacility',
+  getFacility = 'getFacility',
+  removeFacility = 'removeFacility',
+  createService = 'createService',
+  updateService = 'updateService',
+  findAllServices = 'findAllServices',
+  getService = 'getService',
+  removeService = 'removeService',
+  createPatient = 'createPatient',
+  updatePatient = 'updatePatient',
+  patientInfo = 'patientInfo',
+  updatePatientProfile = 'updatePatientProfile',
+  sendInviteToPatient = 'sendInviteToPatient',
+  updatePatientProvider = 'updatePatientProvider',
+  findAllPatient = 'findAllPatient',
+  getPatient = 'getPatient',
+  removePatient = 'removePatient',
+  createPractice = 'createPractice',
+  updatePractice = 'updatePractice',
+  findAllPractices = 'findAllPractices',
+  getPractice = 'getPractice',
+  removePractice = 'removePractice',
+  createDoctor = 'createDoctor',
+  updateDoctor = 'updateDoctor',
+  findAllDoctor = 'findAllDoctor',
+  getDoctor = 'getDoctor',
+  removeDoctor = 'removeDoctor',
+  disableDoctor = 'disableDoctor',
+  createStaff = 'createStaff',
+  updateStaff = 'updateStaff',
+  findAllStaff = 'findAllStaff',
+  getStaff = 'getStaff',
+  removeStaff = 'removeStaff',
+  disableStaff = 'disableStaff',
+  createSchedule = 'createSchedule',
+  getDoctorSchedule = 'getDoctorSchedule',
+  getFacilitySchedule = 'getFacilitySchedule',
+  updateSchedule = 'updateSchedule',
+  findAllSchedules = 'findAllSchedules',
+  getSchedule = 'getSchedule',
+  getSlots = 'getSlots',
+  removeSchedule = 'removeSchedule',
+  addPatientProblem = 'addPatientProblem',
+  updatePatientProblem = 'updatePatientProblem',
+  findAllPatientProblem = 'findAllPatientProblem',
+  searchIcdCodes = 'searchIcdCodes',
+  searchSnoMedCodeByIcdCodes = 'searchSnoMedCodeByIcdCodes',
+  getPatientProblem = 'getPatientProblem',
+  removePatientProblem = 'removePatientProblem'
+}

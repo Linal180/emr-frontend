@@ -20,7 +20,7 @@ import {
   PracticesPayload, useFindAllPracticesLazyQuery, useRemovePracticeMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
+  ACTION, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
   CANT_DELETE_PRACTICE, DATE_ADDED, 
 } from "../../../../constants";
 
@@ -124,7 +124,6 @@ const PracticeTable: FC = (): JSX.Element => {
           <TableHead>
             <TableRow>
               {renderTh(NAME)}
-              {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(DATE_ADDED)}
               {renderTh(ACTION, "center")}
@@ -134,16 +133,11 @@ const PracticeTable: FC = (): JSX.Element => {
           <TableBody>
             {
               practices?.map(practice => {
-                const { id, name, phone, createdAt, facilities } = practice || {};
-                const primaryFacility = facilities?.filter(facility => facility.isPrimary)[0]
-                const { contacts } = primaryFacility || {};
-                const primaryContact = contacts?.filter(contact => contact.primaryContact)[0]
-                const { email } = primaryContact || {}
+                const { id, name, phone, createdAt } = practice || {};
 
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
                     <TableCell scope="row">

@@ -23,8 +23,8 @@ import {
   useGetAppointmentsLazyQuery
 } from "../../generated/graphql";
 import {
-  ACTION, DOCTOR, PATIENT, DATE, DURATION, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, APPOINTMENT, MINUTES, CANCEL_TIME_EXPIRED_MESSAGE,
+  ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
+  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
 } from "../../constants";
 
 dotenv.config()
@@ -176,7 +176,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
               {!doctorId && renderTh(DOCTOR)}
               {renderTh(PATIENT)}
               {renderTh(DATE)}
-              {renderTh(DURATION)}
+              {renderTh(TIME)}
               {renderTh(FACILITY)}
               {renderTh(STATUS)}
               {renderTh(ACTION, "center")}
@@ -192,11 +192,11 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             ) : (
               appointments?.map((appointment: AppointmentPayload['appointment']) => {
                 const {
-                  id, scheduleStartDateTime, provider, facility, patient, appointmentType, status
+                  id, scheduleStartDateTime, provider, facility, patient, appointmentType, status, scheduleEndDateTime
                 } = appointment || {};
                 const { name } = facility || {};
                 const { firstName, lastName } = patient || {};
-                const { duration, name: type } = appointmentType || {};
+                const { name: type } = appointmentType || {};
                 const { firstName: doctorFN, lastName: doctorLN } = provider || {};
                 const { text, bgColor, textColor } = appointmentStatus(status || '')
 
@@ -207,10 +207,12 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
 
                     <TableCell scope="row">
-                      {getFormattedDate(scheduleStartDateTime || '')} {getStandardTime(scheduleStartDateTime || '')}
+                      {getFormattedDate(scheduleStartDateTime || '')}
                     </TableCell>
 
-                    <TableCell scope="row">{duration} {MINUTES}</TableCell>
+                    <TableCell scope="row">
+                      {getStandardTime(scheduleStartDateTime || '')} - {getStandardTime(scheduleEndDateTime || '')}
+                    </TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box className={classes.status} component='span' bgcolor={bgColor} color={textColor}>

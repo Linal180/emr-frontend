@@ -20,12 +20,13 @@ import {
 import {
   DESCRIPTION, EDIT_ROLE_TEXT, FORBIDDEN_EXCEPTION, MODULES, MODULE_TYPES, PERMISSIONS, PERMISSIONS_SET,
   ROLES_ROUTE, ROLE_ALREADY_EXIST, ROLE_CREATED, ROLE_DETAILS_TEXT, ROLE_NAME, ROLE_NOT_FOUND, ROLE_UPDATED,
-  ADD_ROLE_TEXT, SAVE_TEXT, SET_PERMISSIONS, CANT_UPDATE_SYSTEM_ROLES,
+  ADD_ROLE_TEXT, SAVE_TEXT, SET_PERMISSIONS,
 } from "../../../../constants";
 
 const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { permissions } = useContext(PermissionContext)
   const [ids, setIds] = useState<string[]>([])
+  const [custom, setCustom] = useState<boolean>(true)
 
   const methods = useForm<RoleItemInput>({
     mode: "all", resolver: yupResolver(roleSchema)
@@ -65,25 +66,21 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             if (role && status && status === 200) {
               const { role: roleName, description, rolePermissions, customRole } = role;
 
-              if (customRole) {
-                roleName && setValue('role', roleName)
-                description && setValue('description', description)
-                let permissionIds: SetStateAction<string[]> = []
+              setCustom(customRole as boolean)
+              roleName && setValue('role', roleName)
+              description && setValue('description', description)
+              let permissionIds: SetStateAction<string[]> = []
 
-                if (rolePermissions && rolePermissions.length > 0) {
-                  permissionIds = rolePermissions.map(rolePermission => {
-                    const { permission } = rolePermission || {}
-                    const { id: permissionId } = permission || {}
+              if (rolePermissions && rolePermissions.length > 0) {
+                permissionIds = rolePermissions.map(rolePermission => {
+                  const { permission } = rolePermission || {}
+                  const { id: permissionId } = permission || {}
 
-                    return permissionId ? permissionId : ''
-                  })
-                }
-
-                setIds(permissionIds)
-              } else {
-                Alert.error(CANT_UPDATE_SYSTEM_ROLES)
-                history.push(ROLES_ROUTE)
+                  return permissionId ? permissionId : ''
+                })
               }
+
+              setIds(permissionIds)
             }
           }
         }
@@ -184,7 +181,10 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box pb={2.25} display='flex' justifyContent='space-between' alignItems='center'>
           <Typography variant='h4'>{isEdit ? EDIT_ROLE_TEXT : ADD_ROLE_TEXT}</Typography>
-          <Button variant='contained' color='primary' disabled={isLoading} type='submit'>{SAVE_TEXT}</Button>
+
+          {custom &&
+            <Button variant='contained' color='primary' disabled={isLoading} type='submit'>{SAVE_TEXT}</Button>
+          }
         </Box>
 
         <Box maxHeight="calc(100vh - 280px)" className="overflowY-auto">
@@ -236,7 +236,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 <Box p={4}>
                   <Box display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{module} {PERMISSIONS}</Typography>
-                    {index === 0 &&
+                    {index === 0 && custom &&
                       <Button onClick={setPermissions} variant='contained' color='inherit' disabled={isLoading}
                         className='blue-button-new' >{SET_PERMISSIONS}</Button>
                     }
@@ -254,7 +254,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <FormGroup>
                               <FormControlLabel
                                 control={
-                                  <Checkbox color="primary" checked={ids.includes(id || '')}
+                                  <Checkbox disabled={!custom} color="primary" checked={ids.includes(id || '')}
                                     onChange={handleChangeForCheckBox(id || '')} />
                                 }
                                 label={formatPermissionName(name || '')}
