@@ -40,6 +40,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element =
               error={invalid}
               helperText={invalid && message}
               autoOk
+              disableFuture
               clearable
               maxDate="2100-01-31"
             />

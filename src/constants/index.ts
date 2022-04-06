@@ -902,8 +902,8 @@ export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optiona
 export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
 export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
 export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
-export const MIN_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be more that 20-years";
-export const MAX_DOCTOR_DOB_VALIDATION_MESSAGE = "Doctor's age should be less that 100-years";
+export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
+export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
 export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";

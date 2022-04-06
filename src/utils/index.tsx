@@ -120,6 +120,18 @@ export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   return isSupeAdmin;
 }
 
+export const getUserRole = (roles: RolesPayload['roles']) => {
+  if (roles) {
+    for (let role of roles) {
+      const {role: roleName} = role || {};
+
+      if (roleName === 'doctor') return 'doctor';
+    }
+  }
+  
+  return 'staff'
+}
+
 export const recordNotFound = (record: string = "Record"): string => {
   return `${record} not found.`
 };
