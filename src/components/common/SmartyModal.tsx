@@ -38,7 +38,7 @@ const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, user
         {data?.length > 0 &&
           <FormControl component="fieldset" className={classes.formControl}>
             <FormLabel component="legend" className={classes.smallText}>{data?.length} {POSSIBLE_MATCH}</FormLabel>
-            <RadioGroup name="address" value={addValue} onChange={handleChange} >
+            <RadioGroup name="address" value={addValue} onChange={handleChange}>
               {data?.map((add) => {
                 const { deliveryLine1, lastLine } = add || {}
                 return (

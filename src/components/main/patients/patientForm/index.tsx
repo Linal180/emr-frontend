@@ -44,7 +44,7 @@ import {
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY,
+  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER,
 } from "../../../../constants";
 import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
 import SmartyModal from '../../../common/SmartyModal'
@@ -500,7 +500,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       }
     }
     else {
-      Alert.error('Please enter zipcode.')
+      Alert.error(ZIP_CODE_ENTER)
     }
   }, [basicZipCode, setValue])
 
@@ -521,7 +521,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       }
     }
     else {
-      Alert.error('Please enter zipcode & city')
+      Alert.error(ZIP_CODE_AND_CITY)
     }
   }
 
