@@ -76,6 +76,7 @@ export type Appointment = {
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
   patientProblem?: Maybe<Array<PatientProblems>>;
+  patientVitals?: Maybe<Array<PatientVitals>>;
   paymentType: PaymentType;
   primaryInsurance?: Maybe<Scalars['String']>;
   provider?: Maybe<Doctor>;
@@ -1045,6 +1046,12 @@ export enum Homebound {
   Yes = 'YES'
 }
 
+/** The patient's head circumference unit type assigned */
+export enum HeadCircumferenceType {
+  Centimeter = 'CENTIMETER',
+  Inch = 'INCH'
+}
+
 export type IcdCodes = {
   __typename?: 'ICDCodes';
   code: Scalars['String'];
@@ -1636,6 +1643,7 @@ export type Patient = {
   patientNote?: Maybe<Scalars['String']>;
   patientProblems?: Maybe<Array<PatientProblems>>;
   patientRecord?: Maybe<Scalars['String']>;
+  patientVitals?: Maybe<Array<PatientVitals>>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission: Scalars['Boolean'];
   preferredCommunicationMethod: Communicationtype;
@@ -1730,6 +1738,31 @@ export type PatientProblemsPayload = {
   pagination?: Maybe<PaginationPayload>;
   patientProblems?: Maybe<Array<Maybe<PatientProblems>>>;
   response?: Maybe<ResponsePayload>;
+};
+
+export type PatientVitals = {
+  __typename?: 'PatientVitals';
+  PainRange?: Maybe<Scalars['String']>;
+  PatientBMI?: Maybe<Scalars['String']>;
+  PatientHeight?: Maybe<Scalars['String']>;
+  PatientWeight?: Maybe<Scalars['String']>;
+  addedBy?: Maybe<Staff>;
+  appointment?: Maybe<Appointment>;
+  bloodPressure?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  headCircumference: HeadCircumferenceType;
+  id: Scalars['String'];
+  oxygenSaturation?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientHeadCircumference?: Maybe<Scalars['String']>;
+  patientTemperature?: Maybe<Scalars['String']>;
+  respiratoryRate?: Maybe<Scalars['String']>;
+  smokingStatus: SmokingStatus;
+  temperatureUnitType: TempUnitType;
+  unitType: UnitType;
+  updatedAt?: Maybe<Scalars['String']>;
+  vitalCreationDate?: Maybe<Scalars['String']>;
+  weightUnit: UnitType;
 };
 
 export type PatientsPayload = {
@@ -2498,6 +2531,16 @@ export type SlotsPayload = {
   slots?: Maybe<Array<Slots>>;
 };
 
+/** The patient's smoking status type assigned */
+export enum SmokingStatus {
+  CurrentEverydaySmoker = 'CURRENT_EVERYDAY_SMOKER',
+  CurrentSomedaySmoker = 'CURRENT_SOMEDAY_SMOKER',
+  FormerSmoker = 'FORMER_SMOKER',
+  NeverSmocked = 'NEVER_SMOCKED',
+  SmokerCurrentStatusUnknown = 'SMOKER_CURRENT_STATUS_UNKNOWN',
+  UnknownIfEverSmoked = 'UNKNOWN_IF_EVER_SMOKED'
+}
+
 export type SnoMedCodes = {
   __typename?: 'SnoMedCodes';
   active?: Maybe<Scalars['String']>;
@@ -2543,6 +2586,7 @@ export type Staff = {
   lastName: Scalars['String'];
   mobile?: Maybe<Scalars['String']>;
   patientProblem?: Maybe<Array<PatientProblems>>;
+  patientVitals?: Maybe<PatientVitals>;
   phone?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
@@ -2565,6 +2609,12 @@ export enum Transactionstatus {
   Due = 'DUE',
   Paid = 'PAID',
   Refund = 'REFUND'
+}
+
+/** The patient's temperature unit type assigned */
+export enum TempUnitType {
+  DegC = 'DEG_C',
+  DegF = 'DEG_F'
 }
 
 export type TransactionPayload = {
@@ -2604,6 +2654,12 @@ export type TwoFactorInput = {
   phone?: Maybe<Scalars['String']>;
   userId: Scalars['String'];
 };
+
+/** The patient's vital unit type assigned */
+export enum UnitType {
+  Centimeter = 'CENTIMETER',
+  Inch = 'INCH'
+}
 
 export type UpdateAppointmentBillingStatusInput = {
   billingStatus: Scalars['String'];
