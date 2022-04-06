@@ -8,6 +8,7 @@ import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PatientAction } from "../reducers/patientReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
@@ -391,6 +392,8 @@ export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
   & { serviceId: SelectorOption } & { day: SelectorOption };
 
+export type FacilityScheduleInputProps = CreateScheduleInput & { day: SelectorOption };
+
 interface CustomBillingAddressInputs {
   billingFax: string;
   billingCity: string;
@@ -705,6 +708,13 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
   doctorFacilityId: string | undefined;
 }
 
+export interface FacilityScheduleModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  reload: Function;
+  facilityDispatcher: Dispatch<FacilityAction>;
+  facilityId: string | undefined;
+}
+
 export interface DaySchedule {
   day: Days;
   slots: Schedule[];
@@ -713,6 +723,11 @@ export interface DaySchedule {
 export interface DoctorScheduleProps {
   schedule: Schedule;
   dispatcher: Dispatch<DoctorAction>;
+}
+
+export interface FacilityScheduleProps {
+  schedule: Schedule;
+  dispatcher: Dispatch<FacilityAction>;
 }
 
 export interface AppointmentsTableProps {
@@ -752,9 +767,6 @@ export interface PortalTableProps {
 }
 
 export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
-
-export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
-  & { serviceId: SelectorOption };
 
 export interface ColumnTypes {
   COL_1: string;

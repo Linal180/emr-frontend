@@ -675,3 +675,11 @@ export const createFormBuilderSchema = yup.object({
     id: yup.string().required()
   }).test('', 'required', ({ id }) => !!id),
 });
+
+export const facilityScheduleSchema = yup.object({
+  ...scheduleTimeSchema,
+  day: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', requiredMessage(DAY), ({ id }) => !!id),
+})

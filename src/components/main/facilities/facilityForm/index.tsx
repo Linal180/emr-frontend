@@ -13,7 +13,6 @@ import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
-import FacilityScheduleCard from '../facilityForm/FacilityScheduleCard';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
@@ -37,6 +36,7 @@ import {
   BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FACILITY_SCHEDULE, FacilityMenuNav, FACILITY_HOURS_END,
   FACILITY_HOURS_START, START_TIME, FACILITY_REGISTRATION
 } from "../../../../constants";
+import DoctorScheduleForm from './schedules';
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext);
@@ -679,7 +679,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       </TabPanel>
 
       <TabPanel value='2'>
-        <FacilityScheduleCard />
+        <DoctorScheduleForm />
       </TabPanel>
     </TabContext>
   );
