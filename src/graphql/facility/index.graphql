@@ -55,6 +55,8 @@ query GetFacility($getFacility: GetFacility!){
       npi
       practiceId
       serviceCode
+      startTime
+      endTime
       createdAt
       updatedAt
 
@@ -129,6 +131,10 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
       name
       status
       message
+    }
+
+    facility {
+      id
     }
   }
 }

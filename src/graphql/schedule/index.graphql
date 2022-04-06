@@ -132,3 +132,30 @@ mutation RemoveSchedule($removeSchedule: RemoveSchedule!){
     }
   }
 }
+
+query GetFacilitySchedule($getFacilitySchedule: GetFacilitySchedule!){
+  getFacilitySchedule(getFacilitySchedule: $getFacilitySchedule){
+    response {
+      error
+      status
+      message
+    }
+    
+		schedules {
+      id
+      startAt
+      endAt
+      createdAt
+      updatedAt
+            
+      scheduleServices {
+        id
+        
+        service{
+          id
+          name
+        }
+      }
+    }
+  }
+}
