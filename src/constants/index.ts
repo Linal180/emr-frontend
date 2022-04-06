@@ -43,6 +43,13 @@ export const SUPER_ADMIN = 'super-admin';
 export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
+export const Ok_TEXT = "OK";
+export const ZIP_CODE_AND_CITY = "Please enter zipcode & city";
+export const ZIP_CODE_ENTER = "Please enter zipcode";
+export const POSSIBLE_MATCH = "possible address match";
+export const CHECK_ADDRESS = "Check Address";
+export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
+export const YOU_ENTER = "You have entered:";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
