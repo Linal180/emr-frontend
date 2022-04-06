@@ -17,7 +17,7 @@ import {
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, minDobValidMessage, maxDobValidMessage,
-  STRING_REGEX, MIDDLE_NAME, DOCTOR, STAFF_TEXT,
+  STRING_REGEX, MIDDLE_NAME, DOCTOR, STAFF_TEXT, SERVICE_NAME_TEXT,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -459,7 +459,7 @@ export const doctorSchema = yup.object({
 
 export const facilityServicesSchema = {
   ...facilityIdSchema,
-  name: nameSchema(NAME),
+  name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
   price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(2, MinLength(PRICE, 2))
     .max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
   duration: yup.string()

@@ -9,7 +9,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
 import { formatRoleName, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { NAME, DESCRIPTION, PAGE_LIMIT, N_A, ROLES_ROUTE } from "../../../../constants";
+import { NAME, DESCRIPTION, N_A, ROLES_ROUTE } from "../../../../constants";
 import { RolesPayload, useFindAllRolesLazyQuery } from "../../../../generated/graphql";
 import { Link } from "react-router-dom";
 
@@ -21,7 +21,7 @@ const RolesTable: FC = (): JSX.Element => {
 
   const [findAllRoles, { loading, error }] = useFindAllRolesLazyQuery({
     variables: {
-      roleInput: { paginationOptions: { page, limit: PAGE_LIMIT } }
+      roleInput: { paginationOptions: { page, limit: 10 } }
     },
 
     notifyOnNetworkStatusChange: true,

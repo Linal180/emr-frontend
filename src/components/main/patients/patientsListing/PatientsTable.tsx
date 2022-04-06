@@ -19,7 +19,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION,
-  PATIENTS_ROUTE, NAME, CITY, COUNTRY, PATIENT
+  PATIENTS_ROUTE, NAME, CITY, PATIENT
 } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
@@ -133,11 +133,11 @@ const PatientsTable: FC = (): JSX.Element => {
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
+              {renderTh('Chart ID')}
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(CITY)}
-              {renderTh(COUNTRY)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -150,14 +150,15 @@ const PatientsTable: FC = (): JSX.Element => {
                 </TableCell>
               </TableRow>
             ) : (
-              patients?.map((record: PatientPayload['patient'], index: number) => {
-                const { id, firstName, lastName, email, contacts } = record || {};
+              patients?.map((record: PatientPayload['patient']) => {
+                const { id, patientRecord, firstName, lastName, email, contacts } = record || {};
 
                 const patientContact = contacts && contacts.filter(contact => contact.primaryContact)[0];
                 const { phone, city, country } = patientContact || {};
 
                 return (
                   <TableRow key={id}>
+                    <TableCell scope="row">{patientRecord}</TableCell>
                     <TableCell scope="row">
                       <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
                         {`${firstName} ${lastName}`}
