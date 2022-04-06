@@ -9,6 +9,7 @@ import { usStreet } from "smartystreets-javascript-sdk";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PatientAction } from "../reducers/patientReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
@@ -138,6 +139,12 @@ export interface ConfirmationTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
+}
+
+export interface ConfirmationDaysTypes extends DialogTypes {
+  title?: string;
+  id?: string
+  isEdit?: boolean
 }
 
 export interface GraphModalProps extends DialogTypes {
@@ -385,6 +392,8 @@ export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | 
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
   & { serviceId: SelectorOption } & { day: SelectorOption };
+
+export type FacilityScheduleInputProps = CreateScheduleInput & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingFax: string;
@@ -700,6 +709,13 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
   doctorFacilityId: string | undefined;
 }
 
+export interface FacilityScheduleModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  reload: Function;
+  facilityDispatcher: Dispatch<FacilityAction>;
+  facilityId: string | undefined;
+}
+
 export interface DaySchedule {
   day: Days;
   slots: Schedule[];
@@ -708,6 +724,11 @@ export interface DaySchedule {
 export interface DoctorScheduleProps {
   schedule: Schedule;
   dispatcher: Dispatch<DoctorAction>;
+}
+
+export interface FacilityScheduleProps {
+  schedule: Schedule;
+  dispatcher: Dispatch<FacilityAction>;
 }
 
 export interface AppointmentsTableProps {
@@ -748,7 +769,6 @@ export interface PortalTableProps {
 
 export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
 
-//form builder interfaces
 export interface ColumnTypes {
   COL_1: string;
   COL_2: string;
@@ -812,7 +832,7 @@ export interface FormBuilderPreviewProps {
 }
 
 export interface FieldComponentProps {
-	item: FieldsInputs;
+  item: FieldsInputs;
   field?: ControllerRenderProps;
   isCreating?: boolean;
 }

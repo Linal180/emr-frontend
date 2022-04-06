@@ -372,6 +372,11 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
   return daySchedules;
 };
 
+export const setTime = (time: string): string => {
+  const Time = moment(time, "hh:mm").format('lll').toString()
+  return Time
+}
+
 export const setTimeDay = (time: string, day: string): string => {
   const validTime = moment(time, "hh:mm").format('lll').toString()
   const date = new Date(validTime)

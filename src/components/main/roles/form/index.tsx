@@ -4,10 +4,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Card, Grid, Typography, Checkbox, FormControlLabel, FormGroup, Button, } from "@material-ui/core";
 // components block
-import Alert from '../../../common/Alert';
 import InputController from '../../../../controller';
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // constants and types block
+import Alert from '../../../common/Alert';
 import history from '../../../../history';
 import { PermissionContext } from '../../../../context';
 import { formatPermissionName } from '../../../../utils';

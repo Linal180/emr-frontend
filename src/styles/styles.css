@@ -16,7 +16,8 @@ a {
   color: #3f51b5;
 }
 
-img, svg {
+img,
+svg {
   max-width: 100%;
 }
 
@@ -352,7 +353,10 @@ body .MuiTabPanel-root {
   min-height: 80px !important;
 }
 
-.braintree-option, .braintree-sheet, .braintree-sheet__header, .braintree-upper-container:before {
+.braintree-option,
+.braintree-sheet,
+.braintree-sheet__header,
+.braintree-upper-container:before {
   border: none !important;
   background-color: #ffffff !important;
 }
@@ -361,11 +365,17 @@ body .MuiTabPanel-root {
   background-color: #f3f4f6 !important;
 }
 
-.braintree-option:first-child, .braintree-sheet__container, .braintree-large-button {
+.braintree-option:first-child,
+.braintree-sheet__container,
+.braintree-large-button {
   margin-bottom: 2rem;
 }
 
 .braintree-sheet__content--form .braintree-form__field-group .braintree-form__field .braintree-form__hosted-field {
   border: none !important;
   background-color: #f3f4f6 !important;
+}
+
+.facilityActive {
+  background-color: #0056B1 !important;
 }
