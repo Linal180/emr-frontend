@@ -48,7 +48,7 @@ import {
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList, fetchAllPatientList } = useContext(ListContext)
+  const { facilityList, fetchAllPatientList, setPatientList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
@@ -273,6 +273,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
+          setPatientList([])
           fetchAllPatientList();
           Alert.success(PATIENT_CREATED);
           history.push(PATIENTS_ROUTE)
@@ -296,6 +297,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
+          setPatientList([])
           fetchAllPatientList();
           Alert.success(PATIENT_UPDATED);
           history.push(PATIENTS_ROUTE)

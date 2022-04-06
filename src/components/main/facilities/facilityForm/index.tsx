@@ -44,8 +44,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
-
-  const { fetchAllFacilityList, practiceList } = useContext(ListContext)
+  const { fetchAllFacilityList, practiceList, setFacilityList } = useContext(ListContext)
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
     resolver: yupResolver(isSuper ? facilitySchemaWithPractice : facilitySchedulerSchema)
@@ -152,6 +151,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (id && status && status === 200) {
           reset()
           Alert.success(FACILITY_CREATED);
+          setFacilityList([])
           fetchAllFacilityList()
           history.push(`${FACILITIES_ROUTE}/${id}`)
         }
@@ -173,6 +173,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (status && status === 200) {
           reset()
           Alert.success(FACILITY_UPDATED);
+          setFacilityList([])
           fetchAllFacilityList();
           history.push(FACILITIES_ROUTE)
         }

@@ -469,6 +469,14 @@ export type CreateFacilityItemInput = {
   timeZone?: Maybe<Scalars['String']>;
 };
 
+export type CreateFormInput = {
+  facilityId: Scalars['String'];
+  isSystemForm?: Maybe<Scalars['Boolean']>;
+  layout: LayoutJsonInputType;
+  name: Scalars['String'];
+  type: FormType;
+};
+
 export type CreateInvoiceInputs = {
   amount: Scalars['String'];
   appointmentId: Scalars['String'];
@@ -565,6 +573,7 @@ export type CreateProblemInput = {
   problemStartDate?: Maybe<Scalars['String']>;
   problemType?: Maybe<ProblemType>;
   providerId?: Maybe<Scalars['String']>;
+  snowMedCodeId?: Maybe<Scalars['String']>;
   staffId?: Maybe<Scalars['String']>;
 };
 
@@ -698,6 +707,39 @@ export enum Ethnicity {
   None = 'NONE'
 }
 
+export type Element = {
+  __typename?: 'Element';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  type: ElementType;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ElementInputs = {
+  type: ElementType;
+};
+
+/** The form's element types */
+export enum ElementType {
+  Checkbox = 'CHECKBOX',
+  Color = 'COLOR',
+  Date = 'DATE',
+  Dropdown = 'DROPDOWN',
+  Email = 'EMAIL',
+  File = 'FILE',
+  Image = 'IMAGE',
+  Month = 'MONTH',
+  Number = 'NUMBER',
+  Password = 'PASSWORD',
+  Radio = 'RADIO',
+  Select = 'SELECT',
+  Tel = 'TEL',
+  Text = 'TEXT',
+  Time = 'TIME',
+  Url = 'URL',
+  Week = 'WEEK'
+}
+
 export type Employer = {
   __typename?: 'Employer';
   createdAt: Scalars['String'];
@@ -761,12 +803,115 @@ export type FacilityPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type FieldOptionsInputType = {
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type FieldOptionsType = {
+  __typename?: 'FieldOptionsType';
+  name: Scalars['String'];
+  value: Scalars['String'];
+};
+
+export type FieldsInputs = {
+  column: Scalars['Int'];
+  columnName?: Maybe<Scalars['String']>;
+  css: Scalars['String'];
+  defaultValue: Scalars['String'];
+  errorMsg: Scalars['String'];
+  fieldId: Scalars['String'];
+  label: Scalars['String'];
+  name: Scalars['String'];
+  options: Array<FieldOptionsInputType>;
+  placeholder: Scalars['String'];
+  required: Scalars['Boolean'];
+  tableName?: Maybe<Scalars['String']>;
+  textArea: Scalars['Boolean'];
+  type: ElementType;
+};
+
+export type FieldsTypes = {
+  __typename?: 'FieldsTypes';
+  column: Scalars['Int'];
+  columnName?: Maybe<Scalars['String']>;
+  css: Scalars['String'];
+  defaultValue: Scalars['String'];
+  errorMsg: Scalars['String'];
+  fieldId: Scalars['String'];
+  label: Scalars['String'];
+  name: Scalars['String'];
+  options: Array<FieldOptionsType>;
+  placeholder: Scalars['String'];
+  required: Scalars['Boolean'];
+  tableName?: Maybe<Scalars['String']>;
+  textArea: Scalars['Boolean'];
+  type: ElementType;
+};
+
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
 
 export type ForgotPasswordPayload = {
   __typename?: 'ForgotPasswordPayload';
+  response?: Maybe<ResponsePayload>;
+};
+
+export type Form = {
+  __typename?: 'Form';
+  createdAt?: Maybe<Scalars['String']>;
+  facilityId: Scalars['String'];
+  formElements?: Maybe<Array<FormElement>>;
+  id: Scalars['String'];
+  isSystemForm?: Maybe<Scalars['Boolean']>;
+  layout: LayoutJsonType;
+  name: Scalars['String'];
+  type: FormType;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type FormElement = {
+  __typename?: 'FormElement';
+  columnName?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  defaultValue?: Maybe<Scalars['String']>;
+  element?: Maybe<Element>;
+  errorMsg?: Maybe<Scalars['String']>;
+  fieldId: Scalars['String'];
+  id: Scalars['String'];
+  isDeleted: Scalars['Boolean'];
+  name: Scalars['String'];
+  placeholder?: Maybe<Scalars['String']>;
+  required?: Maybe<Scalars['Boolean']>;
+  sectionId: Scalars['String'];
+  tableName?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type FormInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
+export type FormPayload = {
+  __typename?: 'FormPayload';
+  form?: Maybe<Form>;
+  response?: Maybe<ResponsePayload>;
+};
+
+/** The form's types */
+export enum FormType {
+  Appointment = 'APPOINTMENT',
+  Doctor = 'DOCTOR',
+  Patient = 'PATIENT',
+  Staff = 'STAFF'
+}
+
+export type FormsPayload = {
+  __typename?: 'FormsPayload';
+  forms?: Maybe<Array<Maybe<Form>>>;
+  pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
 };
 
@@ -822,6 +967,10 @@ export type GetFacility = {
 };
 
 export type GetFacilitySchedule = {
+  id: Scalars['String'];
+};
+
+export type GetForm = {
   id: Scalars['String'];
 };
 
@@ -906,6 +1055,13 @@ export type IcdCodes = {
   version?: Maybe<Scalars['String']>;
 };
 
+export type IcdCodesPayload = {
+  __typename?: 'IcdCodesPayload';
+  icdCodes?: Maybe<Array<Maybe<IcdCodes>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type Invoice = {
   __typename?: 'Invoice';
   amount: Scalars['String'];
@@ -946,6 +1102,15 @@ export type InvoicesPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type LayoutJsonInputType = {
+  sections: Array<SectionsInputs>;
+};
+
+export type LayoutJsonType = {
+  __typename?: 'LayoutJSONType';
+  sections: Array<SectionsTypes>;
+};
+
 export type LoginUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -972,9 +1137,11 @@ export type Mutation = {
   createAttachmentData: AttachmentPayload;
   createContact: ContactPayload;
   createDoctor: DoctorPayload;
+  createElement: Element;
   createExternalAppointment: AppointmentPayload;
   createExternalInvoice: InvoicePayload;
   createFacility: FacilityPayload;
+  createForm: FormPayload;
   createInvoice: InvoicePayload;
   createPatient: PatientPayload;
   createPermission: PermissionPayload;
@@ -996,6 +1163,7 @@ export type Mutation = {
   removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
+  removeForm: FormPayload;
   removePatient: PatientPayload;
   removePatientProblem: PatientProblemPayload;
   removePermission: PermissionPayload;
@@ -1018,6 +1186,7 @@ export type Mutation = {
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updateFacilityTimeZone: FacilityPayload;
+  updateForm: FormPayload;
   updateInvoiceStatus: InvoicePayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
@@ -1087,6 +1256,11 @@ export type MutationCreateDoctorArgs = {
 };
 
 
+export type MutationCreateElementArgs = {
+  inputs: ElementInputs;
+};
+
+
 export type MutationCreateExternalAppointmentArgs = {
   createExternalAppointmentInput: CreateExternalAppointmentInput;
 };
@@ -1099,6 +1273,11 @@ export type MutationCreateExternalInvoiceArgs = {
 
 export type MutationCreateFacilityArgs = {
   createFacilityInput: CreateFacilityInput;
+};
+
+
+export type MutationCreateFormArgs = {
+  createFormInput: CreateFormInput;
 };
 
 
@@ -1204,6 +1383,11 @@ export type MutationRemoveDoctorArgs = {
 
 export type MutationRemoveFacilityArgs = {
   removeFacility: RemoveFacility;
+};
+
+
+export type MutationRemoveFormArgs = {
+  removeForm: RemoveForm;
 };
 
 
@@ -1314,6 +1498,11 @@ export type MutationUpdateFacilityArgs = {
 
 export type MutationUpdateFacilityTimeZoneArgs = {
   updateFacilityTimeZoneInput: UpdateFacilityTimeZoneInput;
+};
+
+
+export type MutationUpdateFormArgs = {
+  updateFormInput: UpdateFormInput;
 };
 
 
@@ -1531,6 +1720,7 @@ export type PatientProblems = {
   problemSeverity: ProblemSeverity;
   problemStartDate?: Maybe<Scalars['String']>;
   problemType: ProblemType;
+  snowMedCode?: Maybe<SnoMedCodes>;
   staff?: Maybe<Staff>;
   updatedAt?: Maybe<Scalars['String']>;
 };
@@ -1672,6 +1862,7 @@ export type Query = {
   findAllContacts: ContactsPayload;
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
+  findAllForms: FormsPayload;
   findAllPatient: PatientsPayload;
   findAllPatientProblem: PatientProblemsPayload;
   findAllPermissions: PermissionsPayload;
@@ -1690,10 +1881,12 @@ export type Query = {
   getDoctorSchedule: SchedulesPayload;
   getFacility: FacilityPayload;
   getFacilitySchedule: SchedulesPayload;
+  getForm: FormPayload;
   getPatient: PatientPayload;
   getPatientAppointment: AppointmentsPayload;
   getPatientProblem: PatientProblemPayload;
   getPractice: PracticePayload;
+  getPublicForm: FormPayload;
   getRole: RolePayload;
   getSchedule: SchedulePayload;
   getService: ServicePayload;
@@ -1702,6 +1895,8 @@ export type Query = {
   getToken: BraintreePayload;
   getUser: UserPayload;
   me: UserPayload;
+  searchIcdCodes: IcdCodesPayload;
+  searchSnoMedCodeByIcdCodes: SnoMedCodesPayload;
   searchUser: UsersPayload;
 };
 
@@ -1733,6 +1928,11 @@ export type QueryFindAllDoctorArgs = {
 
 export type QueryFindAllFacilityArgs = {
   facilityInput: FacilityInput;
+};
+
+
+export type QueryFindAllFormsArgs = {
+  formInput: FormInput;
 };
 
 
@@ -1826,6 +2026,11 @@ export type QueryGetFacilityScheduleArgs = {
 };
 
 
+export type QueryGetFormArgs = {
+  getForm: GetForm;
+};
+
+
 export type QueryGetPatientArgs = {
   getPatient: GetPatient;
 };
@@ -1843,6 +2048,11 @@ export type QueryGetPatientProblemArgs = {
 
 export type QueryGetPracticeArgs = {
   getPractice: GetPractice;
+};
+
+
+export type QueryGetPublicFormArgs = {
+  getForm: GetForm;
 };
 
 
@@ -1873,6 +2083,16 @@ export type QueryGetStaffArgs = {
 
 export type QueryGetUserArgs = {
   getUser: GetUser;
+};
+
+
+export type QuerySearchIcdCodesArgs = {
+  searchIcdCodesInput: SearchIcdCodesInput;
+};
+
+
+export type QuerySearchSnoMedCodeByIcdCodesArgs = {
+  searchSnoMedCodesInput: SearchSnoMedCodesInput;
 };
 
 
@@ -1952,6 +2172,10 @@ export type RemoveDoctor = {
 };
 
 export type RemoveFacility = {
+  id: Scalars['String'];
+};
+
+export type RemoveForm = {
   id: Scalars['String'];
 };
 
@@ -2115,6 +2339,27 @@ export type SchedulesPayload = {
   schedules?: Maybe<Array<Maybe<Schedule>>>;
 };
 
+export type SearchIcdCodesInput = {
+  searchTerm: Scalars['String'];
+};
+
+export type SearchSnoMedCodesInput = {
+  IcdCodes: Scalars['String'];
+};
+
+export type SectionsInputs = {
+  col: Scalars['Int'];
+  fields: Array<FieldsInputs>;
+  id: Scalars['String'];
+};
+
+export type SectionsTypes = {
+  __typename?: 'SectionsTypes';
+  col: Scalars['Int'];
+  fields: Array<FieldsTypes>;
+  id: Scalars['String'];
+};
+
 export type SeneOtpAgainInput = {
   id: Scalars['String'];
 };
@@ -2251,6 +2496,27 @@ export type SlotsPayload = {
   __typename?: 'SlotsPayload';
   response?: Maybe<ResponsePayload>;
   slots?: Maybe<Array<Slots>>;
+};
+
+export type SnoMedCodes = {
+  __typename?: 'SnoMedCodes';
+  active?: Maybe<Scalars['String']>;
+  correlationId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  effectiveTime?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  mapAdvice?: Maybe<Scalars['String']>;
+  mapCategoryId?: Maybe<Scalars['String']>;
+  mapGroup?: Maybe<Scalars['String']>;
+  mapPriority?: Maybe<Scalars['String']>;
+  mapRule?: Maybe<Scalars['String']>;
+  mapTarget?: Maybe<Scalars['String']>;
+  moduleId?: Maybe<Scalars['String']>;
+  patientProblem?: Maybe<Array<PatientProblems>>;
+  recordId?: Maybe<Scalars['String']>;
+  referencedComponentId?: Maybe<Scalars['String']>;
+  refsetId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
 };
 
 /** The doctor's speciality */
@@ -2531,6 +2797,15 @@ export type UpdateFacilityTimeZoneInput = {
   timeZone?: Maybe<Scalars['String']>;
 };
 
+export type UpdateFormInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isSystemForm?: Maybe<Scalars['Boolean']>;
+  layout?: Maybe<LayoutJsonInputType>;
+  name?: Maybe<Scalars['String']>;
+  type?: Maybe<FormType>;
+};
+
 export type UpdatePasswordInput = {
   id: Scalars['String'];
   newPassword: Scalars['String'];
@@ -2769,6 +3044,13 @@ export type VerifyEmailInput = {
   token: Scalars['String'];
 };
 
+export type SnoMedCodesPayload = {
+  __typename?: 'snoMedCodesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  snoMedCodes?: Maybe<Array<Maybe<SnoMedCodes>>>;
+};
+
 export type FindAllAppointmentsQueryVariables = Exact<{
   appointmentInput: AppointmentInput;
 }>;
@@ -2948,6 +3230,48 @@ export type CreateFacilityMutationVariables = Exact<{
 
 
 export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string } | null | undefined } };
+
+export type CreateFormMutationVariables = Exact<{
+  createFormInput: CreateFormInput;
+}>;
+
+
+export type CreateFormMutation = { __typename?: 'Mutation', createForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string } | null | undefined } };
+
+export type FindAllFormsQueryVariables = Exact<{
+  formInput: FormInput;
+}>;
+
+
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms?: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId: string, name: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+
+export type RemoveFormMutationVariables = Exact<{
+  removeForm: RemoveForm;
+}>;
+
+
+export type RemoveFormMutation = { __typename?: 'Mutation', removeForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type GetFormQueryVariables = Exact<{
+  getForm: GetForm;
+}>;
+
+
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, type: FormType, facilityId: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+
+export type UpdateFormMutationVariables = Exact<{
+  updateFormInput: UpdateFormInput;
+}>;
+
+
+export type UpdateFormMutation = { __typename?: 'Mutation', updateForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string } | null | undefined } };
+
+export type GetPublicFormQueryVariables = Exact<{
+  getForm: GetForm;
+}>;
+
+
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId: string, name: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
 
 export type CreateInvoiceMutationVariables = Exact<{
   createInvoiceInputs: CreateInvoiceInputs;
@@ -4610,6 +4934,332 @@ export function useCreateFacilityMutation(baseOptions?: Apollo.MutationHookOptio
 export type CreateFacilityMutationHookResult = ReturnType<typeof useCreateFacilityMutation>;
 export type CreateFacilityMutationResult = Apollo.MutationResult<CreateFacilityMutation>;
 export type CreateFacilityMutationOptions = Apollo.BaseMutationOptions<CreateFacilityMutation, CreateFacilityMutationVariables>;
+export const CreateFormDocument = gql`
+    mutation createForm($createFormInput: CreateFormInput!) {
+  createForm(createFormInput: $createFormInput) {
+    response {
+      status
+    }
+    form {
+      id
+      name
+    }
+  }
+}
+    `;
+export type CreateFormMutationFn = Apollo.MutationFunction<CreateFormMutation, CreateFormMutationVariables>;
+
+/**
+ * __useCreateFormMutation__
+ *
+ * To run a mutation, you first call `useCreateFormMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFormMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFormMutation, { data, loading, error }] = useCreateFormMutation({
+ *   variables: {
+ *      createFormInput: // value for 'createFormInput'
+ *   },
+ * });
+ */
+export function useCreateFormMutation(baseOptions?: Apollo.MutationHookOptions<CreateFormMutation, CreateFormMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFormMutation, CreateFormMutationVariables>(CreateFormDocument, options);
+      }
+export type CreateFormMutationHookResult = ReturnType<typeof useCreateFormMutation>;
+export type CreateFormMutationResult = Apollo.MutationResult<CreateFormMutation>;
+export type CreateFormMutationOptions = Apollo.BaseMutationOptions<CreateFormMutation, CreateFormMutationVariables>;
+export const FindAllFormsDocument = gql`
+    query findAllForms($formInput: FormInput!) {
+  findAllForms(formInput: $formInput) {
+    response {
+      status
+    }
+    forms {
+      id
+      type
+      facilityId
+      name
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+            textArea
+            options {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+    pagination {
+      page
+      limit
+      totalCount
+      totalPages
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllFormsQuery__
+ *
+ * To run a query within a React component, call `useFindAllFormsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllFormsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllFormsQuery({
+ *   variables: {
+ *      formInput: // value for 'formInput'
+ *   },
+ * });
+ */
+export function useFindAllFormsQuery(baseOptions: Apollo.QueryHookOptions<FindAllFormsQuery, FindAllFormsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllFormsQuery, FindAllFormsQueryVariables>(FindAllFormsDocument, options);
+      }
+export function useFindAllFormsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllFormsQuery, FindAllFormsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllFormsQuery, FindAllFormsQueryVariables>(FindAllFormsDocument, options);
+        }
+export type FindAllFormsQueryHookResult = ReturnType<typeof useFindAllFormsQuery>;
+export type FindAllFormsLazyQueryHookResult = ReturnType<typeof useFindAllFormsLazyQuery>;
+export type FindAllFormsQueryResult = Apollo.QueryResult<FindAllFormsQuery, FindAllFormsQueryVariables>;
+export const RemoveFormDocument = gql`
+    mutation removeForm($removeForm: RemoveForm!) {
+  removeForm(removeForm: $removeForm) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveFormMutationFn = Apollo.MutationFunction<RemoveFormMutation, RemoveFormMutationVariables>;
+
+/**
+ * __useRemoveFormMutation__
+ *
+ * To run a mutation, you first call `useRemoveFormMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveFormMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeFormMutation, { data, loading, error }] = useRemoveFormMutation({
+ *   variables: {
+ *      removeForm: // value for 'removeForm'
+ *   },
+ * });
+ */
+export function useRemoveFormMutation(baseOptions?: Apollo.MutationHookOptions<RemoveFormMutation, RemoveFormMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveFormMutation, RemoveFormMutationVariables>(RemoveFormDocument, options);
+      }
+export type RemoveFormMutationHookResult = ReturnType<typeof useRemoveFormMutation>;
+export type RemoveFormMutationResult = Apollo.MutationResult<RemoveFormMutation>;
+export type RemoveFormMutationOptions = Apollo.BaseMutationOptions<RemoveFormMutation, RemoveFormMutationVariables>;
+export const GetFormDocument = gql`
+    query getForm($getForm: GetForm!) {
+  getForm(getForm: $getForm) {
+    response {
+      status
+      message
+    }
+    form {
+      id
+      name
+      type
+      facilityId
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+            textArea
+            options {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetFormQuery__
+ *
+ * To run a query within a React component, call `useGetFormQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetFormQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetFormQuery({
+ *   variables: {
+ *      getForm: // value for 'getForm'
+ *   },
+ * });
+ */
+export function useGetFormQuery(baseOptions: Apollo.QueryHookOptions<GetFormQuery, GetFormQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetFormQuery, GetFormQueryVariables>(GetFormDocument, options);
+      }
+export function useGetFormLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetFormQuery, GetFormQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetFormQuery, GetFormQueryVariables>(GetFormDocument, options);
+        }
+export type GetFormQueryHookResult = ReturnType<typeof useGetFormQuery>;
+export type GetFormLazyQueryHookResult = ReturnType<typeof useGetFormLazyQuery>;
+export type GetFormQueryResult = Apollo.QueryResult<GetFormQuery, GetFormQueryVariables>;
+export const UpdateFormDocument = gql`
+    mutation updateForm($updateFormInput: UpdateFormInput!) {
+  updateForm(updateFormInput: $updateFormInput) {
+    response {
+      status
+    }
+    form {
+      id
+      name
+    }
+  }
+}
+    `;
+export type UpdateFormMutationFn = Apollo.MutationFunction<UpdateFormMutation, UpdateFormMutationVariables>;
+
+/**
+ * __useUpdateFormMutation__
+ *
+ * To run a mutation, you first call `useUpdateFormMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateFormMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateFormMutation, { data, loading, error }] = useUpdateFormMutation({
+ *   variables: {
+ *      updateFormInput: // value for 'updateFormInput'
+ *   },
+ * });
+ */
+export function useUpdateFormMutation(baseOptions?: Apollo.MutationHookOptions<UpdateFormMutation, UpdateFormMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateFormMutation, UpdateFormMutationVariables>(UpdateFormDocument, options);
+      }
+export type UpdateFormMutationHookResult = ReturnType<typeof useUpdateFormMutation>;
+export type UpdateFormMutationResult = Apollo.MutationResult<UpdateFormMutation>;
+export type UpdateFormMutationOptions = Apollo.BaseMutationOptions<UpdateFormMutation, UpdateFormMutationVariables>;
+export const GetPublicFormDocument = gql`
+    query getPublicForm($getForm: GetForm!) {
+  getPublicForm(getForm: $getForm) {
+    response {
+      status
+      message
+    }
+    form {
+      id
+      type
+      facilityId
+      name
+      layout {
+        sections {
+          id
+          col
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+            textArea
+            options {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPublicFormQuery__
+ *
+ * To run a query within a React component, call `useGetPublicFormQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicFormQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicFormQuery({
+ *   variables: {
+ *      getForm: // value for 'getForm'
+ *   },
+ * });
+ */
+export function useGetPublicFormQuery(baseOptions: Apollo.QueryHookOptions<GetPublicFormQuery, GetPublicFormQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicFormQuery, GetPublicFormQueryVariables>(GetPublicFormDocument, options);
+      }
+export function useGetPublicFormLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicFormQuery, GetPublicFormQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicFormQuery, GetPublicFormQueryVariables>(GetPublicFormDocument, options);
+        }
+export type GetPublicFormQueryHookResult = ReturnType<typeof useGetPublicFormQuery>;
+export type GetPublicFormLazyQueryHookResult = ReturnType<typeof useGetPublicFormLazyQuery>;
+export type GetPublicFormQueryResult = Apollo.QueryResult<GetPublicFormQuery, GetPublicFormQueryVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
   createInvoice(createInvoiceInputs: $createInvoiceInputs) {
