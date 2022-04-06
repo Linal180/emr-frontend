@@ -879,7 +879,6 @@ export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
-export const START_PROJECT_ROUTE = `${DASHBOARD_ROUTE}/start-project`;
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
@@ -1144,7 +1143,7 @@ export const APPOINTMENT_MENU_ITEMS = [
   },
   {
     name: CALENDAR_VIEW_TEXT,
-    link: START_PROJECT_ROUTE,
+    link: CALENDAR_ROUTE,
   },
 ];
 

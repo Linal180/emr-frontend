@@ -102,8 +102,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
               roles.map(role => {
                 const { rolePermissions } = role || {};
-
                 let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
+
                 return permissionsList && setUserPermissions(permissionsList as string[])
               })
             }
