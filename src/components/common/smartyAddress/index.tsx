@@ -1,31 +1,10 @@
-import { core, usAutocompletePro, usZipcode, usStreet } from 'smartystreets-javascript-sdk'
-
-
+//packages import
+import { core, usAutocompletePro, usZipcode, usStreet } from 'smartystreets-javascript-sdk';
+//interfaces
+import { GetAddressResponse, VerifyResponse, AutoCompleteResponse } from '../../../interfacesTypes';
+//constants
 const smartyId = process.env.SMARTY_ID || 'c9ba762d-47d1-a874-c0f9-13c80894d76d';
 const smartyToken = process.env.SMARTY_TOKEN || 'rKqWvqJFyiFJdgwd4XgC';
-
-
-
-interface GetAddressResponse {
-  zipCode: usZipcode.ZipCode;
-  status: boolean;
-  message: string;
-}
-
-interface VerifyResponse {
-  status: boolean;
-  message: string;
-  options: usStreet.Candidate[]
-}
-
-interface AutoCompleteResponse {
-  status: boolean;
-  message: string;
-  options: any
-}
-/**
- * Smarty address
- */
 
 /**
  * Gets address by zipcode
@@ -103,7 +82,6 @@ export const verifyAddress = async (zipCode: string, city: string, state: string
     options: []
   }
 
-
   try {
     const result = await client.send(lookup);
     const { lookups } = result || {};
@@ -139,7 +117,6 @@ export const addressAutoComplete = async (search: string, selected: string): Pro
 
   try {
     const result = await client.send(lookup);
-    console.log('result => ', result?.result);
     const data = {
       status: true,
       message: "Address found",
@@ -156,5 +133,3 @@ export const addressAutoComplete = async (search: string, selected: string): Pro
     return data
   }
 }
-
-
