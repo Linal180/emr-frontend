@@ -260,7 +260,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
           </Box>
         </Grid>
       </Grid>
-      <ACHModal open={true} onClose={() => { }} />
+     
     </Box>
   );
 };

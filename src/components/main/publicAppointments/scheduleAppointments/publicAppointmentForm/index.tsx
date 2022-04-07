@@ -37,6 +37,7 @@ import {
   AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
   NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT,
 } from "../../../../../constants";
+import ACHModal from '../../achModal'
 
 const PublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
@@ -349,6 +350,7 @@ const PublicAppointmentForm = (): JSX.Element => {
           </form>
         </FormProvider>
       </Box>
+      <ACHModal open={true} onClose={() => { }} />
     </Box>
   )
 }
