@@ -12,10 +12,10 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { ListContext } from "../../../../context/listContext";
-import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
+import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
+import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
