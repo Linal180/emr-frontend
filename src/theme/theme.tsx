@@ -343,7 +343,7 @@ export const theme = createTheme({
     MuiFormControl: {
       marginNormal: {
         position: 'relative',
-        paddingBottom: customTheme.spacing(3)
+        paddingBottom: customTheme.spacing(2)
       },
 
       root: {

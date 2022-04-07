@@ -6,6 +6,7 @@ import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import { PageNotFound } from "../pages/404";
 import Settings from "../pages/main/settings";
+import { CheckIn } from "../pages/main/checkIn";
 import Dashboard from "../pages/main/dashboard";
 import { Profile } from "../pages/main/profile";
 import { Maintenance } from "../pages/maintenance";
@@ -35,6 +36,7 @@ import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import { EmergencyAccess } from "../pages/main/emergencyAccess";
+import { ViewLabOrders } from "../pages/main/labOrders/addOrder";
 import LabResults from "../pages/main/reports/labResultsListing";
 import PatientDetail from "../pages/main/patients/patientDetail";
 import { AddPractice } from "../pages/main/practices/addPractice";
@@ -74,9 +76,8 @@ import {
   ROLES_ROUTE, CALENDAR_ROUTE, EMERGENCY_ACCESS_ROUTE, FORM_BUILDER_ROUTE, SLOT_CONFIRMATION,
   PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE, SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE,
   SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE,
-  FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE, CHECK_IN_ROUTE
+  FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE, CHECK_IN_ROUTE, CREATE_LAB_ORDERS_ROUTE,
 } from "../constants";
-import { CheckIn } from "../pages/main/checkIn";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -147,6 +148,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
+      <PrivateRoute exact path= {CREATE_LAB_ORDERS_ROUTE} component={ViewLabOrders} />
       <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/add`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />
 

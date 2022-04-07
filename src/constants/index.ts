@@ -175,6 +175,7 @@ export const CANT_CREATE_SCHEDULE = "Can't create schedule";
 export const PRACTICE_MANAGEMENT_TEXT = "Practice Management";
 export const CANT_UPDATE_SCHEDULE = "Schedule cant be updated";
 export const ADD_ANOTHER_PATIENT_PAYMENT = "Add Another Patient Payment";
+export const ADD_ANOTHER_SPECIMEN = "Add Another Specimen";
 export const RELEASE_BILLING_INFO_PERMISSIONS = "Can we release medical and billing information to this contact?";
 export const APPOINTMENT_CONFIRMATION_PERMISSIONS = "May we phone, email, or send a text to you to confirm appointments?";
 export const ADD_DOCTOR = "Add Doctor";
@@ -457,6 +458,9 @@ export const CLAIMED = "Claimed";
 export const SERVICE = "Service";
 export const COMMENT = "Comment";
 export const SIGN_IN = "Sign In";
+export const SIGN_OFF = "Sign Off";
+export const RESULT = "Result";
+export const FILE = "File";
 export const TOKEN = "emr_token";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
@@ -567,6 +571,13 @@ export const DELETE_REQUEST = "Delete Request";
 export const REQUEST_DETAIL = "Request Detail";
 export const REQUEST_STATUS = "Request Status";
 export const TEST_DATE_TIME = "Test Date/Time";
+export const TEST_DATE = "Test Date";
+export const TEST_TIME = "Test Time";
+export const TEST_NOTES = "Test Notes";
+export const SPECIMEN_TYPE = "Specimen Type";
+export const SPECIMEN_NOTES = "Specimen Notes";
+export const COLLECTION_DATE = "Collection Date";
+export const COLLECTION_TIME= "Collection Time";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const DOCTOR_SIGNOFF = "Doctor Signoff";
 export const EMAIL_VERIFIED = "Email Verified?";
@@ -590,15 +601,19 @@ export const MEMBERSHIP_PLAN = "Membership Plan";
 export const MEMBERSHIP_NAME = "Membership name";
 export const CHANGE_PASSWORD = "Change password";
 export const LOINC_CODE = "LOINC Code";
+export const TEST_LOINC_CODE = "Test/LOINC Code";
 export const RESULT_VALUE = "Result Value";
 export const RESULT_UNITS = "Result Units";
 export const NORMAL_RANGE = "Normal Range";
 export const NORMAL_RANGE_UNIT = "Normal Range Unit";
+export const NORMAL_RANGE_UNITS = "Normal Range Units";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const SCANNED_IN_RESULTS = "Scanned in Results";
 export const TWO_FA_TEXT = "2-FA";
 export const AUTO_LOGOUT = "Auto Logout";
 export const LOCK_SCREEN = "Lock Screen";
+export const CREATE_LAB_ORDER = "Create Lab Order";
+export const EDIT_LAB_ORDER = "Edit Lab Order";
 export const REPEAT_PASSWORD = "Repeat password";
 export const INITIAL_PAYMENT = "Initial payment";
 export const TOKEN_NOT_FOUND = "Token not found";
@@ -887,6 +902,7 @@ export const UPDATE_PASSWORD_ROUTE = "/update-password";
 export const CHANGE_PASSWORD_ROUTE = "/change-password";
 export const FORGET_PASSWORD_ROUTE = "/forget-password";
 export const CANCEL_APPOINTMENT = "/cancel-appointment";
+export const CREATE_LAB_ORDERS_ROUTE = "/lab-orders/new";
 export const EMERGENCY_ACCESS_ROUTE = "/emergency-access";
 export const PRACTICE_DETAILS_ROUTE = "/practice-details";
 export const PATIENT_INFORMATION = "/patient-information";
@@ -971,7 +987,6 @@ export const SERVICE_UPDATED = "Service updated successfully!";
 export const CANT_DELETE_PATIENT = "Patient can't be deleted.";
 export const INVOICE_CREATED = "Invoice created successfully!";
 export const PATIENT_CREATED = "Patient created successfully!";
-export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const PATIENT_UPDATED = "Patient updated successfully!";
 export const CANT_DELETE_SERVICE = "Service can't be deleted.";
 export const RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not found.";
@@ -991,6 +1006,7 @@ export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const ATTACHMENT_DELETED = "Attachment deleted successfully!";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
+export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
 export const APPOINTMENT_NOT_FOUND_EXCEPTION = "Appointment not found";
 export const CANT_UPDATE_APPOINTMENT = "Appointment can't be updated.";
@@ -2145,6 +2161,61 @@ export const LAB_ORDERS_DUMMY_DATA = [
     appointment: "2020-01-04 02:46 PM",
     test: "Vitamin E Test",
     date: "2020-06-27 01:23 PM",
+  },
+];
+
+export const LAB_ORDERS_LISTING_DATA = [
+  {
+    doctorName: "Courtney Fox",
+    loinsCode: "14444-4",
+    description: "Cholesterol [Mass/volume] in Urine",
+    appointmentDate: "Appointment: March 29, 2022, 9:45 a.m",
+    entered: "Entered: March 28, 2022, 7:09 a.m.",
+    performed: "Performed: March 28, 2022, 4:08 p.m.",
+    signOff: "Signed Off",
+    status: "Result Received",
+    result: "33 mg/dL",
+    file: "Patient HIPAA Signature",
+    comments: "Report is normal",
+  },
+  {
+    doctorName: "Philip Richards",
+    loinsCode: "13333-3",
+    description: "CD3+CD25+ cells/100 cells in Blood",
+    appointmentDate: "Appointment: March 29, 2022, 9:45 a.m",
+    entered: "Entered: March 28, 2022, 7:09 a.m.",
+    performed: "Performed: March 28, 2022, 4:08 p.m.",
+    signOff: "Pending",
+    status: "Order Entered",
+    result: "34 %",
+    file: "--",
+    comments: "Report is normal",
+  },
+  {
+    doctorName: "Darrell Fox",
+    loinsCode: "12234-5",
+    description: "Cholesterol [Mass/volume] in Urine",
+    appointmentDate: "Appointment: March 29, 2022, 9:45 a.m",
+    entered: "Entered: March 28, 2022, 7:09 a.m.",
+    performed: "Performed: March 28, 2022, 4:08 p.m.",
+    signOff: "Pending",
+    status: "Order Entered",
+    result: "42 mg/dL",
+    file: "Result",
+    comments: "Report is normal",
+  },
+  {
+    doctorName: "Ronald Lane",
+    loinsCode: "18577-3",
+    description: "CD3+CD25+ cells/100 cells in Blood",
+    appointmentDate: "Appointment: March 29, 2022, 9:45 a.m",
+    entered: "Entered: March 28, 2022, 7:09 a.m.",
+    performed: "Performed: March 28, 2022, 4:08 p.m.",
+    signOff: "Pending",
+    status: "Order Entered",
+    result: "35 %",
+    file: "Report",
+    comments: "Report is not normal. refer him for another test...",
   },
 ];
 
