@@ -1,6 +1,6 @@
 import moment from "moment";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload } from "../generated/graphql"
+import { AppointmentPayload, AppointmentsPayload, SlotsPayload, FacilityPayload, DoctorPayload } from "../generated/graphql"
 
 export interface State {
   page: number;
@@ -21,6 +21,7 @@ export interface State {
   deleteAppointmentId: string;
   date: MaterialUiPickersDate;
   facility: FacilityPayload['facility'];
+  doctor: DoctorPayload['doctor'];
   availableSlots: SlotsPayload['slots'];
   appointment: AppointmentPayload['appointment'];
   appointments: AppointmentsPayload['appointments'];
@@ -53,6 +54,7 @@ export const initialState: State = {
   agreed: false,
   providerId: '',
   facility: null,
+  doctor: null,
   searchQuery: '',
   appointments: [],
   openDelete: false,
@@ -94,6 +96,7 @@ export enum ActionType {
   SET_COPIED = 'setCopied',
   SET_AGREED = 'setAgreed',
   SET_FACILITY = 'setFacility',
+  SET_DOCTOR = 'setDoctor',
   SET_SERVICE_ID = 'setServiceId',
   SET_PROVIDER_ID = 'setProviderId',
   SET_OPEN_DELETE = 'setOpenDelete',
@@ -141,6 +144,7 @@ export type Action =
   | { type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: boolean }
   | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
+  | { type: ActionType.SET_DOCTOR; doctor: DoctorPayload['doctor'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_APPOINTMENT; appointment: AppointmentPayload['appointment'] }
   | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: SlotsPayload['slots'] }
@@ -216,6 +220,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         facility: action.facility
+      }
+
+    case ActionType.SET_DOCTOR:
+      return {
+        ...state,
+        doctor: action.doctor
       }
 
     case ActionType.SET_AVAILABLE_SLOTS:

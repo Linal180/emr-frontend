@@ -620,6 +620,27 @@ export type CreateStaffItemInput = {
   username: Scalars['String'];
 };
 
+export type CreateVitalInput = {
+  PainRange?: Maybe<Scalars['String']>;
+  PatientBMI?: Maybe<Scalars['String']>;
+  PatientHeight?: Maybe<Scalars['String']>;
+  PatientWeight?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  bloodPressure?: Maybe<Scalars['String']>;
+  headCircumference: HeadCircumferenceType;
+  oxygenSaturation?: Maybe<Scalars['String']>;
+  patientHeadCircumference?: Maybe<Scalars['String']>;
+  patientId: Scalars['String'];
+  patientTemperature?: Maybe<Scalars['String']>;
+  respiratoryRate?: Maybe<Scalars['String']>;
+  smokingStatus: SmokingStatus;
+  staffId?: Maybe<Scalars['String']>;
+  temperatureUnitType: TempUnitType;
+  unitType: UnitType;
+  vitalCreationDate?: Maybe<Scalars['String']>;
+  weightUnit: WeightType;
+};
+
 export type DisableDoctor = {
   id: Scalars['String'];
 };
@@ -991,6 +1012,10 @@ export type GetPatientProblem = {
   id: Scalars['String'];
 };
 
+export type GetPatientVital = {
+  id: Scalars['String'];
+};
+
 export type GetPermission = {
   id?: Maybe<Scalars['String']>;
 };
@@ -1136,6 +1161,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
   addPatientProblem: PatientProblemPayload;
+  addPatientVital: PatientVitalPayload;
   assignPermissionToRole: PermissionPayload;
   cancelAppointment: AppointmentPayload;
   chargeAfterAppointment: AppointmentPayload;
@@ -1173,6 +1199,7 @@ export type Mutation = {
   removeForm: FormPayload;
   removePatient: PatientPayload;
   removePatientProblem: PatientProblemPayload;
+  removePatientVital: PatientVitalPayload;
   removePermission: PermissionPayload;
   removePractice: PracticePayload;
   removeRole: RolePayload;
@@ -1200,6 +1227,7 @@ export type Mutation = {
   updatePatientProblem: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
+  updatePatientVital: PatientVitalPayload;
   updatePermission: PermissionPayload;
   updatePractice: PracticePayload;
   updateRole: RolePayload;
@@ -1220,6 +1248,11 @@ export type MutationActivateUserArgs = {
 
 export type MutationAddPatientProblemArgs = {
   createProblemInput: CreateProblemInput;
+};
+
+
+export type MutationAddPatientVitalArgs = {
+  createVitalInput: CreateVitalInput;
 };
 
 
@@ -1408,6 +1441,11 @@ export type MutationRemovePatientProblemArgs = {
 };
 
 
+export type MutationRemovePatientVitalArgs = {
+  removeVital: RemoveVital;
+};
+
+
 export type MutationRemovePermissionArgs = {
   removePermission: RemovePermission;
 };
@@ -1540,6 +1578,11 @@ export type MutationUpdatePatientProfileArgs = {
 
 export type MutationUpdatePatientProviderArgs = {
   updatePatientProvider: UpdatePatientProvider;
+};
+
+
+export type MutationUpdatePatientVitalArgs = {
+  updateVitalInput: UpdateVitalInput;
 };
 
 
@@ -1740,6 +1783,18 @@ export type PatientProblemsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type PatientVitalInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type PatientVitalPayload = {
+  __typename?: 'PatientVitalPayload';
+  patientVital?: Maybe<PatientVitals>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PatientVitals = {
   __typename?: 'PatientVitals';
   PainRange?: Maybe<Scalars['String']>;
@@ -1748,6 +1803,7 @@ export type PatientVitals = {
   PatientWeight?: Maybe<Scalars['String']>;
   addedBy?: Maybe<Staff>;
   appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
   bloodPressure?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   headCircumference: HeadCircumferenceType;
@@ -1755,6 +1811,7 @@ export type PatientVitals = {
   oxygenSaturation?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientHeadCircumference?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
   patientTemperature?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
@@ -1762,7 +1819,14 @@ export type PatientVitals = {
   unitType: UnitType;
   updatedAt?: Maybe<Scalars['String']>;
   vitalCreationDate?: Maybe<Scalars['String']>;
-  weightUnit: UnitType;
+  weightUnit: WeightType;
+};
+
+export type PatientVitalsPayload = {
+  __typename?: 'PatientVitalsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  patientVitals?: Maybe<Array<Maybe<PatientVitals>>>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type PatientsPayload = {
@@ -1898,6 +1962,7 @@ export type Query = {
   findAllForms: FormsPayload;
   findAllPatient: PatientsPayload;
   findAllPatientProblem: PatientProblemsPayload;
+  findAllPatientVitals: PatientVitalsPayload;
   findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
   findAllSchedules: SchedulesPayload;
@@ -1918,6 +1983,7 @@ export type Query = {
   getPatient: PatientPayload;
   getPatientAppointment: AppointmentsPayload;
   getPatientProblem: PatientProblemPayload;
+  getPatientVital: PatientVitalPayload;
   getPractice: PracticePayload;
   getPublicForm: FormPayload;
   getRole: RolePayload;
@@ -1976,6 +2042,11 @@ export type QueryFindAllPatientArgs = {
 
 export type QueryFindAllPatientProblemArgs = {
   patientProblemInput: PatientProblemInput;
+};
+
+
+export type QueryFindAllPatientVitalsArgs = {
+  patientVitalInput: PatientVitalInput;
 };
 
 
@@ -2076,6 +2147,11 @@ export type QueryGetPatientAppointmentArgs = {
 
 export type QueryGetPatientProblemArgs = {
   getPatientProblem: GetPatientProblem;
+};
+
+
+export type QueryGetPatientVitalArgs = {
+  getPatientVital: GetPatientVital;
 };
 
 
@@ -2241,6 +2317,10 @@ export type RemoveService = {
 };
 
 export type RemoveStaff = {
+  id: Scalars['String'];
+};
+
+export type RemoveVital = {
   id: Scalars['String'];
 };
 
@@ -3041,6 +3121,25 @@ export type UpdateUserInput = {
   zipCode?: Maybe<Scalars['String']>;
 };
 
+export type UpdateVitalInput = {
+  PainRange?: Maybe<Scalars['String']>;
+  PatientBMI?: Maybe<Scalars['String']>;
+  PatientHeight?: Maybe<Scalars['String']>;
+  PatientWeight?: Maybe<Scalars['String']>;
+  bloodPressure?: Maybe<Scalars['String']>;
+  headCircumference: HeadCircumferenceType;
+  id: Scalars['String'];
+  oxygenSaturation?: Maybe<Scalars['String']>;
+  patientHeadCircumference?: Maybe<Scalars['String']>;
+  patientTemperature?: Maybe<Scalars['String']>;
+  respiratoryRate?: Maybe<Scalars['String']>;
+  smokingStatus: SmokingStatus;
+  temperatureUnitType: TempUnitType;
+  unitType: UnitType;
+  vitalCreationDate?: Maybe<Scalars['String']>;
+  weightUnit: WeightType;
+};
+
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['String'];
@@ -3099,6 +3198,13 @@ export type VerifyCodeInput = {
 export type VerifyEmailInput = {
   token: Scalars['String'];
 };
+
+/** The patient's weight unit type assigned */
+export enum WeightType {
+  Kg = 'KG',
+  Pound = 'POUND',
+  PoundOunce = 'POUND_OUNCE'
+}
 
 export type SnoMedCodesPayload = {
   __typename?: 'snoMedCodesPayload';
