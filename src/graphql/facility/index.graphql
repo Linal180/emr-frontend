@@ -40,6 +40,7 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
     }
   }
 }
+
 query GetFacility($getFacility: GetFacility!){
   getFacility(getFacility: $getFacility){
     facility{
