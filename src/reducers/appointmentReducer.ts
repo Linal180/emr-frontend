@@ -64,7 +64,7 @@ export const initialState: State = {
   isAutoAccident: false,
   isOtherAccident: false,
   deleteAppointmentId: '',
-  offset: moment.tz().zone(),
+  offset: moment.tz().utcOffset(),
   currentDate: new Date().toDateString(),
   externalAppointment: {
     id: '',

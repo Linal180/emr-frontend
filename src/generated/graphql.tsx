@@ -549,6 +549,7 @@ export type CreatePatientItemInput = {
 
 export type CreatePracticeInput = {
   createContactInput?: Maybe<CreateContactInput>;
+  createFacilityContactInput?: Maybe<CreateContactInput>;
   createFacilityItemInput?: Maybe<CreateFacilityItemInput>;
   createPracticeItemInput?: Maybe<CreatePracticeItemInput>;
   registerUserInput?: Maybe<RegisterUserInput>;
