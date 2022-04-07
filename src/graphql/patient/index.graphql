@@ -19,6 +19,7 @@ query FindAllPatient($patientInput: PatientInput!) {
       firstName
       createdAt
       updatedAt
+      patientRecord
       
       contacts {
         id

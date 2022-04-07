@@ -1,0 +1,172 @@
+mutation createForm($createFormInput: CreateFormInput!) {
+  createForm(createFormInput: $createFormInput) {
+    response {
+      status
+    }
+
+    form {
+      id
+      name
+    }
+  }
+}
+
+query findAllForms($formInput: FormInput!) {
+  findAllForms(formInput: $formInput) {
+    response {
+      status
+    }
+
+    forms {
+      id
+      type
+      facilityId
+      name
+
+      layout {
+        sections {
+          id
+          col
+
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+            textArea
+
+            options {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+    
+    pagination {
+      page
+      limit
+      totalCount
+      totalPages
+    }
+  }
+}
+
+mutation removeForm($removeForm: RemoveForm!) {
+  removeForm(removeForm: $removeForm) {
+    response {
+      status
+      message
+    }
+  }
+}
+
+query getForm($getForm: GetForm!) {
+  getForm(getForm: $getForm) {
+    response {
+      status
+      message
+    }
+
+    form {
+      id
+      name
+      type
+      facilityId
+      
+      layout {
+        sections {
+          id
+          col
+
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+            textArea
+
+            options {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation updateForm($updateFormInput: UpdateFormInput!) {
+  updateForm(updateFormInput: $updateFormInput) {
+    response {
+      status
+    }
+
+    form {
+      id
+      name
+    }
+  }
+}
+
+query getPublicForm($getForm: GetForm!) {
+  getPublicForm(getForm: $getForm) {
+    response {
+      status
+      message
+    }
+
+    form {
+      id
+      type
+      facilityId
+      name
+
+      layout {
+        sections {
+          id
+          col
+
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            tableName
+            columnName
+            fieldId
+            textArea
+
+            options {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+  }
+}

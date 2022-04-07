@@ -12,10 +12,11 @@ import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, disabled, multiline, info, placeholder
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
+  disabled, multiline, info, placeholder, className
 }): JSX.Element => {
   const classes = useFormStyles();
-  const { control } = useFormContext()
+  const { control } = useFormContext();
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
 
   const handleClickShowPassword = () => {
@@ -50,6 +51,7 @@ const InputController: FC<CustomInputControlProps> = ({
             error={invalid}
             variant="outlined"
             multiline={multiline}
+            className={className}
             disabled={disabled}
             id={controllerName}
             placeholder={placeholder ? placeholder : ""}

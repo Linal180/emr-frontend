@@ -2,20 +2,22 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues, Ref } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref, ControllerRenderProps } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
+import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PatientAction } from "../reducers/patientReducer";
 import {
-  LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput,
+  LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput,
-  AttachmentsPayload, RolesPayload, PermissionsPayload,
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor, 
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, 
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -30,9 +32,15 @@ export interface BackdropInputType {
   loading: boolean
 }
 
+export interface CalendarChart {
+  isCalendar: boolean
+}
+
 export interface AuthContextProps {
   user: User | null;
   isLoggedIn: boolean;
+  currentUser: Doctor | Staff | null;
+  userPermissions: string[],
   setUser: (user: User | null) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
 }
@@ -134,6 +142,12 @@ export interface ConfirmationTypes extends DialogTypes {
   handleDelete: () => void;
 }
 
+export interface ConfirmationDaysTypes extends DialogTypes {
+  title?: string;
+  id?: string
+  isEdit?: boolean
+}
+
 export interface GraphModalProps extends DialogTypes {
   dispatcher: Dispatch<PatientAction>;
 }
@@ -202,6 +216,7 @@ export interface PageHeaderProps {
   openModal?: () => void;
   setTableData?: Function;
   tableData?: ServicesPayload['services'];
+  startIcon?: JSX.Element;
 }
 
 export interface IDropzoneImage {
@@ -301,6 +316,7 @@ interface IControlLabel {
   isPassword?: boolean;
   placeholder?: string;
   controllerLabel?: string;
+  className?: string;
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -377,6 +393,8 @@ export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | 
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
   & { serviceId: SelectorOption } & { day: SelectorOption };
+
+export type FacilityScheduleInputProps = CreateScheduleInput & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingFax: string;
@@ -692,6 +710,13 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
   doctorFacilityId: string | undefined;
 }
 
+export interface FacilityScheduleModalProps extends GeneralFormProps {
+  isOpen: boolean;
+  reload: Function;
+  facilityDispatcher: Dispatch<FacilityAction>;
+  facilityId: string | undefined;
+}
+
 export interface DaySchedule {
   day: Days;
   slots: Schedule[];
@@ -700,6 +725,11 @@ export interface DaySchedule {
 export interface DoctorScheduleProps {
   schedule: Schedule;
   dispatcher: Dispatch<DoctorAction>;
+}
+
+export interface FacilityScheduleProps {
+  schedule: Schedule;
+  dispatcher: Dispatch<FacilityAction>;
 }
 
 export interface AppointmentsTableProps {
@@ -740,3 +770,106 @@ export interface PortalTableProps {
 
 export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
 
+export interface ColumnTypes {
+  COL_1: string;
+  COL_2: string;
+  COL_3: string;
+}
+
+export interface ItemsTypes extends FieldsInputs {
+  icon: ElementType
+}
+export interface FormInitialType extends FieldsInputs {
+  list: string;
+}
+
+export interface FormValuesTypes {
+  id: string;
+  col: number;
+  fields: FieldsInputs[],
+}
+
+export interface SelectOptions {
+  id: number
+  name: number
+}
+
+export interface CustomSelectControlProps extends IControlLabel {
+  controllerName: string;
+  info?: string;
+  options: SelectOptions[]
+}
+
+export interface FieldEditModalProps {
+  open: boolean;
+  closeModalHanlder: () => void;
+  setFieldValuesHandler: (values: any) => void;
+  selected: FormInitialType;
+}
+
+
+export interface DropContainerPropsTypes {
+  formValues: FormValuesTypes[];
+  changeValues: (id: string, item: FieldsInputs) => void;
+  delFieldHandler: (id: number, index: number) => void;
+  delColHandler: (index: number) => void
+}
+
+
+export interface FormBuilderFormInitial {
+  name: string;
+  type: SelectorOption;
+  facilityId: SelectorOption;
+}
+
+export interface LoaderProps {
+  open: boolean
+}
+
+export interface FormBuilderPreviewProps {
+  open: Boolean;
+  closeModalHanlder: () => void;
+  data: SectionsInputs[];
+}
+
+export interface FieldComponentProps {
+  item: FieldsInputs;
+  field?: ControllerRenderProps;
+  isCreating?: boolean;
+}
+
+export interface ShareModalTypes extends DialogTypes {
+  title?: string;
+  actionText?: string;
+  description?: string;
+  handleCopy: () => void;
+}
+
+export interface SmartyUserData {
+  street: string;
+  address: string;
+}
+export interface SmartyModalComponentType {
+  setOpen: Function;
+  isOpen: boolean;
+  data: usStreet.Candidate[];
+  userData: SmartyUserData
+}
+
+export interface GetAddressResponse {
+  zipCode: usZipcode.ZipCode;
+  status: boolean;
+  message: string;
+}
+
+export interface VerifyResponse {
+  status: boolean;
+  message: string;
+  options: usStreet.Candidate[]
+}
+
+export interface AutoCompleteResponse {
+  status: boolean;
+  message: string;
+  options: any
+}

@@ -20,7 +20,8 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onError() {
+    onError({message}) {
+      console.log(message)
       return null;
     },
 
