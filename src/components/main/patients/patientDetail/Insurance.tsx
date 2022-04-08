@@ -6,21 +6,20 @@ import { Box, Typography, Collapse, colors, Card, Grid, Accordion, AccordionSumm
 // components block
 import Search from "../../../common/Search";
 import Selector from '../../../common/Selector';
+import InputController from '../../../../controller';
 // constant, utils and styles block
 import { BLUE_EIGHT, GRAY_TEN } from "../../../../theme";
 import { AddInsuranceIcon } from "../../../../assets/svgs";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import {
-  ADDITIONAL_DETAILS,
-  ADD_INSURANCE, ADD_INSURANCE_INFORMATION, COPAY_AMOUNTS, EMPTY_OPTION, EXPIRATION_DATE, INSURANCE_AND_POLICIES, INSURANCE_PAYER_NAME, INSURANCE_POLICY_DETAILS,
-  ISSUE_DATE,
-  MEMBER_ID_CERTIFICATE_NUMBER,
-  ORDER_OF_BENEFIT, PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, POLICY_NAME,
+  ADDITIONAL_DETAILS, ADD_ANOTHER_COPAY_AMOUNT, ADD_INSURANCE, ADD_INSURANCE_INFORMATION, COINSURANCE_PERCENTAGE, COPAY_AMOUNTS, EMPTY_OPTION, EXPIRATION_DATE,
+  INSURANCE_AND_POLICIES, INSURANCE_PAYER_NAME, INSURANCE_POLICY_DETAILS, ISSUE_DATE, MEMBER_ID_CERTIFICATE_NUMBER, NOTES, ORDER_OF_BENEFIT,
+  PATIENT_RELATIONSHIP_TO_POLICY_HOLDER, POLICY_GROUP_NUMBER, POLICY_NAME, PRICING_PRODUCT_TYPE, PRIMARY_CARE_PROVIDER, REFERRING_PROVIDER,
 } from "../../../../constants";
-import InputController from '../../../../controller';
 
 const InsuranceComponent = (): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false)
+  const [openNew, setOpenNew] = useState<boolean>(false)
   const [expanded, setExpanded] = useState<string | false>(false);
   const classes = useTableStyles();
   const methods = useForm<any>({
@@ -94,7 +93,6 @@ const InsuranceComponent = (): JSX.Element => {
                     </Grid>
                   </Grid>
 
-
                   <Box mt={4}>
 
                     <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')} className='accordionCustomize'>
@@ -166,6 +164,89 @@ const InsuranceComponent = (): JSX.Element => {
                                 fieldType="text"
                                 controllerName="amount"
                                 controllerLabel={''}
+                              />
+                            </Grid>
+
+                            <Grid item md={12} sm={12} xs={12}>
+                              <Collapse in={!openNew} mountOnEnter unmountOnExit>
+                                <Box
+                                  onClick={() => setOpenNew(!openNew)}
+                                  className="billing-box" textAlign="center"
+                                  maxWidth={240} margin="auto"
+                                  borderBottom={`1px solid ${BLUE_EIGHT}`}
+                                >
+                                  <Typography>{ADD_ANOTHER_COPAY_AMOUNT}</Typography>
+                                </Box>
+                              </Collapse>
+
+                              <Grid container spacing={3} justifyContent="flex-end">
+                                <Grid item md={8} sm={12} xs={12}>
+                                  <Collapse in={openNew} mountOnEnter unmountOnExit>
+                                    <Box>
+                                      <Grid container spacing={3}>
+                                        <Grid item md={6} sm={12} xs={12}>
+                                          <Selector
+                                            name="copayAmounts"
+                                            label={COPAY_AMOUNTS}
+                                            value={EMPTY_OPTION}
+                                            options={[]}
+                                          />
+                                        </Grid>
+
+                                        <Grid item md={3} sm={12} xs={12}>
+                                          <InputController
+                                            fieldType="text"
+                                            controllerName="amount"
+                                            controllerLabel={''}
+                                          />
+                                        </Grid>
+                                      </Grid>
+                                    </Box>
+                                  </Collapse>
+                                </Grid>
+                              </Grid>
+                            </Grid>
+
+                            <Grid item md={2} sm={12} xs={12}>
+                              <InputController
+                                fieldType="text"
+                                controllerName="coinsurancePercentage"
+                                controllerLabel={COINSURANCE_PERCENTAGE}
+                              />
+                            </Grid>
+
+                            <Grid item md={4} sm={12} xs={12}>
+                              <Selector
+                                name="referringProvider"
+                                label={REFERRING_PROVIDER}
+                                value={EMPTY_OPTION}
+                                options={[]}
+                              />
+                            </Grid>
+
+                            <Grid item md={4} sm={12} xs={12}>
+                              <Selector
+                                name="primaryCareProvider"
+                                label={PRIMARY_CARE_PROVIDER}
+                                value={EMPTY_OPTION}
+                                options={[]}
+                              />
+                            </Grid>
+
+                            <Grid item md={2} sm={12} xs={12}>
+                              <Selector
+                                name="pricingProductType"
+                                label={PRICING_PRODUCT_TYPE}
+                                value={EMPTY_OPTION}
+                                options={[]}
+                              />
+                            </Grid>
+
+                            <Grid item md={4} sm={12} xs={12}>
+                              <InputController
+                                fieldType="text"
+                                controllerName="notes"
+                                controllerLabel={NOTES}
                               />
                             </Grid>
                           </Grid>
