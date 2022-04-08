@@ -139,7 +139,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   }, [getPractice, isEdit, id])
 
   const onSubmit: SubmitHandler<CustomPracticeInputProps> = async (inputs) => {
-    const { name, phone, fax, upin, ein, medicaid, medicare, champus, facilityName,
+    const {
+      name, phone, fax, upin, ein, medicaid, medicare, champus, facilityName,
       userFirstName, userLastName, userEmail, email,
       userPhone, roleType, address, address2, city, state, country, zipCode
     } = inputs;
@@ -165,12 +166,15 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           createPracticeInput: {
             createPracticeItemInput: { ...practiceInput },
             createFacilityItemInput: { name: facilityName },
-            createContactInput: { address, address2, city, state: selectedState, country: selectedCountry, zipCode, email },
+            createContactInput: { firstName: userFirstName, lastName: userLastName, email: userEmail, primaryContact: true },
             registerUserInput: {
-              isAdmin: true, email: userEmail || '', password: SYSTEM_PASSWORD, firstName: userFirstName || '',
-              lastName: userLastName || '', phone: userPhone || '',
+              isAdmin: true, email: userEmail, password: SYSTEM_PASSWORD, firstName: userFirstName || '',
+              lastName: userLastName, phone: userPhone || '',
               roleType: selectedRole, adminId: adminId || '',
             },
+            createFacilityContactInput: {
+              primaryContact: true, email, address, address2, city, state: selectedState, country: selectedCountry, zipCode,
+            }
           }
         }
       })

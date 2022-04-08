@@ -1,9 +1,28 @@
-// constants block
-import { ADD_PATIENT, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENTS_TEXT, USERS_BREAD } from "../../../../constants";
-import PageHeader from "../../../common/PageHeader";
+// packages block
+import { useContext, useEffect } from "react";
+// components block
+import Alert from "../../../common/Alert";
 import PatientsTable from "./PatientsTable";
+import PageHeader from "../../../common/PageHeader";
+// constants block
+import history from "../../../../history";
+import { AuthContext } from "../../../../context";
+import { checkPermission } from "../../../../utils";
+import {
+  ADD_PATIENT, PATIENTS_BREAD, PATIENTS_ROUTE, PATIENTS_TEXT, PERMISSION_DENIED, ROOT_ROUTE, USERS_BREAD,
+  USER_PERMISSIONS
+} from "../../../../constants";
 
 const LabResultsComponent = (): JSX.Element => {
+  const { userPermissions } = useContext(AuthContext)
+
+  useEffect(() => {
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllPatient)) {
+      Alert.error(PERMISSION_DENIED)
+      history.push(ROOT_ROUTE)
+    }
+  }, [userPermissions]);
+
   return (
     <>
       <PageHeader

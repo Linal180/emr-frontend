@@ -9,9 +9,9 @@ import {
   Action, ActionType, initialState, listContextReducer, State as LocalState
 } from '../reducers/listContextReducer';
 import {
-  AllDoctorPayload, useFindAllDoctorLazyQuery, FacilitiesPayload, useFindAllFacilitiesLazyQuery,
-  ServicesPayload, useFindAllServicesLazyQuery, useFindAllPatientLazyQuery, PatientsPayload,
-  useFindAllPracticesLazyQuery, PracticesPayload, useFindAllRolesLazyQuery, RolesPayload,
+  AllDoctorPayload, FacilitiesPayload, ServicesPayload, PatientsPayload, useFindAllServiceListLazyQuery,
+  PracticesPayload, RolesPayload, useFindAllRoleListLazyQuery, useFindAllPracticeListLazyQuery,
+  useFindAllFacilityListLazyQuery, useFindAllDoctorListLazyQuery, useFindAllPatientListLazyQuery,
 } from "../generated/graphql";
 
 export const ListContext = createContext<ListContextInterface>({
@@ -46,7 +46,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     patientPages, practiceId, practicePages, practiceList, rolePages, roleList
   } = state;
 
-  const [getAllRoles] = useFindAllRolesLazyQuery({
+  const [getAllRoles] = useFindAllRoleListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -56,23 +56,27 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { getAllRoles: { pagination, roles } } = data
+        const { getAllRoles } = data
 
-        if (pagination) {
-          const { totalPages } = pagination;
+        if (getAllRoles) {
+          const { pagination, roles } = getAllRoles
 
-          if (totalPages ? rolePages !== totalPages : false) {
-            setRolePages(rolePages + 1)
+          if (pagination) {
+            const { totalPages } = pagination;
+
+            if (totalPages ? rolePages !== totalPages : false) {
+              setRolePages(rolePages + 1)
+            }
           }
-        }
 
-        !!roles && !!roleList &&
-          setRoleList([...roleList, ...roles] as RolesPayload['roles'])
+          !!roles && !!roleList &&
+            setRoleList([...roleList, ...roles] as RolesPayload['roles'])
+        }
       }
     }
   })
 
-  const [findAllPractices] = useFindAllPracticesLazyQuery({
+  const [findAllPractices] = useFindAllPracticeListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -82,23 +86,27 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { findAllPractices: { practices, pagination } } = data
+        const { findAllPractices } = data
 
-        if (pagination) {
-          const { totalPages } = pagination;
+        if (findAllPractices) {
+          const { practices, pagination } = findAllPractices
 
-          if (totalPages ? practicePages !== totalPages : false) {
-            setPracticePages(practicePages + 1)
+          if (pagination) {
+            const { totalPages } = pagination;
+
+            if (totalPages ? practicePages !== totalPages : false) {
+              setPracticePages(practicePages + 1)
+            }
           }
-        }
 
-        !!practices && !!practiceList &&
-          setPracticeList([...practiceList, ...practices] as PracticesPayload['practices'])
+          !!practices && !!practiceList &&
+            setPracticeList([...practiceList, ...practices] as PracticesPayload['practices'])
+        }
       }
     }
   })
 
-  const [findAllFacility] = useFindAllFacilitiesLazyQuery({
+  const [findAllFacility] = useFindAllFacilityListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -108,23 +116,27 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { findAllFacility: { facilities, pagination } } = data
+        const { findAllFacility } = data
 
-        if (pagination) {
-          const { totalPages } = pagination;
+        if (findAllFacility) {
+          const { facilities, pagination } = findAllFacility
 
-          if (totalPages ? facilityPages !== totalPages : false) {
-            setFacilityPages(facilityPages + 1)
+          if (pagination) {
+            const { totalPages } = pagination;
+
+            if (totalPages ? facilityPages !== totalPages : false) {
+              setFacilityPages(facilityPages + 1)
+            }
           }
-        }
 
-        !!facilities && !!facilityList &&
-          setFacilityList([...facilityList, ...facilities] as FacilitiesPayload['facilities'])
+          !!facilities && !!facilityList &&
+            setFacilityList([...facilityList, ...facilities] as FacilitiesPayload['facilities'])
+        }
       }
     }
   })
 
-  const [findAllDoctor] = useFindAllDoctorLazyQuery({
+  const [findAllDoctor] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -134,23 +146,27 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { findAllDoctor: { doctors, pagination } } = data
+        const { findAllDoctor } = data
 
-        if (pagination) {
-          const { totalPages } = pagination;
+        if (findAllDoctor) {
+          const { doctors, pagination } = findAllDoctor;
 
-          if (totalPages ? doctorPages !== totalPages : false) {
-            setDoctorPages(doctorPages + 1)
+          if (pagination) {
+            const { totalPages } = pagination;
+
+            if (totalPages ? doctorPages !== totalPages : false) {
+              setDoctorPages(doctorPages + 1)
+            }
           }
-        }
 
-        !!doctors && !!doctorList &&
-          setDoctorList([...doctorList, ...doctors] as AllDoctorPayload['doctors'])
+          !!doctors && !!doctorList &&
+            setDoctorList([...doctorList, ...doctors] as AllDoctorPayload['doctors'])
+        }
       }
     }
   })
 
-  const [findAllPatient] = useFindAllPatientLazyQuery({
+  const [findAllPatient] = useFindAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -176,7 +192,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
     }
   })
 
-  const [findAllServices] = useFindAllServicesLazyQuery({
+  const [findAllServices] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 

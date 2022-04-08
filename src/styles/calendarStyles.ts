@@ -102,6 +102,22 @@ export const useCalendarStyles = makeStyles(() =>
 
     notCursor: {
       cursor: 'not-allowed'
+    },
+
+    blur: {
+      filter: 'blur(3px)'
+    },
+
+    loader: {
+      display: 'flex',
+      alignItems: 'center',
+      maxWidth: 1750,
+      width: "100%",
+      minHeight: 700,
+      height: "100%",
+      justifyContent: 'center',
+      bgcolor: 'transparent',
+      position: 'absolute'
     }
   })
 );

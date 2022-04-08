@@ -1,5 +1,5 @@
 // packages block
-import { ReactNode ,memo} from "react";
+import { ReactNode, memo } from "react";
 import moment from "moment";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
@@ -58,9 +58,12 @@ export const renderItem = (
 ) => (
   <>
     <Typography variant="body2">{name}</Typography>
-    <Typography component="h5" variant="h5" noWrap={noWrap}>
-      {value ? value : N_A}
-    </Typography>
+    <Box pb={2} pt={0.5}>
+
+      <Typography component="h5" variant="h5" noWrap={noWrap}>
+        {value ? value : N_A}
+      </Typography>
+    </Box>
   </>
 );
 
@@ -123,12 +126,12 @@ export const isSuperAdmin = (roles: RolesPayload['roles']) => {
 export const getUserRole = (roles: RolesPayload['roles']) => {
   if (roles) {
     for (let role of roles) {
-      const {role: roleName} = role || {};
+      const { role: roleName } = role || {};
 
       if (roleName === 'doctor') return 'doctor';
     }
   }
-  
+
   return 'staff'
 }
 

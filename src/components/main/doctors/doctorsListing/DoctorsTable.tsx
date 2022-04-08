@@ -11,26 +11,34 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext, ListContext } from "../../../../context";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, formatValue, isSuperAdmin, renderTh } from "../../../../utils";
+import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
+import { formatPhone, formatValue, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
+import {
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, State as AppointmentState,
+  ActionType as AppointmentActionType
+} from "../../../../reducers/appointmentReducer";
 import {
   AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
-  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY
+  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, LINK_COPIED, PUBLIC_LINK
 } from "../../../../constants";
+import { InsertLink } from "@material-ui/icons";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
+  const isAdmin = isUserAdmin(roles)
   const { id: facilityId } = facility || {}
   const { fetchAllDoctorList, setDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
+  const [{ copied }, appointmentDispatcher] =
+    useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllDoctor, { loading, error }] = useFindAllDoctorLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -63,7 +71,7 @@ const DoctorsTable: FC = (): JSX.Element => {
       const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const doctorInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
-      
+
       await findAllDoctor({
         variables: { doctorInput: { ...doctorInputs } }
       })
@@ -121,6 +129,16 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   };
 
+  const handleClipboard = (id: string) => {
+    if (id) {
+      navigator.clipboard.writeText(
+        `${process.env.REACT_APP_URL}${PROVIDER_PUBLIC_APPOINTMENT_ROUTE}/${id}`
+      )
+
+      appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: true })
+    }
+  };
+
   const search = (query: string) => { }
 
   return (
@@ -168,6 +186,14 @@ const DoctorsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                        {isAdmin &&
+                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                              <InsertLink />
+                            </Box>
+                          </DetailTooltip>
+                        }
+
                         <Link to={`${DOCTORS_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
                             <EditIcon />

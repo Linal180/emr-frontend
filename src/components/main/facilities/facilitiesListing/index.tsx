@@ -8,13 +8,16 @@ import PageHeader from "../../../common/PageHeader";
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { checkPermission } from '../../../../utils';
-import { ADD_FACILITY, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITIES_TEXT, PERMISSION_DENIED, ROOT_ROUTE, USER_PERMISSIONS } from "../../../../constants";
+import {
+  ADD_FACILITY, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITIES_TEXT, PERMISSION_DENIED, ROOT_ROUTE,
+  USER_PERMISSIONS
+} from "../../../../constants";
 
 const FacilityComponent: FC = (): JSX.Element => {
   const { userPermissions } = useContext(AuthContext)
 
   useEffect(() => {
-    if(!checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)){
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)) {
       Alert.error(PERMISSION_DENIED)
       history.push(ROOT_ROUTE)
     }

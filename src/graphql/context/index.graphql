@@ -1,0 +1,81 @@
+query FindAllRoleList($roleInput: RoleInput!){
+  getAllRoles(roleInput: $roleInput){ 
+    pagination {
+      totalPages
+    }
+    
+    roles {
+      id
+      role
+      description
+    }
+  }
+}
+
+query FindAllPracticeList($practiceInput: PracticeInput!){
+  findAllPractices(facilityInput: $practiceInput){
+    pagination {
+      totalPages
+    }
+    
+    practices {
+      id
+      name
+    }
+  }  	
+}
+
+query FindAllFacilityList($facilityInput: FacilityInput!) {
+  findAllFacility(facilityInput: $facilityInput) {
+    facilities {
+      id
+      name
+    }
+
+    pagination {
+      totalPages
+    }
+  }
+}
+
+query FindAllDoctorList($doctorInput: DoctorInput!) {
+  findAllDoctor(doctorInput: $doctorInput) {
+    doctors {
+      id
+      lastName
+      firstName
+    }
+
+    pagination {
+      totalPages
+    }
+  }
+}
+
+query FindAllPatientList($patientInput: PatientInput!) {
+  findAllPatient(patientInput: $patientInput) {
+    pagination {
+      totalPages
+    }
+    
+    patients {
+      id
+      lastName
+      firstName
+    }
+  }
+}
+
+query FindAllServiceList($serviceInput: ServiceInput!) {
+  findAllServices(serviceInput: $serviceInput) {
+    pagination {
+      totalPages
+    }
+
+    services {
+      id
+      name
+      duration
+    }
+  }
+}

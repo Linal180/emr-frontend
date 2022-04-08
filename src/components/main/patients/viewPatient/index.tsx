@@ -1,15 +1,29 @@
 // packages block
-import { FC } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { useParams } from 'react-router';
 // component block
 import PatientForm from "../patientForm";
 import PageHeader from '../../../common/PageHeader';
-// constants block
+import Alert from '../../../common/Alert';
+// constants, utils  block
+import history from '../../../../history';
+import { AuthContext } from '../../../../context';
+import { checkPermission } from '../../../../utils';
 import { ParamsType } from '../../../../interfacesTypes';
-import { EDIT_PATIENT, PATIENTS_BREAD, PATIENT_EDIT_BREAD, USERS_BREAD } from '../../../../constants';
+import {
+  EDIT_PATIENT, PATIENTS_BREAD, PATIENT_EDIT_BREAD, PERMISSION_DENIED, ROOT_ROUTE, USERS_BREAD, USER_PERMISSIONS
+} from '../../../../constants';
 
 const AddPatientComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
+  const { userPermissions } = useContext(AuthContext)
+
+  useEffect(() => {
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.updatePatient)) {
+      Alert.error(PERMISSION_DENIED)
+      history.push(ROOT_ROUTE)
+    }
+  }, [userPermissions]);
 
   return (
     <>
