@@ -223,7 +223,6 @@ const LabOrdersForm: FC<GeneralFormProps> = (): JSX.Element => {
                     </Collapse>
                   </Grid>
                 </Grid>
-
               </Grid>
 
               <Grid item md={2} sm={12} xs={12}>
