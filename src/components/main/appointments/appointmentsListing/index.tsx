@@ -1,15 +1,28 @@
 // packages block
-import { FC } from "react";
+import { FC, useContext, useEffect } from "react";
 // components block
+import Alert from "../../../common/Alert";
 import PageHeader from "../../../common/PageHeader";
 import AppointmentsTable from "../../../common/AppointmentsTable";
-// constants block
+// constants and utils block
+import history from "../../../../history";
+import { AuthContext } from "../../../../context";
+import { checkPermission } from "../../../../utils";
 import {
-  ADD_APPOINTMENT, VIEW_APPOINTMENTS_BREAD, APPOINTMENTS_ROUTE, APPOINTMENT_TEXT,
-  APPOINTMENTS_BREAD
+  ADD_APPOINTMENT, VIEW_APPOINTMENTS_BREAD, APPOINTMENTS_ROUTE, APPOINTMENT_TEXT, APPOINTMENTS_BREAD, 
+  PERMISSION_DENIED, ROOT_ROUTE, USER_PERMISSIONS
 } from "../../../../constants";
 
 const AppointmentsComponent: FC = (): JSX.Element => {
+  const { userPermissions } = useContext(AuthContext)
+
+  useEffect(() => {
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllAppointments)) {
+      Alert.error(PERMISSION_DENIED)
+      history.push(ROOT_ROUTE)
+    }
+  }, [userPermissions]);
+
   return (
     <>
       <PageHeader

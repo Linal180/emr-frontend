@@ -24,24 +24,22 @@ import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../.
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
-import {
-  getStandardTime, getTimestamps, renderDoctors, renderServices
-} from "../../../../../utils";
+import { getStandardTime, getTimestamps, renderServices } from "../../../../../utils";
 import {
   ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation, useGetSlotsLazyQuery,
   useGetFacilityLazyQuery, FacilityPayload, BillingStatus
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
-  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, SELECT_PROVIDER, BOOK_APPOINTMENT,
+  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT,
   AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
   NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT,
 } from "../../../../../constants";
 
-const PublicAppointmentForm = (): JSX.Element => {
+const FacilityPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
   const { id: facilityId } = useParams<ParamsType>();
-  const { serviceList, doctorList, fetchAllDoctorList, fetchAllServicesList } = useContext(FacilityContext)
+  const { serviceList, fetchAllServicesList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { facility, availableSlots, currentDate, offset, agreed } = state;
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
@@ -52,7 +50,6 @@ const PublicAppointmentForm = (): JSX.Element => {
   const { reset, setValue, handleSubmit, watch } = methods;
   const {
     serviceId: { id: selectedService } = {},
-    providerId: { id: selectedProvider } = {},
   } = watch();
 
   const [getFacility] = useGetFacilityLazyQuery({
@@ -72,7 +69,6 @@ const PublicAppointmentForm = (): JSX.Element => {
           const { status } = response
 
           if (facility && status && status === 200) {
-            fetchAllDoctorList(facilityId);
             fetchAllServicesList(facilityId)
             dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
           }
@@ -134,23 +130,19 @@ const PublicAppointmentForm = (): JSX.Element => {
   }, [facilityId, getFacility])
 
   useEffect(() => {
-    if (selectedProvider && selectedService && date) {
+    if (selectedService && date) {
       getSlots({
         variables: {
           getSlots: {
-            providerId: selectedProvider, offset, currentDate: date.toString(),
-            serviceId: selectedService,
+            offset, currentDate: date.toString(), serviceId: selectedService, facilityId
           }
         }
       })
     }
-  }, [date, facilityId, getSlots, offset, selectedProvider, selectedService, currentDate])
+  }, [date, facilityId, getSlots, offset, selectedService, currentDate])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
-    const {
-      firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime,
-      scheduleEndDateTime, providerId
-    } = inputs;
+    const { firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime } = inputs;
 
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
@@ -158,7 +150,6 @@ const PublicAppointmentForm = (): JSX.Element => {
       if (facility) {
         const { id: facilityId } = facility
         const { id: selectedService } = serviceId || {};
-        const { id: selectedProvider } = providerId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
         await createExternalAppointment({
@@ -166,14 +157,14 @@ const PublicAppointmentForm = (): JSX.Element => {
             createExternalAppointmentInput: {
               createGuardianContactInput: { contactType: ContactType.Guardian },
               createExternalAppointmentItemInput: {
-                serviceId: selectedService, providerId: selectedProvider, facilityId, paymentType: PaymentType.Self,
+                serviceId: selectedService, facilityId, paymentType: PaymentType.Self,
                 scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
                 scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId,
-                usualProviderId: selectedProvider, sexAtBirth: selectedSexAtBirth as Genderidentity,
+                sexAtBirth: selectedSexAtBirth as Genderidentity,
               },
             }
           }
@@ -210,26 +201,14 @@ const PublicAppointmentForm = (): JSX.Element => {
               <Grid container spacing={3}>
                 <Grid lg={9} md={8} sm={6} xs={12} item>
                   <CardComponent cardTitle={SELECT_SERVICES}>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={APPOINTMENT_TYPE}
-                          name="serviceId"
-                          options={renderServices(serviceList)}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={SELECT_PROVIDER}
-                          name="providerId"
-                          options={renderDoctors(doctorList)}
-                        />
-                      </Grid>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={APPOINTMENT_TYPE}
+                        name="serviceId"
+                        options={renderServices(serviceList)}
+                      />
                     </Grid>
                   </CardComponent>
 
@@ -353,4 +332,4 @@ const PublicAppointmentForm = (): JSX.Element => {
   )
 }
 
-export default PublicAppointmentForm;
+export default FacilityPublicAppointmentForm;

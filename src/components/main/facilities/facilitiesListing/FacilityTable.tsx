@@ -12,10 +12,10 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { ListContext } from "../../../../context/listContext";
-import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
+import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
+import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
@@ -27,9 +27,9 @@ import {
   FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, PUBLIC_APPOINTMENT_ROUTE,
-  STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED, PUBLIC_LINK,
-  FACILITY_SERVICES_ROUTE, SERVICES, PRACTICE,
+  CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED,
+  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE,
+  PUBLIC_LINK, FACILITY_SERVICES_ROUTE, SERVICES, PRACTICE, FACILITY_PUBLIC_APPOINTMENT_ROUTE,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
@@ -135,7 +135,7 @@ const FacilityTable: FC = (): JSX.Element => {
   const handleClipboard = (id: string) => {
     if (id) {
       navigator.clipboard.writeText(
-        `${process.env.REACT_APP_URL}${PUBLIC_APPOINTMENT_ROUTE}/${id}`
+        `${process.env.REACT_APP_URL}${FACILITY_PUBLIC_APPOINTMENT_ROUTE}/${id}`
       )
 
       appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: true })

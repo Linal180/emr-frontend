@@ -1,9 +1,27 @@
-// constants block
-import { ADD_STAFF, STAFF_BREAD, STAFF_ROUTE, STAFF_TEXT, USERS_BREAD } from "../../../../constants";
-import PageHeader from "../../../common/PageHeader";
+// packages block
+import { useContext, useEffect } from "react";
+// components block
 import StaffTable from "./StaffTable";
+import Alert from "../../../common/Alert";
+import PageHeader from "../../../common/PageHeader";
+// constants, utils and context block
+import history from "../../../../history";
+import { AuthContext } from "../../../../context";
+import { checkPermission } from "../../../../utils";
+import {
+  ADD_STAFF, PERMISSION_DENIED, ROOT_ROUTE, STAFF_BREAD, STAFF_ROUTE, STAFF_TEXT, USERS_BREAD, USER_PERMISSIONS
+} from "../../../../constants";
 
 const StaffComponent = (): JSX.Element => {
+  const { userPermissions } = useContext(AuthContext)
+
+  useEffect(() => {
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.findAllStaff)) {
+      Alert.error(PERMISSION_DENIED)
+      history.push(ROOT_ROUTE)
+    }
+  }, [userPermissions]);
+
   return (
     <>
       <PageHeader

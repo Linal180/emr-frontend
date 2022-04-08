@@ -80,10 +80,10 @@ const PracticeTable: FC = (): JSX.Element => {
           if (response) {
             const { message } = response
             message && Alert.success(message);
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             await findAllPractices();
             fetchAllPracticeList();
             fetchAllFacilityList();
-            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
         }
       } catch (error) { }

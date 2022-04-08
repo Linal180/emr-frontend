@@ -7,8 +7,8 @@ import {
   Action, ActionType, initialState, facilityContextReducer, State as LocalState
 } from '../reducers/facilityContextReducer';
 import {
-  AllDoctorPayload, useFindAllDoctorLazyQuery, useFindAllPatientLazyQuery, PatientsPayload,
-  ServicesPayload, useFindAllServicesLazyQuery,
+  AllDoctorPayload, PatientsPayload, useFindAllServiceListLazyQuery, ServicesPayload,
+  useFindAllDoctorListLazyQuery, useFindAllPatientListLazyQuery,
 } from "../generated/graphql";
 
 export const FacilityContext = createContext<FacilityContextInterface>({
@@ -29,7 +29,7 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     doctorPages, doctorList, servicePages, serviceList, patientList, patientPages
   } = state;
 
-  const [findAllDoctor] = useFindAllDoctorLazyQuery({
+  const [findAllDoctor] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -55,7 +55,7 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     }
   })
 
-  const [findAllPatient] = useFindAllPatientLazyQuery({
+  const [findAllPatient] = useFindAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -83,7 +83,7 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
     }
   })
 
-  const [findAllServices] = useFindAllServicesLazyQuery({
+  const [findAllServices] = useFindAllServiceListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -145,7 +145,7 @@ export const FacilityContextProvider: FC = ({ children }): JSX.Element => {
         },
       });
 
-    } catch  { }
+    } catch { }
   }, [findAllPatient])
 
   const fetchAllServicesList = useCallback(async (facilityId, page = 1) => {

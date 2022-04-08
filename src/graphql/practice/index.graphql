@@ -13,27 +13,9 @@ query FindAllPractices($practiceInput: PracticeInput!){
     
     practices {
       id
-      fax
       name
       phone
       createdAt
-      updatedAt
-      
-      facilities {
-        id
-        name
-        isPrimary
-
-        contacts {
-          id
-          city
-          email
-          state
-          address
-          country
-          primaryContact
-        }
-      }
     }
   }  	
 }
