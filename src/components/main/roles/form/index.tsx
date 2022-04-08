@@ -254,8 +254,10 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <FormGroup>
                               <FormControlLabel
                                 control={
-                                  <Checkbox disabled={!custom} color="primary" checked={ids.includes(id || '')}
-                                    onChange={handleChangeForCheckBox(id || '')} />
+                                  <Box className='permissionDenied'>
+                                    <Checkbox disabled={!custom} color="primary" checked={ids.includes(id || '')}
+                                      onChange={handleChangeForCheckBox(id || '')} />
+                                  </Box>
                                 }
                                 label={formatPermissionName(name || '')}
                               />
