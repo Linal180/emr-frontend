@@ -12,10 +12,12 @@ import AppointmentCard from "./appointmentCard";
 import { mapAppointmentData } from "../../../utils"
 import { useFindAllAppointmentsLazyQuery, AppointmentsPayload } from "../../../generated/graphql";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
+import { useCalendarStyles } from "../../../styles/calendarStyles";
 
 const CalendarComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const classes = useCalendarStyles()
 
   const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     variables: {
@@ -79,23 +81,24 @@ const CalendarComponent = (): JSX.Element => {
   return (
     <Card>
       <Box>
-        {fetchAllAppointmentsLoading ?
-          <Box display='flex' alignItems='center' maxWidth={1750} width="100%" minHeight={700} height="100%" justifyContent='center'><CircularProgress color="inherit" /></Box>
-          : (
-            <Scheduler data={mapAppointmentData(appointments)}>
-              <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
-              <MonthView />
-              <WeekView />
-              <DayView />
-              <Toolbar />
-              <TodayButton />
-              <ViewSwitcher />
-              <DateNavigator />
-              <Appointments appointmentComponent={Appointment} />
-              <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
-            </Scheduler>
-          )
+        {fetchAllAppointmentsLoading &&
+          <Box className={classes.loader} ><CircularProgress color="inherit" /></Box>
         }
+
+        <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
+          <Scheduler data={mapAppointmentData(appointments)}>
+            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+            <MonthView />
+            <WeekView />
+            <DayView />
+            <Toolbar />
+            <TodayButton />
+            <ViewSwitcher />
+            <DateNavigator />
+            <Appointments appointmentComponent={Appointment} />
+            <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
+          </Scheduler>
+        </Box>
       </Box>
     </Card>
   )
