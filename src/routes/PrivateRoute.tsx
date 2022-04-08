@@ -5,10 +5,10 @@ import { Route, Redirect, useLocation } from "react-router-dom";
 import Alert from "../components/common/Alert";
 import MainLayout from "../components/common/MainLayout";
 // context, interfaces/types and constants block
-import { activeClass, getToken, isSuperAdmin } from "../utils";
 import { AuthContext } from "../context";
-import { FORBIDDEN_ROUTE, LOGIN_ROUTE, ROOT_ROUTE } from "../constants";
 import { PrivateRouteProps } from "../interfacesTypes";
+import { activeClass, getToken, isSuperAdmin } from "../utils";
+import { FORBIDDEN_ROUTE, LOGIN_ROUTE, ROOT_ROUTE } from "../constants";
 
 const PrivateRoute: FC<PrivateRouteProps> = ({ component: Component, ...rest }): JSX.Element => {
   const { user } = useContext(AuthContext);
