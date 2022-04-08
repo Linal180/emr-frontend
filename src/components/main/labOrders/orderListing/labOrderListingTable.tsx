@@ -3,7 +3,6 @@
 import { ChangeEvent, Reducer, useReducer } from "react";
 import { Pagination } from "@material-ui/lab";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, } from "@material-ui/core";
-// components block
 // constant, utils and styles block
 import { renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";

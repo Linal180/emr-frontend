@@ -3,10 +3,9 @@ import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
-  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE,
+  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, GRAY_TWELVE, BLACK_NINE,
   BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED_FOUR,
 } from ".";
-import { BLACK_NINE, WHITE_SEVEN } from "./colors";
 
 const breakpoints = createBreakpoints({})
 const customTheme = createTheme()
@@ -208,10 +207,10 @@ export const theme = createTheme({
             height: 20,
             width: 20,
             position: "absolute",
-            background: WHITE_SEVEN,
+            background: 'WHITE_SEVEN',
             zIndex: 9,
             borderRadius: 3,
-            border: `10px solid ${GRAY_SEVEN}`,
+            border: `2px solid ${GRAY_TWELVE}`,
           },
         },
 

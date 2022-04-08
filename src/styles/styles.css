@@ -338,6 +338,10 @@ body .MuiTabPanel-root {
   font-weight: 600;
 }
 
+.permissionDenied:hover {
+  cursor: not-allowed;
+}
+
 /* Signature-pad-Styling */
 .sigCanvas {
   width: 100%;
