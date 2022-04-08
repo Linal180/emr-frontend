@@ -271,6 +271,7 @@ export type ContactsPayload = {
 };
 
 export type CreateAppointmentInput = {
+  appointmentTypeId: Scalars['String'];
   autoAccident?: Maybe<Scalars['Boolean']>;
   billingStatus: BillingStatus;
   employment?: Maybe<Scalars['Boolean']>;
@@ -288,7 +289,6 @@ export type CreateAppointmentInput = {
   scheduleEndDateTime: Scalars['String'];
   scheduleStartDateTime: Scalars['String'];
   secondaryInsurance?: Maybe<Scalars['String']>;
-  serviceId: Scalars['String'];
 };
 
 export type CreateAttachmentInput = {
@@ -2748,6 +2748,7 @@ export type UpdateAppointmentBillingStatusInput = {
 };
 
 export type UpdateAppointmentInput = {
+  appointmentTypeId?: Maybe<Scalars['String']>;
   autoAccident?: Maybe<Scalars['Boolean']>;
   billingStatus?: Maybe<BillingStatus>;
   employment?: Maybe<Scalars['Boolean']>;
@@ -2767,7 +2768,6 @@ export type UpdateAppointmentInput = {
   scheduleEndDateTime?: Maybe<Scalars['String']>;
   scheduleStartDateTime?: Maybe<Scalars['String']>;
   secondaryInsurance?: Maybe<Scalars['String']>;
-  serviceId?: Maybe<Scalars['String']>;
 };
 
 export type UpdateAppointmentStatusInput = {
@@ -3219,7 +3219,7 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleEndDateTime?: string | null | undefined, scheduleStartDateTime?: string | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleEndDateTime?: string | null | undefined, scheduleStartDateTime?: string | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
@@ -3834,6 +3834,10 @@ export const FindAllAppointmentsDocument = gql`
         lastName
       }
       facility {
+        id
+        name
+      }
+      appointmentType {
         id
         name
       }

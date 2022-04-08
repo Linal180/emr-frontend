@@ -33,6 +33,11 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
         id
         name
       }
+
+      appointmentType {
+        id
+        name
+      }
     }
   }
 }
