@@ -590,7 +590,6 @@ export const externalAppointmentSchema = yup.object({
   ...dobSchema,
   ...emailSchema,
   ...serviceIdSchema,
-  ...providerIdSchema,
   ...firstLastNameSchema,
 })
 

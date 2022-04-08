@@ -1,6 +1,6 @@
 // packages block
 import { useEffect, useCallback, Reducer, useState, useReducer } from "react";
-import { Box, Card } from "@material-ui/core";
+import { Box, Card, CircularProgress } from "@material-ui/core";
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
@@ -17,7 +17,7 @@ const CalendarComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
-  const [findAllAppointments] = useFindAllAppointmentsLazyQuery({
+  const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     variables: {
       appointmentInput: {
         paginationOptions: {
@@ -79,18 +79,23 @@ const CalendarComponent = (): JSX.Element => {
   return (
     <Card>
       <Box>
-        <Scheduler data={mapAppointmentData(appointments)}>
-          <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
-          <MonthView />
-          <WeekView />
-          <DayView />
-          <Toolbar />
-          <TodayButton />
-          <ViewSwitcher />
-          <DateNavigator />
-          <Appointments appointmentComponent={Appointment} />
-          <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
-        </Scheduler>
+        {fetchAllAppointmentsLoading ?
+          <Box display='flex' alignItems='center' maxWidth={1750} width="100%" minHeight={700} height="100%" justifyContent='center'><CircularProgress color="inherit" /></Box>
+          : (
+            <Scheduler data={mapAppointmentData(appointments)}>
+              <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+              <MonthView />
+              <WeekView />
+              <DayView />
+              <Toolbar />
+              <TodayButton />
+              <ViewSwitcher />
+              <DateNavigator />
+              <Appointments appointmentComponent={Appointment} />
+              <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
+            </Scheduler>
+          )
+        }
       </Box>
     </Card>
   )
