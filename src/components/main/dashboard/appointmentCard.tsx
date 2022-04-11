@@ -134,8 +134,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
   const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
   const appCancelToken = appointmentMeta?.data.token
-  console.log(appointmentMeta?.data);
-
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
