@@ -33,7 +33,6 @@ const PrivateRoute: FC<PrivateRouteProps> = ({ component: Component, permission,
               }
             } else
             if(permission){
-              console.log(permission)
               if(userPermissions.includes(permission)){
                 return <Component {...props} />
               }else {
