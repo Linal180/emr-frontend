@@ -60,24 +60,26 @@ const AutoLogoutComponent = (): JSX.Element => {
           </Box>
         </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={AUTO_LOGOUT}>
-            <Box p={2}>
+            <Box p={2} mb={2}>
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <Selector
-                    isRequired
-                    name="notice"
-                    label={AUTO_LOGOUT_DESCRIPTION}
-                    value={EMPTY_OPTION}
-                    options={[]}
-                  />
+                  <Grid container spacing={3}>
+                    <Grid item md={10} sm={12} xs={12}>
+                      <Selector
+                        isRequired
+                        name="notice"
+                        label={AUTO_LOGOUT_DESCRIPTION}
+                        value={EMPTY_OPTION}
+                        options={[]}
+                      />
+
+                      <Button type="submit" variant="contained" color='primary'>{SAVE_TEXT}</Button>
+                    </Grid>
+                  </Grid>
                 </form>
               </FormProvider>
-            </Box>
-
-            <Box mb={4}>
-              <Button type="submit" variant="contained" color='primary'>{SAVE_TEXT}</Button>
             </Box>
           </CardComponent>
         </Grid>

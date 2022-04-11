@@ -10,8 +10,8 @@ import { WHITE } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
-  GENERAL, PROFILE_GENERAL_MENU_ITEMS, SECURITY, USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, TWO_FA_AUTHENTICATION, STATUS, 
-  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, TWO_FA_PASSWORD, ENABLE,
+  GENERAL, PROFILE_GENERAL_MENU_ITEMS, SECURITY, USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, TWO_FA_AUTHENTICATION, STATUS,
+  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENABLE, ENTER_PASSWORD,
 } from '../../../constants';
 
 const TwoFAComponent = (): JSX.Element => {
@@ -60,7 +60,7 @@ const TwoFAComponent = (): JSX.Element => {
           </Box>
         </Grid>
 
-        <Grid item md={6} sm={12} xs={12}>
+        <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={TWO_FA_AUTHENTICATION}>
             <Box p={2} mb={2}>
               <FormProvider {...methods}>
@@ -76,11 +76,11 @@ const TwoFAComponent = (): JSX.Element => {
                   <Box p={2} />
 
                   <Grid container spacing={3}>
-                    <Grid item md={4} sm={12} xs={12}>
+                    <Grid item md={5} sm={12} xs={12}>
                       <InputController
                         fieldType="text"
                         controllerName="password"
-                        controllerLabel={TWO_FA_PASSWORD}
+                        controllerLabel={ENTER_PASSWORD}
                       />
                     </Grid>
                   </Grid>
