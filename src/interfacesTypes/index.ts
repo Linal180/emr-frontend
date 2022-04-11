@@ -22,6 +22,7 @@ import {
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
+  permission?: string;
 }
 
 type Key = string | number | undefined;
@@ -88,6 +89,7 @@ export interface FacilityContextInterface {
 }
 
 export interface PermissionContextInterface {
+  permissionLoading: boolean;
   permissions: PermissionsPayload['permissions']
 }
 
@@ -389,7 +391,8 @@ export type ParamsType = {
 }
 
 export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | "roleType" | "gender">
-  & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
+  & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption }
+  & { providerIds: SelectorOption };
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
   & { serviceId: SelectorOption } & { day: SelectorOption };

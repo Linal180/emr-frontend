@@ -1,5 +1,5 @@
 // packages block
-import { FC, useImperativeHandle, useState, forwardRef } from "react";
+import { FC, useImperativeHandle, useState, forwardRef, useContext } from "react";
 import axios from "axios";
 import { Edit } from "@material-ui/icons";
 import { DropzoneArea } from "material-ui-dropzone";
@@ -7,15 +7,17 @@ import { Box, Button, CircularProgress, IconButton } from "@material-ui/core";
 // components block
 import Alert from "./Alert";
 // styles, utils, graphql, constants and interfaces/types block
+import { AuthContext } from "../../context";
 import { getToken, handleLogout } from "../../utils";
 import { AttachmentType } from "../../generated/graphql";
-import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { MediaPatientDataType } from "../../interfacesTypes";
+import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
 
 const DropzoneImage: FC<any> = forwardRef(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reload, title,
 }, ref): JSX.Element => {
+  const {setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
   const [loading, setLoading] = useState<boolean>(false);
   const [imageEdit, setImageEdit] = useState<boolean>(false);
@@ -92,6 +94,8 @@ const DropzoneImage: FC<any> = forwardRef(({
         Alert.error("Something went wrong!");
 
         if (status === 401) {
+          setIsLoggedIn(false)
+          setUser(null)
           handleLogout();
         }
       }
