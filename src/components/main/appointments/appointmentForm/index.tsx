@@ -49,7 +49,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
-    serviceName, facilityName, providerName, patientName
+    serviceName, facilityName, providerName, patientName, cancelAppStatus
   } = state
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
@@ -105,34 +105,29 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           } = appointment || {}
 
           if (status === Appointmentstatus.Cancelled) {
-            history.push(VIEW_APPOINTMENTS_ROUTE);
-            Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
+            dispatch({ type: ActionType.SET_CANCEL_APP_STATUS, cancelAppStatus: true })
           }
 
           const { id: facilityId, name: facilityName } = facility || {};
           const { id: serviceId, name: serviceName } = appointmentType || {};
           const { id: patientId, firstName: patientFN, lastName: patientLN } = patient || {};
           const { id: providerId, firstName: providerFN, lastName: providerLN } = provider || {};
-          
-          notes && setValue('notes', notes)
-          reason && setValue('reason', reason)
-          employment && setValue('employment', employment)
-          autoAccident && setValue('autoAccident', autoAccident)
-          otherAccident && setValue('otherAccident', otherAccident)
-          primaryInsurance && setValue('primaryInsurance', primaryInsurance)
-          secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
+
+
           scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
           scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
 
-          if (serviceId && serviceName) {
-            setValue('serviceId', setRecord(serviceId, serviceName))
-            dispatch({ type: ActionType.SET_SERVICE_NAME, serviceName })
-          }
 
           if (facilityId && facilityName) {
             setValue('facilityId', setRecord(facilityId, facilityName))
             dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName })
           }
+
+          if (serviceId && serviceName) {
+            dispatch({ type: ActionType.SET_SERVICE_NAME, serviceName })
+            setValue('serviceId', setRecord(serviceId, serviceName))
+          }
+
           if (providerId) {
             setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}`))
             dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: `${providerFN} ${providerLN}` })
@@ -142,6 +137,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             setValue('patientId', setRecord(patientId, `${patientFN} ${patientLN}`))
             dispatch({ type: ActionType.SET_PATIENT_NAME, patientName: `${patientFN} ${patientLN}` })
           }
+
+          notes && setValue('notes', notes)
+          reason && setValue('reason', reason)
+          employment && setValue('employment', employment)
+          autoAccident && setValue('autoAccident', autoAccident)
+          otherAccident && setValue('otherAccident', otherAccident)
+          primaryInsurance && setValue('primaryInsurance', primaryInsurance)
+          secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
@@ -240,7 +243,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [fetchAppointment, id, isEdit, setValue])
 
   useEffect(() => {
-    if (selectedFacility && selectedService && date) {
+    if (selectedService && date) {
       const slotsInput = { offset, currentDate: date.toString(), serviceId: selectedService };
 
       getSlots({
@@ -296,9 +299,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       if (isEdit) {
         id ?
-          await updateAppointment({
-            variables: { updateAppointmentInput: { id, ...payload } }
-          })
+          cancelAppStatus ?
+            Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
+            :
+            await updateAppointment({
+              variables: { updateAppointmentInput: { id, ...payload } }
+            })
           : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({

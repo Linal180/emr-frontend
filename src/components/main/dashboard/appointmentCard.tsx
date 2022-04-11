@@ -26,15 +26,16 @@ import {
 } from '../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useRemoveAppointmentMutation
+  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation
 } from '../../../generated/graphql';
 import {
+  PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD,
+  FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT,
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_LOCATION, INVOICE, 
-  FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT, 
+  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_LOCATION, INVOICE,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PROVIDER_NAME,
-   PRODUCT_AND_SERVICES_TEXT,  REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD, TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE,
+  TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
 } from '../../../constants';
 import { Link } from 'react-router-dom';
 
@@ -45,7 +46,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
-    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, openDelete, isInvoiceNumber,
+    appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber
   } = state;
   const methods = useForm<UpdateStatusInputProps>({ mode: "all", });
   const { handleSubmit, watch, setValue } = methods;
@@ -132,6 +133,9 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
   const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
   const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
+  const appCancelToken = appointmentMeta?.data.token
+  console.log(appointmentMeta?.data);
+
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -216,7 +220,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     dispatch({ type: ActionType.SET_APP_EDIT, appEdit: true })
   }
 
-  const [removeAppointment, { loading: removeAppointmentLoading }] = useRemoveAppointmentMutation({
+  const [cancelAppointment, { loading: cancelAppointmentLoading }] = useCancelAppointmentMutation({
     onError() {
       Alert.error(CANT_CANCELLED_APPOINTMENT)
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
@@ -224,7 +228,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
     async onCompleted(data) {
       if (data) {
-        const { removeAppointment: { response } } = data
+        const { cancelAppointment: { response } } = data
 
         if (response) {
           const { message } = response
@@ -237,18 +241,15 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   });
 
   const handleCancelAppointment = async () => {
-    deleteAppointmentId && await removeAppointment({
+    await cancelAppointment({
       variables: {
-        removeAppointment: { id: deleteAppointmentId }
+        cancelAppointment: { reason: APPOINTMENT_CANCEL_REASON, token: appCancelToken }
       }
     })
   };
 
-  const onDeleteClick = (id: string) => {
-    if (id) {
-      dispatch({ type: ActionType.SET_DELETE_APPOINTMENT_ID, deleteAppointmentId: id })
-      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
-    }
+  const onDeleteClick = () => {
+    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
   };
 
   const handleAppDetail = () => {
@@ -379,7 +380,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
                   <IconButton onClick={() => {
                     moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
-                      Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
+                      Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick()
                   }}>
                     <DeleteAppointmentIcon />
                   </IconButton>
@@ -481,7 +482,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               <ConfirmationModal
                 title={APPOINTMENT_DETAILS}
                 isOpen={openDelete}
-                isLoading={removeAppointmentLoading}
+                isLoading={cancelAppointmentLoading}
                 description={DELETE_APPOINTMENT_DESCRIPTION}
                 setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
                 handleDelete={handleCancelAppointment}

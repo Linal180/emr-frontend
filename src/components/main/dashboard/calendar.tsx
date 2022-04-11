@@ -10,7 +10,7 @@ import {
 import AppointmentCard from "./appointmentCard";
 // context, constants block
 import { mapAppointmentData } from "../../../utils"
-import { useFindAllAppointmentsLazyQuery, AppointmentsPayload } from "../../../generated/graphql";
+import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus } from "../../../generated/graphql";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
 import { useCalendarStyles } from "../../../styles/calendarStyles";
 
@@ -43,7 +43,7 @@ const CalendarComponent = (): JSX.Element => {
         const { appointments } = findAllAppointments
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments as AppointmentsPayload['appointments']
+          appointments: appointments?.filter(appointment => appointment?.status !== Appointmentstatus.Cancelled) as AppointmentsPayload['appointments']
         });
       }
     }

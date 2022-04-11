@@ -571,7 +571,7 @@ export const settingSchema = yup.object({
 export const appointmentSchema = yup.object({
   ...patientIdSchema,
   ...serviceIdSchema,
-  ...facilityIdSchema,
+  // ...facilityIdSchema,
   notes: yup.string(),
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
   secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
