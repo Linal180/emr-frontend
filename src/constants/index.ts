@@ -225,6 +225,7 @@ export const ASSOCIATED_FACILITY = "Associated Facility";
 export const APPOINTMENT_SETTINGS = "Appointment Settings";
 export const FACILITY_CONTACT_INFO = "Facility Contact Information";
 export const FACILITY_BILLING_INFO = "Facility BIling Information";
+export const ENABLE = "Enable";
 export const VITALS_TEXT = "Vitals";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
@@ -598,6 +599,9 @@ export const CHANGE_PASSWORD = "Change password";
 export const TWO_FA_TEXT = "2-FA";
 export const LOINC_CODE = "LOINC Code";
 export const AUTO_LOGOUT = "Auto Logout";
+export const TWO_FA_PASSWORD = "Enter 2-FA Password";
+export const TWO_FA_AUTHENTICATION = "2-Factor Authentication";
+export const TWO_FA_AUTHENTICATION_DESCRIPTION = "When you login you provide an email address and password. This is one “factor” of authenticating who you are. 2-Factor refers to using a second factor to confirm your identity.";
 export const LOCK_SCREEN = "Lock Screen";
 export const RESULT_VALUE = "Result Value";
 export const RESULT_UNITS = "Result Units";
@@ -869,6 +873,7 @@ export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
+export const TWO_FA_ROUTE = "/twoFA";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
@@ -1194,7 +1199,7 @@ export const PROFILE_SECURITY_MENU_ITEMS = [
   },
   {
     name: TWO_FA_TEXT,
-    link: "/",
+    link: TWO_FA_ROUTE,
   },
   {
     name: AUTO_LOGOUT,

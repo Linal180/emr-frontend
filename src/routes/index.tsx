@@ -75,9 +75,11 @@ import {
   EMERGENCY_ACCESS_ROUTE, FORM_BUILDER_ROUTE, SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE,
   SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, PUBLIC_FORM_BUILDER_ROUTE,
   PUBLIC_FORM_BUILDER_FAIL_ROUTE, FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE, CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE,
-  PROVIDER_PUBLIC_APPOINTMENT_ROUTE
+  PROVIDER_PUBLIC_APPOINTMENT_ROUTE,
+  TWO_FA_ROUTE
 } from "../constants";
 import { CheckIn } from "../pages/main/checkIn";
+import { TwoFA } from "../pages/main/twoFA";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -113,6 +115,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={SIGNATURE_ROUTE} component={Signature} />
       <PrivateRoute exact path={CANCELLATION_ROUTE} component={Cancellation} />
       <PrivateRoute exact path={ROLES_ROUTE} component={Roles} />
+      <PrivateRoute exact path={TWO_FA_ROUTE} component={TwoFA} />
       <PrivateRoute exact path={`${ROLES_ROUTE}/new`} component={AddRole} />
       <PrivateRoute exact path={`${ROLES_ROUTE}/:id`} component={EditRole} />
       <PrivateRoute exact path={AUTO_LOGOUT_ROUTE} component={AutoLogout} />
