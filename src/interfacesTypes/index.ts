@@ -89,6 +89,7 @@ export interface FacilityContextInterface {
 }
 
 export interface PermissionContextInterface {
+  permissionLoading: boolean;
   permissions: PermissionsPayload['permissions']
 }
 

@@ -569,6 +569,7 @@ export const renderFacility = (facilityId: string, facilities: FacilitiesPayload
     const { name } = facility || {}
     return name ? name : "";
   }
+
   return ""
 }
 

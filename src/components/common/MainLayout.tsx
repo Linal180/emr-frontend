@@ -5,15 +5,16 @@ import { Box, CssBaseline } from "@material-ui/core";
 import Header from "./Header";
 import BackdropLoader from "./Backdrop";
 // interfaces/types and main layout styles block
-import { AuthContext } from "../../context";
 import { MainLayoutProps } from "../../interfacesTypes";
+import { AuthContext, PermissionContext } from "../../context";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const { user, isLoggedIn } = useContext(AuthContext);
+  const { permissionLoading } = useContext(PermissionContext);
 
   return (
     <>
-      {(!user && isLoggedIn) ? <BackdropLoader loading={true} /> : (<>
+      {(!user && isLoggedIn) || permissionLoading ? <BackdropLoader loading={true} /> : (<>
         <CssBaseline />
         <Header />
 

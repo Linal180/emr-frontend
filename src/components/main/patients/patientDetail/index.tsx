@@ -7,13 +7,12 @@ import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
-import PortalTable from './PortalTable';
-import DocumentsTable from './DocumentsTable';
-import LabOrdersTable from './LabOrdersTable';
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import PortalTable from '../../../common/patientDetail/PortalTable';
+import DocumentsTable from '../../../common/patientDetail/DocumentsTable';
 // constants, history, styling block
 import history from '../../../../history';
 import { ParamsType } from "../../../../interfacesTypes";
@@ -37,6 +36,7 @@ import {
   VIEW_CHART_TEXT,
 } from "../../../../constants";
 import Insurance from './Insurance';
+import LabOrdersTable from '../../../common/patientDetail/LabOrdersTable';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
