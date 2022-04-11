@@ -1,10 +1,11 @@
 // packages block
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useContext } from "react";
 import { Link } from "react-router-dom";
 import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton } from '@material-ui/core';
 // utils and header styles block
 import { WHITE_FOUR } from "../../theme";
 import { handleLogout } from "../../utils";
+import { AuthContext } from "../../context";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import StatusSelector from "../main/dashboard/statusSelector";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
@@ -14,12 +15,18 @@ import {
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
+  const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-
+  const logout = () => {
+    setIsLoggedIn(false)
+    setUser(null)
+    handleLogout();
+  };
+  
   return (
     <>
       <IconButton
@@ -102,7 +109,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               </Grid>
 
               <Grid item md={4}>
-                <Button onClick={() => handleLogout()} variant="outlined" color="secondary" size="small"
+                <Button onClick={() => logout()} variant="outlined" color="secondary" size="small"
                 >
                   {LOGOUT_TEXT}
                 </Button>
