@@ -13,7 +13,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
 
   return (
     <>
-      {(!user && isLoggedIn) ? <BackdropLoader loading={true} /> : (<>
+      {!user && isLoggedIn ? <BackdropLoader loading={true} /> : (<>
         <CssBaseline />
         <Header />
 

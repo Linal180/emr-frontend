@@ -16,7 +16,7 @@ import history from "../../../../history";
 import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getTimestamps, renderFacilities, renderRoles, setRecord } from "../../../../utils";
+import { getTimestamps, renderDoctors, renderFacilities, renderRoles, setRecord } from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
 } from "../../../../generated/graphql";
@@ -24,12 +24,12 @@ import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, 
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
-  const { facilityList, roleList } = useContext(ListContext)
+  const { facilityList, roleList, doctorList } = useContext(ListContext)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(staffSchema)
@@ -134,14 +134,15 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [getStaff, id, isEdit])
 
   const onSubmit: SubmitHandler<ExtendedStaffInputProps> = async ({
-    firstName, lastName, email, username, phone, mobile, dob, gender, facilityId, roleType
+    firstName, lastName, email, username, phone, mobile, dob, gender, facilityId, roleType, providerIds
   }) => {
     const { id: staffGender } = gender
-    const { id: facilityID } = facilityId
+    const { id: selectedFacility } = facilityId
+    const { id: selectedProvider } = providerIds
 
     const staffInputs = {
       firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
-      gender: staffGender as Gender, facilityId: facilityID, username,
+      gender: staffGender as Gender, facilityId: selectedFacility, username: '',
     };
 
     if (isEdit) {
@@ -150,7 +151,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           variables: {
             updateStaffInput: {
               updateStaffItemInput: { id, ...staffInputs },
-              providers: []
+              providers: [selectedProvider]
             }
           }
         })
@@ -165,8 +166,8 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         await createStaff({
           variables: {
             createStaffInput: {
-              staffInput: { password: 'staff@123', roleType: role, ...staffInputs, adminId: id },
-              providers: []
+              staffInput: { password: SYSTEM_PASSWORD, roleType: role, ...staffInputs, adminId: id },
+              providers: [selectedProvider]
             }
           }
         })
@@ -274,10 +275,12 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       </Grid>
 
                       <Grid item md={4} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="username"
-                          controllerLabel={PROVIDER}
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={PROVIDER}
+                          name="providerIds"
+                          options={renderDoctors(doctorList)}
                         />
                       </Grid>
                     </Grid>

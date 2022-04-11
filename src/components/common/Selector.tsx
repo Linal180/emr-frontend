@@ -7,7 +7,7 @@ import { TextField, FormControl, FormHelperText, InputLabel } from "@material-ui
 import { SelectorProps } from "../../interfacesTypes";
 import { requiredLabel } from "../../utils";
 
-const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, }): JSX.Element => {
+const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired }): JSX.Element => {
   const { control } = useFormContext()
 
   return (

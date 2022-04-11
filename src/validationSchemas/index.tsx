@@ -16,8 +16,8 @@ import {
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, minDobValidMessage, maxDobValidMessage,
-  STRING_REGEX, MIDDLE_NAME, DOCTOR, STAFF_TEXT, SERVICE_NAME_TEXT,
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME, 
+  SERVICE_NAME_TEXT, DOB,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -118,13 +118,13 @@ const dobSchema = {
     value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
 }
 
-const doctorDobSchema = (label: string) => {
-  return yup.string()
-    .test('', minDobValidMessage(label),
-      value => moment().diff(moment(value), 'years') >= 20)
-    .test('', maxDobValidMessage(label),
-      value => moment().diff(moment(value), 'years') < 100)
-}
+// const doctorDobSchema = (label: string) => {
+//   return yup.string()
+//     .test('', minDobValidMessage(label),
+//       value => moment().diff(moment(value), 'years') >= 20)
+//     .test('', maxDobValidMessage(label),
+//       value => moment().diff(moment(value), 'years') < 100)
+// }
 
 const roleTypeSchema = {
   roleType: yup.object().shape({
@@ -188,8 +188,8 @@ const practiceIdSchema = {
   )
 }
 
-const providerIdSchema = {
-  providerId: yup.object().shape({
+const providerIdSchema = () => {
+  return yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
   }).test(
@@ -363,10 +363,10 @@ const staffBasicSchema = {
   ...roleTypeSchema,
   ...facilityIdSchema,
   ...firstLastNameSchema,
-  username: yup.string(),
-  dob: doctorDobSchema(STAFF_TEXT),
   phone: notRequiredPhone(PHONE),
-  mobile: yup.string().min(10, MinLength(MOBILE_NUMBER, 10)).max(15, MaxLength(MOBILE_NUMBER, 15)),
+  providerIds: providerIdSchema(),
+  mobile: notRequiredPhone(MOBILE),
+  dob: yup.string().required(requiredMessage(DOB)),
 }
 
 export const staffSchema = yup.object({
@@ -435,7 +435,6 @@ export const basicDoctorSchema = {
   dpsCtpNumber: yup.string(),
   stateLicense: yup.string(),
   emcProviderId: yup.string(),
-  dob: doctorDobSchema(DOCTOR),
   campusGrpNumber: yup.string(),
   blueShildNumber: yup.string(),
   providerIntials: yup.string(),
@@ -448,6 +447,7 @@ export const basicDoctorSchema = {
   meammographyCertNumber: yup.string(),
   suffix: notRequiredStringOnly(SUFFIX),
   middleName: notRequiredStringOnly(MIDDLE_NAME),
+  dob: yup.string().required(requiredMessage(DOB)),
   languagesSpoken: notRequiredStringOnly(LANGUAGE_SPOKEN),
 };
 
@@ -595,10 +595,10 @@ export const externalAppointmentSchema = yup.object({
 
 export const externalPatientSchema = yup.object({
   ...ssnSchema,
-  ...providerIdSchema,
   state: stateSchema(true),
   country: countrySchema(true),
   phone: notRequiredPhone(PHONE),
+  providerId: providerIdSchema(),
   emergencyState: stateSchema(false),
   city: requiredStringOnly(CITY, 2, 20),
   emergencyCountry: countrySchema(false),
