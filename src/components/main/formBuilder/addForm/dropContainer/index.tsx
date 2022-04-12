@@ -19,7 +19,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
   //render
   return (
     <Box className={classes.main}>
-      <Grid container >
+      <Grid container>
         {formValues?.map((list, i) => (
           <Grid item key={list?.id} xs={parseColumnGrid(list?.col) || 12} sm={parseColumnGrid(list?.col) || 12}
             md={parseColumnGrid(list?.col) || 12} lg={parseColumnGrid(list?.col) || 12}
@@ -41,7 +41,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                   <Grid container spacing={1}>
                     {list?.fields
                       ? list?.fields?.map((item: FieldsInputs, index: number) => (
-                        <Draggable key={item.fieldId} draggableId={item.fieldId} index={index} >
+                        <Draggable key={item.fieldId} draggableId={item.fieldId} index={index}>
                           {(provided, snapshot) => (
                             <Grid item
                               xs={parseColumnGrid(item.column) || 12} sm={parseColumnGrid(item.column) || 12}

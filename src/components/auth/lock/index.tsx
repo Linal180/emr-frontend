@@ -110,7 +110,7 @@ const LockComponent = (): JSX.Element => {
             {LOGOUT_TEXT}
           </Button>
 
-          <Button type="submit" variant="contained" color="inherit" >
+          <Button type="submit" variant="contained" color="inherit">
             {UNLOCK_TEXT}
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>

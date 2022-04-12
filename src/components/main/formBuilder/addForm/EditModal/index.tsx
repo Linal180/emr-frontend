@@ -3,26 +3,25 @@ import { useState, useEffect, ChangeEvent, useCallback } from 'react';
 import { Dialog, DialogContent, Grid, Box, Button, FormControl, InputLabel, DialogTitle, IconButton, } from '@material-ui/core';
 import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm, } from 'react-hook-form'
 import { Add as AddIcon } from '@material-ui/icons';
-//components block
-import LabledInputController from '../../../../../controller';
+// components block
+import LabeledInputController from '../../../../../controller';
 import InputController from '../../../../../controller';
 import Selector from '../../../../common/Select';
 import { AntSwitch } from '../../../../../styles/publicAppointmentStyles/externalPatientStyles';
-//constants & interfaces
-import { ACTION, COLUMN_LENGTH, CSS_CLASSES, DISMISS, FIELD_EDIT_INITIAL_VALUES, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, } from '../../../../../constants';
+// constants, styles  & interfaces
+import { ACTION, COLUMN_LENGTH, CSS_CLASSES, DISMISS, FIELD_EDIT_INITIAL_VALUES, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REQUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, } from '../../../../../constants';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import { GRAY_TWO, WHITE } from '../../../../../theme';
 import { SAVE_TEXT } from '../../../../../constants';
 import { ElementType } from '../../../../../generated/graphql'
-//styles
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import { TrashIcon } from '../../../../../assets/svgs';
 /**
  * Opens edit modal
- * @param { open, closeModalHanlder, setFieldValuesHandler, selected } 
+ * @param { open, closeModalHandler, setFieldValuesHandler, selected } 
  * @returns  
  */
-const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }: FieldEditModalProps) => {
+const EditModal = ({ open, closeModalHandler, setFieldValuesHandler, selected }: FieldEditModalProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const classes = usePublicAppointmentStyles();
   const methods = useForm<FormInitialType>({ defaultValues: FIELD_EDIT_INITIAL_VALUES });
@@ -62,7 +61,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
   };
   //render
   return (
-    <Dialog open={!!open} onClose={closeModalHanlder} fullWidth maxWidth={'sm'}>
+    <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'sm'}>
       <DialogTitle>
         {PROPERTIES_TEXT}
       </DialogTitle>
@@ -78,7 +77,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                     <FormControl fullWidth margin="normal"
                       className={classes.toggleContainer}
                     >
-                      <InputLabel shrink>{REUIRED_TEXT}</InputLabel>
+                      <InputLabel shrink>{REQUIRED_TEXT}</InputLabel>
                       <label className="toggle-main">
                         <Box color={isChecked ? WHITE : GRAY_TWO}>{YES_TEXT}</Box>
                         <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='required' />
@@ -89,28 +88,28 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                 />
               </Grid>
               <Grid item md={12}>
-                <LabledInputController
+                <LabeledInputController
                   fieldType="text"
                   controllerName="name"
                   controllerLabel={NAME}
                 />
               </Grid>
               <Grid item md={12}>
-                <LabledInputController
+                <LabeledInputController
                   fieldType="text"
                   controllerName="label"
                   controllerLabel={LABEL}
                 />
               </Grid>
               <Grid item md={12}>
-                <LabledInputController
+                <LabeledInputController
                   fieldType="text"
                   controllerName="css"
                   controllerLabel={CSS_CLASSES}
                 />
               </Grid>
               <Grid item md={12}>
-                <LabledInputController
+                <LabeledInputController
                   fieldType="text"
                   controllerName="placeholder"
                   controllerLabel={PLACEHOLDER}
@@ -128,24 +127,24 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
 
                   <table style={{
                     width: "100%"
-                  }} >
+                  }}>
                     <thead>
                       <tr>
-                        <th >{NAME}</th>
-                        <th >{VALUE}</th>
-                        {fields?.length > 1 && <th >{ACTION}</th>}
+                        <th>{NAME}</th>
+                        <th>{VALUE}</th>
+                        {fields?.length > 1 && <th>{ACTION}</th>}
                       </tr>
                     </thead>
                     <tbody>
                       {fields?.map((option, index) => (
-                        <tr key={`${option.value}-${index}-${option.name}`} >
-                          <td >
+                        <tr key={`${option.value}-${index}-${option.name}`}>
+                          <td>
                             <InputController
                               fieldType="text"
                               controllerName={`options.${index}.name`}
                             />
                           </td>
-                          <td >
+                          <td>
                             <InputController
                               fieldType="text"
                               controllerName={`options.${index}.value`}
@@ -168,7 +167,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                     display: "flex",
                     justifyContent: "flex-end"
                   }}>
-                    <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />} >
+                    <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />}>
                       {OPTION_TEXT}
                     </Button>
                   </Box>
@@ -177,7 +176,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
               <Grid item md={12}>
                 <Box display={'flex'} justifyContent={'flex-end'}>
                   <Box marginX={2}>
-                    <Button onClick={closeModalHanlder} variant={'contained'}>
+                    <Button onClick={closeModalHandler} variant={'contained'}>
                       {DISMISS}
                     </Button>
                   </Box>

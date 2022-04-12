@@ -281,8 +281,8 @@ const LabOrdersForm: FC<GeneralFormProps> = (): JSX.Element => {
             </Box>
           </form>
         </FormProvider>
-      </Box >
-    </Card >
+      </Box>
+    </Card>
   );
 };
 

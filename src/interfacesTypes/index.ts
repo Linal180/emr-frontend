@@ -805,7 +805,7 @@ export interface CustomSelectControlProps extends IControlLabel {
 
 export interface FieldEditModalProps {
   open: boolean;
-  closeModalHanlder: () => void;
+  closeModalHandler: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
 }
@@ -831,7 +831,7 @@ export interface LoaderProps {
 
 export interface FormBuilderPreviewProps {
   open: Boolean;
-  closeModalHanlder: () => void;
+  closeModalHandler: () => void;
   data: SectionsInputs[];
 }
 

@@ -9,11 +9,11 @@ import BackdropLoader from "./Backdrop";
 // interfaces/types and main layout styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { LOCK_ROUTE, ROUTE } from "../../constants";
 import { MainLayoutProps } from "../../interfacesTypes";
+import { LOCK_ROUTE, LOCK_TIME_OUT, ROUTE } from "../../constants";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
-  const [timeout] = useState<number>(30000)
+  const [timeout] = useState<number>(LOCK_TIME_OUT)
   const { user, isLoggedIn } = useContext(AuthContext);
   const { pathname } = useLocation()
   console.log(pathname);

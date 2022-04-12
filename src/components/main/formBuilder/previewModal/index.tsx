@@ -10,15 +10,15 @@ import { CANCEL_TEXT, FORM_SUBMIT_TEXT } from '../../../../constants';
 //styles
 import { usePreviewModalStyles } from '../../../../styles/formbuilder/previewModalStyles'
 //component
-const FormPreview = ({ open, closeModalHanlder, data }: FormBuilderPreviewProps) => {
+const FormPreview = ({ open, closeModalHandler, data }: FormBuilderPreviewProps) => {
   //style
   const classes = usePreviewModalStyles()
   //render
   return (
-    <Dialog open={!!open} onClose={closeModalHanlder} fullWidth maxWidth={'md'}>
+    <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'md'}>
       <DialogContent dividers>
         <Box className={classes.main}>
-          <Grid container spacing={2} >
+          <Grid container spacing={2}>
             {data?.map((item, index) => (
               <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
                 <Grid container spacing={2}>
@@ -44,12 +44,12 @@ const FormPreview = ({ open, closeModalHanlder, data }: FormBuilderPreviewProps)
           </Grid>
           <Box marginY={2} display={'flex'} justifyContent={'flex-end'}>
             <Box marginX={2}>
-              <Button variant={'contained'} onClick={closeModalHanlder}>
+              <Button variant={'contained'} onClick={closeModalHandler}>
                 {CANCEL_TEXT}
               </Button>
             </Box>
             <Box>
-              <Button onClick={closeModalHanlder} variant={'contained'} color={'primary'}>
+              <Button onClick={closeModalHandler} variant={'contained'} color={'primary'}>
                 {FORM_SUBMIT_TEXT}
               </Button>
             </Box>

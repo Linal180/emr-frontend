@@ -35,8 +35,7 @@ export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
-export const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // roles
 export const SUPER_ADMIN = 'super-admin';
@@ -44,8 +43,9 @@ export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
 export const Ok_TEXT = "OK";
-export const ZIP_CODE_AND_CITY = "Please enter zipcode & city";
-export const ZIP_CODE_ENTER = "Please enter zipcode";
+export const LOCK_TIME_OUT = 600000;
+export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
+export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
 export const CHECK_ADDRESS = "Check Address";
 export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
@@ -70,7 +70,7 @@ export const SELECT_COLUMN_TEXT = "Select a column";
 export const YES_TEXT = "Yes";
 export const NO_TEXT = "No";
 export const CANCEL_TEXT = "Cancel";
-export const REUIRED_TEXT = "Required?";
+export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
 export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
@@ -578,7 +578,7 @@ export const TEST_NOTES = "Test Notes";
 export const SPECIMEN_TYPE = "Specimen Type";
 export const SPECIMEN_NOTES = "Specimen Notes";
 export const COLLECTION_DATE = "Collection Date";
-export const COLLECTION_TIME= "Collection Time";
+export const COLLECTION_TIME = "Collection Time";
 export const INITIAL_CAPITAL_INVESTMENT = "2%";
 export const DOCTOR_SIGNOFF = "Doctor Signoff";
 export const EMAIL_VERIFIED = "Email Verified?";
