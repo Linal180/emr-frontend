@@ -384,7 +384,6 @@ body .MuiTabPanel-root {
 
 .accordionCustomize {
   box-shadow: none !important;
-  /* border-bottom: 1px solid rgb(224, 224, 224); */
 }
 
 .accordionCustomize .MuiAccordionSummary-content.Mui-expanded .MuiTypography-root {
@@ -394,4 +393,10 @@ body .MuiTabPanel-root {
 
 .accordionCustomize .Mui-expanded {
   border-bottom: none !important;
+}
+
+/* TIMEPICKER-STYLING */
+
+.timePickerIcon {
+  
 }
