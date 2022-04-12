@@ -1,10 +1,11 @@
 // packages block
-import { Reducer, useContext, useEffect, useState, useReducer } from "react";
+import { Reducer, useContext, useEffect, useState, useReducer, useCallback } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Box, Button, Checkbox, colors, FormControlLabel, Grid, Typography } from "@material-ui/core";
+import { PlaidLinkOnEvent, PlaidLinkStableEvent, PlaidLinkOnEventMetadata, usePlaidLink, PlaidLinkOnSuccess, PlaidLinkOnSuccessMetadata, PlaidLinkOnExit, PlaidLinkError, PlaidLinkOnExitMetadata } from 'react-plaid-link'
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
@@ -191,6 +192,54 @@ const PublicAppointmentForm = (): JSX.Element => {
       endTime && setValue('scheduleEndDateTime', endTime)
     }
   };
+
+  const onSuccess = useCallback<PlaidLinkOnSuccess>(
+    (public_token: string, metadata: PlaidLinkOnSuccessMetadata) => {
+      debugger
+    }, [])
+
+  const onExit = useCallback<PlaidLinkOnExit>((error: PlaidLinkError | null, metadata: PlaidLinkOnExitMetadata) => {
+    // log and save error and metadata
+    // handle invalid link token
+    if (error != null && error.error_code === 'INVALID_LINK_TOKEN') {
+      // generate new link token
+    }
+    // to handle other error codes, see https://plaid.com/docs/errors/
+  },
+    [],
+  );
+
+  const onEvent = useCallback<PlaidLinkOnEvent>(
+    (
+      eventName: PlaidLinkStableEvent | string,
+      metadata: PlaidLinkOnEventMetadata,
+    ) => {
+      // log eventName and metadata
+    },
+    [],
+  );
+
+  const { ready, error, open, exit } = usePlaidLink({
+    onSuccess: onSuccess,
+    onExit: onExit,
+    onEvent: onEvent,
+    token: 'link-sandbox-dadf991a-af6f-4e14-b3db-60af0e362078',
+    env: 'sandbox'
+  })
+
+  const palidOpenHandler = useCallback(() => {
+    if (ready) {
+      open();
+    }
+    else {
+      console.log('error', error)
+    }
+  }, [open, ready, error])
+
+  // useEffect(() => {
+  //   palidOpenHandler()
+  // }, [palidOpenHandler])
+
 
   return (
     <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
