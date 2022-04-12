@@ -247,7 +247,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
         <ShareModal title={FORM_EMBED_TITLE} isOpen={openShare}
           description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`}
           handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
-        <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHanlder={previewCloseHanlder} />
+        <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHandler={previewCloseHanlder} />
       </Box>
     </Box>
   );
