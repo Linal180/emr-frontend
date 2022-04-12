@@ -1,31 +1,29 @@
 // packages block
-import { Reducer, useEffect, useReducer, useState } from "react";
-import { Box, Card } from "@material-ui/core";
+import { useEffect, useCallback, Reducer, useState, useReducer } from "react";
+import { Box, Card, CircularProgress } from "@material-ui/core";
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
-  Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator,
-  DayView, WeekView, AppointmentTooltip, ViewSwitcher,
+  Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
+  AppointmentTooltip, ViewSwitcher,
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
 import AppointmentCard from "./appointmentCard";
-// styles, constants  block
-import { PAGE_LIMIT } from "../../../constants";
+// context, constants block
 import { mapAppointmentData } from "../../../utils"
+import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus } from "../../../generated/graphql";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
-import { AppointmentsPayload, useFindAllAppointmentsLazyQuery } from "../../../generated/graphql";
-import Backdrop from "../../common/Backdrop";
+import { useCalendarStyles } from "../../../styles/calendarStyles";
 
-const StartProjectComponent = (): JSX.Element => {
+const CalendarComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { page, searchQuery, appointments } = state;
+  const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const classes = useCalendarStyles()
 
-
-  const [findAllAppointments, { loading: appointmentsLoading }] = useFindAllAppointmentsLazyQuery({
+  const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     variables: {
       appointmentInput: {
         paginationOptions: {
-          page, limit: PAGE_LIMIT
+          page: 1, limit: 20
         }
       }
     },
@@ -42,32 +40,18 @@ const StartProjectComponent = (): JSX.Element => {
       const { findAllAppointments } = data || {};
 
       if (findAllAppointments) {
-        const { appointments, pagination } = findAllAppointments || {}
-
-        if (!searchQuery && pagination) {
-          const { totalPages } = pagination
-
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-          dispatch({
-            type: ActionType.SET_APPOINTMENTS,
-            appointments: appointments as AppointmentsPayload['appointments']
-          });
-        }
+        const { appointments } = findAllAppointments
+        dispatch({
+          type: ActionType.SET_APPOINTMENTS,
+          appointments: appointments?.filter(appointment => appointment?.status !== Appointmentstatus.Cancelled) as AppointmentsPayload['appointments']
+        });
       }
     }
   });
 
-  useEffect(() => {
-    findAllAppointments();
-  }, [findAllAppointments]);
+  const handleDateChange = () => setCurrentDate(currentDate)
 
-  const handleDateChange = () => {
-    setCurrentDate(currentDate)
-  }
-
-  const Appointment = ({
-    children, style, ...restProps
-  }: any) => {
+  const Appointment = ({ children, style, ...restProps }: any) => {
     const { data: { color } } = restProps
 
     return (
@@ -86,10 +70,24 @@ const StartProjectComponent = (): JSX.Element => {
     )
   };
 
+  const fetchAppointments = useCallback(async () => {
+    try {
+      await findAllAppointments();
+    } catch (error) { }
+  }, [findAllAppointments]);
+
+  useEffect(() => {
+    fetchAppointments()
+  }, [fetchAppointments]);
+
   return (
     <Card>
-      {appointmentsLoading ? <Backdrop loading={true} /> :
-        <Box>
+      <Box>
+        {fetchAllAppointmentsLoading &&
+          <Box className={classes.loader} ><CircularProgress color="inherit" /></Box>
+        }
+
+        <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
           <Scheduler data={mapAppointmentData(appointments)}>
             <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
             <MonthView />
@@ -103,9 +101,9 @@ const StartProjectComponent = (): JSX.Element => {
             <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
           </Scheduler>
         </Box>
-      }
+      </Box>
     </Card>
   )
 };
 
-export default StartProjectComponent;
+export default CalendarComponent;

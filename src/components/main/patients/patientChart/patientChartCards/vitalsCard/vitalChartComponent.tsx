@@ -18,8 +18,9 @@ import {
 import { patientReducer, State, initialState, Action, ActionType } from "../../../../../../reducers/patientReducer";
 import InputController from "../../../../../../controller";
 import { useProfileDetailsStyles } from "../../../../../../styles/profileDetails";
+import { CalendarChart } from "../../../../../../interfacesTypes";
 
-const VitalsChartingTable: FC = (): JSX.Element => {
+const VitalsChartingTable: FC<CalendarChart> = ({isCalendar}): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const [patientData] = useState<Patient | null>();
   const { firstName, lastName, dob, doctorPatients } = patientData || {}
@@ -45,7 +46,6 @@ const VitalsChartingTable: FC = (): JSX.Element => {
     })[0];
 
     if (currentDoctor) {
-      debugger
       const { firstName, lastName } = currentDoctor || {};
       providerName = `${firstName} ${lastName}` || "--"
     }
@@ -65,7 +65,8 @@ const VitalsChartingTable: FC = (): JSX.Element => {
 
   return (
     <>
-      <Box className={classes.profileCard}>
+      {isCalendar === true
+       && <Box className={classes.profileCard}>
         <Box display="flex" alignItems="center">
           <Box pl={1}>
             <Box pr={3.75}>
@@ -103,7 +104,7 @@ const VitalsChartingTable: FC = (): JSX.Element => {
             <Button color="primary" variant="contained" className="blue-button">Schedule Appointment</Button>
           </Box>
         </Box>
-      </Box>
+      </Box>}
 
       <Box pt={3} pb={2} pl={3} display='flex'>
         <Box pr={1}>

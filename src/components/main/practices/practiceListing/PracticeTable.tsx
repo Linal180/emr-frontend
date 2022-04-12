@@ -6,6 +6,7 @@ import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
+import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -20,8 +21,8 @@ import {
   PracticesPayload, useFindAllPracticesLazyQuery, useRemovePracticeMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
-  CANT_DELETE_PRACTICE, DATE_ADDED, 
+  ACTION, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
+  CANT_DELETE_PRACTICE, DATE_ADDED,
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
@@ -80,10 +81,10 @@ const PracticeTable: FC = (): JSX.Element => {
           if (response) {
             const { message } = response
             message && Alert.success(message);
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             await findAllPractices();
             fetchAllPracticeList();
             fetchAllFacilityList();
-            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
         }
       } catch (error) { }
@@ -124,7 +125,6 @@ const PracticeTable: FC = (): JSX.Element => {
           <TableHead>
             <TableRow>
               {renderTh(NAME)}
-              {renderTh(EMAIL)}
               {renderTh(PHONE)}
               {renderTh(DATE_ADDED)}
               {renderTh(ACTION, "center")}
@@ -132,18 +132,18 @@ const PracticeTable: FC = (): JSX.Element => {
           </TableHead>
 
           <TableBody>
-            {
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={10}>
+                  <TableLoader numberOfRows={10} numberOfColumns={4} />
+                </TableCell>
+              </TableRow>) : (
               practices?.map(practice => {
-                const { id, name, phone, createdAt, facilities } = practice || {};
-                const primaryFacility = facilities?.filter(facility => facility.isPrimary)[0]
-                const { contacts } = primaryFacility || {};
-                const primaryContact = contacts?.filter(contact => contact.primaryContact)[0]
-                const { email } = primaryContact || {}
+                const { id, name, phone, createdAt } = practice || {};
 
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
                     <TableCell scope="row">
@@ -160,9 +160,9 @@ const PracticeTable: FC = (): JSX.Element => {
                       </Box>
                     </TableCell>
                   </TableRow>
-                );
-              }
-              )}
+                )
+            })
+            )}
           </TableBody>
         </Table>
 

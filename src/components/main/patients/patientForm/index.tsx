@@ -1,9 +1,10 @@
 // packages block
 import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { usStreet } from 'smartystreets-javascript-sdk';
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel,
+  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel, Typography,
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -18,7 +19,7 @@ import history from '../../../../history';
 import { GRAY_TWO, WHITE } from '../../../../theme';
 import { extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext, FacilityContext } from '../../../../context';
-import { GeneralFormProps, PatientInputProps } from '../../../../interfacesTypes';
+import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import {
@@ -43,12 +44,14 @@ import {
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY,
+  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER,
 } from "../../../../constants";
+import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
+import SmartyModal from '../../../common/SmartyModal'
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList, fetchAllPatientList } = useContext(ListContext)
+  const { facilityList, fetchAllPatientList, setPatientList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
@@ -61,6 +64,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   })
 
   const [isChecked, setIsChecked] = useState(false);
+  const [addressOpen, setAddressOpen] = useState(false);
+  const [data, setData] = useState<usStreet.Candidate[]>([])
+  const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const classes = usePublicAppointmentStyles();
 
   const methods = useForm<PatientInputProps>({
@@ -68,7 +74,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     resolver: yupResolver(extendedPatientSchema)
   });
   const { handleSubmit, setValue, watch, reset, control } = methods;
-  const { facilityId: { id: selectedFacility, name: selectedFacilityName } = {} } = watch();
+  const { facilityId: { id: selectedFacility, name: selectedFacilityName } = {}, basicZipCode, basicCity, basicState, basicAddress, basicAddress2 } = watch();
 
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked } } = event
@@ -243,8 +249,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             }
           }
 
-          if (employer && employer.length) {
-            const { id: employerId, name, email, phone, industry, usualOccupation } = employer[0];
+          if (employer) {
+            const { id: employerId, name, email, phone, industry, usualOccupation } = employer;
 
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
             name && setValue('employerName', name)
@@ -273,6 +279,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
+          setPatientList([])
           fetchAllPatientList();
           Alert.success(PATIENT_CREATED);
           history.push(PATIENTS_ROUTE)
@@ -296,6 +303,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
+          setPatientList([])
           fetchAllPatientList();
           Alert.success(PATIENT_UPDATED);
           history.push(PATIENTS_ROUTE)
@@ -477,6 +485,51 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const disableSubmit = getPatientLoading || createPatientLoading || updatePatientLoading;
 
+  const getAddressHandler = useCallback(async () => {
+
+    if (basicZipCode) {
+      const data = await getAddressByZipcode(basicZipCode);
+      const { zipCode: responseData, message, status } = data || {}
+      const { defaultCity, state, stateAbbreviation } = responseData || {}
+      if (status) {
+        setValue('basicCity', defaultCity)
+        setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
+      }
+      else {
+        Alert.error(message)
+      }
+    }
+    else {
+      Alert.error(ZIP_CODE_ENTER)
+    }
+  }, [basicZipCode, setValue])
+
+  const verifyAddressHandler = async () => {
+    if (basicZipCode && basicCity) {
+      const { id } = basicState
+      const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
+      setUserData((prev) => ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
+      const { status, options } = data || {}
+
+      if (status) {
+        setData(options)
+        setAddressOpen(true)
+      }
+      else {
+        setData([])
+        setAddressOpen(true)
+      }
+    }
+    else {
+      Alert.error(ZIP_CODE_AND_CITY)
+    }
+  }
+
+  useEffect(() => {
+    basicZipCode?.length === 5 && getAddressHandler()
+  }, [basicZipCode, getAddressHandler])
+
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -606,15 +659,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <InputController
                         isRequired
                         fieldType="text"
-                        controllerName="basicZipCode"
-                        controllerLabel={ZIP_CODE}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        isRequired
-                        fieldType="text"
                         controllerName="basicAddress"
                         controllerLabel={ADDRESS}
                       />
@@ -627,6 +671,32 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         controllerLabel={ADDRESS_2}
                       />
                     </Grid>
+                    <Grid item md={12} sm={12} xs={12}>
+                      <Grid container spacing={1} alignItems={'center'}>
+                        <Grid item md={10} sm={10} xs={10}>
+                          <InputController
+                            isRequired
+                            fieldType="text"
+                            controllerName="basicZipCode"
+                            controllerLabel={ZIP_CODE}
+                          />
+                        </Grid>
+
+                        <Grid item md={2}>
+                          <Box>
+                            <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
+                              <Typography color='primary'>
+                                verify address
+                              </Typography>
+                            </Button>
+
+                          </Box>
+                        </Grid>
+
+                      </Grid>
+                    </Grid>
+
+
 
                     <Grid container spacing={3}>
                       <Grid item md={4}>
@@ -1223,6 +1293,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         </Box>
 
       </form>
+      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} />
     </FormProvider>
   );
 };

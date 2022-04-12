@@ -1,6 +1,6 @@
 // packages block
 import { useParams } from "react-router";
-import { FC, useContext, useEffect } from "react";
+import { FC, useCallback, useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Button, Dialog, DialogActions, Box, Grid, CircularProgress } from "@material-ui/core";
@@ -11,12 +11,12 @@ import TimePicker from "../../../common/TimePicker";
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from "../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
-import { FacilityContext } from '../../../../context';
 import { ActionType } from "../../../../reducers/doctorReducer";
+import { AuthContext, FacilityContext } from '../../../../context';
 import { doctorScheduleSchema } from "../../../../validationSchemas";
 import { ScheduleInputProps, ParamsType, DoctorScheduleModalProps } from "../../../../interfacesTypes";
 import {
-  getDayFromTimestamps, getISOTime, renderServices, setRecord, setTimeDay
+  checkPermission, getDayFromTimestamps, getTimeString, renderServices, setRecord, setTimeDay
 } from "../../../../utils";
 import {
   useCreateScheduleMutation, useGetScheduleLazyQuery, useUpdateScheduleMutation
@@ -25,18 +25,33 @@ import {
   CANCEL, EMPTY_OPTION, PICK_DAY_TEXT, WEEK_DAYS, APPOINTMENT_TYPE, DOCTOR_SCHEDULE,
   START_TIME, END_TIME, CANT_UPDATE_SCHEDULE, CANT_CREATE_SCHEDULE, CREATE_SCHEDULE,
   SCHEDULE_CREATED_SUCCESSFULLY, SCHEDULE_UPDATED_SUCCESSFULLY, UPDATE_SCHEDULE, SCHEDULE_NOT_FOUND,
+  PERMISSION_DENIED, USER_PERMISSIONS,
 } from "../../../../constants";
 
 const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
   id, isEdit, doctorDispatcher, isOpen, doctorFacilityId, reload
 }): JSX.Element => {
   const { id: doctorId } = useParams<ParamsType>();
+  const { userPermissions } = useContext(AuthContext)
   const { serviceList, fetchAllServicesList } = useContext(FacilityContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(doctorScheduleSchema)
   });
   const { reset, handleSubmit, setValue } = methods;
+
+  const handleClose = useCallback(() => {
+    reset();
+    doctorDispatcher({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
+    doctorDispatcher({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: false })
+  }, [doctorDispatcher, reset])
+
+  useEffect(() => {
+    if (!checkPermission(userPermissions, USER_PERMISSIONS.createSchedule)) {
+      Alert.error(PERMISSION_DENIED)
+      handleClose();
+    }
+  }, [handleClose, userPermissions]);
 
   const [getSchedule, { loading: getScheduleLoading }] = useGetScheduleLazyQuery({
     fetchPolicy: "network-only",
@@ -54,13 +69,12 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
         const { status } = response
 
         if (schedule && status && status === 200) {
-
           const { startAt, endAt, scheduleServices } = schedule || {};
           const { service } = (scheduleServices && scheduleServices[0]) || {}
           const { id: serviceId, name: serviceName } = (service && service) || {}
 
-          endAt && setValue('endAt', getISOTime(endAt))
-          startAt && setValue('startAt', getISOTime(startAt))
+          endAt && setValue('endAt', getTimeString(endAt))
+          startAt && setValue('startAt', getTimeString(startAt))
           serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
           startAt && setValue('day', setRecord(getDayFromTimestamps(startAt), getDayFromTimestamps(startAt)))
         }
@@ -110,21 +124,16 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     }
   });
 
-  const handleClose = () => {
-    reset();
-    doctorDispatcher({ type: ActionType.SET_SCHEDULE_ID, scheduleId: '' })
-    doctorDispatcher({ type: ActionType.SET_SCHEDULE_OPEN_MODAL, scheduleOpenModal: false })
-  }
-
   useEffect(() => {
     fetchAllServicesList(doctorFacilityId)
+    reset()
 
     if (isEdit && id) {
       getSchedule({
         variables: { getSchedule: { id } }
       })
     }
-  }, [doctorFacilityId, fetchAllServicesList, getSchedule, id, isEdit])
+  }, [doctorFacilityId, fetchAllServicesList, getSchedule, id, isEdit, reset])
 
   const onSubmit: SubmitHandler<ScheduleInputProps> = async ({ endAt, serviceId, startAt, day }) => {
     const { id: selectedService } = serviceId || {}

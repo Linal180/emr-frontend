@@ -25,11 +25,11 @@ import {
 } from '../../../../reducers/appointmentReducer';
 import {
   getTimestamps, renderDoctors, renderFacilities, renderPatient, renderServices, getTimeFromTimestamps,
-  setRecord, getStandardTime,
+  setRecord, getStandardTime, renderItem,
 } from "../../../../utils";
 import {
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
-  useGetDoctorSlotsLazyQuery, Appointmentstatus, DoctorSlotsPayload, BillingStatus,
+  useGetSlotsLazyQuery, Appointmentstatus, SlotsPayload, BillingStatus,
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
@@ -47,7 +47,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident } = state
+  const {
+    date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
+    serviceName, facilityName, providerName, patientName, cancelAppStatus
+  } = state
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -102,14 +105,38 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           } = appointment || {}
 
           if (status === Appointmentstatus.Cancelled) {
-            history.push(VIEW_APPOINTMENTS_ROUTE);
-            Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
+            dispatch({ type: ActionType.SET_CANCEL_APP_STATUS, cancelAppStatus: true })
           }
 
           const { id: facilityId, name: facilityName } = facility || {};
           const { id: serviceId, name: serviceName } = appointmentType || {};
           const { id: patientId, firstName: patientFN, lastName: patientLN } = patient || {};
           const { id: providerId, firstName: providerFN, lastName: providerLN } = provider || {};
+
+
+          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
+          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
+
+
+          if (facilityId && facilityName) {
+            setValue('facilityId', setRecord(facilityId, facilityName))
+            dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName })
+          }
+
+          if (serviceId && serviceName) {
+            dispatch({ type: ActionType.SET_SERVICE_NAME, serviceName })
+            setValue('serviceId', setRecord(serviceId, serviceName))
+          }
+
+          if (providerId) {
+            setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}`))
+            dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: `${providerFN} ${providerLN}` })
+          }
+
+          if (patientId) {
+            setValue('patientId', setRecord(patientId, `${patientFN} ${patientLN}`))
+            dispatch({ type: ActionType.SET_PATIENT_NAME, patientName: `${patientFN} ${patientLN}` })
+          }
 
           notes && setValue('notes', notes)
           reason && setValue('reason', reason)
@@ -118,12 +145,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           otherAccident && setValue('otherAccident', otherAccident)
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
-          facilityId && facilityName && setValue('facilityId', setRecord(facilityId, facilityName))
-          patientId && setValue('patientId', setRecord(patientId, `${patientFN} ${patientLN}` || ''))
-          providerId && setValue('providerId', setRecord(providerId, `${providerFN} ${providerLN}` || ''))
-          scheduleEndDateTime && setValue('scheduleEndDateTime', getTimeFromTimestamps(scheduleEndDateTime))
-          serviceId && serviceName && setValue('serviceId', setRecord(serviceId, serviceName))
-          scheduleStartDateTime && setValue('scheduleStartDateTime', getTimeFromTimestamps(scheduleStartDateTime))
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
@@ -137,7 +158,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const [getDoctorSlots, { loading: getSlotsLoading }] = useGetDoctorSlotsLazyQuery({
+  const [getSlots, { loading: getSlotsLoading }] = useGetSlotsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -146,17 +167,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     },
 
     onCompleted(data) {
-      const { getDoctorSlots } = data || {}
+      const { getSlots } = data || {}
 
-      if (getDoctorSlots) {
-        const { slots } = getDoctorSlots;
-        if (slots) {
+      if (getSlots) {
+        const { slots } = getSlots;
+
+        slots ?
           dispatch({
-            type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as DoctorSlotsPayload['slots']
-          });
-        } else {
-          dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
-        }
+            type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as SlotsPayload['slots']
+          })
+          : dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
       }
     }
   });
@@ -223,17 +243,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [fetchAppointment, id, isEdit, setValue])
 
   useEffect(() => {
-    if (selectedFacility && selectedProvider && selectedService && date) {
-      getDoctorSlots({
+    if (selectedService && date) {
+      const slotsInput = { offset, currentDate: date.toString(), serviceId: selectedService };
+
+      getSlots({
         variables: {
-          getDoctorSlots: { id: selectedProvider, offset, currentDate: date.toString(), serviceId: selectedService }
+          getSlots: selectedProvider ? { providerId: selectedProvider, ...slotsInput } : { facilityId: selectedFacility, ...slotsInput }
         }
       })
     }
-  }, [
-    currentDate, getDoctorSlots, id, offset, selectedFacility, date, selectedProvider, selectedService,
-    serviceId, watch
-  ])
+  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -269,29 +288,27 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       const { id: selectedFacility } = facilityId || {};
 
       const appointmentInput = {
-        reason: reason || '',
-        scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
-        scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
-        autoAccident: autoAccident || false, otherAccident: otherAccident || false,
-        primaryInsurance: primaryInsurance || '', secondaryInsurance: secondaryInsurance || '',
-        notes: notes || '', facilityId: selectedFacility, patientId: selectedPatient,
-        serviceId: selectedService, providerId: selectedProvider, employment: employment || false,
-        paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
+        reason, scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
+        scheduleEndDateTime: getTimestamps(scheduleEndDateTime), autoAccident: autoAccident || false,
+        otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
+        notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
+        employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
       };
 
+      const payload = selectedProvider ? { ...appointmentInput, providerId: selectedProvider } : { ...appointmentInput }
+
       if (isEdit) {
-        if (id) {
-          await updateAppointment({
-            variables: { updateAppointmentInput: { id, ...appointmentInput } }
-          })
-        } else {
-          Alert.error(CANT_UPDATE_APPOINTMENT)
-        }
+        id ?
+          cancelAppStatus ?
+            Alert.info(CANCELLED_APPOINTMENT_EDIT_MESSAGE)
+            :
+            await updateAppointment({
+              variables: { updateAppointmentInput: { id, ...payload } }
+            })
+          : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
-          variables: {
-            createAppointmentInput: { ...appointmentInput, }
-          }
+          variables: { createAppointmentInput: { ...payload } }
         })
       }
     }
@@ -315,24 +332,27 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <Grid container spacing={3}>
                     <Grid item md={6} sm={12} xs={12}>
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={FACILITY}
-                        name="facilityId"
-                        options={renderFacilities(facilityList)}
-                      />
+                      {isEdit ? renderItem(FACILITY, facilityName) :
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={FACILITY}
+                          name="facilityId"
+                          options={renderFacilities(facilityList)}
+                        />
+                      }
                     </Grid>
 
                     <Grid item md={6} sm={12} xs={12}>
-
-                      <Selector
-                        isRequired
-                        value={EMPTY_OPTION}
-                        label={APPOINTMENT_TYPE}
-                        name="serviceId"
-                        options={renderServices(serviceList)}
-                      />
+                      {isEdit ? renderItem(APPOINTMENT_TYPE, serviceName) :
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={APPOINTMENT_TYPE}
+                          name="serviceId"
+                          options={renderServices(serviceList)}
+                        />
+                      }
                     </Grid>
                   </Grid>
                 )}
@@ -345,23 +365,26 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={PROVIDER}
-                          name="providerId"
-                          options={renderDoctors(doctorList)}
-                        />
+                        {isEdit ? renderItem(PROVIDER, providerName) :
+                          <Selector
+                            value={EMPTY_OPTION}
+                            label={PROVIDER}
+                            name="providerId"
+                            options={renderDoctors(doctorList)}
+                          />
+                        }
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={PATIENT}
-                          name="patientId"
-                          options={renderPatient(patientList)}
-                        />
+                        {isEdit ? renderItem(PATIENT, patientName) :
+                          <Selector
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={PATIENT}
+                            name="patientId"
+                            options={renderPatient(patientList)}
+                          />
+                        }
                       </Grid>
                     </Grid>
 

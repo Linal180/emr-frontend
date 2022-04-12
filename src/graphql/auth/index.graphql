@@ -28,29 +28,24 @@ query GetLoggedInUser {
       id
       email
       token
-      status
       userId
-      userType
-      inviteSentAt
-      emailVerified
-      inviteAcceptedAt
-      createdAt
-      updatedAt
 
       roles {
         id
         role
-        createdAt
-        updatedAt
+
+        rolePermissions {
+          permission {
+            id
+            name
+          }
+        }
       }
 
       facility {
         id
         name
-        practiceId
-        createdAt
-        updatedAt
-        
+        practiceId        
       }
     }
   }
@@ -82,6 +77,35 @@ mutation updatePassword($updatePasswordInput: UpdatePasswordInput!){
       error
       status
       message
+    }
+  }
+}
+
+query GetDoctorUser($getDoctor: GetDoctor!) {
+  getDoctor(getDoctor: $getDoctor) {
+    doctor {
+      id
+      firstName
+      lastName
+    }
+
+    response {
+      status
+    }
+  }
+}
+
+query GetStaffUser($getStaff: GetStaff!){
+  getStaff(getStaff: $getStaff){
+    response {
+      status
+    }
+
+    staff {
+      id
+      email
+      lastName
+      firstName
     }
   }
 }

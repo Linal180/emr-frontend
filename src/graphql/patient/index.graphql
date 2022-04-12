@@ -17,8 +17,7 @@ query FindAllPatient($patientInput: PatientInput!) {
       email
       lastName
       firstName
-      createdAt
-      updatedAt
+      patientRecord
       
       contacts {
         id
@@ -26,10 +25,7 @@ query FindAllPatient($patientInput: PatientInput!) {
         city
         email
         phone
-        country
         primaryContact
-        createdAt
-        updatedAt
       }
     }
   }

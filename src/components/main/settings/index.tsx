@@ -8,21 +8,37 @@ import CardComponent from "../../common/CardComponent";
 import Search from '../../common/Search';
 import {
   APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS, CALENDAR_SETTINGS_ITEMS, CALENDAR_SETTINGS_TEXT,
-  CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS,
-  MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS, PRACTICE_SETTINGS_ITEMS, SERVICES, SERVICES_ITEMS, SETTINGS_TEXT
+  CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS, SETTINGS_TEXT,
+  MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS, PRACTICE_SETTINGS_ITEMS, SERVICES, SERVICES_ITEMS, 
+  USERS_MANAGEMENT, USER_MENU_ITEMS,
 } from "../../../constants";
 
 const search = (query: string) => { }
 
 export const SettingsComponent = () => (
   <>
-    sss
     <Grid container justifyContent='center'>
       <Grid item md={7} sm={12} xs={12}>
         <PageHeader title={SETTINGS_TEXT} />
         <Box mb={3} bgcolor="WHITE">
           <Search search={search} />
         </Box>
+
+        <CardComponent cardTitle={USERS_MANAGEMENT}>
+          <Box pb={3}>
+            {USER_MENU_ITEMS.map((item) => {
+              return (
+                <Box display="flex" alignItems="center" flexWrap="wrap">
+                  <Link key={`${item.link}-${item.name}`} to={item.link}>
+                    <MenuItem>{item.name}</MenuItem>
+                  </Link>
+                </Box>
+              )
+            })}
+          </Box>
+        </CardComponent>
+
+        <Box p={2} />
 
         <CardComponent cardTitle={PRACTICE_SETTINGS}>
           <Box pb={3}>

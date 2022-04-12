@@ -16,15 +16,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       status
       scheduleEndDateTime
       scheduleStartDateTime
-      createdAt
-      updatedAt
-      
-      appointmentType {
-        id
-        name
-        duration
-        color
-      }
+      token
       
       provider {
         id
@@ -39,6 +31,11 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       }
       
       facility {
+        id
+        name
+      }
+
+      appointmentType {
         id
         name
       }
@@ -98,6 +95,10 @@ query GetAppointment($getAppointment: GetAppointment!){
         name
         practiceType
         serviceCode
+      }
+
+       invoice {
+        invoiceNo
       }
     }
   }
@@ -167,8 +168,8 @@ mutation CancelAppointment($cancelAppointment: CancelAppointment!){
   }
 }
 
-query GetDoctorAppointments($getDoctorAppointment: GetDoctorAppointment!){
-  getDoctorAppointment(getDoctorAppointment: $getDoctorAppointment){
+query GetAppointments($getAppointments: GetAppointments!){
+  getAppointments(getAppointments: $getAppointments){
     response {
       error
       status
@@ -212,6 +213,21 @@ query GetDoctorAppointments($getDoctorAppointment: GetDoctorAppointment!){
         id
         name
       }
+    }
+  }
+}
+
+mutation UpdateAppointmentStatus($appointmentStatusInput: UpdateAppointmentStatusInput!){
+  updateAppointmentStatus(appointmentStatusInput: $appointmentStatusInput){
+    response {
+      error
+      status
+      message
+    }
+
+    appointment {
+      id
+      status
     }
   }
 }

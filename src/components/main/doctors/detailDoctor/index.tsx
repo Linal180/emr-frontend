@@ -102,14 +102,14 @@ const DoctorDetailComponent = (): JSX.Element => {
       title: "Date Added",
       description: providerDateAdded
     },
-    {
-      title: "Last Scheduled Appointment",
-      description: "Wed Jul 25, 2018"
-    },
-    {
-      title: "Next Scheduled Appointment",
-      description: "Thu Nov 18, 2021"
-    },
+    // {
+    //   title: "Last Scheduled Appointment",
+    //   description: "Wed Jul 25, 2018"
+    // },
+    // {
+    //   title: "Next Scheduled Appointment",
+    //   description: "Thu Nov 18, 2021"
+    // },
   ]
 
   return (

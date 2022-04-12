@@ -1,21 +1,22 @@
 // packages block
-import { ReactNode } from "react";
+import { ReactNode, memo } from "react";
 import moment from "moment";
-import { Typography, Box, TableCell } from "@material-ui/core";
+import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
+import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { DaySchedule, SelectorOption, TableAlignType } from "../interfacesTypes";
+import { DaySchedule, LoaderProps, SelectorOption, TableAlignType } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload,
+  AppointmentsPayload, AttachmentsPayload, ElementType
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, DOCTORS_ROUTE, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE,
-  LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, STAFF_ROUTE, TOKEN,
-  START_PROJECT_ROUTE, USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, N_A, ADMIN, SUPER_ADMIN, ROUTE,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
+  SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
+  USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE,
 } from "../constants";
 
 export const handleLogout = () => {
@@ -58,9 +59,12 @@ export const renderItem = (
 ) => (
   <>
     <Typography variant="body2">{name}</Typography>
-    <Typography component="h5" variant="h5" noWrap={noWrap}>
-      {value ? value : N_A}
-    </Typography>
+    <Box pb={2} pt={0.5}>
+
+      <Typography component="h5" variant="h5" noWrap={noWrap}>
+        {value ? value : N_A}
+      </Typography>
+    </Box>
   </>
 );
 
@@ -120,6 +124,18 @@ export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   return isSupeAdmin;
 }
 
+export const getUserRole = (roles: RolesPayload['roles']) => {
+  if (roles) {
+    for (let role of roles) {
+      const { role: roleName } = role || {};
+
+      if (roleName === 'doctor') return 'doctor';
+    }
+  }
+
+  return 'staff'
+}
+
 export const recordNotFound = (record: string = "Record"): string => {
   return `${record} not found.`
 };
@@ -127,7 +143,6 @@ export const recordNotFound = (record: string = "Record"): string => {
 export const getToken = () => {
   return localStorage.getItem(TOKEN);
 };
-
 
 export const requiredMessage = (fieldName: string) => `${fieldName} is required`;
 export const invalidMessage = (fieldName: string) => `${fieldName} is invalid`;
@@ -149,6 +164,14 @@ export const getPracticeType = (type: PracticeType): string => {
 
 export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
+};
+
+export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
+  return date ? moment(date).format("h:mm a") : moment().format("h:mm a")
+};
+
+export const getAppointmentDate = (date: SchedulerDateTime | undefined): string => {
+  return date ? moment(date).format("MMMM Do YYYY") : moment().format("MMMM Do YYYY")
 };
 
 export const getDate = (date: string) => {
@@ -316,6 +339,12 @@ export const getTimeFromTimestamps = (timestamp: string) => {
   return new Date(parseInt(timestamp)).toISOString()
 };
 
+export const getTimeString = (timestamp: string) => {
+  if (!timestamp) return "";
+
+  return new Date(parseInt(timestamp)).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
+};
+
 export const getISOTime = (timestamp: string) => {
   if (!timestamp) return "";
 
@@ -359,6 +388,11 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
   return daySchedules;
 };
 
+export const setTime = (time: string): string => {
+  const Time = moment(time, "hh:mm").format('lll').toString()
+  return Time
+}
+
 export const setTimeDay = (time: string, day: string): string => {
   const validTime = moment(time, "hh:mm").format('lll').toString()
   const date = new Date(validTime)
@@ -391,13 +425,11 @@ export const activeClass = (pathname: string): string => {
       return 'inPractice';
 
     case VIEW_APPOINTMENTS_ROUTE:
-    case START_PROJECT_ROUTE:
+    case CALENDAR_ROUTE:
       return "inAppointment"
 
-    case DOCTORS_ROUTE:
     case PATIENTS_ROUTE:
-    case STAFF_ROUTE:
-      return "inUser"
+      return "inPatient"
 
     case FACILITIES_ROUTE:
       return "inFacility"
@@ -434,20 +466,42 @@ const makeTodayAppointment = (startDate: Date, endDate: Date) => {
   };
 };
 
-export const mapAppointmentData = (data: AppointmentsPayload['appointments']) => {
-  return data?.map(appointment => {
-    const { scheduleEndDateTime, scheduleStartDateTime, patient, id, appointmentType } = appointment || {}
-    const { firstName, lastName } = patient || {}
-    const { color } = appointmentType || {}
+export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
+  data?.map(appointment => {
+    const {
+      scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
+      reason, primaryInsurance, status, token
+    } = appointment || {};
+
+    const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
+    const { color, price, name: appointmentName, id: serviceId } = appointmentType || {}
+    const { contacts: fContact, id: facilityId, name: facilityName } = facility || {}
+    const { firstName: providerFN, lastName: providerLN, id: providerId } = provider || {}
+    const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
+    const appointmentStatus = status && formatValue(status)
+    const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
 
     return {
-      id, color,
+      token,
+      reason,
+      facilityId,
+      patientId,
+      serviceId,
+      providerId,
+      appointmentId,
+      facilityName,
+      facilityContact,
+      patientContact,
+      appointmentType,
+      primaryInsurance,
+      color, price,
+      appointmentName,
+      appointmentStatus,
       title: `${firstName} ${lastName}`,
+      providerName: `${providerFN} ${providerLN}`,
       ...makeTodayAppointment(new Date(parseInt(scheduleStartDateTime || '')), new Date(parseInt(scheduleEndDateTime || '')))
     }
-
   })
-}
 
 export const appointmentStatus = (status: string) => {
   const cancelled = status === Appointmentstatus.Cancelled;
@@ -468,4 +522,58 @@ export const getDocumentByType = (attachmentData: AttachmentsPayload['attachment
   return {
     drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2
   }
+};
+
+export const formatPermissionName = (name: string) => {
+  const [text, ...rest] = name.split(/(?=[A-Z])/)
+  const updateName = `${text.charAt(0).toUpperCase()}${text.slice(1)} ${rest.map(str => str)} `
+  return updateName.replaceAll(',', ' ');
+}
+
+export const formatRoleName = (name: string) => {
+  const text = name.split(/[-_\s]+/)
+
+  return text.map(str => `${str.charAt(0).toUpperCase()}${str.slice(1)} `)
+};
+
+export const parseColumnGrid = (col: number): GridSize => {
+  return col as GridSize;
+}
+
+export const LoaderBackdrop = memo(({ open }: LoaderProps): JSX.Element => (
+  <Backdrop
+    open={open}
+  >
+    <CircularProgress size={20} color="inherit" />
+  </Backdrop>
+))
+
+
+export const getFieldType = (type: ElementType) => {
+  switch (type) {
+    case ElementType.Checkbox:
+      return ElementType.Text
+
+    case ElementType.Select:
+      return ElementType.Text
+
+    case ElementType.Radio:
+      return ElementType.Text
+    default:
+      return type as ElementType
+  }
+}
+
+export const renderFacility = (facilityId: string, facilities: FacilitiesPayload['facilities']): string => {
+  if (!!facilities) {
+    const facility = facilities.find((val) => val?.id === facilityId);
+    const { name } = facility || {}
+    return name ? name : "";
+  }
+
+  return ""
+}
+
+export const checkPermission = (permissions: string[], query: string): boolean => {
+  return permissions.includes(query)
 };

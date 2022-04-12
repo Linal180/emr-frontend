@@ -108,9 +108,8 @@ query GetDoctorSchedule($getDoctorSchedule: GetDoctorSchedule!){
   }
 }
 
-
-query GetDoctorSlots($getDoctorSlots: GetDoctorSlots!){
-  getDoctorSlots(getDoctorSlots: $getDoctorSlots){
+query GetSlots($getSlots: GetSlots!){
+  getSlots(getSlots: $getSlots){
     response {
       error
       status
@@ -130,6 +129,33 @@ mutation RemoveSchedule($removeSchedule: RemoveSchedule!){
       error
       status
       message
+    }
+  }
+}
+
+query GetFacilitySchedule($getFacilitySchedule: GetFacilitySchedule!){
+  getFacilitySchedule(getFacilitySchedule: $getFacilitySchedule){
+    response {
+      error
+      status
+      message
+    }
+    
+		schedules {
+      id
+      startAt
+      endAt
+      createdAt
+      updatedAt
+            
+      scheduleServices {
+        id
+        
+        service{
+          id
+          name
+        }
+      }
     }
   }
 }

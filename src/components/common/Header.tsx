@@ -8,25 +8,30 @@ import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { activeClass, isSuperAdmin } from "../../utils";
+import { activeClass, checkPermission, isSuperAdmin, isUserAdmin } from "../../utils";
 import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import {
-  BILLING_TEXT, USERS_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, USER_MENU_ITEMS,
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, ADMIN,
-  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE, 
+  FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user } = useContext(AuthContext);
+  const { user, currentUser, userPermissions } = useContext(AuthContext);
+  const { firstName, lastName } = currentUser || {}
   const { location: { pathname } } = history;
   const { roles } = user || {};
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
 
   useEffect(() => {
-    setIsSuper(isSuperAdmin(roles))
+    if (isUserAdmin(roles)) {
+      setIsAdmin(true)
+      setIsSuper(isSuperAdmin(roles))
+    }
   }, [isSuper, roles, user]);
 
   return (
@@ -55,17 +60,23 @@ const HeaderNew: FC = (): JSX.Element => {
             </Typography>
           }
 
-          <DropdownMenu
-            itemName={SCHEDULE_TEXT}
-            menuItem={APPOINTMENT_MENU_ITEMS}
-            current={currentRoute === 'inAppointment'}
-          />
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllAppointments) &&
+            <DropdownMenu
+              itemName={SCHEDULE_TEXT}
+              menuItem={APPOINTMENT_MENU_ITEMS}
+              current={currentRoute === 'inAppointment'}
+            />
+          }
 
-          <DropdownMenu
-            itemName={USERS_TEXT}
-            menuItem={USER_MENU_ITEMS}
-            current={currentRoute === 'inUser'}
-          />
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllPatient) &&
+            <Typography
+              component={Link}
+              to={PATIENTS_ROUTE}
+              className={currentRoute === 'inPatient' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+            >
+              {PATIENTS_TEXT}
+            </Typography>
+          }
 
           <DropdownMenu
             itemName={BILLING_TEXT}
@@ -73,13 +84,15 @@ const HeaderNew: FC = (): JSX.Element => {
             current={currentRoute === 'inBilling'}
           />
 
-          <Typography
-            component={Link}
-            to={FACILITIES_ROUTE}
-            className={currentRoute === 'inFacility' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
-          >
-            {FACILITIES_TEXT}
-          </Typography>
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
+            <Typography
+              component={Link}
+              to={FACILITIES_ROUTE}
+              className={currentRoute === 'inFacility' ? ` ${classes.menuItem} active` : `${classes.menuItem}`}
+            >
+              {FACILITIES_TEXT}
+            </Typography>
+          }
 
           <Typography
             component={Link}
@@ -105,7 +118,12 @@ const HeaderNew: FC = (): JSX.Element => {
               className={classes.profileItemName}
             >
               <Typography>{HELLO_TEXT}</Typography>
-              <Typography variant="h6">{isSuper ? SUPER_ADMIN : ADMIN}</Typography>
+
+              {isAdmin ?
+                <Typography variant="h6">{isSuper ? SUPER_ADMIN : ADMIN}</Typography>
+                :
+                <Typography variant="h6">{firstName} {lastName}</Typography>
+              }
             </Box>
 
             <ProfileDropdownMenu />

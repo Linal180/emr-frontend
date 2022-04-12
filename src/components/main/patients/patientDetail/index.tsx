@@ -7,12 +7,12 @@ import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
-import PortalTable from './PortalTable';
-import DocumentsTable from './DocumentsTable';
 import Selector from "../../../common/Selector";
 import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import PortalTable from '../../../common/patientDetail/PortalTable';
+import DocumentsTable from '../../../common/patientDetail/DocumentsTable';
 // constants, history, styling block
 import history from '../../../../history';
 import { ParamsType } from "../../../../interfacesTypes";
@@ -35,6 +35,8 @@ import {
   MAPPED_WIDGETS, PATIENTS_CHART, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, SCHEDULE_APPOINTMENTS_TEXT,
   VIEW_CHART_TEXT,
 } from "../../../../constants";
+import Insurance from './Insurance';
+import LabOrdersTable from '../../../common/patientDetail/LabOrdersTable';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
@@ -202,14 +204,14 @@ const PatientDetailsComponent = (): JSX.Element => {
       title: "Date Added",
       description: providerDateAdded
     },
-    {
-      title: "Last Scheduled Appointment",
-      description: "Wed Jul 25, 2018"
-    },
-    {
-      title: "Next Scheduled Appointment",
-      description: "Thu Nov 18, 2021"
-    },
+    // {
+    //   title: "Last Scheduled Appointment",
+    //   description: "Wed Jul 25, 2018"
+    // },
+    // {
+    //   title: "Next Scheduled Appointment",
+    //   description: "Thu Nov 18, 2021"
+    // },
   ]
 
   const onDeleteClick = () =>
@@ -372,12 +374,20 @@ const PatientDetailsComponent = (): JSX.Element => {
               </Grid>
             </TabPanel>
 
+            <TabPanel value="2">
+              <Insurance />
+            </TabPanel>
+
             <TabPanel value="8">
               <DocumentsTable dispatcher={mediaDispatch} attachments={attachmentsData} />
             </TabPanel>
 
             <TabPanel value="9">
               <PortalTable inviteAccepted={Boolean(inviteAccepted)} />
+            </TabPanel>
+
+            <TabPanel value="10">
+              <LabOrdersTable />
             </TabPanel>
           </Box>
         </TabContext>
