@@ -399,7 +399,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         handleDelete={handleDeleteWidget}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-    </Box >
+    </Box>
   )
 }
 

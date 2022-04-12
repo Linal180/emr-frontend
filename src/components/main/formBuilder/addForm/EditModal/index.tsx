@@ -19,10 +19,10 @@ import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointm
 import { TrashIcon } from '../../../../../assets/svgs';
 /**
  * Opens edit modal
- * @param { open, closeModalHanlder, setFieldValuesHandler, selected } 
+ * @param { open, closeModalHandler, setFieldValuesHandler, selected } 
  * @returns  
  */
-const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }: FieldEditModalProps) => {
+const EditModal = ({ open, closeModalHandler, setFieldValuesHandler, selected }: FieldEditModalProps) => {
   const [isChecked, setIsChecked] = useState(false);
   const classes = usePublicAppointmentStyles();
   const methods = useForm<FormInitialType>({ defaultValues: FIELD_EDIT_INITIAL_VALUES });
@@ -62,7 +62,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
   };
   //render
   return (
-    <Dialog open={!!open} onClose={closeModalHanlder} fullWidth maxWidth={'sm'}>
+    <Dialog open={!!open} onClose={closeModalHandler} fullWidth maxWidth={'sm'}>
       <DialogTitle>
         {PROPERTIES_TEXT}
       </DialogTitle>
@@ -128,12 +128,12 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
 
                   <table style={{
                     width: "100%"
-                  }} >
+                  }}>
                     <thead>
                       <tr>
                         <th>{NAME}</th>
                         <th>{VALUE}</th>
-                        {fields?.length > 1 && <th >{ACTION}</th>}
+                        {fields?.length > 1 && <th>{ACTION}</th>}
                       </tr>
                     </thead>
                     <tbody>
@@ -145,7 +145,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                               controllerName={`options.${index}.name`}
                             />
                           </td>
-                          <td >
+                          <td>
                             <InputController
                               fieldType="text"
                               controllerName={`options.${index}.value`}
@@ -168,7 +168,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                     display: "flex",
                     justifyContent: "flex-end"
                   }}>
-                    <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />} >
+                    <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />}>
                       {OPTION_TEXT}
                     </Button>
                   </Box>
@@ -177,7 +177,7 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
               <Grid item md={12}>
                 <Box display={'flex'} justifyContent={'flex-end'}>
                   <Box marginX={2}>
-                    <Button onClick={closeModalHanlder} variant={'contained'}>
+                    <Button onClick={closeModalHandler} variant={'contained'}>
                       {DISMISS}
                     </Button>
                   </Box>

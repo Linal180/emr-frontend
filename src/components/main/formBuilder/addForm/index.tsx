@@ -253,7 +253,7 @@ const AddForm = () => {
   const modalOpenHandler = () => {
     setOpen(true);
   };
-  const closeModalHanlder = () => {
+  const closeModalHandler = () => {
     setOpen(false);
   };
 
@@ -282,7 +282,7 @@ const AddForm = () => {
     });
 
     setFormValues(arr1);
-    closeModalHanlder();
+    closeModalHandler();
   }
   //del field handler
   const delFieldHandler = (index: number, sectionIndex: number) => {
@@ -333,7 +333,7 @@ const AddForm = () => {
             </Box>
           </Box>
           <Grid container spacing={2}>
-            {isSuper && <Grid item xs={6} sm={6} >
+            {isSuper && <Grid item xs={6} sm={6}>
               <Selector
                 isRequired
                 value={EMPTY_OPTION}
@@ -399,7 +399,7 @@ const AddForm = () => {
       </FormProvider>
       <EditModal
         open={open}
-        closeModalHanlder={closeModalHanlder}
+        closeModalHandler={closeModalHandler}
         setFieldValuesHandler={setFieldValuesHandler}
         selected={selected}
       />
