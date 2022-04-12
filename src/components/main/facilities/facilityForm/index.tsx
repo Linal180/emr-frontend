@@ -19,7 +19,7 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { getISOTime, getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
+import { getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
 import {
