@@ -84,7 +84,7 @@ const CalendarComponent = (): JSX.Element => {
     <Card>
       <Box>
         {fetchAllAppointmentsLoading &&
-          <Box className={classes.loader} ><CircularProgress color="inherit" /></Box>
+          <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
         }
 
         <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>

@@ -775,12 +775,14 @@ export const BOOK_APPOINTMENT = "Book Appointment";
 export const RESET_PASSWORD_TEXT = "Reset Password";
 export const GROUP_NUMBER = "Policy / Group number";
 export const YOU_HAVE_ENTERED = "You have entered:";
+export const CREATE_LAB_ORDER = "Create Lab Order";
 export const NO_SLOT_AVAILABLE = "No Slot available";
 export const REGISTRATION_DATE = "Registration Date";
 export const PATIENT_LAST_NAME = "Patient Last Name";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const PATIENT_FIRST_NAME = "Patient First Name";
 export const SEXUAL_ORIENTATION = "Sexual Orientation";
+export const NORMAL_RANGE_UNITS = "Normal Range Units";
 export const PRIMARY_DEPARTMENT = "Primary Department";
 export const PREVIOUS_LAST_NAME = "Previous Last Name";
 export const NOT_FOUND_EXCEPTION = "Not Found Exception";
@@ -870,9 +872,9 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
     dateTime || ""
   )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
 
-// routes paths
-export const ROOT_ROUTE = "/";
-export const LOGIN_ROUTE = "/login";
+  // routes paths
+  export const ROOT_ROUTE = "/";
+  export const LOGIN_ROUTE = "/login";
 export const STAFF_ROUTE = "/staff";
 export const ROLES_ROUTE = "/roles";
 export const VITALS_ROUTE = "/vitals";
