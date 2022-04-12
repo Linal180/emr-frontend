@@ -1,9 +1,9 @@
 import { makeStyles } from '@material-ui/core'
-import { BLACK, GRAY_FOUR, WHITE } from '../../theme'
+import { BLACK, GRAY_FOUR, GRAY_ONE, GRAY_THIRTEEN, WHITE } from '../../theme'
 
 export const useFormBuilderContainerStyles = makeStyles((theme) => ({
   main: {
-    border: `1px solid ${GRAY_FOUR}`,
+    border: `1px dashed ${GRAY_FOUR}`,
     borderRadius: theme.spacing(0.5),
     maxHeight: 500,
     backgroundColor: WHITE,
@@ -12,12 +12,12 @@ export const useFormBuilderContainerStyles = makeStyles((theme) => ({
   },
 
   dropContainer: {
+    minHeight: 120,
+    backgroundColor: GRAY_THIRTEEN,
+    border: `1px solid ${GRAY_ONE}`,
+    borderRadius: theme.spacing(1),
     padding: theme.spacing(1),
-    borderRadius: 5,
     margin: theme.spacing(1),
-    backgroundColor: WHITE,
-    minHeight: 100,
-    border: `1px solid ${GRAY_FOUR}`
   },
 
   draggingDropContainer: {
@@ -25,10 +25,14 @@ export const useFormBuilderContainerStyles = makeStyles((theme) => ({
   },
 
   dragContainer: {
+    border: `1px solid ${GRAY_ONE}`,
     padding: '0.5rem',
     borderRadius: 5,
-    backgroundColor: WHITE,
-    border: `1px solid ${GRAY_FOUR}`,
+    margin: theme.spacing(1),
+
+    "& .MuiOutlinedInput-input": {
+      backgroundColor: WHITE,
+    }
   },
 
   draggingDragContainer: {

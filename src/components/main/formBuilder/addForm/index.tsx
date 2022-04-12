@@ -2,23 +2,23 @@
 import { useState, MouseEvent, useContext, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { Grid, Box, Button, Typography, Menu, MenuItem } from '@material-ui/core';
+import { Grid, Box, Button, Typography, Menu, MenuItem, Fade } from '@material-ui/core';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler } from 'react-hook-form';
 import { useParams } from 'react-router';
 //components block
-import EditModal from './EditModal';
+import EditModal from './fieldProperties';
 import Sidebar from './sidebar';
 import DropContainer from './dropContainer';
 // constants block
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION,
   FORM_BUILDER_INITIAL_VALUES, getForminitialValues, FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION,
-  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, SAVE_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER
+  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, SAVE_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, SAVE_DRAFT, PUBLISH
 } from '../../../../constants';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
-import { AddWidgetIcon } from '../../../../assets/svgs';
+import { AddWidgetIcon, FormAddIcon } from '../../../../assets/svgs';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import InputController from '../../../../controller';
 import Selector from '../../../common/Selector';
@@ -29,6 +29,8 @@ import { ListContext } from '../../../../context/listContext'
 import { isSuperAdmin, LoaderBackdrop, renderFacilities, setRecord } from '../../../../utils';
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
+import { BLACK, WHITE, WHITE_EIGHT, WHITE_FIVE } from '../../../../theme';
+import FieldProperties from './fieldProperties';
 //component
 const AddForm = () => {
   //states
@@ -247,7 +249,7 @@ const AddForm = () => {
   const changeValues = (id: string, item: FieldsInputs) => {
     const { fieldId, label, type, name, css, column, placeholder, required, errorMsg, defaultValue, options, textArea } = item;
     setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id, options, textArea });
-    modalOpenHandler();
+    // modalOpenHandler();
   };
   //modal handlers
   const modalOpenHandler = () => {
@@ -318,91 +320,115 @@ const AddForm = () => {
     <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
-
-          <Box display={'flex'} justifyContent={'space-between'}>
+          <Box py={2} my={2} display='flex' justifyContent='space-between'>
             <Typography variant='h4'>{FORM_BUILDER}</Typography>
-            <Box display={'flex'} justifyContent={'flex-start'}>
-              <Box marginX={2}>
-                <Button onClick={clearHandler} variant={'outlined'}>
-                  {CLEAR_TEXT}
+
+            <Box display='flex' justifyContent='flex-start'>
+              <Button onClick={clearHandler} variant="outlined" color="default">
+                {CLEAR_TEXT}
+              </Button>
+
+              <Box mx={2}>
+                <Button type='submit' variant='contained' color='inherit' className='blue-button-new'>
+                  {SAVE_DRAFT}
                 </Button>
               </Box>
-              <Button type='submit' variant={'contained'} color={'primary'}>
-                {SAVE_TEXT}
+
+              <Button type='submit' variant='contained' color='primary'>
+                {PUBLISH}
               </Button>
             </Box>
           </Box>
-          <Grid container spacing={2}>
-            {isSuper && <Grid item xs={6} sm={6} >
-              <Selector
-                isRequired
-                value={EMPTY_OPTION}
-                label={FACILITY}
-                name="facilityId"
-                options={renderFacilities(facilityList)}
-              />
-            </Grid>}
-            <Grid item xs={6} sm={6}>
-              <InputController
-                fieldType="text"
-                isRequired
-                controllerName="name"
-                controllerLabel={FORM_NAME}
-              />
-            </Grid>
-            <Grid item xs={6} sm={6}>
-              <Selector
-                label={FORM_TYPE}
-                name="type"
-                isRequired
-                value={EMPTY_OPTION}
-                options={MAPPED_FORM_TYPES}
-              />
-            </Grid>
-          </Grid>
-          <Grid container>
-            <Grid item md={8}>
-              <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
-              <Grid container>
-                <Grid item md={6}>
-                  <Box
-                    my={2}
-                    aria-haspopup="true"
-                    aria-controls={'add-column-layout'}
-                    className={classes.addSlot}
-                    aria-label="widget's patient"
-                    onClick={handleMenuOpen}
-                  >
-                    <AddWidgetIcon />
-                    <Typography component='h1' variant="h4">
-                      {ADD_COLUMNS_TEXT}
-                    </Typography>
-                  </Box>
-                  <Menu open={Boolean(colMenu)} anchorEl={colMenu} id="add-column-layout" onClose={handleMenuClose}>
-                    {COL_TYPES_ARRAY?.map((item, index) => (
-                      <MenuItem
-                        key={`${index}-add-${item.value}-column-${item.text}`}
-                        onClick={() => addList(item.value)}
-                      >
-                        {item.text}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </Grid>
+
+          <Box p={3} pb={0} bgcolor={WHITE}>
+            <Grid container spacing={3}>
+              {isSuper && <Grid item md={4} sm={12} xs={12}>
+                <Selector
+                  isRequired
+                  value={EMPTY_OPTION}
+                  label={FACILITY}
+                  name="facilityId"
+                  options={renderFacilities(facilityList)}
+                />
+              </Grid>}
+
+              <Grid item md={4} sm={12} xs={12}>
+                <InputController
+                  fieldType="text"
+                  isRequired
+                  controllerName="name"
+                  controllerLabel={FORM_NAME}
+                />
+              </Grid>
+
+              <Grid item md={4} sm={12} xs={12}>
+                <Selector
+                  label={FORM_TYPE}
+                  name="type"
+                  isRequired
+                  value={EMPTY_OPTION}
+                  options={MAPPED_FORM_TYPES}
+                />
               </Grid>
             </Grid>
-            <Grid item md={4}>
-              <Sidebar />
+          </Box>
+
+          <Box mt={5} maxHeight="calc(100vh - 390px)" className="overflowY-auto">
+            <Grid container spacing={3}>
+              <Grid item md={2} sm={6} xs={6}>
+                <Sidebar />
+              </Grid>
+
+              <Grid item md={7} sm={6} xs={6}>
+                <Box p={3} bgcolor={WHITE} borderRadius={6}>
+                  <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
+
+                  <Grid container justifyContent='center'>
+                    <Grid item md={4} sm={12} xs={12}>
+                      <Box
+                        aria-haspopup="true"
+                        aria-controls={'add-column-layout'}
+                        className={classes.addSlot}
+                        aria-label="widget's patient"
+                        onClick={handleMenuOpen}
+                      >
+                        <Box bgcolor={WHITE_EIGHT} borderRadius={6} p={1} mr={1}>
+                          <FormAddIcon />
+                        </Box>
+
+                        <Typography variant="h4">
+                          {ADD_COLUMNS_TEXT}
+                        </Typography>
+                      </Box>
+
+                      <Menu
+                        open={Boolean(colMenu)}
+                        anchorEl={colMenu}
+                        id="add-column-layout"
+                        onClose={handleMenuClose}
+                      >
+                        {COL_TYPES_ARRAY?.map((item, index) => (
+                          <MenuItem
+                            key={`${index}-add-${item.value}-column-${item.text}`}
+                            onClick={() => addList(item.value)}
+                          >
+                            {item.text}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </Grid>
+
+              <Grid item md={3} sm={6} xs={6}>
+                <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </form>
       </FormProvider>
-      <EditModal
-        open={open}
-        closeModalHanlder={closeModalHanlder}
-        setFieldValuesHandler={setFieldValuesHandler}
-        selected={selected}
-      />
+
       <LoaderBackdrop open={loading || getFormLoader || updateLoading} />
     </DragDropContext>
   );

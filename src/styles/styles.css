@@ -383,3 +383,11 @@ body .MuiTabPanel-root {
 .facilityActive {
   background-color: #0056B1 !important;
 }
+
+.checkedRadioButton .MuiRadio-root {
+  color: #9CA3AF !important;
+}
+
+.checkedRadioButton .MuiRadio-colorSecondary.Mui-checked {
+  color: #204ECF !important;
+}

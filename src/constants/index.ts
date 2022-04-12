@@ -70,7 +70,7 @@ export const SELECT_COLUMN_TEXT = "Select a column";
 export const YES_TEXT = "Yes";
 export const NO_TEXT = "No";
 export const CANCEL_TEXT = "Cancel";
-export const REUIRED_TEXT = "Required?";
+export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
 export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
@@ -230,8 +230,10 @@ export const VITALS_TEXT = "Vitals";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
+export const PUBLISH = "Publish";
 export const TO_BILLING = "To Billing";
 export const UPLOAD_LOGO = "Upload Logo";
+export const SAVE_DRAFT = "Save as Draft";
 export const UPLOAD_PICTURE = "Upload Picture";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
@@ -312,6 +314,7 @@ export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
+export const FORM_FIELDS = "Form Fields";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
@@ -2416,7 +2419,7 @@ export const ITEMS: ItemsTypes[] = [
   {
     icon: DateIcon,
     fieldId: uuid(),
-    label: 'Date Input',
+    label: 'Date',
     type: ElementType.Date,
     name: uuid(),
     css: '',
@@ -2431,7 +2434,7 @@ export const ITEMS: ItemsTypes[] = [
   {
     icon: NumberIcon,
     fieldId: uuid(),
-    label: 'Number Input',
+    label: 'Number',
     type: ElementType.Number,
     name: uuid(),
     css: '',
