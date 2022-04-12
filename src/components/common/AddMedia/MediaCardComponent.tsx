@@ -102,7 +102,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               );
             })}
 
-          <Grid md={12} xs={12}>
+          <Grid item md={12} xs={12}>
             {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
               startIcon={<UploadIcon />}>
               {UPLOAD}

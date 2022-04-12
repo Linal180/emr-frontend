@@ -50,6 +50,7 @@ export interface State {
   appShowPayBtn: boolean;
   appDetail: boolean;
   isInvoiceNumber: boolean;
+  cancelAppStatus: boolean;
 }
 
 export const initialState: State = {
@@ -84,6 +85,7 @@ export const initialState: State = {
   isEmployment: false,
   appShowPayBtn: false,
   isAutoAccident: false,
+  cancelAppStatus: false,
   isInvoiceNumber: false,
   isOtherAccident: false,
   deleteAppointmentId: '',
@@ -133,6 +135,7 @@ export enum ActionType {
   SET_AVAILABLE_SLOTS = 'setAvailableSlots',
   SET_APP_SHOW_PAY_BTN = 'setAppShowPayBtn',
   SET_IS_AUTO_ACCIDENT = 'setIsAutoAccident',
+  SET_CANCEL_APP_STATUS = 'setCancelAppStatus',
   SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
   SET_IS_INVOICE_NUMBER = 'setIsInvoiceNumber',
   SET_APP_INVOICE_NUMBER = 'setAppInvoiceNumber',
@@ -170,6 +173,7 @@ export type Action =
   | { type: ActionType.SET_DOCTOR; doctor: DoctorPayload['doctor'] }
   | { type: ActionType.SET_APP_SHOW_PAY_BTN; appShowPayBtn: boolean }
   | { type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: boolean }
+  | { type: ActionType.SET_CANCEL_APP_STATUS; cancelAppStatus: boolean }
   | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
   | { type: ActionType.SET_IS_INVOICE_NUMBER; isInvoiceNumber: boolean }
   | { type: ActionType.SET_APP_INVOICE_NUMBER; appInvoiceNumber: string }
@@ -405,6 +409,11 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isInvoiceNumber: action.isInvoiceNumber
+      }
+    case ActionType.SET_CANCEL_APP_STATUS:
+      return {
+        ...state,
+        cancelAppStatus: action.cancelAppStatus
       }
   }
 };
