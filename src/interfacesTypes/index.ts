@@ -150,6 +150,15 @@ export interface ConfirmationDaysTypes extends DialogTypes {
   isEdit?: boolean
 }
 
+export interface ConfirmationAuthenticationTypes extends DialogTypes {
+  title?: string;
+  isLoading?: boolean;
+  actionText?: string;
+  success?: boolean;
+  description?: string;
+  handleLogin: () => void;
+}
+
 export interface GraphModalProps extends DialogTypes {
   dispatcher: Dispatch<PatientAction>;
 }

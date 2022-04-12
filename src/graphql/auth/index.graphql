@@ -109,3 +109,33 @@ query GetStaffUser($getStaff: GetStaff!){
     }
   }
 }
+
+mutation update2FactorAuth($twoFactorInput: TwoFactorInput!){
+  update2FactorAuth(twoFactorInput: $twoFactorInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation resentOTP($seneOTPAgainInput: SeneOTPAgainInput!){
+  resentOTP(seneOTPAgainInput: $seneOTPAgainInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation verifyOTP($verifyCodeInput: VerifyCodeInput!){
+  verifyOTP(verifyCodeInput: $verifyCodeInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}

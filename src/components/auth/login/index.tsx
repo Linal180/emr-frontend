@@ -19,11 +19,17 @@ import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
   SOMETHING_WENT_WRONG,
+  // PATIENT_CANCELLED_APPOINTMENT,
+  // CANT_CANCELLED_APPOINTMENT,
+  // APPOINTMENT_DETAILS,
 } from "../../../constants";
+// import ConfirmationAuthenticationModal from "../../common/ConfirmationAuthenticationModal";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
   const { fetchAllFacilityList } = useContext(ListContext);
+  // const [openModal, setOpenModal] = useState<boolean>(false)
+
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: "",
@@ -51,6 +57,7 @@ const LoginComponent = (): JSX.Element => {
           }
 
           if (status === 200 && access_token && roles) {
+
             const userRoles = roles.map(role => role.role)
             const isAdmin = userRoles.filter(role => role !== 'patient')
 
@@ -71,6 +78,25 @@ const LoginComponent = (): JSX.Element => {
     }
   });
 
+  // const [verifyOtp, { loading: verifyOtpLoading }] = useVerifyOtpMutation({
+  //   onError() {
+  //     Alert.error(CANT_CANCELLED_APPOINTMENT)
+  //     setOpenModal(false)
+  //   },
+
+  //   async onCompleted(data) {
+  //     if (data) {
+  //       const { verifyOTP: { response } } = data
+
+  //       if (response) {
+  //         const { message } = response
+  //         message && Alert.success(message);
+  //         setOpenModal(false)
+  //       }
+  //     }
+  //   }
+  // });
+
   const onSubmit: SubmitHandler<LoginUserInput> = async (data) => {
     setIsLoggedIn(false);
 
@@ -78,6 +104,16 @@ const LoginComponent = (): JSX.Element => {
       variables: { loginUser: data }
     });
   };
+
+  // const handleTwoFALogin = async () => {
+  //   await verifyOtp({
+  //     variables: {
+  //       verifyCodeInput: {
+  //         id:, otpCode:
+  //       }
+  //     }
+  //   })
+  // };
 
   useEffect(() => {
     localStorage.getItem(TOKEN) && history.push(DASHBOARD_ROUTE)
@@ -111,6 +147,12 @@ const LoginComponent = (): JSX.Element => {
           {loading && <CircularProgress size={20} color="inherit" />}
         </Button>
       </form>
+      {/* <ConfirmationAuthenticationModal isOpen={openModal}
+        handleLogin={handleTwoFALogin}
+        title={APPOINTMENT_DETAILS}
+        isLoading={cancelAppointmentLoading}
+        setOpen={(open: boolean) => setOpenModal(open)}
+      /> */}
     </AuthLayout>
   );
 };
