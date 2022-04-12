@@ -16,12 +16,12 @@ import {
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE,
+  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
 } from "../constants";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
-  localStorage.removeItem(USER_EMAIL);
+  localStorage.removeItem(EMAIL);
   sessionStorage.removeItem(ROUTE);
   history.push(LOGIN_ROUTE);
   client.clearStore();
@@ -577,3 +577,10 @@ export const renderFacility = (facilityId: string, facilities: FacilitiesPayload
 export const checkPermission = (permissions: string[], query: string): boolean => {
   return permissions.includes(query)
 };
+
+export const onIdle = () => {
+  const route = history.location.pathname
+  sessionStorage.setItem(ROUTE, route);
+  localStorage.removeItem(TOKEN);
+  history.push(LOCK_ROUTE);
+}

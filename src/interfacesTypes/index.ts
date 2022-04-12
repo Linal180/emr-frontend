@@ -163,6 +163,7 @@ export interface ViewAppointmentCardProps {
 
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
+  disabled?: boolean;
 }
 
 type LoginControlTypes = "email" | "password";

@@ -16,10 +16,8 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const [timeout] = useState<number>(LOCK_TIME_OUT)
   const { user, isLoggedIn } = useContext(AuthContext);
   const { pathname } = useLocation()
-  console.log(pathname);
 
   const onIdle = () => {
-    console.log('user is idle')
     const route = pathname
     sessionStorage.setItem(ROUTE, route);
     history.push(LOCK_ROUTE);

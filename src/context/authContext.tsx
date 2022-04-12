@@ -20,12 +20,15 @@ export const AuthContext = createContext<AuthContextProps>({
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const [user, setUser] = useState<User | null>(null);
+  const [roles, setRoles] = useState<RolesPayload['roles']>([]);
   const [isLoggedIn, _setIsLoggedIn] = useState<boolean>(false);
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() { },
 
@@ -48,6 +51,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   const [getStaff] = useGetStaffUserLazyQuery({
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() { },
 
@@ -68,8 +73,35 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
     }
   });
 
-  const [fetchUser, { loading }] = useGetLoggedInUserLazyQuery({
-    nextFetchPolicy: "network-only",
+  const handleRolesAndPermissions = useCallback(async () => {
+    try {
+      const { userId } = user || {}
+
+      if (!isUserAdmin(roles as RolesPayload['roles'])) {
+        if (getUserRole(roles as RolesPayload['roles']) === 'doctor') {
+          userId && await getDoctor({
+            variables: { getDoctor: { id: userId } }
+          })
+        } else {
+          userId && await getStaff({
+            variables: { getStaff: { id: userId } }
+          })
+        }
+      }
+
+      roles?.map(role => {
+        const { rolePermissions } = role || {};
+        let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
+
+        return permissionsList && setUserPermissions(permissionsList as string[])
+      })
+    } catch (error) { }
+  }, [getDoctor, getStaff, roles, user])
+
+  const [fetchUser] = useGetLoggedInUserLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() {
       setUser(null);
@@ -78,45 +110,24 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
     async onCompleted(data) {
       if (data) {
         const { me } = data
-
+        console.log(user, "STATE")
         if (me) {
           const { user } = me;
 
           if (user) {
-            const { roles, userId } = user;
-
-            if (roles && userId) {
-              try {
-                if (!isUserAdmin(roles as RolesPayload['roles'])) {
-                  if (getUserRole(roles as RolesPayload['roles']) === 'doctor') {
-                    await getDoctor({
-                      variables: { getDoctor: { id: userId } }
-                    })
-                  } else {
-                    await getStaff({
-                      variables: { getStaff: { id: userId } }
-                    })
-                  }
-                }
-              } catch (error) { }
-
-              roles.map(role => {
-                const { rolePermissions } = role || {};
-                let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
-
-                return permissionsList && setUserPermissions(permissionsList as string[])
-              })
-            }
-
+            const { roles } = user;
+            console.log(user, "RESPONSE")
             setUser(user as User);
+            roles && setRoles(roles as RolesPayload['roles'])
+
+            await handleRolesAndPermissions();
           }
         }
       }
-    },
+    }
   });
 
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);
-
   const hasToken = localStorage.getItem(TOKEN);
 
   const getUser = useCallback(async () => {
@@ -127,8 +138,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   useEffect(() => {
     hasToken && setIsLoggedIn(true);
-    isLoggedIn && hasToken && !user && getUser();
-  }, [isLoggedIn, hasToken, loading, getUser, user]);
+    isLoggedIn && hasToken && getUser();
+  }, [isLoggedIn, hasToken, getUser]);
 
   return (
     <AuthContext.Provider

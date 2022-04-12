@@ -17,8 +17,8 @@ import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION,
-  NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE, SOMETHING_WENT_WRONG,
-  LOGOUT_TEXT, UNLOCK_TEXT, ROUTE,
+  NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
+  SOMETHING_WENT_WRONG, LOGOUT_TEXT, UNLOCK_TEXT, ROUTE,
 } from "../../../constants";
 
 const LockComponent = (): JSX.Element => {
@@ -26,7 +26,7 @@ const LockComponent = (): JSX.Element => {
   const { fetchAllFacilityList } = useContext(ListContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
-      email: "",
+      email: localStorage.getItem(EMAIL) || '',
       password: "",
     },
 
@@ -58,7 +58,8 @@ const LockComponent = (): JSX.Element => {
               localStorage.setItem(TOKEN, access_token);
               setIsLoggedIn(true);
               fetchAllFacilityList();
-              const existingRoute = sessionStorage.getItem(ROUTE) ? sessionStorage.getItem(ROUTE) : DASHBOARD_ROUTE
+              const existingRoute = sessionStorage.getItem(ROUTE)
+                ? sessionStorage.getItem(ROUTE) : DASHBOARD_ROUTE
               existingRoute && history.push(existingRoute);
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
@@ -79,17 +80,13 @@ const LockComponent = (): JSX.Element => {
     });
   };
 
-  const logoutHandler = () => {
-    handleLogout()
-  }
-
-
   const { email: { message: emailError } = {}, password: { message: passwordError } = {} } = errors;
 
   return (
     <AuthLayout>
       <form onSubmit={handleSubmit(onSubmit)}>
         <LoginController
+          disabled
           control={control}
           controllerName="email"
           controllerLabel={requiredLabel(EMAIL)}
@@ -106,12 +103,13 @@ const LockComponent = (): JSX.Element => {
           error={passwordError}
         />
         <Box display='flex' justifyContent='space-between'>
-          <Button variant="contained" color="inherit" onClick={logoutHandler}>
+          <Button variant="contained" color="inherit" onClick={() => handleLogout()}>
             {LOGOUT_TEXT}
           </Button>
 
           <Button type="submit" variant="contained" color="inherit">
             {UNLOCK_TEXT}
+
             {loading && <CircularProgress size={20} color="inherit" />}
           </Button>
         </Box>

@@ -12,7 +12,6 @@ import LoginController from "./LoginController";
 import history from "../../../history";
 import { requiredLabel } from "../../../utils";
 import { AuthContext } from "../../../context";
-import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
@@ -23,7 +22,6 @@ import {
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
-  const { fetchAllFacilityList } = useContext(ListContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: "",
@@ -56,8 +54,6 @@ const LoginComponent = (): JSX.Element => {
 
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
-              setIsLoggedIn(true);
-              fetchAllFacilityList();
               Alert.success(LOGIN_SUCCESSFULLY)
               history.push(DASHBOARD_ROUTE);
             } else {
