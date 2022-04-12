@@ -2,7 +2,7 @@
 import { Link } from 'react-router-dom';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 // component block
-import Selector from '../../common/Selector';
+import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
 import { Box, Button, Grid, MenuItem, Typography, } from '@material-ui/core';
 // constants, history, styling block
@@ -10,11 +10,11 @@ import { WHITE } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
-  AUTO_LOGOUT, AUTO_LOGOUT_DESCRIPTION, EMPTY_OPTION, GENERAL, PROFILE_GENERAL_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS,
+  GENERAL, PROFILE_GENERAL_MENU_ITEMS, SECURITY, USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, TWO_FA_AUTHENTICATION, STATUS,
+  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENABLE, ENTER_PASSWORD,
 } from '../../../constants';
 
-const AutoLogoutComponent = (): JSX.Element => {
+const TwoFAComponent = (): JSX.Element => {
   const classes = useHeaderStyles();
   const methods = useForm<any>({ mode: "all" });
   const { handleSubmit } = methods;
@@ -61,23 +61,34 @@ const AutoLogoutComponent = (): JSX.Element => {
         </Grid>
 
         <Grid item md={5} sm={12} xs={12}>
-          <CardComponent cardTitle={AUTO_LOGOUT}>
+          <CardComponent cardTitle={TWO_FA_AUTHENTICATION}>
             <Box p={2} mb={2}>
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <Grid container spacing={3}>
-                    <Grid item md={10} sm={12} xs={12}>
-                      <Selector
-                        isRequired
-                        name="notice"
-                        label={AUTO_LOGOUT_DESCRIPTION}
-                        value={EMPTY_OPTION}
-                        options={[]}
-                      />
+                  <Box mb={4} display="flex" alignItems="center">
+                    <Typography variant='h4'>{STATUS}</Typography>
+                    <Box p={1} />
+                    <Button variant='contained' color='default'>{DISABLED}</Button>
+                  </Box>
 
-                      <Button type="submit" variant="contained" color='primary'>{SAVE_TEXT}</Button>
+                  <Typography variant='body1'>{TWO_FA_AUTHENTICATION_DESCRIPTION}</Typography>
+
+                  <Box p={2} />
+
+                  <Grid container spacing={3}>
+                    <Grid item md={5} sm={12} xs={12}>
+                      <InputController
+                        fieldType="text"
+                        controllerName="password"
+                        controllerLabel={ENTER_PASSWORD}
+                      />
                     </Grid>
                   </Grid>
+
+                  <Box p={1} />
+
+                  <Button type="submit" variant="contained" color='primary'>{ENABLE}</Button>
+
                 </form>
               </FormProvider>
             </Box>
@@ -88,4 +99,4 @@ const AutoLogoutComponent = (): JSX.Element => {
   )
 };
 
-export default AutoLogoutComponent;
+export default TwoFAComponent;

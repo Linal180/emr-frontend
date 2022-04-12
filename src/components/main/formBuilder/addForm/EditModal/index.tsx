@@ -131,15 +131,15 @@ const EditModal = ({ open, closeModalHanlder, setFieldValuesHandler, selected }:
                   }} >
                     <thead>
                       <tr>
-                        <th >{NAME}</th>
-                        <th >{VALUE}</th>
+                        <th>{NAME}</th>
+                        <th>{VALUE}</th>
                         {fields?.length > 1 && <th >{ACTION}</th>}
                       </tr>
                     </thead>
                     <tbody>
                       {fields?.map((option, index) => (
-                        <tr key={`${option.value}-${index}-${option.name}`} >
-                          <td >
+                        <tr key={`${option.value}-${index}-${option.name}`}>
+                          <td>
                             <InputController
                               fieldType="text"
                               controllerName={`options.${index}.name`}
