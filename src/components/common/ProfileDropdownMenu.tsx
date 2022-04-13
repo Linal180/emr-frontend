@@ -89,7 +89,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               <Typography variant="body1">{PRACTICE} :</Typography>
             </Box>
 
-            <Typography variant="body1">{name ?? 'super-admin'}</Typography>
+            <Typography variant="body1">{name || '--'}</Typography>
           </Box>
 
           <Grid container spacing={3}>
