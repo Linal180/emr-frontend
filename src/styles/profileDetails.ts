@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK, BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
+import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
@@ -99,12 +99,10 @@ export const useProfileDetailsStyles = makeStyles(() =>
     addSlot: {
       width: '100%',
       display: 'flex',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       alignItems: 'center',
-      border: `1px dashed ${BLACK}`,
       padding: 20,
       background: 'transparent',
-      borderRadius: 6,
       cursor: 'pointer',
     },
 
