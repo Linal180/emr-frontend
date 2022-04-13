@@ -17,7 +17,9 @@ import {
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, setUser, setIsLoggedIn } = useContext(AuthContext);
-  const { email } = user || {};
+  const { email, facility } = user || {};
+  const { practice } = facility || {}
+  const { name } = practice || {}
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -75,7 +77,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               <Typography variant="body1">{PRACTICE} :</Typography>
             </Box>
 
-            <Typography variant="body1">Express Medical Center</Typography>
+            <Typography variant="body1">{name ?? 'super-admin'}</Typography>
           </Box>
 
           <Grid container spacing={3}>

@@ -53,6 +53,21 @@ export type AllStaffPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The patient's allergy onset type assigned */
+export enum AllergyOnset {
+  Adulthood = 'ADULTHOOD',
+  Childhood = 'CHILDHOOD',
+  Unnkown = 'UNNKOWN'
+}
+
+/** The patient's allergy severity type assigned */
+export enum AllergySeverity {
+  Acute = 'ACUTE',
+  Mild = 'MILD',
+  Moderate = 'MODERATE',
+  VeryMild = 'VERY_MILD'
+}
+
 export type Appointment = {
   __typename?: 'Appointment';
   appointmentCancelReason?: Maybe<Scalars['String']>;
@@ -75,10 +90,12 @@ export type Appointment = {
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientId?: Maybe<Scalars['String']>;
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   paymentType: PaymentType;
+  practiceId?: Maybe<Scalars['String']>;
   primaryInsurance?: Maybe<Scalars['String']>;
   provider?: Maybe<Doctor>;
   providerId?: Maybe<Scalars['String']>;
@@ -97,6 +114,7 @@ export type AppointmentInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type AppointmentPayload = {
@@ -287,6 +305,7 @@ export type CreateAppointmentInput = {
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patientId?: Maybe<Scalars['String']>;
   paymentType: PaymentType;
+  practiceId?: Maybe<Scalars['String']>;
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
@@ -390,6 +409,7 @@ export type CreateDoctorItemInput = {
   middleName: Scalars['String'];
   npi?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
@@ -433,6 +453,7 @@ export type CreateExternalAppointmentItemInput = {
   patientId?: Maybe<Scalars['String']>;
   paymentStatus?: Maybe<Scalars['String']>;
   paymentType: PaymentType;
+  practiceId?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
   scheduleEndDateTime: Scalars['String'];
   scheduleStartDateTime: Scalars['String'];
@@ -528,6 +549,7 @@ export type CreatePatientItemInput = {
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
+  practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -620,6 +642,7 @@ export type CreateStaffItemInput = {
   mobile?: Maybe<Scalars['String']>;
   password: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<Scalars['String']>;
   username: Scalars['String'];
@@ -684,7 +707,9 @@ export type Doctor = {
   medicareGrpNumber?: Maybe<Scalars['String']>;
   middleName?: Maybe<Scalars['String']>;
   npi?: Maybe<Scalars['String']>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientProblem?: Maybe<Array<PatientProblems>>;
+  practiceId?: Maybe<Scalars['String']>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
@@ -708,6 +733,7 @@ export type Doctor = {
 export type DoctorInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type DoctorPatient = {
@@ -1692,12 +1718,14 @@ export type Patient = {
   medicationHistoryAuthority: Scalars['Boolean'];
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientNote?: Maybe<Scalars['String']>;
   patientProblems?: Maybe<Array<PatientProblems>>;
   patientRecord?: Maybe<Scalars['String']>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission: Scalars['Boolean'];
+  practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod: Communicationtype;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -1719,6 +1747,22 @@ export type Patient = {
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
   voiceCallPermission: Scalars['Boolean'];
+};
+
+export type PatientAllergies = {
+  __typename?: 'PatientAllergies';
+  allergyOnset: AllergyOnset;
+  allergySeverity: AllergySeverity;
+  allergyStartDate?: Maybe<Scalars['String']>;
+  appointment?: Maybe<Appointment>;
+  comments?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  doctor?: Maybe<Doctor>;
+  id: Scalars['String'];
+  isActive?: Maybe<Scalars['Boolean']>;
+  patient?: Maybe<Patient>;
+  staff?: Maybe<Staff>;
+  updatedAt?: Maybe<Scalars['String']>;
 };
 
 export type PatientInfoInput = {
@@ -1743,6 +1787,7 @@ export type PatientInfoItemInput = {
 export type PatientInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type PatientInviteInput = {
@@ -2674,9 +2719,11 @@ export type Staff = {
   id: Scalars['String'];
   lastName: Scalars['String'];
   mobile?: Maybe<Scalars['String']>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<PatientVitals>;
   phone?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
   username?: Maybe<Scalars['String']>;
@@ -2685,6 +2732,7 @@ export type Staff = {
 export type StaffInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type StaffPayload = {
@@ -2740,7 +2788,7 @@ export type TransactionsPayload = {
 
 export type TwoFactorInput = {
   isTwoFactorEnabled: Scalars['Boolean'];
-  phone?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
   userId: Scalars['String'];
 };
 
@@ -2770,6 +2818,7 @@ export type UpdateAppointmentInput = {
   patientId?: Maybe<Scalars['String']>;
   paymentStatus?: Maybe<Scalars['String']>;
   paymentType?: Maybe<PaymentType>;
+  practiceId?: Maybe<Scalars['String']>;
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
@@ -2882,6 +2931,7 @@ export type UpdateDoctorItemInput = {
   middleName?: Maybe<Scalars['String']>;
   npi?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
@@ -2993,6 +3043,7 @@ export type UpdatePatientItemInput = {
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
+  practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -3112,6 +3163,7 @@ export type UpdateStaffItemInput = {
   mobile?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
@@ -3310,7 +3362,7 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Ac
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, userId: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, userId: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } | null | undefined } | null | undefined } };
 
 export type ForgetPasswordMutationVariables = Exact<{
   forgotPasswordInput: ForgotPasswordInput;
@@ -4436,6 +4488,10 @@ export const GetLoggedInUserDocument = gql`
         id
         name
         practiceId
+        practice {
+          id
+          name
+        }
       }
     }
   }
