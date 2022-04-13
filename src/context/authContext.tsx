@@ -28,6 +28,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() { },
 
