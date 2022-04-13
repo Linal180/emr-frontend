@@ -16,7 +16,7 @@ import {
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, currentUser, setUser, setIsLoggedIn } = useContext(AuthContext);
+  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
   const { email, facility, roles } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { practice } = facility || {}
@@ -32,12 +32,14 @@ const ProfileDropdownMenu = (): JSX.Element => {
     email && localStorage.setItem(EMAIL, email)
     onIdle();
     setUser(null)
+    setCurrentUser(null)
     setIsLoggedIn(false)
   }
 
   const logout = () => {
     setIsLoggedIn(false)
     setUser(null)
+    setCurrentUser(null)
     handleLogout();
   };
 
@@ -87,7 +89,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               <Typography variant="body1">{PRACTICE} :</Typography>
             </Box>
 
-            <Typography variant="body1">{name ?? 'super-admin'}</Typography>
+            <Typography variant="body1">{name || '--'}</Typography>
           </Box>
 
           <Grid container spacing={3}>
