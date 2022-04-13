@@ -231,8 +231,10 @@ export const VITALS_TEXT = "Vitals";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
+export const PUBLISH = "Publish";
 export const TO_BILLING = "To Billing";
 export const UPLOAD_LOGO = "Upload Logo";
+export const SAVE_DRAFT = "Save as Draft";
 export const UPLOAD_PICTURE = "Upload Picture";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
@@ -313,6 +315,7 @@ export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
+export const FORM_FIELDS = "Form Fields";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
@@ -966,6 +969,7 @@ export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, 
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
+export const DROP_FIELD = 'Please drop atleast one field';
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
 export const ROLE_NOT_FOUND = "Role not found!";
@@ -2427,7 +2431,7 @@ export const ITEMS: ItemsTypes[] = [
   {
     icon: DateIcon,
     fieldId: uuid(),
-    label: 'Date Input',
+    label: 'Date',
     type: ElementType.Date,
     name: uuid(),
     css: '',
@@ -2442,7 +2446,7 @@ export const ITEMS: ItemsTypes[] = [
   {
     icon: NumberIcon,
     fieldId: uuid(),
-    label: 'Number Input',
+    label: 'Number',
     type: ElementType.Number,
     name: uuid(),
     css: '',
@@ -2554,7 +2558,7 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   }
 }
 
-export const getForminitialValues = () => [
+export const getFormInitialValues = () => [
   {
     id: uuid(),
     col: 12,
