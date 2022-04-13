@@ -1,17 +1,17 @@
 // packages block
 import { useState, MouseEvent, useContext } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton } from '@material-ui/core';
+import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, } from '@material-ui/core';
 // utils and header styles block
-import { WHITE_FOUR } from "../../theme";
+import { BLACK_TWO, WHITE_FOUR } from "../../theme";
 import { handleLogout, onIdle } from "../../utils";
 import { AuthContext } from "../../context";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import StatusSelector from "../main/dashboard/statusSelector";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
+
 import {
   EMAIL,
-  GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SECURITY
+  GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SECURITY
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
@@ -23,7 +23,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
 
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  
+
   const handleIdle = () => {
     email && localStorage.setItem(EMAIL, email)
     onIdle();
@@ -36,7 +36,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
     setUser(null)
     handleLogout();
   };
-  
+
   return (
     <>
       <IconButton
@@ -64,12 +64,18 @@ const ProfileDropdownMenu = (): JSX.Element => {
             <Box display="flex" alignItems="center">
               <NewAvatarIcon />
 
-              <Box ml={1}>
+              <Box ml={2}>
                 <Typography variant="h6">Richard Alvis</Typography>
               </Box>
             </Box>
+          </Box>
 
-            <StatusSelector />
+          <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+            <Box pr={1} color={BLACK_TWO}>
+              <Typography variant="body1">{PRACTICE} :</Typography>
+            </Box>
+
+            <Typography variant="body1">Express Medical Center</Typography>
           </Box>
 
           <Grid container spacing={3}>

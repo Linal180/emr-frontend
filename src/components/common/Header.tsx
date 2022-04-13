@@ -14,7 +14,7 @@ import { useHeaderStyles } from "../../styles/headerStyles";
 import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -117,8 +117,6 @@ const HeaderNew: FC = (): JSX.Element => {
               alignItems="right"
               className={classes.profileItemName}
             >
-              <Typography>{HELLO_TEXT}</Typography>
-
               {isAdmin ?
                 <Typography variant="h6">{isSuper ? SUPER_ADMIN : ADMIN}</Typography>
                 :
