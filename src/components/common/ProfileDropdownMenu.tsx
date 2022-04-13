@@ -13,8 +13,9 @@ import { EMAIL, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MEN
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, setUser, setIsLoggedIn } = useContext(AuthContext);
+  const { user, currentUser, setUser, setIsLoggedIn } = useContext(AuthContext);
   const { email, facility } = user || {};
+  const { firstName, lastName } = currentUser || {}
   const { practice } = facility || {}
   const { name } = practice || {}
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -64,7 +65,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               <NewAvatarIcon />
 
               <Box ml={2}>
-                <Typography variant="h6">Richard Alvis</Typography>
+                <Typography variant="h6">{`${firstName} ${lastName}` ?? 'super-admin'}</Typography>
               </Box>
             </Box>
           </Box>
