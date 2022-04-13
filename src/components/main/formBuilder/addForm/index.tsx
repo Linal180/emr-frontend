@@ -6,8 +6,9 @@ import { SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm, FormProvider } from 'react-hook-form';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { Grid, Box, Button, Typography, Menu, MenuItem, } from '@material-ui/core';
+import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, } from '@material-ui/core';
 //components block
+import ViewDataLoader from '../../../common/ViewDataLoader';
 import Sidebar from './sidebar';
 import Alert from '../../../common/Alert';
 import history from '../../../../history';
@@ -20,7 +21,7 @@ import { FormAddIcon } from '../../../../assets/svgs';
 import { WHITE, WHITE_EIGHT, } from '../../../../theme';
 import { ListContext } from '../../../../context/listContext'
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
-import { isSuperAdmin, LoaderBackdrop, renderFacilities, setRecord } from '../../../../utils';
+import { isSuperAdmin, renderFacilities, setRecord } from '../../../../utils';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
 import {
@@ -324,44 +325,46 @@ const AddForm = () => {
 
               <Box mx={1} />
 
-              <Button type='submit' variant='contained' color='primary'>
-                {PUBLISH}
+              <Button type='submit' variant='contained' color='primary' disabled={loading || updateLoading}>
+                {loading || updateLoading ? <CircularProgress size={20} color="inherit" /> : PUBLISH}
               </Button>
             </Box>
           </Box>
 
           <Box>
             <Box p={3} pb={0} bgcolor={WHITE}>
-              <Grid container spacing={3}>
-                {isSuper && <Grid item md={4} sm={12} xs={12}>
-                  <Selector
-                    isRequired
-                    value={EMPTY_OPTION}
-                    label={FACILITY}
-                    name="facilityId"
-                    options={renderFacilities(facilityList)}
-                  />
-                </Grid>}
+              {getFormLoader ? <ViewDataLoader rows={1} columns={3} hasMedia={false} /> :
+                <Grid container spacing={3}>
+                  {isSuper && <Grid item md={4} sm={12} xs={12}>
+                    <Selector
+                      isRequired
+                      value={EMPTY_OPTION}
+                      label={FACILITY}
+                      name="facilityId"
+                      options={renderFacilities(facilityList)}
+                    />
+                  </Grid>}
 
-                <Grid item md={4} sm={12} xs={12}>
-                  <InputController
-                    fieldType="text"
-                    isRequired
-                    controllerName="name"
-                    controllerLabel={FORM_NAME}
-                  />
-                </Grid>
+                  <Grid item md={4} sm={12} xs={12}>
+                    <InputController
+                      fieldType="text"
+                      isRequired
+                      controllerName="name"
+                      controllerLabel={FORM_NAME}
+                    />
+                  </Grid>
 
-                <Grid item md={4} sm={12} xs={12}>
-                  <Selector
-                    label={FORM_TYPE}
-                    name="type"
-                    isRequired
-                    value={EMPTY_OPTION}
-                    options={MAPPED_FORM_TYPES}
-                  />
+                  <Grid item md={4} sm={12} xs={12}>
+                    <Selector
+                      label={FORM_TYPE}
+                      name="type"
+                      isRequired
+                      value={EMPTY_OPTION}
+                      options={MAPPED_FORM_TYPES}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
+              }
             </Box>
 
             <Box mt={3}>
@@ -372,8 +375,9 @@ const AddForm = () => {
 
                 <Grid item md={7} sm={4} xs={12}>
                   <Box p={3} bgcolor={WHITE} borderRadius={6}>
-                    <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
-
+                    {getFormLoader ? <ViewDataLoader rows={3} columns={3} hasMedia={false} /> :
+                      <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
+                    }
                     <Grid container justifyContent='center'>
                       <Grid item md={4} sm={12} xs={12}>
                         <Box
@@ -420,7 +424,6 @@ const AddForm = () => {
           </Box>
         </form>
       </FormProvider>
-      <LoaderBackdrop open={loading || getFormLoader || updateLoading} />
     </DragDropContext>
   );
 };

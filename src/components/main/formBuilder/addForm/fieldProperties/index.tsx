@@ -25,7 +25,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
   const [isChecked, setIsChecked] = useState(false);
   const classes = usePublicAppointmentStyles();
   const methods = useForm<FormInitialType>({ defaultValues: FIELD_EDIT_INITIAL_VALUES });
-  const { setValue, handleSubmit, control } = methods;
+  const { setValue, handleSubmit, control, reset } = methods;
   const { fields, remove, append } = useFieldArray({ control: control, name: "options" });
 
   //set form values
@@ -62,6 +62,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
   // form submit handler
   const submitHandler: SubmitHandler<FormInitialType> = (values) => {
     setFieldValuesHandler(values)
+    reset()
   };
 
   //render
