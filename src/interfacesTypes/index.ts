@@ -40,10 +40,11 @@ export interface CalendarChart {
 export interface AuthContextProps {
   user: User | null;
   isLoggedIn: boolean;
-  currentUser: Doctor | Staff | null;
   userPermissions: string[],
+  currentUser: Doctor | Staff | null;
   setUser: (user: User | null) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setCurrentUser: (user: Doctor | Staff | null) => void;
 }
 
 export interface DoctorScheduleSlotProps {
