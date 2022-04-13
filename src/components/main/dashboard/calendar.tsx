@@ -9,11 +9,11 @@ import {
 // component block
 import AppointmentCard from "./appointmentCard";
 // context, constants block
-import { mapAppointmentData } from "../../../utils"
-import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus } from "../../../generated/graphql";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
-import { useCalendarStyles } from "../../../styles/calendarStyles";
 import { AuthContext } from "../../../context";
+import { mapAppointmentData } from "../../../utils"
+import { useCalendarStyles } from "../../../styles/calendarStyles";
+import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
+import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus } from "../../../generated/graphql";
 
 const CalendarComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
