@@ -312,7 +312,7 @@ export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
 export const CANCELLED_APPOINTMENT_DESCRIPTION =
   "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
-export const FACILITY_SCHEDULE = "Facility Schedule";
+export const FACILITY_SCHEDULE = "Business Hours";
 export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
@@ -938,7 +938,7 @@ export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointme
 export const BILLING_PROFILE_ROUTE = "billing-profile";
 export const FACILITY_INFO_ROUTE = "facility-information";
 export const FACILITY_LOCATION_ROUTE = "facility-location";
-export const FACILITY_SCHEDULE_ROUTE = "facility-schedule";
+export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
