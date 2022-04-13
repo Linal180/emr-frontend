@@ -16,8 +16,8 @@ import {
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME, 
-  SERVICE_NAME_TEXT, DOB,
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
+  SERVICE_NAME_TEXT, DOB, OTP_CODE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -82,6 +82,18 @@ const notRequiredPhone = (label: string) => {
         }
 
         return !!value && value.length >= 10
+      })
+}
+
+const notRequiredOTP = (label: string) => {
+  return yup.string()
+    .test(
+      '', MinLength(label, 6), value => {
+        if (!value) {
+          return true
+        }
+
+        return !!value && value.length >= 6
       })
 }
 
@@ -303,6 +315,10 @@ const firstLastNameSchema = {
 
 export const loginValidationSchema = yup.object({
   ...emailSchema,
+  ...passwordSchema
+});
+
+export const twoFAValidationSchema = yup.object({
   ...passwordSchema
 });
 
@@ -681,4 +697,12 @@ export const facilityScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(DAY), ({ id }) => !!id),
+})
+
+const otpBasicSchema = {
+  otpCode: notRequiredOTP(OTP_CODE),
+}
+
+export const otpSchema = yup.object({
+  ...otpBasicSchema,
 })

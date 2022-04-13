@@ -5,7 +5,7 @@ import Login from "../pages/auth/login";
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import { PageNotFound } from "../pages/404";
-import { TwoFA } from "../pages/main/twoFA";
+import { TwoFA } from "../pages/main/2FA";
 import Settings from "../pages/main/settings";
 import { CheckIn } from "../pages/main/checkIn";
 import Dashboard from "../pages/main/dashboard";

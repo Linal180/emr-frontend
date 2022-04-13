@@ -27,6 +27,8 @@ query GetLoggedInUser {
     user {
       id
       email
+      phone
+      isTwoFactorEnabled
       token
       userId
 

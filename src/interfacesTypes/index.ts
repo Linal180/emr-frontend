@@ -17,7 +17,7 @@ import {
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, TwoFactorInput, VerifyCodeInput,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -156,7 +156,6 @@ export interface ConfirmationAuthenticationTypes extends DialogTypes {
   actionText?: string;
   success?: boolean;
   description?: string;
-  handleLogin: () => void;
 }
 
 export interface GraphModalProps extends DialogTypes {
@@ -884,4 +883,24 @@ export interface AutoCompleteResponse {
   status: boolean;
   message: string;
   options: any
+}
+
+export type TwoFactorInputProps = Omit<TwoFactorInput, "userId">;
+
+export type VerifyCodeInputProps = Omit<VerifyCodeInput, "id">;
+
+export interface OTPInputProps {
+  value: number | string;
+  onChange: any;
+  numInputs: number;
+  separator?: JSX.Element | undefined;
+  isDisabled?: boolean | undefined;
+  shouldAutoFocus?: boolean | undefined;
+  hasErrored?: boolean | undefined;
+  isInputNum?: boolean | undefined;
+  containerStyle?: string | React.CSSProperties | undefined;
+  inputStyle?: string | React.CSSProperties | undefined;
+  focusStyle?: string | React.CSSProperties | undefined;
+  disabledStyle?: string | React.CSSProperties | undefined;
+  errorStyle?: string | React.CSSProperties | undefined;
 }

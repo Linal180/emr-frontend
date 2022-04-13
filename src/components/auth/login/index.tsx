@@ -1,5 +1,5 @@
 // packages block
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -18,17 +18,15 @@ import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
-  SOMETHING_WENT_WRONG,
-  // PATIENT_CANCELLED_APPOINTMENT,
-  // CANT_CANCELLED_APPOINTMENT,
-  // APPOINTMENT_DETAILS,
+  SOMETHING_WENT_WRONG, LOGIN, TWO_FACTOR_LOGIN, TWO_FACTOR_LOGIN_DESCRIPTION,
 } from "../../../constants";
+import ConfirmationAuthenticationModal from "../../common/ConfirmationAuthenticationModal";
 // import ConfirmationAuthenticationModal from "../../common/ConfirmationAuthenticationModal";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
   const { fetchAllFacilityList } = useContext(ListContext);
-  // const [openModal, setOpenModal] = useState<boolean>(false)
+  const [openModal, setOpenModal] = useState<boolean>(false)
 
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
@@ -57,45 +55,32 @@ const LoginComponent = (): JSX.Element => {
           }
 
           if (status === 200 && access_token && roles) {
-
-            const userRoles = roles.map(role => role.role)
-            const isAdmin = userRoles.filter(role => role !== 'patient')
-
-            if (!!isAdmin?.length) {
-              localStorage.setItem(TOKEN, access_token);
-              setIsLoggedIn(true);
-              fetchAllFacilityList();
-              Alert.success(LOGIN_SUCCESSFULLY)
-              history.push(DASHBOARD_ROUTE);
+            if (status === 200) {
+              setOpenModal(true)
             } else {
-              Alert.error(NOT_SUPER_ADMIN_MESSAGE)
+              const userRoles = roles.map(role => role.role)
+              const isAdmin = userRoles.filter(role => role !== 'patient')
+
+              if (!!isAdmin?.length) {
+                localStorage.setItem(TOKEN, access_token);
+                setIsLoggedIn(true);
+                fetchAllFacilityList();
+                Alert.success(LOGIN_SUCCESSFULLY)
+                history.push(DASHBOARD_ROUTE);
+              } else {
+                Alert.error(NOT_SUPER_ADMIN_MESSAGE)
+              }
             }
           } else {
             Alert.error(SOMETHING_WENT_WRONG)
           }
+
         }
       }
     }
   });
 
-  // const [verifyOtp, { loading: verifyOtpLoading }] = useVerifyOtpMutation({
-  //   onError() {
-  //     Alert.error(CANT_CANCELLED_APPOINTMENT)
-  //     setOpenModal(false)
-  //   },
 
-  //   async onCompleted(data) {
-  //     if (data) {
-  //       const { verifyOTP: { response } } = data
-
-  //       if (response) {
-  //         const { message } = response
-  //         message && Alert.success(message);
-  //         setOpenModal(false)
-  //       }
-  //     }
-  //   }
-  // });
 
   const onSubmit: SubmitHandler<LoginUserInput> = async (data) => {
     setIsLoggedIn(false);
@@ -105,15 +90,7 @@ const LoginComponent = (): JSX.Element => {
     });
   };
 
-  // const handleTwoFALogin = async () => {
-  //   await verifyOtp({
-  //     variables: {
-  //       verifyCodeInput: {
-  //         id:, otpCode:
-  //       }
-  //     }
-  //   })
-  // };
+
 
   useEffect(() => {
     localStorage.getItem(TOKEN) && history.push(DASHBOARD_ROUTE)
@@ -147,12 +124,14 @@ const LoginComponent = (): JSX.Element => {
           {loading && <CircularProgress size={20} color="inherit" />}
         </Button>
       </form>
-      {/* <ConfirmationAuthenticationModal isOpen={openModal}
-        handleLogin={handleTwoFALogin}
-        title={APPOINTMENT_DETAILS}
-        isLoading={cancelAppointmentLoading}
+
+      <ConfirmationAuthenticationModal
+        isOpen={openModal}
+        title={TWO_FACTOR_LOGIN}
+        description={TWO_FACTOR_LOGIN_DESCRIPTION}
+        actionText={LOGIN}
         setOpen={(open: boolean) => setOpenModal(open)}
-      /> */}
+      />
     </AuthLayout>
   );
 };

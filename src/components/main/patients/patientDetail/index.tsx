@@ -90,7 +90,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         },
       })
     } catch (error) { }
-  }, [attachmentId, getAttachment]) 
+  }, [attachmentId, getAttachment])
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -101,7 +101,7 @@ const PatientDetailsComponent = (): JSX.Element => {
       dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: null })
     },
 
-     onCompleted(data) {
+    onCompleted(data) {
       if (data) {
         const { getPatient } = data;
 
@@ -399,7 +399,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         handleDelete={handleDeleteWidget}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-    </Box >
+    </Box>
   )
 }
 
