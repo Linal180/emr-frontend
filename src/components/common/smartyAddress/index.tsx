@@ -4,7 +4,7 @@ import { core, usAutocompletePro, usZipcode, usStreet } from 'smartystreets-java
 import { GetAddressResponse, VerifyResponse, AutoCompleteResponse } from '../../../interfacesTypes';
 //constants
 
-const smartyKey = process.env.SMARTY_KEY || '119911642791713069'
+const smartyKey = process.env.REACT_APP_SMARTY_KEY || '';
 
 /**
  * Gets address by zipcode
