@@ -2,7 +2,7 @@
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues, Ref, ControllerRenderProps, UseFormSetValue } from "react-hook-form";
+import { Control, ValidationRule, FieldValues, Ref, ControllerRenderProps } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // graphql block
@@ -858,8 +858,7 @@ export interface SmartyModalComponentType {
   isOpen: boolean;
   data: usStreet.Candidate[];
   userData: SmartyUserData;
-  setValue: UseFormSetValue<PatientInputProps>,
-  setIsVerified: Dispatch<SetStateAction<boolean>>
+  verifiedAddressHandler: (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => void
 }
 
 export interface GetAddressResponse {

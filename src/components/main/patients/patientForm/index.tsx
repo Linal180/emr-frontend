@@ -534,6 +534,17 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     basicZipCode?.length === 5 && getAddressHandler()
   }, [basicZipCode, getAddressHandler]);
 
+  const verifiedAddressHandler = (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => {
+    deliveryLine1 && setValue('basicAddress', deliveryLine1);
+    zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
+    cityName && setValue('basicCity', cityName);
+    setIsVerified(true)
+  }
+
+  useEffect(() => {
+    setIsVerified(false)
+  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch])
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -701,11 +712,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             </Box>
                           }
                         </Grid>
-
                       </Grid>
                     </Grid>
-
-
 
                     <Grid container spacing={3}>
                       <Grid item md={4}>
@@ -1302,7 +1310,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         </Box>
 
       </form>
-      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} setValue={setValue} setIsVerified={setIsVerified} />
+      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} verifiedAddressHandler={verifiedAddressHandler} />
     </FormProvider>
   );
 };

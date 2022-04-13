@@ -10,7 +10,7 @@ import { useSmartyModalStyles } from "../../styles/smartyModalStyles";
 import { DISMISS, Ok_TEXT, CHECK_ADDRESS, SMARTY_0_MATCH, YOU_ENTER, POSSIBLE_MATCH, SELECT_ADDRESS } from "../../constants";
 import Alert from "./Alert";
 
-const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, userData, setValue, setIsVerified }): JSX.Element => {
+const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, userData, verifiedAddressHandler }): JSX.Element => {
   const classes = useSmartyModalStyles();
   const { address, street } = userData || {}
   const [addValue, setAddValue] = useState<string>('')
@@ -27,11 +27,8 @@ const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, user
       if (addValue) {
         const address = JSON.parse(addValue);
         const { deliveryLine1, cityName, zipCode, plus4Code } = address || {};
-        deliveryLine1 && setValue('basicAddress', deliveryLine1);
-        zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
-        cityName && setValue('basicCity', cityName);
+        verifiedAddressHandler(deliveryLine1, zipCode, plus4Code, cityName);
         setAddValue('')
-        setIsVerified(true)
         handleClose();
       }
       else {
