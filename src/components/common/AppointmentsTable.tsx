@@ -33,13 +33,14 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { facility } = user || {}
-  const { id: facilityId } = facility || {}
+  const { id: facilityId, practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
     variables: {
       appointmentInput: {
+        practiceId: practiceId || '',
         paginationOptions: {
           page, limit: PAGE_LIMIT
         }

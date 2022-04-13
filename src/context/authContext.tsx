@@ -2,7 +2,7 @@
 import { createContext, FC, useEffect, useState } from "react";
 // graphql, interfaces/types and constants block
 import { TOKEN } from "../constants";
-import { getUserRole, isUserAdmin } from "../utils";
+import { getUserRole, isSuperAdmin } from "../utils";
 import { AuthContextProps } from "../interfacesTypes";
 import {
   User, useGetLoggedInUserLazyQuery, Doctor, Staff, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery,
@@ -89,11 +89,10 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
           if (userResponse) {
             const { roles, userId } = userResponse;
-            const isAdmin = isUserAdmin(roles as RolesPayload['roles'])
+            const isAdmin = isSuperAdmin(roles as RolesPayload['roles'])
 
             if (!isAdmin) {
               const roleName = getUserRole(roles as RolesPayload['roles'])
-
               if (roleName === 'doctor') {
                 getDoctor({
                   variables: { getDoctor: { id: userId } }

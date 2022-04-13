@@ -23,15 +23,11 @@ const HeaderNew: FC = (): JSX.Element => {
   const { firstName, lastName } = currentUser || {}
   const { location: { pathname } } = history;
   const { roles } = user || {};
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
 
   useEffect(() => {
-    if (isUserAdmin(roles)) {
-      setIsAdmin(true)
-      setIsSuper(isSuperAdmin(roles))
-    }
+    setIsSuper(isSuperAdmin(roles))
   }, [isSuper, roles, user]);
 
   return (
@@ -119,8 +115,8 @@ const HeaderNew: FC = (): JSX.Element => {
             >
               <Typography>{HELLO_TEXT}</Typography>
 
-              {isAdmin ?
-                <Typography variant="h6">{isSuper ? SUPER_ADMIN : ADMIN}</Typography>
+              {isSuper ?
+                <Typography variant="h6">{SUPER_ADMIN}</Typography>
                 :
                 <Typography variant="h6">{firstName} {lastName}</Typography>
               }
