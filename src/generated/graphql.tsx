@@ -53,6 +53,21 @@ export type AllStaffPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The patient's allergy onset type assigned */
+export enum AllergyOnset {
+  Adulthood = 'ADULTHOOD',
+  Childhood = 'CHILDHOOD',
+  Unnkown = 'UNNKOWN'
+}
+
+/** The patient's allergy severity type assigned */
+export enum AllergySeverity {
+  Acute = 'ACUTE',
+  Mild = 'MILD',
+  Moderate = 'MODERATE',
+  VeryMild = 'VERY_MILD'
+}
+
 export type Appointment = {
   __typename?: 'Appointment';
   appointmentCancelReason?: Maybe<Scalars['String']>;
@@ -75,10 +90,12 @@ export type Appointment = {
   otherAccident?: Maybe<Scalars['Boolean']>;
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientId?: Maybe<Scalars['String']>;
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   paymentType: PaymentType;
+  practiceId?: Maybe<Scalars['String']>;
   primaryInsurance?: Maybe<Scalars['String']>;
   provider?: Maybe<Doctor>;
   providerId?: Maybe<Scalars['String']>;
@@ -97,6 +114,7 @@ export type AppointmentInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type AppointmentPayload = {
@@ -287,6 +305,7 @@ export type CreateAppointmentInput = {
   otherPartyResponsible?: Maybe<Scalars['Boolean']>;
   patientId?: Maybe<Scalars['String']>;
   paymentType: PaymentType;
+  practiceId?: Maybe<Scalars['String']>;
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
@@ -390,6 +409,7 @@ export type CreateDoctorItemInput = {
   middleName: Scalars['String'];
   npi?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
+  practiceId: Scalars['String'];
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
@@ -433,6 +453,7 @@ export type CreateExternalAppointmentItemInput = {
   patientId?: Maybe<Scalars['String']>;
   paymentStatus?: Maybe<Scalars['String']>;
   paymentType: PaymentType;
+  practiceId?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
   scheduleEndDateTime: Scalars['String'];
   scheduleStartDateTime: Scalars['String'];
@@ -528,6 +549,7 @@ export type CreatePatientItemInput = {
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
+  practiceId: Scalars['String'];
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -620,6 +642,7 @@ export type CreateStaffItemInput = {
   mobile?: Maybe<Scalars['String']>;
   password: Scalars['String'];
   phone?: Maybe<Scalars['String']>;
+  practiceId: Scalars['String'];
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<Scalars['String']>;
   username: Scalars['String'];
@@ -684,7 +707,9 @@ export type Doctor = {
   medicareGrpNumber?: Maybe<Scalars['String']>;
   middleName?: Maybe<Scalars['String']>;
   npi?: Maybe<Scalars['String']>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientProblem?: Maybe<Array<PatientProblems>>;
+  practiceId?: Maybe<Scalars['String']>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
@@ -708,6 +733,7 @@ export type Doctor = {
 export type DoctorInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type DoctorPatient = {
@@ -1692,12 +1718,14 @@ export type Patient = {
   medicationHistoryAuthority: Scalars['Boolean'];
   middleName?: Maybe<Scalars['String']>;
   motherMaidenName?: Maybe<Scalars['String']>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientNote?: Maybe<Scalars['String']>;
   patientProblems?: Maybe<Array<PatientProblems>>;
   patientRecord?: Maybe<Scalars['String']>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission: Scalars['Boolean'];
+  practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod: Communicationtype;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -1719,6 +1747,22 @@ export type Patient = {
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
   voiceCallPermission: Scalars['Boolean'];
+};
+
+export type PatientAllergies = {
+  __typename?: 'PatientAllergies';
+  allergyOnset: AllergyOnset;
+  allergySeverity: AllergySeverity;
+  allergyStartDate?: Maybe<Scalars['String']>;
+  appointment?: Maybe<Appointment>;
+  comments?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  doctor?: Maybe<Doctor>;
+  id: Scalars['String'];
+  isActive?: Maybe<Scalars['Boolean']>;
+  patient?: Maybe<Patient>;
+  staff?: Maybe<Staff>;
+  updatedAt?: Maybe<Scalars['String']>;
 };
 
 export type PatientInfoInput = {
@@ -1743,6 +1787,7 @@ export type PatientInfoItemInput = {
 export type PatientInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type PatientInviteInput = {
@@ -2674,9 +2719,11 @@ export type Staff = {
   id: Scalars['String'];
   lastName: Scalars['String'];
   mobile?: Maybe<Scalars['String']>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientProblem?: Maybe<Array<PatientProblems>>;
   patientVitals?: Maybe<PatientVitals>;
   phone?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
   username?: Maybe<Scalars['String']>;
@@ -2685,6 +2732,7 @@ export type Staff = {
 export type StaffInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  practiceId?: Maybe<Scalars['String']>;
 };
 
 export type StaffPayload = {
@@ -2740,7 +2788,7 @@ export type TransactionsPayload = {
 
 export type TwoFactorInput = {
   isTwoFactorEnabled: Scalars['Boolean'];
-  phone?: Maybe<Scalars['String']>;
+  password?: Maybe<Scalars['String']>;
   userId: Scalars['String'];
 };
 
@@ -2770,6 +2818,7 @@ export type UpdateAppointmentInput = {
   patientId?: Maybe<Scalars['String']>;
   paymentStatus?: Maybe<Scalars['String']>;
   paymentType?: Maybe<PaymentType>;
+  practiceId?: Maybe<Scalars['String']>;
   primaryInsurance?: Maybe<Scalars['String']>;
   providerId?: Maybe<Scalars['String']>;
   reason?: Maybe<Scalars['String']>;
@@ -2882,6 +2931,7 @@ export type UpdateDoctorItemInput = {
   middleName?: Maybe<Scalars['String']>;
   npi?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   prefix?: Maybe<Scalars['String']>;
   prescriptiveAuthNumber?: Maybe<Scalars['String']>;
   providerIntials?: Maybe<Scalars['String']>;
@@ -2993,6 +3043,7 @@ export type UpdatePatientItemInput = {
   patientRecord?: Maybe<Scalars['String']>;
   pharmacy?: Maybe<Scalars['String']>;
   phonePermission?: Maybe<Scalars['Boolean']>;
+  practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   prefferedName?: Maybe<Scalars['String']>;
   previousFirstName?: Maybe<Scalars['String']>;
@@ -3112,6 +3163,7 @@ export type UpdateStaffItemInput = {
   mobile?: Maybe<Scalars['String']>;
   password?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  practiceId?: Maybe<Scalars['String']>;
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<Scalars['String']>;
   username?: Maybe<Scalars['String']>;
@@ -3366,7 +3418,7 @@ export type FindAllFacilityListQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFacilityListQuery = { __typename?: 'Query', findAllFacility: { __typename?: 'FacilitiesPayload', facilities?: Array<{ __typename?: 'Facility', id: string, name: string } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined } };
+export type FindAllFacilityListQuery = { __typename?: 'Query', findAllFacility: { __typename?: 'FacilitiesPayload', facilities?: Array<{ __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined } };
 
 export type FindAllDoctorListQueryVariables = Exact<{
   doctorInput: DoctorInput;
@@ -3415,7 +3467,7 @@ export type GetDoctorQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, prefix?: string | null | undefined, suffix?: string | null | undefined, email?: string | null | undefined, providerIntials?: string | null | undefined, degreeCredentials?: string | null | undefined, speciality?: Speciality | null | undefined, dob?: string | null | undefined, taxId?: string | null | undefined, facilityId?: string | null | undefined, ssn?: string | null | undefined, taxonomyCode?: string | null | undefined, deaNumber?: string | null | undefined, prescriptiveAuthNumber?: string | null | undefined, licenseTermDate?: string | null | undefined, stateLicense?: string | null | undefined, languagesSpoken?: string | null | undefined, dpsCtpNumber?: string | null | undefined, anesthesiaLicense?: string | null | undefined, specialityLicense?: string | null | undefined, taxIdStuff?: string | null | undefined, blueShildNumber?: string | null | undefined, campusGrpNumber?: string | null | undefined, medicareGrpNumber?: string | null | undefined, billingFacility?: string | null | undefined, emcProviderId?: string | null | undefined, upin?: string | null | undefined, npi?: string | null | undefined, licenseActiveDate?: string | null | undefined, meammographyCertNumber?: string | null | undefined, medicaidGrpNumber?: string | null | undefined, deaActiveDate?: string | null | undefined, deaTermDate?: string | null | undefined, createdAt: string, updatedAt: string, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null | undefined, mobile?: string | null | undefined, phone?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, userId?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, serviceCode: ServiceCodes, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, userId?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type GetDoctorQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, prefix?: string | null | undefined, suffix?: string | null | undefined, email?: string | null | undefined, providerIntials?: string | null | undefined, degreeCredentials?: string | null | undefined, speciality?: Speciality | null | undefined, dob?: string | null | undefined, taxId?: string | null | undefined, facilityId?: string | null | undefined, ssn?: string | null | undefined, taxonomyCode?: string | null | undefined, deaNumber?: string | null | undefined, prescriptiveAuthNumber?: string | null | undefined, licenseTermDate?: string | null | undefined, stateLicense?: string | null | undefined, languagesSpoken?: string | null | undefined, dpsCtpNumber?: string | null | undefined, anesthesiaLicense?: string | null | undefined, specialityLicense?: string | null | undefined, taxIdStuff?: string | null | undefined, blueShildNumber?: string | null | undefined, campusGrpNumber?: string | null | undefined, medicareGrpNumber?: string | null | undefined, billingFacility?: string | null | undefined, emcProviderId?: string | null | undefined, upin?: string | null | undefined, npi?: string | null | undefined, practiceId?: string | null | undefined, licenseActiveDate?: string | null | undefined, meammographyCertNumber?: string | null | undefined, medicaidGrpNumber?: string | null | undefined, deaActiveDate?: string | null | undefined, deaTermDate?: string | null | undefined, createdAt: string, updatedAt: string, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null | undefined, mobile?: string | null | undefined, phone?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, userId?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, serviceCode: ServiceCodes, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, userId?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type UpdateDoctorMutationVariables = Exact<{
   updateDoctorInput: UpdateDoctorInput;
@@ -4753,6 +4805,7 @@ export const FindAllFacilityListDocument = gql`
     facilities {
       id
       name
+      practiceId
     }
     pagination {
       totalPages
@@ -5084,6 +5137,7 @@ export const GetDoctorDocument = gql`
       upin
       npi
       taxId
+      practiceId
       prescriptiveAuthNumber
       licenseActiveDate
       meammographyCertNumber

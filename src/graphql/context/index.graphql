@@ -30,6 +30,7 @@ query FindAllFacilityList($facilityInput: FacilityInput!) {
     facilities {
       id
       name
+      practiceId
     }
 
     pagination {
