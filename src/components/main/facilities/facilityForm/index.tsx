@@ -36,7 +36,8 @@ import {
   SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO,
   NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
   BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FACILITY_SCHEDULE, FacilityMenuNav, FACILITY_HOURS_END,
-  FACILITY_HOURS_START, FACILITY_REGISTRATION, VERIFY_ADDRESS, VERIFIED, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER
+  OFFICE_TIMING, FACILITY_HOURS_START, FACILITY_REGISTRATION, VERIFY_ADDRESS, VERIFIED, ZIP_CODE_AND_CITY,
+  ZIP_CODE_ENTER
 } from "../../../../constants";
 import DoctorScheduleForm from './schedules';
 import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
@@ -723,7 +724,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Box pb={3} />
 
                     <Grid md={12} id={FACILITY_SCHEDULE_ROUTE}>
-                      <CardComponent cardTitle={FACILITY_SCHEDULE} isEdit={true}>
+                      <CardComponent cardTitle={OFFICE_TIMING} isEdit={true}>
                         {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                           <>
                             <Grid container spacing={3}>

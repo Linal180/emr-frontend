@@ -104,13 +104,14 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
               }
             }
 
-            setUser(userResponse as User);
             roles?.map(role => {
               const { rolePermissions } = role || {};
               let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
 
               return permissionsList && setUserPermissions(permissionsList as string[])
             })
+
+            setUser(userResponse as User);
           }
         }
       }

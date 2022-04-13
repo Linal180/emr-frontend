@@ -70,12 +70,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const [data, setData] = useState<usStreet.Candidate[]>([])
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const classes = usePublicAppointmentStyles();
-
   const methods = useForm<PatientInputProps>({
     mode: "all",
     resolver: yupResolver(extendedPatientSchema)
   });
-  const { handleSubmit, setValue, watch, reset, control } = methods;
+  const { handleSubmit, setValue, watch, control } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2
@@ -484,13 +483,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   }, [getPatient, id, isEdit])
 
   const fetchList = useCallback((id: string, name: string) => {
-    reset({
-      usualProviderId: EMPTY_OPTION,
-      facilityId: { id, name }
-    });
+    setValue('usualProviderId', EMPTY_OPTION)
 
     id && fetchAllDoctorList(id);
-  }, [fetchAllDoctorList, reset]);
+  }, [fetchAllDoctorList, setValue]);
 
   useEffect(() => {
     selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);

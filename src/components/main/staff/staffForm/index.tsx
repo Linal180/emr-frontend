@@ -13,7 +13,7 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { staffSchema } from '../../../../validationSchemas';
+import { createStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import { getTimestamps, renderDoctors, renderFacilities, renderStaffRoles, setRecord } from "../../../../utils";
@@ -33,7 +33,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(staffSchema)
+    resolver: yupResolver(isEdit ? updateStaffSchema : createStaffSchema)
   });
   const { reset, setValue, handleSubmit, watch } = methods;
   const { facilityId } = watch();
@@ -67,7 +67,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             const { roles } = user || {}
             const { role } = (roles && roles[0]) || {}
             const { name } = facility || {}
-            
+
             facilityId && name && setValue('facilityId', setRecord(facilityId, name))
 
             dob && setValue('dob', dob)
@@ -176,7 +176,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           variables: {
             updateStaffInput: {
               updateStaffItemInput: { id, ...staffInputs },
-              providers: [selectedProvider]
+              providers: selectedProvider ? [selectedProvider] : []
             }
           }
         })
@@ -192,7 +192,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           variables: {
             createStaffInput: {
               staffInput: { password: SYSTEM_PASSWORD, roleType: role, ...staffInputs, adminId: id },
-              providers: [selectedProvider]
+              providers: selectedProvider ? [selectedProvider] : []
             }
           }
         })
@@ -289,7 +289,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={8} sm={12} xs={12}>
+                      <Grid item md={8} sm={isEdit ? 12 : 6} xs={12}>
                         <InputController
                           isRequired
                           fieldType="email"
@@ -298,15 +298,17 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         />
                       </Grid>
 
-                      <Grid item md={4} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={PROVIDER}
-                          name="providerIds"
-                          options={renderDoctors(doctorList)}
-                        />
-                      </Grid>
+                      {!isEdit &&
+                        <Grid item md={4} sm={12} xs={12}>
+                          <Selector
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={PROVIDER}
+                            name="providerIds"
+                            options={renderDoctors(doctorList)}
+                          />
+                        </Grid>
+                      }
                     </Grid>
                   </>
                 )}
