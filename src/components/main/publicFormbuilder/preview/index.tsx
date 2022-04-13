@@ -10,7 +10,7 @@ import Alert from '../../../common/Alert';
 import { ParamsType } from '../../../../interfacesTypes'
 import { LoaderBackdrop, parseColumnGrid } from '../../../../utils';
 import { SectionsInputs, useGetPublicFormLazyQuery } from '../../../../generated/graphql';
-import { getForminitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT } from '../../../../constants';
+import { getFormInitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
 import { WHITE_SEVEN } from '../../../../theme';
@@ -23,7 +23,7 @@ const PublicFormPreview = () => {
   const methods = useForm<any>({ defaultValues: initialValues });
   const { id } = useParams<ParamsType>()
   //states
-  const [formValues, setFormValues] = useState<SectionsInputs[]>(getForminitialValues());
+  const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
   const [formName, setFormName] = useState('')
   //constants destructuring
   const { handleSubmit, reset } = methods;

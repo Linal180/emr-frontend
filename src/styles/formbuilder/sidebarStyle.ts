@@ -8,6 +8,9 @@ export const useFormBuilderSidebarStyles = makeStyles((theme) => ({
     margin: theme.spacing(0.5),
     backgroundColor: WHITE,
     minHeight: 100,
+    position: "sticky",
+    top: 100,
+    zIndex: 1,
   },
   dragContainer: {
     display: "flex",

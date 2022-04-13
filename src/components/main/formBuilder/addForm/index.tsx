@@ -1,41 +1,42 @@
 //package block
 import { useState, MouseEvent, useContext, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
-import { DragDropContext, DropResult } from 'react-beautiful-dnd';
-import { Grid, Box, Button, Typography, Menu, MenuItem, Fade } from '@material-ui/core';
-import { useForm, FormProvider } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { SubmitHandler } from 'react-hook-form';
 import { useParams } from 'react-router';
+import { SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm, FormProvider } from 'react-hook-form';
+import { DragDropContext, DropResult } from 'react-beautiful-dnd';
+import { Grid, Box, Button, Typography, Menu, MenuItem, } from '@material-ui/core';
 //components block
-import EditModal from './fieldProperties';
 import Sidebar from './sidebar';
+import Alert from '../../../common/Alert';
+import history from '../../../../history';
 import DropContainer from './dropContainer';
+import Selector from '../../../common/Selector';
+import FieldProperties from './fieldProperties';
+import { AuthContext } from '../../../../context';
+import InputController from '../../../../controller';
+import { FormAddIcon } from '../../../../assets/svgs';
+import { WHITE, WHITE_EIGHT, } from '../../../../theme';
+import { ListContext } from '../../../../context/listContext'
+import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
+import { isSuperAdmin, LoaderBackdrop, renderFacilities, setRecord } from '../../../../utils';
+import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
+import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
+import {
+  FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation
+} from '../../../../generated/graphql';
 // constants block
 import {
-  COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION,
-  FORM_BUILDER_INITIAL_VALUES, getForminitialValues, FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION,
-  TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, SAVE_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, SAVE_DRAFT, PUBLISH
+  COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES, getFormInitialValues,
+  FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION,
+  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD
 } from '../../../../constants';
-import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
-import { AddWidgetIcon, FormAddIcon } from '../../../../assets/svgs';
-import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
-import InputController from '../../../../controller';
-import Selector from '../../../common/Selector';
-import Alert from '../../../common/Alert';
-import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
-import { FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation } from '../../../../generated/graphql';
-import { ListContext } from '../../../../context/listContext'
-import { isSuperAdmin, LoaderBackdrop, renderFacilities, setRecord } from '../../../../utils';
-import history from '../../../../history';
-import { AuthContext } from '../../../../context';
-import { BLACK, WHITE, WHITE_EIGHT, WHITE_FIVE } from '../../../../theme';
-import FieldProperties from './fieldProperties';
+
 //component
 const AddForm = () => {
   //states
-  const [formValues, setFormValues] = useState<SectionsInputs[]>(getForminitialValues());
-  const [open, setOpen] = useState<boolean>(false);
+  const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
   const [selected, setSelected] = useState<FormInitialType>(FIELD_EDIT_INITIAL_VALUES);
   const [colMenu, setColMenu] = useState<null | HTMLElement>(null)
   //hooks
@@ -64,7 +65,7 @@ const AddForm = () => {
       if (response) {
         const { status } = response
         if (status && status === 200) {
-          setFormValues(getForminitialValues())
+          setFormValues(getFormInitialValues())
           Alert.success(CREATE_FORM_BUILDER);
           history.push(FORM_BUILDER_ROUTE)
         }
@@ -242,7 +243,7 @@ const AddForm = () => {
       const data = { name, type: typeId as FormType, facilityId: selectedFacilityId, layout: { sections: formValues } }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
-    else Alert.error('Please drap alteast one field')
+    else Alert.error(DROP_FIELD)
 
   };
   //select field for edit handler
@@ -251,13 +252,7 @@ const AddForm = () => {
     setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id, options, textArea });
     // modalOpenHandler();
   };
-  //modal handlers
-  const modalOpenHandler = () => {
-    setOpen(true);
-  };
-  const closeModalHanlder = () => {
-    setOpen(false);
-  };
+
 
   //edit field form submit handler
   const setFieldValuesHandler: SubmitHandler<FormInitialType> = (values) => {
@@ -284,7 +279,6 @@ const AddForm = () => {
     });
 
     setFormValues(arr1);
-    closeModalHanlder();
   }
   //del field handler
   const delFieldHandler = (index: number, sectionIndex: number) => {
@@ -299,7 +293,7 @@ const AddForm = () => {
   }
   //clear form values handler
   const clearHandler = () => {
-    setFormValues(getForminitialValues())
+    setFormValues(getFormInitialValues())
   };
   //menu handlers
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setColMenu(event.currentTarget);
@@ -320,7 +314,7 @@ const AddForm = () => {
     <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
-          <Box py={2} my={2} display='flex' justifyContent='space-between'>
+          <Box py={2} display='flex' justifyContent='space-between'>
             <Typography variant='h4'>{FORM_BUILDER}</Typography>
 
             <Box display='flex' justifyContent='flex-start'>
@@ -328,11 +322,7 @@ const AddForm = () => {
                 {CLEAR_TEXT}
               </Button>
 
-              <Box mx={2}>
-                <Button type='submit' variant='contained' color='inherit' className='blue-button-new'>
-                  {SAVE_DRAFT}
-                </Button>
-              </Box>
+              <Box mx={1} />
 
               <Button type='submit' variant='contained' color='primary'>
                 {PUBLISH}
@@ -340,91 +330,93 @@ const AddForm = () => {
             </Box>
           </Box>
 
-          <Box p={3} pb={0} bgcolor={WHITE}>
-            <Grid container spacing={3}>
-              {isSuper && <Grid item md={4} sm={12} xs={12}>
-                <Selector
-                  isRequired
-                  value={EMPTY_OPTION}
-                  label={FACILITY}
-                  name="facilityId"
-                  options={renderFacilities(facilityList)}
-                />
-              </Grid>}
+          <Box>
+            <Box p={3} pb={0} bgcolor={WHITE}>
+              <Grid container spacing={3}>
+                {isSuper && <Grid item md={4} sm={12} xs={12}>
+                  <Selector
+                    isRequired
+                    value={EMPTY_OPTION}
+                    label={FACILITY}
+                    name="facilityId"
+                    options={renderFacilities(facilityList)}
+                  />
+                </Grid>}
 
-              <Grid item md={4} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  isRequired
-                  controllerName="name"
-                  controllerLabel={FORM_NAME}
-                />
+                <Grid item md={4} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    isRequired
+                    controllerName="name"
+                    controllerLabel={FORM_NAME}
+                  />
+                </Grid>
+
+                <Grid item md={4} sm={12} xs={12}>
+                  <Selector
+                    label={FORM_TYPE}
+                    name="type"
+                    isRequired
+                    value={EMPTY_OPTION}
+                    options={MAPPED_FORM_TYPES}
+                  />
+                </Grid>
               </Grid>
+            </Box>
 
-              <Grid item md={4} sm={12} xs={12}>
-                <Selector
-                  label={FORM_TYPE}
-                  name="type"
-                  isRequired
-                  value={EMPTY_OPTION}
-                  options={MAPPED_FORM_TYPES}
-                />
-              </Grid>
-            </Grid>
-          </Box>
+            <Box mt={3}>
+              <Grid container spacing={2}>
+                <Grid item md={2} sm={4} xs={12}>
+                  <Sidebar />
+                </Grid>
 
-          <Box mt={5} maxHeight="calc(100vh - 390px)" className="overflowY-auto">
-            <Grid container spacing={3}>
-              <Grid item md={2} sm={6} xs={6}>
-                <Sidebar />
-              </Grid>
+                <Grid item md={7} sm={4} xs={12}>
+                  <Box p={3} bgcolor={WHITE} borderRadius={6}>
+                    <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
 
-              <Grid item md={7} sm={6} xs={6}>
-                <Box p={3} bgcolor={WHITE} borderRadius={6}>
-                  <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
+                    <Grid container justifyContent='center'>
+                      <Grid item md={4} sm={12} xs={12}>
+                        <Box
+                          aria-haspopup="true"
+                          aria-controls={'add-column-layout'}
+                          className={classes.addSlot}
+                          aria-label="widget's patient"
+                          onClick={handleMenuOpen}
+                        >
+                          <Box bgcolor={WHITE_EIGHT} borderRadius={6} p={1} mr={1}>
+                            <FormAddIcon />
+                          </Box>
 
-                  <Grid container justifyContent='center'>
-                    <Grid item md={4} sm={12} xs={12}>
-                      <Box
-                        aria-haspopup="true"
-                        aria-controls={'add-column-layout'}
-                        className={classes.addSlot}
-                        aria-label="widget's patient"
-                        onClick={handleMenuOpen}
-                      >
-                        <Box bgcolor={WHITE_EIGHT} borderRadius={6} p={1} mr={1}>
-                          <FormAddIcon />
+                          <Typography variant="h4">
+                            {ADD_COLUMNS_TEXT}
+                          </Typography>
                         </Box>
 
-                        <Typography variant="h4">
-                          {ADD_COLUMNS_TEXT}
-                        </Typography>
-                      </Box>
-
-                      <Menu
-                        open={Boolean(colMenu)}
-                        anchorEl={colMenu}
-                        id="add-column-layout"
-                        onClose={handleMenuClose}
-                      >
-                        {COL_TYPES_ARRAY?.map((item, index) => (
-                          <MenuItem
-                            key={`${index}-add-${item.value}-column-${item.text}`}
-                            onClick={() => addList(item.value)}
-                          >
-                            {item.text}
-                          </MenuItem>
-                        ))}
-                      </Menu>
+                        <Menu
+                          open={Boolean(colMenu)}
+                          anchorEl={colMenu}
+                          id="add-column-layout"
+                          onClose={handleMenuClose}
+                        >
+                          {COL_TYPES_ARRAY?.map((item, index) => (
+                            <MenuItem
+                              key={`${index}-add-${item.value}-column-${item.text}`}
+                              onClick={() => addList(item.value)}
+                            >
+                              {item.text}
+                            </MenuItem>
+                          ))}
+                        </Menu>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </Box>
-              </Grid>
+                  </Box>
+                </Grid>
 
-              <Grid item md={3} sm={6} xs={6}>
-                <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
+                <Grid item md={3} sm={4} xs={12}>
+                  <FieldProperties setFieldValuesHandler={setFieldValuesHandler} selected={selected} />
+                </Grid>
               </Grid>
-            </Grid>
+            </Box>
           </Box>
         </form>
       </FormProvider>

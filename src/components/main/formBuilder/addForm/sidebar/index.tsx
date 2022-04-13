@@ -9,13 +9,14 @@ import { useFormBuilderSidebarStyles } from '../../../../../styles/formbuilder/s
 
 const Sidebar = () => {
   const classes = useFormBuilderSidebarStyles()
+
   return (
     <Box className={classes.main}>
       <Box pb={2} borderBottom={`1px solid ${colors.grey[300]}`}>
         <Typography variant='h4'>{FORM_FIELDS}</Typography>
       </Box>
 
-      <Box mt={4}>
+      <Box mt={4} pt={1} maxHeight={500} className="overflowY-auto">
         <Droppable droppableId='ITEMS' isDropDisabled={true}>
           {(provided, snapshot) => (
             <div
@@ -68,4 +69,4 @@ const Sidebar = () => {
   )
 }
 
-export default Sidebar
+export default Sidebar;

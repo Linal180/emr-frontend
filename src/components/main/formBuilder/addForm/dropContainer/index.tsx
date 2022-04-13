@@ -1,17 +1,16 @@
 //packages block
 import { memo } from 'react';
-import { Box, Grid, IconButton, Typography } from '@material-ui/core';
-import { Edit as EditIcon, Close as DeleteIcon, AcUnit as DragIcon } from '@material-ui/icons'
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Box, Grid, IconButton, Typography } from '@material-ui/core';
 //component
 import FieldRenderer from '../../../../common/FieldRenderer';
-//contants block
-import { FieldsInputs } from '../../../../../generated/graphql';
-import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
-import { useFormBuilderContainerStyles } from '../../../../../styles/formbuilder/dropContainer';
+//constants block
 import { WHITE } from '../../../../../theme';
 import { parseColumnGrid } from '../../../../../utils';
 import { DROP_ITEM_TEXT } from '../../../../../constants';
+import { FieldsInputs } from '../../../../../generated/graphql';
+import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
+import { useFormBuilderContainerStyles } from '../../../../../styles/formbuilder/dropContainer';
 import { DeleteSmallIcon, EditOutlinedIcon, TrashOutlinedIcon } from '../../../../../assets/svgs';
 //component
 const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandler }: DropContainerPropsTypes) => {
@@ -20,7 +19,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
   //render
   return (
     <Box className={classes.main}>
-      <Grid container >
+      <Grid container>
         {formValues?.map((list, i) => (
           <Grid item key={list?.id} xs={parseColumnGrid(list?.col) || 12} sm={parseColumnGrid(list?.col) || 12}
             md={parseColumnGrid(list?.col) || 12} lg={parseColumnGrid(list?.col) || 12}
@@ -31,6 +30,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                   <TrashOutlinedIcon />
                 </IconButton>
               </Box>}
+
             <Droppable droppableId={list.id}>
               {(provided, snapshot) => (
                 <div
@@ -53,33 +53,27 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                               >
-                                <Box
-                                  sx={{
-                                    bgcolor: WHITE,
-                                  }}
-                                  {...provided.dragHandleProps}
-                                ></Box>
-                                <Box>
-                                  <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}
-                                    marginBottom={1} paddingX={1}>
-                                    <Typography variant='h6'>
-                                      {item.required ? `${item.label} *` : item.label}
-                                    </Typography>
+                                <Box bgcolor={WHITE}{...provided.dragHandleProps}></Box>
 
-                                    <Box display='flex' alignItems='center'>
-                                        <IconButton size='small' onClick={() => changeValues(list.id, item)}>
-                                          <EditOutlinedIcon />
-                                        </IconButton>
+                                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}
+                                  marginBottom={1} paddingX={1}>
+                                  <Typography variant='h6'>
+                                    {item.required ? `${item.label} *` : item.label}
+                                  </Typography>
 
-                                        <Box p={1} />
+                                  <Box display='flex' alignItems='center'>
+                                    <IconButton size='small' onClick={() => changeValues(list.id, item)}>
+                                      <EditOutlinedIcon />
+                                    </IconButton>
 
-                                        <IconButton size='small' onClick={() => delFieldHandler(index, i)}>
-                                          <DeleteSmallIcon />
-                                        </IconButton>
-                                    </Box>
+                                    <Box p={1} />
+
+                                    <IconButton size='small' onClick={() => delFieldHandler(index, i)}>
+                                      <DeleteSmallIcon />
+                                    </IconButton>
                                   </Box>
-                                  <FieldRenderer item={item} isCreating />
                                 </Box>
+                                <FieldRenderer item={item} isCreating />
                               </div>
                             </Grid>
                           )}

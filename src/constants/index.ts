@@ -958,6 +958,7 @@ export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, 
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
+export const DROP_FIELD = 'Please drop atleast one field';
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
 export const ROLE_NOT_FOUND = "Role not found!";
@@ -2546,7 +2547,7 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   }
 }
 
-export const getForminitialValues = () => [
+export const getFormInitialValues = () => [
   {
     id: uuid(),
     col: 12,

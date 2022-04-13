@@ -5,7 +5,6 @@ export const useFormBuilderContainerStyles = makeStyles((theme) => ({
   main: {
     border: `1px dashed ${GRAY_FOUR}`,
     borderRadius: theme.spacing(0.5),
-    maxHeight: 500,
     backgroundColor: WHITE,
     overflowY: "auto",
     margin: theme.spacing(0.5)
