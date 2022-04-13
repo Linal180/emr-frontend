@@ -3,18 +3,17 @@ import { useState, useEffect, ChangeEvent, useCallback } from 'react';
 import { Dialog, DialogContent, Grid, Box, Button, FormControl, InputLabel, DialogTitle, IconButton, } from '@material-ui/core';
 import { Controller, FormProvider, SubmitHandler, useFieldArray, useForm, } from 'react-hook-form'
 import { Add as AddIcon } from '@material-ui/icons';
-//components block
-import LabledInputController from '../../../../../controller';
+// components block
+import LabeledInputController from '../../../../../controller';
 import InputController from '../../../../../controller';
 import Selector from '../../../../common/Select';
 import { AntSwitch } from '../../../../../styles/publicAppointmentStyles/externalPatientStyles';
-//constants & interfaces
-import { ACTION, COLUMN_LENGTH, CSS_CLASSES, DISMISS, FIELD_EDIT_INITIAL_VALUES, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, } from '../../../../../constants';
+// constants, styles  & interfaces
+import { ACTION, COLUMN_LENGTH, CSS_CLASSES, DISMISS, FIELD_EDIT_INITIAL_VALUES, LABEL, NAME, NO_TEXT, OPTION_TEXT, PLACEHOLDER, PROPERTIES_TEXT, REQUIRED_TEXT, SELECT_COLUMN_TEXT, VALUE, YES_TEXT, } from '../../../../../constants';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
 import { GRAY_TWO, WHITE } from '../../../../../theme';
 import { SAVE_TEXT } from '../../../../../constants';
 import { ElementType } from '../../../../../generated/graphql'
-//styles
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import { TrashIcon } from '../../../../../assets/svgs';
 /**
@@ -78,7 +77,7 @@ const EditModal = ({ open, closeModalHandler, setFieldValuesHandler, selected }:
                     <FormControl fullWidth margin="normal"
                       className={classes.toggleContainer}
                     >
-                      <InputLabel shrink>{REUIRED_TEXT}</InputLabel>
+                      <InputLabel shrink>{REQUIRED_TEXT}</InputLabel>
                       <label className="toggle-main">
                         <Box color={isChecked ? WHITE : GRAY_TWO}>{YES_TEXT}</Box>
                         <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='required' />
@@ -89,28 +88,28 @@ const EditModal = ({ open, closeModalHandler, setFieldValuesHandler, selected }:
                 />
               </Grid>
               <Grid item md={12}>
-                <LabledInputController
+                <LabeledInputController
                   fieldType="text"
                   controllerName="name"
                   controllerLabel={NAME}
                 />
               </Grid>
               <Grid item md={12}>
-                <LabledInputController
+                <LabeledInputController
                   fieldType="text"
                   controllerName="label"
                   controllerLabel={LABEL}
                 />
               </Grid>
               <Grid item md={12}>
-                <LabledInputController
+                <LabeledInputController
                   fieldType="text"
                   controllerName="css"
                   controllerLabel={CSS_CLASSES}
                 />
               </Grid>
               <Grid item md={12}>
-                <LabledInputController
+                <LabeledInputController
                   fieldType="text"
                   controllerName="placeholder"
                   controllerLabel={PLACEHOLDER}

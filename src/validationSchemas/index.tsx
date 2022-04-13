@@ -16,7 +16,7 @@ import {
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME, 
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
   SERVICE_NAME_TEXT, DOB,
 } from "../constants";
 
@@ -268,6 +268,16 @@ const scheduleTimeSchema = {
   })
 }
 
+const facilityTimeSchema = {
+  startTime: yup.string().test('', invalidMessage(START_TIME), value => !!value),
+
+  endTime: yup.string().test('', invalidMessage(END_TIME), (value, { parent: { startTime } }) => {
+    if (!value) return false
+
+    return timeValidation(value, startTime)
+  })
+}
+
 const patientRegisterDateSchema = {
   registrationDate: yup.string().test('', invalidMessage(REGISTRATION_DATE), value => {
     if (!value) return true
@@ -398,7 +408,8 @@ const facilitySchedulerBasicSchema = {
   ...federalTaxIdSchema,
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
-  name: nameSchema(NAME)
+  ...facilityTimeSchema,
+  name: yup.string().required(requiredMessage(NAME))
 }
 
 export const facilitySchedulerSchema = yup.object({
@@ -625,14 +636,13 @@ const practiceFacilitySchema = {
   ...einSchema,
   ...upinSchema,
   state: stateSchema(false),
-  city: notRequiredStringOnly(CITY),
   country: countrySchema(false),
+  city: notRequiredStringOnly(CITY),
   address2: addressValidation(ADDRESS, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
 export const createPracticeSchema = yup.object({
-  ...emailSchema,
   ...roleTypeSchema,
   ...registerUserSchema,
   ...practiceFacilitySchema,
@@ -652,7 +662,7 @@ export const updatePasswordSchema = yup.object({
 })
 
 export const roleSchema = yup.object({
-  role: nameSchema(ROLE_NAME)
+  role: yup.string().required(requiredMessage(ROLE_NAME))
 })
 
 export const createFormBuilderSchemaWithFacility = yup.object({

@@ -238,7 +238,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Typography variant="h4">{module} {PERMISSIONS}</Typography>
                     {index === 0 && custom &&
                       <Button onClick={setPermissions} variant='contained' color='inherit' disabled={isLoading}
-                        className='blue-button-new' >{SET_PERMISSIONS}</Button>
+                        className='blue-button-new'>{SET_PERMISSIONS}</Button>
                     }
                   </Box>
 

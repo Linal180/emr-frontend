@@ -12,7 +12,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, formatValue, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
+import { formatPhone, formatValue, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
 import {
@@ -32,7 +32,6 @@ const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
-  const isAdmin = isUserAdmin(roles)
   const { id: facilityId } = facility || {}
   const { fetchAllDoctorList, setDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
@@ -186,13 +185,11 @@ const DoctorsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        {isAdmin &&
-                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                              <InsertLink />
-                            </Box>
-                          </DetailTooltip>
-                        }
+                        <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                          <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                            <InsertLink />
+                          </Box>
+                        </DetailTooltip>
 
                         <Link to={`${DOCTORS_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
