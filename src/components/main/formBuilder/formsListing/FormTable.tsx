@@ -16,7 +16,7 @@ import FormPreviewModal from '../previewModal'
 import { AuthContext, ListContext } from "../../../../context";
 import { isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
-import { EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs'
 import {
   useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, SectionsInputs,
   LayoutJsonType
@@ -208,11 +208,11 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         </DetailTooltip>
                         <Link to={`${FORM_BUILDER_EDIT_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
-                            <EditIcon />
+                            <EditNewIcon />
                           </Box>
                         </Link>
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                          <TrashIcon />
+                          <TrashNewIcon />
                         </Box>
                         <Box className={classes.iconsBackground} onClick={() => onViewClick(layout)}>
                           <VisibilityIcon />
@@ -236,8 +236,14 @@ const FormBuilderTable: FC = (): JSX.Element => {
         )}
 
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
-            <Pagination count={totalPages} shape="rounded" page={page} onChange={handleChange} />
+          <Box display="flex" justifyContent="flex-end" p={2}>
+            <Pagination
+              count={totalPages}
+              shape="rounded"
+              variant="outlined"
+              page={page}
+              onChange={handleChange}
+            />
           </Box>
         )}
 

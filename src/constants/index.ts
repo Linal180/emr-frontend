@@ -19,7 +19,7 @@ import {
 } from "../generated/graphql";
 
 // regex
-export const ZIP_REGEX = /^\d{5}$/;
+export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
@@ -50,6 +50,8 @@ export const POSSIBLE_MATCH = "possible address match";
 export const CHECK_ADDRESS = "Check Address";
 export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
 export const YOU_ENTER = "You have entered:";
+export const SELECT_ADDRESS = "Please select a address";
+export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
@@ -231,8 +233,10 @@ export const VITALS_TEXT = "Vitals";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
+export const PUBLISH = "Publish";
 export const TO_BILLING = "To Billing";
 export const UPLOAD_LOGO = "Upload Logo";
+export const SAVE_DRAFT = "Save as Draft";
 export const UPLOAD_PICTURE = "Upload Picture";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
@@ -313,6 +317,7 @@ export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
+export const FORM_FIELDS = "Form Fields";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
@@ -941,7 +946,7 @@ export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
-export const ZIP_VALIDATION_MESSAGE = "Valid zip code is 5-digit long";
+export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
@@ -966,6 +971,7 @@ export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, 
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
+export const DROP_FIELD = 'Please drop atleast one field';
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
 export const ROLE_NOT_FOUND = "Role not found!";
@@ -2427,7 +2433,7 @@ export const ITEMS: ItemsTypes[] = [
   {
     icon: DateIcon,
     fieldId: uuid(),
-    label: 'Date Input',
+    label: 'Date',
     type: ElementType.Date,
     name: uuid(),
     css: '',
@@ -2442,7 +2448,7 @@ export const ITEMS: ItemsTypes[] = [
   {
     icon: NumberIcon,
     fieldId: uuid(),
-    label: 'Number Input',
+    label: 'Number',
     type: ElementType.Number,
     name: uuid(),
     css: '',
@@ -2554,7 +2560,7 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   }
 }
 
-export const getForminitialValues = () => [
+export const getFormInitialValues = () => [
   {
     id: uuid(),
     col: 12,
