@@ -312,7 +312,8 @@ export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
 export const CANCELLED_APPOINTMENT_DESCRIPTION =
   "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
-export const FACILITY_SCHEDULE = "Business Hours";
+export const BUSINESS_HOURS = "Business Hours";
+export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
@@ -2616,7 +2617,7 @@ export const FacilityMenuNav = [
     linkTo: BILLING_PROFILE_ROUTE,
   },
   {
-    title: FACILITY_SCHEDULE,
+    title: BUSINESS_HOURS,
     linkTo: FACILITY_SCHEDULE_ROUTE,
   }
 ];
