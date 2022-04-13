@@ -19,7 +19,7 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
+import { getTimestamps, getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
 import {
@@ -208,7 +208,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const facilityInput = {
       name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode, practiceId: facilityPractice,
       mammographyCertificationNumber, serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
-      startTime: startTime && setTime(startTime), endTime: endTime && setTime(endTime),
+      startTime: startTime && getTimestamps(startTime), endTime: endTime && getTimestamps(endTime),
     }
 
     const contactInput = {
