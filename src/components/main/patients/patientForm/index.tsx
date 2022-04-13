@@ -494,14 +494,14 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     if (basicZipCode) {
       const data = await getAddressByZipcode(basicZipCode);
-      const { zipCode: responseData, message, status } = data || {}
+      const { zipCode: responseData, status } = data || {}
       const { defaultCity, state, stateAbbreviation } = responseData || {}
       if (status) {
         setValue('basicCity', defaultCity)
         setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
       else {
-        Alert.error(message)
+        // Alert.error(message)
       }
     }
     else {
