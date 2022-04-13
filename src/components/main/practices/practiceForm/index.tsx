@@ -12,8 +12,8 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
-import { renderRoles } from '../../../../utils';
 import { GRAY_TWO, WHITE } from '../../../../theme';
+import { renderOfficeRoles } from '../../../../utils';
 import { AuthContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
@@ -238,7 +238,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
-                          options={renderRoles(roleList)}
+                          options={renderOfficeRoles(roleList)}
                         />
                       </Grid>
                     </Grid>

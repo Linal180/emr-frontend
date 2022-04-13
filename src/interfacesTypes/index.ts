@@ -805,8 +805,8 @@ export interface CustomSelectControlProps extends IControlLabel {
 }
 
 export interface FieldEditModalProps {
-  open: boolean;
-  closeModalHandler: () => void;
+  open?: boolean;
+  closeModalHanlder?: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
 }
@@ -857,7 +857,8 @@ export interface SmartyModalComponentType {
   setOpen: Function;
   isOpen: boolean;
   data: usStreet.Candidate[];
-  userData: SmartyUserData
+  userData: SmartyUserData;
+  verifiedAddressHandler: (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => void
 }
 
 export interface GetAddressResponse {

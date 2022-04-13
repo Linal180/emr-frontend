@@ -8,13 +8,13 @@ import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { activeClass, checkPermission, isSuperAdmin, isUserAdmin } from "../../utils";
+import { activeClass, checkPermission, isSuperAdmin } from "../../utils";
 import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import {
-  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, ADMIN,
+  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS, HELLO_TEXT,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -23,15 +23,11 @@ const HeaderNew: FC = (): JSX.Element => {
   const { firstName, lastName } = currentUser || {}
   const { location: { pathname } } = history;
   const { roles } = user || {};
-  const [isAdmin, setIsAdmin] = useState(false);
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
 
   useEffect(() => {
-    if (isUserAdmin(roles)) {
-      setIsAdmin(true)
-      setIsSuper(isSuperAdmin(roles))
-    }
+    setIsSuper(isSuperAdmin(roles))
   }, [isSuper, roles, user]);
 
   return (
@@ -117,8 +113,10 @@ const HeaderNew: FC = (): JSX.Element => {
               alignItems="right"
               className={classes.profileItemName}
             >
-              {isAdmin ?
-                <Typography variant="h6">{isSuper ? SUPER_ADMIN : ADMIN}</Typography>
+              <Typography>{HELLO_TEXT}</Typography>
+
+              {isSuper ?
+                <Typography variant="h6">{SUPER_ADMIN}</Typography>
                 :
                 <Typography variant="h6">{firstName} {lastName}</Typography>
               }

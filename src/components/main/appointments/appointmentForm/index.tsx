@@ -287,8 +287,16 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       const { id: selectedProvider } = providerId || {};
       const { id: selectedFacility } = facilityId || {};
 
+      let practiceId = '';
+      if (selectedFacility) {
+        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+        const { practiceId: pId } = facility || {};
+
+        practiceId = pId || ''
+      }
+
       const appointmentInput = {
-        reason, scheduleStartDateTime: getTimestamps(scheduleStartDateTime),
+        reason, scheduleStartDateTime: getTimestamps(scheduleStartDateTime), practiceId,
         scheduleEndDateTime: getTimestamps(scheduleEndDateTime), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,

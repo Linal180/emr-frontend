@@ -151,7 +151,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
       if (doctor) {
-        const { facilityId } = doctor
+        const { facilityId, practiceId } = doctor
         const { id: selectedService } = serviceId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
@@ -167,7 +167,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId: facilityId || '',
-                usualProviderId: doctorId, sexAtBirth: selectedSexAtBirth as Genderidentity,
+                usualProviderId: doctorId, sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
               },
             }
           }
