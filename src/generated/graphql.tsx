@@ -3418,7 +3418,7 @@ export type FindAllFacilityListQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFacilityListQuery = { __typename?: 'Query', findAllFacility: { __typename?: 'FacilitiesPayload', facilities?: Array<{ __typename?: 'Facility', id: string, name: string } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined } };
+export type FindAllFacilityListQuery = { __typename?: 'Query', findAllFacility: { __typename?: 'FacilitiesPayload', facilities?: Array<{ __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined } | null | undefined } };
 
 export type FindAllDoctorListQueryVariables = Exact<{
   doctorInput: DoctorInput;
@@ -4805,6 +4805,7 @@ export const FindAllFacilityListDocument = gql`
     facilities {
       id
       name
+      practiceId
     }
     pagination {
       totalPages

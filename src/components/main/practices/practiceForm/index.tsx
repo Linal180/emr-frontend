@@ -13,7 +13,7 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import { GRAY_TWO, WHITE } from '../../../../theme';
-import { renderStaffRoles } from '../../../../utils';
+import { renderOfficeRoles } from '../../../../utils';
 import { AuthContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
@@ -238,7 +238,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
-                          options={renderStaffRoles(roleList)}
+                          options={renderOfficeRoles(roleList)}
                         />
                       </Grid>
                     </Grid>

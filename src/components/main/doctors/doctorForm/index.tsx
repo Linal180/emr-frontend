@@ -238,7 +238,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         practiceId = pId || ''
       }
-
+      
       const doctorItemInput = {
         firstName, middleName, lastName, prefix, suffix, email, facilityId: selectedFacility,
         degreeCredentials, roleType: 'doctor', ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
@@ -542,7 +542,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid item md={12} sm={12} xs={12}>
                       <InputController
                         isRequired
-                        disabled={isEdit}
                         fieldType="text"
                         controllerName="email"
                         controllerLabel={EMAIL}

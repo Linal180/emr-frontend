@@ -25,7 +25,7 @@ const StaffTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext);
   const { facility, roles } = user || {};
-  const { id: facilityId } = facility || {};
+  const { practiceId } = facility || {};
   const [searchQuery,] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -63,7 +63,7 @@ const StaffTable: FC = (): JSX.Element => {
     try {
       const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const staffInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      const staffInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllStaff({
         variables: {
@@ -71,7 +71,7 @@ const StaffTable: FC = (): JSX.Element => {
         }
       })
     } catch (error) { }
-  }, [facilityId, findAllStaff, page, roles]);
+  }, [practiceId, findAllStaff, page, roles]);
 
   const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
     onError() {

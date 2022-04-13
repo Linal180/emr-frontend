@@ -10,8 +10,7 @@ import { useHeaderStyles } from "../../styles/headerStyles";
 import StatusSelector from "../main/dashboard/statusSelector";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
 import {
-  EMAIL,
-  GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SECURITY
+  EMAIL, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SECURITY
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {

@@ -991,7 +991,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 6} sm={12} xs={12}>
+                      <Grid item md={6} sm={12} xs={12}>
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
@@ -1001,17 +1001,15 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         />
                       </Grid>
 
-                      {!isEdit &&
-                        <Grid item md={6} sm={12} xs={12}>
-                          <Selector
-                            isRequired
-                            value={EMPTY_OPTION}
-                            label={USUAL_PROVIDER_ID}
-                            name="usualProviderId"
-                            options={renderDoctors(doctorList)}
-                          />
-                        </Grid>
-                      }
+                      <Grid item md={6} sm={12} xs={12}>
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={USUAL_PROVIDER_ID}
+                          name="usualProviderId"
+                          options={renderDoctors(doctorList)}
+                        />
+                      </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>

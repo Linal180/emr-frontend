@@ -16,7 +16,7 @@ import history from "../../../../history";
 import { staffSchema } from '../../../../validationSchemas';
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getTimestamps, renderDoctors, renderFacilities, renderRoles, setRecord } from "../../../../utils";
+import { getTimestamps, renderDoctors, renderFacilities, renderStaffRoles, setRecord } from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
 } from "../../../../generated/graphql";
@@ -67,6 +67,8 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             const { roles } = user || {}
             const { role } = (roles && roles[0]) || {}
             const { name } = facility || {}
+            
+            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
 
             dob && setValue('dob', dob)
             email && setValue('email', email)
@@ -77,7 +79,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             firstName && setValue('firstName', firstName)
             role && setValue('roleType', setRecord(role, role))
             gender && setValue('gender', setRecord(gender, gender))
-            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
           }
         }
       }
@@ -227,7 +228,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             label={ROLE}
                             name="roleType"
                             value={EMPTY_OPTION}
-                            options={renderRoles(roleList)}
+                            options={renderStaffRoles(roleList)}
                           />
                         </Grid>
                       }
@@ -291,7 +292,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <Grid item md={8} sm={12} xs={12}>
                         <InputController
                           isRequired
-                          disabled={isEdit}
                           fieldType="email"
                           controllerName="email"
                           controllerLabel={EMAIL}
