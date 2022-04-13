@@ -1,8 +1,7 @@
 // packages block
-import { FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback } from 'react';
+import { FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { usStreet } from 'smartystreets-javascript-sdk';
-import { AddCircleOutline, CheckBox as CheckBoxIcon } from '@material-ui/icons';
+import { AddCircleOutline } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { TabContext, TabList, TabPanel, Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator } from '@material-ui/lab';
 import { Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup, Grid, List, ListItem, Tab, Typography } from "@material-ui/core";
@@ -14,14 +13,13 @@ import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
-import SmartyModal from '../../../common/SmartyModal';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
-import { CustomFacilityInputProps, GeneralFormProps, SmartyUserData } from '../../../../interfacesTypes';
-import { getTimestamps, getTimeString, isSuperAdmin, renderPractices, setRecord } from '../../../../utils';
+import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
+import { getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
 import {
@@ -36,18 +34,13 @@ import {
   SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO,
   NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
   BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FACILITY_SCHEDULE, FacilityMenuNav, FACILITY_HOURS_END,
-  FACILITY_HOURS_START, FACILITY_REGISTRATION, VERIFY_ADDRESS, VERIFIED, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER
+  FACILITY_HOURS_START, FACILITY_REGISTRATION
 } from "../../../../constants";
 import DoctorScheduleForm from './schedules';
-import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext);
   const [tabValue, setTabValue] = useState<string>('1')
-  const [isVerified, setIsVerified] = useState(false)
-  const [addressOpen, setAddressOpen] = useState(false);
-  const [data, setData] = useState<usStreet.Candidate[]>([])
-  const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
@@ -215,7 +208,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const facilityInput = {
       name: name || '', cliaIdNumber, federalTaxId, npi, timeZone: timeZoneName, tamxonomyCode, practiceId: facilityPractice,
       mammographyCertificationNumber, serviceCode: selectedServiceCode as ServiceCode || ServiceCode.Pharmacy_01,
-      startTime: startTime && getTimestamps(startTime), endTime: endTime && getTimestamps(endTime),
+      startTime: startTime && setTime(startTime), endTime: endTime && setTime(endTime),
     }
 
     const contactInput = {
@@ -298,63 +291,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     setTabValue(newValue)
 
   const path = history.location?.hash;
-
-
-  const verifyAddressHandler = async () => {
-    if (zipCode && city && address) {
-      const { id } = state
-      const data = await verifyAddress(zipCode, city, id, address, address2);
-      setUserData((prev) => ({ ...prev, address: `${city}, ${id} ${zipCode}`, street: `${address} ${address2}` }))
-      const { status, options } = data || {}
-
-      if (status) {
-        setData(options)
-        setAddressOpen(true)
-      }
-      else {
-        setData([])
-        setAddressOpen(true)
-      }
-    }
-    else {
-      Alert.error(ZIP_CODE_AND_CITY)
-    }
-  }
-
-  const getAddressHandler = useCallback(async () => {
-
-    if (zipCode) {
-      const data = await getAddressByZipcode(zipCode);
-      const { zipCode: responseData, status } = data || {}
-      const { defaultCity, state, stateAbbreviation } = responseData || {}
-      if (status) {
-        setValue('city', defaultCity)
-        setValue('state', { id: state, name: `${state} - ${stateAbbreviation}` })
-      }
-      else {
-        // Alert.error(message)
-      }
-    }
-    else {
-      Alert.error(ZIP_CODE_ENTER)
-    }
-  }, [zipCode, setValue])
-
-  useEffect(() => {
-    zipCode?.length === 5 && getAddressHandler()
-  }, [zipCode, getAddressHandler]);
-
-  useEffect(() => {
-    setIsVerified(false)
-  }, [zipCode, city, state, address, address2, watch])
-
-
-  const verifiedAddressHandler = (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => {
-    deliveryLine1 && setValue('address', deliveryLine1);
-    zipCode && plus4Code && setValue('zipCode', `${zipCode}-${plus4Code}`);
-    cityName && setValue('city', cityName);
-    setIsVerified(true)
-  }
 
   return (
     <TabContext value={tabValue}>
@@ -622,7 +558,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                           <>
                             <Grid container spacing={3}>
-                              <Grid item md={12}>
+                              <Grid item md={8}>
                                 <InputController
                                   isRequired
                                   fieldType="text"
@@ -630,10 +566,17 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                   controllerLabel={EMAIL}
                                 />
                               </Grid>
+
+                              <Grid item md={4}>
+                                <InputController
+                                  fieldType="text"
+                                  controllerName="zipCode"
+                                  controllerLabel={ZIP}
+                                />
+                              </Grid>
                             </Grid>
 
                             <Grid container spacing={3}>
-
                               <Grid item md={6} sm={12} xs={12}>
                                 <PhoneField name="phone" label={PHONE} />
                               </Grid>
@@ -649,45 +592,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                               controllerLabel={ADDRESS}
                             />
 
-                            <Grid container spacing={3}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="address2"
+                              controllerLabel={ADDRESS_2}
+                            />
 
-                              <Grid item md={6}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="address2"
-                                  controllerLabel={ADDRESS_2}
-                                />
-                              </Grid>
-
-                              <Grid item md={6}>
-                                <Grid container spacing={1} alignItems={'center'}>
-                                  <Grid item md={10} sm={10} xs={10}>
-                                    <InputController
-                                      fieldType="text"
-                                      controllerName="zipCode"
-                                      controllerLabel={ZIP}
-                                    />
-                                  </Grid>
-
-                                  <Grid item md={2}>
-                                    {!isVerified ? <Box>
-                                      <Button onClick={verifyAddressHandler} disabled={!Boolean(city && address)}>
-                                        <Typography color={!Boolean(city && address) ? "initial" : 'primary'}>
-                                          {VERIFY_ADDRESS}
-                                        </Typography>
-                                      </Button>
-                                    </Box> :
-                                      <Box display={'flex'} alignItems={'center'}>
-                                        <CheckBoxIcon color='primary' /> <Box ml={0.2}>
-                                          <Typography>{VERIFIED}</Typography>
-                                        </Box>
-                                      </Box>
-                                    }
-                                  </Grid>
-                                </Grid>
-
-                              </Grid>
-                            </Grid>
                             <Grid container spacing={3}>
                               <Grid item md={4}>
                                 <InputController
@@ -770,8 +680,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <TabPanel value='2'>
         <DoctorScheduleForm />
       </TabPanel>
-
-      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} verifiedAddressHandler={verifiedAddressHandler} />
     </TabContext>
   );
 };
