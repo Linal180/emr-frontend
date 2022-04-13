@@ -27,7 +27,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
     <>
       <IdleTimer element={document} onIdle={onIdle} timeout={timeout} />
 
-      {!user && isLoggedIn ? <BackdropLoader loading={true} /> : (<>
+      {(!user && isLoggedIn) ? <BackdropLoader loading={true} /> : (<>
         <CssBaseline />
         {pathname !== LOCK_ROUTE && <Header />}
 

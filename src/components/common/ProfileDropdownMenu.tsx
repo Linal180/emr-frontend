@@ -26,9 +26,9 @@ const ProfileDropdownMenu = (): JSX.Element => {
   
   const handleIdle = () => {
     email && localStorage.setItem(EMAIL, email)
+    onIdle();
     setUser(null)
     setIsLoggedIn(false)
-    onIdle();
   }
 
   const logout = () => {

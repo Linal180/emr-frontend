@@ -32,6 +32,9 @@ const LoginComponent = (): JSX.Element => {
   });
 
   const [login, { loading }] = useLoginMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION || message === EXCEPTION)
         return Alert.error(EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE)
@@ -51,11 +54,12 @@ const LoginComponent = (): JSX.Element => {
           if (status === 200 && access_token && roles) {
             const userRoles = roles.map(role => role.role)
             const isAdmin = userRoles.filter(role => role !== 'patient')
-
+            
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
               Alert.success(LOGIN_SUCCESSFULLY)
               history.push(DASHBOARD_ROUTE);
+              setIsLoggedIn(true)
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }
