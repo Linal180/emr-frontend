@@ -370,16 +370,21 @@ export const extendedContactSchema = yup.object({
 
 const staffBasicSchema = {
   ...genderSchema,
-  ...roleTypeSchema,
   ...facilityIdSchema,
   ...firstLastNameSchema,
   phone: notRequiredPhone(PHONE),
-  providerIds: providerIdSchema(),
   mobile: notRequiredPhone(MOBILE),
   dob: yup.string().required(requiredMessage(DOB)),
 }
 
-export const staffSchema = yup.object({
+export const createStaffSchema = yup.object({
+  ...emailSchema,
+  ...roleTypeSchema,
+  ...staffBasicSchema,
+  providerIds: providerIdSchema(),
+})
+
+export const updateStaffSchema = yup.object({
   ...emailSchema,
   ...staffBasicSchema,
 })

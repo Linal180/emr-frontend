@@ -14,7 +14,7 @@ import { EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, ROUTE } from "../../constants";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const [timeout] = useState<number>(LOCK_TIME_OUT)
-  const { user, isLoggedIn } = useContext(AuthContext);
+  const { user, userPermissions, isLoggedIn } = useContext(AuthContext);
   const { email } = user || {}
   const { pathname } = useLocation()
 
@@ -29,7 +29,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
     <>
       <IdleTimer element={document} onIdle={onIdle} timeout={timeout} />
 
-      {(!user && isLoggedIn) ? <BackdropLoader loading={true} /> : (<>
+      {((!user && isLoggedIn) || !userPermissions.length) ? <BackdropLoader loading={true} /> : (<>
         <CssBaseline />
         {pathname !== LOCK_ROUTE && <Header />}
 
