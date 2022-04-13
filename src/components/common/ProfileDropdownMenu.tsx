@@ -70,13 +70,13 @@ const ProfileDropdownMenu = (): JSX.Element => {
             </Box>
           </Box>
 
-          <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+          {name && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
             <Box pr={1} color={BLACK_TWO}>
               <Typography variant="body1">{PRACTICE} :</Typography>
             </Box>
 
-            <Typography variant="body1">{name ?? 'super-admin'}</Typography>
-          </Box>
+            <Typography variant="body1">{name}</Typography>
+          </Box>}
 
           <Grid container spacing={3}>
             <Grid item md={6}>

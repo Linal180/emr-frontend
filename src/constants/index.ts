@@ -1476,20 +1476,34 @@ export const MAPPED_SERVICE_CODES: SelectorOption[] = [
 ];
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [
+  { id: Speciality.AllergyOrImmunology, name: formatValue(Speciality.AllergyOrImmunology) },
+  { id: Speciality.Anesthesiology, name: formatValue(Speciality.Anesthesiology) },
+  { id: Speciality.Cardiology, name: formatValue(Speciality.Cardiology) },
+  { id: Speciality.Dermatology, name: formatValue(Speciality.Dermatology) },
+  { id: Speciality.FamilyPractice, name: formatValue(Speciality.FamilyPractice) },
+  { id: Speciality.Gastroenterology, name: formatValue(Speciality.Gastroenterology) },
+  { id: Speciality.GeneralPractice, name: formatValue(Speciality.GeneralPractice) },
+  { id: Speciality.GeneralSurgery, name: formatValue(Speciality.GeneralSurgery) },
+  { id: Speciality.InternalMedicine, name: formatValue(Speciality.InternalMedicine) },
+  { id: Speciality.InterventionalPainManagement, name: formatValue(Speciality.InterventionalPainManagement) },
   { id: Speciality.Neurology, name: formatValue(Speciality.Neurology) },
+  { id: Speciality.Neurosurgery, name: formatValue(Speciality.Neurosurgery) },
+  { id: Speciality.ObstetricsOrGynecology, name: formatValue(Speciality.ObstetricsOrGynecology) },
+  { id: Speciality.Ophthalmology, name: formatValue(Speciality.Ophthalmology) },
+  { id: Speciality.OralSurgery, name: formatValue(Speciality.OralSurgery) },
+  { id: Speciality.OrthopedicSurgery, name: formatValue(Speciality.OrthopedicSurgery) },
+  { id: Speciality.OsteopathicManipulativeTherapy, name: formatValue(Speciality.OsteopathicManipulativeTherapy) },
+  { id: Speciality.Otolaryngology, name: formatValue(Speciality.Otolaryngology) },
+  { id: Speciality.Pathology, name: formatValue(Speciality.Pathology) },
+  { id: Speciality.PediatricDentist, name: formatValue(Speciality.PediatricDentist) },
+  { id: Speciality.PediatricDermatology, name: formatValue(Speciality.PediatricDermatology) },
+  { id: Speciality.Periodontics, name: formatValue(Speciality.Periodontics) },
   { id: Speciality.Pharmacist, name: formatValue(Speciality.Pharmacist) },
-  {
-    id: Speciality.Gastroenterology,
-    name: formatValue(Speciality.Gastroenterology),
-  },
-  {
-    id: Speciality.PediatricDentist,
-    name: formatValue(Speciality.PediatricDentist),
-  },
-  {
-    id: Speciality.PhysicianAssistant,
-    name: formatValue(Speciality.PhysicianAssistant),
-  },
+  { id: Speciality.PhysicalMedicineAndRehabilitation, name: formatValue(Speciality.PhysicalMedicineAndRehabilitation) },
+  { id: Speciality.PhysicianAssistant, name: formatValue(Speciality.PhysicianAssistant) },
+  { id: Speciality.PlasticAndReconstructiveSurgery, name: formatValue(Speciality.PlasticAndReconstructiveSurgery) },
+  { id: Speciality.Psychiatry, name: formatValue(Speciality.Psychiatry) },
+
 ];
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [

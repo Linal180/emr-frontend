@@ -2698,13 +2698,33 @@ export type SnoMedCodes = {
 
 /** The doctor's speciality */
 export enum Speciality {
+  AllergyOrImmunology = 'ALLERGY_OR_IMMUNOLOGY',
+  Anesthesiology = 'ANESTHESIOLOGY',
+  Cardiology = 'CARDIOLOGY',
+  Dermatology = 'DERMATOLOGY',
+  FamilyPractice = 'FAMILY_PRACTICE',
   Gastroenterology = 'GASTROENTEROLOGY',
+  GeneralPractice = 'GENERAL_PRACTICE',
+  GeneralSurgery = 'GENERAL_SURGERY',
+  InternalMedicine = 'INTERNAL_MEDICINE',
+  InterventionalPainManagement = 'INTERVENTIONAL_PAIN_MANAGEMENT',
   Neurology = 'NEUROLOGY',
+  Neurosurgery = 'NEUROSURGERY',
+  ObstetricsOrGynecology = 'OBSTETRICS_OR_GYNECOLOGY',
+  Ophthalmology = 'OPHTHALMOLOGY',
+  OralSurgery = 'ORAL_SURGERY',
+  OrthopedicSurgery = 'ORTHOPEDIC_SURGERY',
+  OsteopathicManipulativeTherapy = 'OSTEOPATHIC_MANIPULATIVE_THERAPY',
+  Otolaryngology = 'OTOLARYNGOLOGY',
+  Pathology = 'PATHOLOGY',
   PediatricDentist = 'PEDIATRIC_DENTIST',
   PediatricDermatology = 'PEDIATRIC_DERMATOLOGY',
   Periodontics = 'PERIODONTICS',
   Pharmacist = 'PHARMACIST',
-  PhysicianAssistant = 'PHYSICIAN_ASSISTANT'
+  PhysicalMedicineAndRehabilitation = 'PHYSICAL_MEDICINE_AND_REHABILITATION',
+  PhysicianAssistant = 'PHYSICIAN_ASSISTANT',
+  PlasticAndReconstructiveSurgery = 'PLASTIC_AND_RECONSTRUCTIVE_SURGERY',
+  Psychiatry = 'PSYCHIATRY'
 }
 
 export type Staff = {
