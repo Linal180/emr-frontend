@@ -8,11 +8,11 @@ import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { activeClass, checkPermission, isSuperAdmin, isUserAdmin } from "../../utils";
+import { activeClass, checkPermission, isSuperAdmin } from "../../utils";
 import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import {
-  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN, ADMIN,
+  APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
   BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, HELLO_TEXT, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
 } from "../../constants";
