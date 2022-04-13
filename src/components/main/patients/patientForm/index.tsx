@@ -359,10 +359,18 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedEmergencyRelationship } = emergencyRelationship;
       const { privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill } = state
 
+      let practiceId = '';
+      if (selectedFacility) {
+        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+        const { practiceId: pId } = facility || {};
+
+        practiceId = pId || ''
+      }
+
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn, statementNote, language, patientNote, email: basicEmail,
-        facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill,
+        facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, practiceId,
         medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,

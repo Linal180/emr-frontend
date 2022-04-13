@@ -156,8 +156,16 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     const { id: selectedFacility } = facilityId
     const { id: selectedProvider } = providerIds
 
+    let practiceId = '';
+    if (selectedFacility) {
+      const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+      const { practiceId: pId } = facility || {};
+
+      practiceId = pId || ''
+    }
+
     const staffInputs = {
-      firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
+      firstName, lastName, email, phone, mobile, practiceId, dob: getTimestamps(dob || ''),
       gender: staffGender as Gender, facilityId: selectedFacility, username: '',
     };
 

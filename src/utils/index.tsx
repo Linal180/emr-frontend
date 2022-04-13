@@ -222,6 +222,22 @@ export const renderRoles = (roles: RolesPayload['roles']) => {
   return data;
 }
 
+export const renderStaffRoles = (roles: RolesPayload['roles']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!roles) {
+    for (let role of roles) {
+      if (role) {
+        const { role: name } = role;
+        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' )
+        name && data.push({ id: name, name: formatValue(name) })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderFacilities = (facilities: FacilitiesPayload['facilities']) => {
   const data: SelectorOption[] = [];
 

@@ -33,7 +33,7 @@ import {
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
-   SYSTEM_PASSWORD,
+  SYSTEM_PASSWORD,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -231,6 +231,14 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedBillingState } = billingState;
       const { id: selectedBillingCountry } = billingCountry;
 
+      let practiceId = '';
+      if (selectedFacility) {
+        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+        const { practiceId: pId } = facility || {};
+
+        practiceId = pId || ''
+      }
+
       const doctorItemInput = {
         firstName, middleName, lastName, prefix, suffix, email, facilityId: selectedFacility,
         degreeCredentials, roleType: 'doctor', ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
@@ -240,7 +248,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         licenseTermDate: licenseTermDate ? getTimestamps(licenseTermDate) : '', password: SYSTEM_PASSWORD,
         licenseActiveDate: licenseActiveDate ? getTimestamps(licenseActiveDate) : '',
         deaActiveDate: deaActiveDate ? getTimestamps(deaActiveDate) : '',
-        deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '',
+        deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '', practiceId,
         speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology,
       };
 
@@ -277,7 +285,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         await createDoctor({
           variables: {
             createDoctorInput: {
-              createDoctorItemInput: { ...doctorItemInput },
+              createDoctorItemInput: { ...doctorItemInput, },
               createContactInput: { ...contactInput },
               createBillingAddressInput: { ...billingAddressInput }
             }
