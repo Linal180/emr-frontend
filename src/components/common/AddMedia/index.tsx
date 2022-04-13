@@ -18,7 +18,7 @@ import { Action, ActionType, mediaReducer, State, initialState } from "../../../
 dotenv.config()
 
 const AddImageModal: FC<MediaModalTypes> = ({
-  imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, isProfile, preSignedUrl,
+  imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, preSignedUrl,
   title, reload
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
@@ -68,6 +68,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
     const { title } = mediaData
     dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
     dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
+    setOpen && setOpen(!isOpen);
   };
 
   const handleDelete = async () => {

@@ -74,7 +74,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     resolver: yupResolver(extendedPatientSchema)
   });
   const { handleSubmit, setValue, watch, reset, control } = methods;
-  const { facilityId: { id: selectedFacility, name: selectedFacilityName } = {}, basicZipCode, basicCity, basicState, basicAddress, basicAddress2 } = watch();
+  const {
+    facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2
+  } = watch();
 
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked } } = event

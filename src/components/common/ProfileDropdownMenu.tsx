@@ -4,23 +4,33 @@ import { Link } from "react-router-dom";
 import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton } from '@material-ui/core';
 // utils and header styles block
 import { WHITE_FOUR } from "../../theme";
-import { handleLogout } from "../../utils";
+import { handleLogout, onIdle } from "../../utils";
 import { AuthContext } from "../../context";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import StatusSelector from "../main/dashboard/statusSelector";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
 import {
+  EMAIL,
   GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SECURITY
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { setIsLoggedIn, setUser } = useContext(AuthContext)
+  const { user, setUser, setIsLoggedIn } = useContext(AuthContext);
+  const { email } = user || {};
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+  
+  const handleIdle = () => {
+    email && localStorage.setItem(EMAIL, email)
+    onIdle();
+    setUser(null)
+    setIsLoggedIn(false)
+  }
+
   const logout = () => {
     setIsLoggedIn(false)
     setUser(null)
@@ -103,7 +113,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
           <Box mt={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`}>
             <Grid container spacing={3}>
               <Grid item md={8}>
-                <Button variant="contained" color="inherit" size="small" className="blue-button-new" fullWidth>
+                <Button onClick={() => handleIdle()} variant="contained" color="inherit" size="small" className="blue-button-new" fullWidth>
                   {LOCK_SCREEN}
                 </Button>
               </Grid>

@@ -420,7 +420,6 @@ const AddForm = () => {
           </Box>
         </form>
       </FormProvider>
-
       <LoaderBackdrop open={loading || getFormLoader || updateLoading} />
     </DragDropContext>
   );

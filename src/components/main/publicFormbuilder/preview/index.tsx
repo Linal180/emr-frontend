@@ -97,7 +97,7 @@ const PublicFormPreview = () => {
             </CardComponent>
             <Box marginY={2} display={'flex'} justifyContent={'flex-end'}>
               <Box marginX={2}>
-                <Button variant={'contained'} >
+                <Button variant={'contained'}>
                   {CANCEL_TEXT}
                 </Button>
               </Box>

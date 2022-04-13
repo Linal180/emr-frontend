@@ -19,7 +19,7 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { getISOTime, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
+import { getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
 import {
@@ -85,8 +85,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             npi && setValue('npi', npi)
             name && setValue('name', name)
-            startTime && setValue('startTime', getISOTime(startTime))
-            endTime && setValue('endTime', getISOTime(endTime))
+            startTime && setValue('startTime', getTimeString(startTime))
+            endTime && setValue('endTime', getTimeString(endTime))
             cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
             federalTaxId && setValue('federalTaxId', federalTaxId)
             tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)

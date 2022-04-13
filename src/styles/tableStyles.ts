@@ -17,7 +17,7 @@ export const useTableStyles = makeStyles(() => ({
   tablesSearchIcon: {
     backgroundColor: GRAY_FIVE,
     borderRadius: 6,
-    maxWidth: 265
+    maxWidth: 265,
   },
 
   mainTableContainer: {

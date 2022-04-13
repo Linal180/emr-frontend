@@ -11,11 +11,15 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation } from "../../../../generated/graphql";
-import { ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, PRIMARY_PROVIDER, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF, STAFF_TEXT } from "../../../../constants";
+import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
+import {
+  AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
+} from "../../../../generated/graphql";
+import {
+  ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF, STAFF_TEXT
+} from "../../../../constants";
 
 const StaffTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -131,7 +135,6 @@ const StaffTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
-              {renderTh(PRIMARY_PROVIDER)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -145,14 +148,13 @@ const StaffTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               staff?.map((record: StaffPayload['staff']) => {
-                const { id, firstName, lastName, email, phone, username } = record || {};
+                const { id, firstName, lastName, email, phone } = record || {};
 
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">{firstName} {lastName}</TableCell>
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{username}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${STAFF_ROUTE}/${id}`}>

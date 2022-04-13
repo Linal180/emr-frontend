@@ -38,7 +38,6 @@ const DropzoneImage: FC<any> = forwardRef(({
 
   const handleModalClose = () => {
     handleClose()
-    reload()
   }
 
   useImperativeHandle(ref, () => ({
@@ -78,11 +77,11 @@ const DropzoneImage: FC<any> = forwardRef(({
               const { patient: { attachments: patientAttachment } } = patientData || {};
 
               if (patientAttachment) {
+                Alert.success('Media added successfully!');
                 setLoading(false);
                 handleModalClose();
                 setAttachments(patientAttachment)
-                Alert.success('Media added successfully!');
-                reload();
+                reload()
               }
             }
             break;

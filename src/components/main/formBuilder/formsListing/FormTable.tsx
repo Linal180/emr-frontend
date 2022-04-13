@@ -142,7 +142,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
     }
   }
 
-  const previewCloseHanlder = () => setOpenPreview(false)
+  const previewCloseHandler = () => setOpenPreview(false)
 
   const handleClipboard = (id: string) => {
     if (id) {
@@ -155,7 +155,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(
-      `<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`
+      `<iframe width="560" height="315" src="${formEmbedUrl}" frameborder="0" allow="accelerometer; allowfullscreen></iframe>`
     )
     setOpenShare(false)
   }
@@ -253,7 +253,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
         <ShareModal title={FORM_EMBED_TITLE} isOpen={openShare}
           description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`}
           handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
-        <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHanlder={previewCloseHanlder} />
+        <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHandler={previewCloseHandler} />
       </Box>
     </Box>
   );

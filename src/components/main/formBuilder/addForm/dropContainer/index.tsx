@@ -40,7 +40,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                   <Grid container spacing={1}>
                     {list?.fields
                       ? list?.fields?.map((item: FieldsInputs, index: number) => (
-                        <Draggable key={item.fieldId} draggableId={item.fieldId} index={index} >
+                        <Draggable key={item.fieldId} draggableId={item.fieldId} index={index}>
                           {(provided, snapshot) => (
                             <Grid item
                               xs={parseColumnGrid(item.column) || 12} sm={parseColumnGrid(item.column) || 12}

@@ -15,7 +15,7 @@ import { AuthContext } from "../../../../context";
 import { ListContext } from "../../../../context/listContext";
 import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
+import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
@@ -37,7 +37,6 @@ const FacilityTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { fetchAllFacilityList } = useContext(ListContext)
   const { facility, roles } = user || {}
-  const isAdmin = isUserAdmin(roles)
   const isSuper = isSuperAdmin(roles);
   const { practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
@@ -189,13 +188,11 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          {isAdmin &&
-                            <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                              <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                                <InsertLink />
-                              </Box>
-                            </DetailTooltip>
-                          }
+                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                              <InsertLink />
+                            </Box>
+                          </DetailTooltip>
 
                           <DetailTooltip title={SERVICES}>
                             <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
