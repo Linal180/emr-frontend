@@ -1,23 +1,27 @@
 // packages block
-import { useState, MouseEvent, useContext } from "react";
+import { useState, MouseEvent, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, } from '@material-ui/core';
 // utils and header styles block
-import { BLACK_TWO, WHITE_FOUR } from "../../theme";
-import { handleLogout, onIdle } from "../../utils";
 import { AuthContext } from "../../context";
+import { BLACK_TWO, WHITE_FOUR } from "../../theme";
 import { useHeaderStyles } from "../../styles/headerStyles";
+import { handleLogout, isSuperAdmin, onIdle } from "../../utils";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
 
-import { EMAIL, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SECURITY } from "../../constants";
+import {
+  EMAIL, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
+  SECURITY, SUPER_ADMIN
+} from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, currentUser, setUser, setIsLoggedIn } = useContext(AuthContext);
-  const { email, facility } = user || {};
+  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
+  const { email, facility, roles } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { practice } = facility || {}
   const { name } = practice || {}
+  const [isSuper, setIsSuper] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -28,14 +32,20 @@ const ProfileDropdownMenu = (): JSX.Element => {
     email && localStorage.setItem(EMAIL, email)
     onIdle();
     setUser(null)
+    setCurrentUser(null)
     setIsLoggedIn(false)
   }
 
   const logout = () => {
     setIsLoggedIn(false)
     setUser(null)
+    setCurrentUser(null)
     handleLogout();
   };
+
+  useEffect(() => {
+    setIsSuper(isSuperAdmin(roles))
+  }, [isSuper, roles, user]);
 
   return (
     <>
@@ -65,7 +75,11 @@ const ProfileDropdownMenu = (): JSX.Element => {
               <NewAvatarIcon />
 
               <Box ml={2}>
-                <Typography variant="h6">{`${firstName} ${lastName}` ?? 'super-admin'}</Typography>
+                {isSuper ?
+                  <Typography variant="h6">{SUPER_ADMIN}</Typography>
+                  :
+                  <Typography variant="h6">{firstName} {lastName}</Typography>
+                }
               </Box>
             </Box>
           </Box>
@@ -75,7 +89,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               <Typography variant="body1">{PRACTICE} :</Typography>
             </Box>
 
-            <Typography variant="body1">{name}</Typography>
+            <Typography variant="body1">{name || '--'}</Typography>
           </Box>}
 
           <Grid container spacing={3}>
