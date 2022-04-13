@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, useCallback, Reducer, useState, useReducer } from "react";
+import { useEffect, useCallback, Reducer, useState, useReducer, useContext } from "react";
 import { Box, Card, CircularProgress } from "@material-ui/core";
 import { ViewState } from '@devexpress/dx-react-scheduler';
 import {
@@ -9,19 +9,24 @@ import {
 // component block
 import AppointmentCard from "./appointmentCard";
 // context, constants block
+import { AuthContext } from "../../../context";
 import { mapAppointmentData } from "../../../utils"
-import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus } from "../../../generated/graphql";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
 import { useCalendarStyles } from "../../../styles/calendarStyles";
+import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
+import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus } from "../../../generated/graphql";
 
 const CalendarComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
+  const { user } = useContext(AuthContext)
+  const { facility } = user || {}
+  const { practiceId } = facility || {}
   const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const classes = useCalendarStyles()
 
   const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     variables: {
       appointmentInput: {
+        practiceId: practiceId || '',
         paginationOptions: {
           page: 1, limit: 20
         }

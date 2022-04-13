@@ -148,7 +148,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
       if (facility) {
-        const { id: facilityId } = facility
+        const { id: facilityId, practiceId } = facility
         const { id: selectedService } = serviceId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
@@ -159,12 +159,12 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
               createExternalAppointmentItemInput: {
                 serviceId: selectedService, facilityId, paymentType: PaymentType.Self,
                 scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
-                scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
+                scheduleEndDateTime: getTimestamps(scheduleEndDateTime), practiceId: practiceId || ''
               },
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId,
-                sexAtBirth: selectedSexAtBirth as Genderidentity,
+                sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
               },
             }
           }

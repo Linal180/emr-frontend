@@ -10,14 +10,16 @@ import BackdropLoader from "./Backdrop";
 import history from "../../history";
 import { AuthContext } from "../../context";
 import { MainLayoutProps } from "../../interfacesTypes";
-import { LOCK_ROUTE, LOCK_TIME_OUT, ROUTE } from "../../constants";
+import { EMAIL, LOCK_ROUTE, LOCK_TIME_OUT, ROUTE } from "../../constants";
 
 const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
   const [timeout] = useState<number>(LOCK_TIME_OUT)
   const { user, isLoggedIn } = useContext(AuthContext);
+  const { email } = user || {}
   const { pathname } = useLocation()
 
   const onIdle = () => {
+    email && localStorage.setItem(EMAIL, email)
     const route = pathname
     sessionStorage.setItem(ROUTE, route);
     history.push(LOCK_ROUTE);

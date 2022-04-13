@@ -32,7 +32,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
-  const { id: facilityId } = facility || {}
+  const { practiceId } = facility || {}
   const { fetchAllDoctorList, setDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
@@ -69,13 +69,13 @@ const DoctorsTable: FC = (): JSX.Element => {
     try {
       const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const doctorInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      const doctorInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllDoctor({
         variables: { doctorInput: { ...doctorInputs } }
       })
     } catch (error) { }
-  }, [facilityId, findAllDoctor, page, roles])
+  }, [findAllDoctor, page, practiceId, roles])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -101,7 +101,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   useEffect(() => {
     !searchQuery && fetchAllDoctors()
-  }, [page, searchQuery, facilityId, roles, fetchAllDoctors]);
+  }, [page, searchQuery, practiceId, roles, fetchAllDoctors]);
 
   useEffect(() => { }, [user]);
 
