@@ -398,7 +398,7 @@ const facilitySchedulerBasicSchema = {
   ...federalTaxIdSchema,
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
-  name: nameSchema(NAME)
+  name: yup.string().required(requiredMessage(NAME))
 }
 
 export const facilitySchedulerSchema = yup.object({
@@ -625,14 +625,13 @@ const practiceFacilitySchema = {
   ...einSchema,
   ...upinSchema,
   state: stateSchema(false),
-  city: notRequiredStringOnly(CITY),
   country: countrySchema(false),
+  city: notRequiredStringOnly(CITY),
   address2: addressValidation(ADDRESS, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
 export const createPracticeSchema = yup.object({
-  ...emailSchema,
   ...roleTypeSchema,
   ...registerUserSchema,
   ...practiceFacilitySchema,
@@ -652,7 +651,7 @@ export const updatePasswordSchema = yup.object({
 })
 
 export const roleSchema = yup.object({
-  role: nameSchema(ROLE_NAME)
+  role: yup.string().required(requiredMessage(ROLE_NAME))
 })
 
 export const createFormBuilderSchemaWithFacility = yup.object({

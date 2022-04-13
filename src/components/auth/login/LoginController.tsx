@@ -10,7 +10,9 @@ import { FORGET_PASSWORD_ROUTE, FORGOT_PASSWORD, PASSWORD, TEXT } from "../../..
 import { LoginInputControlProps, PasswordType } from "../../../interfacesTypes";
 import { Link } from "react-router-dom";
 
-const LoginController: FC<LoginInputControlProps> = ({ control, controllerName, controllerLabel, fieldType, error, isPassword }): JSX.Element => {
+const LoginController: FC<LoginInputControlProps> = ({
+  control, controllerName, controllerLabel, fieldType, error, isPassword, disabled
+}): JSX.Element => {
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
   const classes = useLoginStyles();
   const handleClickShowPassword = () => {
@@ -47,6 +49,7 @@ const LoginController: FC<LoginInputControlProps> = ({ control, controllerName, 
             id={controllerName}
             variant="outlined"
             error={invalid}
+            disabled={disabled}
             fullWidth
             helperText={error && error}
             {...field}

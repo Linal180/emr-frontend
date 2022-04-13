@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext } from 'react';
+import { useEffect, FC, useContext, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
@@ -14,7 +14,7 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { staffSchema } from '../../../../validationSchemas';
-import { AuthContext, ListContext } from '../../../../context';
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
 import { getTimestamps, renderDoctors, renderFacilities, renderRoles, setRecord } from "../../../../utils";
 import {
@@ -29,12 +29,15 @@ import {
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
-  const { facilityList, roleList, doctorList } = useContext(ListContext)
+  const { facilityList, roleList } = useContext(ListContext)
+  const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(staffSchema)
   });
-  const { reset, setValue, handleSubmit } = methods;
+  const { reset, setValue, handleSubmit, watch } = methods;
+  const { facilityId } = watch();
+  const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
     fetchPolicy: "network-only",
@@ -125,6 +128,19 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
+  const fetchList = useCallback((id: string, name: string) => {
+    reset({
+      providerIds: EMPTY_OPTION,
+      facilityId: { id, name }
+    });
+
+    id && fetchAllDoctorList(id);
+  }, [fetchAllDoctorList, reset]);
+
+  useEffect(() => {
+    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName)
+  }, [fetchAllDoctorList, fetchList, selectedFacility, selectedFacilityName, watch]);
+
   useEffect(() => {
     if (isEdit) {
       id ?
@@ -134,7 +150,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [getStaff, id, isEdit])
 
   const onSubmit: SubmitHandler<ExtendedStaffInputProps> = async ({
-    firstName, lastName, email, username, phone, mobile, dob, gender, facilityId, roleType, providerIds
+    firstName, lastName, email, phone, mobile, dob, gender, facilityId, roleType, providerIds
   }) => {
     const { id: staffGender } = gender
     const { id: selectedFacility } = facilityId

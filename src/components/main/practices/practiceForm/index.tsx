@@ -347,21 +347,12 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 <Grid md={12} item>
                   <CardComponent cardTitle={FACILITY_DETAILS_TEXT}>
                     <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
+                      <Grid item md={12} sm={12} xs={12}>
                         <InputController
                           isRequired
                           fieldType="text"
                           controllerName="facilityName"
                           controllerLabel={FACILITY_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="email"
-                          controllerName="email"
-                          controllerLabel={EMAIL}
                         />
                       </Grid>
                     </Grid>
