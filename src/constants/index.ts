@@ -392,6 +392,7 @@ export const CHAMPUS = "Champus";
 export const FROM_TEXT = "From:";
 export const MEDICARE = "Medicare";
 export const MEDICAID = "Medicaid";
+export const CHART_ID = "Chart ID";
 export const ACTIVE_TEXT = "Active";
 export const MERCHANT_ID = "Merchant ID";
 export const BANK_ACCOUNT = "Bank Account";
@@ -1705,17 +1706,6 @@ export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Patient Information" },
   { title: "Document Verification" },
-];
-
-export const AGREEMENT_POINTS = [
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
 ];
 
 // Breadcrumb links
