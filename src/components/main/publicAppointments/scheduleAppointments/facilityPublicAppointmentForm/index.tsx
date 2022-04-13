@@ -31,9 +31,9 @@ import {
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
-  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT,
+  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, APPOINTMENT_PAYMENT,
   AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
-  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT,
+  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING,
 } from "../../../../../constants";
 
 const FacilityPublicAppointmentForm = (): JSX.Element => {
@@ -268,13 +268,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
 
                   <CardComponent cardTitle={AGREEMENT_HEADING}>
                     <Box maxHeight={400} pl={2} mb={3} overflow="auto">
-                      <ul>
-                        {AGREEMENT_POINTS.map((point, index) => (
-                          <li key={index}>
-                            <Typography variant="subtitle1" component="p">{point}</Typography>
-                          </li>
-                        ))}
-                      </ul>
+                      <Typography variant="subtitle1" component="p">{`{{Terms of Service Content}}`}</Typography>
                     </Box>
                   </CardComponent>
 

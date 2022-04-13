@@ -1693,17 +1693,6 @@ export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Document Verification" },
 ];
 
-export const AGREEMENT_POINTS = [
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-];
-
 // Breadcrumb links
 export const FACILITIES_BREAD = {
   text: FACILITIES_LISTING,
