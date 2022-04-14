@@ -3473,7 +3473,7 @@ export type CreateDoctorMutationVariables = Exact<{
 }>;
 
 
-export type CreateDoctorMutation = { __typename?: 'Mutation', createDoctor: { __typename?: 'DoctorPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreateDoctorMutation = { __typename?: 'Mutation', createDoctor: { __typename?: 'DoctorPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } };
 
 export type RemoveDoctorMutationVariables = Exact<{
   removeDoctor: RemoveDoctor;
@@ -3494,7 +3494,7 @@ export type UpdateDoctorMutationVariables = Exact<{
 }>;
 
 
-export type UpdateDoctorMutation = { __typename?: 'Mutation', updateDoctor: { __typename?: 'DoctorPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdateDoctorMutation = { __typename?: 'Mutation', updateDoctor: { __typename?: 'DoctorPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } };
 
 export type FindAllFacilitiesQueryVariables = Exact<{
   facilityInput: FacilityInput;
@@ -3522,14 +3522,14 @@ export type UpdateFacilityMutationVariables = Exact<{
 }>;
 
 
-export type UpdateFacilityMutation = { __typename?: 'Mutation', updateFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdateFacilityMutation = { __typename?: 'Mutation', updateFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } };
 
 export type CreateFacilityMutationVariables = Exact<{
   createFacilityInput: CreateFacilityInput;
 }>;
 
 
-export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string } | null | undefined } };
+export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } };
 
 export type CreateFormMutationVariables = Exact<{
   createFormInput: CreateFormInput;
@@ -3627,14 +3627,14 @@ export type CreatePatientMutationVariables = Exact<{
 }>;
 
 
-export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } };
 
 export type UpdatePatientMutationVariables = Exact<{
   updatePatientInput: UpdatePatientInput;
 }>;
 
 
-export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } };
 
 export type SendInviteToPatientMutationVariables = Exact<{
   patientInviteInput: PatientInviteInput;
@@ -3695,14 +3695,14 @@ export type CreatePracticeMutationVariables = Exact<{
 }>;
 
 
-export type CreatePracticeMutation = { __typename?: 'Mutation', createPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreatePracticeMutation = { __typename?: 'Mutation', createPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } };
 
 export type UpdatePracticeMutationVariables = Exact<{
   updatePracticeInput: UpdatePracticeInput;
 }>;
 
 
-export type UpdatePracticeMutation = { __typename?: 'Mutation', updatePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdatePracticeMutation = { __typename?: 'Mutation', updatePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } };
 
 export type RemovePracticeMutationVariables = Exact<{
   removePractice: RemovePractice;
@@ -5059,6 +5059,11 @@ export const CreateDoctorDocument = gql`
       status
       message
     }
+    doctor {
+      id
+      firstName
+      lastName
+    }
   }
 }
     `;
@@ -5256,6 +5261,11 @@ export const UpdateDoctorDocument = gql`
       error
       status
       message
+    }
+    doctor {
+      id
+      firstName
+      lastName
     }
   }
 }
@@ -5483,6 +5493,10 @@ export const UpdateFacilityDocument = gql`
       status
       message
     }
+    facility {
+      id
+      name
+    }
   }
 }
     `;
@@ -5522,6 +5536,7 @@ export const CreateFacilityDocument = gql`
     }
     facility {
       id
+      name
     }
   }
 }
@@ -6306,6 +6321,11 @@ export const CreatePatientDocument = gql`
       status
       message
     }
+    patient {
+      id
+      firstName
+      lastName
+    }
   }
 }
     `;
@@ -6342,6 +6362,11 @@ export const UpdatePatientDocument = gql`
       error
       status
       message
+    }
+    patient {
+      id
+      firstName
+      lastName
     }
   }
 }
@@ -6842,6 +6867,10 @@ export const CreatePracticeDocument = gql`
       status
       message
     }
+    practice {
+      id
+      name
+    }
   }
 }
     `;
@@ -6878,6 +6907,10 @@ export const UpdatePracticeDocument = gql`
       error
       status
       message
+    }
+    practice {
+      id
+      name
     }
   }
 }

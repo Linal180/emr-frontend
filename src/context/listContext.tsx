@@ -11,7 +11,7 @@ import {
 import {
   AllDoctorPayload, FacilitiesPayload, ServicesPayload, PatientsPayload, useFindAllServiceListLazyQuery,
   PracticesPayload, RolesPayload, useFindAllRoleListLazyQuery, useFindAllPracticeListLazyQuery,
-  useFindAllFacilityListLazyQuery, useFindAllDoctorListLazyQuery, useFindAllPatientListLazyQuery,
+  useFindAllFacilityListLazyQuery, useFindAllDoctorListLazyQuery, useFindAllPatientListLazyQuery, RolePayload, DoctorPayload, ServicePayload, PatientPayload, PracticePayload, FacilityPayload,
 } from "../generated/graphql";
 
 export const ListContext = createContext<ListContextInterface>({
@@ -33,6 +33,24 @@ export const ListContext = createContext<ListContextInterface>({
   patientList: [],
   setPatientList: () => { },
   fetchAllPatientList: () => { },
+  deletePracticeList: () => { },
+  deleteRoleList: () => { },
+  deleteFacilityList: () => { },
+  deleteDoctorList: () => { },
+  deleteServiceList: () => { },
+  deletePatientList: () => { },
+  addPracticeList: () => { },
+  addRoleList: () => { },
+  addFacilityList: () => { },
+  addDoctorList: () => { },
+  addServiceList: () => { },
+  addPatientList: () => { },
+  updatePracticeList: () => { },
+  updateRoleList: () => { },
+  updateFacilityList: () => { },
+  updateDoctorList: () => { },
+  updateServiceList: () => { },
+  updatePatientList: () => { },
 });
 
 export const ListContextProvider: FC = ({ children }): JSX.Element => {
@@ -220,7 +238,6 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
   const fetchAllRoleList = useCallback(async (page = 1) => {
     try {
-      dispatch({ type: ActionType.SET_ROLE_LIST, roleList: [] })
       const pageInputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } };
 
       await getAllRoles({
@@ -231,7 +248,6 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
   const fetchAllPracticeList = useCallback(async (page = 1) => {
     try {
-      dispatch({ type: ActionType.SET_PRACTICE_LIST, practiceList: [] })
       const pageInputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } };
       const isSuper = isSuperAdmin(roles)
 
@@ -245,7 +261,6 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
   const fetchAllFacilityList = useCallback(async (page = 1) => {
     try {
-      dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [] })
       const pageInputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } };
       const facilityInputs = practiceId ? { practiceId, ...pageInputs } : { ...pageInputs };
 
@@ -259,8 +274,6 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
   const fetchAllDoctorList = useCallback(async (page = 1) => {
     try {
-      dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: [] })
-
       await findAllDoctor({
         variables: {
           doctorInput: {
@@ -276,8 +289,6 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
   const fetchAllPatientList = useCallback(async (page = 1) => {
     try {
-      dispatch({ type: ActionType.SET_PATIENT_LIST, patientList: [] })
-
       await findAllPatient({
         variables: {
           patientInput: {
@@ -293,7 +304,6 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
   const fetchAllServicesList = useCallback(async (page = 1) => {
     try {
-      dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: [] })
 
       await findAllServices({
         variables: {
@@ -339,6 +349,62 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const setServicePages = (pageNumber: number) => dispatch({ type: ActionType.SET_SERVICE_PAGES, servicePages: pageNumber });
   const setPatientPages = (pageNumber: number) => dispatch({ type: ActionType.SET_PATIENT_PAGES, patientPages: pageNumber });
 
+  const deleteRoleList = (id: string) => id && dispatch({ type: ActionType.SET_ROLE_LIST, roleList: roleList?.filter(role => role?.id !== id) })
+  const deleteDoctorList = (id: string) => id && dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: doctorList?.filter(doctor => doctor?.id !== id) })
+  const deleteServiceList = (id: string) => id && dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: serviceList?.filter(service => service?.id !== id) })
+  const deletePatientList = (id: string) => id && dispatch({ type: ActionType.SET_PATIENT_LIST, patientList: patientList?.filter(patient => patient?.id !== id) })
+  const deletePracticeList = (id: string) => id && dispatch({ type: ActionType.SET_PRACTICE_LIST, practiceList: practiceList?.filter(practice => practice?.id !== id) })
+  const deleteFacilityList = (id: string) => id && dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: facilityList?.filter(facility => facility?.id !== id) })
+
+  const addRoleList = (newRecord: RolePayload['role']) => !!roleList && dispatch({ type: ActionType.SET_ROLE_LIST, roleList: [newRecord, ...roleList] as RolesPayload['roles'] })
+  const addDoctorList = (newRecord: DoctorPayload['doctor']) => !!doctorList && dispatch({ type: ActionType.SET_DOCTOR_LIST, doctorList: [newRecord, ...doctorList] as AllDoctorPayload['doctors'] })
+  const addServiceList = (newRecord: ServicePayload['service']) => !!serviceList && dispatch({ type: ActionType.SET_SERVICE_LIST, serviceList: [newRecord, ...serviceList] as ServicesPayload['services'] })
+  const addPatientList = (newRecord: PatientPayload['patient']) => !!patientList && dispatch({ type: ActionType.SET_PATIENT_LIST, patientList: [newRecord, ...patientList] as PatientsPayload['patients'] })
+  const addPracticeList = (newRecord: PracticePayload['practice']) => !!practiceList && dispatch({ type: ActionType.SET_PRACTICE_LIST, practiceList: [newRecord, ...practiceList] as PracticesPayload['practices'] })
+  const addFacilityList = (newRecord: FacilityPayload['facility']) => !!facilityList && dispatch({ type: ActionType.SET_FACILITY_LIST, facilityList: [newRecord, ...facilityList] as FacilitiesPayload['facilities'] })
+
+  const updateRoleList = (newRecord: RolePayload['role']) => {
+    const { id } = newRecord || {}
+
+    id && deleteRoleList(id)
+    addRoleList(newRecord)
+  }
+
+  const updateDoctorList = (newRecord: DoctorPayload['doctor']) => {
+    const { id } = newRecord || {}
+
+    id && deleteDoctorList(id)
+    addDoctorList(newRecord)
+  }
+
+  const updateServiceList = (newRecord: ServicePayload['service']) => {
+    const { id } = newRecord || {}
+
+    id && deleteServiceList(id)
+    addServiceList(newRecord)
+  }
+
+  const updatePatientList = (newRecord: PatientPayload['patient']) => {
+    const { id } = newRecord || {}
+
+    id && deletePatientList(id)
+    addPatientList(newRecord)
+  }
+
+  const updatePracticeList = (newRecord: PracticePayload['practice']) => {
+    const { id } = newRecord || {}
+
+    id && deletePracticeList(id)
+    addPracticeList(newRecord)
+  }
+
+  const updateFacilityList = (newRecord: FacilityPayload['facility']) => {
+    const { id } = newRecord || {}
+
+    id && deleteFacilityList(id)
+    addFacilityList(newRecord)
+  }
+
 
   return (
     <ListContext.Provider
@@ -360,7 +426,25 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
         fetchAllServicesList,
         patientList,
         setPatientList,
-        fetchAllPatientList
+        fetchAllPatientList,
+        deletePracticeList,
+        deleteRoleList,
+        deleteFacilityList,
+        deleteDoctorList,
+        deleteServiceList,
+        deletePatientList,
+        addPracticeList,
+        addRoleList,
+        addFacilityList,
+        addDoctorList,
+        addServiceList,
+        addPatientList,
+        updatePracticeList,
+        updateRoleList,
+        updateFacilityList,
+        updateDoctorList,
+        updateServiceList,
+        updatePatientList,
       }}
     >
       {children}

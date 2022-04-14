@@ -33,7 +33,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
   const { practiceId } = facility || {}
-  const { fetchAllDoctorList, setDoctorList } = useContext(ListContext)
+  const { deleteDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
   const [{ copied }, appointmentDispatcher] =
@@ -91,8 +91,7 @@ const DoctorsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           fetchAllDoctors()
-          setDoctorList([]);
-          fetchAllDoctorList();
+          deleteDoctorList(deleteDoctorId);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }

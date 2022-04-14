@@ -27,7 +27,7 @@ const PatientsTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const { practiceId } = facility || {}
-  const { fetchAllPatientList } = useContext(ListContext)
+  const { deletePatientList } = useContext(ListContext)
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [searchQuery,] = useState<string>('');
@@ -90,7 +90,7 @@ const PatientsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           setOpenDelete(false)
           fetchAllPatients();
-          fetchAllPatientList();
+          deletePatientList(deletePatientId);
         }
       }
     }

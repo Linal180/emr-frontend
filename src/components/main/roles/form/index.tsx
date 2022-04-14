@@ -9,10 +9,10 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // constants and types block
 import Alert from '../../../common/Alert';
 import history from '../../../../history';
-import { PermissionContext } from '../../../../context';
 import { formatPermissionName } from '../../../../utils';
 import { roleSchema } from '../../../../validationSchemas';
 import { GeneralFormProps } from '../../../../interfacesTypes';
+import { ListContext, PermissionContext } from '../../../../context';
 import {
   RoleItemInput, useAssignPermissionToRoleMutation, useCreateRoleMutation, useGetRoleLazyQuery,
   useUpdateRoleMutation
@@ -25,6 +25,7 @@ import {
 
 const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { permissions } = useContext(PermissionContext)
+  const { addRoleList, updateRoleList } = useContext(ListContext)
   const [ids, setIds] = useState<string[]>([])
   const [custom, setCustom] = useState<boolean>(true)
 
@@ -122,6 +123,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (status && status === 200) {
           const { id: newRole } = role || {}
+          addRoleList(role)
           Alert.success(ROLE_CREATED);
           history.push(`${ROLES_ROUTE}/${newRole}`)
         }
@@ -135,12 +137,13 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { updateRole: { response } } = data;
+      const { updateRole: { response, role } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
+          updateRoleList(role)
           Alert.success(ROLE_UPDATED)
         }
       }

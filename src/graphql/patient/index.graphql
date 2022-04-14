@@ -179,6 +179,12 @@ mutation CreatePatient($createPatientInput: CreatePatientInput!){
       status
       message
     }
+
+    patient {
+      id
+      firstName
+      lastName
+    }
   }
 }
 
@@ -188,6 +194,12 @@ mutation UpdatePatient($updatePatientInput: UpdatePatientInput!){
       error
       status
       message
+    }
+
+    patient {
+      id
+      firstName
+      lastName
     }
   }
 }

@@ -40,6 +40,12 @@ mutation CreateDoctor($createDoctorInput: CreateDoctorInput!){
       status
       message
     }
+
+    doctor {
+      id
+      firstName
+      lastName
+    }
   }
 }
 
@@ -158,6 +164,12 @@ mutation UpdateDoctor($updateDoctorInput: UpdateDoctorInput!){
       error
       status
       message
+    }
+
+    doctor {
+      id
+      firstName
+      lastName
     }
   }
 }
