@@ -3473,7 +3473,7 @@ export type CreateDoctorMutationVariables = Exact<{
 }>;
 
 
-export type CreateDoctorMutation = { __typename?: 'Mutation', createDoctor: { __typename?: 'DoctorPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } };
+export type CreateDoctorMutation = { __typename?: 'Mutation', createDoctor: { __typename?: 'DoctorPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type RemoveDoctorMutationVariables = Exact<{
   removeDoctor: RemoveDoctor;
@@ -3494,7 +3494,7 @@ export type UpdateDoctorMutationVariables = Exact<{
 }>;
 
 
-export type UpdateDoctorMutation = { __typename?: 'Mutation', updateDoctor: { __typename?: 'DoctorPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } };
+export type UpdateDoctorMutation = { __typename?: 'Mutation', updateDoctor: { __typename?: 'DoctorPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type FindAllFacilitiesQueryVariables = Exact<{
   facilityInput: FacilityInput;
@@ -3606,7 +3606,7 @@ export type FindAllPatientQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientQueryVariables = Exact<{
   getPatient: GetPatient;
@@ -3627,14 +3627,14 @@ export type CreatePatientMutationVariables = Exact<{
 }>;
 
 
-export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } };
+export type CreatePatientMutation = { __typename?: 'Mutation', createPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type UpdatePatientMutationVariables = Exact<{
   updatePatientInput: UpdatePatientInput;
 }>;
 
 
-export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined } };
+export type UpdatePatientMutation = { __typename?: 'Mutation', updatePatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type SendInviteToPatientMutationVariables = Exact<{
   patientInviteInput: PatientInviteInput;
@@ -5059,11 +5059,6 @@ export const CreateDoctorDocument = gql`
       status
       message
     }
-    doctor {
-      id
-      firstName
-      lastName
-    }
   }
 }
     `;
@@ -5261,11 +5256,6 @@ export const UpdateDoctorDocument = gql`
       error
       status
       message
-    }
-    doctor {
-      id
-      firstName
-      lastName
     }
   }
 }
@@ -6069,7 +6059,6 @@ export const FindAllPatientDocument = gql`
   findAllPatient(patientInput: $patientInput) {
     pagination {
       page
-      totalCount
       totalPages
     }
     response {
@@ -6321,11 +6310,6 @@ export const CreatePatientDocument = gql`
       status
       message
     }
-    patient {
-      id
-      firstName
-      lastName
-    }
   }
 }
     `;
@@ -6362,11 +6346,6 @@ export const UpdatePatientDocument = gql`
       error
       status
       message
-    }
-    patient {
-      id
-      firstName
-      lastName
     }
   }
 }
