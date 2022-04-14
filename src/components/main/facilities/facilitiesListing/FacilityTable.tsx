@@ -35,7 +35,7 @@ import {
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
-  const { fetchAllFacilityList } = useContext(ListContext)
+  const { deleteFacilityList } = useContext(ListContext)
   const { facility, roles } = user || {}
   const isSuper = isSuperAdmin(roles);
   const { practiceId } = facility || {}
@@ -99,7 +99,7 @@ const FacilityTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             await fetchAllFacilities();
-            fetchAllFacilityList();
+            deleteFacilityList(deleteFacilityId)
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           } catch (error) { }
         }

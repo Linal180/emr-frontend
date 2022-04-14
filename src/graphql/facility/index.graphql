@@ -35,7 +35,7 @@ query FindAllFacilities($facilityInput: FacilityInput!) {
 
 query GetFacility($getFacility: GetFacility!){
   getFacility(getFacility: $getFacility){
-    facility{
+    facility {
       id
       name
       practiceType
@@ -116,6 +116,11 @@ mutation UpdateFacility($updateFacilityInput: UpdateFacilityInput!) {
       status
       message
     }
+
+    facility {
+      id
+      name
+    }
   }
 }
 mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
@@ -128,6 +133,7 @@ mutation CreateFacility($createFacilityInput: CreateFacilityInput!) {
 
     facility {
       id
+      name
     }
   }
 }

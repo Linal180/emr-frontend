@@ -3544,14 +3544,14 @@ export type UpdateFacilityMutationVariables = Exact<{
 }>;
 
 
-export type UpdateFacilityMutation = { __typename?: 'Mutation', updateFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdateFacilityMutation = { __typename?: 'Mutation', updateFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } };
 
 export type CreateFacilityMutationVariables = Exact<{
   createFacilityInput: CreateFacilityInput;
 }>;
 
 
-export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string } | null | undefined } };
+export type CreateFacilityMutation = { __typename?: 'Mutation', createFacility: { __typename?: 'FacilityPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined } };
 
 export type CreateFormMutationVariables = Exact<{
   createFormInput: CreateFormInput;
@@ -3628,7 +3628,7 @@ export type FindAllPatientQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientQueryVariables = Exact<{
   getPatient: GetPatient;
@@ -3717,14 +3717,14 @@ export type CreatePracticeMutationVariables = Exact<{
 }>;
 
 
-export type CreatePracticeMutation = { __typename?: 'Mutation', createPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type CreatePracticeMutation = { __typename?: 'Mutation', createPractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } };
 
 export type UpdatePracticeMutationVariables = Exact<{
   updatePracticeInput: UpdatePracticeInput;
 }>;
 
 
-export type UpdatePracticeMutation = { __typename?: 'Mutation', updatePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type UpdatePracticeMutation = { __typename?: 'Mutation', updatePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } };
 
 export type RemovePracticeMutationVariables = Exact<{
   removePractice: RemovePractice;
@@ -5619,6 +5619,10 @@ export const UpdateFacilityDocument = gql`
       status
       message
     }
+    facility {
+      id
+      name
+    }
   }
 }
     `;
@@ -5658,6 +5662,7 @@ export const CreateFacilityDocument = gql`
     }
     facility {
       id
+      name
     }
   }
 }
@@ -6190,7 +6195,6 @@ export const FindAllPatientDocument = gql`
   findAllPatient(patientInput: $patientInput) {
     pagination {
       page
-      totalCount
       totalPages
     }
     response {
@@ -6978,6 +6982,10 @@ export const CreatePracticeDocument = gql`
       status
       message
     }
+    practice {
+      id
+      name
+    }
   }
 }
     `;
@@ -7014,6 +7022,10 @@ export const UpdatePracticeDocument = gql`
       error
       status
       message
+    }
+    practice {
+      id
+      name
     }
   }
 }

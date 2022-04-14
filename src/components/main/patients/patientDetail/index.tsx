@@ -83,7 +83,6 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const fetchAttachment = useCallback(async () => {
     try {
-      console.log("Getting Profile")
       await getAttachment({
         variables: {
           getMedia: { id: attachmentId }
@@ -113,7 +112,6 @@ const PatientDetailsComponent = (): JSX.Element => {
           const { id: attachmentId, } = profilePicture || {}
 
           if (attachmentId) {
-            console.log("ID >>", attachmentId)
             mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
           }
 

@@ -131,6 +131,9 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
 
   useEffect(() => {
     if (selectedService && date) {
+      setValue('scheduleEndDateTime', '')
+      setValue('scheduleStartDateTime', '')
+
       getSlots({
         variables: {
           getSlots: {
@@ -139,7 +142,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
         }
       })
     }
-  }, [date, facilityId, getSlots, offset, selectedService, currentDate])
+  }, [date, facilityId, getSlots, offset, selectedService, currentDate, setValue])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const { firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime } = inputs;
