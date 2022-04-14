@@ -52,7 +52,7 @@ import SmartyModal from '../../../common/SmartyModal'
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList, addPatientList, updatePatientList } = useContext(ListContext)
+  const { facilityList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
@@ -277,13 +277,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { createPatient: { response, patient } } = data;
+      const { createPatient: { response } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
-          addPatientList(patient)
           Alert.success(PATIENT_CREATED);
           history.push(PATIENTS_ROUTE)
         }
@@ -300,13 +299,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { updatePatient: { response, patient } } = data;
+      const { updatePatient: { response } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
-          updatePatientList(patient)
           Alert.success(PATIENT_UPDATED);
           history.push(PATIENTS_ROUTE)
         }

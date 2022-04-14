@@ -38,7 +38,7 @@ import {
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList, addDoctorList, updateDoctorList } = useContext(ListContext)
+  const { facilityList } = useContext(ListContext)
   const [{ contactId, billingId }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const methods = useForm<DoctorInputProps>({
     mode: "all",
@@ -161,14 +161,13 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { createDoctor: { response, doctor } } = data;
+      const { createDoctor: { response } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
           Alert.success(DOCTOR_CREATED);
-          addDoctorList(doctor)
           reset()
           history.push(DOCTORS_ROUTE)
         }
@@ -182,14 +181,13 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { updateDoctor: { response, doctor } } = data;
+      const { updateDoctor: { response } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
           Alert.success(DOCTOR_UPDATED);
-          updateDoctorList(doctor)
           reset()
           history.push(DOCTORS_ROUTE)
         }

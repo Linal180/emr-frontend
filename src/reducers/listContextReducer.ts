@@ -3,6 +3,7 @@ import {
 } from "../generated/graphql"
 
 export interface State {
+  isSuper: boolean;
   practiceId: string;
   rolePages: number;
   roleList: RolesPayload['roles'];
@@ -19,6 +20,7 @@ export interface State {
 }
 
 export const initialState: State = {
+  isSuper: false,
   practiceId: '',
   rolePages: 1,
   roleList: [],
@@ -35,6 +37,7 @@ export const initialState: State = {
 }
 
 export enum ActionType {
+  SET_IS_SUPER = 'setIsSuper',
   SET_PRACTICE_ID = 'setPracticeId',
   SET_ROLE_PAGES = "setRolePages",
   SET_ROLE_LIST = "setRoleList",
@@ -51,6 +54,7 @@ export enum ActionType {
 }
 
 export type Action =
+  | { type: ActionType.SET_IS_SUPER, isSuper: boolean }
   | { type: ActionType.SET_PRACTICE_ID, practiceId: string }
   | { type: ActionType.SET_ROLE_PAGES; rolePages: number }
   | { type: ActionType.SET_ROLE_LIST; roleList: RolesPayload['roles'] }
@@ -67,6 +71,12 @@ export type Action =
 
 export const listContextReducer = (state: State, action: Action): State => {
   switch (action.type) {
+    case ActionType.SET_IS_SUPER:
+      return {
+        ...state,
+        isSuper: action.isSuper
+      }
+
     case ActionType.SET_ROLE_PAGES:
       return {
         ...state,

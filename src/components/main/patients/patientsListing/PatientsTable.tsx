@@ -10,7 +10,7 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext, ListContext } from "../../../../context";
+import { AuthContext } from "../../../../context";
 import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
@@ -27,7 +27,6 @@ const PatientsTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const { practiceId } = facility || {}
-  const { deletePatientList } = useContext(ListContext)
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [searchQuery,] = useState<string>('');
@@ -90,7 +89,6 @@ const PatientsTable: FC = (): JSX.Element => {
           message && Alert.success(message);
           setOpenDelete(false)
           fetchAllPatients();
-          deletePatientList(deletePatientId);
         }
       }
     }
