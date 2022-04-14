@@ -30,10 +30,10 @@ import {
   useGetSlotsLazyQuery, BillingStatus, useGetDoctorLazyQuery, DoctorPayload
 } from "../../../../../generated/graphql";
 import {
-  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT,
+  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, DOCTOR_NOT_FOUND,
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
-  AVAILABLE_SLOTS, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
-  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT, DOCTOR_NOT_FOUND,
+  AVAILABLE_SLOTS, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING,
+  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, APPOINTMENT_PAYMENT,
 } from "../../../../../constants";
 
 const DoctorPublicAppointmentForm = (): JSX.Element => {
@@ -151,7 +151,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
       if (doctor) {
-        const { facilityId } = doctor
+        const { facilityId, practiceId } = doctor
         const { id: selectedService } = serviceId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
@@ -167,7 +167,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId: facilityId || '',
-                usualProviderId: doctorId, sexAtBirth: selectedSexAtBirth as Genderidentity,
+                usualProviderId: doctorId, sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
               },
             }
           }
@@ -271,13 +271,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
                   <CardComponent cardTitle={AGREEMENT_HEADING}>
                     <Box maxHeight={400} pl={2} mb={3} overflow="auto">
-                      <ul>
-                        {AGREEMENT_POINTS.map((point, index) => (
-                          <li key={index}>
-                            <Typography variant="subtitle1" component="p">{point}</Typography>
-                          </li>
-                        ))}
-                      </ul>
+                      <Typography variant="subtitle1" component="p">{`{{Terms of Service Content}}`}</Typography>
                     </Box>
                   </CardComponent>
 

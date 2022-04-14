@@ -1,8 +1,18 @@
   import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_FOUR, BLUE_EIGHT, BLUE_ONE, GRAY_ONE, GRAY_SIX, POPPINS, WHITE } from "../../theme";
+import { BLACK_FOUR, BLUE_EIGHT, BLUE_ONE, GRAY_ONE, GRAY_SIX, POPPINS, theme, WHITE } from "../../theme";
 
 export const usePublicAppointmentStyles = makeStyles(() =>
   createStyles({
+    main: {
+      padding: theme.spacing(3),
+      borderRadius: theme.spacing(1),
+      margin: theme.spacing(0.5),
+      backgroundColor: WHITE,
+      minHeight: 100,
+      position: "sticky",
+      top: 100,
+      zIndex: 1,
+    },
     timeSlots: {
       padding: 0,
       display: 'flex',

@@ -19,14 +19,14 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION,
-  PATIENTS_ROUTE, NAME, CITY, PATIENT
+  PATIENTS_ROUTE, NAME, CITY, PATIENT, CHART_ID
 } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
-  const { id: facilityId } = facility || {}
+  const { practiceId } = facility || {}
   const { fetchAllPatientList } = useContext(ListContext)
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -62,7 +62,7 @@ const PatientsTable: FC = (): JSX.Element => {
     try {
       const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const patientsInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      const patientsInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllPatient({
         variables: {
@@ -70,7 +70,7 @@ const PatientsTable: FC = (): JSX.Element => {
         },
       })
     } catch (error) { }
-  }, [facilityId, findAllPatient, page, roles])
+  }, [practiceId, findAllPatient, page, roles])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     notifyOnNetworkStatusChange: true,
@@ -133,7 +133,7 @@ const PatientsTable: FC = (): JSX.Element => {
         <Table aria-label="customized table">
           <TableHead>
             <TableRow>
-              {renderTh('Chart ID')}
+              {renderTh(CHART_ID)}
               {renderTh(NAME)}
               {renderTh(EMAIL)}
               {renderTh(PHONE)}
@@ -154,7 +154,7 @@ const PatientsTable: FC = (): JSX.Element => {
                 const { id, patientRecord, firstName, lastName, email, contacts } = record || {};
 
                 const patientContact = contacts && contacts.filter(contact => contact.primaryContact)[0];
-                const { phone, city, country } = patientContact || {};
+                const { phone, city } = patientContact || {};
 
                 return (
                   <TableRow key={id}>
@@ -167,7 +167,6 @@ const PatientsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{email}</TableCell>
                     <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                     <TableCell scope="row">{city}</TableCell>
-                    <TableCell scope="row">{country}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PATIENTS_ROUTE}/${id}`}>

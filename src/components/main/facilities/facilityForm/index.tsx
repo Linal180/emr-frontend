@@ -19,7 +19,7 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
 import { CustomFacilityInputProps, GeneralFormProps } from '../../../../interfacesTypes';
-import { getISOTime, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
+import { getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
 import {
@@ -33,8 +33,8 @@ import {
   FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION, MAPPED_COUNTRIES, BILLING_PROFILE,
   SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO,
   NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
-  BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FACILITY_SCHEDULE, FacilityMenuNav, FACILITY_HOURS_END,
-  FACILITY_HOURS_START, FACILITY_REGISTRATION
+  BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FacilityMenuNav, FACILITY_HOURS_END,
+  FACILITY_HOURS_START, FACILITY_REGISTRATION, BUSINESS_HOURS, FACILITY_SCHEDULE,
 } from "../../../../constants";
 import DoctorScheduleForm from './schedules';
 
@@ -85,8 +85,8 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             npi && setValue('npi', npi)
             name && setValue('name', name)
-            startTime && setValue('startTime', getISOTime(startTime))
-            endTime && setValue('endTime', getISOTime(endTime))
+            startTime && setValue('startTime', getTimeString(startTime))
+            endTime && setValue('endTime', getTimeString(endTime))
             cliaIdNumber && setValue('cliaIdNumber', cliaIdNumber)
             federalTaxId && setValue('federalTaxId', federalTaxId)
             tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
@@ -300,7 +300,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       </TabList>
       <TabPanel value="1">
         <Box display='flex' position='relative'>
-          <Box mr={2} ml={2} pl={2} pr={2} pb={4} display='flex' className={classes.navbar}>
+          <Box mr={2} ml={2} pl={1} pr={1} pb={4} display='flex' className={classes.navbar}>
             <List>
               {FacilityMenuNav.map((item) => {
                 return (
@@ -310,12 +310,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         <TimelineItem>
                           <TimelineSeparator>
                             <TimelineDot className={`#${item.linkTo}` === path ? 'facilityActive' : ''} />
-                            {item.title !== FACILITY_SCHEDULE && <TimelineConnector />}
+                            {item.title !== BUSINESS_HOURS && <TimelineConnector />}
                           </TimelineSeparator>
                           <TimelineContent />
                         </TimelineItem>
                       </Timeline>
-                      <ListItem button className={`#${item.linkTo}` === path ? 'active' : ''}>
+                      <ListItem button className={`#${item.linkTo}` === path ? 'active' : ''} style={{ display: 'flex', alignItems: 'baseline' }}>
                         <Typography variant='h5'>
                           {item.title}
                         </Typography>
@@ -633,7 +633,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Box pb={3} />
 
                     <Grid md={12} id={FACILITY_SCHEDULE_ROUTE}>
-                      <CardComponent cardTitle={FACILITY_SCHEDULE} isEdit={true}>
+                      <CardComponent cardTitle={BUSINESS_HOURS} isEdit={true}>
                         {getFacilityLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                           <>
                             <Grid container spacing={3}>
@@ -680,7 +680,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <TabPanel value='2'>
         <DoctorScheduleForm />
       </TabPanel>
-    </TabContext>
+    </TabContext >
   );
 };
 

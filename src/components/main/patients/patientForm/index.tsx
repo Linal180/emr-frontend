@@ -6,6 +6,7 @@ import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-for
 import {
   CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel, Typography,
 } from "@material-ui/core";
+import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
@@ -44,7 +45,7 @@ import {
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER,
+  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS, VERIFIED,
 } from "../../../../constants";
 import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
 import SmartyModal from '../../../common/SmartyModal'
@@ -64,16 +65,16 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   })
 
   const [isChecked, setIsChecked] = useState(false);
+  const [isVerified, setIsVerified] = useState(false)
   const [addressOpen, setAddressOpen] = useState(false);
   const [data, setData] = useState<usStreet.Candidate[]>([])
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const classes = usePublicAppointmentStyles();
-
   const methods = useForm<PatientInputProps>({
     mode: "all",
     resolver: yupResolver(extendedPatientSchema)
   });
-  const { handleSubmit, setValue, watch, reset, control } = methods;
+  const { handleSubmit, setValue, watch, control } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
     basicZipCode, basicCity, basicState, basicAddress, basicAddress2
@@ -359,10 +360,18 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedEmergencyRelationship } = emergencyRelationship;
       const { privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill } = state
 
+      let practiceId = '';
+      if (selectedFacility) {
+        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+        const { practiceId: pId } = facility || {};
+
+        practiceId = pId || ''
+      }
+
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn, statementNote, language, patientNote, email: basicEmail,
-        facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill,
+        facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, practiceId,
         medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
@@ -474,13 +483,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   }, [getPatient, id, isEdit])
 
   const fetchList = useCallback((id: string, name: string) => {
-    reset({
-      usualProviderId: EMPTY_OPTION,
-      facilityId: { id, name }
-    });
+    setValue('usualProviderId', EMPTY_OPTION)
 
     id && fetchAllDoctorList(id);
-  }, [fetchAllDoctorList, reset]);
+  }, [fetchAllDoctorList, setValue]);
 
   useEffect(() => {
     selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName);
@@ -492,14 +498,14 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
     if (basicZipCode) {
       const data = await getAddressByZipcode(basicZipCode);
-      const { zipCode: responseData, message, status } = data || {}
+      const { zipCode: responseData, status } = data || {}
       const { defaultCity, state, stateAbbreviation } = responseData || {}
       if (status) {
         setValue('basicCity', defaultCity)
         setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
       else {
-        Alert.error(message)
+        // Alert.error(message)
       }
     }
     else {
@@ -530,8 +536,18 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   useEffect(() => {
     basicZipCode?.length === 5 && getAddressHandler()
-  }, [basicZipCode, getAddressHandler])
+  }, [basicZipCode, getAddressHandler]);
 
+  const verifiedAddressHandler = (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => {
+    deliveryLine1 && setValue('basicAddress', deliveryLine1);
+    zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
+    cityName && setValue('basicCity', cityName);
+    setIsVerified(true)
+  }
+
+  useEffect(() => {
+    setIsVerified(false)
+  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch])
 
   return (
     <FormProvider {...methods}>
@@ -686,20 +702,22 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         </Grid>
 
                         <Grid item md={2}>
-                          <Box>
+                          {!isVerified ? <Box>
                             <Button onClick={verifyAddressHandler} disabled={!Boolean(basicCity && basicAddress)}>
-                              <Typography color='primary'>
-                                verify address
+                              <Typography color={!Boolean(basicCity && basicAddress) ? "initial" : 'primary'}>
+                                {VERIFY_ADDRESS}
                               </Typography>
                             </Button>
-
-                          </Box>
+                          </Box> :
+                            <Box display={'flex'} alignItems={'center'}>
+                              <CheckBoxIcon color='primary' /> <Box ml={0.2}>
+                                <Typography>{VERIFIED}</Typography>
+                              </Box>
+                            </Box>
+                          }
                         </Grid>
-
                       </Grid>
                     </Grid>
-
-
 
                     <Grid container spacing={3}>
                       <Grid item md={4}>
@@ -983,7 +1001,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 6} sm={12} xs={12}>
+                      <Grid item md={6} sm={12} xs={12}>
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
@@ -993,17 +1011,15 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         />
                       </Grid>
 
-                      {!isEdit &&
-                        <Grid item md={6} sm={12} xs={12}>
-                          <Selector
-                            isRequired
-                            value={EMPTY_OPTION}
-                            label={USUAL_PROVIDER_ID}
-                            name="usualProviderId"
-                            options={renderDoctors(doctorList)}
-                          />
-                        </Grid>
-                      }
+                      <Grid item md={6} sm={12} xs={12}>
+                        <Selector
+                          isRequired
+                          value={EMPTY_OPTION}
+                          label={USUAL_PROVIDER_ID}
+                          name="usualProviderId"
+                          options={renderDoctors(doctorList)}
+                        />
+                      </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
@@ -1296,7 +1312,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         </Box>
 
       </form>
-      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} />
+      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} verifiedAddressHandler={verifiedAddressHandler} />
     </FormProvider>
   );
 };

@@ -19,7 +19,7 @@ import {
 } from "../generated/graphql";
 
 // regex
-export const ZIP_REGEX = /^\d{5}$/;
+export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
 export const NUMBER_REGEX = /^[0-9]+$/;
@@ -35,8 +35,7 @@ export const TAXONOMY_CODE_REGEX = /^[A-Z0-9]{9}X$/;
 export const ALPHABETS_REGEX = /^[^\s].([A-Za-z]+\s)*[A-Za-z]+$/;
 export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
-export const PASSWORD_REGEX =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
+export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
 // roles
 export const SUPER_ADMIN = 'super-admin';
@@ -44,12 +43,15 @@ export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
 export const Ok_TEXT = "OK";
-export const ZIP_CODE_AND_CITY = "Please enter zipcode & city";
-export const ZIP_CODE_ENTER = "Please enter zipcode";
+export const LOCK_TIME_OUT = 600000;
+export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
+export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
 export const CHECK_ADDRESS = "Check Address";
 export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
 export const YOU_ENTER = "You have entered:";
+export const SELECT_ADDRESS = "Please select a address";
+export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
@@ -70,7 +72,7 @@ export const SELECT_COLUMN_TEXT = "Select a column";
 export const YES_TEXT = "Yes";
 export const NO_TEXT = "No";
 export const CANCEL_TEXT = "Cancel";
-export const REUIRED_TEXT = "Required?";
+export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
 export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
@@ -231,8 +233,10 @@ export const VITALS_TEXT = "Vitals";
 export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
+export const PUBLISH = "Publish";
 export const TO_BILLING = "To Billing";
 export const UPLOAD_LOGO = "Upload Logo";
+export const SAVE_DRAFT = "Save as Draft";
 export const UPLOAD_PICTURE = "Upload Picture";
 export const ALLOW_CANCELLATION = "Allow Cancellations";
 export const VACCINE_TEXT = "Vaccine";
@@ -308,11 +312,13 @@ export const CANCELLED_APPOINTMENT = "Cancelled Appointment";
 export const CANCELLED_APPOINTMENT_DESCRIPTION =
   "View cancelled appointments and their reason";
 export const CALENDAR_SETTINGS_TEXT = "Calendar Settings";
+export const BUSINESS_HOURS = "Business Hours";
 export const FACILITY_SCHEDULE = "Facility Schedule";
 export const FACILITY_REGISTRATION = "Facility Registration";
 export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage slots";
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
+export const FORM_FIELDS = "Form Fields";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
@@ -387,6 +393,7 @@ export const CHAMPUS = "Champus";
 export const FROM_TEXT = "From:";
 export const MEDICARE = "Medicare";
 export const MEDICAID = "Medicaid";
+export const CHART_ID = "Chart ID";
 export const ACTIVE_TEXT = "Active";
 export const MERCHANT_ID = "Merchant ID";
 export const BANK_ACCOUNT = "Bank Account";
@@ -395,6 +402,7 @@ export const PRICE_TEXT = "Price (In USD)";
 export const STATE_LICENSE = "State License";
 export const CTP_NUMBER = "DPS / CTP Number";
 export const FACILITY_TYPE = "Facility Type";
+export const OFFICE_TIMING = "Office Timing";
 export const SERVICE_NAME_TEXT = "Service Name";
 export const SELECT_COLOR_TEXT = "Select Color";
 export const EMC_PROVIDER_ID = "EMC Provider ID";
@@ -705,7 +713,6 @@ export const HOME_TEXT = "Home";
 export const PENDING = "Pending";
 export const ACTIONS = "Actions";
 export const PAYMENT = "Payment";
-export const HELLO_TEXT = "Hello";
 export const ROLES_TEXT = "Roles";
 export const TOTAL_TEXT = "Total";
 export const GUARDIAN = "Guardian";
@@ -715,6 +722,7 @@ export const INDUSTRY = "Industry";
 export const RELOAD = "Go To Home";
 export const LANGUAGE = "Language";
 export const PRONOUNS = "Pronouns";
+export const UNLOCK_TEXT = "Unlock";
 export const LEGAL_SEX = "Legal Sex";
 export const MORE_INFO = "More Info";
 export const ID_NUMBER = "ID Number";
@@ -836,6 +844,7 @@ export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
 export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
+export const ROUTE = "Route";
 export const CHOOSE_YOUR_PAYMENT_METHOD = "2- Choose your Payment Method";
 export const EMAIL_NOT_RECEIVE_TEXT = "Did’t receive an email? Try Again";
 export const GUARANTOR_RELATION = "Patient’s Relationship with guarantor";
@@ -878,10 +887,12 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
     dateTime || ""
   )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
 
+
 // routes paths
 export const ROOT_ROUTE = "/";
-export const LOGIN_ROUTE = "/login";
+export const LOCK_ROUTE = "/lock";
 export const STAFF_ROUTE = "/staff";
+export const LOGIN_ROUTE = "/login";
 export const ROLES_ROUTE = "/roles";
 export const VITALS_ROUTE = "/vitals";
 export const PATIENTS_CHART = "/chart";
@@ -935,7 +946,7 @@ export const PATIENT_APPOINTMENT_CANCEL = `${PUBLIC_APPOINTMENT_ROUTE}/appointme
 export const BILLING_PROFILE_ROUTE = "billing-profile";
 export const FACILITY_INFO_ROUTE = "facility-information";
 export const FACILITY_LOCATION_ROUTE = "facility-location";
-export const FACILITY_SCHEDULE_ROUTE = "facility-schedule";
+export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
@@ -943,7 +954,7 @@ export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
-export const ZIP_VALIDATION_MESSAGE = "Valid zip code is 5-digit long";
+export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
@@ -968,6 +979,7 @@ export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, 
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
+export const DROP_FIELD = 'Please drop atleast one field';
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
 export const ROLE_NOT_FOUND = "Role not found!";
@@ -1473,20 +1485,34 @@ export const MAPPED_SERVICE_CODES: SelectorOption[] = [
 ];
 
 export const MAPPED_SPECIALTIES: SelectorOption[] = [
+  { id: Speciality.AllergyOrImmunology, name: formatValue(Speciality.AllergyOrImmunology) },
+  { id: Speciality.Anesthesiology, name: formatValue(Speciality.Anesthesiology) },
+  { id: Speciality.Cardiology, name: formatValue(Speciality.Cardiology) },
+  { id: Speciality.Dermatology, name: formatValue(Speciality.Dermatology) },
+  { id: Speciality.FamilyPractice, name: formatValue(Speciality.FamilyPractice) },
+  { id: Speciality.Gastroenterology, name: formatValue(Speciality.Gastroenterology) },
+  { id: Speciality.GeneralPractice, name: formatValue(Speciality.GeneralPractice) },
+  { id: Speciality.GeneralSurgery, name: formatValue(Speciality.GeneralSurgery) },
+  { id: Speciality.InternalMedicine, name: formatValue(Speciality.InternalMedicine) },
+  { id: Speciality.InterventionalPainManagement, name: formatValue(Speciality.InterventionalPainManagement) },
   { id: Speciality.Neurology, name: formatValue(Speciality.Neurology) },
+  { id: Speciality.Neurosurgery, name: formatValue(Speciality.Neurosurgery) },
+  { id: Speciality.ObstetricsOrGynecology, name: formatValue(Speciality.ObstetricsOrGynecology) },
+  { id: Speciality.Ophthalmology, name: formatValue(Speciality.Ophthalmology) },
+  { id: Speciality.OralSurgery, name: formatValue(Speciality.OralSurgery) },
+  { id: Speciality.OrthopedicSurgery, name: formatValue(Speciality.OrthopedicSurgery) },
+  { id: Speciality.OsteopathicManipulativeTherapy, name: formatValue(Speciality.OsteopathicManipulativeTherapy) },
+  { id: Speciality.Otolaryngology, name: formatValue(Speciality.Otolaryngology) },
+  { id: Speciality.Pathology, name: formatValue(Speciality.Pathology) },
+  { id: Speciality.PediatricDentist, name: formatValue(Speciality.PediatricDentist) },
+  { id: Speciality.PediatricDermatology, name: formatValue(Speciality.PediatricDermatology) },
+  { id: Speciality.Periodontics, name: formatValue(Speciality.Periodontics) },
   { id: Speciality.Pharmacist, name: formatValue(Speciality.Pharmacist) },
-  {
-    id: Speciality.Gastroenterology,
-    name: formatValue(Speciality.Gastroenterology),
-  },
-  {
-    id: Speciality.PediatricDentist,
-    name: formatValue(Speciality.PediatricDentist),
-  },
-  {
-    id: Speciality.PhysicianAssistant,
-    name: formatValue(Speciality.PhysicianAssistant),
-  },
+  { id: Speciality.PhysicalMedicineAndRehabilitation, name: formatValue(Speciality.PhysicalMedicineAndRehabilitation) },
+  { id: Speciality.PhysicianAssistant, name: formatValue(Speciality.PhysicianAssistant) },
+  { id: Speciality.PlasticAndReconstructiveSurgery, name: formatValue(Speciality.PlasticAndReconstructiveSurgery) },
+  { id: Speciality.Psychiatry, name: formatValue(Speciality.Psychiatry) },
+
 ];
 
 export const MAPPED_MARITAL_STATUS: SelectorOption[] = [
@@ -1687,17 +1713,6 @@ export const StepperIcons: { [index: string]: number } = { 1: 1, 2: 2, 3: 3 };
 export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
   { title: "Patient Information" },
   { title: "Document Verification" },
-];
-
-export const AGREEMENT_POINTS = [
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
-  LOREM_TEXT_15,
 ];
 
 // Breadcrumb links
@@ -2430,7 +2445,7 @@ export const ITEMS: ItemsTypes[] = [
   {
     icon: DateIcon,
     fieldId: uuid(),
-    label: 'Date Input',
+    label: 'Date',
     type: ElementType.Date,
     name: uuid(),
     css: '',
@@ -2445,7 +2460,7 @@ export const ITEMS: ItemsTypes[] = [
   {
     icon: NumberIcon,
     fieldId: uuid(),
-    label: 'Number Input',
+    label: 'Number',
     type: ElementType.Number,
     name: uuid(),
     css: '',
@@ -2557,7 +2572,7 @@ export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   }
 }
 
-export const getForminitialValues = () => [
+export const getFormInitialValues = () => [
   {
     id: uuid(),
     col: 12,
@@ -2599,7 +2614,7 @@ export const FacilityMenuNav = [
     linkTo: BILLING_PROFILE_ROUTE,
   },
   {
-    title: FACILITY_SCHEDULE,
+    title: BUSINESS_HOURS,
     linkTo: FACILITY_SCHEDULE_ROUTE,
   }
 ];

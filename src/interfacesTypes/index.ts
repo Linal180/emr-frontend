@@ -40,10 +40,11 @@ export interface CalendarChart {
 export interface AuthContextProps {
   user: User | null;
   isLoggedIn: boolean;
-  currentUser: Doctor | Staff | null;
   userPermissions: string[],
+  currentUser: Doctor | Staff | null;
   setUser: (user: User | null) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setCurrentUser: (user: Doctor | Staff | null) => void;
 }
 
 export interface DoctorScheduleSlotProps {
@@ -171,6 +172,7 @@ export interface ViewAppointmentCardProps {
 
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
+  disabled?: boolean;
 }
 
 type LoginControlTypes = "email" | "password";
@@ -812,8 +814,8 @@ export interface CustomSelectControlProps extends IControlLabel {
 }
 
 export interface FieldEditModalProps {
-  open: boolean;
-  closeModalHanlder: () => void;
+  open?: boolean;
+  closeModalHanlder?: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
 }
@@ -839,7 +841,7 @@ export interface LoaderProps {
 
 export interface FormBuilderPreviewProps {
   open: Boolean;
-  closeModalHanlder: () => void;
+  closeModalHandler: () => void;
   data: SectionsInputs[];
 }
 
@@ -864,7 +866,8 @@ export interface SmartyModalComponentType {
   setOpen: Function;
   isOpen: boolean;
   data: usStreet.Candidate[];
-  userData: SmartyUserData
+  userData: SmartyUserData;
+  verifiedAddressHandler: (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => void
 }
 
 export interface GetAddressResponse {

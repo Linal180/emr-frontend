@@ -47,7 +47,12 @@ query GetLoggedInUser {
       facility {
         id
         name
-        practiceId        
+        practiceId 
+        
+        practice {
+          id
+          name
+        }       
       }
     }
   }

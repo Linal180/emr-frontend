@@ -3,6 +3,7 @@ import { Redirect, Route, Switch } from "react-router-dom";
 // components
 import Login from "../pages/auth/login";
 import PublicRoute from "./PublicRoute";
+import { Lock } from "../pages/auth/lock";
 import PrivateRoute from "./PrivateRoute";
 import { PageNotFound } from "../pages/404";
 import { TwoFA } from "../pages/main/2FA";
@@ -76,7 +77,7 @@ import {
   SETTINGS_ROUTE, PATIENT_APPOINTMENT_FAIL, PROFILE_ROUTE, MAINTENANCE_ROUTE, PATIENT_APPOINTMENT_CANCEL,
   PATIENTS_CHART, VITALS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, APPOINTMENT_PAYMENT, ROLES_ROUTE, CALENDAR_ROUTE,
   EMERGENCY_ACCESS_ROUTE, FORM_BUILDER_ROUTE, SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE,
-  SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE,
+  SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, LOCK_ROUTE,
   PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE, FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE,
   CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, TWO_FA_ROUTE,
   USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE
@@ -88,6 +89,7 @@ const Routes: FC = (): JSX.Element => {
   return (
     <Switch>
       <PublicRoute path={LOGIN_ROUTE} component={Login} exact />
+      <PublicRoute path={LOCK_ROUTE} component={Lock} exact />
       <PublicRoute path={FORGET_PASSWORD_ROUTE} component={ForgetPassword} exact />
       <PublicRoute path={SET_PASSWORD_ROUTE} component={SetPassword} exact />
       <PublicRoute path={RESET_PASSWORD_ROUTE} component={ResetPassword} exact />

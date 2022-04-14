@@ -16,12 +16,13 @@ import {
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  USER_EMAIL, VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE,
+  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
 } from "../constants";
 
 export const handleLogout = () => {
   localStorage.removeItem(TOKEN);
-  localStorage.removeItem(USER_EMAIL);
+  localStorage.removeItem(EMAIL);
+  sessionStorage.removeItem(ROUTE);
   history.push(LOGIN_ROUTE);
   client.clearStore();
 };
@@ -213,6 +214,38 @@ export const renderRoles = (roles: RolesPayload['roles']) => {
       if (role) {
         const { role: name } = role;
 
+        name && data.push({ id: name, name: formatValue(name) })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderOfficeRoles = (roles: RolesPayload['roles']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!roles) {
+    for (let role of roles) {
+      if (role) {
+        const { role: name } = role;
+        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' )
+        name && data.push({ id: name, name: formatValue(name) })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderStaffRoles = (roles: RolesPayload['roles']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!roles) {
+    for (let role of roles) {
+      if (role) {
+        const { role: name } = role;
+        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' && name !== 'doctor' )
         name && data.push({ id: name, name: formatValue(name) })
       }
     }
@@ -576,3 +609,10 @@ export const renderFacility = (facilityId: string, facilities: FacilitiesPayload
 export const checkPermission = (permissions: string[], query: string): boolean => {
   return permissions.includes(query)
 };
+
+export const onIdle = () => {
+  const route = history.location.pathname
+  sessionStorage.setItem(ROUTE, route);
+  localStorage.removeItem(TOKEN);
+  history.push(LOCK_ROUTE);
+}

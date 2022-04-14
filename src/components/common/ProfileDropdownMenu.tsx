@@ -1,32 +1,52 @@
 // packages block
-import { useState, MouseEvent, useContext } from "react";
+import { useState, MouseEvent, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton } from '@material-ui/core';
+import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, } from '@material-ui/core';
 // utils and header styles block
-import { WHITE_FOUR } from "../../theme";
-import { handleLogout } from "../../utils";
 import { AuthContext } from "../../context";
+import { BLACK_TWO, WHITE_FOUR } from "../../theme";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import StatusSelector from "../main/dashboard/statusSelector";
+import { handleLogout, isSuperAdmin, onIdle } from "../../utils";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
+
 import {
-  GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SECURITY
+  EMAIL, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
+  SECURITY, SUPER_ADMIN
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { setIsLoggedIn, setUser } = useContext(AuthContext)
+  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
+  const { email, facility, roles } = user || {};
+  const { firstName, lastName } = currentUser || {}
+  const { practice } = facility || {}
+  const { name } = practice || {}
+  const [isSuper, setIsSuper] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  const handleIdle = () => {
+    email && localStorage.setItem(EMAIL, email)
+    onIdle();
+    setUser(null)
+    setCurrentUser(null)
+    setIsLoggedIn(false)
+  }
+
   const logout = () => {
     setIsLoggedIn(false)
     setUser(null)
+    setCurrentUser(null)
     handleLogout();
   };
-  
+
+  useEffect(() => {
+    setIsSuper(isSuperAdmin(roles))
+  }, [isSuper, roles, user]);
+
   return (
     <>
       <IconButton
@@ -54,13 +74,23 @@ const ProfileDropdownMenu = (): JSX.Element => {
             <Box display="flex" alignItems="center">
               <NewAvatarIcon />
 
-              <Box ml={1}>
-                <Typography variant="h6">Richard Alvis</Typography>
+              <Box ml={2}>
+                {isSuper ?
+                  <Typography variant="h6">{SUPER_ADMIN}</Typography>
+                  :
+                  <Typography variant="h6">{firstName} {lastName}</Typography>
+                }
               </Box>
             </Box>
-
-            <StatusSelector />
           </Box>
+
+          {name && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+            <Box pr={1} color={BLACK_TWO}>
+              <Typography variant="body1">{PRACTICE} :</Typography>
+            </Box>
+
+            <Typography variant="body1">{name || '--'}</Typography>
+          </Box>}
 
           <Grid container spacing={3}>
             <Grid item md={6}>
@@ -103,7 +133,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
           <Box mt={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`}>
             <Grid container spacing={3}>
               <Grid item md={8}>
-                <Button variant="contained" color="inherit" size="small" className="blue-button-new" fullWidth>
+                <Button onClick={() => handleIdle()} variant="contained" color="inherit" size="small" className="blue-button-new" fullWidth>
                   {LOCK_SCREEN}
                 </Button>
               </Grid>

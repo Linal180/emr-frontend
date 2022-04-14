@@ -1,35 +1,32 @@
 // packages block
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { withRouter } from "react-router";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Button, CircularProgress } from "@material-ui/core";
+import { Box, Button, CircularProgress } from "@material-ui/core";
 // components block
 import AuthLayout from "../AuthLayout";
 import Alert from "../../common/Alert";
-import LoginController from "./LoginController";
+import LoginController from "../login/LoginController";
 // history, context, constants, graphql, and utils
 import history from "../../../history";
-import { requiredLabel } from "../../../utils";
+import { handleLogout, requiredLabel } from "../../../utils";
 import { AuthContext } from "../../../context";
+import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
-  EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
-  NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
-  SOMETHING_WENT_WRONG, LOGIN, TWO_FACTOR_LOGIN, TWO_FACTOR_LOGIN_DESCRIPTION,
+  EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION,
+  NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
+  SOMETHING_WENT_WRONG, LOGOUT_TEXT, UNLOCK_TEXT, ROUTE,
 } from "../../../constants";
-import ConfirmationAuthenticationModal from "../../common/ConfirmationAuthenticationModal";
-// import ConfirmationAuthenticationModal from "../../common/ConfirmationAuthenticationModal";
 
-const LoginComponent = (): JSX.Element => {
+const LockComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
   const { fetchAllFacilityList } = useContext(ListContext);
-  const [openModal, setOpenModal] = useState<boolean>(false)
-
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
-      email: "",
+      email: localStorage.getItem(EMAIL) || '',
       password: "",
     },
 
@@ -37,9 +34,6 @@ const LoginComponent = (): JSX.Element => {
   });
 
   const [login, { loading }] = useLoginMutation({
-    fetchPolicy: "network-only",
-    notifyOnNetworkStatusChange: true,
-
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION || message === EXCEPTION)
         return Alert.error(EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE)
@@ -57,32 +51,26 @@ const LoginComponent = (): JSX.Element => {
           }
 
           if (status === 200 && access_token && roles) {
-            if (status === 200) {
-              setOpenModal(true)
-            } else {
-              const userRoles = roles.map(role => role.role)
-              const isAdmin = userRoles.filter(role => role !== 'patient')
+            const userRoles = roles.map(role => role.role)
+            const isAdmin = userRoles.filter(role => role !== 'patient')
 
-              if (!!isAdmin?.length) {
-                localStorage.setItem(TOKEN, access_token);
-                setIsLoggedIn(true);
-                fetchAllFacilityList();
-                Alert.success(LOGIN_SUCCESSFULLY)
-                history.push(DASHBOARD_ROUTE);
-              } else {
-                Alert.error(NOT_SUPER_ADMIN_MESSAGE)
-              }
+            if (!!isAdmin?.length) {
+              localStorage.setItem(TOKEN, access_token);
+              setIsLoggedIn(true);
+              fetchAllFacilityList();
+              const existingRoute = sessionStorage.getItem(ROUTE)
+                ? sessionStorage.getItem(ROUTE) : DASHBOARD_ROUTE
+              existingRoute && history.push(existingRoute);
+            } else {
+              Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }
           } else {
             Alert.error(SOMETHING_WENT_WRONG)
           }
-
         }
       }
     }
   });
-
-
 
   const onSubmit: SubmitHandler<LoginUserInput> = async (data) => {
     setIsLoggedIn(false);
@@ -92,18 +80,13 @@ const LoginComponent = (): JSX.Element => {
     });
   };
 
-
-
-  useEffect(() => {
-    localStorage.getItem(TOKEN) && history.push(DASHBOARD_ROUTE)
-  }, []);
-
   const { email: { message: emailError } = {}, password: { message: passwordError } = {} } = errors;
 
   return (
     <AuthLayout>
       <form onSubmit={handleSubmit(onSubmit)}>
         <LoginController
+          disabled
           control={control}
           controllerName="email"
           controllerLabel={requiredLabel(EMAIL)}
@@ -119,23 +102,20 @@ const LoginComponent = (): JSX.Element => {
           fieldType="password"
           error={passwordError}
         />
+        <Box display='flex' justifyContent='space-between'>
+          <Button variant="contained" color="inherit" onClick={() => handleLogout()}>
+            {LOGOUT_TEXT}
+          </Button>
 
-        <Button type="submit" variant="contained" color="inherit" fullWidth disabled={loading}>
-          {SIGN_IN}
+          <Button type="submit" variant="contained" color="inherit">
+            {UNLOCK_TEXT}
 
-          {loading && <CircularProgress size={20} color="inherit" />}
-        </Button>
+            {loading && <CircularProgress size={20} color="inherit" />}
+          </Button>
+        </Box>
       </form>
-
-      <ConfirmationAuthenticationModal
-        isOpen={openModal}
-        title={TWO_FACTOR_LOGIN}
-        description={TWO_FACTOR_LOGIN_DESCRIPTION}
-        actionText={LOGIN}
-        setOpen={(open: boolean) => setOpenModal(open)}
-      />
     </AuthLayout>
   );
 };
 
-export default withRouter(LoginComponent);
+export default withRouter(LockComponent);

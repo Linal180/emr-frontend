@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState, ChangeEvent } from "react";
+import { FC, useState, ChangeEvent, memo } from "react";
 import {
   Button, Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, FormControl,
   FormLabel, FormControlLabel, RadioGroup, Radio
@@ -7,18 +7,39 @@ import {
 // constants and interfaces block
 import { SmartyModalComponentType } from "../../interfacesTypes";
 import { useSmartyModalStyles } from "../../styles/smartyModalStyles";
-import { DISMISS, Ok_TEXT, CHECK_ADDRESS, SMARTY_0_MATCH, YOU_ENTER, POSSIBLE_MATCH } from "../../constants";
+import { DISMISS, Ok_TEXT, CHECK_ADDRESS, SMARTY_0_MATCH, YOU_ENTER, POSSIBLE_MATCH, SELECT_ADDRESS } from "../../constants";
+import Alert from "./Alert";
 
-const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, userData }): JSX.Element => {
+const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, userData, verifiedAddressHandler }): JSX.Element => {
   const classes = useSmartyModalStyles();
   const { address, street } = userData || {}
-  const [addValue, setAddValue] = useState('')
+  const [addValue, setAddValue] = useState<string>('')
 
   const handleClose = () => setOpen && setOpen(!isOpen);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setAddValue((event.target as HTMLInputElement).value);
   };
+
+  const clickHandler = () => {
+
+    if (data?.length !== 0) {
+      if (addValue) {
+        const address = JSON.parse(addValue);
+        const { deliveryLine1, cityName, zipCode, plus4Code } = address || {};
+        verifiedAddressHandler(deliveryLine1, zipCode, plus4Code, cityName);
+        setAddValue('')
+        handleClose();
+      }
+      else {
+        Alert.error(SELECT_ADDRESS)
+      }
+    }
+    else {
+      handleClose();
+    }
+  }
+
 
   return (
     <Dialog
@@ -39,10 +60,11 @@ const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, user
           <FormControl component="fieldset" className={classes.formControl}>
             <FormLabel component="legend" className={classes.smallText}>{data?.length} {POSSIBLE_MATCH}</FormLabel>
             <RadioGroup name="address" value={addValue} onChange={handleChange}>
-              {data?.map((add) => {
-                const { deliveryLine1, lastLine } = add || {}
+              {data?.map((add, index) => {
+                const { deliveryLine1, lastLine, components } = add || {}
+                const { cityName, state, zipCode, plus4Code } = components
                 return (
-                  <FormControlLabel value={`${deliveryLine1},${lastLine}`} control={<Radio color="primary" />} label={<>{deliveryLine1}<br />{lastLine}</>} />
+                  <FormControlLabel key={`${index}-${deliveryLine1}-${lastLine}`} value={JSON.stringify({ deliveryLine1, cityName, state, zipCode, plus4Code })} control={<Radio color="primary" />} label={<>{deliveryLine1}<br />{lastLine}</>} />
                 )
               })}
             </RadioGroup>
@@ -57,10 +79,10 @@ const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, user
           </Box>
         }
 
-        <Button color="primary" variant="contained" disabled={data?.length > 0 ? !addValue : false} onClick={handleClose} size="large">{Ok_TEXT}</Button>
+        <Button color="primary" variant="contained" disabled={data?.length > 0 ? !addValue : false} onClick={clickHandler} size="large">{Ok_TEXT}</Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default SmartyModal;
+export default memo(SmartyModal);
