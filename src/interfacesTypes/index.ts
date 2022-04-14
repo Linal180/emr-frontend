@@ -791,6 +791,7 @@ export interface FormInitialType extends FieldsInputs {
 export interface FormValuesTypes {
   id: string;
   col: number;
+  name: string;
   fields: FieldsInputs[],
 }
 
@@ -818,6 +819,7 @@ export interface DropContainerPropsTypes {
   changeValues: (id: string, item: FieldsInputs) => void;
   delFieldHandler: (id: number, index: number) => void;
   delColHandler: (index: number) => void
+  setFormValues: Dispatch<SetStateAction<SectionsInputs[]>>
 }
 
 

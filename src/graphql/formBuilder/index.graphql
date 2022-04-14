@@ -27,6 +27,7 @@ query findAllForms($formInput: FormInput!) {
         sections {
           id
           col
+          name
 
           fields {
             label
@@ -51,7 +52,7 @@ query findAllForms($formInput: FormInput!) {
         }
       }
     }
-    
+
     pagination {
       page
       limit
@@ -82,11 +83,12 @@ query getForm($getForm: GetForm!) {
       name
       type
       facilityId
-      
+
       layout {
         sections {
           id
           col
+          name
 
           fields {
             label
@@ -144,6 +146,7 @@ query getPublicForm($getForm: GetForm!) {
         sections {
           id
           col
+          name
 
           fields {
             label
@@ -167,6 +170,47 @@ query getPublicForm($getForm: GetForm!) {
           }
         }
       }
+    }
+  }
+}
+
+query findAllUsersForms($userFormInput: UserFormInput!) {
+  findAllUsersForms(userFormInput: $userFormInput) {
+    response {
+      status
+      message
+    }
+
+    userForms {
+      id
+      PatientId
+      StaffId
+      FormId
+      SubmitterId
+      userFormElements {
+        id
+        UsersFormsId
+        FormsElementsId
+        value
+        arrayOfStrings {
+          name
+          value
+        }
+      }
+    }
+  }
+}
+
+mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
+  saveUserFormValues(createUserFormInput: $createUserFormInput) {
+    response {
+      status
+      message
+      error
+    }
+
+    userForm {
+      id
     }
   }
 }

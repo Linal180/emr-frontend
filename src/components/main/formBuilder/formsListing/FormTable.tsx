@@ -14,7 +14,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import FormPreviewModal from '../previewModal'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext, ListContext } from "../../../../context";
-import { isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
+import { getFormatDate, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs'
 import {
@@ -23,7 +23,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
-  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_EMBED_TITLE
+  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_EMBED_TITLE, CREATED_ON
 } from "../../../../constants";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
@@ -178,6 +178,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
               {renderTh(NAME)}
               {renderTh(TYPE)}
               {isSuper && renderTh(FACILITY_NAME)}
+              {renderTh(CREATED_ON)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -191,7 +192,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               forms?.map((record: FormPayload['form']) => {
-                const { id, type, name, facilityId, layout } = record || {};
+                const { id, type, name, facilityId, layout, createdAt } = record || {};
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
@@ -199,6 +200,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
                     {isSuper && facilityId && <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell>}
+                    <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_FORM_LINK}>
@@ -250,9 +252,11 @@ const FormBuilderTable: FC = (): JSX.Element => {
         <ConfirmationModal title={FORM_TEXT} isOpen={openDelete} isLoading={deleteFormLoading}
           description={DELETE_FORM_DESCRIPTION} handleDelete={handleDeleteForm}
           setOpen={(open: boolean) => setOpenDelete(open)} />
+
         <ShareModal title={FORM_EMBED_TITLE} isOpen={openShare}
           description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`}
           handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
+
         <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHandler={previewCloseHandler} />
       </Box>
     </Box>

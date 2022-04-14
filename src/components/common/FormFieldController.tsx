@@ -12,14 +12,13 @@ export const FieldController = ({ item, isCreating }: FieldComponentProps) => {
   const { control } = useFormContext();
   const classes = useFormStyles();
   //constants
-  const { name, defaultValue, required, label } = item;
+  const { name, required, label } = item;
   //render
   return (
     <Controller
       name={name}
       control={control}
-      defaultValue={defaultValue}
-      render={({ field }) => (
+      render={({ field, }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={name} className={classes.detailTooltipBox}>
             {required ? `${label} *` : label}

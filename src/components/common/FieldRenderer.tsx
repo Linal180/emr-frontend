@@ -1,6 +1,7 @@
 //packages import
 import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, Radio, FormGroup, Checkbox } from '@material-ui/core'
-//constant & interfaces , util funtions
+import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
+//constant & interfaces , util functions
 import { ElementType } from '../../generated/graphql'
 import { FieldComponentProps } from '../../interfacesTypes';
 import { getFieldType } from '../../utils';
@@ -50,18 +51,30 @@ export const RadioGroupComponent = ({ item, field }: FieldComponentProps) => {
   )
 }
 //checkbox component
-export const CheckboxGroupComponent = ({ item, field }: FieldComponentProps) => {
-  const { defaultValue, fieldId } = item;
+export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
+  const { defaultValue, fieldId, name } = item;
+  const { control } = useFormContext();
+  useFieldArray({ control, name });
+
+  // useEffect(() => {
+  //   options?.length > 0 && prepend(options)
+  // }, [options, prepend])
 
 
   return (
     <FormControl>
+
       <FormGroup
         aria-labelledby={fieldId}
         defaultValue={defaultValue}
       >
         {item?.options?.map((option, index) => (
-          <FormControlLabel key={`${index}-${fieldId}-${option.value}`} control={<Checkbox {...field} />} label={option.name} />
+          <Controller
+            name={`${name}.${index}.${option.name}`}
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel key={`${index}-${fieldId}-${option.value}`} control={<Checkbox {...field} />} label={option.name} />)}
+          />
         ))}
       </FormGroup>
     </FormControl>

@@ -130,6 +130,17 @@ export type AppointmentsPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type ArrayOfStringsType = {
+  __typename?: 'ArrayOfStringsType';
+  name: Scalars['String'];
+  value: Scalars['Boolean'];
+};
+
+export type ArrayOfStringsTypeInput = {
+  name: Scalars['String'];
+  value: Scalars['Boolean'];
+};
+
 export type Attachment = {
   __typename?: 'Attachment';
   attachmentName?: Maybe<Scalars['String']>;
@@ -646,6 +657,15 @@ export type CreateStaffItemInput = {
   /** Send Investor Type from the ENUM - Sign-up */
   roleType?: Maybe<Scalars['String']>;
   username: Scalars['String'];
+};
+
+export type CreateUserFormInput = {
+  DoctorId?: Maybe<Scalars['String']>;
+  FormId: Scalars['String'];
+  PatientId?: Maybe<Scalars['String']>;
+  StaffId?: Maybe<Scalars['String']>;
+  SubmitterId?: Maybe<Scalars['String']>;
+  userFormElements: Array<UserFormElementInputs>;
 };
 
 export type CreateVitalInput = {
@@ -1244,6 +1264,7 @@ export type Mutation = {
   resendVerificationEmail: UserPayload;
   resentOTP: UserPayload;
   resetPassword: UserPayload;
+  saveUserFormValues: UserFormPayload;
   sendInviteToPatient: PatientPayload;
   update2FactorAuth: UserPayload;
   updateAppointment: AppointmentPayload;
@@ -1527,6 +1548,11 @@ export type MutationResentOtpArgs = {
 
 export type MutationResetPasswordArgs = {
   resetPassword: ResetPasswordInput;
+};
+
+
+export type MutationSaveUserFormValuesArgs = {
+  createUserFormInput: CreateUserFormInput;
 };
 
 
@@ -2022,6 +2048,7 @@ export type Query = {
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
+  findAllUsersForms: UserFormsPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
@@ -2126,6 +2153,11 @@ export type QueryFindAllServicesArgs = {
 
 export type QueryFindAllStaffArgs = {
   staffInput: StaffInput;
+};
+
+
+export type QueryFindAllUsersFormsArgs = {
+  userFormInput: UserFormInput;
 };
 
 
@@ -2395,6 +2427,14 @@ export type ResponsePayload = {
   status?: Maybe<Scalars['Float']>;
 };
 
+export type ResponsePayloadResponse = {
+  __typename?: 'ResponsePayloadResponse';
+  error?: Maybe<Scalars['String']>;
+  message?: Maybe<Scalars['String']>;
+  name?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['Float']>;
+};
+
 export type Role = {
   __typename?: 'Role';
   createdAt?: Maybe<Scalars['String']>;
@@ -2518,6 +2558,7 @@ export type SectionsInputs = {
   col: Scalars['Int'];
   fields: Array<FieldsInputs>;
   id: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type SectionsTypes = {
@@ -2525,6 +2566,7 @@ export type SectionsTypes = {
   col: Scalars['Int'];
   fields: Array<FieldsTypes>;
   id: Scalars['String'];
+  name: Scalars['String'];
 };
 
 export type SeneOtpAgainInput = {
@@ -3241,6 +3283,42 @@ export type User = {
   userType: Scalars['String'];
 };
 
+export type UserFormElementInputs = {
+  FormsElementsId: Scalars['String'];
+  arrayOfStrings: Array<ArrayOfStringsTypeInput>;
+  value: Scalars['String'];
+};
+
+export type UserFormInput = {
+  paginationOptions: PaginationInput;
+};
+
+export type UserFormPayload = {
+  __typename?: 'UserFormPayload';
+  response?: Maybe<ResponsePayloadResponse>;
+  userForm?: Maybe<UserForms>;
+};
+
+export type UserForms = {
+  __typename?: 'UserForms';
+  DoctorId?: Maybe<Scalars['String']>;
+  FormId: Scalars['String'];
+  PatientId?: Maybe<Scalars['String']>;
+  StaffId?: Maybe<Scalars['String']>;
+  SubmitterId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+  userFormElements?: Maybe<Array<UsersFormsElements>>;
+};
+
+export type UserFormsPayload = {
+  __typename?: 'UserFormsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayloadResponse>;
+  userForms?: Maybe<Array<UserForms>>;
+};
+
 export type UserIdInput = {
   adminId?: Maybe<Scalars['String']>;
   isEnabled?: Maybe<Scalars['Boolean']>;
@@ -3258,6 +3336,18 @@ export enum UserStatus {
   Active = 'ACTIVE',
   Deactivated = 'DEACTIVATED'
 }
+
+export type UsersFormsElements = {
+  __typename?: 'UsersFormsElements';
+  FormsElementsId: Scalars['String'];
+  UsersFormsId: Scalars['String'];
+  arrayOfStrings: Array<ArrayOfStringsType>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  updatedAt?: Maybe<Scalars['String']>;
+  userForm?: Maybe<UserForms>;
+  value?: Maybe<Scalars['String']>;
+};
 
 export type UsersInput = {
   paginationOptions: PaginationInput;
@@ -3543,7 +3633,7 @@ export type FindAllFormsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms?: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId: string, name: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms?: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId: string, name: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type RemoveFormMutationVariables = Exact<{
   removeForm: RemoveForm;
@@ -3557,7 +3647,7 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, type: FormType, facilityId: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, type: FormType, facilityId: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
@@ -3571,7 +3661,21 @@ export type GetPublicFormQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId: string, name: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId: string, name: string, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+
+export type FindAllUsersFormsQueryVariables = Exact<{
+  userFormInput: UserFormInput;
+}>;
+
+
+export type FindAllUsersFormsQuery = { __typename?: 'Query', findAllUsersForms: { __typename?: 'UserFormsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, userForms?: Array<{ __typename?: 'UserForms', id: string, PatientId?: string | null | undefined, StaffId?: string | null | undefined, FormId: string, SubmitterId?: string | null | undefined, userFormElements?: Array<{ __typename?: 'UsersFormsElements', id: string, UsersFormsId: string, FormsElementsId: string, value?: string | null | undefined, arrayOfStrings: Array<{ __typename?: 'ArrayOfStringsType', name: string, value: boolean }> }> | null | undefined }> | null | undefined } };
+
+export type SaveUserFormValuesMutationVariables = Exact<{
+  createUserFormInput: CreateUserFormInput;
+}>;
+
+
+export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined, userForm?: { __typename?: 'UserForms', id: string } | null | undefined } };
 
 export type CreateInvoiceMutationVariables = Exact<{
   createInvoiceInputs: CreateInvoiceInputs;
@@ -5606,6 +5710,7 @@ export const FindAllFormsDocument = gql`
         sections {
           id
           col
+          name
           fields {
             label
             name
@@ -5717,6 +5822,7 @@ export const GetFormDocument = gql`
         sections {
           id
           col
+          name
           fields {
             label
             name
@@ -5825,6 +5931,7 @@ export const GetPublicFormDocument = gql`
         sections {
           id
           col
+          name
           fields {
             label
             name
@@ -5878,6 +5985,101 @@ export function useGetPublicFormLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetPublicFormQueryHookResult = ReturnType<typeof useGetPublicFormQuery>;
 export type GetPublicFormLazyQueryHookResult = ReturnType<typeof useGetPublicFormLazyQuery>;
 export type GetPublicFormQueryResult = Apollo.QueryResult<GetPublicFormQuery, GetPublicFormQueryVariables>;
+export const FindAllUsersFormsDocument = gql`
+    query findAllUsersForms($userFormInput: UserFormInput!) {
+  findAllUsersForms(userFormInput: $userFormInput) {
+    response {
+      status
+      message
+    }
+    userForms {
+      id
+      PatientId
+      StaffId
+      FormId
+      SubmitterId
+      userFormElements {
+        id
+        UsersFormsId
+        FormsElementsId
+        value
+        arrayOfStrings {
+          name
+          value
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllUsersFormsQuery__
+ *
+ * To run a query within a React component, call `useFindAllUsersFormsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllUsersFormsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllUsersFormsQuery({
+ *   variables: {
+ *      userFormInput: // value for 'userFormInput'
+ *   },
+ * });
+ */
+export function useFindAllUsersFormsQuery(baseOptions: Apollo.QueryHookOptions<FindAllUsersFormsQuery, FindAllUsersFormsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllUsersFormsQuery, FindAllUsersFormsQueryVariables>(FindAllUsersFormsDocument, options);
+      }
+export function useFindAllUsersFormsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllUsersFormsQuery, FindAllUsersFormsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllUsersFormsQuery, FindAllUsersFormsQueryVariables>(FindAllUsersFormsDocument, options);
+        }
+export type FindAllUsersFormsQueryHookResult = ReturnType<typeof useFindAllUsersFormsQuery>;
+export type FindAllUsersFormsLazyQueryHookResult = ReturnType<typeof useFindAllUsersFormsLazyQuery>;
+export type FindAllUsersFormsQueryResult = Apollo.QueryResult<FindAllUsersFormsQuery, FindAllUsersFormsQueryVariables>;
+export const SaveUserFormValuesDocument = gql`
+    mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
+  saveUserFormValues(createUserFormInput: $createUserFormInput) {
+    response {
+      status
+      message
+      error
+    }
+    userForm {
+      id
+    }
+  }
+}
+    `;
+export type SaveUserFormValuesMutationFn = Apollo.MutationFunction<SaveUserFormValuesMutation, SaveUserFormValuesMutationVariables>;
+
+/**
+ * __useSaveUserFormValuesMutation__
+ *
+ * To run a mutation, you first call `useSaveUserFormValuesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSaveUserFormValuesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [saveUserFormValuesMutation, { data, loading, error }] = useSaveUserFormValuesMutation({
+ *   variables: {
+ *      createUserFormInput: // value for 'createUserFormInput'
+ *   },
+ * });
+ */
+export function useSaveUserFormValuesMutation(baseOptions?: Apollo.MutationHookOptions<SaveUserFormValuesMutation, SaveUserFormValuesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SaveUserFormValuesMutation, SaveUserFormValuesMutationVariables>(SaveUserFormValuesDocument, options);
+      }
+export type SaveUserFormValuesMutationHookResult = ReturnType<typeof useSaveUserFormValuesMutation>;
+export type SaveUserFormValuesMutationResult = Apollo.MutationResult<SaveUserFormValuesMutation>;
+export type SaveUserFormValuesMutationOptions = Apollo.BaseMutationOptions<SaveUserFormValuesMutation, SaveUserFormValuesMutationVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
   createInvoice(createInvoiceInputs: $createInvoiceInputs) {

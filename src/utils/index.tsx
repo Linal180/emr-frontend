@@ -229,8 +229,8 @@ export const renderOfficeRoles = (roles: RolesPayload['roles']) => {
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' )
-        name && data.push({ id: name, name: formatValue(name) })
+        if (name !== 'patient' && name !== 'super-admin' && name !== 'admin')
+          name && data.push({ id: name, name: formatValue(name) })
       }
     }
   }
@@ -245,8 +245,8 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' && name !== 'doctor' )
-        name && data.push({ id: name, name: formatValue(name) })
+        if (name !== 'patient' && name !== 'super-admin' && name !== 'admin' && name !== 'doctor')
+          name && data.push({ id: name, name: formatValue(name) })
       }
     }
   }
@@ -616,3 +616,8 @@ export const onIdle = () => {
   localStorage.removeItem(TOKEN);
   history.push(LOCK_ROUTE);
 }
+
+export const getFormatDate = (date: Maybe<string> | undefined) => {
+  if (!date) return '';
+  return moment(date, "x").format("DD/MM/YY")
+};

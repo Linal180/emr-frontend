@@ -1,6 +1,6 @@
 //packages block
 import { useEffect, useState } from 'react';
-import { Button, Grid, Box } from '@material-ui/core';
+import { Button, Grid, Box, Typography } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 //components block
@@ -9,7 +9,7 @@ import Alert from '../../../common/Alert';
 //interfaces & constants
 import { ParamsType } from '../../../../interfacesTypes'
 import { LoaderBackdrop, parseColumnGrid } from '../../../../utils';
-import { SectionsInputs, useGetPublicFormLazyQuery } from '../../../../generated/graphql';
+import { SectionsInputs, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
 import { getFormInitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
@@ -53,16 +53,45 @@ const PublicFormPreview = () => {
       history.push(PUBLIC_FORM_BUILDER_FAIL_ROUTE)
     }
   })
-  //form submit handler
-  const submitHandler = (values: any) => {
-    closeHandler()
-  };
-  //close handler
 
-  const closeHandler = () => {
-    reset({})
-  }
-  //
+  const [createUserForm, { }] = useSaveUserFormValuesMutation({
+    onCompleted: () => {
+
+    },
+    onError: () => {
+
+    }
+  })
+
+  const submitHandler = (values: any) => {
+
+
+    if (id) {
+      let arr = [];
+      for (const property in values) {
+        console.log(`${property}: ${values[property]}`);
+        if (Array.isArray(property)) {
+          const options = values[property]
+          // arr.push({ FormsElementsId: property, value: '', arrayOfStrings: options })
+        }
+        else {
+          arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [] })
+        }
+      }
+      const data = {
+        FormId: id,
+        DoctorId: "",
+        PatientId: "",
+        StaffId: "",
+        SubmitterId: "",
+        userFormElements: [{ FormsElementsId: "full_name", value: "Ali", arrayOfStrings: [] }]
+      }
+    }
+
+    // createUserForm({ variables: { createUserFormInput: data } })
+    reset()
+  };
+
   useEffect(() => {
     id ? getForm({ variables: { getForm: { id } } }) : history.push(PUBLIC_FORM_BUILDER_FAIL_ROUTE)
   }, [getForm, id])
@@ -80,6 +109,11 @@ const PublicFormPreview = () => {
               <Grid container spacing={2}>
                 {formValues?.map((item, index) => (
                   <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
+                    <Box p={2} pl={0}>
+                      <Typography variant='h4'>
+                        {item?.name}
+                      </Typography>
+                    </Box>
                     <Grid container spacing={2}>
                       {item?.fields?.map((field) => (
                         <Grid

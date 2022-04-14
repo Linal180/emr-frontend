@@ -178,6 +178,7 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 12,
+            name: 'Section_1',
             fields: [],
           },
         ]);
@@ -189,11 +190,13 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 6,
+            name: 'Section_1',
             fields: [],
           },
           {
             id: uuid(),
             col: 6,
+            name: 'Section_2',
             fields: [],
           },
         ]);
@@ -205,16 +208,19 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 4,
+            name: 'Section_1',
             fields: [],
           },
           {
             id: uuid(),
             col: 4,
+            name: 'Section_2',
             fields: [],
           },
           {
             id: uuid(),
             col: 4,
+            name: 'Section_3',
             fields: [],
           },
         ]);
@@ -226,6 +232,7 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 12,
+            name: 'Section_1',
             fields: [],
           },
         ]);
@@ -376,7 +383,8 @@ const AddForm = () => {
                 <Grid item md={7} sm={4} xs={12}>
                   <Box p={3} bgcolor={WHITE} borderRadius={6}>
                     {getFormLoader ? <ViewDataLoader rows={3} columns={3} hasMedia={false} /> :
-                      <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
+                      <DropContainer formValues={formValues} changeValues={changeValues} 
+                      delFieldHandler={delFieldHandler} delColHandler={delColHandler} setFormValues={setFormValues} />
                     }
                     <Grid container justifyContent='center'>
                       <Grid item md={4} sm={12} xs={12}>

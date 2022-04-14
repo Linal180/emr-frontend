@@ -91,6 +91,7 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
@@ -2569,6 +2570,7 @@ export const getFormInitialValues = () => [
   {
     id: uuid(),
     col: 12,
+    name: 'Section',
     fields: [],
   },
 ]
