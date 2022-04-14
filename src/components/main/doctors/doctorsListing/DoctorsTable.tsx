@@ -10,7 +10,7 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext, ListContext } from "../../../../context";
+import { AuthContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, formatValue, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
@@ -33,7 +33,6 @@ const DoctorsTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
   const { practiceId } = facility || {}
-  const { fetchAllDoctorList, setDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
   const [{ copied }, appointmentDispatcher] =
@@ -91,8 +90,6 @@ const DoctorsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           fetchAllDoctors()
-          setDoctorList([]);
-          fetchAllDoctorList();
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }

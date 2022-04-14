@@ -66,15 +66,15 @@ export interface ListContextInterface {
   facilityList: FacilitiesPayload['facilities'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
-  doctorList: AllDoctorPayload['doctors'];
-  setDoctorList: Function;
-  fetchAllDoctorList: Function;
-  serviceList: ServicesPayload['services'];
-  setServicesList: Function;
-  fetchAllServicesList: Function;
-  patientList: PatientsPayload['patients'];
-  setPatientList: Function;
-  fetchAllPatientList: Function;
+  deletePracticeList: Function;
+  deleteRoleList: Function;
+  deleteFacilityList: Function;
+  addPracticeList: Function;
+  addRoleList: Function;
+  addFacilityList: Function;
+  updatePracticeList: Function;
+  updateRoleList: Function;
+  updateFacilityList: Function;
 }
 
 export interface FacilityContextInterface {
