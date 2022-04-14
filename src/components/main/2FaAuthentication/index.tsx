@@ -8,14 +8,13 @@ import Alert from "../../common/Alert";
 import history from "../../../history";
 import AuthLayout from '../../auth/AuthLayout';
 // interfaces/types block/theme/svgs/constants
-import { handleLogout } from "../../../utils";
 import InputController from "../../../controller";
 import { otpSchema } from "../../../validationSchemas";
 import { AuthContext, ListContext } from "../../../context";
 import { useHeaderStyles } from "../../../styles/headerStyles";
-import { useResentOtpMutation, useVerifyOtpMutation } from "../../../generated/graphql";
 import { VerifyCodeInputProps } from "../../../interfacesTypes";
-import { CANT_CANCELLED_APPOINTMENT, ERROR, RESEND_OTP, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, SIGN_IN, ENTER_OTP_CODE } from "../../../constants";
+import { useResentOtpMutation, useVerifyOtpMutation } from "../../../generated/graphql";
+import { ERROR, RESEND_OTP, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, SIGN_IN, ENTER_OTP_CODE, OTP_NOT_FOUND_EXCEPTION_MESSAGE, OTP_WRONG_MESSAGE } from "../../../constants";
 
 const TwoFaAuthenticationComponent = (): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -30,9 +29,11 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
   const { handleSubmit } = methods;
 
   const [verifyOtp, { loading: verifyOtpLoading }] = useVerifyOtpMutation({
-    onError() {
-      Alert.error(CANT_CANCELLED_APPOINTMENT)
-      handleLogout()
+    onError({ message }) {
+      message === OTP_NOT_FOUND_EXCEPTION_MESSAGE ?
+        Alert.error(OTP_WRONG_MESSAGE)
+        :
+        Alert.error(message)
     },
 
     async onCompleted(data) {
@@ -100,7 +101,7 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
           />
           <Box display='flex' justifyContent='flex-end'>
             <Typography onClick={handleResendOtp} className={classes.resendBtn}>
-              {resentOtpLoading && <CircularProgress size={20} color='primary' />}
+              {resentOtpLoading && <CircularProgress size={20} color='inherit' />}
               {RESEND_OTP}
             </Typography>
           </Box>

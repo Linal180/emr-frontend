@@ -17,7 +17,7 @@ import {
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
-  SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME,
+  SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -85,16 +85,12 @@ const notRequiredPhone = (label: string) => {
       })
 }
 
-const notRequiredOTP = (label: string) => {
+const notRequiredOTP = (label: string, isRequired: boolean) => {
   return yup.string()
-    .test(
-      '', MinLength(label, 6), value => {
-        if (!value) {
-          return true
-        }
-
-        return !!value && value.length >= 6
-      })
+    .test('', requiredMessage(label), value => isRequired ? !!value : true)
+    .matches(NUMBER_REGEX, ValidOTP())
+    .min(6, MinLength(label, 6)).max(6, MaxLength(label, 6))
+    .required(requiredMessage(label))
 }
 
 const stateSchema = (isRequired: boolean) => {
@@ -717,7 +713,7 @@ export const facilityScheduleSchema = yup.object({
 })
 
 const otpBasicSchema = {
-  otpCode: notRequiredOTP(OTP_CODE),
+  otpCode: notRequiredOTP(OTP_CODE, true),
 }
 
 export const otpSchema = yup.object({

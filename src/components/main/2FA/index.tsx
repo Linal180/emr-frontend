@@ -11,7 +11,7 @@ import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   GENERAL, PROFILE_GENERAL_MENU_ITEMS, SECURITY, USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, TWO_FA_AUTHENTICATION, STATUS,
-  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD, TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED,
+  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD, TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED, NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE,
 } from '../../../constants';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context';
@@ -20,11 +20,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { twoFAValidationSchema } from '../../../validationSchemas';
 import { TwoFactorInputProps } from '../../../interfacesTypes';
 import Alert from '../../common/Alert';
-import { handleLogout } from '../../../utils';
 import { AntSwitch } from '../../../styles/publicAppointmentStyles/externalPatientStyles';
 
 const TwoFAComponent = (): JSX.Element => {
-  const { user, setIsLoggedIn, setUser } = useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const { id, isTwoFactorEnabled: userTwoFactor } = user || {}
   const classes = useHeaderStyles();
   const [isChecked, setIsChecked] = useState(false);
@@ -37,7 +36,10 @@ const TwoFAComponent = (): JSX.Element => {
 
   const [fAEnabled, { loading }] = useUpdate2FactorAuthMutation({
     onError({ message }) {
-      return Alert.error(message)
+      message === NOT_FOUND_EXCEPTION ?
+        Alert.error(VALID_PASSWORD_MESSAGE)
+        :
+        Alert.error(message)
     },
 
     onCompleted(data) {
@@ -48,7 +50,6 @@ const TwoFAComponent = (): JSX.Element => {
           const { status } = response
           if (status === 200) {
             Alert.success(TWO_FA_ENABLED_SUCCESSFULLY)
-            logout()
           }
         }
       }
@@ -72,12 +73,6 @@ const TwoFAComponent = (): JSX.Element => {
     const { target: { checked } } = event
     setIsChecked(checked);
     setValue('isTwoFactorEnabled', checked)
-  };
-
-  const logout = () => {
-    setIsLoggedIn(false)
-    setUser(null)
-    handleLogout();
   };
 
   useEffect(() => {
