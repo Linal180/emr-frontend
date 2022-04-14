@@ -1,6 +1,7 @@
 mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
     access_token
+    isTwoFactorEnabled
     
     response {
       status

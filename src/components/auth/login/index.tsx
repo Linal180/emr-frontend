@@ -1,5 +1,5 @@
 // packages block
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { withRouter } from "react-router";
 import { yupResolver } from '@hookform/resolvers/yup';
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -11,21 +11,18 @@ import LoginController from "./LoginController";
 // history, context, constants, graphql, and utils
 import history from "../../../history";
 import { requiredLabel } from "../../../utils";
-import { AuthContext } from "../../../context";
+import { AuthContext, ListContext } from "../../../context";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
-  SOMETHING_WENT_WRONG, LOGIN, TWO_FACTOR_LOGIN, TWO_FACTOR_LOGIN_DESCRIPTION,
+  SOMETHING_WENT_WRONG, TWO_FA_AUTHENTICATION_ROUTE,
 } from "../../../constants";
-import ConfirmationAuthenticationModal from "../../common/ConfirmationAuthenticationModal";
-// import ConfirmationAuthenticationModal from "../../common/ConfirmationAuthenticationModal";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
   const { fetchAllFacilityList } = useContext(ListContext);
-  const [openModal, setOpenModal] = useState<boolean>(false)
 
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
@@ -47,7 +44,7 @@ const LoginComponent = (): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { login: { response, access_token, roles } } = data
+        const { login: { response, access_token, roles, isTwoFactorEnabled } } = data
 
         if (response) {
           const { status } = response
@@ -57,21 +54,21 @@ const LoginComponent = (): JSX.Element => {
           }
 
           if (status === 200 && access_token && roles) {
-            if (status === 200) {
-              setOpenModal(true)
-            } else {
-              const userRoles = roles.map(role => role.role)
-              const isAdmin = userRoles.filter(role => role !== 'patient')
+            const userRoles = roles.map(role => role.role)
+            const isAdmin = userRoles.filter(role => role !== 'patient')
 
-              if (!!isAdmin?.length) {
-                localStorage.setItem(TOKEN, access_token);
-                setIsLoggedIn(true);
+            if (!!isAdmin?.length) {
+              localStorage.setItem(TOKEN, access_token);
+              setIsLoggedIn(true);
+              if (!isTwoFactorEnabled) {
                 fetchAllFacilityList();
                 Alert.success(LOGIN_SUCCESSFULLY)
                 history.push(DASHBOARD_ROUTE);
               } else {
-                Alert.error(NOT_SUPER_ADMIN_MESSAGE)
+                history.push(TWO_FA_AUTHENTICATION_ROUTE);
               }
+            } else {
+              Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }
           } else {
             Alert.error(SOMETHING_WENT_WRONG)
@@ -126,14 +123,6 @@ const LoginComponent = (): JSX.Element => {
           {loading && <CircularProgress size={20} color="inherit" />}
         </Button>
       </form>
-
-      <ConfirmationAuthenticationModal
-        isOpen={openModal}
-        title={TWO_FACTOR_LOGIN}
-        description={TWO_FACTOR_LOGIN_DESCRIPTION}
-        actionText={LOGIN}
-        setOpen={(open: boolean) => setOpenModal(open)}
-      />
     </AuthLayout>
   );
 };

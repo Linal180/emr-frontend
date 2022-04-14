@@ -138,9 +138,18 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   resendBtn: {
-    marginTop: 30,
+    paddingBottom: 30,
     textDecoration: 'underline',
     color: BLUE,
     cursor: 'pointer'
+  },
+
+  otpDialogue: {
+
+    "& .MuiDialog-paper": {
+      overflowY: 'clip',
+      borderRadius: 5,
+      padding: 20
+    }
   }
 }));

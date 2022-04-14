@@ -46,6 +46,7 @@ import { AddFacility } from "../pages/main/facilities/addFacility";
 import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
 import { ViewFacility } from "../pages/main/facilities/viewFacility";
+import { TwoFaAuthentication } from "../pages/main/2FaAuthentication";
 import { DetailPractice } from "../pages/main/practices/detailPractice";
 import { Facilities } from "../pages/main/facilities/facilitiesListing";
 import { AppointmentFail } from "../pages/main/publicAppointments/fail";
@@ -80,7 +81,7 @@ import {
   SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, LOCK_ROUTE,
   PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE, FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE,
   CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, TWO_FA_ROUTE,
-  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE
+  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, TWO_FA_AUTHENTICATION_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -117,6 +118,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={PRACTICE_DETAILS_ROUTE} component={DetailPractice} />
       <PrivateRoute exact path={SIGNATURE_ROUTE} component={Signature} />
       <PrivateRoute exact path={CANCELLATION_ROUTE} component={Cancellation} />
+      <PrivateRoute exact path={TWO_FA_AUTHENTICATION_ROUTE} component={TwoFaAuthentication} />
       <PrivateRoute exact path={TWO_FA_ROUTE} component={TwoFA} />
       <PrivateRoute exact path={ROLES_ROUTE} component={Roles} permission={USER_PERMISSIONS.getAllRoles} />
       <PrivateRoute exact path={`${ROLES_ROUTE}/new`} component={AddRole} permission={USER_PERMISSIONS.createRole} />
