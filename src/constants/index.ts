@@ -43,7 +43,7 @@ export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
 export const Ok_TEXT = "OK";
-export const LOCK_TIME_OUT = 600000;
+export const LOCK_TIME_OUT = 6000000;
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";

@@ -1,5 +1,5 @@
 // packages block
-import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "react";
+import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
@@ -11,9 +11,10 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
-import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
+import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation
 } from "../../../../generated/graphql";
@@ -27,19 +28,15 @@ const PatientsTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const { practiceId } = facility || {}
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [searchQuery,] = useState<string>('');
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [deletePatientId, setDeletePatientId] = useState<string>("");
-  const [patients, setPatients] = useState<PatientsPayload['patients']>([]);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
 
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setPatients([]);
+      dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
     },
 
     onCompleted(data) {
@@ -47,11 +44,11 @@ const PatientsTable: FC = (): JSX.Element => {
 
       if (findAllPatient) {
         const { pagination, patients } = findAllPatient
-        patients && setPatients(patients as PatientsPayload['patients'])
+        patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
 
         if (!searchQuery && pagination) {
           const { totalPages } = pagination
-          totalPages && setTotalPages(totalPages)
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
       }
     }
@@ -64,12 +61,10 @@ const PatientsTable: FC = (): JSX.Element => {
       const patientsInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllPatient({
-        variables: {
-          patientInput: { ...patientsInputs }
-        },
+        variables: { patientInput: { ...patientsInputs, searchString: searchQuery } }
       })
     } catch (error) { }
-  }, [practiceId, findAllPatient, page, roles])
+  }, [roles, page, practiceId, findAllPatient, searchQuery])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     notifyOnNetworkStatusChange: true,
@@ -77,7 +72,7 @@ const PatientsTable: FC = (): JSX.Element => {
 
     onError() {
       Alert.error(CANT_DELETE_PATIENT)
-      setOpenDelete(false)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
     onCompleted(data) {
@@ -87,7 +82,7 @@ const PatientsTable: FC = (): JSX.Element => {
         if (response) {
           const { message } = response
           message && Alert.success(message);
-          setOpenDelete(false)
+          dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           fetchAllPatients();
         }
       }
@@ -95,33 +90,30 @@ const PatientsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => { }, [user]);
-
   useEffect(() => {
-    !searchQuery && fetchAllPatients()
+    fetchAllPatients()
   }, [page, searchQuery, fetchAllPatients]);
 
-  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
+  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
+    dispatch({ type: ActionType.SET_PAGE, page });
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setDeletePatientId(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_DELETE_PATIENT_ID, deletePatientId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
   const handleDeletePatient = async () => {
-    if (deletePatientId) {
-      await removePatient({
-        variables: {
-          removePatient: {
-            id: deletePatientId
-          }
-        }
-      })
-    }
+    deletePatientId && await removePatient({
+      variables: { removePatient: { id: deletePatientId } }
+    })
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -208,7 +200,7 @@ const PatientsTable: FC = (): JSX.Element => {
           isLoading={deletePatientLoading}
           description={DELETE_PATIENT_DESCRIPTION}
           handleDelete={handleDeletePatient}
-          setOpen={(open: boolean) => setOpenDelete(open)}
+          setOpen={(openDelete: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete })}
         />
       </Box>
     </Box>
