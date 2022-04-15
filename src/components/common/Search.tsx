@@ -2,9 +2,10 @@
 import { FC, useState } from "react";
 import { Box, IconButton, TextField } from "@material-ui/core";
 // styles, constants, utils and interfaces block
-import { TablesSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
+import { Clear } from "@material-ui/icons";
+import SearchIcon from '@material-ui/icons/Search';
 
 const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
   const classes = useTableStyles()
@@ -15,23 +16,25 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
   }
 
   return (
-    <Box className={classes.searchContainer}>
+    <Box className={classes.tableSearchBox}>
+      <IconButton aria-label="search">
+        <SearchIcon />
+      </IconButton>
+
       <TextField
         name="searchQuery"
-        className={classes.tablesSearchIcon}
+        className={classes.tableSearchInput}
         value={query}
         onChange={({ target: { value } }) => setQuery(value)}
         onKeyPress={({ key }) => key === "Enter" && handleSearch()}
-        placeholder="Search"
+        placeholder="Search here..."
         variant="outlined"
         fullWidth
-        InputProps={{
-          startAdornment:
-            <IconButton color="default">
-              <TablesSearchIcon />
-            </IconButton>
-        }}
       />
+
+      {query && <IconButton type="submit" aria-label="clear">
+        <Clear />
+      </IconButton>}
     </Box>
   );
 };

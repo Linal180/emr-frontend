@@ -9,7 +9,8 @@ import Search from "../Search";
 import { renderTh } from "../../../utils";
 import StatusSelector from "../../main/dashboard/statusSelector";
 import { useTableStyles } from "../../../styles/tableStyles";
-import { MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, LAB_ORDERS_DUMMY_DATA, CREATE_LAB_ORDERS_ROUTE, } from "../../../constants";
+import { MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, LAB_ORDERS_DUMMY_DATA, CREATE_LAB_ORDERS_ROUTE, IN_PROGRESS, } from "../../../constants";
+import { BLUE_EIGHT } from "../../../theme";
 
 const LabOrdersTable = (): JSX.Element => {
   const classes = useTableStyles();
@@ -49,7 +50,10 @@ const LabOrdersTable = (): JSX.Element => {
 
                 <TableCell scope="row">{date}</TableCell>
                 <TableCell scope="row">
-                  <StatusSelector />
+                  {/* <StatusSelector /> */}
+                  <Box className={classes.status} component='span' color={BLUE_EIGHT} border={`1px solid ${BLUE_EIGHT}`}>
+                    {IN_PROGRESS}
+                  </Box>
                 </TableCell>
               </TableRow>
             )}
