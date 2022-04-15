@@ -3,16 +3,16 @@ import { core, usAutocompletePro, usZipcode, usStreet } from 'smartystreets-java
 //interfaces
 import { GetAddressResponse, VerifyResponse, AutoCompleteResponse } from '../../../interfacesTypes';
 //constants
-const smartyId = process.env.SMARTY_ID || 'c9ba762d-47d1-a874-c0f9-13c80894d76d';
-const smartyToken = process.env.SMARTY_TOKEN || 'rKqWvqJFyiFJdgwd4XgC';
+
+const smartyKey = process.env.REACT_APP_SMARTY_KEY || '';
 
 /**
  * Gets address by zipcode
  * @param zipCode 
  */
 export const getAddressByZipcode = async (zipCode: string): Promise<GetAddressResponse> => {
-  const staticCredentials = new core.StaticCredentials(smartyId, smartyToken);
-  const clientBuilder = new core.ClientBuilder(staticCredentials);
+  const credentials = new core.SharedCredentials(smartyKey);
+  const clientBuilder = new core.ClientBuilder(credentials);
 
   const client = clientBuilder.buildUsZipcodeClient();
   const lookup = new usZipcode.Lookup();
@@ -62,18 +62,18 @@ export const getAddressByZipcode = async (zipCode: string): Promise<GetAddressRe
 }
 
 /**
- * Verifys address
+ * Verify address
  */
-export const verifyAddress = async (zipCode: string, city: string, state: string, address: string, address2: string): Promise<VerifyResponse> => {
-  const staticCredentials = new core.StaticCredentials(smartyId, smartyToken);
-  const clientBuilder = new core.ClientBuilder(staticCredentials);
+export const verifyAddress = async (zipCode: string, city: string, state: string, address: string, address2: string | undefined | null): Promise<VerifyResponse> => {
+  const credentials = new core.SharedCredentials(smartyKey);
+  const clientBuilder = new core.ClientBuilder(credentials);
   const client = clientBuilder.buildUsStreetApiClient();
   const lookup = new usStreet.Lookup();
   lookup.zipCode = zipCode;
   lookup.city = city;
   lookup.state = state;
   lookup.street = address;
-  lookup.street2 = address2
+  lookup.street2 = address2 ? address2 : ''
   lookup.match = 'enhance'
 
   let response: VerifyResponse = {
@@ -108,8 +108,9 @@ export const verifyAddress = async (zipCode: string, city: string, state: string
 }
 
 export const addressAutoComplete = async (search: string, selected: string): Promise<AutoCompleteResponse> => {
-  const staticCredentials = new core.StaticCredentials(smartyId, smartyToken);
-  const clientBuilder = new core.ClientBuilder(staticCredentials);
+  const credentials = new core.SharedCredentials(smartyKey);
+  const clientBuilder = new core.ClientBuilder(credentials);
+
   const client = clientBuilder.buildUsAutocompleteProClient();
   const lookup = new usAutocompletePro.Lookup(search);
   lookup.maxResults = 10;

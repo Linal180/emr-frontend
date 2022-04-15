@@ -31,9 +31,9 @@ import {
 } from "../../../../../generated/graphql";
 import {
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
-  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT,
+  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, APPOINTMENT_PAYMENT,
   AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
-  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT,
+  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING,
 } from "../../../../../constants";
 
 const FacilityPublicAppointmentForm = (): JSX.Element => {
@@ -131,6 +131,9 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
 
   useEffect(() => {
     if (selectedService && date) {
+      setValue('scheduleEndDateTime', '')
+      setValue('scheduleStartDateTime', '')
+
       getSlots({
         variables: {
           getSlots: {
@@ -139,7 +142,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
         }
       })
     }
-  }, [date, facilityId, getSlots, offset, selectedService, currentDate])
+  }, [date, facilityId, getSlots, offset, selectedService, currentDate, setValue])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const { firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime } = inputs;
@@ -148,7 +151,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
       if (facility) {
-        const { id: facilityId } = facility
+        const { id: facilityId, practiceId } = facility
         const { id: selectedService } = serviceId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
@@ -159,12 +162,12 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
               createExternalAppointmentItemInput: {
                 serviceId: selectedService, facilityId, paymentType: PaymentType.Self,
                 scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
-                scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
+                scheduleEndDateTime: getTimestamps(scheduleEndDateTime), practiceId: practiceId || ''
               },
 
               createPatientItemInput: {
                 email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId,
-                sexAtBirth: selectedSexAtBirth as Genderidentity,
+                sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
               },
             }
           }
@@ -268,13 +271,7 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
 
                   <CardComponent cardTitle={AGREEMENT_HEADING}>
                     <Box maxHeight={400} pl={2} mb={3} overflow="auto">
-                      <ul>
-                        {AGREEMENT_POINTS.map((point, index) => (
-                          <li key={index}>
-                            <Typography variant="subtitle1" component="p">{point}</Typography>
-                          </li>
-                        ))}
-                      </ul>
+                      <Typography variant="subtitle1" component="p">{`{{Terms of Service Content}}`}</Typography>
                     </Box>
                   </CardComponent>
 

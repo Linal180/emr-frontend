@@ -12,8 +12,8 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
-import { renderRoles } from '../../../../utils';
 import { GRAY_TWO, WHITE } from '../../../../theme';
+import { renderOfficeRoles } from '../../../../utils';
 import { AuthContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
@@ -35,7 +35,9 @@ import {
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { fetchAllPracticeList, fetchAllFacilityList, roleList, setPracticeList } = useContext(ListContext)
+  const {
+    fetchAllFacilityList, setFacilityList, addPracticeList, updatePracticeList, roleList
+  } = useContext(ListContext)
   const { id: adminId } = user || {}
   const classes = usePublicAppointmentStyles();
   const methods = useForm<CustomPracticeInputProps>({
@@ -92,7 +94,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { createPractice: { response } } = data;
+      const { createPractice: { response, practice } } = data;
 
       if (response) {
         const { status, message } = response
@@ -100,8 +102,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
-          setPracticeList([])
-          fetchAllPracticeList();
+          addPracticeList(practice)
+          setFacilityList([])
           fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
@@ -115,7 +117,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { updatePractice: { response } } = data;
+      const { updatePractice: { response, practice } } = data;
 
       if (response) {
         const { status, message } = response
@@ -123,8 +125,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (message && status && status === 200) {
           reset()
           Alert.success(message);
-          setPracticeList([])
-          fetchAllPracticeList();
+          updatePracticeList(practice)
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
       }
@@ -238,7 +239,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           label={ROLE}
                           name="roleType"
                           value={EMPTY_OPTION}
-                          options={renderRoles(roleList)}
+                          options={renderOfficeRoles(roleList)}
                         />
                       </Grid>
                     </Grid>
@@ -347,21 +348,12 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 <Grid md={12} item>
                   <CardComponent cardTitle={FACILITY_DETAILS_TEXT}>
                     <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
+                      <Grid item md={12} sm={12} xs={12}>
                         <InputController
                           isRequired
                           fieldType="text"
                           controllerName="facilityName"
                           controllerLabel={FACILITY_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="email"
-                          controllerName="email"
-                          controllerLabel={EMAIL}
                         />
                       </Grid>
                     </Grid>

@@ -2,7 +2,6 @@ query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
     pagination {
       page
-      totalCount
       totalPages
     }
     

@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext } from 'react';
+import { useEffect, FC, useContext, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
@@ -13,10 +13,10 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { staffSchema } from '../../../../validationSchemas';
-import { AuthContext, ListContext } from '../../../../context';
+import { createStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
+import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getTimestamps, renderFacilities, renderRoles, setRecord } from "../../../../utils";
+import { getTimestamps, renderDoctors, renderFacilities, renderStaffRoles, setRecord } from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
 } from "../../../../generated/graphql";
@@ -24,17 +24,20 @@ import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, 
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
   const { facilityList, roleList } = useContext(ListContext)
+  const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
-    resolver: yupResolver(staffSchema)
+    resolver: yupResolver(isEdit ? updateStaffSchema : createStaffSchema)
   });
-  const { reset, setValue, handleSubmit } = methods;
+  const { reset, setValue, handleSubmit, watch } = methods;
+  const { facilityId } = watch();
+  const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
     fetchPolicy: "network-only",
@@ -65,6 +68,8 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             const { role } = (roles && roles[0]) || {}
             const { name } = facility || {}
 
+            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
+
             dob && setValue('dob', dob)
             email && setValue('email', email)
             phone && setValue('phone', phone)
@@ -74,7 +79,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
             firstName && setValue('firstName', firstName)
             role && setValue('roleType', setRecord(role, role))
             gender && setValue('gender', setRecord(gender, gender))
-            facilityId && name && setValue('facilityId', setRecord(facilityId, name))
           }
         }
       }
@@ -125,6 +129,19 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
+  const fetchList = useCallback((id: string, name: string) => {
+    reset({
+      providerIds: EMPTY_OPTION,
+      facilityId: { id, name }
+    });
+
+    id && fetchAllDoctorList(id);
+  }, [fetchAllDoctorList, reset]);
+
+  useEffect(() => {
+    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName)
+  }, [fetchAllDoctorList, fetchList, selectedFacility, selectedFacilityName, watch]);
+
   useEffect(() => {
     if (isEdit) {
       id ?
@@ -134,14 +151,23 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [getStaff, id, isEdit])
 
   const onSubmit: SubmitHandler<ExtendedStaffInputProps> = async ({
-    firstName, lastName, email, username, phone, mobile, dob, gender, facilityId, roleType
+    firstName, lastName, email, phone, mobile, dob, gender, facilityId, roleType, providerIds
   }) => {
     const { id: staffGender } = gender
-    const { id: facilityID } = facilityId
+    const { id: selectedFacility } = facilityId
+    const { id: selectedProvider } = providerIds
+
+    let practiceId = '';
+    if (selectedFacility) {
+      const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+      const { practiceId: pId } = facility || {};
+
+      practiceId = pId || ''
+    }
 
     const staffInputs = {
-      firstName, lastName, email, phone, mobile, dob: getTimestamps(dob || ''),
-      gender: staffGender as Gender, facilityId: facilityID, username,
+      firstName, lastName, email, phone, mobile, practiceId, dob: getTimestamps(dob || ''),
+      gender: staffGender as Gender, facilityId: selectedFacility, username: '',
     };
 
     if (isEdit) {
@@ -150,7 +176,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           variables: {
             updateStaffInput: {
               updateStaffItemInput: { id, ...staffInputs },
-              providers: []
+              providers: selectedProvider ? [selectedProvider] : []
             }
           }
         })
@@ -165,8 +191,8 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         await createStaff({
           variables: {
             createStaffInput: {
-              staffInput: { password: 'staff@123', roleType: role, ...staffInputs, adminId: id },
-              providers: []
+              staffInput: { password: SYSTEM_PASSWORD, roleType: role, ...staffInputs, adminId: id },
+              providers: selectedProvider ? [selectedProvider] : []
             }
           }
         })
@@ -202,7 +228,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             label={ROLE}
                             name="roleType"
                             value={EMPTY_OPTION}
-                            options={renderRoles(roleList)}
+                            options={renderStaffRoles(roleList)}
                           />
                         </Grid>
                       }
@@ -263,23 +289,26 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={8} sm={12} xs={12}>
+                      <Grid item md={8} sm={isEdit ? 12 : 6} xs={12}>
                         <InputController
                           isRequired
-                          disabled={isEdit}
                           fieldType="email"
                           controllerName="email"
                           controllerLabel={EMAIL}
                         />
                       </Grid>
 
-                      <Grid item md={4} sm={12} xs={12}>
-                        <InputController
-                          fieldType="text"
-                          controllerName="username"
-                          controllerLabel={PROVIDER}
-                        />
-                      </Grid>
+                      {!isEdit &&
+                        <Grid item md={4} sm={12} xs={12}>
+                          <Selector
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={PROVIDER}
+                            name="providerIds"
+                            options={renderDoctors(doctorList)}
+                          />
+                        </Grid>
+                      }
                     </Grid>
                   </>
                 )}

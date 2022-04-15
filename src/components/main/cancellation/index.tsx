@@ -66,7 +66,7 @@ const CancellationComponent = (): JSX.Element => {
           </Box>
         </Grid>
 
-        <Grid item md={4} sm={12} xs={12}>
+        <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={CANCELLATIONS}>
             <Box p={2} maxWidth={340}>
               <FormProvider {...methods}>

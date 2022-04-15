@@ -6,6 +6,7 @@ import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
+import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
@@ -21,12 +22,12 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
-  CANT_DELETE_PRACTICE, DATE_ADDED, 
+  CANT_DELETE_PRACTICE, DATE_ADDED,
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const { fetchAllPracticeList, fetchAllFacilityList } = useContext(ListContext)
+  const { deletePracticeList, setFacilityList, fetchAllFacilityList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
@@ -82,8 +83,9 @@ const PracticeTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             await findAllPractices();
-            fetchAllPracticeList();
-            fetchAllFacilityList();
+            deletePracticeList(deletePracticeId);
+            setFacilityList([])
+            fetchAllFacilityList()
           }
         }
       } catch (error) { }
@@ -131,7 +133,12 @@ const PracticeTable: FC = (): JSX.Element => {
           </TableHead>
 
           <TableBody>
-            {
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={10}>
+                  <TableLoader numberOfRows={10} numberOfColumns={4} />
+                </TableCell>
+              </TableRow>) : (
               practices?.map(practice => {
                 const { id, name, phone, createdAt } = practice || {};
 
@@ -154,9 +161,9 @@ const PracticeTable: FC = (): JSX.Element => {
                       </Box>
                     </TableCell>
                   </TableRow>
-                );
-              }
-              )}
+                )
+            })
+            )}
           </TableBody>
         </Table>
 

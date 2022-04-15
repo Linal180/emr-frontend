@@ -1,5 +1,5 @@
 query FindAllPractices($practiceInput: PracticeInput!){
-  findAllPractices(facilityInput: $practiceInput){
+  findAllPractices(practiceInput: $practiceInput){
     response {
       error
       status
@@ -68,6 +68,11 @@ mutation CreatePractice($createPracticeInput: CreatePracticeInput!){
       status
       message
     }
+
+    practice {
+      id
+      name
+    }
   }
 }
 
@@ -77,6 +82,11 @@ mutation UpdatePractice($updatePracticeInput: UpdatePracticeInput!){
       error
       status
       message
+    }
+
+    practice {
+      id
+      name
     }
   }
 }

@@ -10,9 +10,9 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext, ListContext } from "../../../../context";
+import { AuthContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, formatValue, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
+import { formatPhone, formatValue, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
 import {
@@ -32,9 +32,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
-  const isAdmin = isUserAdmin(roles)
-  const { id: facilityId } = facility || {}
-  const { fetchAllDoctorList, setDoctorList } = useContext(ListContext)
+  const { practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
   const [{ copied }, appointmentDispatcher] =
@@ -70,13 +68,13 @@ const DoctorsTable: FC = (): JSX.Element => {
     try {
       const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const doctorInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      const doctorInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllDoctor({
         variables: { doctorInput: { ...doctorInputs } }
       })
     } catch (error) { }
-  }, [facilityId, findAllDoctor, page, roles])
+  }, [findAllDoctor, page, practiceId, roles])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -92,8 +90,6 @@ const DoctorsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           fetchAllDoctors()
-          setDoctorList([]);
-          fetchAllDoctorList();
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
@@ -102,7 +98,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   useEffect(() => {
     !searchQuery && fetchAllDoctors()
-  }, [page, searchQuery, facilityId, roles, fetchAllDoctors]);
+  }, [page, searchQuery, practiceId, roles, fetchAllDoctors]);
 
   useEffect(() => { }, [user]);
 
@@ -186,13 +182,11 @@ const DoctorsTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        {isAdmin &&
-                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                              <InsertLink />
-                            </Box>
-                          </DetailTooltip>
-                        }
+                        <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                          <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                            <InsertLink />
+                          </Box>
+                        </DetailTooltip>
 
                         <Link to={`${DOCTORS_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>

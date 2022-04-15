@@ -8,7 +8,6 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Avatar, Box, Button, CircularProgress, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
 import Selector from "../../../common/Selector";
-import Backdrop from '../../../common/Backdrop';
 import MediaCards from "../../../common/AddMedia/MediaCards";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import PortalTable from '../../../common/patientDetail/PortalTable';
@@ -37,6 +36,7 @@ import {
 } from "../../../../constants";
 import Insurance from './Insurance';
 import LabOrdersTable from '../../../common/patientDetail/LabOrdersTable';
+import ViewDataLoader from '../../../common/ViewDataLoader';
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
@@ -81,6 +81,16 @@ const PatientDetailsComponent = (): JSX.Element => {
     },
   });
 
+  const fetchAttachment = useCallback(async () => {
+    try {
+      await getAttachment({
+        variables: {
+          getMedia: { id: attachmentId }
+        },
+      })
+    } catch (error) { }
+  }, [attachmentId, getAttachment]) 
+
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -90,7 +100,7 @@ const PatientDetailsComponent = (): JSX.Element => {
       dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: null })
     },
 
-    onCompleted(data) {
+     onCompleted(data) {
       if (data) {
         const { getPatient } = data;
 
@@ -101,7 +111,10 @@ const PatientDetailsComponent = (): JSX.Element => {
             attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
           const { id: attachmentId, } = profilePicture || {}
 
-          attachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
+          if (attachmentId) {
+            mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
+          }
+
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
           mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
           attachments && mediaDispatch({
@@ -115,33 +128,19 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const fetchPatient = useCallback(async () => {
     try {
-      id && await getPatient({
+      await getPatient({
         variables: { getPatient: { id } }
       })
     } catch (error) { }
   }, [getPatient, id]);
 
-  const fetchAttachment = useCallback(async () => {
-    try {
-      attachmentId && await getAttachment({
-        variables: {
-          getMedia: { id: attachmentId }
-        },
-      })
-    } catch (error) { }
-  }, [attachmentId, getAttachment])
-
-  const reloadAttachment = useCallback(() => {
-    if (attachmentData) {
-      fetchAttachment();
-    } else {
-      fetchPatient()
-    }
-  }, [attachmentData, fetchAttachment, fetchPatient])
+  useEffect(() => {
+    id && fetchPatient()
+  }, [fetchPatient, id])
 
   useEffect(() => {
-    reloadAttachment()
-  }, [id, attachmentId, attachmentData, fetchAttachment, fetchPatient, reloadAttachment])
+    attachmentId && fetchAttachment();
+  }, [attachmentId, fetchAttachment])
 
   const { firstName, email: patientEmail, lastName, dob, inviteAccepted, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
@@ -218,31 +217,28 @@ const PatientDetailsComponent = (): JSX.Element => {
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
   const handleDeleteWidget = () => { };
-
   const onSubmit: SubmitHandler<any> = async (inputs) => { }
-
   const isLoading = getPatientLoading || getAttachmentLoading
-
 
   return (
     <Box>
-      {isLoading ? <Backdrop loading={true} /> : (
-        <TabContext value={tabValue}>
-          <Box display="flex" justifyContent="space-between">
-            <TabList onChange={handleChange} aria-label="Profile top tabs">
-              {PROFILE_TOP_TABS.map(item => (
-                <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
-              ))}
-            </TabList>
+      <TabContext value={tabValue}>
+        <Box display="flex" justifyContent="space-between">
+          <TabList onChange={handleChange} aria-label="Profile top tabs">
+            {PROFILE_TOP_TABS.map(item => (
+              <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+            ))}
+          </TabList>
 
-            <Box pr={2}>
-              <Link to={`${PATIENTS_ROUTE}/${id}/details${PATIENTS_CHART}`}>
-                <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
-              </Link>
-            </Box>
+          <Box pr={2}>
+            <Link to={`${PATIENTS_ROUTE}/${id}/details${PATIENTS_CHART}`}>
+              <Button color="primary" variant="contained">{VIEW_CHART_TEXT}</Button>
+            </Link>
           </Box>
+        </Box>
 
-          <Box className={classes.profileDetailsContainer}>
+        <Box className={classes.profileDetailsContainer}>
+          {isLoading ? (<ViewDataLoader rows={3} columns={6} />) : (
             <Box className={classes.profileCard}>
               <Box key={attachmentId} display="flex" alignItems="center">
                 <Box pl={1}>
@@ -257,7 +253,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
                     <MediaCards
                       title={ATTACHMENT_TITLES.ProfilePicture}
-                      reload={() => reloadAttachment()}
+                      reload={() => fetchAttachment()}
                       notDescription={true}
                       moduleType={AttachmentType.Patient}
                       itemId={id}
@@ -306,54 +302,55 @@ const PatientDetailsComponent = (): JSX.Element => {
                 </Box>
               </Box>
             </Box>
+          )}
 
-            <TabPanel value="1">
-              <Grid container spacing={3}>
-                {PROFILE_DETAIL_DATA.map((item, index) => (
-                  <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
-                    {item && item.title === "Allergies" && <>
-                      <Box
-                        my={2}
-                        aria-haspopup="true"
-                        aria-controls={widgetId}
-                        className={classes.addSlot}
-                        aria-label="widget's patient"
-                        onClick={handleWidgetMenuOpen}
-                      >
-                        <AddWidgetIcon />
+          <TabPanel value="1">
+            <Grid container spacing={3}>
+              {PROFILE_DETAIL_DATA.map((item, index) => (
+                <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
+                  {item && item.title === "Allergies" && <>
+                    <Box
+                      my={2}
+                      aria-haspopup="true"
+                      aria-controls={widgetId}
+                      className={classes.addSlot}
+                      aria-label="widget's patient"
+                      onClick={handleWidgetMenuOpen}
+                    >
+                      <AddWidgetIcon />
+                      <Typography component='h1' variant="h4">
+                        {ADD_WIDGET_TEXT}
+                      </Typography>
+                    </Box>
 
-                        <Typography component='h1' variant="h4">
-                          {ADD_WIDGET_TEXT}
-                        </Typography>
-                      </Box>
+                    <FormProvider {...methods}>
+                      <form onSubmit={handleSubmit(onSubmit)}>
+                        <Menu
+                          getContentAnchorEl={null}
+                          anchorEl={anchorEl}
+                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                          id={widgetId}
+                          keepMounted
+                          transformOrigin={{ vertical: "top", horizontal: "right" }}
+                          open={isMenuOpen}
+                          onClose={handleMenuClose}
+                          className={classes.dropdown}
+                        >
+                          <Selector
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={ADD_WIDGET_TEXT}
+                            name="addWidget"
+                            options={MAPPED_WIDGETS}
+                            isMultiple
+                          />
+                        </Menu>
+                      </form>
+                    </FormProvider>
+                  </>
+                  }
 
-                      <FormProvider {...methods}>
-                        <form onSubmit={handleSubmit(onSubmit)}>
-                          <Menu
-                            getContentAnchorEl={null}
-                            anchorEl={anchorEl}
-                            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                            id={widgetId}
-                            keepMounted
-                            transformOrigin={{ vertical: "top", horizontal: "right" }}
-                            open={isMenuOpen}
-                            onClose={handleMenuClose}
-                            className={classes.dropdown}
-                          >
-                            <Selector
-                              isRequired
-                              value={EMPTY_OPTION}
-                              label={ADD_WIDGET_TEXT}
-                              name="addWidget"
-                              options={MAPPED_WIDGETS}
-                              isMultiple
-                            />
-                          </Menu>
-                        </form>
-                      </FormProvider>
-                    </>
-                    }
-
+                  {isLoading ? (<ViewDataLoader rows={6} columns={12} />) : (
                     <Box bgcolor={WHITE} p={4}>
                       <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
                         <Box className={classes.profileInfoHeading}>
@@ -369,29 +366,29 @@ const PatientDetailsComponent = (): JSX.Element => {
                         <Typography color="inherit">{item.description}</Typography>
                       </Box>
                     </Box>
-                  </Grid>
-                ))}
-              </Grid>
-            </TabPanel>
+                  )}
+                </Grid>
+              ))}
+            </Grid>
+          </TabPanel>
 
-            <TabPanel value="2">
-              <Insurance />
-            </TabPanel>
+          <TabPanel value="2">
+            <Insurance />
+          </TabPanel>
 
-            <TabPanel value="8">
-              <DocumentsTable dispatcher={mediaDispatch} attachments={attachmentsData} />
-            </TabPanel>
+          <TabPanel value="8">
+            <DocumentsTable dispatcher={mediaDispatch} attachments={attachmentsData} />
+          </TabPanel>
 
-            <TabPanel value="9">
-              <PortalTable inviteAccepted={Boolean(inviteAccepted)} />
-            </TabPanel>
+          <TabPanel value="9">
+            <PortalTable inviteAccepted={Boolean(inviteAccepted)} />
+          </TabPanel>
 
-            <TabPanel value="10">
-              <LabOrdersTable />
-            </TabPanel>
-          </Box>
-        </TabContext>
-      )}
+          <TabPanel value="10">
+            <LabOrdersTable />
+          </TabPanel>
+        </Box>
+      </TabContext>
 
       <ConfirmationModal
         title={DELETE_WIDGET_TEXT}
@@ -400,7 +397,7 @@ const PatientDetailsComponent = (): JSX.Element => {
         handleDelete={handleDeleteWidget}
         setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
       />
-    </Box >
+    </Box>
   )
 }
 

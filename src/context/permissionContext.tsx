@@ -10,18 +10,18 @@ import {
 
 export const PermissionContext = createContext<PermissionContextInterface>({
   permissions: [],
+  permissionLoading: false
 });
 
 export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
   const [{ permissions, page }, dispatch] = useReducer<Reducer<State, Action>>(permissionContextReducer, initialState)
 
-  const [findAllPermissions] = useFindAllPermissionsLazyQuery({
+  const [findAllPermissions, {loading: permissionLoading}] = useFindAllPermissionsLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
-    onError({message}) {
-      console.log(message)
+    onError() {
       return null;
     },
 
@@ -58,7 +58,7 @@ export const PermissionContextProvider: FC = ({ children }): JSX.Element => {
 
   return (
     <PermissionContext.Provider
-      value={{ permissions }}
+      value={{ permissions, permissionLoading }}
     >
       {children}
     </PermissionContext.Provider>

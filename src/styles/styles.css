@@ -383,3 +383,25 @@ body .MuiTabPanel-root {
 .facilityActive {
   background-color: #0056B1 !important;
 }
+
+.checkedRadioButton .MuiRadio-root {
+  color: #9CA3AF !important;
+}
+
+.checkedRadioButton .MuiRadio-colorSecondary.Mui-checked {
+  color: #204ECF !important;
+}
+/* ACCORDION-STYLING */
+
+.accordionCustomize {
+  box-shadow: none !important;
+}
+
+.accordionCustomize .MuiAccordionSummary-content.Mui-expanded .MuiTypography-root {
+  color: #000000;
+  font-weight: 600;
+}
+
+.accordionCustomize .Mui-expanded {
+  border-bottom: none !important;
+}

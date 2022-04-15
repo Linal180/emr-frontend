@@ -39,6 +39,7 @@ export const RadioGroupComponent = ({ item, field }: FieldComponentProps) => {
       <RadioGroup
         defaultValue={defaultValue}
         name={name}
+        className='checkedRadioButton'
         {...field}
       >
         {item?.options?.map((option, index) => (
