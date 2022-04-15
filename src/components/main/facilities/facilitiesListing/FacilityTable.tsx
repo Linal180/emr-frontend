@@ -1,8 +1,8 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer, useCallback } from "react";
 import { Link } from "react-router-dom";
-import Pagination from "@material-ui/lab/Pagination";
 import { InsertLink } from "@material-ui/icons";
+import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -13,23 +13,23 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
 import { ListContext } from "../../../../context/listContext";
+import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, State as AppointmentState,
-  ActionType as AppointmentActionType
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, 
+  State as AppointmentState, ActionType as AppointmentActionType
 } from "../../../../reducers/appointmentReducer";
 import {
   FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED,
-  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE,
-  PUBLIC_LINK, FACILITY_SERVICES_ROUTE, SERVICES, PRACTICE, FACILITY_PUBLIC_APPOINTMENT_ROUTE,
+  CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED, SERVICES, PRACTICE,
+  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE, FACILITY_SERVICES_ROUTE,
+  PUBLIC_LINK, FACILITY_PUBLIC_APPOINTMENT_ROUTE,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
@@ -58,16 +58,14 @@ const FacilityTable: FC = (): JSX.Element => {
       if (findAllFacility) {
         const { facilities, pagination } = findAllFacility
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
-          }
-
-          facilities && dispatch({
-            type: ActionType.SET_FACILITIES, facilities: facilities as FacilitiesPayload['facilities']
-          })
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
+
+        facilities && dispatch({
+          type: ActionType.SET_FACILITIES, facilities: facilities as FacilitiesPayload['facilities']
+        })
       }
     }
   });
@@ -77,12 +75,12 @@ const FacilityTable: FC = (): JSX.Element => {
       await findAllFacility({
         variables: {
           facilityInput: {
-            practiceId, paginationOptions: { page, limit: PAGE_LIMIT }
+            practiceId, facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT }
           }
         },
       })
     } catch (error) { }
-  }, [findAllFacility, page, practiceId])
+  }, [findAllFacility, page, practiceId, searchQuery])
 
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {
@@ -108,7 +106,7 @@ const FacilityTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    !searchQuery && fetchAllFacilities();
+    fetchAllFacilities();
   }, [fetchAllFacilities, page, searchQuery]);
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) =>
@@ -141,7 +139,11 @@ const FacilityTable: FC = (): JSX.Element => {
     }
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
     <>

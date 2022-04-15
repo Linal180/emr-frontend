@@ -52,14 +52,12 @@ const DoctorsTable: FC = (): JSX.Element => {
       if (findAllDoctor) {
         const { doctors, pagination } = findAllDoctor
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
-          }
-
-          doctors && dispatch({ type: ActionType.SET_DOCTORS, doctors: doctors as AllDoctorPayload['doctors'] })
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
+
+        doctors && dispatch({ type: ActionType.SET_DOCTORS, doctors: doctors as AllDoctorPayload['doctors'] })
       }
     }
   });
@@ -71,10 +69,10 @@ const DoctorsTable: FC = (): JSX.Element => {
       const doctorInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllDoctor({
-        variables: { doctorInput: { ...doctorInputs } }
+        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
       })
     } catch (error) { }
-  }, [findAllDoctor, page, practiceId, roles])
+  }, [findAllDoctor, page, practiceId, roles, searchQuery])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -97,7 +95,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    !searchQuery && fetchAllDoctors()
+    fetchAllDoctors()
   }, [page, searchQuery, practiceId, roles, fetchAllDoctors]);
 
   useEffect(() => { }, [user]);
@@ -135,7 +133,11 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -231,8 +233,8 @@ const DoctorsTable: FC = (): JSX.Element => {
           isLoading={deleteDoctorLoading}
           handleDelete={handleDeleteDoctor}
           description={DELETE_DOCTOR_DESCRIPTION}
-          setOpen={(open: boolean) => dispatch({
-            type: ActionType.SET_OPEN_DELETE, openDelete: open
+          setOpen={(openDelete: boolean) => dispatch({
+            type: ActionType.SET_OPEN_DELETE, openDelete
           })}
         />
       </Box>
