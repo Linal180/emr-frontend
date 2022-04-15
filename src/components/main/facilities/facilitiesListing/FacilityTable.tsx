@@ -1,8 +1,8 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer, useCallback } from "react";
 import { Link } from "react-router-dom";
-import Pagination from "@material-ui/lab/Pagination";
 import { InsertLink } from "@material-ui/icons";
+import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -13,15 +13,15 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
 import { ListContext } from "../../../../context/listContext";
+import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, State as AppointmentState,
-  ActionType as AppointmentActionType
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, 
+  State as AppointmentState, ActionType as AppointmentActionType
 } from "../../../../reducers/appointmentReducer";
 import {
   FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
