@@ -4,8 +4,7 @@ import { Box, IconButton, TextField } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
-import { Clear } from "@material-ui/icons";
-import SearchIcon from '@material-ui/icons/Search';
+import { Clear, Search as SearchIcon } from "@material-ui/icons";
 
 const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
   const classes = useTableStyles()
