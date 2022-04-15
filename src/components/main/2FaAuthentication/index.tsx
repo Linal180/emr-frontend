@@ -96,7 +96,7 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
     if (!userId || !token) {
       history.push(LOGIN_ROUTE)
     }
-  }, [])
+  }, [token, userId])
 
   return (
     <AuthLayout>
