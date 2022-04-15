@@ -38,6 +38,7 @@ export type AccessUserPayload = {
   isTwoFactorEnabled?: Maybe<Scalars['Boolean']>;
   response?: Maybe<ResponsePayload>;
   roles?: Maybe<Array<Role>>;
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type AllDoctorPayload = {
