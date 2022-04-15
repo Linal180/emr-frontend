@@ -135,6 +135,7 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   const search = (query: string) => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
@@ -232,8 +233,8 @@ const DoctorsTable: FC = (): JSX.Element => {
           isLoading={deleteDoctorLoading}
           handleDelete={handleDeleteDoctor}
           description={DELETE_DOCTOR_DESCRIPTION}
-          setOpen={(open: boolean) => dispatch({
-            type: ActionType.SET_OPEN_DELETE, openDelete: open
+          setOpen={(openDelete: boolean) => dispatch({
+            type: ActionType.SET_OPEN_DELETE, openDelete
           })}
         />
       </Box>

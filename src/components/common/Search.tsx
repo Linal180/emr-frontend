@@ -9,7 +9,11 @@ import { SearchComponentProps } from "../../interfacesTypes";
 const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
-  const handleSearch = () => search(query)
+
+  const handleClear = () => {
+    setQuery('')
+    search('')
+  }
 
   return (
     <Box className={classes.tableSearchBox}>
@@ -25,11 +29,11 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
         value={query}
         className={classes.tableSearchInput}
         onChange={({ target: { value } }) => setQuery(value)}
-        onKeyPress={({ key }) => key === "Enter" && handleSearch()}
+        onKeyPress={({ key }) => key === "Enter" && search(query)}
       />
 
       {query &&
-        <IconButton type="submit" aria-label="clear">
+        <IconButton type="submit" aria-label="clear" onClick={handleClear}>
           <Clear />
         </IconButton>
       }
