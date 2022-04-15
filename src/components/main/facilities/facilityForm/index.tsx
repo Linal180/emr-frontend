@@ -331,9 +331,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         setValue('city', defaultCity)
         setValue('state', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-      else {
-        // Alert.error(message)
-      }
     }
     else {
       Alert.error(ZIP_CODE_ENTER)

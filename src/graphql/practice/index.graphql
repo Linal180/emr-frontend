@@ -1,5 +1,5 @@
 query FindAllPractices($practiceInput: PracticeInput!){
-  findAllPractices(facilityInput: $practiceInput){
+  findAllPractices(practiceInput: $practiceInput){
     response {
       error
       status

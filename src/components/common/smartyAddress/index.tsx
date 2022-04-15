@@ -62,7 +62,7 @@ export const getAddressByZipcode = async (zipCode: string): Promise<GetAddressRe
 }
 
 /**
- * Verifys address
+ * Verify address
  */
 export const verifyAddress = async (zipCode: string, city: string, state: string, address: string, address2: string | undefined | null): Promise<VerifyResponse> => {
   const credentials = new core.SharedCredentials(smartyKey);
