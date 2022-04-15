@@ -35,7 +35,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { handleSubmit, reset, setValue } = methods;
 
   const handleChangeForCheckBox = (id: string) => (
-    event: ChangeEvent<HTMLInputElement>
+    _: ChangeEvent<HTMLInputElement>
   ) => {
     if (id) {
       if (ids.includes(id)) {
