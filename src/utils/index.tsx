@@ -7,7 +7,7 @@ import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { DaySchedule, LoaderProps, SelectorOption, TableAlignType } from "../interfacesTypes";
+import { DaySchedule, LoaderProps, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
@@ -621,3 +621,36 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
   if (!date) return '';
   return moment(date, "x").format("DD/MM/YY")
 };
+
+export const getUserFormFormattedValues = (values: any) => {
+  const arr = [];
+  for (const property in values) {
+    if (Array.isArray(values[property])) {
+      const options = values[property]?.map((val: any) => {
+        const key = Object.keys(val);
+        const name = key[0];
+        const data = Object.values(val);
+        const value = data[0]
+        return { name, value: value ?? false }
+      })
+      arr.push({ FormsElementsId: property, value: '', arrayOfStrings: options })
+    }
+    else if ((values[property] instanceof File || FileList) && typeof values[property] === 'object') {
+      arr.push({ FormsElementsId: property, value: values[property][0].name, arrayOfStrings: [] })
+    }
+    else {
+      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [] })
+    }
+  }
+  return arr;
+}
+
+export const getUserFormFiles = (values: any): UserFormType[] => {
+  const arr = [];
+  for (const property in values) {
+    if ((values[property] instanceof File || FileList) && typeof values[property] === 'object') {
+      arr.push({ attachmentId: property, title: values[property][0].name, file: values[property][0] })
+    }
+  }
+  return arr;
+}

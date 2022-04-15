@@ -45,6 +45,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const [forms, setForms] = useState<FormsPayload['forms']>([]);
   const [formPreviewData, setFormPreviewData] = useState<SectionsInputs[]>([]);
   const [openPreview, setOpenPreview] = useState<boolean>(false)
+  const [formName, setFormName] = useState<string>('')
   //mutation & query
   const [findAllForms, { loading, error }] = useFindAllFormsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -134,10 +135,11 @@ const FormBuilderTable: FC = (): JSX.Element => {
     }
   };
 
-  const onViewClick = (layout: LayoutJsonType | undefined) => {
+  const onViewClick = (layout: LayoutJsonType | undefined, name: string | undefined) => {
     if (layout) {
       const { sections } = layout;
       sections?.length > 0 && setFormPreviewData(sections)
+      name && setFormName(name)
       setOpenPreview(true)
     }
   }
@@ -216,7 +218,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashNewIcon />
                         </Box>
-                        <Box className={classes.iconsBackground} onClick={() => onViewClick(layout)}>
+                        <Box className={classes.iconsBackground} onClick={() => onViewClick(layout, name)}>
                           <VisibilityIcon />
                         </Box>
                         <Box className={classes.iconsBackground} onClick={() => onShareClick(id || '')}>
@@ -257,7 +259,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
           description={`<iframe width="560" height="315" src="${formEmbedUrl}"  frameborder="0" allow="accelerometer; allowfullscreen></iframe>`}
           handleCopy={handleCopy} setOpen={(open: boolean) => setOpenShare(open)} />
 
-        <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHandler={previewCloseHandler} />
+        <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHandler={previewCloseHandler} formName={formName} />
       </Box>
     </Box>
   );

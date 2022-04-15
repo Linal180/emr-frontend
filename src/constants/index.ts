@@ -881,7 +881,10 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
   )} on ${getFormattedDate(
     dateTime || ""
   )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
-
+export const PUBLIC_FORM_SUCCESS_HEADING = 'Record Submitted';
+export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
+export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
+export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 
 // routes paths
 export const ROOT_ROUTE = "/";
@@ -929,6 +932,7 @@ export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const PUBLIC_FORM_BUILDER_FAIL_ROUTE = "/public/form-form/fail";
+export const PUBLIC_FORM_BUILDER_SUCCESS_ROUTE = "/public/form-form/success";
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
@@ -2765,3 +2769,6 @@ export enum USER_PERMISSIONS {
   getPatientProblem = 'getPatientProblem',
   removePatientProblem = 'removePatientProblem'
 }
+
+//Form Builder API urls
+export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`

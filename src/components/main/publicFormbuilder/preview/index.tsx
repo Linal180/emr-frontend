@@ -1,16 +1,20 @@
 //packages block
 import { useEffect, useState } from 'react';
-import { Button, Grid, Box, Typography } from '@material-ui/core';
+import { Button, Grid, Box, Typography, CircularProgress } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
+import axios from "axios";
 //components block
 import InputController from '../../../common/FormFieldController';
 import Alert from '../../../common/Alert';
 //interfaces & constants
-import { ParamsType } from '../../../../interfacesTypes'
-import { LoaderBackdrop, parseColumnGrid } from '../../../../utils';
+import { ParamsType, UserFormType } from '../../../../interfacesTypes'
+import { getToken, getUserFormFiles, getUserFormFormattedValues, LoaderBackdrop, parseColumnGrid } from '../../../../utils';
 import { SectionsInputs, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
-import { getFormInitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT } from '../../../../constants';
+import {
+  getFormInitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT,
+  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, USER_FORM_IMAGE_UPLOAD_URL
+} from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
 import { WHITE_SEVEN } from '../../../../theme';
@@ -22,11 +26,12 @@ const PublicFormPreview = () => {
   //hooks
   const methods = useForm<any>({ defaultValues: initialValues });
   const { id } = useParams<ParamsType>()
+  const token = getToken();
   //states
   const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
   const [formName, setFormName] = useState('')
   //constants destructuring
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit } = methods;
   //mutation
   const [getForm, { loading: getFormLoader }] = useGetPublicFormLazyQuery({
     fetchPolicy: "network-only",
@@ -54,42 +59,67 @@ const PublicFormPreview = () => {
     }
   })
 
-  const [createUserForm, { }] = useSaveUserFormValuesMutation({
-    onCompleted: () => {
+  const [createUserForm, { loading }] = useSaveUserFormValuesMutation({
+    onCompleted: (data) => {
+      const { saveUserFormValues } = data;
+      const { userForm, response } = saveUserFormValues;
+      const { status } = response || {}
+      const { id } = userForm || {}
+      if (status === 200 && id) {
+        Alert.success(PUBLIC_FORM_SUCCESS_TITLE)
+        history.push(PUBLIC_FORM_BUILDER_SUCCESS_ROUTE)
+      }
+      else {
+        Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
+      }
 
     },
     onError: () => {
-
+      Alert.error(PUBLIC_FORM_FAIL_MESSAGE)
     }
   })
 
+  const userFormUploadImage = async (file: File, attachmentId: string, title: string) => {
+    const formData = new FormData();
+    attachmentId && formData.append("id", attachmentId);
+    id && formData.append("typeId", id);
+    title && formData.append("title", title);
+    file && formData.append("file", file);
+    try {
+       const response = await axios.post(
+      `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    } catch (error) {
+      
+    }
+  
+  }
+
+
+
   const submitHandler = (values: any) => {
 
-
     if (id) {
-      let arr = [];
-      for (const property in values) {
-        console.log(`${property}: ${values[property]}`);
-        if (Array.isArray(property)) {
-          const options = values[property]
-          // arr.push({ FormsElementsId: property, value: '', arrayOfStrings: options })
-        }
-        else {
-          arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [] })
-        }
-      }
+      const formValues = getUserFormFormattedValues(values);
+      const formFiles = getUserFormFiles(values);
+      const uploadedFiles = formFiles?.map(({ file, attachmentId, title }: UserFormType) => userFormUploadImage(file, attachmentId, title))
       const data = {
         FormId: id,
         DoctorId: "",
         PatientId: "",
         StaffId: "",
         SubmitterId: "",
-        userFormElements: [{ FormsElementsId: "full_name", value: "Ali", arrayOfStrings: [] }]
+        userFormElements: formValues
       }
-    }
 
-    // createUserForm({ variables: { createUserFormInput: data } })
-    reset()
+      createUserForm({ variables: { createUserFormInput: data } })
+    }
   };
 
   useEffect(() => {
@@ -136,7 +166,8 @@ const PublicFormPreview = () => {
                 </Button>
               </Box>
               <Box>
-                <Button type={'submit'} variant={'contained'} color={'primary'}>
+                {loading && <CircularProgress size={20} color="inherit" />}
+                <Button type={'submit'} variant={'contained'} color={'primary'} disabled={loading}>
                   {FORM_SUBMIT_TEXT}
                 </Button>
               </Box>

@@ -7,7 +7,7 @@ import { FieldComponentProps } from '../../interfacesTypes';
 import { getFieldType } from '../../utils';
 //text Field component
 export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
-  const { type, textArea, placeholder, options, css, required, fieldId } = item;
+  const { type, textArea, placeholder, options, css, required, fieldId, defaultValue } = item;
   return (
     <TextField
       fullWidth
@@ -16,6 +16,7 @@ export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentPr
       SelectProps={{
         displayEmpty: true
       }}
+      defaultValue={defaultValue || ''}
       required={isCreating ? undefined : required}
       className={css}
       multiline={textArea}
@@ -29,6 +30,29 @@ export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentPr
       {options?.map((option, index) => (
         <MenuItem key={`${index}-${fieldId}-${option.value}`} value={option.value}>{option.name}</MenuItem>
       ))}
+    </TextField>
+  )
+}
+//file Field component
+export const FileFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
+  const { type, placeholder, css, required, fieldId, defaultValue } = item;
+  const { name } = field || {}
+  const { register } = useFormContext();
+  return (
+    <TextField
+      fullWidth
+      variant="outlined"
+      SelectProps={{
+        displayEmpty: true
+      }}
+      id={fieldId}
+      defaultValue={defaultValue || ''}
+      required={isCreating ? undefined : required}
+      className={css}
+      placeholder={placeholder ? placeholder : ""}
+      type={getFieldType(type)}
+      {...register(name || fieldId)}
+    >
     </TextField>
   )
 }
@@ -71,6 +95,7 @@ export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
         {item?.options?.map((option, index) => (
           <Controller
             name={`${name}.${index}.${option.name}`}
+            key={`${name}-${index}-${option.name}-field`}
             control={control}
             render={({ field }) => (
               <FormControlLabel key={`${index}-${fieldId}-${option.value}`} control={<Checkbox {...field} />} label={option.name} />)}
@@ -88,6 +113,8 @@ export const FieldRenderer = ({ item, field, isCreating }: FieldComponentProps) 
       return <CheckboxGroupComponent item={item} field={field} isCreating={isCreating} />
     case ElementType.Radio:
       return <RadioGroupComponent item={item} field={field} isCreating={isCreating} />
+    case ElementType.File:
+      return <FileFieldComponent item={item} field={field} isCreating={isCreating} />
     default:
       return <TextFieldComponent item={item} field={field} isCreating={isCreating} />
   }

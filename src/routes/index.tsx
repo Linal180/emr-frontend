@@ -63,7 +63,7 @@ import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
 import { PatientChart } from "../pages/main/patients/patientDetail/patientChart";
 import { DoctorPublicAppointment } from "../pages/main/doctorPublicAppointments";
-import { PublicFormPreview, PublicFormFail } from '../pages/main/publicFormbuilder';
+import { PublicFormPreview, PublicFormFail, PublicFormSuccessComponent } from '../pages/main/publicFormbuilder';
 import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
 import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
 import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
@@ -80,7 +80,7 @@ import {
   SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, LOCK_ROUTE,
   PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE, FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE,
   CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, TWO_FA_ROUTE,
-  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE
+  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -104,6 +104,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={`${PROVIDER_PUBLIC_APPOINTMENT_ROUTE}/:id`} component={DoctorPublicAppointment} exact />
       <PublicRoute exact path={`${PUBLIC_FORM_BUILDER_ROUTE}/:id`} component={PublicFormPreview} />
       <PublicRoute exact path={PUBLIC_FORM_BUILDER_FAIL_ROUTE} component={PublicFormFail} />
+      <PublicRoute exact path={PUBLIC_FORM_BUILDER_SUCCESS_ROUTE} component={PublicFormSuccessComponent} />
 
       <Route exact path="/">
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}

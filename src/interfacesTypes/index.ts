@@ -837,6 +837,7 @@ export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
   data: SectionsInputs[];
+  formName: string
 }
 
 export interface FieldComponentProps {
@@ -880,4 +881,11 @@ export interface AutoCompleteResponse {
   status: boolean;
   message: string;
   options: any
+}
+
+
+export interface UserFormType {
+  attachmentId: string
+  title: string
+  file: File
 }
