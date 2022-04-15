@@ -2,25 +2,23 @@
 // packages block
 import { Link } from "react-router-dom";
 import { Add } from '@material-ui/icons';
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, IconButton, } from "@material-ui/core";
 // components block
 import Search from "../Search";
 // constant, utils and styles block
-import { renderTh } from "../../../utils";
-import StatusSelector from "../../main/dashboard/statusSelector";
+import { FilledAddIcon } from "../../../assets/svgs";
+import { renderTh, appointmentStatus } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
-import { MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, LAB_ORDERS_DUMMY_DATA, CREATE_LAB_ORDERS_ROUTE, IN_PROGRESS, } from "../../../constants";
-import { BLUE_EIGHT } from "../../../theme";
+import { MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, LAB_ORDERS_DUMMY_DATA, CREATE_LAB_ORDERS_ROUTE, RESULTS, } from "../../../constants";
 
 const LabOrdersTable = (): JSX.Element => {
   const classes = useTableStyles();
+  const { text, textColor } = appointmentStatus('' || '')
 
   return (
     <Box className={classes.mainTableContainer}>
       <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
-        <Box className={classes.searchOuterContainer}>
-          <Search search={Search} />
-        </Box>
+        <Search search={Search} />
 
         <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} component={Link} to={CREATE_LAB_ORDERS_ROUTE}>
           {MANUAL_ENTRY}
@@ -35,6 +33,7 @@ const LabOrdersTable = (): JSX.Element => {
               {renderTh(TESTS)}
               {renderTh(DATE)}
               {renderTh(STATUS)}
+              {renderTh(RESULTS)}
             </TableRow>
           </TableHead>
 
@@ -44,16 +43,17 @@ const LabOrdersTable = (): JSX.Element => {
             }) =>
               <TableRow>
                 <TableCell scope="row">{appointment}</TableCell>
-                <TableCell scope="row">
-                  <Typography variant="body1">{test}</Typography>
-                </TableCell>
-
+                <TableCell scope="row">{test}</TableCell>
                 <TableCell scope="row">{date}</TableCell>
                 <TableCell scope="row">
-                  {/* <StatusSelector /> */}
-                  <Box className={classes.status} component='span' color={BLUE_EIGHT} border={`1px solid ${BLUE_EIGHT}`}>
-                    {IN_PROGRESS}
+                  <Box className={classes.status} component='span' color={textColor} border={`1px solid ${textColor}`}>
+                    {text}
                   </Box>
+                </TableCell>
+                <TableCell scope="row">
+                  <IconButton>
+                    <FilledAddIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             )}

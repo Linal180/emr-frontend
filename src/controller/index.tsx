@@ -1,6 +1,6 @@
 // packages block
 import { FC, useState } from "react";
-import { InfoOutlined } from "@material-ui/icons";
+import { InfoOutlined, Search } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, InputLabel, TextField } from "@material-ui/core";
 // components block
@@ -13,7 +13,7 @@ import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
-  disabled, multiline, info, placeholder, className
+  disabled, multiline, info, placeholder, className, isSearch
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -66,6 +66,8 @@ const InputController: FC<CustomInputControlProps> = ({
               />,
             } : fieldType === 'number' ? {
               inputProps: { step: '5' }
+            } : isSearch ? {
+              endAdornment: <Search />
             } : undefined}
           />
         </FormControl>
