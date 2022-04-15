@@ -81,21 +81,21 @@ const ServicesTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          fetchService();
+          fetchServices();
         }
       }
     }
   });
 
-  const fetchService = useCallback(async () => {
+  const fetchServices = useCallback(async () => {
     try {
       await findAllServices();
     } catch (error) { }
   }, [findAllServices])
 
   useEffect(() => {
-    facilityId && fetchService();
-  }, [fetchService, searchQuery, facilityId]);
+    facilityId && fetchServices();
+  }, [fetchServices, searchQuery, facilityId]);
 
   const onDeleteClick = (id: string) => {
     if (id) {
