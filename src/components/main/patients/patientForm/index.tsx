@@ -538,7 +538,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     deliveryLine1 && setValue('basicAddress', deliveryLine1);
     zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('basicCity', cityName);
-    setIsVerified(true)
+    setTimeout(() => { setIsVerified(true) }, 0);
   }
 
   useEffect(() => {
@@ -706,7 +706,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             </Button>
                           </Box> :
                             <Box display={'flex'} alignItems={'center'}>
-                              <CheckBoxIcon color='primary' /> <Box ml={0.2}>
+                              <CheckBoxIcon color='primary' />
+                              <Box ml={0.2}>
                                 <Typography>{VERIFIED}</Typography>
                               </Box>
                             </Box>
