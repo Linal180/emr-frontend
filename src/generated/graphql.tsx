@@ -116,6 +116,7 @@ export type AppointmentInput = {
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
 };
 
 export type AppointmentPayload = {
@@ -735,6 +736,7 @@ export type DoctorInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
 };
 
 export type DoctorPatient = {
@@ -848,6 +850,7 @@ export type Facility = {
 };
 
 export type FacilityInput = {
+  facilityName?: Maybe<Scalars['String']>;
   isPrivate?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
@@ -1788,7 +1791,9 @@ export type PatientInfoItemInput = {
 export type PatientInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
+  patientRecord?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
 };
 
 export type PatientInviteInput = {
@@ -1970,6 +1975,7 @@ export type Practice = {
 
 export type PracticeInput = {
   paginationOptions: PaginationInput;
+  practiceName?: Maybe<Scalars['String']>;
 };
 
 export type PracticePayload = {
@@ -2111,7 +2117,7 @@ export type QueryFindAllPermissionsArgs = {
 
 
 export type QueryFindAllPracticesArgs = {
-  facilityInput: PracticeInput;
+  practiceInput: PracticeInput;
 };
 
 
@@ -2633,6 +2639,7 @@ export type ServiceInput = {
   facilityId?: Maybe<Scalars['String']>;
   isActive?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
+  serviceName?: Maybe<Scalars['String']>;
 };
 
 export type ServicePayload = {
@@ -2754,6 +2761,7 @@ export type StaffInput = {
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
+  searchString?: Maybe<Scalars['String']>;
 };
 
 export type StaffPayload = {
@@ -4920,7 +4928,7 @@ export type FindAllRoleListLazyQueryHookResult = ReturnType<typeof useFindAllRol
 export type FindAllRoleListQueryResult = Apollo.QueryResult<FindAllRoleListQuery, FindAllRoleListQueryVariables>;
 export const FindAllPracticeListDocument = gql`
     query FindAllPracticeList($practiceInput: PracticeInput!) {
-  findAllPractices(facilityInput: $practiceInput) {
+  findAllPractices(practiceInput: $practiceInput) {
     pagination {
       totalPages
     }
@@ -6860,7 +6868,7 @@ export type AssignPermissionToRoleMutationResult = Apollo.MutationResult<AssignP
 export type AssignPermissionToRoleMutationOptions = Apollo.BaseMutationOptions<AssignPermissionToRoleMutation, AssignPermissionToRoleMutationVariables>;
 export const FindAllPracticesDocument = gql`
     query FindAllPractices($practiceInput: PracticeInput!) {
-  findAllPractices(facilityInput: $practiceInput) {
+  findAllPractices(practiceInput: $practiceInput) {
     response {
       error
       status
