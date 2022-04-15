@@ -34,6 +34,7 @@ const PracticeTable: FC = (): JSX.Element => {
   const [findAllPractices, { loading, error }] = useFindAllPracticesLazyQuery({
     variables: {
       practiceInput: {
+        practiceName: searchQuery,
         paginationOptions: {
           page, limit: PAGE_LIMIT
         }
@@ -92,13 +93,7 @@ const PracticeTable: FC = (): JSX.Element => {
     }
   });
 
-  useEffect(() => {
-    if (!searchQuery) {
-      findAllPractices()
-    }
-  }, [page, findAllPractices, searchQuery]);
-
-
+  useEffect(() => { findAllPractices() }, [page, findAllPractices]);
   const handleChange = (_: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page })
 
   const onDelete = (id: string) => {
@@ -115,7 +110,10 @@ const PracticeTable: FC = (): JSX.Element => {
       })
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -162,7 +160,7 @@ const PracticeTable: FC = (): JSX.Element => {
                     </TableCell>
                   </TableRow>
                 )
-            })
+              })
             )}
           </TableBody>
         </Table>

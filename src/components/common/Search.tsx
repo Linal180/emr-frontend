@@ -11,7 +11,7 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
   const [query, setQuery] = useState<string>('')
 
   const handleSearch = () => {
-    search(query)
+    search(query.trim())
   }
 
   return (
