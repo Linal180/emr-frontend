@@ -38,6 +38,7 @@ export type AccessUserPayload = {
   isTwoFactorEnabled?: Maybe<Scalars['Boolean']>;
   response?: Maybe<ResponsePayload>;
   roles?: Maybe<Array<Role>>;
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type AllDoctorPayload = {
@@ -3386,7 +3387,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, isTwoFactorEnabled?: boolean | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, isTwoFactorEnabled?: boolean | null | undefined, userId?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
 
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4473,6 +4474,7 @@ export const LoginDocument = gql`
   login(loginUser: $loginUser) {
     access_token
     isTwoFactorEnabled
+    userId
     response {
       status
       message

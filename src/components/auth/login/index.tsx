@@ -44,7 +44,7 @@ const LoginComponent = (): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { login: { response, access_token, roles, isTwoFactorEnabled } } = data
+        const { login: { response, access_token, roles, isTwoFactorEnabled, userId } } = data
 
         if (response) {
           const { status } = response
@@ -58,14 +58,15 @@ const LoginComponent = (): JSX.Element => {
             const isAdmin = userRoles.filter(role => role !== 'patient')
 
             if (!!isAdmin?.length) {
-              localStorage.setItem(TOKEN, access_token);
-              setIsLoggedIn(true);
               if (!isTwoFactorEnabled) {
+                localStorage.setItem(TOKEN, access_token);
+                setIsLoggedIn(true);
                 fetchAllFacilityList();
                 Alert.success(LOGIN_SUCCESSFULLY)
                 history.push(DASHBOARD_ROUTE);
               } else {
-                history.push(TWO_FA_AUTHENTICATION_ROUTE);
+                history.push(`${TWO_FA_AUTHENTICATION_ROUTE}/${userId}?token=${access_token}`);
+
               }
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)

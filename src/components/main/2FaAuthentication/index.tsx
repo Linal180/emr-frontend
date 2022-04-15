@@ -1,5 +1,5 @@
 // packages block
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Typography } from "@material-ui/core";
@@ -12,13 +12,16 @@ import InputController from "../../../controller";
 import { otpSchema } from "../../../validationSchemas";
 import { AuthContext, ListContext } from "../../../context";
 import { useHeaderStyles } from "../../../styles/headerStyles";
-import { VerifyCodeInputProps } from "../../../interfacesTypes";
+import { ParamsType, VerifyCodeInputProps } from "../../../interfacesTypes";
 import { useResentOtpMutation, useVerifyOtpMutation } from "../../../generated/graphql";
-import { ERROR, RESEND_OTP, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, SIGN_IN, ENTER_OTP_CODE, OTP_NOT_FOUND_EXCEPTION_MESSAGE, OTP_WRONG_MESSAGE } from "../../../constants";
+import { ERROR, RESEND_OTP, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, SIGN_IN, ENTER_OTP_CODE, OTP_NOT_FOUND_EXCEPTION_MESSAGE, OTP_WRONG_MESSAGE, TOKEN, LOGIN_ROUTE } from "../../../constants";
+import { useParams } from "react-router";
 
 const TwoFaAuthenticationComponent = (): JSX.Element => {
-  const { user } = useContext(AuthContext)
-  const { id } = user || {}
+  const { setIsLoggedIn } = useContext(AuthContext)
+  const { id: userId } = useParams<ParamsType>();
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
   const { fetchAllFacilityList } = useContext(ListContext)
   const classes = useHeaderStyles()
   const methods = useForm<VerifyCodeInputProps>({
@@ -41,8 +44,8 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
         const { verifyOTP: { response } } = data
 
         if (response) {
-          const { message } = response
-          message && Alert.success(message);
+          token && localStorage.setItem(TOKEN, token);
+          setIsLoggedIn(true)
           fetchAllFacilityList();
           Alert.success(LOGIN_SUCCESSFULLY)
           history.push(DASHBOARD_ROUTE);
@@ -69,10 +72,10 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
   });
 
   const handleResendOtp = async () => {
-    id && await resentOtp({
+    userId && await resentOtp({
       variables: {
         seneOTPAgainInput: {
-          id
+          id: userId
         }
       }
     })
@@ -80,14 +83,20 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<VerifyCodeInputProps> = async (inputs) => {
     const { otpCode } = inputs
-    id && await verifyOtp({
+    userId && await verifyOtp({
       variables: {
         verifyCodeInput: {
-          id, otpCode
+          id: userId, otpCode
         }
       }
     })
   }
+
+  useEffect(() => {
+    if (!userId || !token) {
+      history.push(LOGIN_ROUTE)
+    }
+  }, [])
 
   return (
     <AuthLayout>
