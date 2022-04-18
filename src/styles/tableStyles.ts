@@ -1,5 +1,5 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { BLACK_TWO, GRAY_FIVE, GRAY_SIX, WHITE, WHITE_THREE } from "../theme";
+import { BLACK_TWO, GRAY_FIVE, GRAY_SIX, WHITE, WHITE_THREE, GRAY_ELEVEN } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -64,12 +64,27 @@ export const useTableStyles = makeStyles(() => ({
     }
   },
 
+  iconsBackgroundDisabled: {
+    background: GRAY_ELEVEN,
+    height: 32,
+    width: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginLeft: 6,
+
+    "& svg": {
+      maxWidth: 16
+    }
+  },
+
   RadioButtonsStroke: {
     border: `1px solid ${GRAY_SIX}`,
     borderRadius: 6,
     padding: 4,
     alignSelf: 'center',
-},
+  },
 
   practiceIconsBackground: {
     height: 32,
@@ -89,4 +104,6 @@ export const useTableStyles = makeStyles(() => ({
       maxWidth: 20
     }
   },
+
+
 }))

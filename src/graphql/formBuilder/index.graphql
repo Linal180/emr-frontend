@@ -23,6 +23,7 @@ query findAllForms($formInput: FormInput!) {
       facilityId
       name
       createdAt
+      isActive
 
       layout {
         sections {
@@ -84,6 +85,7 @@ query getForm($getForm: GetForm!) {
       name
       type
       facilityId
+      isActive
 
       layout {
         sections {
@@ -142,6 +144,7 @@ query getPublicForm($getForm: GetForm!) {
       type
       facilityId
       name
+      isActive
 
       layout {
         sections {
@@ -188,11 +191,13 @@ query findAllUsersForms($userFormInput: UserFormInput!) {
       StaffId
       FormId
       SubmitterId
+
       userFormElements {
         id
         UsersFormsId
         FormsElementsId
         value
+
         arrayOfStrings {
           name
           value

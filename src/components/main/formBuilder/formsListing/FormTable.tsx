@@ -23,7 +23,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
-  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_EMBED_TITLE, CREATED_ON
+  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_EMBED_TITLE, CREATED_ON, NOT_PUBLISHED, PUBLISHED
 } from "../../../../constants";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
@@ -181,6 +181,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
               {renderTh(TYPE)}
               {isSuper && renderTh(FACILITY_NAME)}
               {renderTh(CREATED_ON)}
+              {renderTh(PUBLISHED)}
               {renderTh(ACTION, "center")}
             </TableRow>
           </TableHead>
@@ -194,7 +195,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
               </TableRow>
             ) : (
               forms?.map((record: FormPayload['form']) => {
-                const { id, type, name, facilityId, layout, createdAt } = record || {};
+                const { id, type, name, facilityId, layout, createdAt, isActive } = record || {};
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
@@ -203,10 +204,11 @@ const FormBuilderTable: FC = (): JSX.Element => {
                     <TableCell scope="row">{type}</TableCell>
                     {isSuper && facilityId && <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell>}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
+                    <TableCell scope="row">{isActive ? PUBLISHED : NOT_PUBLISHED}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_FORM_LINK}>
-                          <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                        <DetailTooltip title={isActive ? (copied ? LINK_COPIED : PUBLIC_FORM_LINK) : ''}>
+                          <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && handleClipboard(id || '')}  >
                             <InsertLinkIcon />
                           </Box>
                         </DetailTooltip>
@@ -221,7 +223,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         <Box className={classes.iconsBackground} onClick={() => onViewClick(layout, name)}>
                           <VisibilityIcon />
                         </Box>
-                        <Box className={classes.iconsBackground} onClick={() => onShareClick(id || '')}>
+                        <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && onShareClick(id || '')}>
                           <ShareIcon />
                         </Box>
                       </Box>
