@@ -23,7 +23,8 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, PAGE_LIMIT, DELETE_FORM_DESCRIPTION, NAME, FACILITY_NAME, FORM_TEXT,
-  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE, FORM_EMBED_TITLE, CREATED_ON, NOT_PUBLISHED, PUBLISHED
+  TYPE, CANT_DELETE_FORM, PUBLIC_FORM_LINK, LINK_COPIED, PUBLIC_FORM_BUILDER_ROUTE, FORM_BUILDER_EDIT_ROUTE,
+  FORM_EMBED_TITLE, CREATED_ON, NOT_PUBLISHED, PUBLISHED, FORM_BUILDER_RESPONSES
 } from "../../../../constants";
 //component
 const FormBuilderTable: FC = (): JSX.Element => {
@@ -37,7 +38,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const [formEmbedUrl, setFormEmbedUrl] = useState('')
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [searchQuery,] = useState<string>('');
+  const [searchQuery] = useState<string>('');
   const [copied, setCopied] = useState<boolean>(false);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [openShare, setOpenShare] = useState<boolean>(false);
@@ -199,7 +200,9 @@ const FormBuilderTable: FC = (): JSX.Element => {
                 return (
                   <TableRow key={id}>
                     <TableCell scope="row">
-                      {name}
+                      <Link to={`${FORM_BUILDER_RESPONSES}/${id}`}>
+                        {name}
+                      </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
                     {isSuper && facilityId && <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell>}
