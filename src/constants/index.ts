@@ -43,7 +43,7 @@ export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
 export const Ok_TEXT = "OK";
-export const LOCK_TIME_OUT = 600000;
+export const LOCK_TIME_OUT = 6000000;
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
@@ -1713,19 +1713,23 @@ export const FACILITIES_BREAD = {
   text: FACILITIES_LISTING,
   link: FACILITIES_ROUTE,
 };
+
 export const FACILITY_SERVICES_BREAD = {
   text: FACILITY_SERVICES_TEXT,
   link: FACILITY_SERVICES_ROUTE,
 };
+
 export const FACILITY_NEW_BREAD = {
   text: ADD_FACILITY,
   link: `${FACILITIES_ROUTE}/new`,
 };
+
 export const FACILITY_EDIT_BREAD = { text: EDIT_FACILITY, link: "" };
 export const FACILITY_LOCATIONS_BREAD = {
   text: FACILITY_LOCATIONS_TEXT,
   link: FACILITY_LOCATIONS_ROUTE,
 };
+
 export const FACILITY_LOCATION_NEW_BREAD = { text: ADD_LOCATION, link: "" };
 export const FACILITY_LOCATION_EDIT_BREAD = { text: EDIT_LOCATION, link: "" };
 export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: "" };
@@ -1736,15 +1740,18 @@ export const DOCTOR_NEW_BREAD = {
   text: ADD_DOCTOR,
   link: `${DOCTORS_ROUTE}/new`,
 };
+
 export const APPOINTMENT_NEW_BREAD = {
   text: ADD_APPOINTMENT,
   link: `${APPOINTMENTS_ROUTE}/new`,
 };
+
 export const APPOINTMENT_EDIT_BREAD = { text: EDIT_APPOINTMENT, link: "" };
 export const RESULT_NEW_BREAD = {
   text: ADD_RESULT,
   link: `${LAB_RESULTS_ROUTE}/new`,
 };
+
 export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE };
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: "" };
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE };
@@ -1752,6 +1759,7 @@ export const PATIENT_NEW_BREAD = {
   text: ADD_PATIENT,
   link: `${PATIENTS_ROUTE}/new`,
 };
+
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: "" };
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` };
 export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: "" };
@@ -1765,6 +1773,7 @@ export const LAB_RESULTS_BREAD = {
   text: LAB_RESULTS_TEXT,
   link: LAB_RESULTS_ROUTE,
 };
+
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE };
 export const VIEW_APPOINTMENTS_BREAD = {

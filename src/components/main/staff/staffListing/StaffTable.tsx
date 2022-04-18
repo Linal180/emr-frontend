@@ -1,5 +1,5 @@
 // packages block
-import { ChangeEvent, FC, useCallback, useContext, useEffect, useState } from "react";
+import { ChangeEvent, FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
@@ -14,6 +14,7 @@ import { AuthContext } from "../../../../context";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
+import { staffReducer, Action, initialState, State, ActionType } from "../../../../reducers/staffReducer";
 import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
 } from "../../../../generated/graphql";
@@ -26,35 +27,29 @@ const StaffTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext);
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
-  const [searchQuery,] = useState<string>('');
-  const [page, setPage] = useState<number>(1);
-  const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [deleteStaffId, setDeleteStaffId] = useState<string>("");
-  const [totalPages, setTotalPages] = useState<number>(0);
-  const [staff, setStaff] = useState<AllStaffPayload['allstaff']>([]);
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(staffReducer, initialState)
+  const { page, totalPages, searchQuery, openDelete, deleteStaffId, allStaff } = state;
 
   const [findAllStaff, { loading, error }] = useFindAllStaffLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setStaff([]);
+      dispatch({ type: ActionType.SET_ALL_STAFF, allStaff: [] })
     },
 
     onCompleted(data) {
       const { findAllStaff } = data || {};
 
       if (findAllStaff) {
-        const { allstaff, pagination, } = findAllStaff
+        const { allstaff, pagination } = findAllStaff
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && setTotalPages(totalPages)
-          }
-
-          allstaff && setStaff(allstaff as AllStaffPayload['allstaff'])
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
+
+        dispatch({ type: ActionType.SET_ALL_STAFF, allStaff: allstaff as AllStaffPayload['allstaff'] })
       }
     }
   });
@@ -67,16 +62,16 @@ const StaffTable: FC = (): JSX.Element => {
 
       await findAllStaff({
         variables: {
-          staffInput: { ...staffInputs }
+          staffInput: { ...staffInputs, searchString: searchQuery }
         }
       })
     } catch (error) { }
-  }, [practiceId, findAllStaff, page, roles]);
+  }, [roles, page, practiceId, findAllStaff, searchQuery]);
 
   const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
     onError() {
       Alert.error(CANT_DELETE_STAFF)
-      setOpenDelete(false)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     },
 
     async onCompleted(data) {
@@ -87,7 +82,7 @@ const StaffTable: FC = (): JSX.Element => {
           if (response) {
             const { message } = response
             message && Alert.success(message);
-            setOpenDelete(false)
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             await fetchAllStaff();
           }
         }
@@ -96,33 +91,28 @@ const StaffTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => { }, [user]);
+  useEffect(() => { fetchAllStaff() }, [fetchAllStaff, page, searchQuery]);
 
-  useEffect(() => {
-    !searchQuery && fetchAllStaff()
-  }, [fetchAllStaff, page, searchQuery]);
+  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
+    dispatch({ type: ActionType.SET_PAGE, page });
 
-  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
-
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   const onDeleteClick = (id: string) => {
     if (id) {
-      setDeleteStaffId(id)
-      setOpenDelete(true)
+      dispatch({ type: ActionType.SET_DELETE_STAFF_ID, deleteStaffId: id })
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
   };
 
-  const handleDeleteStaff = async () => {
-    if (deleteStaffId) {
-      await removeStaff({
-        variables: {
-          removeStaff: {
-            id: deleteStaffId
-          }
-        }
-      })
+  const handleDeleteStaff = async () => deleteStaffId && await removeStaff({
+    variables: {
+      removeStaff: { id: deleteStaffId }
     }
-  };
+  });
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -147,7 +137,7 @@ const StaffTable: FC = (): JSX.Element => {
                 </TableCell>
               </TableRow>
             ) : (
-              staff?.map((record: StaffPayload['staff']) => {
+              allStaff?.map((record: StaffPayload['staff']) => {
                 const { id, firstName, lastName, email, phone } = record || {};
 
                 return (
@@ -175,7 +165,7 @@ const StaffTable: FC = (): JSX.Element => {
           </TableBody>
         </Table>
 
-        {((!loading && staff?.length === 0) || error) && (
+        {((!loading && allStaff?.length === 0) || error) && (
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>
@@ -198,7 +188,7 @@ const StaffTable: FC = (): JSX.Element => {
           isLoading={deleteStaffLoading}
           description={DELETE_STAFF_DESCRIPTION}
           handleDelete={handleDeleteStaff}
-          setOpen={(open: boolean) => setOpenDelete(open)}
+          setOpen={(openDelete: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete })}
         />
       </Box>
     </Box>
