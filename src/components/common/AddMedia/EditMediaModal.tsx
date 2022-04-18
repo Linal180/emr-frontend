@@ -16,9 +16,10 @@ const EditMediaModel: FC<MediaModalTypes> = ({
   preSignedUrl, title
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
-  const [{ fileUrl, attachmentId }, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
   const [loading, setLoading] = useState<boolean>(false);
+  const [{ fileUrl, attachmentId }, dispatch] =
+    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const handlePreview = useCallback(() => {
     const { id } = attachment || {}
@@ -39,8 +40,8 @@ const EditMediaModel: FC<MediaModalTypes> = ({
   const handleMediaSubmit = async (data: ICreateMediaInput) => {
     setLoading(true)
     const { title } = data
-    dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
     dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
+    dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
     setLoading(false)
   }
 
