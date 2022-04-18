@@ -123,11 +123,16 @@ export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
 export const CALENDAR = "Calendar";
+export const PRINT = "Print";
 export const PAY_LATER = "Pay Later";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
 export const PAYMENT_TYPE = "Payment Type";
+export const SELF_PAY_RESTRICTION = "Self Pay Restriction";
+export const PRIMARY_INSURANCE_FOR_ORDER = "Primary Insurance For Order";
+export const SECONDARY_INSURANCE_FOR_ORDER = "Secondary Insurance For Order";
+export const ORDERING_PROVIDER = "Ordering Provider";
 export const SELECT_PAYMENT = "Select Payment";
 export const AUTO_ACCIDENT = "Auto Accident";
 export const STREET_ADDRESS = "Street Address";
@@ -473,6 +478,7 @@ export const COMMENT = "Comment";
 export const SIGN_IN = "Sign In";
 export const SIGN_OFF = "Sign Off";
 export const RESULT = "Result";
+export const RESULTS = "Results";
 export const FILE = "File";
 export const TOKEN = "emr_token";
 export const BACK_TO = "Back to";
@@ -513,6 +519,7 @@ export const USER_ID = "User ID";
 export const PATIENT = "Patient";
 export const DOCUMENT = "Document";
 export const PRACTICE = "Practice";
+export const IN_PROGRESS = "In Progress";
 export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
@@ -655,6 +662,7 @@ export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const PRICE = "Price";
 export const SEARCH = "Search";
 export const BILLING = "Billing";
+export const DIAGNOSES = "Diagnoses";
 export const PRIVACY = "Privacy";
 export const IS_ACTIVE = "Active";
 export const GUARANTOR = "Guarantor";
@@ -2600,6 +2608,10 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 
 export const CHECK_IN_STEPS = [
   CHECK_IN, PATIENT_INFO, INSURANCE, VITALS_TEXT, CHART_TEXT, BILLING_TEXT
+];
+
+export const LAB_ORDER_STEPS = [
+  LAB_ORDER, PAYMENT
 ];
 
 export const FacilityMenuNav = [

@@ -1,8 +1,12 @@
 // packages block
 import { FC } from 'react';
-// constants block
-import LabOrdersForm from '../form';
+// components block
 
-const AddLabOrdersComponent: FC = (): JSX.Element => <LabOrdersForm />
+const AddLabOrdersComponent: FC = (): JSX.Element => {
+  return (
+    <>
+    </>
+  )
+}
 
 export default AddLabOrdersComponent;
