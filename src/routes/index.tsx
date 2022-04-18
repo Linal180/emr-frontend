@@ -114,7 +114,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={PracticeListing} permission={USER_PERMISSIONS.findAllPractices} />
       <PrivateRoute exact path={PROFILE_ROUTE} component={Profile} />
       <PrivateRoute exact path={EMERGENCY_ACCESS_ROUTE} component={EmergencyAccess} />
-      <PrivateRoute exact path={PRACTICE_DETAILS_ROUTE} component={DetailPractice} />
+      <PrivateRoute exact path={PRACTICE_DETAILS_ROUTE} component={DetailPractice} permission={USER_PERMISSIONS.updatePractice}/>
       <PrivateRoute exact path={SIGNATURE_ROUTE} component={Signature} />
       <PrivateRoute exact path={CANCELLATION_ROUTE} component={Cancellation} />
       <PrivateRoute exact path={TWO_FA_ROUTE} component={TwoFA} />
