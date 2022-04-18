@@ -38,6 +38,7 @@ export type AccessUserPayload = {
   isTwoFactorEnabled?: Maybe<Scalars['Boolean']>;
   response?: Maybe<ResponsePayload>;
   roles?: Maybe<Array<Role>>;
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type AllDoctorPayload = {
@@ -54,6 +55,17 @@ export type AllStaffPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type Allergies = {
+  __typename?: 'Allergies';
+  allergyType: AllergyType;
+  createdAt?: Maybe<Scalars['String']>;
+  drugAllergyTypes?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  patientAllergies?: Maybe<Array<PatientAllergies>>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 /** The patient's allergy onset type assigned */
 export enum AllergyOnset {
   Adulthood = 'ADULTHOOD',
@@ -67,6 +79,13 @@ export enum AllergySeverity {
   Mild = 'MILD',
   Moderate = 'MODERATE',
   VeryMild = 'VERY_MILD'
+}
+
+/** The patient's allergy type assigned */
+export enum AllergyType {
+  Drug = 'DRUG',
+  Environment = 'ENVIRONMENT',
+  Food = 'FOOD'
 }
 
 export type Appointment = {
@@ -514,6 +533,20 @@ export type CreateInvoiceInputs = {
   paymentMethod?: Maybe<Scalars['String']>;
   paymentTransactionId?: Maybe<Scalars['String']>;
   status: Status;
+};
+
+export type CreatePatientAllergyInput = {
+  allergyId?: Maybe<Scalars['String']>;
+  allergyOnset?: Maybe<AllergyOnset>;
+  allergySeverity?: Maybe<AllergySeverity>;
+  allergyStartDate?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  comments?: Maybe<Scalars['String']>;
+  isActive?: Maybe<Scalars['Boolean']>;
+  patientId: Scalars['String'];
+  providerId?: Maybe<Scalars['String']>;
+  reactionsIds: Array<Scalars['String']>;
+  staffId?: Maybe<Scalars['String']>;
 };
 
 export type CreatePatientInput = {
@@ -1198,6 +1231,7 @@ export enum Maritialstatus {
 export type Mutation = {
   __typename?: 'Mutation';
   activateUser: UserPayload;
+  addPatientAllergy: PatientAllergyPayload;
   addPatientProblem: PatientProblemPayload;
   addPatientVital: PatientVitalPayload;
   assignPermissionToRole: PermissionPayload;
@@ -1281,6 +1315,11 @@ export type Mutation = {
 
 export type MutationActivateUserArgs = {
   user: UserIdInput;
+};
+
+
+export type MutationAddPatientAllergyArgs = {
+  createPatientAllergyInput: CreatePatientAllergyInput;
 };
 
 
@@ -1755,6 +1794,7 @@ export type Patient = {
 
 export type PatientAllergies = {
   __typename?: 'PatientAllergies';
+  allergy?: Maybe<Allergies>;
   allergyOnset: AllergyOnset;
   allergySeverity: AllergySeverity;
   allergyStartDate?: Maybe<Scalars['String']>;
@@ -1765,8 +1805,15 @@ export type PatientAllergies = {
   id: Scalars['String'];
   isActive?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
+  reactions?: Maybe<Array<Maybe<Reactions>>>;
   staff?: Maybe<Staff>;
   updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PatientAllergyPayload = {
+  __typename?: 'PatientAllergyPayload';
+  patientAllergy?: Maybe<PatientAllergies>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type PatientInfoInput = {
@@ -2279,6 +2326,15 @@ export enum Race {
   Other = 'OTHER',
   White = 'WHITE'
 }
+
+export type Reactions = {
+  __typename?: 'Reactions';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name: Scalars['String'];
+  patientAllergies?: Maybe<PatientAllergies>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
 
 export type RegisterUserInput = {
   adminId?: Maybe<Scalars['String']>;
@@ -3309,7 +3365,7 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleEndDateTime?: string | null | undefined, scheduleStartDateTime?: string | null | undefined, token?: string | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleEndDateTime?: string | null | undefined, scheduleStartDateTime?: string | null | undefined, token?: string | null | undefined, reason?: string | null | undefined, primaryInsurance?: string | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
@@ -3914,6 +3970,8 @@ export const FindAllAppointmentsDocument = gql`
       scheduleEndDateTime
       scheduleStartDateTime
       token
+      reason
+      primaryInsurance
       provider {
         id
         firstName

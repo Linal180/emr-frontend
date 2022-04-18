@@ -62,7 +62,7 @@ const PortalTable: FC<PortalTableProps> = ({ inviteAccepted }): JSX.Element => {
   return (
     <Box className={classes.mainTableContainer}>
       <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
-        <Box className={classes.searchOuterContainer}>
+        <Box>
           <Search search={search} />
         </Box>
 
