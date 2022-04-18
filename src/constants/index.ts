@@ -973,7 +973,6 @@ export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, 
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
-export const DROP_FIELD = 'Please drop atleast one field';
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
 export const ROLE_NOT_FOUND = "Role not found!";
@@ -988,6 +987,7 @@ export const PRACTICE_NOT_FOUND = "Practice not found!";
 export const LOCATION_NOT_FOUND = "Location not found!";
 export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
+export const DROP_FIELD = 'Please drop at least one field';
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const ROLE_CREATED = "Role is created successfully";
 export const ROLE_UPDATED = "Role is updated successfully";
@@ -1026,6 +1026,7 @@ export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const ATTACHMENT_DELETED = "Attachment deleted successfully!";
+export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
