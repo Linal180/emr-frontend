@@ -48,7 +48,7 @@ export const useColorLibStepIconStyles = makeStyles({
     marginRight: 5,
     fontSize: 12,
     fontWeight: 600,
-    fontFamily: "Poppins, sans-serif",
+    fontFamily: "Inter, sans-serif",
   },
 
   active: {

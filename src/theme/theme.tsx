@@ -3,8 +3,8 @@ import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
-  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, GRAY_TWELVE, BLACK_NINE,
-  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED_FOUR,
+  GREEN, BLUE, WHITE, BLACK, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, GRAY_TWELVE, BLACK_NINE,
+  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED_FOUR, INTER,
 } from ".";
 
 const breakpoints = createBreakpoints({})
@@ -18,7 +18,7 @@ export const theme = createTheme({
     },
 
     secondary: {
-      main: PINK,
+      main: BLUE,
       contrastText: WHITE,
     },
 
@@ -37,7 +37,7 @@ export const theme = createTheme({
   },
 
   typography: {
-    fontFamily: POPPINS,
+    fontFamily: INTER,
 
     h3: {
       fontSize: 30,
@@ -207,7 +207,7 @@ export const theme = createTheme({
             height: 20,
             width: 20,
             position: "absolute",
-            background: 'WHITE_SEVEN',
+            background: 'WHITE',
             zIndex: 9,
             borderRadius: 3,
             border: `2px solid ${GRAY_TWELVE}`,
@@ -215,8 +215,8 @@ export const theme = createTheme({
         },
 
         "& .MuiSvgIcon-root": {
-          height: 24,
-          width: 24,
+          height: 20,
+          width: 20,
           borderRadius: 3,
         },
 
@@ -305,7 +305,7 @@ export const theme = createTheme({
         "& $notchedOutline": {
           borderRadius: 4,
           border: `1px solid ${GRAY_ONE}`,
-          fontFamily: POPPINS,
+          fontFamily: INTER,
         },
 
         "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {

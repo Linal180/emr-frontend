@@ -1,5 +1,5 @@
   import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_FOUR, BLUE_EIGHT, BLUE_ONE, GRAY_ONE, GRAY_SIX, POPPINS, theme, WHITE } from "../../theme";
+import { BLACK_FOUR, BLUE_EIGHT, BLUE_ONE, GRAY_ONE, GRAY_SIX, INTER, theme, WHITE } from "../../theme";
 
 export const usePublicAppointmentStyles = makeStyles(() =>
   createStyles({
@@ -32,7 +32,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         display: 'none',
 
         "& + label": {
-          fontFamily: POPPINS,
+          fontFamily: INTER,
           fontSize: 13,
           color: BLACK_FOUR,
           border: `1px solid ${GRAY_ONE}`,

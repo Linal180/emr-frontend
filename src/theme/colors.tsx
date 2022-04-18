@@ -13,7 +13,6 @@ export const GRAY_ELEVEN = "#40353554"
 export const GRAY_TWELVE = "#BCB3E2"
 export const GRAY_THIRTEEN = "#F9FAFB"
 
-export const BLACK = "#000000";
 export const BLACK_ONE = "#3F4254";
 export const BLACK_TWO = "#7E8299";
 export const BLACK_THREE = "#4A4B68";
@@ -24,7 +23,6 @@ export const BLACK_SEVEN = "#262D3D";
 export const BLACK_EIGHT = "#6B7280";
 export const BLACK_NINE = "#202020";
 
-export const WHITE = "#FFFFFF";
 export const WHITE_ONE = "#F2F3F5";
 export const WHITE_TWO = "#E5E5E5";
 export const WHITE_THREE = "#F3F6F9";
@@ -34,9 +32,6 @@ export const WHITE_SIX = "#F1FAFF";
 export const WHITE_SEVEN = "#F3F4F6";
 export const WHITE_EIGHT = "#a1a5b740";
 
-export const GREEN = "#1DC894";
-
-export const BLUE = "#596ed5"
 export const BLUE_ONE = "#009EF6";
 export const BLUE_TWO = "#0056B1";
 export const BLUE_THREE = "#00A3FF";
@@ -55,3 +50,10 @@ export const RED = "#F64E60";
 export const RED_ONE = "#FFE2E5";
 export const RED_THREE = "#f44336";
 export const RED_FOUR = "#DD1010";
+
+// ** NEW UI COLORS **
+
+export const BLUE = "#204ECF";
+export const GREEN = "#03CC83";
+export const BLACK = "#262D3D";
+export const WHITE = "#FFFFFF";
