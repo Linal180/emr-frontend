@@ -14,6 +14,7 @@ import { mapAppointmentData } from "../../../utils"
 import { useCalendarStyles } from "../../../styles/calendarStyles";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
 import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus } from "../../../generated/graphql";
+import { TimeTableCell } from "./weekView";
 
 const CalendarComponent = (): JSX.Element => {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -96,7 +97,7 @@ const CalendarComponent = (): JSX.Element => {
           <Scheduler data={mapAppointmentData(appointments)}>
             <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
             <MonthView />
-            <WeekView />
+            <WeekView timeTableCellComponent={TimeTableCell} />
             <DayView />
             <Toolbar />
             <TodayButton />

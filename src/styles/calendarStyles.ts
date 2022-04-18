@@ -118,6 +118,11 @@ export const useCalendarStyles = makeStyles(() =>
       justifyContent: 'center',
       bgcolor: 'transparent',
       position: 'absolute'
+    },
+
+    viewsDate: {
+      height: '100%',
+      width: '100%',
     }
   })
 );

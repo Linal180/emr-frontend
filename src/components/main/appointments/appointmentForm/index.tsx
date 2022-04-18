@@ -43,6 +43,8 @@ import {
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
   const { facilityList } = useContext(ListContext)
+  const params = new URLSearchParams(window.location.search);
+  const appDate = params.get('date');
   const {
     serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
@@ -51,6 +53,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
     serviceName, facilityName, providerName, patientName, cancelAppStatus
   } = state
+
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -432,7 +435,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <DatePicker
                         variant="static"
                         openTo="date"
-                        value={date}
+                        value={appDate ? appDate : date}
                         autoOk
                         disablePast
                         fullWidth
