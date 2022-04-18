@@ -3,17 +3,16 @@ import { useEffect, useState } from 'react';
 import { Button, Grid, Box, Typography, CircularProgress } from '@material-ui/core';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
-import axios from "axios";
 //components block
 import InputController from '../../../common/FormFieldController';
 import Alert from '../../../common/Alert';
 //interfaces & constants
-import { ParamsType, UserFormType } from '../../../../interfacesTypes'
-import { getToken, getUserFormFiles, getUserFormFormattedValues, LoaderBackdrop, parseColumnGrid } from '../../../../utils';
+import { ParamsType } from '../../../../interfacesTypes'
+import { getToken, getUserFormFormattedValues, LoaderBackdrop, parseColumnGrid } from '../../../../utils';
 import { SectionsInputs, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
 import {
   getFormInitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT,
-  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, USER_FORM_IMAGE_UPLOAD_URL
+  PUBLIC_FORM_FAIL_MESSAGE, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE
 } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
@@ -30,6 +29,7 @@ const PublicFormPreview = () => {
   //states
   const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
   const [formName, setFormName] = useState('')
+  const [uploadImage, setUploadImage] = useState(false)
   //constants destructuring
   const { handleSubmit } = methods;
   //mutation
@@ -79,36 +79,14 @@ const PublicFormPreview = () => {
     }
   })
 
-  const userFormUploadImage = async (file: File, attachmentId: string, title: string) => {
-    const formData = new FormData();
-    attachmentId && formData.append("id", attachmentId);
-    id && formData.append("typeId", id);
-    title && formData.append("title", title);
-    file && formData.append("file", file);
-    try {
-       const response = await axios.post(
-      `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    )
-    } catch (error) {
-      
-    }
-  
-  }
 
 
 
-  const submitHandler = (values: any) => {
+  const submitHandler = async (values: any) => {
 
-    if (id) {
-      const formValues = getUserFormFormattedValues(values);
-      const formFiles = getUserFormFiles(values);
-      const uploadedFiles = formFiles?.map(({ file, attachmentId, title }: UserFormType) => userFormUploadImage(file, attachmentId, title))
+    if (id && token) {
+      setUploadImage(true)
+      const formValues = await getUserFormFormattedValues(values, token, id);
       const data = {
         FormId: id,
         DoctorId: "",
@@ -117,7 +95,7 @@ const PublicFormPreview = () => {
         SubmitterId: "",
         userFormElements: formValues
       }
-
+      setUploadImage(false)
       createUserForm({ variables: { createUserFormInput: data } })
     }
   };
@@ -166,8 +144,8 @@ const PublicFormPreview = () => {
                 </Button>
               </Box>
               <Box>
-                {loading && <CircularProgress size={20} color="inherit" />}
-                <Button type={'submit'} variant={'contained'} color={'primary'} disabled={loading}>
+                {(loading || uploadImage) && <CircularProgress size={20} color="inherit" />}
+                <Button type={'submit'} variant={'contained'} color={'primary'} disabled={loading || uploadImage}>
                   {FORM_SUBMIT_TEXT}
                 </Button>
               </Box>

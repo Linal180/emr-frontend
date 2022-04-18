@@ -17,7 +17,7 @@ import {
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, ResponsePayloadResponse,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -888,4 +888,9 @@ export interface UserFormType {
   attachmentId: string
   title: string
   file: File
+}
+
+export  interface FormAttachmentPayload {
+  attachment?: String | null | undefined;
+  response?: ResponsePayloadResponse
 }

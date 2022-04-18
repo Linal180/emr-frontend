@@ -34,9 +34,8 @@ export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentPr
   )
 }
 //file Field component
-export const FileFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
+export const FileFieldComponent = ({ item, isCreating }: FieldComponentProps) => {
   const { type, placeholder, css, required, fieldId, defaultValue } = item;
-  const { name } = field || {}
   const { register } = useFormContext();
   return (
     <TextField
@@ -51,19 +50,19 @@ export const FileFieldComponent = ({ item, field, isCreating }: FieldComponentPr
       className={css}
       placeholder={placeholder ? placeholder : ""}
       type={getFieldType(type)}
-      {...register(name || fieldId)}
+      {...register(fieldId)}
     >
     </TextField>
   )
 }
 //radio group component
 export const RadioGroupComponent = ({ item, field }: FieldComponentProps) => {
-  const { name, defaultValue, fieldId } = item;
+  const { defaultValue, fieldId } = item;
   return (
     <FormControl>
       <RadioGroup
-        defaultValue={defaultValue}
-        name={name}
+        defaultValue={defaultValue || ''}
+        name={fieldId}
         className='checkedRadioButton'
         {...field}
       >
@@ -76,9 +75,9 @@ export const RadioGroupComponent = ({ item, field }: FieldComponentProps) => {
 }
 //checkbox component
 export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
-  const { defaultValue, fieldId, name } = item;
+  const { defaultValue, fieldId } = item;
   const { control } = useFormContext();
-  useFieldArray({ control, name });
+  useFieldArray({ control, name: fieldId });
 
   // useEffect(() => {
   //   options?.length > 0 && prepend(options)
@@ -94,8 +93,8 @@ export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
       >
         {item?.options?.map((option, index) => (
           <Controller
-            name={`${name}.${index}.${option.name}`}
-            key={`${name}-${index}-${option.name}-field`}
+            name={`${fieldId}.${index}.${option.name}`}
+            key={`${fieldId}-${index}-${option.name}-field`}
             control={control}
             render={({ field }) => (
               <FormControlLabel key={`${index}-${fieldId}-${option.value}`} control={<Checkbox {...field} />} label={option.name} />)}

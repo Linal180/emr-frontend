@@ -171,6 +171,7 @@ export type AttachmentPayload = {
 /** The type is assigned */
 export enum AttachmentType {
   Doctor = 'DOCTOR',
+  FormBuilder = 'FORM_BUILDER',
   Patient = 'PATIENT',
   Lab = 'lab'
 }
@@ -3306,6 +3307,7 @@ export type UserForms = {
   PatientId?: Maybe<Scalars['String']>;
   StaffId?: Maybe<Scalars['String']>;
   SubmitterId?: Maybe<Scalars['String']>;
+  attachments?: Maybe<Array<Attachment>>;
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
