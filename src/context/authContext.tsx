@@ -11,12 +11,13 @@ import {
 
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
+  practiceName: '',
   currentUser: null,
   isLoggedIn: false,
   userPermissions: [],
-  fetchUser: () => { },
   setIsLoggedIn: () => { },
   setUser: (user: User | null) => { },
+  setPracticeName: (name: string) => { },
   setCurrentUser: (user: Doctor | Staff | null) => { },
 });
 
@@ -26,6 +27,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const [isLoggedIn, _setIsLoggedIn] = useState<boolean>(false);
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
+  const [practiceName, setPracticeName] = useState<string>('');
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
@@ -93,11 +95,12 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
           const { user: userResponse } = me;
 
           if (userResponse) {
-            const { roles, userId } = userResponse;
+            const { roles, userId, facility } = userResponse;
             const isAdmin = isSuperAdmin(roles as RolesPayload['roles'])
 
             if (!isAdmin) {
               const roleName = getUserRole(roles as RolesPayload['roles'])
+
               if (roleName === 'doctor') {
                 getDoctor({
                   variables: { getDoctor: { id: userId } }
@@ -106,6 +109,13 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
                 getStaff({
                   variables: { getStaff: { id: userId } }
                 })
+              }
+
+              if (facility) {
+                const { practice } = facility;
+                const { name } = practice || {}
+
+                name && setPracticeName(name)
               }
             }
 
@@ -135,12 +145,13 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
       value={{
         user,
         setUser,
-        fetchUser,
         isLoggedIn,
         currentUser,
+        practiceName,
         setIsLoggedIn,
         setCurrentUser,
         userPermissions,
+        setPracticeName,
       }}
     >
       {children}

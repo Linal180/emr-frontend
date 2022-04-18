@@ -16,11 +16,9 @@ import {
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser } = useContext(AuthContext);
-  const { email, facility, roles } = user || {};
+  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName } = useContext(AuthContext);
+  const { email, roles } = user || {};
   const { firstName, lastName } = currentUser || {}
-  const { practice } = facility || {}
-  const { name } = practice || {}
   const [isSuper, setIsSuper] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -84,12 +82,12 @@ const ProfileDropdownMenu = (): JSX.Element => {
             </Box>
           </Box>
 
-          {name && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+          {practiceName && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
             <Box pr={1} color={BLACK_TWO}>
               <Typography variant="body1">{PRACTICE} :</Typography>
             </Box>
 
-            <Typography variant="body1">{name || '--'}</Typography>
+            <Typography variant="body1">{practiceName}</Typography>
           </Box>}
 
           <Grid container spacing={3}>

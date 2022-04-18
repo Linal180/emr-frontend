@@ -6,12 +6,13 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Box, Button, Card, CircularProgress, Collapse, Grid, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../common/Alert';
+import PracticeData from './practiceData';
 import PhoneField from '../../../common/PhoneInput';
 import InputController from '../../../../controller';
-import LogoIcon from "../../../../assets/images/logo.svg"
+import LogoIcon from "../../../../assets/images/logo.svg";
+import ViewDataLoader from '../../../common/ViewDataLoader';
 // constants block
 import history from '../../../../history';
-import { renderItem } from '../../../../utils';
 import { AuthContext } from '../../../../context';
 import { updatePracticeSchema } from '../../../../validationSchemas';
 import { CustomPracticeInputProps } from '../../../../interfacesTypes';
@@ -24,7 +25,7 @@ import {
 } from '../../../../constants';
 
 const DetailPracticeComponent: FC = (): JSX.Element => {
-  const { user, fetchUser } = useContext(AuthContext);
+  const { user, setPracticeName } = useContext(AuthContext);
   const { facility } = user || {};
   const { practice } = facility || {};
   const { id: practiceId } = practice || {};
@@ -78,17 +79,19 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
       Alert.error(message)
     },
 
-    onCompleted(data) {
-      const { updatePractice: { response } } = data;
+    async onCompleted(data) {
+      const { updatePractice: { response, practice } } = data;
 
       if (response) {
         const { status, message } = response
 
-        if (message && status && status === 200) {
-          Alert.success(message);
-          fetchUser();
+        if (practice && message && status && status === 200) {
+          const { name } = practice
+
+          name && setPracticeName(name)
           fetchPractice();
           setEdit(false)
+          Alert.success(message);
         }
       }
     }
@@ -113,10 +116,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<CustomPracticeInputProps> = async (inputs) => {
     const { name, phone, fax, upin, ein, medicaid, medicare, champus } = inputs;
-
-    const practiceInput = {
-      name, champus, ein, fax, medicaid, medicare, phone, upin
-    }
+    const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone, upin }
 
     practiceId && await updatePractice({
       variables: { updatePracticeInput: { id: practiceId, ...practiceInput } }
@@ -124,75 +124,9 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
   };
 
   const disableSubmit = loading || updatePracticeLoading
-  const { name, phone, fax, ein, upin, medicaid, medicare, champus } = practiceData || {};
 
-  const renderPracticeDate = () => {
-    return (
-      <>
-        <Grid container spacing={3}>
-          <Grid item md={12} sm={12}>
-            {renderItem(PRACTICE_NAME, name)}
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12}>
-            {renderItem(PHONE, phone)}
-          </Grid>
-
-          <Grid item md={6} sm={12}>
-            {renderItem(FAX, fax)}
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={3}>
-          <Grid item md={12} sm={12}>
-            <Typography variant='h6'>{PRACTICE_IDENTIFIER}</Typography>
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12}>
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12}>
-                {renderItem(EIN, ein)}
-              </Grid>
-
-              <Grid item md={6} sm={12}>
-                {renderItem(UPIN, upin)}
-              </Grid>
-            </Grid>
-          </Grid>
-
-          <Grid item md={6} sm={12}>
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12}>
-                {renderItem(MEDICARE, medicare)}
-              </Grid>
-
-              <Grid item md={6} sm={12}>
-                {renderItem(MEDICAID, medicaid)}
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={3}>
-          <Grid item md={6} sm={12}>
-            <Grid container spacing={3}>
-              <Grid item md={6} sm={12}>
-                {renderItem(CHAMPUS, champus)}
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
-      </>
-    )
-  }
   return (
-    <>
-      <Box p={4} />
-
+    <Box p={4}>
       <Grid container justifyContent='center'>
         <Grid item md={8} sm={12} xs={12}>
           <Card>
@@ -218,115 +152,115 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                       <Button variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
                     }
                   </Box>
+                  {loading ? <ViewDataLoader columns={6} rows={4} /> :
+                    <FormProvider {...methods}>
+                      <Collapse in={!edit} mountOnEnter unmountOnExit>
+                        <PracticeData practiceData={practiceData} />
+                      </Collapse>
 
-                  <FormProvider {...methods}>
-                    <Collapse in={!edit} mountOnEnter unmountOnExit>
-                      {renderPracticeDate()}
-                    </Collapse>
-
-                    <Collapse in={edit} mountOnEnter unmountOnExit>
-                      <form onSubmit={handleSubmit(onSubmit)}>
-                        <Grid container spacing={3}>
-                          <Grid item md={12} sm={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="name"
-                              controllerLabel={PRACTICE_NAME}
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12}>
-                            <PhoneField name="phone" label={PHONE} />
+                      <Collapse in={edit} mountOnEnter unmountOnExit>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                          <Grid container spacing={3}>
+                            <Grid item md={12} sm={12}>
+                              <InputController
+                                fieldType="text"
+                                controllerName="name"
+                                controllerLabel={PRACTICE_NAME}
+                              />
+                            </Grid>
                           </Grid>
 
-                          <Grid item md={6} sm={12}>
-                            <PhoneField name="fax" label={FAX} />
+                          <Grid container spacing={3}>
+                            <Grid item md={6} sm={12}>
+                              <PhoneField name="phone" label={PHONE} />
+                            </Grid>
+
+                            <Grid item md={6} sm={12}>
+                              <PhoneField name="fax" label={FAX} />
+                            </Grid>
                           </Grid>
-                        </Grid>
 
-                        <Grid container spacing={3}>
-                          <Grid item md={12} sm={12}>
-                            <Typography variant='h6'>{PRACTICE_IDENTIFIER}</Typography>
+                          <Grid container spacing={3}>
+                            <Grid item md={12} sm={12}>
+                              <Typography variant='h6'>{PRACTICE_IDENTIFIER}</Typography>
+                            </Grid>
                           </Grid>
-                        </Grid>
 
-                        <Box p={2} />
+                          <Box p={2} />
 
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12}>
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="ein"
-                                  controllerLabel={EIN}
-                                />
+                          <Grid container spacing={3}>
+                            <Grid item md={6} sm={12}>
+                              <Grid container spacing={3}>
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="ein"
+                                    controllerLabel={EIN}
+                                  />
+                                </Grid>
+
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="upin"
+                                    controllerLabel={UPIN}
+                                  />
+                                </Grid>
                               </Grid>
+                            </Grid>
 
-                              <Grid item md={6} sm={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="upin"
-                                  controllerLabel={UPIN}
-                                />
+                            <Grid item md={6} sm={12}>
+                              <Grid container spacing={3}>
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="medicare"
+                                    controllerLabel={MEDICARE}
+                                  />
+                                </Grid>
+
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="medicaid"
+                                    controllerLabel={MEDICAID}
+                                  />
+                                </Grid>
                               </Grid>
                             </Grid>
                           </Grid>
 
-                          <Grid item md={6} sm={12}>
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="medicare"
-                                  controllerLabel={MEDICARE}
-                                />
-                              </Grid>
-
-                              <Grid item md={6} sm={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="medicaid"
-                                  controllerLabel={MEDICAID}
-                                />
+                          <Grid container spacing={3}>
+                            <Grid item md={6} sm={12}>
+                              <Grid container spacing={3}>
+                                <Grid item md={6} sm={12}>
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="champus"
+                                    controllerLabel={CHAMPUS}
+                                  />
+                                </Grid>
                               </Grid>
                             </Grid>
-                          </Grid>
-                        </Grid>
 
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12}>
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="champus"
-                                  controllerLabel={CHAMPUS}
-                                />
-                              </Grid>
+                            <Grid item md={12} sm={12}>
+                              <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
+                                {SAVE_TEXT}
+
+                                {disableSubmit && <CircularProgress size={20} color="inherit" />}
+                              </Button>
                             </Grid>
                           </Grid>
-
-                          <Grid item md={12} sm={12}>
-                            <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
-                              {SAVE_TEXT}
-
-                              {disableSubmit && <CircularProgress size={20} color="inherit" />}
-                            </Button>
-                          </Grid>
-                        </Grid>
-                      </form>
-                    </Collapse>
-                  </FormProvider>
+                        </form>
+                      </Collapse>
+                    </FormProvider>}
                 </Grid>
               </Grid>
             </Box>
           </Card>
         </Grid>
       </Grid>
-    </>
+    </Box>
   )
 }
 
