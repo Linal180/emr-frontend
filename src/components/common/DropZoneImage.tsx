@@ -17,7 +17,7 @@ import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT 
 const DropzoneImage: FC<any> = forwardRef(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reload, title,
 }, ref): JSX.Element => {
-  const {setIsLoggedIn, setUser } = useContext(AuthContext)
+  const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
   const [loading, setLoading] = useState<boolean>(false);
   const [imageEdit, setImageEdit] = useState<boolean>(false);
@@ -36,9 +36,7 @@ const DropzoneImage: FC<any> = forwardRef(({
       break;
   }
 
-  const handleModalClose = () => {
-    handleClose()
-  }
+  const handleModalClose = () => handleClose();
 
   useImperativeHandle(ref, () => ({
     submit() {
@@ -73,17 +71,15 @@ const DropzoneImage: FC<any> = forwardRef(({
 
           case AttachmentType.Patient:
             const patientData = data as unknown as MediaPatientDataType;
+
             if (patientData) {
               const { patient: { attachments: patientAttachment } } = patientData || {};
-
-              if (patientAttachment) {
-                Alert.success('Media added successfully!');
-                setLoading(false);
-                handleModalClose();
-                setAttachments(patientAttachment)
-                reload()
-              }
+              patientAttachment && setAttachments(patientAttachment)
+              setLoading(false);
+              handleModalClose();
+              reload()
             }
+
             break;
 
           default:
