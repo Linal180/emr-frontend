@@ -14,6 +14,7 @@ export const AuthContext = createContext<AuthContextProps>({
   currentUser: null,
   isLoggedIn: false,
   userPermissions: [],
+  fetchUser: () => { },
   setIsLoggedIn: () => { },
   setUser: (user: User | null) => { },
   setCurrentUser: (user: Doctor | Staff | null) => { },
@@ -134,6 +135,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
       value={{
         user,
         setUser,
+        fetchUser,
         isLoggedIn,
         currentUser,
         setIsLoggedIn,

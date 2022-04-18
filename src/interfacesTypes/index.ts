@@ -45,6 +45,7 @@ export interface AuthContextProps {
   setUser: (user: User | null) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setCurrentUser: (user: Doctor | Staff | null) => void;
+  fetchUser: Function;
 }
 
 export interface DoctorScheduleSlotProps {
