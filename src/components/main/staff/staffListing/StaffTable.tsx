@@ -172,10 +172,11 @@ const StaffTable: FC = (): JSX.Element => {
         )}
 
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
+          <Box display="flex" justifyContent="flex-end" p={3}>
             <Pagination
               count={totalPages}
               shape="rounded"
+              variant="outlined"
               page={page}
               onChange={handleChange}
             />

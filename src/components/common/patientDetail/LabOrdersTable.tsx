@@ -16,11 +16,9 @@ const LabOrdersTable = (): JSX.Element => {
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
-        <Box className={classes.searchOuterContainer}>
-          <Search search={Search} />
-        </Box>
-
+      <Box px={2} display="flex" justifyContent="space-between" alignItems="center">
+        <Search search={Search} />
+        
         <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} component={Link} to={CREATE_LAB_ORDERS_ROUTE}>
           {MANUAL_ENTRY}
         </Button>
