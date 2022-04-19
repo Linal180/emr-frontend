@@ -16,7 +16,7 @@ import {
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
+  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL, SYSTEM_ROLES,
 } from "../constants";
 
 export const handleLogout = () => {
@@ -245,7 +245,11 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        if (name !== 'patient' && name !== 'super-admin' && name !== 'admin' && name !== 'doctor')
+        // && name !== SYSTEM_ROLES.FacilityAdmin
+        if (
+          name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
+          && name !== SYSTEM_ROLES.Doctor
+        )
           name && data.push({ id: name, name: formatValue(name) })
       }
     }

@@ -40,9 +40,11 @@ export interface CalendarChart {
 export interface AuthContextProps {
   user: User | null;
   isLoggedIn: boolean;
+  practiceName: string,
   userPermissions: string[],
   currentUser: Doctor | Staff | null;
   setUser: (user: User | null) => void;
+  setPracticeName: (name: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setCurrentUser: (user: Doctor | Staff | null) => void;
 }
@@ -284,6 +286,7 @@ export interface SelectorProps {
   label: string
   error?: string
   disabled?: boolean
+  addEmpty?: boolean
   isRequired?: boolean
   isMultiple?: boolean
   value?: SelectorOption

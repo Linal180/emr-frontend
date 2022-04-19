@@ -350,7 +350,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
           <Grid container spacing={3}>
-            <Grid md={6} item>
+            <Grid md={8} item>
               <CardComponent cardTitle={APPOINTMENT}>
                 {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <Grid container spacing={3}>
@@ -439,7 +439,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               </CardComponent>
             </Grid>
 
-            <Grid md={6} item>
+            <Grid md={4} item>
               <Grid item md={12} sm={12} className="custom-calendar">
                 <CardComponent cardTitle="Available Slots">
                   <Box display="flex" justifyContent="center">

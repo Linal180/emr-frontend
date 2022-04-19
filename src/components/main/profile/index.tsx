@@ -1,6 +1,7 @@
 // packages block
-import { Link } from 'react-router-dom';
 import { Reducer, useReducer, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Edit } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Avatar, Box, Button, Collapse, Grid, MenuItem, Typography } from "@material-ui/core";
 //components block
@@ -8,7 +9,6 @@ import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
 // constants, history, styling block
 import { WHITE } from '../../../theme';
-import { Edit } from '@material-ui/icons';
 import { renderItem } from '../../../utils';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";

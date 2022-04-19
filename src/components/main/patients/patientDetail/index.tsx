@@ -139,7 +139,6 @@ const PatientDetailsComponent = (): JSX.Element => {
   }, [fetchPatient, id])
 
   useEffect(() => {
-    console.log("Use effect attachmentId", attachmentId)
     attachmentId && fetchAttachment();
   }, [attachmentId, fetchAttachment, attachmentData])
 

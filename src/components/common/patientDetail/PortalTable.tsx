@@ -61,10 +61,8 @@ const PortalTable: FC<PortalTableProps> = ({ inviteAccepted }): JSX.Element => {
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
-        <Box>
-          <Search search={search} />
-        </Box>
+      <Box px={2} display="flex" justifyContent="space-between" alignItems="center">
+        <Search search={search} />
 
         <Button color="inherit" variant="outlined" className='blue-button-new'
           onClick={() => handleAccess()}

@@ -14,7 +14,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext } from "../../../../context";
 import { ListContext } from "../../../../context/listContext";
 import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
-import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
+import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -199,19 +199,19 @@ const FacilityTable: FC = (): JSX.Element => {
                           <DetailTooltip title={SERVICES}>
                             <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
                               <Box className={classes.iconsBackground}>
-                                <ServiceIcon />
+                                <AddNewIcon />
                               </Box>
                             </Link>
                           </DetailTooltip>
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
-                              <EditIcon />
+                              <EditNewIcon />
                             </Box>
                           </Link>
 
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashIcon />
+                            <TrashNewIcon />
                           </Box>
                         </Box>
                       </TableCell>
@@ -242,10 +242,11 @@ const FacilityTable: FC = (): JSX.Element => {
       </Box>
 
       {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" pt={2.25}>
+        <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
             count={totalPages}
             shape="rounded"
+            variant="outlined"
             page={page}
             onChange={handleChange}
           />
