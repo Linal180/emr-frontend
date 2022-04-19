@@ -248,7 +248,7 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
         // && name !== SYSTEM_ROLES.FacilityAdmin
         if (
           name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
-         && name !== SYSTEM_ROLES.Doctor
+          && name !== SYSTEM_ROLES.Doctor
         )
           name && data.push({ id: name, name: formatValue(name) })
       }
@@ -506,7 +506,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
     const {
       scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status, token
+      reason, primaryInsurance, status, token, billingStatus
     } = appointment || {};
 
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
@@ -531,6 +531,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       appointmentType,
       primaryInsurance,
       color, price,
+      billingStatus,
       appointmentName,
       appointmentStatus,
       title: `${firstName} ${lastName}`,

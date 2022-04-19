@@ -17,6 +17,8 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       scheduleEndDateTime
       scheduleStartDateTime
       token
+      reason
+      primaryInsurance
       
       provider {
         id
@@ -38,6 +40,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       appointmentType {
         id
         name
+        price
       }
     }
   }

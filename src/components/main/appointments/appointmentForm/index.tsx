@@ -43,6 +43,9 @@ import {
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
   const { facilityList } = useContext(ListContext)
+  const params = new URLSearchParams(window.location.search);
+  const appStartDate = params.get('startDate');
+  const appEndDate = params.get('endDate');
   const {
     serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
@@ -51,6 +54,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
     serviceName, facilityName, providerName, patientName, cancelAppStatus
   } = state
+
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -172,11 +176,22 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       if (getSlots) {
         const { slots } = getSlots;
 
-        slots ?
+        if (slots) {
+          // if (appStartDate) {
+          //   const apStartDate = new Date(appStartDate).toString()
+          //   console.log(apStartDate);
+
+          //   const appointmentSlots = slots?.map(item => {
+          //     console.log(slots.map(item => item.startTime));
+
+          //     return item?.startTime?.includes(apStartDate)
+          //   })
+          //   console.log(appointmentSlots);
+          // }
           dispatch({
             type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as SlotsPayload['slots']
           })
-          : dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
+        } else { dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] }); }
       }
     }
   });
@@ -244,7 +259,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => {
     if (selectedService && date) {
-      const slotsInput = { offset, currentDate: date.toString(), serviceId: selectedService };
+      const slotsInput = { offset, currentDate: appStartDate ? appStartDate : date.toString(), serviceId: selectedService };
 
       getSlots({
         variables: {
@@ -252,7 +267,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         }
       })
     }
-  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots])
+  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots, appStartDate, setValue, appEndDate])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -432,7 +447,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <DatePicker
                         variant="static"
                         openTo="date"
-                        value={date}
+                        value={appStartDate ? appStartDate : date}
                         autoOk
                         disablePast
                         fullWidth
