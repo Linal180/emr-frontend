@@ -161,7 +161,7 @@ const ServicesTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{duration}</TableCell>
                       <TableCell scope="row">{price}</TableCell>
                       <TableCell scope="row">
-                        <Box className={classes.status} component='span' color={StatusColor} style={{border:`1px solid ${StatusColor}`}}>
+                        <Box className={classes.status} component='span' color={StatusColor} border={`1px solid ${StatusColor}`}>
                           {ActiveStatus}
                         </Box>
                       </TableCell>
