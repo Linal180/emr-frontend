@@ -107,7 +107,7 @@ export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) 
 
   if (currentUserRole) {
     for (let role of currentUserRole) {
-      isAdmin = role?.role === ADMIN || role?.role === SUPER_ADMIN
+      isAdmin = role?.role === SYSTEM_ROLES.PracticeAdmin || role?.role === SYSTEM_ROLES.SuperAdmin
     }
   }
 

@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext } from "../../../../context";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
+import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { staffReducer, Action, initialState, State, ActionType } from "../../../../reducers/staffReducer";
 import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
@@ -26,7 +26,9 @@ const StaffTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext);
   const { facility, roles } = user || {};
-  const { practiceId } = facility || {};
+  const { id: facilityId, practiceId } = facility || {};
+  const isSuper = isSuperAdmin(roles);
+  const isAdmin = isUserAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(staffReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteStaffId, allStaff } = state;
 
@@ -56,9 +58,9 @@ const StaffTable: FC = (): JSX.Element => {
 
   const fetchAllStaff = useCallback(async () => {
     try {
-      const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const staffInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
+      const staffInputs = isSuper ? { ...pageInputs } :
+        !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllStaff({
         variables: {
@@ -66,7 +68,7 @@ const StaffTable: FC = (): JSX.Element => {
         }
       })
     } catch (error) { }
-  }, [roles, page, practiceId, findAllStaff, searchQuery]);
+  }, [page, isSuper, isAdmin, facilityId, practiceId, findAllStaff, searchQuery]);
 
   const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
     onError() {
