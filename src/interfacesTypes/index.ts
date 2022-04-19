@@ -286,6 +286,7 @@ export interface SelectorProps {
   label: string
   error?: string
   disabled?: boolean
+  addEmpty?: boolean
   isRequired?: boolean
   isMultiple?: boolean
   value?: SelectorOption
