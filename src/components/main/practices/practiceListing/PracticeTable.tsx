@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
-import { EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs';
+import { TrashNewIcon, EditNewIcon } from '../../../../assets/svgs';
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/practiceReducer";
@@ -149,13 +149,13 @@ const PracticeTable: FC = (): JSX.Element => {
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>
-                          <Box className={classes.practiceIconsBackground}>
-                            <EditPracticeIcon />
+                          <Box className={classes.iconsBackground}>
+                            <EditNewIcon />
                           </Box>
                         </Link>
 
-                        <Box className={classes.practiceIconsBackground} onClick={() => onDelete(id || '')}>
-                          <DeletePracticeIcon />
+                        <Box className={classes.iconsBackground} onClick={() => onDelete(id || '')}>
+                          <TrashNewIcon />
                         </Box>
                       </Box>
                     </TableCell>
@@ -173,10 +173,11 @@ const PracticeTable: FC = (): JSX.Element => {
         )}
 
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
+          <Box display="flex" justifyContent="flex-end" p={3}>
             <Pagination
               count={totalPages}
               shape="rounded"
+              variant="outlined"
               page={page}
               onChange={handleChange}
             />

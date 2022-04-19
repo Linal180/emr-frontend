@@ -21,7 +21,7 @@ export const useTableStyles = makeStyles(() => ({
     display: 'flex',
     alignItems: 'center',
     maxWidth: 400,
-    margin: 36,
+    margin: 10,
   },
 
   tableSearchInput: {

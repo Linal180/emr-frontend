@@ -11,7 +11,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { EditIcon, TrashIcon } from '../../../../assets/svgs'
+import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs'
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
@@ -162,12 +162,12 @@ const PatientsTable: FC = (): JSX.Element => {
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PATIENTS_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
-                            <EditIcon />
+                            <EditNewIcon />
                           </Box>
                         </Link>
 
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                          <TrashIcon />
+                          <TrashNewIcon />
                         </Box>
                       </Box>
                     </TableCell>
@@ -185,10 +185,11 @@ const PatientsTable: FC = (): JSX.Element => {
         )}
 
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
+          <Box display="flex" justifyContent="flex-end" p={3}>
             <Pagination
               count={totalPages}
               shape="rounded"
+              variant="outlined"
               page={page}
               onChange={handleChange}
             />
