@@ -229,8 +229,8 @@ export const renderOfficeRoles = (roles: RolesPayload['roles']) => {
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' )
-        name && data.push({ id: name, name: formatValue(name) })
+        if (name !== 'patient' && name !== 'super-admin' && name !== 'admin')
+          name && data.push({ id: name, name: formatValue(name) })
       }
     }
   }
@@ -245,8 +245,8 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' && name !== 'doctor' )
-        name && data.push({ id: name, name: formatValue(name) })
+        if (name !== 'patient' && name !== 'super-admin' && name !== 'admin' && name !== 'doctor')
+          name && data.push({ id: name, name: formatValue(name) })
       }
     }
   }
@@ -502,7 +502,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
     const {
       scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status, token
+      reason, primaryInsurance, status, token, billingStatus
     } = appointment || {};
 
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
@@ -527,6 +527,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       appointmentType,
       primaryInsurance,
       color, price,
+      billingStatus,
       appointmentName,
       appointmentStatus,
       title: `${firstName} ${lastName}`,

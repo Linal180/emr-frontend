@@ -887,6 +887,7 @@ export type FacilityInput = {
   isPrivate?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
+  singleFacilityId?: Maybe<Scalars['String']>;
 };
 
 export type FacilityPayload = {
@@ -1071,6 +1072,10 @@ export type GetMedia = {
 };
 
 export type GetPatient = {
+  id: Scalars['String'];
+};
+
+export type GetPatientAllergy = {
   id: Scalars['String'];
 };
 
@@ -1270,6 +1275,7 @@ export type Mutation = {
   removeFacility: FacilityPayload;
   removeForm: FormPayload;
   removePatient: PatientPayload;
+  removePatientAllergy: PatientAllergyPayload;
   removePatientProblem: PatientProblemPayload;
   removePatientVital: PatientVitalPayload;
   removePermission: PermissionPayload;
@@ -1296,6 +1302,7 @@ export type Mutation = {
   updateInvoiceStatus: InvoicePayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
+  updatePatientAllergy: PatientAllergyPayload;
   updatePatientProblem: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
@@ -1424,7 +1431,7 @@ export type MutationCreateRoleArgs = {
 
 
 export type MutationCreateScheduleArgs = {
-  createScheduleInput: CreateScheduleInput;
+  createScheduleInput: Array<CreateScheduleInput>;
 };
 
 
@@ -1510,6 +1517,11 @@ export type MutationRemoveFormArgs = {
 
 export type MutationRemovePatientArgs = {
   removePatient: RemovePatient;
+};
+
+
+export type MutationRemovePatientAllergyArgs = {
+  removePatientAllergy: RemovePatientAllergy;
 };
 
 
@@ -1640,6 +1652,11 @@ export type MutationUpdatePasswordArgs = {
 
 export type MutationUpdatePatientArgs = {
   updatePatientInput: UpdatePatientInput;
+};
+
+
+export type MutationUpdatePatientAllergyArgs = {
+  updateAllergyInput: UpdateAllergyInput;
 };
 
 
@@ -1799,15 +1816,31 @@ export type PatientAllergies = {
   allergySeverity: AllergySeverity;
   allergyStartDate?: Maybe<Scalars['String']>;
   appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   doctor?: Maybe<Doctor>;
+  doctorId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   isActive?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
   reactions?: Maybe<Array<Maybe<Reactions>>>;
   staff?: Maybe<Staff>;
+  staffId?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type PatientAllergiesPayload = {
+  __typename?: 'PatientAllergiesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  patientAllergies?: Maybe<Array<Maybe<PatientAllergies>>>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type PatientAllergyInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
 };
 
 export type PatientAllergyPayload = {
@@ -1947,20 +1980,20 @@ export type PatientsPayload = {
 export type PaymentInput = {
   appointmentId: Scalars['String'];
   clientIntent?: Maybe<Scalars['String']>;
-  facilityId: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
   price: Scalars['String'];
-  providerId: Scalars['String'];
+  providerId?: Maybe<Scalars['String']>;
   serviceId: Scalars['String'];
 };
 
 export type PaymentInputsAfterAppointment = {
   appointmentId: Scalars['String'];
   clientIntent: Scalars['String'];
-  facilityId: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
   price: Scalars['String'];
-  providerId: Scalars['String'];
+  providerId?: Maybe<Scalars['String']>;
 };
 
 /** The patient payment type assigned */
@@ -2069,6 +2102,7 @@ export type Query = {
   findAllFacility: FacilitiesPayload;
   findAllForms: FormsPayload;
   findAllPatient: PatientsPayload;
+  findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientProblem: PatientProblemsPayload;
   findAllPatientVitals: PatientVitalsPayload;
   findAllPermissions: PermissionsPayload;
@@ -2089,6 +2123,7 @@ export type Query = {
   getFacilitySchedule: SchedulesPayload;
   getForm: FormPayload;
   getPatient: PatientPayload;
+  getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
   getPatientProblem: PatientProblemPayload;
   getPatientVital: PatientVitalPayload;
@@ -2145,6 +2180,11 @@ export type QueryFindAllFormsArgs = {
 
 export type QueryFindAllPatientArgs = {
   patientInput: PatientInput;
+};
+
+
+export type QueryFindAllPatientAllergiesArgs = {
+  patientAllergyInput: PatientAllergyInput;
 };
 
 
@@ -2245,6 +2285,11 @@ export type QueryGetFormArgs = {
 
 export type QueryGetPatientArgs = {
   getPatient: GetPatient;
+};
+
+
+export type QueryGetPatientAllergyArgs = {
+  getPatientAllergy: GetPatientAllergy;
 };
 
 
@@ -2406,6 +2451,10 @@ export type RemoveForm = {
 };
 
 export type RemovePatient = {
+  id: Scalars['String'];
+};
+
+export type RemovePatientAllergy = {
   id: Scalars['String'];
 };
 
@@ -2852,9 +2901,9 @@ export type Transactions = {
   appointmentId: Scalars['String'];
   createdAt?: Maybe<Scalars['String']>;
   doctor?: Maybe<Array<Doctor>>;
-  doctorId: Scalars['String'];
+  doctorId?: Maybe<Scalars['String']>;
   facility?: Maybe<Array<Facility>>;
-  facilityId: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   invoice?: Maybe<Array<Invoice>>;
   patient?: Maybe<Array<Patient>>;
@@ -2882,6 +2931,16 @@ export enum UnitType {
   Centimeter = 'CENTIMETER',
   Inch = 'INCH'
 }
+
+export type UpdateAllergyInput = {
+  allergyId?: Maybe<Scalars['String']>;
+  appointmentId?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  providerId?: Maybe<Scalars['String']>;
+  reactionsIds: Array<Scalars['String']>;
+  staffId?: Maybe<Scalars['String']>;
+  updatePatientAllergyInput: UpdatePatientAllergyInput;
+};
 
 export type UpdateAppointmentBillingStatusInput = {
   billingStatus: Scalars['String'];
@@ -3090,6 +3149,15 @@ export type UpdatePasswordInput = {
   id: Scalars['String'];
   newPassword: Scalars['String'];
   oldPassword: Scalars['String'];
+};
+
+export type UpdatePatientAllergyInput = {
+  allergyOnset?: Maybe<AllergyOnset>;
+  allergySeverity?: Maybe<AllergySeverity>;
+  allergyStartDate?: Maybe<Scalars['String']>;
+  comments?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  isActive?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdatePatientInput = {
@@ -3365,7 +3433,7 @@ export type FindAllAppointmentsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleEndDateTime?: string | null | undefined, scheduleStartDateTime?: string | null | undefined, token?: string | null | undefined, reason?: string | null | undefined, primaryInsurance?: string | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllAppointmentsQuery = { __typename?: 'Query', findAllAppointments: { __typename?: 'AppointmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, appointments?: Array<{ __typename?: 'Appointment', id: string, status: Appointmentstatus, scheduleEndDateTime?: string | null | undefined, scheduleStartDateTime?: string | null | undefined, token?: string | null | undefined, reason?: string | null | undefined, primaryInsurance?: string | null | undefined, facilityId?: string | null | undefined, provider?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string } | null | undefined, appointmentType?: { __typename?: 'Service', id: string, name: string, price: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetAppointmentQueryVariables = Exact<{
   getAppointment: GetAppointment;
@@ -3819,7 +3887,7 @@ export type FindAllPermissionQueryVariables = Exact<{
 export type FindAllPermissionQuery = { __typename?: 'Query', findAllPermissions: { __typename?: 'PermissionsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, permissions?: Array<{ __typename?: 'Permission', id: string, name?: string | null | undefined, moduleType?: string | null | undefined, status?: boolean | null | undefined } | null | undefined> | null | undefined } };
 
 export type CreateScheduleMutationVariables = Exact<{
-  createScheduleInput: CreateScheduleInput;
+  createScheduleInput: Array<CreateScheduleInput> | CreateScheduleInput;
 }>;
 
 
@@ -3972,6 +4040,7 @@ export const FindAllAppointmentsDocument = gql`
       token
       reason
       primaryInsurance
+      facilityId
       provider {
         id
         firstName
@@ -7300,7 +7369,7 @@ export type FindAllPermissionQueryHookResult = ReturnType<typeof useFindAllPermi
 export type FindAllPermissionLazyQueryHookResult = ReturnType<typeof useFindAllPermissionLazyQuery>;
 export type FindAllPermissionQueryResult = Apollo.QueryResult<FindAllPermissionQuery, FindAllPermissionQueryVariables>;
 export const CreateScheduleDocument = gql`
-    mutation CreateSchedule($createScheduleInput: CreateScheduleInput!) {
+    mutation CreateSchedule($createScheduleInput: [CreateScheduleInput!]!) {
   createSchedule(createScheduleInput: $createScheduleInput) {
     response {
       error
