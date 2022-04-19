@@ -947,6 +947,7 @@ export type Form = {
   name: Scalars['String'];
   type: FormType;
   updatedAt?: Maybe<Scalars['String']>;
+  userForms?: Maybe<Array<UserForms>>;
 };
 
 export type FormElement = {
@@ -959,11 +960,11 @@ export type FormElement = {
   fieldId: Scalars['String'];
   id: Scalars['String'];
   isDeleted: Scalars['Boolean'];
+  label?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   placeholder?: Maybe<Scalars['String']>;
   required?: Maybe<Scalars['Boolean']>;
   sectionId: Scalars['String'];
-  tableName?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
 };
 
@@ -3294,6 +3295,7 @@ export type UserFormElementInputs = {
 };
 
 export type UserFormInput = {
+  FormId: Scalars['String'];
   paginationOptions: PaginationInput;
 };
 
@@ -3310,8 +3312,8 @@ export type UserForms = {
   PatientId?: Maybe<Scalars['String']>;
   StaffId?: Maybe<Scalars['String']>;
   SubmitterId?: Maybe<Scalars['String']>;
-  attachments?: Maybe<Array<Attachment>>;
   createdAt?: Maybe<Scalars['String']>;
+  form?: Maybe<Form>;
   id: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
   userFormElements?: Maybe<Array<UsersFormsElements>>;
@@ -3319,9 +3321,9 @@ export type UserForms = {
 
 export type UserFormsPayload = {
   __typename?: 'UserFormsPayload';
+  form?: Maybe<Form>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayloadResponse>;
-  userForms?: Maybe<Array<UserForms>>;
 };
 
 export type UserIdInput = {
@@ -3673,7 +3675,7 @@ export type FindAllUsersFormsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllUsersFormsQuery = { __typename?: 'Query', findAllUsersForms: { __typename?: 'UserFormsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, userForms?: Array<{ __typename?: 'UserForms', id: string, PatientId?: string | null | undefined, StaffId?: string | null | undefined, FormId: string, SubmitterId?: string | null | undefined, userFormElements?: Array<{ __typename?: 'UsersFormsElements', id: string, UsersFormsId: string, FormsElementsId: string, value?: string | null | undefined, arrayOfStrings: Array<{ __typename?: 'ArrayOfStringsType', name: string, value: boolean }> }> | null | undefined }> | null | undefined } };
+export type FindAllUsersFormsQuery = { __typename?: 'Query', findAllUsersForms: { __typename?: 'UserFormsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, formElements?: Array<{ __typename?: 'FormElement', id: string, name: string, label?: string | null | undefined, fieldId: string, sectionId: string, isDeleted: boolean }> | null | undefined, userForms?: Array<{ __typename?: 'UserForms', id: string, FormId: string, DoctorId?: string | null | undefined, PatientId?: string | null | undefined, StaffId?: string | null | undefined, SubmitterId?: string | null | undefined, userFormElements?: Array<{ __typename?: 'UsersFormsElements', id: string, value?: string | null | undefined, UsersFormsId: string, FormsElementsId: string, arrayOfStrings: Array<{ __typename?: 'ArrayOfStringsType', name: string, value: boolean }> }> | null | undefined }> | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type SaveUserFormValuesMutationVariables = Exact<{
   createUserFormInput: CreateUserFormInput;
@@ -6001,22 +6003,41 @@ export const FindAllUsersFormsDocument = gql`
       status
       message
     }
-    userForms {
+    form {
       id
-      PatientId
-      StaffId
-      FormId
-      SubmitterId
-      userFormElements {
+      name
+      formElements {
         id
-        UsersFormsId
-        FormsElementsId
-        value
-        arrayOfStrings {
-          name
+        name
+        label
+        fieldId
+        sectionId
+        isDeleted
+      }
+      userForms {
+        id
+        FormId
+        DoctorId
+        PatientId
+        StaffId
+        SubmitterId
+        userFormElements {
+          id
           value
+          UsersFormsId
+          FormsElementsId
+          arrayOfStrings {
+            name
+            value
+          }
         }
       }
+    }
+    pagination {
+      page
+      limit
+      totalCount
+      totalPages
     }
   }
 }

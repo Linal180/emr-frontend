@@ -7,12 +7,12 @@ import { FORM_RESPONSES } from '../../../../constants';
 
 
 const FormResponses: FC = (): JSX.Element => {
-	return (
-		<>
-			<PageHeader title={FORM_RESPONSES} />
-			<ResponseTable />
-		</>
-	)
+  return (
+    <>
+      <PageHeader title={FORM_RESPONSES} />
+      <ResponseTable />
+    </>
+  )
 }
 
 export default FormResponses

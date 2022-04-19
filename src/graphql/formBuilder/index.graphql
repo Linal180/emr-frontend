@@ -185,24 +185,46 @@ query findAllUsersForms($userFormInput: UserFormInput!) {
       message
     }
 
-    userForms {
+    form {
       id
-      PatientId
-      StaffId
-      FormId
-      SubmitterId
+      name
 
-      userFormElements {
+      formElements {
         id
-        UsersFormsId
-        FormsElementsId
-        value
+        name
+        label
+        fieldId
+        sectionId
+        isDeleted
+      }
 
-        arrayOfStrings {
-          name
+      userForms {
+        id
+        FormId
+        DoctorId
+        PatientId
+        StaffId
+        SubmitterId
+
+        userFormElements {
+          id
           value
+          UsersFormsId
+          FormsElementsId
+
+          arrayOfStrings {
+            name
+            value
+          }
         }
       }
+    }
+
+    pagination {
+      page
+      limit
+      totalCount
+      totalPages
     }
   }
 }

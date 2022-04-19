@@ -12,7 +12,7 @@ import { DaySchedule, FormAttachmentPayload, LoaderProps, SelectorOption, TableA
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
@@ -718,4 +718,25 @@ export const getUserFormDefaultValue = (type: ElementType) => {
     default:
       return ''
   }
+}
+
+export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: FormElement[]): FormElement[] => {
+  if (userForm?.length > 0 && elementLabels?.length > 0) {
+    const firstElement = userForm[0];
+    const { userFormElements } = firstElement
+    if (userFormElements && userFormElements?.length > 0) {
+      const arr: FormElement[] = []
+      userFormElements?.map((val) => {
+        const { FormsElementsId } = val;
+        const obj = elementLabels?.find((value) => value?.fieldId === FormsElementsId);
+        if (obj) {
+          arr.push(obj)
+        }
+        return obj
+      })
+      return arr ?? [];
+    }
+    return []
+  }
+  return []
 }
