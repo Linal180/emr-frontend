@@ -1,5 +1,6 @@
 // packages block
 import { ReactNode, memo } from "react";
+import axios from "axios";
 import moment from "moment";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
@@ -7,16 +8,17 @@ import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { DaySchedule, LoaderProps, SelectorOption, TableAlignType } from "../interfacesTypes";
+import { DaySchedule, FormAttachmentPayload, LoaderProps, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
   VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL, SYSTEM_ROLES,
+  USER_FORM_IMAGE_UPLOAD_URL
 } from "../constants";
 
 export const handleLogout = () => {
@@ -620,4 +622,127 @@ export const onIdle = () => {
   sessionStorage.setItem(ROUTE, route);
   localStorage.removeItem(TOKEN);
   history.push(LOCK_ROUTE);
+}
+
+export const getFormatDate = (date: Maybe<string> | undefined) => {
+  if (!date) return '';
+  return moment(date, "x").format("DD/MM/YY")
+};
+
+export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string, token: string) => {
+  const formData = new FormData();
+  attachmentId && formData.append("id", attachmentId);
+  id && formData.append("typeId", id);
+  title && formData.append("title", title);
+  file && formData.append("file", file);
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    const { data } = res || {};
+    const { attachment, response } = data as FormAttachmentPayload || {}
+    const { status } = response || {}
+    if (status === 200 && attachment) {
+      return attachment
+    }
+    else {
+      return null;
+    }
+
+  } catch (error) {
+    return null;
+  }
+
+}
+
+
+export const getUserFormFormattedValues = async (values: any, token: string, id: string) => {
+  const arr = [];
+  for (const property in values) {
+    if (Array.isArray(values[property])) {
+      const options = values[property]?.map((val: any) => {
+        const key = Object.keys(val);
+        const name = key[0];
+        const data = Object.values(val);
+        const value = data[0]
+        return { name, value: value ?? false }
+      })
+      arr.push({ FormsElementsId: property, value: '', arrayOfStrings: options })
+    }
+    else if ((values[property] instanceof FileList) && typeof values[property] === 'object') {
+      if (values[property][0] instanceof File) {
+        const file = values[property][0];
+        const title = values[property][0]?.name;
+        const key = await userFormUploadImage(file, property, title, id, token);
+        if (key) {
+          arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [] })
+        }
+        else {
+          arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [] })
+        }
+      }
+    }
+    else {
+      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [] })
+    }
+  }
+  return arr;
+}
+
+export const getUserFormFiles = (values: any): UserFormType[] => {
+  const arr = [];
+  for (const property in values) {
+    if ((values[property] instanceof FileList) && typeof values[property] === 'object') {
+      if (values[property][0] instanceof File) {
+        arr.push({ attachmentId: property, title: values[property][0].name, file: values[property][0] })
+      }
+
+    }
+  }
+  return arr;
+}
+
+
+export const getUserFormDefaultValue = (type: ElementType) => {
+  switch (type) {
+    case ElementType.Text:
+      return ''
+
+    case ElementType.Select:
+      return ''
+
+    case ElementType.Radio:
+      return ''
+    case ElementType.Checkbox:
+      return []
+    default:
+      return ''
+  }
+}
+
+export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: FormElement[]): FormElement[] => {
+  if (userForm?.length > 0 && elementLabels?.length > 0) {
+    const firstElement = userForm[0];
+    const { userFormElements } = firstElement
+    if (userFormElements && userFormElements?.length > 0) {
+      const arr: FormElement[] = []
+      userFormElements?.map((val) => {
+        const { FormsElementsId } = val;
+        const obj = elementLabels?.find((value) => value?.fieldId === FormsElementsId);
+        if (obj) {
+          arr.push(obj)
+        }
+        return obj
+      })
+      return arr ?? [];
+    }
+    return []
+  }
+  return []
 }

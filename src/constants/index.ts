@@ -67,6 +67,7 @@ export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
+export const FORM_RESPONSES = "Form Responses";
 export const TIME = "Time";
 export const OPTION_TEXT = "Option";
 export const FORM_TEXT = "Form";
@@ -77,6 +78,8 @@ export const FORM_SUBMIT_TEXT = "Form Submit";
 export const FORM_TYPE = "Select a form type";
 export const ADD_COLUMNS_TEXT = "Add Columns";
 export const FORM_EMBED_TITLE = 'Embed your form builder';
+export const FORM_NOT_PUBLISHED = 'Form is not published';
+export const CONTACT_SUPPORT_TEAM = 'Please Contact support team';
 export const CSS_CLASSES = "CSS Classes";
 export const PLACEHOLDER = "Placeholder";
 export const DROP_ITEM_TEXT = "Drop items here";
@@ -103,6 +106,7 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
@@ -246,6 +250,8 @@ export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
 export const PUBLISH = "Publish";
+export const PUBLISHED = "Published";
+export const NOT_PUBLISHED = "Not Published";
 export const TO_BILLING = "To Billing";
 export const UPLOAD_LOGO = "Upload Logo";
 export const SAVE_DRAFT = "Save as Draft";
@@ -892,7 +898,10 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
   )} on ${getFormattedDate(
     dateTime || ""
   )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
-
+export const PUBLIC_FORM_SUCCESS_HEADING = 'Record Submitted';
+export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
+export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
+export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 
 // routes paths
 export const ROOT_ROUTE = "/";
@@ -936,10 +945,12 @@ export const PRACTICE_DETAILS_ROUTE = "/practice-details";
 export const PATIENT_INFORMATION = "/patient-information";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const FORM_BUILDER_EDIT_ROUTE = "/form-builder/edit";
+export const FORM_BUILDER_RESPONSES = "/form-responses";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const PUBLIC_FORM_BUILDER_FAIL_ROUTE = "/public/form-form/fail";
+export const PUBLIC_FORM_BUILDER_SUCCESS_ROUTE = "/public/form-form/success";
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
@@ -2591,6 +2602,7 @@ export const getFormInitialValues = () => [
   {
     id: uuid(),
     col: 12,
+    name: 'Section',
     fields: [],
   },
 ]
@@ -2785,3 +2797,6 @@ export enum USER_PERMISSIONS {
   getPatientProblem = 'getPatientProblem',
   removePatientProblem = 'removePatientProblem'
 }
+
+//Form Builder API urls
+export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`

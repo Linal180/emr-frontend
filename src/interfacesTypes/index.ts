@@ -17,7 +17,7 @@ import {
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, ResponsePayloadResponse,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -794,6 +794,7 @@ export interface FormInitialType extends FieldsInputs {
 export interface FormValuesTypes {
   id: string;
   col: number;
+  name: string;
   fields: FieldsInputs[],
 }
 
@@ -821,6 +822,7 @@ export interface DropContainerPropsTypes {
   changeValues: (id: string, item: FieldsInputs) => void;
   delFieldHandler: (id: number, index: number) => void;
   delColHandler: (index: number) => void
+  setFormValues: Dispatch<SetStateAction<SectionsInputs[]>>
 }
 
 
@@ -838,6 +840,7 @@ export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
   data: SectionsInputs[];
+  formName: string
 }
 
 export interface FieldComponentProps {
@@ -881,4 +884,16 @@ export interface AutoCompleteResponse {
   status: boolean;
   message: string;
   options: any
+}
+
+
+export interface UserFormType {
+  attachmentId: string
+  title: string
+  file: File
+}
+
+export  interface FormAttachmentPayload {
+  attachment?: String | null | undefined;
+  response?: ResponsePayloadResponse
 }
