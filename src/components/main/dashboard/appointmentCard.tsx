@@ -317,7 +317,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     chargePayment({
       variables: {
         paymentInput: {
-          price: appointmentPrice, patientId: patientId, providerId: providerId,
+          price: appointmentPrice, patientId: patientId, providerId: providerId || '',
           facilityId: facilityId, appointmentId: id, clientIntent: token, serviceId: serviceId
         },
       },
@@ -371,12 +371,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               title={APPOINTMENT}
               action={
                 <Box>
-                  <IconButton onClick={() => {
+                  {appStatus !== "COMPLETED" && <IconButton onClick={() => {
                     moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
                       Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick()
                   }}>
                     <DeleteAppointmentIcon />
-                  </IconButton>
+                  </IconButton>}
 
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />

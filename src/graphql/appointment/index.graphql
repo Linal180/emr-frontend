@@ -40,6 +40,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       appointmentType {
         id
         name
+        price
       }
     }
   }
