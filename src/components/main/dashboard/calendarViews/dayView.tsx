@@ -7,7 +7,8 @@ export const DayTimeTableCell = (props: DayView.TimeTableCellProps) => {
 
   const handleViewDate = (props: any) => {
     const startDateDay = props.startDate
-    history.push(`${APPOINTMENTS_ROUTE}/new?date=${startDateDay}`)
+    const endDateDay = props.endDate
+    history.push(`${APPOINTMENTS_ROUTE}/new?startDate=${startDateDay}&endDate=${endDateDay}`)
   }
 
   return <DayView.TimeTableCell {...props} onDoubleClick={() => { handleViewDate(props) }} />;
