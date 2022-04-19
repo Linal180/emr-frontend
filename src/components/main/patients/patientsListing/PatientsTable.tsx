@@ -11,9 +11,9 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs'
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
+import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
+import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
   useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation
@@ -27,7 +27,9 @@ const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
-  const { practiceId } = facility || {}
+  const isSuper = isSuperAdmin(roles);
+  const isAdmin = isUserAdmin(roles);
+  const { id: facilityId, practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
 
@@ -56,15 +58,16 @@ const PatientsTable: FC = (): JSX.Element => {
 
   const fetchAllPatients = useCallback(async () => {
     try {
-      const isSuper = isSuperAdmin(roles);
+
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const patientsInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
+      const patientsInputs = isSuper ? { ...pageInputs } :
+        !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllPatient({
         variables: { patientInput: { ...patientsInputs, searchString: searchQuery } }
       })
     } catch (error) { }
-  }, [roles, page, practiceId, findAllPatient, searchQuery])
+  }, [page, isSuper, isAdmin, facilityId, practiceId, findAllPatient, searchQuery])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     notifyOnNetworkStatusChange: true,

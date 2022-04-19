@@ -500,11 +500,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         setValue('basicCity', defaultCity)
         setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-      else {
-        // Alert.error(message)
-      }
-    }
-    else {
+    } else {
       Alert.error(ZIP_CODE_ENTER)
     }
   }, [basicZipCode, setValue])
@@ -513,7 +509,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     if (basicZipCode && basicCity) {
       const { id } = basicState
       const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
-      setUserData((prev) => ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
+      setUserData((prev) =>
+        ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
       const { status, options } = data || {}
 
       if (status) {
@@ -534,7 +531,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     basicZipCode?.length === 5 && getAddressHandler()
   }, [basicZipCode, getAddressHandler]);
 
-  const verifiedAddressHandler = (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => {
+  const verifiedAddressHandler = (
+    deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string
+  ) => {
     deliveryLine1 && setValue('basicAddress', deliveryLine1);
     zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('basicCity', cityName);

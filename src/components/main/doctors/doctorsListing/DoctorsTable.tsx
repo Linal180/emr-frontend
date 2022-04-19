@@ -12,7 +12,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, formatValue, isSuperAdmin, renderTh } from "../../../../utils";
+import { formatPhone, formatValue, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
 import {
@@ -32,7 +32,9 @@ const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
-  const { practiceId } = facility || {}
+  const { id: facilityId, practiceId } = facility || {}
+  const isSuper = isSuperAdmin(roles);
+  const isAdmin = isUserAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
   const [{ copied }, appointmentDispatcher] =
@@ -64,15 +66,15 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   const fetchAllDoctors = useCallback(async () => {
     try {
-      const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const doctorInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
+      const doctorInputs = isSuper ? { ...pageInputs } :
+        !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllDoctor({
         variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
       })
     } catch (error) { }
-  }, [findAllDoctor, page, practiceId, roles, searchQuery])
+  }, [facilityId, findAllDoctor, isAdmin, isSuper, page, practiceId, searchQuery])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {

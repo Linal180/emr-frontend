@@ -1,7 +1,10 @@
 // packages block
 import { useEffect, useCallback, Reducer, useState, useReducer, useContext } from "react";
-import { Box, Card, CircularProgress } from "@material-ui/core";
 import { ViewState } from '@devexpress/dx-react-scheduler';
+import { DayTimeTableCell } from "./calendarViews/dayView";
+import { WeekTimeTableCell } from "./calendarViews/weekView";
+import { MonthTimeTableCell } from "./calendarViews/monthView";
+import { Box, Card, CircularProgress } from "@material-ui/core";
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
   AppointmentTooltip, ViewSwitcher,
@@ -10,22 +13,24 @@ import {
 import AppointmentCard from "./appointmentCard";
 // context, constants block
 import { AuthContext } from "../../../context";
-import { mapAppointmentData } from "../../../utils"
+import { isSuperAdmin, isUserAdmin, mapAppointmentData } from "../../../utils"
 import { useCalendarStyles } from "../../../styles/calendarStyles";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../../reducers/appointmentReducer";
-import { useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus } from "../../../generated/graphql";
-import { MonthTimeTableCell } from "./calendarViews/monthView";
-import { WeekTimeTableCell } from "./calendarViews/weekView";
-import { DayTimeTableCell } from "./calendarViews/dayView";
-
+import {
+  appointmentReducer, Action, initialState, State, ActionType
+} from "../../../reducers/appointmentReducer";
+import {
+  useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus
+} from "../../../generated/graphql";
 
 const CalendarComponent = (): JSX.Element => {
+  const classes = useCalendarStyles()
   const [currentDate, setCurrentDate] = useState(new Date())
   const { user } = useContext(AuthContext)
-  const { facility } = user || {}
-  const { practiceId } = facility || {}
-  const [{ appointments }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const classes = useCalendarStyles()
+  const { facility, roles } = user || {}
+  const { id: facilityId, practiceId } = facility || {}
+  const isSuper = isSuperAdmin(roles);
+  const isAdmin = isUserAdmin(roles);
+  const [{ appointments, page }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
 
   const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     variables: {
@@ -52,7 +57,8 @@ const CalendarComponent = (): JSX.Element => {
         const { appointments } = findAllAppointments
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments?.filter(appointment => appointment?.status !== Appointmentstatus.Cancelled) as AppointmentsPayload['appointments']
+          appointments: appointments?.filter(appointment => 
+            appointment?.status !== Appointmentstatus.Cancelled) as AppointmentsPayload['appointments']
         });
       }
     }
@@ -81,9 +87,17 @@ const CalendarComponent = (): JSX.Element => {
 
   const fetchAppointments = useCallback(async () => {
     try {
-      await findAllAppointments();
+      const pageInputs = { paginationOptions: { page, limit: 25 } }
+      const inputs = isSuper ? { ...pageInputs } :
+        !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
+
+      await findAllAppointments({
+        variables: {
+          appointmentInput: { ...inputs }
+        },
+      })
     } catch (error) { }
-  }, [findAllAppointments]);
+  }, [page, isSuper, isAdmin, facilityId, practiceId, findAllAppointments])
 
   useEffect(() => {
     fetchAppointments()

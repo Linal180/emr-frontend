@@ -11,16 +11,15 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../../../context";
-import { ListContext } from "../../../../context/listContext";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
-import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
+import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
+import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
+import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, 
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState,
   State as AppointmentState, ActionType as AppointmentActionType
 } from "../../../../reducers/appointmentReducer";
 import {
@@ -38,7 +37,8 @@ const FacilityTable: FC = (): JSX.Element => {
   const { deleteFacilityList } = useContext(ListContext)
   const { facility, roles } = user || {}
   const isSuper = isSuperAdmin(roles);
-  const { practiceId } = facility || {}
+  const isAdmin = isUserAdmin(roles);
+  const { practiceId, id: facilityId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
   const [{ copied }, appointmentDispatcher] =
@@ -72,15 +72,14 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const fetchAllFacilities = useCallback(async () => {
     try {
+      const inputs = { practiceId, facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
+      const payload = !isAdmin ? { ...inputs, singleFacilityId: facilityId } : { ...inputs }
+
       await findAllFacility({
-        variables: {
-          facilityInput: {
-            practiceId, facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT }
-          }
-        },
+        variables: { facilityInput: { ...payload } }
       })
     } catch (error) { }
-  }, [findAllFacility, page, practiceId, searchQuery])
+  }, [facilityId, findAllFacility, isAdmin, page, practiceId, searchQuery])
 
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {

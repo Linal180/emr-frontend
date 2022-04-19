@@ -16,8 +16,12 @@ import { AuthContext } from "../../context";
 import { EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
-import { getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime } from "../../utils";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
+import {
+  appointmentReducer, Action, initialState, State, ActionType
+} from "../../reducers/appointmentReducer";
+import {
+  getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin, isUserAdmin
+} from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
   useGetAppointmentsLazyQuery
@@ -32,21 +36,14 @@ dotenv.config()
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
-  const { facility } = user || {}
+  const { facility, roles } = user || {}
   const { id: facilityId, practiceId } = facility || {}
+  const isSuper = isSuperAdmin(roles);
+  const isAdmin = isUserAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
-    variables: {
-      appointmentInput: {
-        practiceId: practiceId || '',
-        paginationOptions: {
-          page, limit: PAGE_LIMIT
-        }
-      }
-    },
-
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -65,6 +62,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           const { totalPages } = pagination
 
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
+
           dispatch({
             type: ActionType.SET_APPOINTMENTS,
             appointments: appointments as AppointmentsPayload['appointments']
@@ -74,32 +72,32 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   });
 
-  const [getAppointments, {
-    loading: getAppointmentsLoading, error: doctorAppointmentError
-  }] = useGetAppointmentsLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
+    const [getAppointments, {
+      loading: getAppointmentsLoading, error: doctorAppointmentError
+    }] = useGetAppointmentsLazyQuery({
+      fetchPolicy: "network-only",
+      nextFetchPolicy: 'no-cache',
+      notifyOnNetworkStatusChange: true,
 
-    onError() {
-      dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
-    },
+      onError() {
+        dispatch({ type: ActionType.SET_APPOINTMENTS, appointments: [] });
+      },
 
-    onCompleted(data) {
-      const { getAppointments } = data || {};
+      onCompleted(data) {
+        const { getAppointments } = data || {};
 
-      if (getAppointments) {
-        const { appointments } = getAppointments
+        if (getAppointments) {
+          const { appointments } = getAppointments
 
-        if (!searchQuery) {
-          dispatch({
-            type: ActionType.SET_APPOINTMENTS,
-            appointments: appointments as AppointmentsPayload['appointments']
-          });
+          if (!searchQuery) {
+            dispatch({
+              type: ActionType.SET_APPOINTMENTS,
+              appointments: appointments as AppointmentsPayload['appointments']
+            });
+          }
         }
       }
-    }
-  });
+    });
 
   const [removeAppointment, { loading: deleteAppointmentLoading }] = useRemoveAppointmentMutation({
     onError() {
@@ -117,27 +115,36 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           try {
-            await findAllAppointments()
+            await fetchAppointments()
           } catch (error) { }
         }
       }
     }
   });
 
-  const fetchAppointments = useCallback(async () => {
-    try {
-      doctorId ?
-        await getAppointments({
-          variables: { getAppointments: { doctorId, facilityId } }
-        })
-        : await findAllAppointments()
-    } catch (error) { }
-  }, [doctorId, getAppointments, facilityId, findAllAppointments])
+    const fetchAppointments = useCallback(async () => {
+      try {
+        if (doctorId) {
+          await getAppointments({
+            variables: { getAppointments: { doctorId, facilityId } }
+          })
+        }
+        else {
+          const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+          const inputs = isSuper ? { ...pageInputs } :
+            !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
+
+          await findAllAppointments({
+            variables: {
+              appointmentInput: { ...inputs }
+            },
+          })
+        }
+      } catch (error) { }
+    }, [doctorId, getAppointments, facilityId, page, isSuper, isAdmin, practiceId, findAllAppointments])
 
   useEffect(() => {
-    if (!searchQuery) {
-      fetchAppointments();
-    }
+    !searchQuery && fetchAppointments();
   }, [page, searchQuery, fetchAppointments]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
