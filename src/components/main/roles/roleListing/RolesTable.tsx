@@ -1,17 +1,16 @@
-
 // packages block
 import { FC, ChangeEvent, useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
-import Search from "../../../common/Search";
+import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
 import { formatRoleName, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { NAME, DESCRIPTION, N_A, ROLES_ROUTE } from "../../../../constants";
 import { RolesPayload, useFindAllRolesLazyQuery } from "../../../../generated/graphql";
-import { Link } from "react-router-dom";
 
 const RolesTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -40,10 +39,10 @@ const RolesTable: FC = (): JSX.Element => {
 
           if (pagination) {
             const { totalPages } = pagination
-
             totalPages && setPages(totalPages)
-            roles && setRoles(roles as RolesPayload['roles'])
           }
+
+          roles && setRoles(roles as RolesPayload['roles'])
         }
       }
     }
@@ -64,8 +63,6 @@ const RolesTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Search search={Search} />
-
         <Box className="table-overflow">
           <Table aria-label="customized table">
             <TableHead>
@@ -76,21 +73,29 @@ const RolesTable: FC = (): JSX.Element => {
             </TableHead>
 
             <TableBody>
-              {roles?.map(role => {
-                const { id, role: roleName, description } = role || {}
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <TableLoader numberOfRows={10} numberOfColumns={2} />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                roles?.map(role => {
+                  const { id, role: roleName, description } = role || {}
 
-                return (
-                  <TableRow>
-                    <TableCell scope="row">
-                      <Link to={`${ROLES_ROUTE}/${id}`}>
-                        {formatRoleName(roleName || '')}
-                      </Link>
-                    </TableCell>
-                    <TableCell scope="row">{description || N_A}</TableCell>
-                  </TableRow>
-                )
-              }
-              )}
+                  return (
+                    <TableRow>
+                      <TableCell scope="row">
+                        <Link to={`${ROLES_ROUTE}/${id}`}>
+                          {formatRoleName(roleName || '')}
+                        </Link>
+                      </TableCell>
+
+                      <TableCell scope="row">{description || N_A}</TableCell>
+                    </TableRow>
+                  )
+                }
+                ))}
             </TableBody>
           </Table>
         </Box>
@@ -103,7 +108,7 @@ const RolesTable: FC = (): JSX.Element => {
       )}
 
       {pages > 1 &&
-        <Box display="flex" justifyContent="flex-end" pt={3}>
+        <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
             count={pages}
             shape="rounded"

@@ -37,13 +37,25 @@ export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
-// roles
+// system roles
+export enum SYSTEM_ROLES {
+  PracticeAdmin = 'practice-admin',
+  FacilityAdmin = 'facility-admin',
+  Doctor = 'doctor',
+  DoctorAssistant = 'doctor-assistant',
+  Staff = 'staff',
+  OfficeManager = 'office-manager',
+  NursePractitioner = 'nurse-practitioner',
+  Nurse = 'nurse',
+  FrontDesk = 'front-desk',
+  Patient = 'patient'
+}
 export const SUPER_ADMIN = 'super-admin';
 export const ADMIN = 'admin';
 // constants
 export const NOTES = "Notes";
 export const Ok_TEXT = "OK";
-export const LOCK_TIME_OUT = 600000;
+export const LOCK_TIME_OUT = 6000000;
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
@@ -83,7 +95,7 @@ export const FORM_NOT_FOUND = "Form not found!";
 export const FORM_UPDATED = "Form updated successfully!";
 export const PUBLIC_FORM_LINK = "Public form preview Link";
 export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
-export const EMPTY_OPTION = { id: "", name: "" };
+export const EMPTY_OPTION = { id: "", name: "--" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
   Monday = "Monday",
@@ -984,7 +996,6 @@ export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, 
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
-export const DROP_FIELD = 'Please drop atleast one field';
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
 export const ROLE_NOT_FOUND = "Role not found!";
@@ -999,6 +1010,7 @@ export const PRACTICE_NOT_FOUND = "Practice not found!";
 export const LOCATION_NOT_FOUND = "Location not found!";
 export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
+export const DROP_FIELD = 'Please drop at least one field';
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const ROLE_CREATED = "Role is created successfully";
 export const ROLE_UPDATED = "Role is updated successfully";
@@ -1037,6 +1049,7 @@ export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const ATTACHMENT_DELETED = "Attachment deleted successfully!";
+export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
@@ -1724,19 +1737,23 @@ export const FACILITIES_BREAD = {
   text: FACILITIES_LISTING,
   link: FACILITIES_ROUTE,
 };
+
 export const FACILITY_SERVICES_BREAD = {
   text: FACILITY_SERVICES_TEXT,
   link: FACILITY_SERVICES_ROUTE,
 };
+
 export const FACILITY_NEW_BREAD = {
   text: ADD_FACILITY,
   link: `${FACILITIES_ROUTE}/new`,
 };
+
 export const FACILITY_EDIT_BREAD = { text: EDIT_FACILITY, link: "" };
 export const FACILITY_LOCATIONS_BREAD = {
   text: FACILITY_LOCATIONS_TEXT,
   link: FACILITY_LOCATIONS_ROUTE,
 };
+
 export const FACILITY_LOCATION_NEW_BREAD = { text: ADD_LOCATION, link: "" };
 export const FACILITY_LOCATION_EDIT_BREAD = { text: EDIT_LOCATION, link: "" };
 export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: "" };
@@ -1747,15 +1764,18 @@ export const DOCTOR_NEW_BREAD = {
   text: ADD_DOCTOR,
   link: `${DOCTORS_ROUTE}/new`,
 };
+
 export const APPOINTMENT_NEW_BREAD = {
   text: ADD_APPOINTMENT,
   link: `${APPOINTMENTS_ROUTE}/new`,
 };
+
 export const APPOINTMENT_EDIT_BREAD = { text: EDIT_APPOINTMENT, link: "" };
 export const RESULT_NEW_BREAD = {
   text: ADD_RESULT,
   link: `${LAB_RESULTS_ROUTE}/new`,
 };
+
 export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE };
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: "" };
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE };
@@ -1763,6 +1783,7 @@ export const PATIENT_NEW_BREAD = {
   text: ADD_PATIENT,
   link: `${PATIENTS_ROUTE}/new`,
 };
+
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: "" };
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` };
 export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: "" };
@@ -1776,6 +1797,7 @@ export const LAB_RESULTS_BREAD = {
   text: LAB_RESULTS_TEXT,
   link: LAB_RESULTS_ROUTE,
 };
+
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE };
 export const VIEW_APPOINTMENTS_BREAD = {

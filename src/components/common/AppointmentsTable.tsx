@@ -13,7 +13,7 @@ import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../context";
-import { EditIcon, TrashIcon } from "../../assets/svgs"
+import { EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
 import { getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime } from "../../utils";
@@ -165,7 +165,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box className={classes.searchContainer}>
+      <Box py={2}>
         <Search search={search} />
       </Box>
 
@@ -199,7 +199,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                 const { firstName, lastName } = patient || {};
                 const { name: type } = appointmentType || {};
                 const { firstName: doctorFN, lastName: doctorLN } = provider || {};
-                const { text, bgColor, textColor } = appointmentStatus(status || '')
+                const { text, textColor } = appointmentStatus(status || '')
 
                 return (
                   <TableRow key={id}>
@@ -216,7 +216,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                     </TableCell>
                     <TableCell scope="row">{name}</TableCell>
                     <TableCell scope="row">
-                      <Box className={classes.status} component='span' bgcolor={bgColor} color={textColor}>
+                      <Box className={classes.status} component='span' color={textColor} border={`1px solid ${textColor}`}>
                         {text}
                       </Box>
                     </TableCell>
@@ -225,7 +225,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
                           <Box className={classes.iconsBackground}>
-                            <EditIcon />
+                            <EditNewIcon />
                           </Box>
                         </Link>
 
@@ -233,7 +233,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
                           moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
                             Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
                         }}>
-                          <TrashIcon />
+                          <TrashNewIcon />
                         </Box>
                       </Box>
                     </TableCell>
@@ -251,9 +251,10 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
         )}
 
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
+          <Box display="flex" justifyContent="flex-end" p={3}>
             <Pagination
               shape="rounded"
+              variant="outlined"
               page={page}
               count={totalPages}
               onChange={handleChange}

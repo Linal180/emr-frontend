@@ -133,6 +133,9 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
 
   useEffect(() => {
     if (selectedService && date) {
+      setValue('scheduleEndDateTime', '')
+      setValue('scheduleStartDateTime', '')
+
       getSlots({
         variables: {
           getSlots: {
@@ -142,7 +145,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
         }
       })
     }
-  }, [date, doctorId, getSlots, offset, selectedProvider, selectedService, currentDate])
+  }, [date, doctorId, getSlots, offset, selectedProvider, selectedService, currentDate, setValue])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
     const { firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime } = inputs;
@@ -160,7 +163,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
             createExternalAppointmentInput: {
               createGuardianContactInput: { contactType: ContactType.Guardian },
               createExternalAppointmentItemInput: {
-                serviceId: selectedService, providerId: doctorId, paymentType: PaymentType.Self,
+                serviceId: selectedService, providerId: doctorId, paymentType: PaymentType.Self, facilityId: facilityId || '',
                 scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
                 scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },

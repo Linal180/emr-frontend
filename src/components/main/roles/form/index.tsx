@@ -1,18 +1,21 @@
 // packages block
-import { useState, ChangeEvent, FC, useContext, useEffect, SetStateAction, useCallback } from 'react';
+import { useState, FC, useContext, useEffect, SetStateAction, useCallback } from 'react';
+import { union, pluck, difference } from 'underscore';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Card, Grid, Typography, Checkbox, FormControlLabel, FormGroup, Button, } from "@material-ui/core";
+import {
+  Box, Card, Grid, Typography, Checkbox, FormControlLabel, FormGroup, Button,
+} from "@material-ui/core";
 // components block
 import InputController from '../../../../controller';
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // constants and types block
 import Alert from '../../../common/Alert';
 import history from '../../../../history';
-import { PermissionContext } from '../../../../context';
 import { formatPermissionName } from '../../../../utils';
 import { roleSchema } from '../../../../validationSchemas';
 import { GeneralFormProps } from '../../../../interfacesTypes';
+import { ListContext, PermissionContext } from '../../../../context';
 import {
   RoleItemInput, useAssignPermissionToRoleMutation, useCreateRoleMutation, useGetRoleLazyQuery,
   useUpdateRoleMutation
@@ -25,7 +28,9 @@ import {
 
 const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { permissions } = useContext(PermissionContext)
+  const { addRoleList, updateRoleList } = useContext(ListContext)
   const [ids, setIds] = useState<string[]>([])
+  const [modules, setModules] = useState<string[]>([])
   const [custom, setCustom] = useState<boolean>(true)
 
   const methods = useForm<RoleItemInput>({
@@ -33,15 +38,23 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   });
   const { handleSubmit, reset, setValue } = methods;
 
-  const handleChangeForCheckBox = (id: string) => (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChangeForCheckBox = (id: string) => {
     if (id) {
       if (ids.includes(id)) {
         setIds(ids.filter(permission => permission !== id))
       } else {
         setIds([...ids, id])
       }
+    }
+  };
+
+  const handleAllIds = (moduleName: string, selectedIds: string[]) => {
+    if (modules.includes(moduleName)) {
+      setModules(modules.filter(name => name !== moduleName))
+      setIds(difference(ids, selectedIds))
+    } else {
+      setModules([...modules, moduleName])
+      setIds(union(ids, selectedIds))
     }
   };
 
@@ -88,25 +101,26 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   });
 
-  const [assignPermissionsRoles, { loading: assignPermissionLoading }] = useAssignPermissionToRoleMutation({
-    onError({ message }) {
-      Alert.error(message)
-    },
+  const [assignPermissionsRoles, { loading: assignPermissionLoading }] =
+    useAssignPermissionToRoleMutation({
+      onError({ message }) {
+        Alert.error(message)
+      },
 
-    onCompleted(data) {
-      const { assignPermissionToRole: { response } } = data;
+      onCompleted(data) {
+        const { assignPermissionToRole: { response } } = data;
 
-      if (response) {
-        const { status } = response
+        if (response) {
+          const { status } = response
 
-        if (status && status === 200) {
-          reset()
-          Alert.success(PERMISSIONS_SET);
-          history.push(ROLES_ROUTE)
+          if (status && status === 200) {
+            reset()
+            Alert.success(PERMISSIONS_SET);
+            history.push(ROLES_ROUTE)
+          }
         }
       }
-    }
-  });
+    });
 
   const [createRole, { loading: createRoleLoading }] = useCreateRoleMutation({
     onError({ message }) {
@@ -122,6 +136,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (status && status === 200) {
           const { id: newRole } = role || {}
+          addRoleList(role)
           Alert.success(ROLE_CREATED);
           history.push(`${ROLES_ROUTE}/${newRole}`)
         }
@@ -135,12 +150,13 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     },
 
     onCompleted(data) {
-      const { updateRole: { response } } = data;
+      const { updateRole: { response, role } } = data;
 
       if (response) {
         const { status } = response
 
         if (status && status === 200) {
+          updateRoleList(role)
           Alert.success(ROLE_UPDATED)
         }
       }
@@ -183,7 +199,9 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           <Typography variant='h4'>{isEdit ? EDIT_ROLE_TEXT : ADD_ROLE_TEXT}</Typography>
 
           {custom &&
-            <Button variant='contained' color='primary' disabled={isLoading} type='submit'>{SAVE_TEXT}</Button>
+            <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
+              {SAVE_TEXT}
+            </Button>
           }
         </Box>
 
@@ -219,57 +237,77 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           <Box p={2} />
 
           {isEdit && MODULES.map((module, index) => {
-            let modulePermissions = [];
+            if (module !== MODULE_TYPES.Practice) {
+              let modulePermissions = [];
+              if (module === MODULE_TYPES.Service) {
+                modulePermissions = permissions?.filter(permission =>
+                  permission?.moduleType === MODULE_TYPES.Service
+                  || permission?.moduleType === MODULE_TYPES.Services) || []
+              } else if (module === MODULE_TYPES.Schedule) {
+                modulePermissions = permissions?.filter(permission =>
+                  permission?.moduleType === MODULE_TYPES.Schedule
+                  || permission?.moduleType === MODULE_TYPES.Schedules) || []
+              } else {
+                modulePermissions = permissions?.filter(permission => permission?.moduleType === module) || []
+              }
 
-            if (module === MODULE_TYPES.Service) {
-              modulePermissions = permissions?.filter(permission =>
-                permission?.moduleType === MODULE_TYPES.Service || permission?.moduleType === MODULE_TYPES.Services) || []
-            } else if (module === MODULE_TYPES.Schedule) {
-              modulePermissions = permissions?.filter(permission =>
-                permission?.moduleType === MODULE_TYPES.Schedule || permission?.moduleType === MODULE_TYPES.Schedules) || []
-            } else {
-              modulePermissions = permissions?.filter(permission => permission?.moduleType === module) || []
-            }
+              const allIds = modulePermissions && pluck(modulePermissions, 'id');
 
-            return modulePermissions?.length > 0 && (
-              <Card>
-                <Box p={4}>
-                  <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography variant="h4">{module} {PERMISSIONS}</Typography>
-                    {index === 0 && custom &&
-                      <Button onClick={setPermissions} variant='contained' color='inherit' disabled={isLoading}
-                        className='blue-button-new'>{SET_PERMISSIONS}</Button>
-                    }
+              return modulePermissions?.length > 0 && (
+                <Card>
+                  <Box p={4}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                      <Grid item md={3} sm={6}>
+                        <FormGroup>
+                          <FormControlLabel
+                            control={
+                              <Box className='permissionDenied'>
+                                <Checkbox disabled={!custom} color="primary" checked={modules.includes(module)}
+                                  onChange={() => handleAllIds(module, allIds)} />
+                              </Box>
+                            }
+
+                            label={<Typography variant="h4">{module} {PERMISSIONS}</Typography>}
+                          />
+                        </FormGroup>
+                      </Grid>
+
+
+                      {index === 0 && custom &&
+                        <Button onClick={setPermissions} variant='contained' color='inherit' disabled={isLoading}
+                          className='blue-button-new'>{SET_PERMISSIONS}</Button>
+                      }
+                    </Box>
+
+                    <Box p={2} />
+
+                    {loading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
+                      <Grid container spacing={0}>
+                        {modulePermissions.map(permission => {
+                          const { id, name } = permission || {}
+
+                          return (
+                            <Grid item md={3} sm={6}>
+                              <FormGroup>
+                                <FormControlLabel
+                                  control={
+                                    <Box className='permissionDenied'>
+                                      <Checkbox disabled={!custom} color="primary" checked={ids.includes(id || '')}
+                                        onChange={() => handleChangeForCheckBox(id || '')} />
+                                    </Box>
+                                  }
+                                  label={formatPermissionName(name || '')}
+                                />
+                              </FormGroup>
+                            </Grid>
+                          )
+                        })}
+                      </Grid>
+                    )}
                   </Box>
-
-                  <Box p={2} />
-
-                  {loading ? <ViewDataLoader rows={1} columns={6} hasMedia={false} /> : (
-                    <Grid container spacing={0}>
-                      {modulePermissions.map(permission => {
-                        const { id, name } = permission || {}
-
-                        return (
-                          <Grid item md={3} sm={6}>
-                            <FormGroup>
-                              <FormControlLabel
-                                control={
-                                  <Box className='permissionDenied'>
-                                    <Checkbox disabled={!custom} color="primary" checked={ids.includes(id || '')}
-                                      onChange={handleChangeForCheckBox(id || '')} />
-                                  </Box>
-                                }
-                                label={formatPermissionName(name || '')}
-                              />
-                            </FormGroup>
-                          </Grid>
-                        )
-                      })}
-                    </Grid>
-                  )}
-                </Box>
-              </Card>
-            )
+                </Card>
+              )
+            } else return <></>;
           })}
         </Box>
       </form>

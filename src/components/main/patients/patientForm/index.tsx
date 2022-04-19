@@ -52,7 +52,7 @@ import SmartyModal from '../../../common/SmartyModal'
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList, fetchAllPatientList, setPatientList } = useContext(ListContext)
+  const { facilityList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
@@ -283,8 +283,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
-          setPatientList([])
-          fetchAllPatientList();
           Alert.success(PATIENT_CREATED);
           history.push(PATIENTS_ROUTE)
         }
@@ -307,8 +305,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
-          setPatientList([])
-          fetchAllPatientList();
           Alert.success(PATIENT_UPDATED);
           history.push(PATIENTS_ROUTE)
         }
@@ -542,7 +538,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     deliveryLine1 && setValue('basicAddress', deliveryLine1);
     zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('basicCity', cityName);
-    setIsVerified(true)
+    setTimeout(() => { setIsVerified(true) }, 0);
   }
 
   useEffect(() => {
@@ -710,7 +706,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             </Button>
                           </Box> :
                             <Box display={'flex'} alignItems={'center'}>
-                              <CheckBoxIcon color='primary' /> <Box ml={0.2}>
+                              <CheckBoxIcon color='primary' />
+                              <Box ml={0.2}>
                                 <Typography>{VERIFIED}</Typography>
                               </Box>
                             </Box>

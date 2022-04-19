@@ -83,14 +83,13 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const fetchAttachment = useCallback(async () => {
     try {
-      console.log("Getting Profile")
       await getAttachment({
         variables: {
           getMedia: { id: attachmentId }
         },
       })
     } catch (error) { }
-  }, [attachmentId, getAttachment]) 
+  }, [attachmentId, getAttachment])
 
   const [getPatient, { loading: getPatientLoading }] = useGetPatientLazyQuery({
     fetchPolicy: "network-only",
@@ -101,7 +100,7 @@ const PatientDetailsComponent = (): JSX.Element => {
       dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: null })
     },
 
-     onCompleted(data) {
+    onCompleted(data) {
       if (data) {
         const { getPatient } = data;
 
@@ -112,10 +111,9 @@ const PatientDetailsComponent = (): JSX.Element => {
             attachment.title === ATTACHMENT_TITLES.ProfilePicture)[0]
           const { id: attachmentId, } = profilePicture || {}
 
-          if (attachmentId) {
-            console.log("ID >>", attachmentId)
+          attachmentId &&
             mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
-          }
+
 
           dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
           mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
@@ -142,7 +140,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   useEffect(() => {
     attachmentId && fetchAttachment();
-  }, [attachmentId, fetchAttachment])
+  }, [attachmentId, fetchAttachment, attachmentData])
 
   const { firstName, email: patientEmail, lastName, dob, inviteAccepted, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
@@ -255,7 +253,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
                     <MediaCards
                       title={ATTACHMENT_TITLES.ProfilePicture}
-                      reload={() => fetchAttachment()}
+                      reload={() => fetchPatient()}
                       notDescription={true}
                       moduleType={AttachmentType.Patient}
                       itemId={id}

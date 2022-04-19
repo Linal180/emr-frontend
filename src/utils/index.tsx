@@ -17,7 +17,8 @@ import {
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL, USER_FORM_IMAGE_UPLOAD_URL,
+  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL, SYSTEM_ROLES,
+  USER_FORM_IMAGE_UPLOAD_URL
 } from "../constants";
 
 export const handleLogout = () => {
@@ -246,7 +247,11 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        if (name !== 'patient' && name !== 'super-admin' && name !== 'admin' && name !== 'doctor')
+        // && name !== SYSTEM_ROLES.FacilityAdmin
+        if (
+          name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
+          && name !== SYSTEM_ROLES.Doctor
+        )
           name && data.push({ id: name, name: formatValue(name) })
       }
     }
@@ -503,7 +508,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
     const {
       scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status, token
+      reason, primaryInsurance, status, token, billingStatus
     } = appointment || {};
 
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
@@ -528,6 +533,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       appointmentType,
       primaryInsurance,
       color, price,
+      billingStatus,
       appointmentName,
       appointmentStatus,
       title: `${firstName} ${lastName}`,

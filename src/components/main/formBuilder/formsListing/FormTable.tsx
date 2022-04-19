@@ -245,7 +245,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
         )}
 
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" p={2}>
+          <Box display="flex" justifyContent="flex-end" p={3}>
             <Pagination
               count={totalPages}
               shape="rounded"

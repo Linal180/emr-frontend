@@ -40,11 +40,11 @@ import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import { EmergencyAccess } from "../pages/main/emergencyAccess";
 import { ViewLabOrders } from "../pages/main/labOrders/addOrder";
 import LabResults from "../pages/main/reports/labResultsListing";
-import PatientDetail from "../pages/main/patients/patientDetail";
 import { AddPractice } from "../pages/main/practices/addPractice";
 import { AddFacility } from "../pages/main/facilities/addFacility";
 import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
+import { PatientDetail } from "../pages/main/patients/patientDetail";
 import { ViewFacility } from "../pages/main/facilities/viewFacility";
 import { DetailPractice } from "../pages/main/practices/detailPractice";
 import { Facilities } from "../pages/main/facilities/facilitiesListing";
@@ -116,7 +116,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={PRACTICE_MANAGEMENT_ROUTE} component={PracticeListing} permission={USER_PERMISSIONS.findAllPractices} />
       <PrivateRoute exact path={PROFILE_ROUTE} component={Profile} />
       <PrivateRoute exact path={EMERGENCY_ACCESS_ROUTE} component={EmergencyAccess} />
-      <PrivateRoute exact path={PRACTICE_DETAILS_ROUTE} component={DetailPractice} />
+      <PrivateRoute exact path={PRACTICE_DETAILS_ROUTE} component={DetailPractice} permission={USER_PERMISSIONS.updatePractice}/>
       <PrivateRoute exact path={SIGNATURE_ROUTE} component={Signature} />
       <PrivateRoute exact path={CANCELLATION_ROUTE} component={Cancellation} />
       <PrivateRoute exact path={TWO_FA_ROUTE} component={TwoFA} />

@@ -40,9 +40,11 @@ export interface CalendarChart {
 export interface AuthContextProps {
   user: User | null;
   isLoggedIn: boolean;
+  practiceName: string,
   userPermissions: string[],
   currentUser: Doctor | Staff | null;
   setUser: (user: User | null) => void;
+  setPracticeName: (name: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setCurrentUser: (user: Doctor | Staff | null) => void;
 }
@@ -66,15 +68,15 @@ export interface ListContextInterface {
   facilityList: FacilitiesPayload['facilities'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
-  doctorList: AllDoctorPayload['doctors'];
-  setDoctorList: Function;
-  fetchAllDoctorList: Function;
-  serviceList: ServicesPayload['services'];
-  setServicesList: Function;
-  fetchAllServicesList: Function;
-  patientList: PatientsPayload['patients'];
-  setPatientList: Function;
-  fetchAllPatientList: Function;
+  deletePracticeList: Function;
+  deleteRoleList: Function;
+  deleteFacilityList: Function;
+  addPracticeList: Function;
+  addRoleList: Function;
+  addFacilityList: Function;
+  updatePracticeList: Function;
+  updateRoleList: Function;
+  updateFacilityList: Function;
 }
 
 export interface FacilityContextInterface {
@@ -284,6 +286,7 @@ export interface SelectorProps {
   label: string
   error?: string
   disabled?: boolean
+  addEmpty?: boolean
   isRequired?: boolean
   isMultiple?: boolean
   value?: SelectorOption

@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
-import { EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs';
+import { TrashNewIcon, EditNewIcon } from '../../../../assets/svgs';
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/practiceReducer";
@@ -27,13 +27,14 @@ import {
 
 const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const { fetchAllPracticeList, fetchAllFacilityList } = useContext(ListContext)
+  const { deletePracticeList, setFacilityList, fetchAllFacilityList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
   const [findAllPractices, { loading, error }] = useFindAllPracticesLazyQuery({
     variables: {
       practiceInput: {
+        practiceName: searchQuery,
         paginationOptions: {
           page, limit: PAGE_LIMIT
         }
@@ -83,21 +84,16 @@ const PracticeTable: FC = (): JSX.Element => {
             message && Alert.success(message);
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
             await findAllPractices();
-            fetchAllPracticeList();
-            fetchAllFacilityList();
+            deletePracticeList(deletePracticeId);
+            setFacilityList([])
+            fetchAllFacilityList()
           }
         }
       } catch (error) { }
     }
   });
 
-  useEffect(() => {
-    if (!searchQuery) {
-      findAllPractices()
-    }
-  }, [page, findAllPractices, searchQuery]);
-
-
+  useEffect(() => { findAllPractices() }, [page, findAllPractices]);
   const handleChange = (_: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page })
 
   const onDelete = (id: string) => {
@@ -114,7 +110,11 @@ const PracticeTable: FC = (): JSX.Element => {
       })
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -149,19 +149,19 @@ const PracticeTable: FC = (): JSX.Element => {
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>
-                          <Box className={classes.practiceIconsBackground}>
-                            <EditPracticeIcon />
+                          <Box className={classes.iconsBackground}>
+                            <EditNewIcon />
                           </Box>
                         </Link>
 
-                        <Box className={classes.practiceIconsBackground} onClick={() => onDelete(id || '')}>
-                          <DeletePracticeIcon />
+                        <Box className={classes.iconsBackground} onClick={() => onDelete(id || '')}>
+                          <TrashNewIcon />
                         </Box>
                       </Box>
                     </TableCell>
                   </TableRow>
                 )
-            })
+              })
             )}
           </TableBody>
         </Table>
@@ -173,10 +173,11 @@ const PracticeTable: FC = (): JSX.Element => {
         )}
 
         {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
+          <Box display="flex" justifyContent="flex-end" p={3}>
             <Pagination
               count={totalPages}
               shape="rounded"
+              variant="outlined"
               page={page}
               onChange={handleChange}
             />

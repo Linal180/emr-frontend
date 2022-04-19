@@ -1,4 +1,4 @@
-mutation CreateSchedule($createScheduleInput: CreateScheduleInput!){
+mutation CreateSchedule($createScheduleInput: [CreateScheduleInput!]!){
   createSchedule(createScheduleInput: $createScheduleInput){
     response {
       error

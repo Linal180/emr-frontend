@@ -10,7 +10,7 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext, ListContext } from "../../../../context";
+import { AuthContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, formatValue, isSuperAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
@@ -33,7 +33,6 @@ const DoctorsTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
   const { practiceId } = facility || {}
-  const { fetchAllDoctorList, setDoctorList } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
   const [{ copied }, appointmentDispatcher] =
@@ -53,14 +52,12 @@ const DoctorsTable: FC = (): JSX.Element => {
       if (findAllDoctor) {
         const { doctors, pagination } = findAllDoctor
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
-          }
-
-          doctors && dispatch({ type: ActionType.SET_DOCTORS, doctors: doctors as AllDoctorPayload['doctors'] })
+        if (!searchQuery && pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
+
+        doctors && dispatch({ type: ActionType.SET_DOCTORS, doctors: doctors as AllDoctorPayload['doctors'] })
       }
     }
   });
@@ -72,10 +69,10 @@ const DoctorsTable: FC = (): JSX.Element => {
       const doctorInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllDoctor({
-        variables: { doctorInput: { ...doctorInputs } }
+        variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
       })
     } catch (error) { }
-  }, [findAllDoctor, page, practiceId, roles])
+  }, [findAllDoctor, page, practiceId, roles, searchQuery])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -91,8 +88,6 @@ const DoctorsTable: FC = (): JSX.Element => {
           const { message } = response
           message && Alert.success(message);
           fetchAllDoctors()
-          setDoctorList([]);
-          fetchAllDoctorList();
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
         }
       }
@@ -100,7 +95,7 @@ const DoctorsTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    !searchQuery && fetchAllDoctors()
+    fetchAllDoctors()
   }, [page, searchQuery, practiceId, roles, fetchAllDoctors]);
 
   useEffect(() => { }, [user]);
@@ -138,7 +133,11 @@ const DoctorsTable: FC = (): JSX.Element => {
     }
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -234,8 +233,8 @@ const DoctorsTable: FC = (): JSX.Element => {
           isLoading={deleteDoctorLoading}
           handleDelete={handleDeleteDoctor}
           description={DELETE_DOCTOR_DESCRIPTION}
-          setOpen={(open: boolean) => dispatch({
-            type: ActionType.SET_OPEN_DELETE, openDelete: open
+          setOpen={(openDelete: boolean) => dispatch({
+            type: ActionType.SET_OPEN_DELETE, openDelete
           })}
         />
       </Box>
