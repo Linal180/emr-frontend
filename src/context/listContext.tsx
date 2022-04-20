@@ -3,7 +3,7 @@ import { createContext, FC, useEffect, useCallback, useReducer, Reducer, useCont
 // graphql, interfaces/types, reducer and constants block
 import { AuthContext } from "./authContext";
 import { LIST_PAGE_LIMIT, TOKEN } from "../constants";
-import { isFacilityAdmin, isSuperAdmin } from "../utils";
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin } from "../utils";
 import { ListContextInterface } from "../interfacesTypes";
 import {
   Action, ActionType, initialState, listContextReducer, State as LocalState
@@ -38,11 +38,13 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const { user } = useContext(AuthContext);
   const { roles, facility } = user || {};
   const { id: facilityId } = facility || {};
+  const isSuper = isSuperAdmin(roles);
+  const isPracAdmin = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const hasToken = localStorage.getItem(TOKEN);
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(listContextReducer, initialState)
   const {
-    facilityPages, facilityList, practiceId, practicePages, practiceList, rolePages, roleList, isSuper
+    facilityPages, facilityList, practiceId, practicePages, practiceList, rolePages, roleList 
   } = state;
 
   const [getAllRoles] = useFindAllRoleListLazyQuery({
@@ -157,17 +159,18 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
 
   const fetchAllFacilityList = useCallback(async (page = 1) => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } };
-      const facilityInputs = isSuper ? { ...pageInputs } :
-        isFacAdmin ? { singleFacilityId: facilityId, ...pageInputs } : practiceId ? { practiceId, ...pageInputs } : undefined;
+      const inputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } }
+      const payload =
+        isSuper ? { ...inputs } : isPracAdmin ? { ...inputs, practiceId } :
+          isFacAdmin ? { ...inputs, singleFacilityId: facilityId } : undefined
 
-      facilityInputs && await findAllFacility({
+      payload && await findAllFacility({
         variables: {
-          facilityInput: { ...facilityInputs }
+          facilityInput: { ...payload }
         },
       });
     } catch (error) { }
-  }, [facilityId, findAllFacility, isFacAdmin, isSuper, practiceId])
+  }, [facilityId, findAllFacility, isFacAdmin, isPracAdmin, isSuper, practiceId])
 
   useEffect(() => { }, [user]);
   useEffect(() => { }, [facility]);
