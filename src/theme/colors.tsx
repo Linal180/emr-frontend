@@ -46,7 +46,6 @@ export const ORANGE_ONE = "#F89C47";
 
 export const PINK = "#F1416C";
 
-export const RED = "#F64E60";
 export const RED_ONE = "#FFE2E5";
 export const RED_THREE = "#f44336";
 export const RED_FOUR = "#DD1010";
@@ -56,4 +55,6 @@ export const RED_FOUR = "#DD1010";
 export const BLUE = "#204ECF";
 export const GREEN = "#03CC83";
 export const BLACK = "#262D3D";
+export const GREY = "#F3F4F6";
 export const WHITE = "#FFFFFF";
+export const RED = "#DD1010";

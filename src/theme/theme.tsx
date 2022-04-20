@@ -4,7 +4,7 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
   GREEN, BLUE, WHITE, BLACK, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, GRAY_TWELVE, BLACK_NINE,
-  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED_FOUR, INTER,
+  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED, INTER,
 } from ".";
 
 const breakpoints = createBreakpoints({})
@@ -237,10 +237,10 @@ export const theme = createTheme({
     MuiButton: {
       contained: {
         borderRadius: 6,
-        maxHeight: 42,
-        padding: '9px 20px',
+        maxHeight: 40,
+        padding: '12px 20px',
         boxShadow: 'none',
-        color: BLACK_TWO,
+        color: BLACK,
 
         "&.blue-button": {
           backgroundColor: BLUE_ONE,
@@ -259,9 +259,10 @@ export const theme = createTheme({
 
       outlined: {
         borderRadius: 6,
-        maxHeight: 42,
-        padding: '9px 20px',
+        maxHeight: 40,
+        padding: '12px 20px',
         boxShadow: 'none',
+        color: BLACK,
 
         "&.blue-button": {
           borderColor: BLUE_ONE,
@@ -281,20 +282,20 @@ export const theme = createTheme({
       },
 
       label: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 600,
       },
 
       text: {
         "& .MuiButton-label": {
-          color: GRAY_TWO
+          color: BLACK
         },
 
         "&.danger": {
           paddingLeft: 0,
 
           "& .MuiButton-label": {
-            color: RED_FOUR
+            color: RED
           }
         }
       }
