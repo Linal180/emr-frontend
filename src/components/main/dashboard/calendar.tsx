@@ -1,6 +1,6 @@
 // packages block
 import { useEffect, useCallback, Reducer, useState, useReducer, useContext } from "react";
-import { ViewState } from '@devexpress/dx-react-scheduler';
+import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import { DayTimeTableCell } from "./calendarViews/dayView";
 import { WeekTimeTableCell } from "./calendarViews/weekView";
 import { MonthTimeTableCell } from "./calendarViews/monthView";
@@ -21,10 +21,12 @@ import {
 import {
   useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus
 } from "../../../generated/graphql";
+import { IntegratedAppointments } from "./integratedAppointments";
 
 const CalendarComponent = (): JSX.Element => {
   const classes = useCalendarStyles()
   const [currentDate, setCurrentDate] = useState(new Date())
+  const [data, setData] = useState<any[]>([])
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
   const { id: facilityId, practiceId } = facility || {}
@@ -57,12 +59,36 @@ const CalendarComponent = (): JSX.Element => {
         const { appointments } = findAllAppointments
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments?.filter(appointment => 
+          appointments: appointments?.filter(appointment =>
             appointment?.status !== Appointmentstatus.Cancelled) as AppointmentsPayload['appointments']
         });
       }
     }
   });
+
+  const onCommitChanges = useCallback(
+    ({ added, changed, deleted }) => {
+      if (added) {
+        const startingAddedId =
+          Array.isArray(data) && data.length > 0 ? data && data[data.length - 1].id + 1 : 0;
+        setData([...data, { id: startingAddedId, ...added }]);
+      }
+      if (changed) {
+        setData(
+          data.map(appointment =>
+            changed[appointment.id]
+              ? { ...appointment, ...changed[appointment.id] }
+              : appointment
+          )
+        );
+      }
+      if (deleted !== undefined) {
+        setData(data.filter(appointment => appointment.id !== deleted));
+      }
+    },
+    [setData, data]
+  );
+
 
   const handleDateChange = () => setCurrentDate(currentDate)
 
@@ -113,12 +139,15 @@ const CalendarComponent = (): JSX.Element => {
         <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
           <Scheduler data={mapAppointmentData(appointments)}>
             <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+            <EditingState onCommitChanges={onCommitChanges} />
             <MonthView timeTableCellComponent={MonthTimeTableCell} />
             <WeekView timeTableCellComponent={WeekTimeTableCell} />
             <DayView timeTableCellComponent={DayTimeTableCell} />
             <Toolbar />
             <TodayButton />
             <ViewSwitcher />
+            <IntegratedEditing />
+            <IntegratedAppointments />
             <DateNavigator />
             <Appointments appointmentComponent={Appointment} />
             <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
