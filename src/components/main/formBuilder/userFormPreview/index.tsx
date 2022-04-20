@@ -34,7 +34,7 @@ const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForm
               {formLabels?.map((ele) => {
                 const { label, name } = ele || {}
                 return (
-                  <Box mb={2}>
+                  <Box mb={2} maxHeight={200} minHeight={20} >
                     <Typography variant='h5'>{label || name}</Typography>
                   </Box>
                 )
@@ -44,7 +44,7 @@ const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForm
               {userForms?.map((responseElement, index) => {
                 const { arrayOfStrings, FormsElementsId, value, id: responseId } = responseElement;
                 return (
-                  <Box key={`${FormsElementsId}-FormsElementsId-${formId}`} mb={2}>
+                  <Box key={`${FormsElementsId}-FormsElementsId-${formId}`} mb={2} maxHeight={200} minHeight={20} className={classes.tableCell}>
                     {(value?.includes(`form builder/${formId}`) ?
                       <Box color={theme.palette.primary.main} pl={2} onClick={() => imagePreviewHandler(value)} className={responsesClasses.viewBtn}>
                         {VIEW}
