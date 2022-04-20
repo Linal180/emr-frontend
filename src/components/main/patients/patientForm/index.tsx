@@ -999,6 +999,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <Selector
+                          addEmpty
                           isRequired
                           value={EMPTY_OPTION}
                           label={FACILITY}
@@ -1009,6 +1010,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={6} sm={12} xs={12}>
                         <Selector
+                          addEmpty
                           isRequired
                           value={EMPTY_OPTION}
                           label={USUAL_PROVIDER_ID}
