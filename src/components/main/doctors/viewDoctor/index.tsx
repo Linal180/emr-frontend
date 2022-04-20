@@ -4,13 +4,13 @@ import { useParams } from 'react-router';
 // component block
 import DoctorForm from "../doctorForm";
 import PageHeader from '../../../common/PageHeader';
-// constants and interfaces block
+// constants, utils and interfaces block
 import { ParamsType } from '../../../../interfacesTypes';
 import { EDIT_DOCTOR, DOCTORS_BREAD, DOCTOR_EDIT_BREAD, USERS_BREAD } from '../../../../constants';
 
 const AddDoctorComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
-  
+
   return (
     <>
       <PageHeader

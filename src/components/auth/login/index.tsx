@@ -12,18 +12,16 @@ import LoginController from "./LoginController";
 import history from "../../../history";
 import { requiredLabel } from "../../../utils";
 import { AuthContext } from "../../../context";
-import { ListContext } from "../../../context/listContext";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
-  SOMETHING_WENT_WRONG,
+  SOMETHING_WENT_WRONG, SYSTEM_ROLES,
 } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
-  const { fetchAllFacilityList } = useContext(ListContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: "",
@@ -34,6 +32,9 @@ const LoginComponent = (): JSX.Element => {
   });
 
   const [login, { loading }] = useLoginMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION || message === EXCEPTION)
         return Alert.error(EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE)
@@ -52,14 +53,13 @@ const LoginComponent = (): JSX.Element => {
 
           if (status === 200 && access_token && roles) {
             const userRoles = roles.map(role => role.role)
-            const isAdmin = userRoles.filter(role => role !== 'patient')
-
+            const isAdmin = userRoles.filter(role => role !== SYSTEM_ROLES.Patient)
+            
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
-              setIsLoggedIn(true);
-              fetchAllFacilityList();
               Alert.success(LOGIN_SUCCESSFULLY)
               history.push(DASHBOARD_ROUTE);
+              setIsLoggedIn(true)
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }

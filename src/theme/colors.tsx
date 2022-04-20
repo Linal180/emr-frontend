@@ -10,6 +10,8 @@ export const GRAY_EIGHT = "#A3A3C7"
 export const GRAY_NINE = "#5E6278"
 export const GRAY_TEN = "#F4F6FD"
 export const GRAY_ELEVEN = "#40353554"
+export const GRAY_TWELVE = "#BCB3E2"
+export const GRAY_THIRTEEN = "#F9FAFB"
 
 export const BLACK = "#000000";
 export const BLACK_ONE = "#3F4254";
@@ -30,6 +32,7 @@ export const WHITE_FOUR = "#E4E6EF;";
 export const WHITE_FIVE = "#A1A5B7;";
 export const WHITE_SIX = "#F1FAFF";
 export const WHITE_SEVEN = "#F3F4F6";
+export const WHITE_EIGHT = "#a1a5b740";
 
 export const GREEN = "#1DC894";
 

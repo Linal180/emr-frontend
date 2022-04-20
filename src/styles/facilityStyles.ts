@@ -10,7 +10,7 @@ export const useFacilityStyles = makeStyles(() => ({
     height: 'fit-content',
     position: 'sticky',
     top: 120,
-    maxWidth: 327,
+    maxWidth: 330,
     width: '100%'
   },
 

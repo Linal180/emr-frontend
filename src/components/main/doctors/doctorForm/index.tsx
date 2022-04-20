@@ -33,11 +33,12 @@ import {
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
+  SYSTEM_PASSWORD,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
-  const { facilityList, setDoctorList, fetchAllDoctorList } = useContext(ListContext)
+  const { facilityList } = useContext(ListContext)
   const [{ contactId, billingId }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const methods = useForm<DoctorInputProps>({
     mode: "all",
@@ -167,8 +168,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (status && status === 200) {
           Alert.success(DOCTOR_CREATED);
-          setDoctorList([])
-          fetchAllDoctorList();
           reset()
           history.push(DOCTORS_ROUTE)
         }
@@ -189,8 +188,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
         if (status && status === 200) {
           Alert.success(DOCTOR_UPDATED);
-          setDoctorList([]);
-          fetchAllDoctorList();
           reset()
           history.push(DOCTORS_ROUTE)
         }
@@ -214,7 +211,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       email, pager, phone, mobile, fax, address, address2, zipCode, city, state, country, facilityId,
       billingEmail, billingPhone, billingFax, billingAddress: billingAddress1, blueShildNumber, taxIdStuff,
       billingAddress2, billingZipCode, billingCity, billingState, billingCountry, billingUserId, taxId,
-      dob, ssn, prefix, suffix, lastName, firstName, speciality, middleName, campusGrpNumber, password,
+      dob, ssn, prefix, suffix, lastName, firstName, speciality, middleName, campusGrpNumber,
       providerIntials, degreeCredentials, languagesSpoken, taxonomyCode, deaNumber, deaActiveDate, npi,
       deaTermDate, emcProviderId, medicareGrpNumber, medicaidGrpNumber, prescriptiveAuthNumber,
       specialityLicense, anesthesiaLicense, dpsCtpNumber, stateLicense, licenseActiveDate, upin,
@@ -230,23 +227,25 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedBillingState } = billingState;
       const { id: selectedBillingCountry } = billingCountry;
 
+      let practiceId = '';
+      if (selectedFacility) {
+        const facility = facilityList?.filter(f => f?.id === selectedFacility)[0];
+        const { practiceId: pId } = facility || {};
+
+        practiceId = pId || ''
+      }
+
       const doctorItemInput = {
-        firstName: firstName || "", middleName: middleName || "", lastName: lastName || "",
-        prefix: prefix || "", suffix: suffix || "", email: email || "", password: password || "",
-        facilityId: selectedFacility || "", providerIntials: providerIntials || "",
-        degreeCredentials: degreeCredentials || "", roleType: 'doctor',
+        firstName, middleName, lastName, prefix, suffix, email, facilityId: selectedFacility,
+        degreeCredentials, roleType: 'doctor', ssn, languagesSpoken, taxonomyCode, deaNumber, taxId,
+        npi, upin, emcProviderId, medicareGrpNumber, medicaidGrpNumber, meammographyCertNumber, campusGrpNumber,
+        blueShildNumber, taxIdStuff, specialityLicense, anesthesiaLicense, stateLicense, dpsCtpNumber,
+        providerIntials, prescriptiveAuthNumber, adminId: userId, dob: dob ? getTimestamps(dob) : '',
+        licenseTermDate: licenseTermDate ? getTimestamps(licenseTermDate) : '', password: SYSTEM_PASSWORD,
+        licenseActiveDate: licenseActiveDate ? getTimestamps(licenseActiveDate) : '',
+        deaActiveDate: deaActiveDate ? getTimestamps(deaActiveDate) : '',
+        deaTermDate: deaTermDate ? getTimestamps(deaTermDate) : '', practiceId,
         speciality: selectedSpecialty as Speciality || Speciality.Gastroenterology,
-        dob: getTimestamps(dob || ''), ssn: ssn || "", languagesSpoken: languagesSpoken || "",
-        taxonomyCode: taxonomyCode || "", deaNumber: deaNumber || "",
-        deaActiveDate: getTimestamps(deaActiveDate || ""), deaTermDate: getTimestamps(deaTermDate || ""),
-        taxId: taxId || "", npi: npi || "", upin: upin || "", emcProviderId: emcProviderId || "",
-        medicareGrpNumber: medicareGrpNumber || "", medicaidGrpNumber: medicaidGrpNumber || "",
-        meammographyCertNumber: meammographyCertNumber || "", campusGrpNumber: campusGrpNumber || "",
-        blueShildNumber: blueShildNumber || "", taxIdStuff: taxIdStuff || "",
-        specialityLicense: specialityLicense || "", anesthesiaLicense: anesthesiaLicense || "",
-        stateLicense: stateLicense || "", licenseActiveDate: getTimestamps(licenseActiveDate || ""),
-        licenseTermDate: getTimestamps(licenseTermDate || ""), dpsCtpNumber: dpsCtpNumber || "",
-        prescriptiveAuthNumber: prescriptiveAuthNumber || "", adminId: userId || "",
       };
 
       const contactInput = {
@@ -282,7 +281,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         await createDoctor({
           variables: {
             createDoctorInput: {
-              createDoctorItemInput: { ...doctorItemInput },
+              createDoctorItemInput: { ...doctorItemInput, },
               createContactInput: { ...contactInput },
               createBillingAddressInput: { ...billingAddressInput }
             }
@@ -306,6 +305,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <Selector
+                          addEmpty
                           isRequired
                           value={EMPTY_OPTION}
                           label={FACILITY}
@@ -539,7 +539,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid item md={12} sm={12} xs={12}>
                       <InputController
                         isRequired
-                        disabled={isEdit}
                         fieldType="text"
                         controllerName="email"
                         controllerLabel={EMAIL}

@@ -16,12 +16,13 @@ import {
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor, 
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, 
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, ResponsePayloadResponse,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
+  permission?: string;
 }
 
 type Key = string | number | undefined;
@@ -39,10 +40,13 @@ export interface CalendarChart {
 export interface AuthContextProps {
   user: User | null;
   isLoggedIn: boolean;
-  currentUser: Doctor | Staff | null;
+  practiceName: string,
   userPermissions: string[],
+  currentUser: Doctor | Staff | null;
   setUser: (user: User | null) => void;
+  setPracticeName: (name: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
+  setCurrentUser: (user: Doctor | Staff | null) => void;
 }
 
 export interface DoctorScheduleSlotProps {
@@ -64,15 +68,15 @@ export interface ListContextInterface {
   facilityList: FacilitiesPayload['facilities'];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
-  doctorList: AllDoctorPayload['doctors'];
-  setDoctorList: Function;
-  fetchAllDoctorList: Function;
-  serviceList: ServicesPayload['services'];
-  setServicesList: Function;
-  fetchAllServicesList: Function;
-  patientList: PatientsPayload['patients'];
-  setPatientList: Function;
-  fetchAllPatientList: Function;
+  deletePracticeList: Function;
+  deleteRoleList: Function;
+  deleteFacilityList: Function;
+  addPracticeList: Function;
+  addRoleList: Function;
+  addFacilityList: Function;
+  updatePracticeList: Function;
+  updateRoleList: Function;
+  updateFacilityList: Function;
 }
 
 export interface FacilityContextInterface {
@@ -88,6 +92,7 @@ export interface FacilityContextInterface {
 }
 
 export interface PermissionContextInterface {
+  permissionLoading: boolean;
   permissions: PermissionsPayload['permissions']
 }
 
@@ -161,6 +166,7 @@ export interface ViewAppointmentCardProps {
 
 interface ControlLabel {
   controllerLabel: string | JSX.Element;
+  disabled?: boolean;
 }
 
 type LoginControlTypes = "email" | "password";
@@ -280,6 +286,7 @@ export interface SelectorProps {
   label: string
   error?: string
   disabled?: boolean
+  addEmpty?: boolean
   isRequired?: boolean
   isMultiple?: boolean
   value?: SelectorOption
@@ -389,7 +396,8 @@ export type ParamsType = {
 }
 
 export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | "roleType" | "gender">
-  & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption };
+  & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption }
+  & { providerIds: SelectorOption };
 
 export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
   & { serviceId: SelectorOption } & { day: SelectorOption };
@@ -786,6 +794,7 @@ export interface FormInitialType extends FieldsInputs {
 export interface FormValuesTypes {
   id: string;
   col: number;
+  name: string;
   fields: FieldsInputs[],
 }
 
@@ -801,8 +810,8 @@ export interface CustomSelectControlProps extends IControlLabel {
 }
 
 export interface FieldEditModalProps {
-  open: boolean;
-  closeModalHanlder: () => void;
+  open?: boolean;
+  closeModalHanlder?: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
 }
@@ -813,6 +822,7 @@ export interface DropContainerPropsTypes {
   changeValues: (id: string, item: FieldsInputs) => void;
   delFieldHandler: (id: number, index: number) => void;
   delColHandler: (index: number) => void
+  setFormValues: Dispatch<SetStateAction<SectionsInputs[]>>
 }
 
 
@@ -828,8 +838,9 @@ export interface LoaderProps {
 
 export interface FormBuilderPreviewProps {
   open: Boolean;
-  closeModalHanlder: () => void;
+  closeModalHandler: () => void;
   data: SectionsInputs[];
+  formName: string
 }
 
 export interface FieldComponentProps {
@@ -853,7 +864,8 @@ export interface SmartyModalComponentType {
   setOpen: Function;
   isOpen: boolean;
   data: usStreet.Candidate[];
-  userData: SmartyUserData
+  userData: SmartyUserData;
+  verifiedAddressHandler: (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => void
 }
 
 export interface GetAddressResponse {
@@ -872,4 +884,16 @@ export interface AutoCompleteResponse {
   status: boolean;
   message: string;
   options: any
+}
+
+
+export interface UserFormType {
+  attachmentId: string
+  title: string
+  file: File
+}
+
+export  interface FormAttachmentPayload {
+  attachment?: String | null | undefined;
+  response?: ResponsePayloadResponse
 }

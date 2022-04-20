@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 // component block
 import PatientForm from "../patientForm";
 import PageHeader from '../../../common/PageHeader';
-// constants block
+// constants, utils  block
 import { ParamsType } from '../../../../interfacesTypes';
 import { EDIT_PATIENT, PATIENTS_BREAD, PATIENT_EDIT_BREAD, USERS_BREAD } from '../../../../constants';
 

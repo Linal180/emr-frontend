@@ -2,7 +2,6 @@ query FindAllStaff($staffInput: StaffInput!) {
   findAllStaff(staffInput: $staffInput) {
     pagination {
       page
-      totalCount
       totalPages
     }
 
@@ -19,8 +18,6 @@ query FindAllStaff($staffInput: StaffInput!) {
       lastName
       username
       phone
-      createdAt
-      updatedAt
     }
   }
 }

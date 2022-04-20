@@ -18,13 +18,13 @@ import { Action, ActionType, mediaReducer, State, initialState } from "../../../
 dotenv.config()
 
 const AddImageModal: FC<MediaModalTypes> = ({
-  imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, isProfile, preSignedUrl,
+  imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, preSignedUrl,
   title, reload
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
-  const { fileUrl, attachmentId } = state;
   const { handleSubmit, reset } = useForm<ICreateMediaInput>();
+  const [{ fileUrl, attachmentId }, dispatch] =
+    useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const handleClose = () => {
     setOpen && setOpen(!isOpen);
@@ -68,6 +68,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
     const { title } = mediaData
     dropZoneRef && dropZoneRef.current && dropZoneRef.current.submit && dropZoneRef.current.submit()
     dispatch({ type: ActionType.SET_MEDIA_DATA, mediaData: { title } })
+    setOpen && setOpen(!isOpen);
   };
 
   const handleDelete = async () => {
@@ -115,13 +116,13 @@ const AddImageModal: FC<MediaModalTypes> = ({
         <DialogActions>
           <Box px={2} py={1} display="flex" justifyContent="space-between" width="100%">
             <Box display="flex" flex={1} justifyContent="flex-end">
-                <Button variant="contained" color="primary" type="submit" disabled={deleteAttachmentLoading}>
-                  {deleteAttachmentLoading &&
-                    <CircularProgress size={20} />
-                  }
+              <Button variant="contained" color="primary" type="submit" disabled={deleteAttachmentLoading}>
+                {deleteAttachmentLoading &&
+                  <CircularProgress size={20} />
+                }
 
-                  {ADD}
-                </Button>
+                {ADD}
+              </Button>
             </Box>
           </Box>
         </DialogActions>

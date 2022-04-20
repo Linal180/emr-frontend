@@ -7,12 +7,15 @@ import PageHeader from '../../../../common/PageHeader';
 // constants block
 import { ParamsType } from '../../../../../interfacesTypes';
 import {
-  EDIT_SERVICE, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITY_SERVICES_ROUTE, FACILITY_SERVICE_EDIT_BREAD, SERVICES,
+  EDIT_SERVICE, FACILITIES_BREAD, FACILITIES_ROUTE, FACILITY_SERVICES_ROUTE, FACILITY_SERVICE_EDIT_BREAD,
+  SERVICES,
 } from '../../../../../constants';
 
 const AddFacilityServiceComponent: FC = (): JSX.Element => {
   const { id, facilityId } = useParams<ParamsType>();
-  const servicesBreadcrumb = { text: SERVICES, link: `${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}` }
+  const servicesBreadcrumb = {
+    text: SERVICES, link: `${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}`
+  }
 
   return (
     <>

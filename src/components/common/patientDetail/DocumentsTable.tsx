@@ -4,29 +4,29 @@ import { useParams } from "react-router";
 import { DefaultExtensionType } from "react-file-icon";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button } from "@material-ui/core";
 // components block
-import Alert from "../../../common/Alert";
-import Search from "../../../common/Search";
-import TableLoader from "../../../common/TableLoader";
-import MediaCards from "../../../common/AddMedia/MediaCards";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import Alert from "../Alert";
+import Search from "../Search";
+import TableLoader from "../TableLoader";
+import MediaCards from "../AddMedia/MediaCards";
+import ConfirmationModal from "../ConfirmationModal";
+import NoDataFoundComponent from "../NoDataFoundComponent";
 // constant, utils and styles block
-import { getFormattedDate, renderTh } from "../../../../utils";
-import { useTableStyles } from "../../../../styles/tableStyles";
-import { DocumentTableProps, ParamsType } from "../../../../interfacesTypes";
+import { getFormattedDate, renderTh } from "../../../utils";
+import { useTableStyles } from "../../../styles/tableStyles";
+import { DocumentTableProps, ParamsType } from "../../../interfacesTypes";
 import {
   AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation
-} from "../../../../generated/graphql";
+} from "../../../generated/graphql";
 import {
   mediaReducer, Action, initialState, State, ActionType
-} from "../../../../reducers/mediaReducer";
+} from "../../../reducers/mediaReducer";
 import {
   DownloadIcon, EditNewIcon, PrinterIcon, SignedIcon, TrashNewIcon,
-} from "../../../../assets/svgs";
+} from "../../../assets/svgs";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-} from "../../../../constants";
+} from "../../../constants";
 
 const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -131,11 +131,9 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+      <Box px={2} display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex">
-          <Box className={classes.searchOuterContainer}>
-            <Search search={search} />
-          </Box>
+          <Search search={search} />
 
           <Box ml={3} className={classes.RadioButtonsStroke}>
             <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>

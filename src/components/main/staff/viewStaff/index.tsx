@@ -9,7 +9,7 @@ import { STAFF_BREAD, STAFF_EDIT_BREAD, USERS_BREAD, VIEW_STAFF } from "../../..
 
 const ViewStaffComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
-  
+
   return (
     <>
       <PageHeader

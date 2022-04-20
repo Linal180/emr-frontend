@@ -1,11 +1,10 @@
 // packages block
-import { Reducer, useContext, useEffect, useState, useReducer, useCallback } from "react";
+import { Reducer, useContext, useEffect, useState, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Box, Button, Checkbox, colors, FormControlLabel, Grid, Typography } from "@material-ui/core";
-import { PlaidLinkOnEvent, PlaidLinkStableEvent, PlaidLinkOnEventMetadata, usePlaidLink, PlaidLinkOnSuccess, PlaidLinkOnSuccessMetadata, PlaidLinkOnExit, PlaidLinkError, PlaidLinkOnExitMetadata } from 'react-plaid-link'
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
@@ -25,27 +24,24 @@ import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../.
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
+import { getStandardTime, getTimestamps, renderServices } from "../../../../../utils";
 import {
-  getStandardTime, getTimestamps, renderDoctors, renderServices
-} from "../../../../../utils";
-import {
-  ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation, useGetSlotsLazyQuery,
-  useGetFacilityLazyQuery, FacilityPayload, BillingStatus
+  ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation,
+  useGetSlotsLazyQuery, BillingStatus, useGetDoctorLazyQuery, DoctorPayload
 } from "../../../../../generated/graphql";
 import {
+  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, DOCTOR_NOT_FOUND,
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
-  MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, SELECT_PROVIDER, BOOK_APPOINTMENT,
-  AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
-  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, AGREEMENT_POINTS, APPOINTMENT_PAYMENT,
+  AVAILABLE_SLOTS, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING,
+  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, APPOINTMENT_PAYMENT,
 } from "../../../../../constants";
-import ACHModal from '../../achModal'
 
-const PublicAppointmentForm = (): JSX.Element => {
+const DoctorPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
-  const { id: facilityId } = useParams<ParamsType>();
-  const { serviceList, doctorList, fetchAllDoctorList, fetchAllServicesList } = useContext(FacilityContext)
+  const { id: doctorId } = useParams<ParamsType>();
+  const { serviceList, fetchAllServicesList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
-  const { facility, availableSlots, currentDate, offset, agreed } = state;
+  const { availableSlots, currentDate, offset, agreed, doctor } = state;
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
   const methods = useForm<ExtendedExternalAppointmentInputProps>({
     mode: "all",
@@ -57,7 +53,7 @@ const PublicAppointmentForm = (): JSX.Element => {
     providerId: { id: selectedProvider } = {},
   } = watch();
 
-  const [getFacility] = useGetFacilityLazyQuery({
+  const [getDoctor] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -68,15 +64,15 @@ const PublicAppointmentForm = (): JSX.Element => {
 
     onCompleted(data) {
       try {
-        const { getFacility: { response, facility } } = data;
+        const { getDoctor: { response, doctor } } = data;
 
         if (response) {
           const { status } = response
 
-          if (facility && status && status === 200) {
-            fetchAllDoctorList(facilityId);
+          if (doctor && status && status === 200) {
+            const { facilityId } = doctor
             fetchAllServicesList(facilityId)
-            dispatch({ type: ActionType.SET_FACILITY, facility: facility as FacilityPayload['facility'] })
+            dispatch({ type: ActionType.SET_DOCTOR, doctor: doctor as DoctorPayload['doctor'] })
           }
         }
       } catch (error) { }
@@ -129,38 +125,37 @@ const PublicAppointmentForm = (): JSX.Element => {
   });
 
   useEffect(() => {
-    facilityId ?
-      getFacility({ variables: { getFacility: { id: facilityId } } })
+    doctorId ?
+      getDoctor({ variables: { getDoctor: { id: doctorId } } })
       :
       history.push(PATIENT_APPOINTMENT_FAIL)
-  }, [facilityId, getFacility])
+  }, [doctorId, getDoctor])
 
   useEffect(() => {
-    if (selectedProvider && selectedService && date) {
+    if (selectedService && date) {
+      setValue('scheduleEndDateTime', '')
+      setValue('scheduleStartDateTime', '')
+
       getSlots({
         variables: {
           getSlots: {
-            providerId: selectedProvider, offset, currentDate: date.toString(),
+            providerId: doctorId, offset, currentDate: date.toString(),
             serviceId: selectedService,
           }
         }
       })
     }
-  }, [date, facilityId, getSlots, offset, selectedProvider, selectedService, currentDate])
+  }, [date, doctorId, getSlots, offset, selectedProvider, selectedService, currentDate, setValue])
 
   const onSubmit: SubmitHandler<ExtendedExternalAppointmentInputProps> = async (inputs) => {
-    const {
-      firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime,
-      scheduleEndDateTime, providerId
-    } = inputs;
+    const { firstName, lastName, dob, email, serviceId, sexAtBirth, scheduleStartDateTime, scheduleEndDateTime } = inputs;
 
     if (!scheduleStartDateTime || !scheduleEndDateTime) {
       Alert.error(APPOINTMENT_SLOT_ERROR_MESSAGE)
     } else {
-      if (facility) {
-        const { id: facilityId } = facility
+      if (doctor) {
+        const { facilityId, practiceId } = doctor
         const { id: selectedService } = serviceId || {};
-        const { id: selectedProvider } = providerId || {};
         const { id: selectedSexAtBirth } = sexAtBirth || {};
 
         await createExternalAppointment({
@@ -168,20 +163,20 @@ const PublicAppointmentForm = (): JSX.Element => {
             createExternalAppointmentInput: {
               createGuardianContactInput: { contactType: ContactType.Guardian },
               createExternalAppointmentItemInput: {
-                serviceId: selectedService, providerId: selectedProvider, facilityId, paymentType: PaymentType.Self,
+                serviceId: selectedService, providerId: doctorId, paymentType: PaymentType.Self, facilityId: facilityId || '',
                 scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
                 scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },
 
               createPatientItemInput: {
-                email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId,
-                usualProviderId: selectedProvider, sexAtBirth: selectedSexAtBirth as Genderidentity,
+                email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId: facilityId || '',
+                usualProviderId: doctorId, sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
               },
             }
           }
         })
       } else
-        Alert.error(FACILITY_NOT_FOUND)
+        Alert.error(DOCTOR_NOT_FOUND)
     }
   }
 
@@ -192,54 +187,6 @@ const PublicAppointmentForm = (): JSX.Element => {
       endTime && setValue('scheduleEndDateTime', endTime)
     }
   };
-
-  const onSuccess = useCallback<PlaidLinkOnSuccess>(
-    (public_token: string, metadata: PlaidLinkOnSuccessMetadata) => {
-      debugger
-    }, [])
-
-  const onExit = useCallback<PlaidLinkOnExit>((error: PlaidLinkError | null, metadata: PlaidLinkOnExitMetadata) => {
-    // log and save error and metadata
-    // handle invalid link token
-    if (error != null && error.error_code === 'INVALID_LINK_TOKEN') {
-      // generate new link token
-    }
-    // to handle other error codes, see https://plaid.com/docs/errors/
-  },
-    [],
-  );
-
-  const onEvent = useCallback<PlaidLinkOnEvent>(
-    (
-      eventName: PlaidLinkStableEvent | string,
-      metadata: PlaidLinkOnEventMetadata,
-    ) => {
-      // log eventName and metadata
-    },
-    [],
-  );
-
-  const { ready, error, open, exit } = usePlaidLink({
-    onSuccess: onSuccess,
-    onExit: onExit,
-    onEvent: onEvent,
-    token: 'link-sandbox-dadf991a-af6f-4e14-b3db-60af0e362078',
-    env: 'sandbox'
-  })
-
-  const palidOpenHandler = useCallback(() => {
-    if (ready) {
-      open();
-    }
-    else {
-      console.log('error', error)
-    }
-  }, [open, ready, error])
-
-  // useEffect(() => {
-  //   palidOpenHandler()
-  // }, [palidOpenHandler])
-
 
   return (
     <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
@@ -260,26 +207,14 @@ const PublicAppointmentForm = (): JSX.Element => {
               <Grid container spacing={3}>
                 <Grid lg={9} md={8} sm={6} xs={12} item>
                   <CardComponent cardTitle={SELECT_SERVICES}>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={APPOINTMENT_TYPE}
-                          name="serviceId"
-                          options={renderServices(serviceList)}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={SELECT_PROVIDER}
-                          name="providerId"
-                          options={renderDoctors(doctorList)}
-                        />
-                      </Grid>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={APPOINTMENT_TYPE}
+                        name="serviceId"
+                        options={renderServices(serviceList)}
+                      />
                     </Grid>
                   </CardComponent>
 
@@ -339,13 +274,7 @@ const PublicAppointmentForm = (): JSX.Element => {
 
                   <CardComponent cardTitle={AGREEMENT_HEADING}>
                     <Box maxHeight={400} pl={2} mb={3} overflow="auto">
-                      <ul>
-                        {AGREEMENT_POINTS.map((point, index) => (
-                          <li key={index}>
-                            <Typography variant="subtitle1" component="p">{point}</Typography>
-                          </li>
-                        ))}
-                      </ul>
+                      <Typography variant="subtitle1" component="p">{`{{Terms of Service Content}}`}</Typography>
                     </Box>
                   </CardComponent>
 
@@ -399,9 +328,8 @@ const PublicAppointmentForm = (): JSX.Element => {
           </form>
         </FormProvider>
       </Box>
-      <ACHModal open={true} onClose={() => { }} />
     </Box>
   )
 }
 
-export default PublicAppointmentForm;
+export default DoctorPublicAppointmentForm;

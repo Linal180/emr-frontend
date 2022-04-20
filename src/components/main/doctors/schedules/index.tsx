@@ -10,8 +10,8 @@ import ViewDataLoader from "../../../common/ViewDataLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import DoctorScheduleBox from "../../../common/DoctorScheduleBox";
 // interfaces, graphql, constants block
-import { getDaySchedules } from "../../../../utils";
 import { AddSlotIcon } from '../../../../assets/svgs';
+import {  getDaySchedules } from "../../../../utils";
 import { useDoctorScheduleStyles } from '../../../../styles/doctorSchedule';
 import { DaySchedule, DoctorScheduleSlotProps, ParamsType } from "../../../../interfacesTypes";
 import {
@@ -22,7 +22,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ADD_MORE_RECORDS_TEXT, AVAILABILITY_TEXT, CANT_DELETE_DOCTOR_SCHEDULE, DELETE_DOCTOR_SCHEDULE_DESCRIPTION,
-  DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE
+  DOCTOR_NOT_FOUND, DOCTOR_SCHEDULE,
 } from "../../../../constants";
 
 const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) => {

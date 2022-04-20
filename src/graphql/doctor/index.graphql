@@ -6,29 +6,22 @@ query FindAllDoctor($doctorInput: DoctorInput!) {
       lastName
       firstName
       speciality
-      createdAt
-      updatedAt
-
 
       contacts {
         id
         email
         phone
         primaryContact
-        createdAt
-        updatedAt
       }
 
       facility {
         id
         name
-        isPrivate
-        createdAt
-        updatedAt
       }
     }
 
     pagination {
+      page
       totalPages
     }
     
@@ -95,6 +88,7 @@ query GetDoctor($getDoctor: GetDoctor!) {
       upin
       npi
       taxId
+      practiceId
       prescriptiveAuthNumber
       licenseActiveDate
       meammographyCertNumber

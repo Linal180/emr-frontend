@@ -1,14 +1,6 @@
 query FindAllPermissions($permissionInput: PermissionInput!){
   findAllPermissions(permissionInput: $permissionInput){
-    response {
-      error
-      status
-      message
-    }
-
     pagination {
-      page
-      totalCount
       totalPages
     }
     

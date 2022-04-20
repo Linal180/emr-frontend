@@ -1,3 +1,3 @@
-import PublicAppointmentForm from "../../../components/main/publicAppointments/scheduleAppointments/publicAppointmentForm";
+import FacilityPublicAppointmentForm from "../../../components/main/publicAppointments/scheduleAppointments/facilityPublicAppointmentForm";
 
-export const PublicAppointment = () => <PublicAppointmentForm />
+export const FacilityPublicAppointment = () => <FacilityPublicAppointmentForm />

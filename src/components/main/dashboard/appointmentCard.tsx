@@ -22,19 +22,20 @@ import { useCalendarStyles } from '../../../styles/calendarStyles';
 import { getAppointmentDate, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
-  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
+  CashAppointmentIcon, DeleteAppointmentIcon, InvoiceAppointmentIcon,
 } from '../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useRemoveAppointmentMutation
+  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus
 } from '../../../generated/graphql';
 import {
+  PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD,
+  FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT,
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_LOCATION, INVOICE, 
-  FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT, 
+  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_LOCATION, INVOICE,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PROVIDER_NAME,
-   PRODUCT_AND_SERVICES_TEXT,  REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD, TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE,
+  TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
 } from '../../../constants';
 import { Link } from 'react-router-dom';
 
@@ -45,7 +46,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
-    appInvoiceNumber, appShowPayBtn, appDetail, deleteAppointmentId, openDelete, isInvoiceNumber,
+    appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber, appBillingStatus
   } = state;
   const methods = useForm<UpdateStatusInputProps>({ mode: "all", });
   const { handleSubmit, watch, setValue } = methods;
@@ -86,12 +87,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     onCompleted({ chargePayment: { transaction, response } }) {
       if (response && transaction) {
         Alert.success(TRANSACTION_PAID_SUCCESSFULLY);
+        fetchAppointment()
         dispatch({ type: ActionType.SET_APP_DETAIL, appDetail: true })
         dispatch({ type: ActionType.SET_APP_PAID, appPaid: false })
         dispatch({ type: ActionType.SET_APP_INVOICE, appInvoice: false })
         dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: false })
         dispatch({ type: ActionType.SET_APP_EDIT, appEdit: false })
-        fetchAppointment()
       }
     }
   });
@@ -132,6 +133,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
   const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
   const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
+  const appCancelToken = appointmentMeta?.data.token
+  const providerName = appointmentMeta?.data?.providerName
+  const appReason = appointmentMeta?.data?.reason
+  const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -148,7 +153,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       if (response) {
         const { status } = response;
         if (appointment && status && status === 200) {
-          const { invoice, status } = appointment;
+          const { invoice, status, billingStatus } = appointment;
           const { invoiceNo } = invoice || {}
 
           if (invoiceNo) {
@@ -161,6 +166,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
           status && setValue('appointmentStatus', setRecord(status, status))
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: status })
+          dispatch({ type: ActionType.SET_APP_BILLING_STATUS, appBillingStatus: billingStatus as BillingStatus })
         }
       }
     },
@@ -212,11 +218,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     onHide && onHide()
   }
 
-  const editHandleClick = () => {
-    dispatch({ type: ActionType.SET_APP_EDIT, appEdit: true })
-  }
-
-  const [removeAppointment, { loading: removeAppointmentLoading }] = useRemoveAppointmentMutation({
+  const [cancelAppointment, { loading: cancelAppointmentLoading }] = useCancelAppointmentMutation({
     onError() {
       Alert.error(CANT_CANCELLED_APPOINTMENT)
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
@@ -224,7 +226,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
     async onCompleted(data) {
       if (data) {
-        const { removeAppointment: { response } } = data
+        const { cancelAppointment: { response } } = data
 
         if (response) {
           const { message } = response
@@ -237,18 +239,15 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   });
 
   const handleCancelAppointment = async () => {
-    deleteAppointmentId && await removeAppointment({
+    await cancelAppointment({
       variables: {
-        removeAppointment: { id: deleteAppointmentId }
+        cancelAppointment: { reason: APPOINTMENT_CANCEL_REASON, token: appCancelToken }
       }
     })
   };
 
-  const onDeleteClick = (id: string) => {
-    if (id) {
-      dispatch({ type: ActionType.SET_DELETE_APPOINTMENT_ID, deleteAppointmentId: id })
-      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
-    }
+  const onDeleteClick = () => {
+    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
   };
 
   const handleAppDetail = () => {
@@ -319,7 +318,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     chargePayment({
       variables: {
         paymentInput: {
-          price: appointmentPrice, patientId: patientId, providerId: providerId,
+          price: appointmentPrice, patientId: patientId, providerId: providerId || '',
           facilityId: facilityId, appointmentId: id, clientIntent: token, serviceId: serviceId
         },
       },
@@ -358,6 +357,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       else if (type === 'CreditCard') dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
     }
   };
+  console.log(appBillingStatus);
 
   return (
     <Dialog
@@ -373,16 +373,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               title={APPOINTMENT}
               action={
                 <Box>
-                  <IconButton onClick={editHandleClick}>
-                    <EditAppointmentIcon />
-                  </IconButton>
-
-                  <IconButton onClick={() => {
+                  {appStatus !== "COMPLETED" && <IconButton onClick={() => {
                     moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
-                      Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
+                      Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick()
                   }}>
                     <DeleteAppointmentIcon />
-                  </IconButton>
+                  </IconButton>}
 
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
@@ -422,19 +418,19 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 <Typography variant="body2">{appointmentMeta?.data?.facilityContact ?? 'NAN'}</Typography>
               </Box>
 
-              <Box display='flex' justifyContent='space-between' pb={1}>
+              {providerName !== 'undefined undefined' && <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{PROVIDER_NAME}</Typography>
-                <Typography variant="body2">{appointmentMeta?.data?.providerName}</Typography>
-              </Box>
+                <Typography variant="body2">{providerName}</Typography>
+              </Box>}
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{REASON}</Typography>
-                <Typography variant="body2">{appointmentMeta?.data?.reason ?? 'NAN'}</Typography>
+                <Typography variant="body2">{appReason === '' ? 'NAN' : appReason}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{PRIMARY_INSURANCE}</Typography>
-                <Typography variant="body2">{appointmentMeta?.data?.primaryInsurance ?? 'NAN'}</Typography>
+                <Typography variant="body2">{appPrimaryInsurance === '' ? 'NAN' : appPrimaryInsurance}</Typography>
               </Box>
 
               {!appPaid && !isInvoiceNumber ? (<Box display="flex" justifyContent="space-between"
@@ -481,7 +477,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               <ConfirmationModal
                 title={APPOINTMENT_DETAILS}
                 isOpen={openDelete}
-                isLoading={removeAppointmentLoading}
+                isLoading={cancelAppointmentLoading}
                 description={DELETE_APPOINTMENT_DESCRIPTION}
                 setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
                 handleDelete={handleCancelAppointment}
@@ -499,7 +495,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
                   </IconButton>
-                  {!isInvoiceNumber && <Button onClick={handleInvoice} type="submit" variant="contained"
+                  {appBillingStatus !== 'PAID' && <Button onClick={handleInvoice} type="submit" variant="contained"
                     size="large" color="primary"
                   >
                     {PAY}

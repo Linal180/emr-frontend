@@ -1,5 +1,6 @@
 {
   "cSpell.words": [
+    "allowfullscreen",
     "Appointmentstatus",
     "bgcolor",
     "braintree",
@@ -9,13 +10,18 @@
     "Communicationtype",
     "devexpress",
     "dropzone",
+    "Formbuilder",
     "Holdstatement",
     "hookform",
     "MAMOGRAPHY",
     "Maritialstatus",
+    "notistack",
     "Requestable",
+    "SIGNOFF",
+    "smartystreets",
     "SPECIALITY",
     "svgs",
-    "UPIN"
+    "UPIN",
+    "Zipcode"
   ]
 }

@@ -1,5 +1,5 @@
 query FindAllPractices($practiceInput: PracticeInput!){
-  findAllPractices(facilityInput: $practiceInput){
+  findAllPractices(practiceInput: $practiceInput){
     response {
       error
       status
@@ -13,27 +13,9 @@ query FindAllPractices($practiceInput: PracticeInput!){
     
     practices {
       id
-      fax
       name
       phone
       createdAt
-      updatedAt
-      
-      facilities {
-        id
-        name
-        isPrimary
-
-        contacts {
-          id
-          city
-          email
-          state
-          address
-          country
-          primaryContact
-        }
-      }
     }
   }  	
 }
@@ -50,31 +32,15 @@ query GetPractice($getPractice: GetPractice!){
       id
       name
       phone
-      fax
       practiceId
       ein
+      fax
       upin
       medicare
       medicaid
       champus
       createdAt
       updatedAt
-      
-      facilities {
-        id
-        name
-        
-        contacts {
-          id
-          email
-          state
-          country
-          zipCode
-          address
-          address2
-          primaryContact
-        }
-      }
     }
   }
 }
@@ -86,6 +52,11 @@ mutation CreatePractice($createPracticeInput: CreatePracticeInput!){
       status
       message
     }
+
+    practice {
+      id
+      name
+    }
   }
 }
 
@@ -95,6 +66,11 @@ mutation UpdatePractice($updatePracticeInput: UpdatePracticeInput!){
       error
       status
       message
+    }
+
+    practice {
+      id
+      name
     }
   }
 }

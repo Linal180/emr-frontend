@@ -1,5 +1,5 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { BLACK_TWO, GRAY_FIVE, GRAY_SIX, WHITE, WHITE_THREE } from "../theme";
+import { BLACK_EIGHT, BLACK_TWO, GRAY_FIVE, GRAY_SIX, WHITE, WHITE_THREE, GRAY_ELEVEN } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -14,10 +14,27 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
 }))(Tooltip);
 
 export const useTableStyles = makeStyles(() => ({
+  tableSearchBox: {
+    backgroundColor: WHITE,
+    borderRadius: 4,
+    border: `1px solid ${BLACK_EIGHT}`,
+    display: 'flex',
+    alignItems: 'center',
+    maxWidth: 400,
+    margin: 10,
+  },
+
+  tableSearchInput: {
+    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
+      border: 'none',
+      padding: 0,
+    },
+  },
+
   tablesSearchIcon: {
     backgroundColor: GRAY_FIVE,
     borderRadius: 6,
-    maxWidth: 265
+    maxWidth: 265,
   },
 
   mainTableContainer: {
@@ -64,12 +81,27 @@ export const useTableStyles = makeStyles(() => ({
     }
   },
 
+  iconsBackgroundDisabled: {
+    background: GRAY_ELEVEN,
+    height: 32,
+    width: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginLeft: 6,
+
+    "& svg": {
+      maxWidth: 16
+    }
+  },
+
   RadioButtonsStroke: {
     border: `1px solid ${GRAY_SIX}`,
     borderRadius: 6,
     padding: 4,
     alignSelf: 'center',
-},
+  },
 
   practiceIconsBackground: {
     height: 32,

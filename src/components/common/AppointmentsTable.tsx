@@ -13,11 +13,15 @@ import ConfirmationModal from "./ConfirmationModal";
 import NoDataFoundComponent from "./NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../context";
-import { EditIcon, TrashIcon } from "../../assets/svgs"
+import { EditNewIcon, TrashNewIcon, } from "../../assets/svgs"
 import { useTableStyles } from "../../styles/tableStyles";
 import { AppointmentsTableProps } from "../../interfacesTypes";
-import { getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime } from "../../utils";
-import { appointmentReducer, Action, initialState, State, ActionType } from "../../reducers/appointmentReducer";
+import {
+  appointmentReducer, Action, initialState, State, ActionType
+} from "../../reducers/appointmentReducer";
+import {
+  getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin, isUserAdmin
+} from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
   useGetAppointmentsLazyQuery
@@ -32,20 +36,14 @@ dotenv.config()
 const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
-  const { facility } = user || {}
-  const { id: facilityId } = facility || {}
+  const { facility, roles } = user || {}
+  const { id: facilityId, practiceId } = facility || {}
+  const isSuper = isSuperAdmin(roles);
+  const isAdmin = isUserAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
 
   const [findAllAppointments, { loading, error }] = useFindAllAppointmentsLazyQuery({
-    variables: {
-      appointmentInput: {
-        paginationOptions: {
-          page, limit: PAGE_LIMIT
-        }
-      }
-    },
-
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -60,15 +58,16 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       if (findAllAppointments) {
         const { appointments, pagination } = findAllAppointments
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
 
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
-          dispatch({
-            type: ActionType.SET_APPOINTMENTS,
-            appointments: appointments as AppointmentsPayload['appointments']
-          });
         }
+
+        dispatch({
+          type: ActionType.SET_APPOINTMENTS,
+          appointments: appointments as AppointmentsPayload['appointments']
+        });
       }
     }
   });
@@ -88,14 +87,18 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       const { getAppointments } = data || {};
 
       if (getAppointments) {
-        const { appointments } = getAppointments
+        const { appointments, pagination } = getAppointments
 
-        if (!searchQuery) {
-          dispatch({
-            type: ActionType.SET_APPOINTMENTS,
-            appointments: appointments as AppointmentsPayload['appointments']
-          });
+        if (pagination) {
+          const { totalPages } = pagination
+
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
+
+        dispatch({
+          type: ActionType.SET_APPOINTMENTS,
+          appointments: appointments as AppointmentsPayload['appointments']
+        });
       }
     }
   });
@@ -116,7 +119,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           try {
-            await findAllAppointments()
+            await fetchAppointments()
           } catch (error) { }
         }
       }
@@ -125,18 +128,27 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
 
   const fetchAppointments = useCallback(async () => {
     try {
-      doctorId ?
+      if (doctorId) {
         await getAppointments({
           variables: { getAppointments: { doctorId, facilityId } }
         })
-        : await findAllAppointments()
+      }
+      else {
+        const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+        const inputs = isSuper ? { ...pageInputs } :
+          !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
+
+        await findAllAppointments({
+          variables: {
+            appointmentInput: { ...inputs, searchString: searchQuery }
+          },
+        })
+      }
     } catch (error) { }
-  }, [doctorId, getAppointments, facilityId, findAllAppointments])
+  }, [doctorId, getAppointments, facilityId, page, isSuper, isAdmin, practiceId, findAllAppointments, searchQuery])
 
   useEffect(() => {
-    if (!searchQuery) {
-      fetchAppointments();
-    }
+    fetchAppointments();
   }, [page, searchQuery, fetchAppointments]);
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => dispatch({
@@ -160,105 +172,99 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     }
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
-    <Box className={classes.mainTableContainer}>
-      <Box className={classes.searchContainer}>
-        <Search search={search} />
-      </Box>
+    <>
+      <Box className={classes.mainTableContainer}>
+        <Box py={2}>
+          <Search search={search} />
+        </Box>
 
-      <Box className="table-overflow">
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {renderTh(TYPE)}
-              {!doctorId && renderTh(DOCTOR)}
-              {renderTh(PATIENT)}
-              {renderTh(DATE)}
-              {renderTh(TIME)}
-              {renderTh(FACILITY)}
-              {renderTh(STATUS)}
-              {renderTh(ACTION, "center")}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(loading || getAppointmentsLoading) ? (
+        <Box className="table-overflow">
+          <Table aria-label="customized table">
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={10}>
-                  <TableLoader numberOfRows={10} numberOfColumns={5} />
-                </TableCell>
+                {renderTh(TYPE)}
+                {!doctorId && renderTh(DOCTOR)}
+                {renderTh(PATIENT)}
+                {renderTh(DATE)}
+                {renderTh(TIME)}
+                {renderTh(FACILITY)}
+                {renderTh(STATUS)}
+                {renderTh(ACTION, "center")}
               </TableRow>
-            ) : (
-              appointments?.map((appointment: AppointmentPayload['appointment']) => {
-                const {
-                  id, scheduleStartDateTime, provider, facility, patient, appointmentType, status, scheduleEndDateTime
-                } = appointment || {};
-                const { name } = facility || {};
-                const { firstName, lastName } = patient || {};
-                const { name: type } = appointmentType || {};
-                const { firstName: doctorFN, lastName: doctorLN } = provider || {};
-                const { text, bgColor, textColor } = appointmentStatus(status || '')
+            </TableHead>
+            <TableBody>
+              {(loading || getAppointmentsLoading) ? (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                appointments?.map((appointment: AppointmentPayload['appointment']) => {
+                  const {
+                    id, scheduleStartDateTime, provider, facility, patient, appointmentType, status, scheduleEndDateTime
+                  } = appointment || {};
+                  const { name } = facility || {};
+                  const { firstName, lastName } = patient || {};
+                  const { name: type } = appointmentType || {};
+                  const { firstName: doctorFN, lastName: doctorLN } = provider || {};
+                  const { text, textColor } = appointmentStatus(status || '')
 
-                return (
-                  <TableRow key={id}>
-                    <TableCell scope="row">{type}</TableCell>
-                    {!doctorId && <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>}
-                    <TableCell scope="row">{firstName} {lastName}</TableCell>
+                  return (
+                    <TableRow key={id}>
+                      <TableCell scope="row">{type}</TableCell>
+                      {!doctorId && <TableCell scope="row">{doctorFN} {doctorLN}</TableCell>}
+                      <TableCell scope="row">{firstName} {lastName}</TableCell>
 
-                    <TableCell scope="row">
-                      {getFormattedDate(scheduleStartDateTime || '')}
-                    </TableCell>
+                      <TableCell scope="row">
+                        {getFormattedDate(scheduleStartDateTime || '')}
+                      </TableCell>
 
-                    <TableCell scope="row">
-                      {getStandardTime(scheduleStartDateTime || '')} - {getStandardTime(scheduleEndDateTime || '')}
-                    </TableCell>
-                    <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">
-                      <Box className={classes.status} component='span' bgcolor={bgColor} color={textColor}>
-                        {text}
-                      </Box>
-                    </TableCell>
-
-                    <TableCell scope="row">
-                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
-                          <Box className={classes.iconsBackground}>
-                            <EditIcon />
-                          </Box>
-                        </Link>
-
-                        <Box className={classes.iconsBackground} onClick={() => {
-                          moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
-                            Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
-                        }}>
-                          <TrashIcon />
+                      <TableCell scope="row">
+                        {getStandardTime(scheduleStartDateTime || '')} - {getStandardTime(scheduleEndDateTime || '')}
+                      </TableCell>
+                      <TableCell scope="row">{name}</TableCell>
+                      <TableCell scope="row">
+                        <Box className={classes.status} component='span' color={textColor} border={`1px solid ${textColor}`}>
+                          {text}
                         </Box>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                )
-              })
-            )}
-          </TableBody>
-        </Table>
+                      </TableCell>
 
-        {((!loading && !getAppointmentsLoading && appointments?.length === 0) || error || doctorAppointmentError) && (
-          <Box display="flex" justifyContent="center" pb={12} pt={5}>
-            <NoDataFoundComponent />
-          </Box>
-        )}
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <Link to={`${APPOINTMENTS_ROUTE}/${id}`}>
+                            <Box className={classes.iconsBackground}>
+                              <EditNewIcon />
+                            </Box>
+                          </Link>
 
-        {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
-            <Pagination
-              shape="rounded"
-              page={page}
-              count={totalPages}
-              onChange={handleChange}
-            />
-          </Box>
-        )}
+                          <Box className={classes.iconsBackground} onClick={() => {
+                            moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
+                              Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick(id || '')
+                          }}>
+                            <TrashNewIcon />
+                          </Box>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              )}
+            </TableBody>
+          </Table>
+
+          {((!loading && !getAppointmentsLoading && appointments?.length === 0) || error || doctorAppointmentError) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          )}
 
         <ConfirmationModal
           title={APPOINTMENT}
@@ -271,7 +277,20 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
           })}
         />
       </Box>
-    </Box>
+        </Box>
+
+        {totalPages > 1 && (
+          <Box display="flex" justifyContent="flex-end" p={3}>
+            <Pagination
+              shape="rounded"
+              variant="outlined"
+              page={page}
+              count={totalPages}
+              onChange={handleChange}
+            />
+          </Box>
+        )}
+    </>
   );
 };
 

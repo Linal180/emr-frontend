@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, ChangeEvent, Reducer, useReducer } from "react";
+import { FC, useEffect, ChangeEvent, Reducer, useReducer, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
@@ -13,8 +13,8 @@ import NoDataFoundComponent from "../../../../common/NoDataFoundComponent";
 import { renderTh } from "../../../../../utils";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { useTableStyles } from "../../../../../styles/tableStyles";
-import { BLUE_FIVE, BLUE_FOUR, RED, RED_ONE } from "../../../../../theme";
-import { EditIcon, TrashIcon } from "../../../../../assets/svgs";
+import { BLUE_FOUR, RED, } from "../../../../../theme";
+import { EditNewIcon, TrashNewIcon } from "../../../../../assets/svgs";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
 } from '../../../../../reducers/serviceReducer';
@@ -39,11 +39,8 @@ const ServicesTable: FC = (): JSX.Element => {
 
     variables: {
       serviceInput: {
-        facilityId,
-        paginationOptions: {
-          page,
-          limit: PAGE_LIMIT
-        }
+        facilityId, serviceName: searchQuery,
+        paginationOptions: { page, limit: PAGE_LIMIT }
       }
     },
 
@@ -55,13 +52,18 @@ const ServicesTable: FC = (): JSX.Element => {
 
     onCompleted(data) {
       const { findAllServices } = data || {};
+
       if (findAllServices) {
         const { services, pagination } = findAllServices
-        dispatch({ type: ActionType.SET_SERVICES, services: services as ServicesPayload['services'] || [] });
-        if (!searchQuery && pagination) {
+
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
+
+        services && dispatch({
+          type: ActionType.SET_SERVICES, services: services as ServicesPayload['services']
+        });
       }
     }
   });
@@ -75,21 +77,26 @@ const ServicesTable: FC = (): JSX.Element => {
     onCompleted(data) {
       if (data) {
         const { removeService: { response } } = data
+
         if (response) {
           const { message } = response
           message && Alert.success(message);
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
-          findAllServices();
+          fetchServices();
         }
       }
     }
   });
 
+  const fetchServices = useCallback(async () => {
+    try {
+      await findAllServices();
+    } catch (error) { }
+  }, [findAllServices])
+
   useEffect(() => {
-    if (!searchQuery && facilityId) {
-      findAllServices()
-    }
-  }, [findAllServices, searchQuery, facilityId]);
+    facilityId && fetchServices();
+  }, [fetchServices, searchQuery, facilityId]);
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -110,9 +117,14 @@ const ServicesTable: FC = (): JSX.Element => {
     }
   };
 
-  const handleChange = (event: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page });
+  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
+    dispatch({ type: ActionType.SET_PAGE, page });
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
     <>
@@ -139,10 +151,9 @@ const ServicesTable: FC = (): JSX.Element => {
                   </TableCell>
                 </TableRow>
               ) : (
-                services?.map((service: ServicePayload['service'], index: number) => {
+                services?.map((service: ServicePayload['service']) => {
                   const { id, name, duration, price, isActive } = service || {};
                   const ActiveStatus = isActive ? ACTIVE : INACTIVE;
-                  const StatusBackground = isActive ? BLUE_FIVE : RED_ONE
                   const StatusColor = isActive ? BLUE_FOUR : RED
 
                   return (
@@ -151,7 +162,7 @@ const ServicesTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{duration}</TableCell>
                       <TableCell scope="row">{price}</TableCell>
                       <TableCell scope="row">
-                        <Box className={classes.status} component='span' bgcolor={StatusBackground} color={StatusColor}>
+                        <Box className={classes.status} component='span' color={StatusColor} border={`1px solid ${StatusColor}`}>
                           {ActiveStatus}
                         </Box>
                       </TableCell>
@@ -160,12 +171,12 @@ const ServicesTable: FC = (): JSX.Element => {
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Box className={classes.iconsBackground}>
                             <Link to={`${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}/${id}`}>
-                              <EditIcon />
+                              <EditNewIcon />
                             </Link>
                           </Box>
 
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashIcon />
+                            <TrashNewIcon />
                           </Box>
                         </Box>
                       </TableCell>
@@ -186,25 +197,24 @@ const ServicesTable: FC = (): JSX.Element => {
             title={SERVICE}
             isOpen={openDelete}
             isLoading={deleteServiceLoading}
-            description={DELETE_SERVICE_DESCRIPTION}
             handleDelete={handleDeleteService}
-            setOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })}
+            description={DELETE_SERVICE_DESCRIPTION}
+            setOpen={(openDelete: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete })}
           />
         </Box>
       </Box>
 
-      {
-        totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={2.25}>
-            <Pagination
-              count={totalPages}
-              shape="rounded"
-              page={page}
-              onChange={handleChange}
-            />
-          </Box>
-        )
-      }
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
     </>
   );
 };

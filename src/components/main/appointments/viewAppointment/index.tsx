@@ -1,14 +1,14 @@
 // packages block
 import { FC } from 'react';
+import { useParams } from 'react-router';
 // component block
 import AppointmentForm from "../appointmentForm";
 import PageHeader from '../../../common/PageHeader';
 // constants block
-import {
-  VIEW_APPOINTMENTS_BREAD, APPOINTMENTS_BREAD, EDIT_APPOINTMENT, APPOINTMENT_EDIT_BREAD
-} from '../../../../constants';
-import { useParams } from 'react-router';
 import { ParamsType } from '../../../../interfacesTypes';
+import {
+  VIEW_APPOINTMENTS_BREAD, APPOINTMENTS_BREAD, EDIT_APPOINTMENT, APPOINTMENT_EDIT_BREAD,
+} from '../../../../constants';
 
 const VIewAppointmentComponent: FC = () => {
   const { id } = useParams<ParamsType>();
