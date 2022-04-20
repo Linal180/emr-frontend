@@ -1,5 +1,6 @@
 // packages block
 import { FC, useContext, useEffect, useState } from "react";
+import { pluck } from "underscore";
 import { Link } from "react-router-dom";
 import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
 // Components block
@@ -14,7 +15,7 @@ import { useHeaderStyles } from "../../styles/headerStyles";
 import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS, SYSTEM_ROLES,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -23,6 +24,7 @@ const HeaderNew: FC = (): JSX.Element => {
   const { firstName, lastName } = currentUser || {}
   const { location: { pathname } } = history;
   const { roles } = user || {};
+  const userRoles = pluck(roles || [], 'role')
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
 
@@ -80,7 +82,8 @@ const HeaderNew: FC = (): JSX.Element => {
             current={currentRoute === 'inBilling'}
           />
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
+            && !userRoles.includes(SYSTEM_ROLES.FacilityAdmin) &&
             <Typography
               component={Link}
               to={FACILITIES_ROUTE}

@@ -2282,31 +2282,31 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: PRACTICE_DETAILS_TEXT,
     link: PRACTICE_DETAILS_ROUTE,
     desc: PRACTICE_DETAILS_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: FACILITY_MANAGEMENT,
-    link: "/",
+    link: FACILITIES_ROUTE,
     desc: FACILITY_MANAGEMENT_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: PROVIDER_MANAGEMENT,
-    link: "/",
+    link: DOCTORS_ROUTE,
     desc: PROVIDER_MANAGEMENT_DESCRIPTION,
+    visible: ['All']
   },
   {
     name: STAFF_MANAGEMENT,
-    link: "/",
+    link: STAFF_ROUTE,
     desc: STAFF_MANAGEMENT_DESCRIPTION,
-  },
-  {
-    name: SCHEDULE,
-    link: "/",
-    desc: SCHEDULE_DESCRIPTION,
+    visible: ['All']
   },
   {
     name: ROLES_PERMISSIONS,
     link: ROLES_ROUTE,
-    desc: ROLES_PERMISSIONS_DESCRIPTION
+    desc: ROLES_PERMISSIONS_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: EMERGENCY_ACCESS,
