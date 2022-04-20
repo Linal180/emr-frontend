@@ -177,17 +177,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         const { slots } = getSlots;
 
         if (slots) {
-          // if (appStartDate) {
-          //   const apStartDate = new Date(appStartDate).toString()
-          //   console.log(apStartDate);
-
-          //   const appointmentSlots = slots?.map(item => {
-          //     console.log(slots.map(item => item.startTime));
-
-          //     return item?.startTime?.includes(apStartDate)
-          //   })
-          //   console.log(appointmentSlots);
-          // }
           dispatch({
             type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as SlotsPayload['slots']
           })

@@ -14,7 +14,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
-import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
+import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
@@ -37,7 +37,8 @@ const FacilityTable: FC = (): JSX.Element => {
   const { deleteFacilityList } = useContext(ListContext)
   const { facility, roles } = user || {}
   const isSuper = isSuperAdmin(roles);
-  const isAdmin = isUserAdmin(roles);
+  const isPracAdmin = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
   const { practiceId, id: facilityId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
@@ -73,14 +74,17 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const fetchAllFacilities = useCallback(async () => {
     try {
-      const inputs = { practiceId, facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
-      const payload = !isAdmin ? { ...inputs, singleFacilityId: facilityId } : { ...inputs }
+      const inputs = { facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
 
-      await findAllFacility({
+      const payload =
+        isSuper ? { ...inputs } : isPracAdmin ? { ...inputs, practiceId } :
+          isFacAdmin ? { ...inputs, singleFacilityId: facilityId } : undefined
+
+      payload && await findAllFacility({
         variables: { facilityInput: { ...payload } }
       })
     } catch (error) { }
-  }, [facilityId, findAllFacility, isAdmin, page, practiceId, searchQuery])
+  }, [facilityId, findAllFacility, isFacAdmin, isPracAdmin, isSuper, page, practiceId, searchQuery])
 
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {

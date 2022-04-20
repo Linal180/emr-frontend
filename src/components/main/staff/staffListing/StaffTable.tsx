@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext } from "../../../../context";
 import { EditIcon, TrashIcon } from '../../../../assets/svgs'
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
+import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import { staffReducer, Action, initialState, State, ActionType } from "../../../../reducers/staffReducer";
 import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
@@ -28,7 +28,8 @@ const StaffTable: FC = (): JSX.Element => {
   const { facility, roles } = user || {};
   const { id: facilityId, practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
-  const isAdmin = isUserAdmin(roles);
+  const isPracAdmin = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(staffReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteStaffId, allStaff } = state;
 
@@ -60,15 +61,16 @@ const StaffTable: FC = (): JSX.Element => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const staffInputs = isSuper ? { ...pageInputs } :
-        !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
+        isPracAdmin ? { practiceId, ...pageInputs } :
+          isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
-      await findAllStaff({
+      staffInputs && await findAllStaff({
         variables: {
           staffInput: { ...staffInputs, searchString: searchQuery }
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isAdmin, facilityId, practiceId, findAllStaff, searchQuery]);
+  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllStaff, searchQuery]);
 
   const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
     onError() {

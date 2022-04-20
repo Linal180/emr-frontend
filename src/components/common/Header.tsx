@@ -1,6 +1,5 @@
 // packages block
 import { FC, useContext, useEffect, useState } from "react";
-import { pluck } from "underscore";
 import { Link } from "react-router-dom";
 import { AppBar, Typography, Box, Toolbar } from '@material-ui/core';
 // Components block
@@ -9,22 +8,21 @@ import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { activeClass, checkPermission, isSuperAdmin } from "../../utils";
 import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
+import { activeClass, checkPermission, formatRoleName, isSuperAdmin } from "../../utils";
 import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS, SYSTEM_ROLES, PRACTITIONER,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, currentUser, userPermissions } = useContext(AuthContext);
+  const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
   const { location: { pathname } } = history;
   const { roles } = user || {};
-  const userRoles = pluck(roles || [], 'role')
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
 
@@ -83,7 +81,7 @@ const HeaderNew: FC = (): JSX.Element => {
           />
 
           {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
-            && !userRoles.includes(SYSTEM_ROLES.FacilityAdmin) &&
+            &&
             <Typography
               component={Link}
               to={FACILITIES_ROUTE}
@@ -120,13 +118,17 @@ const HeaderNew: FC = (): JSX.Element => {
             >
               {isSuper ?
                 <Typography variant="h6">{SUPER_ADMIN}</Typography>
-                :
-                <Typography variant="h6">{firstName} {lastName}</Typography>
-              }
+                : (
+                  <>
+                    <Typography variant="h6">{firstName} {lastName}</Typography>
 
-              <Box className={classes.roleName}>
-                <Typography variant="body1">{PRACTITIONER}</Typography>
-              </Box>
+                    <Box className={classes.roleName}>
+                      {userRoles.map(roleName =>
+                        <Typography variant="body1">{formatRoleName(roleName)}</Typography>
+                      )}
+                    </Box>
+                  </>
+                )}
             </Box>
 
             <ProfileDropdownMenu />
