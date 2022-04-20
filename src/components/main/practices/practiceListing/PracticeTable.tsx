@@ -117,85 +117,87 @@ const PracticeTable: FC = (): JSX.Element => {
   }
 
   return (
-    <Box className={classes.mainTableContainer}>
-      <Search search={search} />
+    <>
+      <Box className={classes.mainTableContainer}>
+        <Search search={search} />
 
-      <Box className="table-overflow">
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {renderTh(NAME)}
-              {renderTh(PHONE)}
-              {renderTh(DATE_ADDED)}
-              {renderTh(ACTION, "center")}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {loading ? (
+        <Box className="table-overflow">
+          <Table aria-label="customized table">
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={10}>
-                  <TableLoader numberOfRows={10} numberOfColumns={4} />
-                </TableCell>
-              </TableRow>) : (
-              practices?.map(practice => {
-                const { id, name, phone, createdAt } = practice || {};
+                {renderTh(NAME)}
+                {renderTh(PHONE)}
+                {renderTh(DATE_ADDED)}
+                {renderTh(ACTION, "center")}
+              </TableRow>
+            </TableHead>
 
-                return (
-                  <TableRow key={id}>
-                    <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
-                    <TableCell scope="row">
-                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>
-                          <Box className={classes.iconsBackground}>
-                            <EditNewIcon />
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <TableLoader numberOfRows={10} numberOfColumns={4} />
+                  </TableCell>
+                </TableRow>) : (
+                practices?.map(practice => {
+                  const { id, name, phone, createdAt } = practice || {};
+
+                  return (
+                    <TableRow key={id}>
+                      <TableCell scope="row">{name}</TableCell>
+                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                      <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>
+                            <Box className={classes.iconsBackground}>
+                              <EditNewIcon />
+                            </Box>
+                          </Link>
+
+                          <Box className={classes.iconsBackground} onClick={() => onDelete(id || '')}>
+                            <TrashNewIcon />
                           </Box>
-                        </Link>
-
-                        <Box className={classes.iconsBackground} onClick={() => onDelete(id || '')}>
-                          <TrashNewIcon />
                         </Box>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                )
-              })
-            )}
-          </TableBody>
-        </Table>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              )}
+            </TableBody>
+          </Table>
 
-        {((!loading && practices?.length === 0) || error) && (
-          <Box display="flex" justifyContent="center" pb={12} pt={5}>
-            <NoDataFoundComponent />
-          </Box>
-        )}
+          {((!loading && practices?.length === 0) || error) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          )}
 
-        {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" p={3}>
-            <Pagination
-              count={totalPages}
-              shape="rounded"
-              variant="outlined"
-              page={page}
-              onChange={handleChange}
-            />
-          </Box>
-        )}
-
-        <ConfirmationModal
-          title={PRACTICE}
-          isOpen={openDelete}
-          isLoading={deletePracticeLoading}
-          handleDelete={handleDeletePractice}
-          description={DELETE_PRACTICE_DESCRIPTION}
-          setOpen={(open: boolean) =>
-            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
-          }
-        />
+          <ConfirmationModal
+            title={PRACTICE}
+            isOpen={openDelete}
+            isLoading={deletePracticeLoading}
+            handleDelete={handleDeletePractice}
+            description={DELETE_PRACTICE_DESCRIPTION}
+            setOpen={(open: boolean) =>
+              dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
+            }
+          />
+        </Box>
       </Box>
-    </Box>
+
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
+    </>
   );
 };
 
