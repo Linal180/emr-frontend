@@ -88,11 +88,7 @@ const PublicFormPreview = () => {
     }
   })
 
-
-
-
   const submitHandler = async (values: any) => {
-
     if (id) {
       setUploadImage(true)
       const formValues = await getUserFormFormattedValues(values, id);

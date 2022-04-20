@@ -1011,6 +1011,12 @@ export type FormInput = {
   paginationOptions: PaginationInput;
 };
 
+export type FormMediaPayload = {
+  __typename?: 'FormMediaPayload';
+  publicUrl?: Maybe<Scalars['String']>;
+  response?: Maybe<ResponsePayloadResponse>;
+};
+
 export type FormPayload = {
   __typename?: 'FormPayload';
   form?: Maybe<Form>;
@@ -1121,6 +1127,11 @@ export type GetPermission = {
 
 export type GetPractice = {
   id?: Maybe<Scalars['String']>;
+};
+
+export type GetPublicMediaInput = {
+  formId: Scalars['String'];
+  url: Scalars['String'];
 };
 
 export type GetRole = {
@@ -1289,6 +1300,7 @@ export type Mutation = {
   disableStaff: StaffPayload;
   forgotPassword: ForgotPasswordPayload;
   getAllTransactions: TransactionsPayload;
+  getFormPublicMediaUrl: FormMediaPayload;
   login: AccessUserPayload;
   patientInfo: PatientPayload;
   registerUser: UserPayload;
@@ -1492,6 +1504,11 @@ export type MutationForgotPasswordArgs = {
 
 export type MutationGetAllTransactionsArgs = {
   transactionInputs: GetAllTransactionsInputs;
+};
+
+
+export type MutationGetFormPublicMediaUrlArgs = {
+  getPublicMediaInput: GetPublicMediaInput;
 };
 
 
@@ -3816,6 +3833,13 @@ export type SaveUserFormValuesMutationVariables = Exact<{
 
 
 export type SaveUserFormValuesMutation = { __typename?: 'Mutation', saveUserFormValues: { __typename?: 'UserFormPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined, userForm?: { __typename?: 'UserForms', id: string } | null | undefined } };
+
+export type GetFormPublicMediaUrlMutationVariables = Exact<{
+  getPublicMediaInput: GetPublicMediaInput;
+}>;
+
+
+export type GetFormPublicMediaUrlMutation = { __typename?: 'Mutation', getFormPublicMediaUrl: { __typename?: 'FormMediaPayload', publicUrl?: string | null | undefined, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type CreateInvoiceMutationVariables = Exact<{
   createInvoiceInputs: CreateInvoiceInputs;
@@ -6253,6 +6277,44 @@ export function useSaveUserFormValuesMutation(baseOptions?: Apollo.MutationHookO
 export type SaveUserFormValuesMutationHookResult = ReturnType<typeof useSaveUserFormValuesMutation>;
 export type SaveUserFormValuesMutationResult = Apollo.MutationResult<SaveUserFormValuesMutation>;
 export type SaveUserFormValuesMutationOptions = Apollo.BaseMutationOptions<SaveUserFormValuesMutation, SaveUserFormValuesMutationVariables>;
+export const GetFormPublicMediaUrlDocument = gql`
+    mutation getFormPublicMediaUrl($getPublicMediaInput: GetPublicMediaInput!) {
+  getFormPublicMediaUrl(getPublicMediaInput: $getPublicMediaInput) {
+    publicUrl
+    response {
+      status
+      error
+      message
+    }
+  }
+}
+    `;
+export type GetFormPublicMediaUrlMutationFn = Apollo.MutationFunction<GetFormPublicMediaUrlMutation, GetFormPublicMediaUrlMutationVariables>;
+
+/**
+ * __useGetFormPublicMediaUrlMutation__
+ *
+ * To run a mutation, you first call `useGetFormPublicMediaUrlMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGetFormPublicMediaUrlMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [getFormPublicMediaUrlMutation, { data, loading, error }] = useGetFormPublicMediaUrlMutation({
+ *   variables: {
+ *      getPublicMediaInput: // value for 'getPublicMediaInput'
+ *   },
+ * });
+ */
+export function useGetFormPublicMediaUrlMutation(baseOptions?: Apollo.MutationHookOptions<GetFormPublicMediaUrlMutation, GetFormPublicMediaUrlMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GetFormPublicMediaUrlMutation, GetFormPublicMediaUrlMutationVariables>(GetFormPublicMediaUrlDocument, options);
+      }
+export type GetFormPublicMediaUrlMutationHookResult = ReturnType<typeof useGetFormPublicMediaUrlMutation>;
+export type GetFormPublicMediaUrlMutationResult = Apollo.MutationResult<GetFormPublicMediaUrlMutation>;
+export type GetFormPublicMediaUrlMutationOptions = Apollo.BaseMutationOptions<GetFormPublicMediaUrlMutation, GetFormPublicMediaUrlMutationVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
   createInvoice(createInvoiceInputs: $createInvoiceInputs) {

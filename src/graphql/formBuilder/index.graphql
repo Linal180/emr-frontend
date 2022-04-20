@@ -242,3 +242,14 @@ mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
     }
   }
 }
+
+mutation getFormPublicMediaUrl($getPublicMediaInput: GetPublicMediaInput!) {
+  getFormPublicMediaUrl(getPublicMediaInput: $getPublicMediaInput) {
+    publicUrl
+    response {
+      status
+      error
+      message
+    }
+  }
+}
