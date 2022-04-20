@@ -26,7 +26,7 @@ import {
 } from '../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
-  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation
+  useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus
 } from '../../../generated/graphql';
 import {
   PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD,
@@ -46,7 +46,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
-    appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber
+    appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber, appBillingStatus
   } = state;
   const methods = useForm<UpdateStatusInputProps>({ mode: "all", });
   const { handleSubmit, watch, setValue } = methods;
@@ -87,12 +87,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     onCompleted({ chargePayment: { transaction, response } }) {
       if (response && transaction) {
         Alert.success(TRANSACTION_PAID_SUCCESSFULLY);
+        fetchAppointment()
         dispatch({ type: ActionType.SET_APP_DETAIL, appDetail: true })
         dispatch({ type: ActionType.SET_APP_PAID, appPaid: false })
         dispatch({ type: ActionType.SET_APP_INVOICE, appInvoice: false })
         dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: false })
         dispatch({ type: ActionType.SET_APP_EDIT, appEdit: false })
-        fetchAppointment()
       }
     }
   });
@@ -153,7 +153,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       if (response) {
         const { status } = response;
         if (appointment && status && status === 200) {
-          const { invoice, status } = appointment;
+          const { invoice, status, billingStatus } = appointment;
           const { invoiceNo } = invoice || {}
 
           if (invoiceNo) {
@@ -166,6 +166,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
           status && setValue('appointmentStatus', setRecord(status, status))
           dispatch({ type: ActionType.SET_APP_STATUS, appStatus: status })
+          dispatch({ type: ActionType.SET_APP_BILLING_STATUS, appBillingStatus: billingStatus as BillingStatus })
         }
       }
     },
@@ -356,6 +357,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       else if (type === 'CreditCard') dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
     }
   };
+  console.log(appBillingStatus);
 
   return (
     <Dialog
@@ -493,7 +495,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
                   </IconButton>
-                  {!isInvoiceNumber && <Button onClick={handleInvoice} type="submit" variant="contained"
+                  {appBillingStatus !== 'PAID' && <Button onClick={handleInvoice} type="submit" variant="contained"
                     size="large" color="primary"
                   >
                     {PAY}
