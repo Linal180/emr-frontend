@@ -32,7 +32,6 @@ export const WHITE_SIX = "#F1FAFF";
 export const WHITE_SEVEN = "#F3F4F6";
 export const WHITE_EIGHT = "#a1a5b740";
 
-export const BLUE_ONE = "#009EF6";
 export const BLUE_TWO = "#0056B1";
 export const BLUE_THREE = "#00A3FF";
 export const BLUE_FOUR = "#1BC5BD"
@@ -53,8 +52,15 @@ export const RED_FOUR = "#DD1010";
 // ** NEW UI COLORS **
 
 export const BLUE = "#204ECF";
+export const BLUE_ONE = "#5AACFF";
+
 export const GREEN = "#03CC83";
+
 export const BLACK = "#262D3D";
+
 export const GREY = "#F3F4F6";
+export const GREY_ONE = "#C9CED6";
+
 export const WHITE = "#FFFFFF";
+
 export const RED = "#DD1010";

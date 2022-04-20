@@ -3,8 +3,8 @@ import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
-  GREEN, BLUE, WHITE, BLACK, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, GRAY_TWELVE, BLACK_NINE,
-  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED, INTER,
+  GREEN, BLUE, WHITE, BLACK, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_NINE,
+  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED, INTER, GREY_ONE,
 } from ".";
 
 const breakpoints = createBreakpoints({})
@@ -207,17 +207,23 @@ export const theme = createTheme({
             height: 20,
             width: 20,
             position: "absolute",
-            background: 'WHITE',
+            background: WHITE,
             zIndex: 9,
-            borderRadius: 3,
-            border: `2px solid ${GRAY_TWELVE}`,
+            borderRadius: 4,
+            border: `1px solid ${GREY_ONE}`,
           },
+        },
+
+        "& .MuiIconButton-label:hover": {
+          "&:before": {
+            border: `1px solid ${BLUE_ONE}`,
+          }
         },
 
         "& .MuiSvgIcon-root": {
           height: 20,
           width: 20,
-          borderRadius: 3,
+          borderRadius: 4,
         },
 
         "&[class*=PrivateSwitchBase-checked]": {
@@ -228,7 +234,7 @@ export const theme = createTheme({
           },
 
           "& .MuiSvgIcon-root": {
-            color: BLUE_EIGHT
+            color: BLUE,
           }
         }
       }
