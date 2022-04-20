@@ -129,14 +129,11 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const fetchList = useCallback(async (id: string, name: string) => {
-    reset({
-      providerIds: EMPTY_OPTION,
-      facilityId: { id, name }
-    });
-
+  const fetchList = useCallback(async (id: string, name: string) => {  
+    setValue('providerIds', EMPTY_OPTION)
+    
     id && await fetchAllDoctorList(id);
-  }, [fetchAllDoctorList, reset]);
+  }, [fetchAllDoctorList, setValue]);
 
   useEffect(() => {
     selectedFacility && fetchList(selectedFacility, selectedFacilityName || '')
@@ -291,7 +288,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={8} sm={isEdit ? 12 : 6} xs={12}>
+                      <Grid item md={isEdit ? 12 : 8} sm={6} xs={12}>
                         <InputController
                           isRequired
                           fieldType="email"
