@@ -121,6 +121,7 @@ export const IS_ADMIN = "Is Admin?";
 export const VIEW_PRACTICES = "View Practices";
 export const EIN = "EIN";
 export const ADMIN_NAME = "Admin Name";
+export const PRACTITIONER = "Practitioner";
 export const FINISH = "Finish";
 export const DONE = "Done";
 export const ALL_STAFF = "Staff";

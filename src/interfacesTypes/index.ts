@@ -39,6 +39,7 @@ export interface CalendarChart {
 
 export interface AuthContextProps {
   user: User | null;
+  userRoles: string[],
   isLoggedIn: boolean;
   practiceName: string,
   userPermissions: string[],
