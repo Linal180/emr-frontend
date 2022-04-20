@@ -19,6 +19,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       token
       reason
       primaryInsurance
+      billingStatus
       
       provider {
         id
@@ -41,6 +42,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
         id
         name
         price
+        color
       }
     }
   }

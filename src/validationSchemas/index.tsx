@@ -584,6 +584,17 @@ export const extendedPatientSchema = yup.object({
   ...guarantorPatientSchema,
 })
 
+export const extendedEditPatientSchema = yup.object({
+  ...genderSchema,
+  ...PatientSchema,
+  ...kinPatientSchema,
+  ...basicContactSchema,
+  ...employerPatientSchema,
+  ...guardianPatientSchema,
+  ...emergencyPatientSchema,
+  ...guarantorPatientSchema,
+})
+
 export const settingSchema = yup.object({
   ...facilityIdSchema,
   ...timeZoneSchema

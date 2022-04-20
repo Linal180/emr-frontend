@@ -19,9 +19,9 @@ import {
 } from "../../../../reducers/appointmentReducer";
 import {
   APPOINTMENT_NOT_FOUND, PATIENT_APPOINTMENT_FAIL,
-  PATIENT_INFORMATION, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND,
+  APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND,
   PATIENT_CANCELLED_APPOINTMENT, PATIENT_APPOINTMENT_CANCEL, APPOINTMENT_CONFIRMED, CANCEL_APPOINTMENT_TEXT,
-  CONTINUE_TEXT, APPOINTMENT_CONFIRM_SUBHEADING, appointmentConfirmationDescription,
+  CONTINUE_TEXT, APPOINTMENT_CONFIRM_SUBHEADING, appointmentConfirmationDescription, PATIENT_APPOINTMENT_SUCCESS,
 } from '../../../../constants';
 
 const AppointmentConfirmationComponent: FC = (): JSX.Element => {
@@ -135,7 +135,8 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
                 <Box p={1} />
 
                 <Button type="submit" variant="contained" color="primary" disabled={!!!patientId}>
-                  <Link to={`${PATIENT_INFORMATION}/${patientId}`}>
+                  {/* <Link to={`${PATIENT_INFORMATION}/${patientId}`}> */}
+                  <Link to={PATIENT_APPOINTMENT_SUCCESS}>
                     <Box color={WHITE}>
                       {CONTINUE_TEXT}
                     </Box>

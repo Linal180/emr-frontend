@@ -39,6 +39,7 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 
 // system roles
 export enum SYSTEM_ROLES {
+  SuperAdmin = 'super-admin',
   PracticeAdmin = 'practice-admin',
   FacilityAdmin = 'facility-admin',
   Doctor = 'doctor',
