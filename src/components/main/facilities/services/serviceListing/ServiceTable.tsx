@@ -61,7 +61,7 @@ const ServicesTable: FC = (): JSX.Element => {
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
 
-        services && dispatch({
+        !!services && dispatch({
           type: ActionType.SET_SERVICES, services: services as ServicesPayload['services']
         });
       }
