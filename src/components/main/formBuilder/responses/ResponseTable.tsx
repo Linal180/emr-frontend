@@ -14,6 +14,7 @@ import { PAGE_LIMIT, } from '../../../../constants';
 import { FormElement, useFindAllUsersFormsLazyQuery, UserForms } from '../../../../generated/graphql';
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 import { ParamsType } from '../../../../interfacesTypes';
+import ImagePreviewModal from '../imagePreviewModal';
 //component
 const ResponseTable: FC = (): JSX.Element => {
   //hooks
@@ -28,6 +29,8 @@ const ResponseTable: FC = (): JSX.Element => {
   const [forms, setForms] = useState<UserForms[]>([]);
   const [formElements, setFormElements] = useState<FormElement[]>([])
   const [sortedFormLabels, setSortedFormLabels] = useState<FormElement[]>([])
+  const [open, setOpen] = useState<boolean>(false)
+  const [imageUrl, setImageUrl] = useState<string>('')
   //mutations & queries
   const [fetchAllUserFormResponses, { loading, error }] = useFindAllUsersFormsLazyQuery({
     onCompleted: (data) => {
@@ -63,7 +66,7 @@ const ResponseTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      
+
       if (formId) {
         const formInputs = { ...pageInputs, FormId: formId }
         await fetchAllUserFormResponses({
@@ -78,9 +81,6 @@ const ResponseTable: FC = (): JSX.Element => {
     } catch (error) { }
   }, [page, formId, fetchAllUserFormResponses])
 
-
-
-
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
   useEffect(() => {
@@ -94,9 +94,13 @@ const ResponseTable: FC = (): JSX.Element => {
     }
   }, [forms, formElements])
 
+  const imagePreviewHandler = (url: string) => {
+    setImageUrl(url)
+    setOpen(true)
+  }
+
   return (
     <Box className={classes.mainTableContainer}>
-
       <Box className="table-overflow">
         <Table >
           <TableHead>
@@ -125,7 +129,7 @@ const ResponseTable: FC = (): JSX.Element => {
                       return (
                         <TableCell key={`${FormsElementsId}-FormsElementsId-${id}`}>
                           {(value?.includes(`form builder/${formId}`) ?
-                            <Box color={theme.palette.primary.main} className={responsesClasses.viewBtn} pl={2}>
+                            <Box color={theme.palette.primary.main} className={responsesClasses.viewBtn} pl={2} onClick={() => imagePreviewHandler(value)}>
                               View
                             </Box>
                             : value) ||
@@ -168,6 +172,7 @@ const ResponseTable: FC = (): JSX.Element => {
           </Box>
         )}
       </Box>
+      <ImagePreviewModal open={open} closeModalHandler={()=> setOpen(!open)} url={imageUrl}  formId={formId}/>
     </Box>
   )
 }

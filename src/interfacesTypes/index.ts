@@ -897,3 +897,10 @@ export  interface FormAttachmentPayload {
   attachment?: String | null | undefined;
   response?: ResponsePayloadResponse
 }
+
+export interface FormMediaPreviewProps {
+  open: Boolean;
+  closeModalHandler: () => void;
+  url: string;
+  formId: string
+}
