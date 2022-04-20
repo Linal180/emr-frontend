@@ -46,7 +46,7 @@ const StaffTable: FC = (): JSX.Element => {
       if (findAllStaff) {
         const { allstaff, pagination } = findAllStaff
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
@@ -117,84 +117,86 @@ const StaffTable: FC = (): JSX.Element => {
   });
 
   return (
-    <Box className={classes.mainTableContainer}>
-      <Search search={search} />
+    <>
+      <Box className={classes.mainTableContainer}>
+        <Search search={search} />
 
-      <Box className="table-overflow">
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {renderTh(NAME)}
-              {renderTh(EMAIL)}
-              {renderTh(PHONE)}
-              {renderTh(ACTION, "center")}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {loading ? (
+        <Box className="table-overflow">
+          <Table aria-label="customized table">
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={10}>
-                  <TableLoader numberOfRows={10} numberOfColumns={5} />
-                </TableCell>
+                {renderTh(NAME)}
+                {renderTh(EMAIL)}
+                {renderTh(PHONE)}
+                {renderTh(ACTION, "center")}
               </TableRow>
-            ) : (
-              allStaff?.map((record: StaffPayload['staff']) => {
-                const { id, firstName, lastName, email, phone } = record || {};
+            </TableHead>
 
-                return (
-                  <TableRow key={id}>
-                    <TableCell scope="row">{firstName} {lastName}</TableCell>
-                    <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">
-                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${STAFF_ROUTE}/${id}`}>
-                          <Box className={classes.iconsBackground}>
-                            <EditIcon />
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                allStaff?.map((record: StaffPayload['staff']) => {
+                  const { id, firstName, lastName, email, phone } = record || {};
+
+                  return (
+                    <TableRow key={id}>
+                      <TableCell scope="row">{firstName} {lastName}</TableCell>
+                      <TableCell scope="row">{email}</TableCell>
+                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <Link to={`${STAFF_ROUTE}/${id}`}>
+                            <Box className={classes.iconsBackground}>
+                              <EditIcon />
+                            </Box>
+                          </Link>
+
+                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
+                            <TrashIcon />
                           </Box>
-                        </Link>
-
-                        <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                          <TrashIcon />
                         </Box>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
 
-        {((!loading && allStaff?.length === 0) || error) && (
-          <Box display="flex" justifyContent="center" pb={12} pt={5}>
-            <NoDataFoundComponent />
-          </Box>
-        )}
+          {((!loading && allStaff?.length === 0) || error) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          )}
 
-        {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" p={3}>
-            <Pagination
-              count={totalPages}
-              shape="rounded"
-              variant="outlined"
-              page={page}
-              onChange={handleChange}
-            />
-          </Box>
-        )}
-
-        <ConfirmationModal
-          title={STAFF_TEXT}
-          isOpen={openDelete}
-          isLoading={deleteStaffLoading}
-          description={DELETE_STAFF_DESCRIPTION}
-          handleDelete={handleDeleteStaff}
-          setOpen={(openDelete: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete })}
-        />
+          <ConfirmationModal
+            title={STAFF_TEXT}
+            isOpen={openDelete}
+            isLoading={deleteStaffLoading}
+            description={DELETE_STAFF_DESCRIPTION}
+            handleDelete={handleDeleteStaff}
+            setOpen={(openDelete: boolean) => dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete })}
+          />
+        </Box>
       </Box>
-    </Box>
+
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
+    </>
   );
 };
 
