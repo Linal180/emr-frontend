@@ -138,7 +138,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
           </Box>
 
           <Box ml={3} className={classes.RadioButtonsStroke}>
-            <Button size="small" variant="contained" color="primary" className="blue-button">{PENDING}</Button>
+            <Button size="small" variant="contained" color="primary" className="muted">{PENDING}</Button>
             <Button size="small">{SIGNED}</Button>
           </Box>
         </Box>

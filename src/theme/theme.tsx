@@ -4,8 +4,9 @@ import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
   GREEN, BLUE, WHITE, BLACK, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_NINE,
-  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED, INTER, GREY_ONE,
+  BLACK_TWO, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY,
 } from ".";
+import { BLUE_TWO, GRAY_FIVE } from "./colors";
 
 const breakpoints = createBreakpoints({})
 const customTheme = createTheme()
@@ -39,20 +40,29 @@ export const theme = createTheme({
   typography: {
     fontFamily: INTER,
 
-    h3: {
-      fontSize: 30,
+    h1: {
+      fontSize: 36,
+      fontWeight: 700
+    },
+
+    h2: {
+      fontSize: 28,
       fontWeight: 600
     },
 
-    h4: {
+    h3: {
       fontSize: 20,
       fontWeight: 600
     },
 
+    h4: {
+      fontSize: 18,
+      fontWeight: 700
+    },
+
     h5: {
       fontSize: 16,
-      fontWeight: 500,
-      color: BLACK_ONE,
+      fontWeight: 600,
     },
 
     h6: {
@@ -61,12 +71,12 @@ export const theme = createTheme({
     },
 
     body1: {
-      fontSize: 14,
+      fontSize: 16,
     },
 
     body2: {
-      fontSize: 12,
-      color: BLACK_THREE
+      fontSize: 14,
+      color: GREY_THREE,
     },
   },
 
@@ -248,19 +258,15 @@ export const theme = createTheme({
         boxShadow: 'none',
         color: BLACK,
 
-        "&.blue-button": {
-          backgroundColor: BLUE_ONE,
+        "&.danger": {
+          backgroundColor: RED,
           color: WHITE,
-
-          "&:hover": {
-            backgroundColor: BLUE_THREE,
-          }
         },
 
-        "&.blue-button-new": {
-          backgroundColor: BLUE_EIGHT,
+        "&.muted": {
+          backgroundColor: GREY_TWO,
           color: WHITE,
-        }
+        },
       },
 
       outlined: {
@@ -270,21 +276,17 @@ export const theme = createTheme({
         boxShadow: 'none',
         color: BLACK,
 
-        "&.blue-button": {
-          borderColor: BLUE_ONE,
-          color: BLUE_ONE,
-          borderStyle: 'dashed',
-
-          "&:hover": {
-            borderColor: BLUE_THREE,
-            color: BLUE_THREE,
-          }
+        "&.danger": {
+          backgroundColor: WHITE,
+          borderColor: RED,
+          color: RED,
         },
 
-        "&.blue-button-new": {
+        "&.muted": {
           backgroundColor: WHITE,
-          color: BLUE_EIGHT,
-        }
+          borderColor: GREY_TWO,
+          color: GREY_TWO,
+        },
       },
 
       label: {
@@ -311,22 +313,23 @@ export const theme = createTheme({
       root: {
         "& $notchedOutline": {
           borderRadius: 4,
-          border: `1px solid ${GRAY_ONE}`,
+          border: `1px solid ${GREY_FOUR}`,
+          backgroundColor: GREY,
           fontFamily: INTER,
         },
 
         "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {
-          border: `1px solid ${BLUE_ONE}`,
+          border: `1px solid ${BLUE}`,
         },
 
         "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
-          border: `1px solid ${GRAY_ONE}`,
+          border: `1px solid ${GRAY_FIVE}`,
         }
       },
 
       input: {
-        height: 42,
-        padding: '11px 14px',
+        height: 48,
+        padding: '12px 16px',
         boxSizing: 'border-box'
       }
     },
@@ -334,11 +337,13 @@ export const theme = createTheme({
     MuiInputLabel: {
       shrink: {
         transform: 'scale(1)',
-        color: GRAY_THREE
+        color: BLACK_TWO,
+        fontWeight: 500,
+        fontSize: 14,
       },
 
       formControl: {
-        top: -20,
+        top: -24,
 
         [breakpoints.between(1280, 1441)]: {
           top: -30,
@@ -349,7 +354,7 @@ export const theme = createTheme({
     MuiFormControl: {
       marginNormal: {
         position: 'relative',
-        paddingBottom: customTheme.spacing(2)
+        paddingBottom: customTheme.spacing(2),
       },
 
       root: {
@@ -359,7 +364,7 @@ export const theme = createTheme({
         },
 
         "& .MuiAutocomplete-inputRoot": {
-          minHeight: 42,
+          minHeight: 48,
         }
       }
     },
@@ -370,13 +375,12 @@ export const theme = createTheme({
         marginLeft: 0,
         marginRight: 0,
         fontSize: 12,
-        opacity: 0.8,
-        color: GRAY_TWO,
         fontWeight: 500,
+        color: BLACK_THREE,
       },
 
       root: {
-        color: RED_THREE
+        color: RED_THREE,
       }
     },
 

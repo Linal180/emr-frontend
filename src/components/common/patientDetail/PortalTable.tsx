@@ -66,7 +66,7 @@ const PortalTable: FC<PortalTableProps> = ({ inviteAccepted }): JSX.Element => {
           <Search search={search} />
         </Box>
 
-        <Button color="inherit" variant="outlined" className='blue-button-new'
+        <Button variant="outlined" color="secondary"
           onClick={() => handleAccess()}
           disabled={loading || inviteAccepted}>
           {inviteAccepted ? DISABLE_ACCESS_PORTAL : ENABLE_ACCESS_PORTAL}

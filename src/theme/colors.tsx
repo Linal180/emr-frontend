@@ -13,9 +13,6 @@ export const GRAY_ELEVEN = "#40353554"
 export const GRAY_TWELVE = "#BCB3E2"
 export const GRAY_THIRTEEN = "#F9FAFB"
 
-export const BLACK_ONE = "#3F4254";
-export const BLACK_TWO = "#7E8299";
-export const BLACK_THREE = "#4A4B68";
 export const BLACK_FOUR = "#181C32";
 export const BLACK_FIVE = "#333333";
 export const BLACK_SIX = "#6C7293";
@@ -32,7 +29,6 @@ export const WHITE_SIX = "#F1FAFF";
 export const WHITE_SEVEN = "#F3F4F6";
 export const WHITE_EIGHT = "#a1a5b740";
 
-export const BLUE_TWO = "#0056B1";
 export const BLUE_THREE = "#00A3FF";
 export const BLUE_FOUR = "#1BC5BD"
 export const BLUE_FIVE = "#C9F7F5"
@@ -53,13 +49,21 @@ export const RED_FOUR = "#DD1010";
 
 export const BLUE = "#204ECF";
 export const BLUE_ONE = "#5AACFF";
+export const BLUE_TWO = "#1C6DD0";
 
 export const GREEN = "#03CC83";
 
 export const BLACK = "#262D3D";
+export const BLACK_ONE = "#3F4254";
+export const BLACK_TWO = "#202020";
+export const BLACK_THREE = "#6B7280";
 
 export const GREY = "#F3F4F6";
 export const GREY_ONE = "#C9CED6";
+export const GREY_TWO = "#A1A5B7";
+export const GREY_THREE = "#7E8299";
+export const GREY_FOUR = "#EEF6FF";
+export const GREY_FIVE = "#D1D5DB";
 
 export const WHITE = "#FFFFFF";
 

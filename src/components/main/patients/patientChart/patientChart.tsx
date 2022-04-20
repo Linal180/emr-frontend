@@ -88,7 +88,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                 ))}
               </Box>
 
-              <Button color="primary" variant="contained" className="blue-button">Schedule Appointment</Button>
+              <Button color="secondary" variant="contained">Schedule Appointment</Button>
             </Box>
 
 

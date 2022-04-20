@@ -139,8 +139,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               </Grid>
 
               <Grid item md={4}>
-                <Button onClick={() => logout()} variant="outlined" color="secondary" size="small"
-                >
+                <Button onClick={() => logout()} variant="outlined" color="inherit" size="small" className="danger">
                   {LOGOUT_TEXT}
                 </Button>
               </Grid>

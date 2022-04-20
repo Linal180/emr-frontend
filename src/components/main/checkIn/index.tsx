@@ -578,7 +578,7 @@ const CheckInComponent = (): JSX.Element => {
               </Box>
             </Box>
 
-            <Button variant="contained" color="inherit" className="blue-button-new">{GO_TO_PROFILE}</Button>
+            <Button variant="contained" color="secondary">{GO_TO_PROFILE}</Button>
           </Box>
         </Box>
       </Card>

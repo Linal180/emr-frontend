@@ -105,7 +105,7 @@ const LabOrdersPaymentForm: FC<GeneralFormProps> = (): JSX.Element => {
             </Grid>
 
             <Box mb={3} display="flex">
-              <Button type="submit" variant="contained" color="inherit" className="blue-button-new">{PRINT}</Button>
+              <Button type="submit" variant="contained" color="secondary">{PRINT}</Button>
 
               <Box p={1} />
 

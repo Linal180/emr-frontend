@@ -125,6 +125,7 @@ export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
 export const CALENDAR = "Calendar";
 export const PRINT = "Print";
 export const PAY_LATER = "Pay Later";
+export const SCHEDULE_APPOINTMENT = "Schedule Appointment";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
