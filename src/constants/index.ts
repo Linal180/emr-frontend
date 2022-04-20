@@ -226,7 +226,7 @@ export const OTHER_DATE = "Other Date";
 export const NO_INVOICE = "No Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
-export const FACILITY_CONTACT = "Contact";
+export const FACILITY_CONTACT = "Facility Contact";
 export const AMOUNT_DOLLAR = "Amount ($)";
 export const STAFF_LISTING = "Staff Listing";
 export const MEMBERSHIP_ID = "Membership ID";
@@ -806,6 +806,8 @@ export const CREATE_LAB_ORDER = "Create Lab Order";
 export const NO_SLOT_AVAILABLE = "No Slot available";
 export const REGISTRATION_DATE = "Registration Date";
 export const PATIENT_LAST_NAME = "Patient Last Name";
+export const PATIENT_NAME = "Patient Name";
+export const PATIENT_CONTACT = "Patient Contact";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const PATIENT_FIRST_NAME = "Patient First Name";
 export const SEXUAL_ORIENTATION = "Sexual Orientation";
@@ -2282,31 +2284,31 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: PRACTICE_DETAILS_TEXT,
     link: PRACTICE_DETAILS_ROUTE,
     desc: PRACTICE_DETAILS_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: FACILITY_MANAGEMENT,
-    link: "/",
+    link: FACILITIES_ROUTE,
     desc: FACILITY_MANAGEMENT_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: PROVIDER_MANAGEMENT,
-    link: "/",
+    link: DOCTORS_ROUTE,
     desc: PROVIDER_MANAGEMENT_DESCRIPTION,
+    visible: ['All']
   },
   {
     name: STAFF_MANAGEMENT,
-    link: "/",
+    link: STAFF_ROUTE,
     desc: STAFF_MANAGEMENT_DESCRIPTION,
-  },
-  {
-    name: SCHEDULE,
-    link: "/",
-    desc: SCHEDULE_DESCRIPTION,
+    visible: ['All']
   },
   {
     name: ROLES_PERMISSIONS,
     link: ROLES_ROUTE,
-    desc: ROLES_PERMISSIONS_DESCRIPTION
+    desc: ROLES_PERMISSIONS_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: EMERGENCY_ACCESS,

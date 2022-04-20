@@ -73,7 +73,6 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const fetchAllFacilities = useCallback(async () => {
     try {
-      console.log("searchQuery", searchQuery)
       const inputs = { practiceId, facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
       const payload = !isAdmin ? { ...inputs, singleFacilityId: facilityId } : { ...inputs }
 

@@ -29,11 +29,12 @@ import {
   useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus
 } from '../../../generated/graphql';
 import {
+  PATIENT_NAME, FACILITY_CONTACT, PATIENT_CONTACT, FACILITY_NAME,
+  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE,
   PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD,
   FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT,
   APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE,
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE,
-  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_LOCATION, INVOICE,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PROVIDER_NAME,
   TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
 } from '../../../constants';
@@ -137,6 +138,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const providerName = appointmentMeta?.data?.providerName
   const appReason = appointmentMeta?.data?.reason
   const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
+  const facilityName = appointmentMeta?.data?.facilityName
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -414,8 +416,8 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
-                <Typography variant="body1">{FACILITY_LOCATION}</Typography>
-                <Typography variant="body2">{appointmentMeta?.data?.facilityContact ?? 'NAN'}</Typography>
+                <Typography variant="body1">{FACILITY_NAME}</Typography>
+                <Typography variant="body2">{facilityName ?? 'N/A'}</Typography>
               </Box>
 
               {providerName !== 'undefined undefined' && <Box display='flex' justifyContent='space-between' pb={1}>
@@ -425,12 +427,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{REASON}</Typography>
-                <Typography variant="body2">{appReason === '' ? 'NAN' : appReason}</Typography>
+                <Typography variant="body2">{appReason === '' ? 'N/A' : appReason}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{PRIMARY_INSURANCE}</Typography>
-                <Typography variant="body2">{appPrimaryInsurance === '' ? 'NAN' : appPrimaryInsurance}</Typography>
+                <Typography variant="body2">{appPrimaryInsurance === '' ? 'N/A' : appPrimaryInsurance}</Typography>
               </Box>
 
               {!appPaid && !isInvoiceNumber ? (<Box display="flex" justifyContent="space-between"
@@ -507,13 +509,29 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
             <Box className={classes.cardText}>
               <Box pb={3}>
-                <Typography variant='h5'>{appointmentMeta?.data?.facilityName}</Typography>
-                <Typography variant="body1">{appointmentMeta?.data?.facilityContact ?? 'NAN'}</Typography>
+                <Box display='flex' justifyContent='space-between' pb={1}>
+                  <Typography variant="body1">{FACILITY_NAME}</Typography>
+                  <Typography variant='h5'>{appointmentMeta?.data?.facilityName}</Typography>
+                </Box>
+
+                <Box display='flex' justifyContent='space-between' pb={1}>
+                  <Typography variant="body1">{FACILITY_CONTACT}</Typography>
+                  <Typography variant="body1">{appointmentMeta?.data?.facilityContact ?? 'N/A'}</Typography>
+                </Box>
 
                 <Box p={1} />
+                <Box display='flex' justifyContent='space-between' pb={1}>
+                  <Typography variant="body1">{PATIENT_NAME}</Typography>
+                  <Typography variant='h5'>{patientName}</Typography>
+                </Box>
 
-                <Typography variant='h5'>{patientName}</Typography>
-                <Typography variant="body1">{appointmentMeta?.data?.patientContact ?? 'NAN'}</Typography>
+                <Box display='flex' justifyContent='space-between' pb={1}>
+                  <Typography variant="body1">{PATIENT_CONTACT}</Typography>
+                  <Typography variant="body1">{appointmentMeta?.data?.patientContact ?? 'N/A'}</Typography>
+                </Box>
+
+                <Box display='flex' justifyContent='space-between' pb={1}>
+                </Box>
               </Box>
 
               <Box my={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`} borderBottom={`1px solid ${WHITE_FOUR}`}>
@@ -527,7 +545,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                   <Typography variant="body1">{appDate}</Typography>
                 </Box>
 
-                <Typography variant="h4">{appointmentPrice ?? 'NAN'}</Typography>
+                <Typography variant="h4">{appointmentPrice ?? 'N/A'}</Typography>
               </Box>
 
               <Box
@@ -540,8 +558,8 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 </Box>
 
                 <Box>
-                  <Typography variant="body2">{appointmentPrice ?? 'NAN'}</Typography>
-                  <Typography variant="body2">{appointmentPrice ?? 'NAN'}</Typography>
+                  <Typography variant="body2">{appointmentPrice ?? 'N/A'}</Typography>
+                  <Typography variant="body2">{appointmentPrice ?? 'N/A'}</Typography>
                 </Box>
               </Box>
 
@@ -549,7 +567,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 borderBottom={`1px solid ${WHITE_FOUR}`}
               >
                 <Typography variant="h5"><strong>{OUTSTANDING_TEXT}</strong></Typography>
-                <Typography variant="h4">{appointmentPrice ?? 'NAN'}</Typography>
+                <Typography variant="h4">{appointmentPrice ?? 'N/A'}</Typography>
               </Box>
 
               <Box mt={5} px={3}>
@@ -580,7 +598,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
             <Box className={classes.cardText}>
               <Box display='flex' justifyContent='space-between' borderBottom={`1px solid ${WHITE_FOUR}`}>
                 <Typography variant="body1"><strong>{PAY_AMOUNT}</strong></Typography>
-                <Typography variant="h6"><strong>{appointmentPrice ?? 'NAN'}</strong></Typography>
+                <Typography variant="h6"><strong>{appointmentPrice ?? 'N/A'}</strong></Typography>
               </Box>
 
               <Box mt={5} p={5}>
