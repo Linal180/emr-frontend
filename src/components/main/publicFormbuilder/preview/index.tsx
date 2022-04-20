@@ -9,7 +9,7 @@ import Alert from '../../../common/Alert';
 import CardComponent from '../../../common/CardComponent';
 //interfaces & constants
 import { ParamsType } from '../../../../interfacesTypes'
-import { getToken, getUserFormFormattedValues, LoaderBackdrop, parseColumnGrid } from '../../../../utils';
+import { getUserFormFormattedValues, LoaderBackdrop, parseColumnGrid } from '../../../../utils';
 import { SectionsInputs, useGetPublicFormLazyQuery, useSaveUserFormValuesMutation } from '../../../../generated/graphql';
 import {
   getFormInitialValues, PUBLIC_FORM_BUILDER_FAIL_ROUTE, NOT_FOUND_EXCEPTION, CANCEL_TEXT, FORM_SUBMIT_TEXT,
@@ -25,7 +25,6 @@ const PublicFormPreview = () => {
   //hooks
   const methods = useForm<any>({ defaultValues: initialValues });
   const { id } = useParams<ParamsType>()
-  const token = getToken();
   //states
   const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
   const [formName, setFormName] = useState('')
@@ -89,14 +88,10 @@ const PublicFormPreview = () => {
     }
   })
 
-
-
-
   const submitHandler = async (values: any) => {
-
-    if (id && token) {
+    if (id) {
       setUploadImage(true)
-      const formValues = await getUserFormFormattedValues(values, token, id);
+      const formValues = await getUserFormFormattedValues(values, id);
       const data = {
         FormId: id,
         DoctorId: "",
