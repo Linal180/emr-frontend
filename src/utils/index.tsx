@@ -650,7 +650,7 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
-      formData,
+      formData
     )
     const { data } = res || {};
     const { attachment, response } = data as FormAttachmentPayload || {}
@@ -757,7 +757,7 @@ export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: 
 export const visibleToUser = (userRoles: string[], visible: string[] | undefined) => {
   let allow = visible === undefined ? true : false;
 
-  if(visible?.includes('All')) return true
+  if (visible?.includes('All')) return true
   visible && userRoles.map(role => allow = visible.includes(role))
 
   return allow;
