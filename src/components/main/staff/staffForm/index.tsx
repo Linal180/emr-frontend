@@ -129,17 +129,17 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const fetchList = useCallback((id: string, name: string) => {
+  const fetchList = useCallback(async (id: string, name: string) => {
     reset({
       providerIds: EMPTY_OPTION,
       facilityId: { id, name }
     });
 
-    id && fetchAllDoctorList(id);
+    id && await fetchAllDoctorList(id);
   }, [fetchAllDoctorList, reset]);
 
   useEffect(() => {
-    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName)
+    selectedFacility && fetchList(selectedFacility, selectedFacilityName || '')
   }, [fetchAllDoctorList, fetchList, selectedFacility, selectedFacilityName, watch]);
 
   useEffect(() => {
@@ -213,6 +213,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     <Grid container spacing={3}>
                       <Grid item md={isEdit ? 12 : 6}>
                         <Selector
+                          addEmpty
                           isRequired
                           value={EMPTY_OPTION}
                           label={FACILITY}
@@ -224,6 +225,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       {!isEdit &&
                         <Grid item md={6}>
                           <Selector
+                            addEmpty
                             isRequired
                             label={ROLE}
                             name="roleType"
@@ -301,6 +303,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       {!isEdit &&
                         <Grid item md={4} sm={12} xs={12}>
                           <Selector
+                            addEmpty
                             isRequired
                             value={EMPTY_OPTION}
                             label={PROVIDER}

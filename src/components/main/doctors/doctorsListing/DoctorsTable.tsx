@@ -12,7 +12,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, formatValue, isSuperAdmin, renderTh } from "../../../../utils";
+import { formatPhone, formatValue, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
 import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
 import {
@@ -32,15 +32,18 @@ const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
-  const { practiceId } = facility || {}
+  const { id: facilityId, practiceId } = facility || {}
+  const isSuper = isSuperAdmin(roles);
+  const isAdmin = isUserAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
   const [{ copied }, appointmentDispatcher] =
     useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllDoctor, { loading, error }] = useFindAllDoctorLazyQuery({
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() {
       dispatch({ type: ActionType.SET_DOCTORS, doctors: [] })
@@ -52,7 +55,7 @@ const DoctorsTable: FC = (): JSX.Element => {
       if (findAllDoctor) {
         const { doctors, pagination } = findAllDoctor
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
@@ -64,15 +67,15 @@ const DoctorsTable: FC = (): JSX.Element => {
 
   const fetchAllDoctors = useCallback(async () => {
     try {
-      const isSuper = isSuperAdmin(roles);
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const doctorInputs = isSuper ? { ...pageInputs } : { practiceId, ...pageInputs }
+      const doctorInputs = isSuper ? { ...pageInputs } :
+        !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
 
       await findAllDoctor({
         variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
       })
     } catch (error) { }
-  }, [findAllDoctor, page, practiceId, roles, searchQuery])
+  }, [facilityId, findAllDoctor, isAdmin, isSuper, page, practiceId, searchQuery])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {
@@ -140,105 +143,105 @@ const DoctorsTable: FC = (): JSX.Element => {
   }
 
   return (
-    <Box className={classes.mainTableContainer}>
-      <Search search={search} />
+    <>
+      <Box className={classes.mainTableContainer}>
+        <Search search={search} />
 
-      <Box className="table-overflow">
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {renderTh(NAME)}
-              {renderTh(EMAIL)}
-              {renderTh(PHONE)}
-              {renderTh(SPECIALTY)}
-              {renderTh(FACILITY)}
-              {renderTh(ACTION, "center")}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {loading ? (
+        <Box className="table-overflow">
+          <Table aria-label="customized table">
+            <TableHead>
               <TableRow>
-                <TableCell colSpan={10}>
-                  <TableLoader numberOfRows={10} numberOfColumns={5} />
-                </TableCell>
+                {renderTh(NAME)}
+                {renderTh(EMAIL)}
+                {renderTh(PHONE)}
+                {renderTh(SPECIALTY)}
+                {renderTh(FACILITY)}
+                {renderTh(ACTION, "center")}
               </TableRow>
-            ) : (
-              doctors?.map((doctor: DoctorPayload['doctor']) => {
-                const { id, firstName, lastName, speciality, contacts, facility } = doctor || {};
-                const doctorContact = contacts && contacts[0];
-                const { email, phone } = doctorContact || {};
-                const { name } = facility || {};
+            </TableHead>
 
-                return (
-                  <TableRow key={id}>
-                    <TableCell scope="row">
-                      <Link to={`${DOCTORS_ROUTE}/${id}/details`}>
-                        {`${firstName} ${lastName}`}
-                      </Link>
-                    </TableCell>
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <TableLoader numberOfRows={10} numberOfColumns={5} />
+                  </TableCell>
+                </TableRow>
+              ) : (
+                doctors?.map((doctor: DoctorPayload['doctor']) => {
+                  const { id, firstName, lastName, speciality, contacts, facility } = doctor || {};
+                  const doctorContact = contacts && contacts[0];
+                  const { email, phone } = doctorContact || {};
+                  const { name } = facility || {};
 
-                    <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{formatValue(speciality as string)}</TableCell>
-                    <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">
-                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                          <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                            <InsertLink />
-                          </Box>
-                        </DetailTooltip>
-
-                        <Link to={`${DOCTORS_ROUTE}/${id}`}>
-                          <Box className={classes.iconsBackground}>
-                            <EditIcon />
-                          </Box>
+                  return (
+                    <TableRow key={id}>
+                      <TableCell scope="row">
+                        <Link to={`${DOCTORS_ROUTE}/${id}/details`}>
+                          {`${firstName} ${lastName}`}
                         </Link>
+                      </TableCell>
 
-                        <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                          <TrashIcon />
+                      <TableCell scope="row">{email}</TableCell>
+                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                      <TableCell scope="row">{formatValue(speciality as string)}</TableCell>
+                      <TableCell scope="row">{name}</TableCell>
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                              <InsertLink />
+                            </Box>
+                          </DetailTooltip>
+
+                          <Link to={`${DOCTORS_ROUTE}/${id}`}>
+                            <Box className={classes.iconsBackground}>
+                              <EditIcon />
+                            </Box>
+                          </Link>
+
+                          <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
+                            <TrashIcon />
+                          </Box>
                         </Box>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                )
-              })
-            )}
-          </TableBody>
-        </Table>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
+              )}
+            </TableBody>
+          </Table>
 
-        {((!loading && doctors?.length === 0) || error) && (
-          <Box display="flex" justifyContent="center" pb={12} pt={5}>
-            <NoDataFoundComponent />
-          </Box>
-        )}
-
-        {
-          totalPages > 1 && (
-            <Box display="flex" justifyContent="flex-end" pt={3}>
-              <Pagination
-                shape="rounded"
-                page={page}
-                count={totalPages}
-                onChange={handleChange}
-              />
+          {((!loading && doctors?.length === 0) || error) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
             </Box>
-          )
-        }
+          )}
 
-        <ConfirmationModal
-          title={DOCTOR}
-          isOpen={openDelete}
-          isLoading={deleteDoctorLoading}
-          handleDelete={handleDeleteDoctor}
-          description={DELETE_DOCTOR_DESCRIPTION}
-          setOpen={(openDelete: boolean) => dispatch({
-            type: ActionType.SET_OPEN_DELETE, openDelete
-          })}
-        />
+          <ConfirmationModal
+            title={DOCTOR}
+            isOpen={openDelete}
+            isLoading={deleteDoctorLoading}
+            handleDelete={handleDeleteDoctor}
+            description={DELETE_DOCTOR_DESCRIPTION}
+            setOpen={(openDelete: boolean) => dispatch({
+              type: ActionType.SET_OPEN_DELETE, openDelete
+            })}
+          />
+        </Box>
       </Box>
-    </Box>
+
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" pt={3}>
+          <Pagination
+            shape="rounded"
+            page={page}
+            count={totalPages}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
+    </>
   );
 };
 

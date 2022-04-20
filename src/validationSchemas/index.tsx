@@ -17,7 +17,7 @@ import {
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
-  SERVICE_NAME_TEXT, DOB, FORM_NAME,
+  SERVICE_NAME_TEXT, DOB, FORM_NAME, PAGER,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -130,7 +130,9 @@ const roleTypeSchema = {
   roleType: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(ROLE))
+  }).test(
+    '', requiredMessage(ROLE), ({ id }) => !!id
+  )
 }
 
 const patientIdSchema = {
@@ -167,7 +169,9 @@ const genderSchema = {
   gender: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(GENDER))
+  }).test(
+    '', requiredMessage(GENDER), ({ id }) => !!id
+  )
 }
 
 const usualProviderSchema = {
@@ -330,6 +334,7 @@ export const contactSchema = {
   fax: notRequiredPhone(FAX),
   country: countrySchema(false),
   phone: notRequiredPhone(PHONE),
+  pager: notRequiredPhone(PAGER),
   mobile: notRequiredPhone(MOBILE),
   city: notRequiredStringOnly(CITY),
   address: addressValidation(ADDRESS, false),
@@ -579,6 +584,17 @@ export const extendedPatientSchema = yup.object({
   ...guarantorPatientSchema,
 })
 
+export const extendedEditPatientSchema = yup.object({
+  ...genderSchema,
+  ...PatientSchema,
+  ...kinPatientSchema,
+  ...basicContactSchema,
+  ...employerPatientSchema,
+  ...guardianPatientSchema,
+  ...emergencyPatientSchema,
+  ...guarantorPatientSchema,
+})
+
 export const settingSchema = yup.object({
   ...facilityIdSchema,
   ...timeZoneSchema
@@ -641,14 +657,15 @@ const practiceFacilitySchema = {
   ...einSchema,
   ...upinSchema,
   state: stateSchema(false),
+  fax: notRequiredPhone(FAX),
   country: countrySchema(false),
+  phone: notRequiredPhone(PHONE),
   city: notRequiredStringOnly(CITY),
   address2: addressValidation(ADDRESS, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
 export const createPracticeSchema = yup.object({
-  ...roleTypeSchema,
   ...registerUserSchema,
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),

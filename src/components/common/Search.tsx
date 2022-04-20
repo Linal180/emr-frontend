@@ -17,7 +17,7 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
 
   return (
     <Box className={classes.tableSearchBox}>
-      <IconButton aria-label="search" onClick={() => search(query)}>
+      <IconButton aria-label="search" disabled={!query} onClick={() => search(query)}>
         <SearchIcon />
       </IconButton>
 

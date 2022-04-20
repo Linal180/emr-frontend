@@ -22,7 +22,7 @@ import { useCalendarStyles } from '../../../styles/calendarStyles';
 import { getAppointmentDate, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
-  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
+  CashAppointmentIcon, DeleteAppointmentIcon, InvoiceAppointmentIcon,
 } from '../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
@@ -134,6 +134,9 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
   const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
   const appCancelToken = appointmentMeta?.data.token
+  const providerName = appointmentMeta?.data?.providerName
+  const appReason = appointmentMeta?.data?.reason
+  const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -212,10 +215,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     dispatch({ type: ActionType.SET_APP_PAYMENT, appPayment: false })
     dispatch({ type: ActionType.SET_APP_EDIT, appEdit: false })
     onHide && onHide()
-  }
-
-  const editHandleClick = () => {
-    dispatch({ type: ActionType.SET_APP_EDIT, appEdit: true })
   }
 
   const [cancelAppointment, { loading: cancelAppointmentLoading }] = useCancelAppointmentMutation({
@@ -318,7 +317,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     chargePayment({
       variables: {
         paymentInput: {
-          price: appointmentPrice, patientId: patientId, providerId: providerId,
+          price: appointmentPrice, patientId: patientId, providerId: providerId || '',
           facilityId: facilityId, appointmentId: id, clientIntent: token, serviceId: serviceId
         },
       },
@@ -372,16 +371,12 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
               title={APPOINTMENT}
               action={
                 <Box>
-                  <IconButton onClick={editHandleClick}>
-                    <EditAppointmentIcon />
-                  </IconButton>
-
-                  <IconButton onClick={() => {
+                  {appStatus !== "COMPLETED" && <IconButton onClick={() => {
                     moment(getISOTime(scheduleStartDateTime || '')).diff(moment(), 'hours') <= 1 ?
                       Alert.info(CANCEL_TIME_EXPIRED_MESSAGE) : onDeleteClick()
                   }}>
                     <DeleteAppointmentIcon />
-                  </IconButton>
+                  </IconButton>}
 
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
@@ -421,19 +416,19 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 <Typography variant="body2">{appointmentMeta?.data?.facilityContact ?? 'NAN'}</Typography>
               </Box>
 
-              <Box display='flex' justifyContent='space-between' pb={1}>
+              {providerName !== 'undefined undefined' && <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{PROVIDER_NAME}</Typography>
-                <Typography variant="body2">{appointmentMeta?.data?.providerName}</Typography>
-              </Box>
+                <Typography variant="body2">{providerName}</Typography>
+              </Box>}
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{REASON}</Typography>
-                <Typography variant="body2">{appointmentMeta?.data?.reason ?? 'NAN'}</Typography>
+                <Typography variant="body2">{appReason === '' ? 'NAN' : appReason}</Typography>
               </Box>
 
               <Box display='flex' justifyContent='space-between' pb={1}>
                 <Typography variant="body1">{PRIMARY_INSURANCE}</Typography>
-                <Typography variant="body2">{appointmentMeta?.data?.primaryInsurance ?? 'NAN'}</Typography>
+                <Typography variant="body2">{appPrimaryInsurance === '' ? 'NAN' : appPrimaryInsurance}</Typography>
               </Box>
 
               {!appPaid && !isInvoiceNumber ? (<Box display="flex" justifyContent="space-between"

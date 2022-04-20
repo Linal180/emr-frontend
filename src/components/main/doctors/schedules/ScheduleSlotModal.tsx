@@ -154,7 +154,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
       } else {
         await createSchedule({
           variables: {
-            createScheduleInput: { ...scheduleInput }
+            createScheduleInput: [{ ...scheduleInput }]
           }
         })
       }

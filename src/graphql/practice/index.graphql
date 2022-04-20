@@ -34,6 +34,7 @@ query GetPractice($getPractice: GetPractice!){
       phone
       practiceId
       ein
+      fax
       upin
       medicare
       medicaid
