@@ -19,6 +19,7 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
       token
       reason
       primaryInsurance
+      billingStatus
       
       provider {
         id
