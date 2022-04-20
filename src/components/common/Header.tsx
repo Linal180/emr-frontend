@@ -15,7 +15,7 @@ import { useHeaderStyles } from "../../styles/headerStyles";
 import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS, SYSTEM_ROLES,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS, SYSTEM_ROLES, PRACTITIONER,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -115,7 +115,7 @@ const HeaderNew: FC = (): JSX.Element => {
             <Box display="flex"
               flexDirection="column"
               justifyContent="center"
-              alignItems="right"
+              alignItems="flex-end"
               className={classes.profileItemName}
             >
               {isSuper ?
@@ -123,6 +123,10 @@ const HeaderNew: FC = (): JSX.Element => {
                 :
                 <Typography variant="h6">{firstName} {lastName}</Typography>
               }
+
+              <Box className={classes.roleName}>
+                <Typography variant="body1">{PRACTITIONER}</Typography>
+              </Box>
             </Box>
 
             <ProfileDropdownMenu />
