@@ -3,7 +3,7 @@ import { useState, MouseEvent, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, } from '@material-ui/core';
 // utils and header styles block
-import { AuthContext } from "../../context";
+import { AuthContext, ListContext } from "../../context";
 import { BLACK_TWO, WHITE_FOUR } from "../../theme";
 import { useHeaderStyles } from "../../styles/headerStyles";
 import { handleLogout, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
@@ -17,6 +17,7 @@ import {
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName } = useContext(AuthContext);
+  const { setFacilityList, setRoleList, setPracticeList } = useContext(ListContext)
   const { email, roles, facility } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { name: facilityName } = facility || {}
@@ -41,6 +42,9 @@ const ProfileDropdownMenu = (): JSX.Element => {
     setUser(null)
     setCurrentUser(null)
     handleLogout();
+    setFacilityList([]);
+    setRoleList([])
+    setPracticeList([])
   };
 
   useEffect(() => {
