@@ -56,7 +56,7 @@ const PracticeTable: FC = (): JSX.Element => {
           const { pagination, practices } = findAllPractices
           practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
 
-          if (!searchQuery && pagination) {
+          if (pagination) {
             const { totalPages } = pagination
             totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }

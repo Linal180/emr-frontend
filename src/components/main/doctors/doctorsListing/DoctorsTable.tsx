@@ -41,8 +41,9 @@ const DoctorsTable: FC = (): JSX.Element => {
     useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllDoctor, { loading, error }] = useFindAllDoctorLazyQuery({
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() {
       dispatch({ type: ActionType.SET_DOCTORS, doctors: [] })
@@ -54,7 +55,7 @@ const DoctorsTable: FC = (): JSX.Element => {
       if (findAllDoctor) {
         const { doctors, pagination } = findAllDoctor
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }

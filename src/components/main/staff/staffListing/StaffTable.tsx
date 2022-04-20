@@ -46,7 +46,7 @@ const StaffTable: FC = (): JSX.Element => {
       if (findAllStaff) {
         const { allstaff, pagination } = findAllStaff
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }

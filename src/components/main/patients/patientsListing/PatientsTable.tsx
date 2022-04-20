@@ -48,7 +48,7 @@ const PatientsTable: FC = (): JSX.Element => {
         const { pagination, patients } = findAllPatient
         patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }

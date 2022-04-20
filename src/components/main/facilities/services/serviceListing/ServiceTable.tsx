@@ -56,7 +56,7 @@ const ServicesTable: FC = (): JSX.Element => {
       if (findAllServices) {
         const { services, pagination } = findAllServices
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
@@ -77,6 +77,7 @@ const ServicesTable: FC = (): JSX.Element => {
     onCompleted(data) {
       if (data) {
         const { removeService: { response } } = data
+
         if (response) {
           const { message } = response
           message && Alert.success(message);
