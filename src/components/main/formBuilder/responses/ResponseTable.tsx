@@ -1,20 +1,21 @@
 // package block
-import { ChangeEvent, FC, useState, useEffect, useCallback, useMemo } from 'react';
+import { ChangeEvent, FC, useState, useEffect, useCallback, useMemo, Fragment } from 'react';
 import { Box, Table, TableRow, TableHead, TableBody, TableCell, useTheme } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { useParams } from 'react-router';
 //components block
 import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
+import ImagePreviewModal from '../imagePreviewModal';
+import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
+import UserPreviewModal from '../userFormPreview'
 //constants interfaces
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { useFormResponsesStyles } from '../../../../styles/formbuilder/responses';
 import { getSortedFormElementLabel, renderTh } from '../../../../utils';
-import { PAGE_LIMIT, } from '../../../../constants';
-import { FormElement, useFindAllUsersFormsLazyQuery, UserForms } from '../../../../generated/graphql';
-import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
+import { PAGE_LIMIT, VIEW, } from '../../../../constants';
+import { FormElement, useFindAllUsersFormsLazyQuery, UserForms, UsersFormsElements } from '../../../../generated/graphql';
 import { ParamsType } from '../../../../interfacesTypes';
-import ImagePreviewModal from '../imagePreviewModal';
 //component
 const ResponseTable: FC = (): JSX.Element => {
   //hooks
@@ -31,6 +32,8 @@ const ResponseTable: FC = (): JSX.Element => {
   const [sortedFormLabels, setSortedFormLabels] = useState<FormElement[]>([])
   const [open, setOpen] = useState<boolean>(false)
   const [imageUrl, setImageUrl] = useState<string>('')
+  const [userForms, setUserForms] = useState<UsersFormsElements[]>([])
+  const [preview, setPreview] = useState<boolean>(false)
   //mutations & queries
   const [fetchAllUserFormResponses, { loading, error }] = useFindAllUsersFormsLazyQuery({
     onCompleted: (data) => {
@@ -95,8 +98,14 @@ const ResponseTable: FC = (): JSX.Element => {
   }, [forms, formElements])
 
   const imagePreviewHandler = (url: string) => {
+    // setPreview(false)
     setImageUrl(url)
     setOpen(true)
+  }
+
+  const showMoreDataHandler = (data: UsersFormsElements[]) => {
+    setUserForms(data)
+    setPreview(true)
   }
 
   return (
@@ -105,9 +114,14 @@ const ResponseTable: FC = (): JSX.Element => {
         <Table >
           <TableHead>
             <TableRow>
-              {sortedFormLabels?.map((ele) => {
+              {sortedFormLabels?.map((ele, index) => {
                 const { label, name } = ele || {}
-                return renderTh(label || name)
+                if (index <= 2) {
+                  return renderTh(label || name)
+                } if (index === 3) {
+                  return renderTh('Action')
+                }
+                return ''
               })}
             </TableRow>
           </TableHead>
@@ -119,7 +133,7 @@ const ResponseTable: FC = (): JSX.Element => {
                 </TableCell>
               </TableRow>
             ) : (
-              forms?.map((response) => {
+              forms?.map((response, i) => {
                 const { FormId, id, userFormElements } = response
 
                 return (
@@ -127,27 +141,36 @@ const ResponseTable: FC = (): JSX.Element => {
                     {userFormElements?.map((responseElement, index) => {
                       const { arrayOfStrings, FormsElementsId, value, id: responseId } = responseElement;
                       return (
-                        <TableCell key={`${FormsElementsId}-FormsElementsId-${id}`}>
-                          {(value?.includes(`form builder/${formId}`) ?
-                            <Box color={theme.palette.primary.main} className={responsesClasses.viewBtn} pl={2} onClick={() => imagePreviewHandler(value)}>
-                              View
-                            </Box>
-                            : value) ||
-                            <ul>
-                              {arrayOfStrings?.filter((arr) => arr.value === true)?.map((val) => {
-                                const { name } = val;
-                                return (
-                                  <li key={`${id}-${name}-${responseId}-${index}-${FormId}`}>
-                                    {name}
-                                  </li>
-                                )
+                        <Fragment>
+                          {index <= 2 &&
+                            <TableCell key={`${FormsElementsId}-FormsElementsId-${id}`}>
+                              {(value?.includes(`form builder/${formId}`) ?
+                                <Box color={theme.palette.primary.main} className={responsesClasses.viewBtn} pl={2} onClick={() => imagePreviewHandler(value)}>
+                                  {VIEW}
+                                </Box>
+                                : value) ||
+                                <ul>
+                                  {arrayOfStrings?.filter((arr) => arr.value === true)?.map((val) => {
+                                    const { name } = val;
+                                    return (
+                                      <li key={`${id}-${name}-${responseId}-${index}-${FormId}`}>
+                                        {name}
+                                      </li>
+                                    )
+                                  }
+                                  )}
+                                </ul>
                               }
-                              )}
-                            </ul>
-                          }
-                        </TableCell>
+                            </TableCell>}
+                          {index === 2 && userFormElements && <TableCell>
+                            <Box onClick={() => showMoreDataHandler(userFormElements)} color={theme.palette.primary.main} className={responsesClasses.viewBtn} pl={2}>
+                              View more
+                            </Box>
+                          </TableCell>}
+                        </Fragment>
                       )
                     })}
+
                   </TableRow>
                 )
               })
@@ -172,7 +195,8 @@ const ResponseTable: FC = (): JSX.Element => {
           </Box>
         )}
       </Box>
-      <ImagePreviewModal open={open} closeModalHandler={()=> setOpen(!open)} url={imageUrl}  formId={formId}/>
+      <ImagePreviewModal open={open} closeModalHandler={() => setOpen(!open)} url={imageUrl} formId={formId} />
+      <UserPreviewModal open={preview} closeModalHandler={() => setPreview(!preview)} formId={formId} userForms={userForms} formLabels={sortedFormLabels} imagePreviewHandler={imagePreviewHandler} />
     </Box>
   )
 }
