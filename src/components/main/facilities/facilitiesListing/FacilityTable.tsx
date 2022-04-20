@@ -45,8 +45,9 @@ const FacilityTable: FC = (): JSX.Element => {
     useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() {
       dispatch({ type: ActionType.SET_FACILITIES, facilities: [] })
@@ -58,7 +59,7 @@ const FacilityTable: FC = (): JSX.Element => {
       if (findAllFacility) {
         const { facilities, pagination } = findAllFacility
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
@@ -72,6 +73,7 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const fetchAllFacilities = useCallback(async () => {
     try {
+      console.log("searchQuery", searchQuery)
       const inputs = { practiceId, facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
       const payload = !isAdmin ? { ...inputs, singleFacilityId: facilityId } : { ...inputs }
 

@@ -56,7 +56,7 @@ const ServicesTable: FC = (): JSX.Element => {
       if (findAllServices) {
         const { services, pagination } = findAllServices
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages });
         }
@@ -77,6 +77,7 @@ const ServicesTable: FC = (): JSX.Element => {
     onCompleted(data) {
       if (data) {
         const { removeService: { response } } = data
+
         if (response) {
           const { message } = response
           message && Alert.success(message);
@@ -203,19 +204,17 @@ const ServicesTable: FC = (): JSX.Element => {
         </Box>
       </Box>
 
-      {
-        totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" p={3}>
-            <Pagination
-              count={totalPages}
-              shape="rounded"
-              variant="outlined"
-              page={page}
-              onChange={handleChange}
-            />
-          </Box>
-        )
-      }
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
     </>
   );
 };
