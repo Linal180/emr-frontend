@@ -18,7 +18,7 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { GRAY_TWO, WHITE } from '../../../../theme';
-import { extendedPatientSchema } from '../../../../validationSchemas';
+import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext, FacilityContext } from '../../../../context';
 import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
@@ -72,7 +72,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const classes = usePublicAppointmentStyles();
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(extendedPatientSchema)
+    resolver: yupResolver(isEdit ? extendedEditPatientSchema : extendedPatientSchema)
   });
   const { handleSubmit, setValue, watch, control } = methods;
   const {
@@ -996,8 +996,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={REGISTRATION_DATES}>
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <Grid container spacing={3}>
-                      <Grid item md={isEdit ? 12 : 6} sm={12} xs={12}>
+                    {!isEdit && <Grid container spacing={3}>
+                      <Grid item md={6} sm={12} xs={12}>
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
@@ -1007,7 +1007,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         />
                       </Grid>
 
-                      {!isEdit && <Grid item md={6} sm={12} xs={12}>
+                      <Grid item md={6} sm={12} xs={12}>
                         <Selector
                           isRequired
                           value={EMPTY_OPTION}
@@ -1015,8 +1015,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           name="usualProviderId"
                           options={renderDoctors(doctorList)}
                         />
-                      </Grid>}
-                    </Grid>
+                      </Grid>
+                    </Grid>}
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
