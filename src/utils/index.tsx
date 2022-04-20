@@ -641,7 +641,7 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
   return moment(date, "x").format("DD/MM/YY")
 };
 
-export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string, token: string) => {
+export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
   const formData = new FormData();
   attachmentId && formData.append("id", attachmentId);
   id && formData.append("typeId", id);
@@ -650,12 +650,7 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   try {
     const res = await axios.post(
       `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      formData
     )
     const { data } = res || {};
     const { attachment, response } = data as FormAttachmentPayload || {}
@@ -674,7 +669,7 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
 }
 
 
-export const getUserFormFormattedValues = async (values: any, token: string, id: string) => {
+export const getUserFormFormattedValues = async (values: any, id: string) => {
   const arr = [];
   for (const property in values) {
     if (Array.isArray(values[property])) {
@@ -691,7 +686,7 @@ export const getUserFormFormattedValues = async (values: any, token: string, id:
       if (values[property][0] instanceof File) {
         const file = values[property][0];
         const title = values[property][0]?.name;
-        const key = await userFormUploadImage(file, property, title, id, token);
+        const key = await userFormUploadImage(file, property, title, id);
         if (key) {
           arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [] })
         }
@@ -762,7 +757,7 @@ export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: 
 export const visibleToUser = (userRoles: string[], visible: string[] | undefined) => {
   let allow = visible === undefined ? true : false;
 
-  if(visible?.includes('All')) return true
+  if (visible?.includes('All')) return true
   visible && userRoles.map(role => allow = visible.includes(role))
 
   return allow;
