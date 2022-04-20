@@ -54,9 +54,9 @@ const AllergiesCardComponent: FC<ChartingCardComponentType> = ({ cardChartingDat
                       onClose={handleMenuClose}
                       className={classes.dropdown}
                     >
-                      {/* <AllergiesModal1Component /> */}
+                      <AllergiesModal1Component />
                       {/* <AllergiesModal2Component /> */}
-                      <AllergiesModal3Component />
+                      {/* <AllergiesModal3Component /> */}
                     </Menu>
                   </Box>
                 )

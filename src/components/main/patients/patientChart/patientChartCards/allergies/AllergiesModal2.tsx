@@ -7,8 +7,8 @@ import Selector from '../../../../../common/Selector';
 import InputController from '../../../../../../controller';
 // constants block
 import { ModalAddIcon, } from '../../../../../../assets/svgs';
-import { GRAY_NINE, GRAY_SIX, WHITE, WHITE_FOUR } from '../../../../../../theme';
-import { ADD, ADULTHOOD, CHILDHOOD, DELETE, EMPTY_OPTION, NOTES, ONSET_DATE, REACTION, SEVERITY, UNKNOWN } from '../../../../../../constants';
+import { GRAY_NINE, GRAY_SIX, WHITE, WHITE_FIVE, WHITE_FOUR } from '../../../../../../theme';
+import { ADD, ADULTHOOD, CHILDHOOD, DELETE, EMPTY_OPTION, NOTE, ONSET_DATE, REACTION, SEVERITY, UNKNOWN } from '../../../../../../constants';
 
 
 const AllergiesModal2Component: FC = (): JSX.Element => {
@@ -54,13 +54,15 @@ const AllergiesModal2Component: FC = (): JSX.Element => {
             controllerLabel={ONSET_DATE}
           />
 
-          <Box p={2} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-            <Box className='selectBox' style={{ backgroundColor: '#A1A5B7', color: WHITE }}>
+          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+            <Box className='selectBox' bgcolor={WHITE_FIVE} color={WHITE}>
               <Typography variant='h6'>{CHILDHOOD}</Typography>
             </Box>
+
             <Box mx={2} className='selectBox'>
               <Typography variant='h6'>{ADULTHOOD}</Typography>
             </Box>
+
             <Box className='selectBox'>
               <Typography variant='h6'>{UNKNOWN}</Typography>
             </Box>
@@ -69,7 +71,7 @@ const AllergiesModal2Component: FC = (): JSX.Element => {
           <InputController
             fieldType="text"
             controllerName="note"
-            controllerLabel={NOTES}
+            controllerLabel={NOTE}
           />
 
           <Box display='flex' justifyContent='flex-end'>

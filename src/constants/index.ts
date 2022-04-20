@@ -41,8 +41,11 @@ export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-
 export const SUPER_ADMIN = 'super-admin';
 export const ADMIN = 'admin';
 // constants
-export const NOTES = "Notes";
+export const NOTE = "Note";
 export const Ok_TEXT = "OK";
+export const NOTES = "Notes";
+export const ACUTE = "Acute";
+export const CHRONIC = "Chronic";
 export const LOCK_TIME_OUT = 6000000;
 export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
@@ -469,6 +472,9 @@ export const STARTING_TIME = "Starting time";
 export const ENDING_TIME = "Ending time";
 export const EMR_TEXT = "EMR";
 export const BILLED = "Billed";
+export const DRUG = "Drug";
+export const FOOD = "Food";
+export const ENVIRONMENT = "Environment";
 export const ACTIVE = "Active";
 export const STATUS = "Status";
 export const ACTION = "Actions";
