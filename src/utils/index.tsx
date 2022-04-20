@@ -114,6 +114,18 @@ export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) 
   return isAdmin;
 }
 
+export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
+  let isAdmin: boolean = false
+
+  if (currentUserRole) {
+    for (let role of currentUserRole) {
+      isAdmin = role?.role === SYSTEM_ROLES.FacilityAdmin
+    }
+  }
+
+  return isAdmin;
+}
+
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   let isSupeAdmin: boolean = false
 
@@ -746,3 +758,12 @@ export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: 
   }
   return []
 }
+
+export const visibleToUser = (userRoles: string[], visible: string[] | undefined) => {
+  let allow = visible === undefined ? true : false;
+
+  if(visible?.includes('All')) return true
+  visible && userRoles.map(role => allow = visible.includes(role))
+
+  return allow;
+}; 

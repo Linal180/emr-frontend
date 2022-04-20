@@ -1,9 +1,9 @@
 // packages block
 import { createContext, FC, useEffect, useCallback, useReducer, Reducer, useContext } from "react";
 // graphql, interfaces/types, reducer and constants block
-import { isSuperAdmin } from "../utils";
 import { AuthContext } from "./authContext";
 import { LIST_PAGE_LIMIT, TOKEN } from "../constants";
+import { isFacilityAdmin, isSuperAdmin } from "../utils";
 import { ListContextInterface } from "../interfacesTypes";
 import {
   Action, ActionType, initialState, listContextReducer, State as LocalState
@@ -37,6 +37,8 @@ export const ListContext = createContext<ListContextInterface>({
 export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const { user } = useContext(AuthContext);
   const { roles, facility } = user || {};
+  const { id: facilityId } = facility || {};
+  const isFacAdmin = isFacilityAdmin(roles);
   const hasToken = localStorage.getItem(TOKEN);
   const [state, dispatch] = useReducer<Reducer<LocalState, Action>>(listContextReducer, initialState)
   const {
@@ -156,7 +158,8 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
   const fetchAllFacilityList = useCallback(async (page = 1) => {
     try {
       const pageInputs = { paginationOptions: { page, limit: LIST_PAGE_LIMIT } };
-      const facilityInputs = isSuper ? { ...pageInputs } : practiceId ? { practiceId, ...pageInputs } : undefined;
+      const facilityInputs = isSuper ? { ...pageInputs } :
+        isFacAdmin ? { singleFacilityId: facilityId, ...pageInputs } : practiceId ? { practiceId, ...pageInputs } : undefined;
 
       facilityInputs && await findAllFacility({
         variables: {
@@ -164,7 +167,7 @@ export const ListContextProvider: FC = ({ children }): JSX.Element => {
         },
       });
     } catch (error) { }
-  }, [findAllFacility, isSuper, practiceId])
+  }, [facilityId, findAllFacility, isFacAdmin, isSuper, practiceId])
 
   useEffect(() => { }, [user]);
   useEffect(() => { }, [facility]);
