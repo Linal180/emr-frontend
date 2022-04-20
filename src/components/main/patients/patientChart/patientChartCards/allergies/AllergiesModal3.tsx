@@ -8,7 +8,7 @@ import InputController from '../../../../../../controller';
 // constants block
 import { GRAY_SIX, WHITE, WHITE_FIVE, } from '../../../../../../theme';
 import {
-  ACUTE, ADD, APPOINTMENT, CHRONIC, DELETE, EMPTY_OPTION, FUNCTIONAL_HEARTBURN, HISTORICAL, LABEL, NOTE, ONSET_DATE, STATUS, TYPE,
+  ACTIVE, ACUTE, ADD, APPOINTMENT, CHRONIC, DELETE, EMPTY_OPTION, FUNCTIONAL_HEARTBURN, HISTORICAL, NOTE, ONSET_DATE, STATUS, TYPE,
 } from '../../../../../../constants';
 
 
@@ -49,7 +49,7 @@ const AllergiesModal3Component: FC = (): JSX.Element => {
 
           <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
             <Box className='selectBox' bgcolor={WHITE_FIVE} color={WHITE}>
-              <Typography variant='h6'>{LABEL}</Typography>
+              <Typography variant='h6'>{ACTIVE}</Typography>
             </Box>
 
             <Box mx={2} className='selectBox'>
