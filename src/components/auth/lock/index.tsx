@@ -23,7 +23,7 @@ import {
 
 const LockComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
-  const { fetchAllFacilityList } = useContext(ListContext);
+  const { fetchAllFacilityList, setFacilityList, setPracticeList, setRoleList } = useContext(ListContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: localStorage.getItem(EMAIL) || '',
@@ -80,6 +80,13 @@ const LockComponent = (): JSX.Element => {
     });
   };
 
+  const logout = () => {
+    handleLogout()
+    setFacilityList([])
+    setRoleList([])
+    setPracticeList([])
+  }
+
   const { email: { message: emailError } = {}, password: { message: passwordError } = {} } = errors;
 
   return (
@@ -103,7 +110,7 @@ const LockComponent = (): JSX.Element => {
           error={passwordError}
         />
         <Box display='flex' justifyContent='space-between'>
-          <Button variant="contained" color="inherit" onClick={() => handleLogout()}>
+          <Button variant="contained" color="inherit" onClick={() => logout()}>
             {LOGOUT_TEXT}
           </Button>
 

@@ -51,6 +51,7 @@ export interface State {
   appDetail: boolean;
   isInvoiceNumber: boolean;
   cancelAppStatus: boolean;
+  appBillingStatus: string;
 }
 
 export const initialState: State = {
@@ -100,6 +101,7 @@ export const initialState: State = {
     patientId: "",
     providerId: '',
   },
+  appBillingStatus: '',
 }
 
 export enum ActionType {
@@ -142,6 +144,7 @@ export enum ActionType {
   SET_EXTERNAL_APPOINTMENT = 'setExternalAppointment',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
+  SET_APP_BILLING_STATUS = 'setAppBillingStatus',
 }
 
 export type Action =
@@ -192,6 +195,7 @@ export type Action =
       providerId: string,
     }
   }
+  | { type: ActionType.SET_APP_BILLING_STATUS; appBillingStatus: string }
 
 
 export const appointmentReducer = (state: State, action: Action): State => {
@@ -414,6 +418,11 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         cancelAppStatus: action.cancelAppStatus
+      }
+    case ActionType.SET_APP_BILLING_STATUS:
+      return {
+        ...state,
+        appBillingStatus: action.appBillingStatus
       }
   }
 };

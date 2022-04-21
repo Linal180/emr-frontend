@@ -50,7 +50,7 @@ import {
   PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS, NAME,
   MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, MORE_INFO, PATIENT_NOT_FOUND, DEMOGRAPHICS,
-  APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD,
+  APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, N_A,
 } from "../../../../../constants";
 
 const PatientFormComponent: FC = (): JSX.Element => {
@@ -139,30 +139,32 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
             const { drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 } = getDocumentByType(attachments)
 
-            mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_1, insuranceCard1: insuranceCard1 || undefined })
-            mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_2, insuranceCard2: insuranceCard2 || undefined })
-            mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_1, drivingLicense1: drivingLicense1 || undefined })
-            mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_2, drivingLicense2: drivingLicense2 || undefined })
-
             if (facility) {
               const { id: facilityId } = facility
 
               facilityId && await fetchAllDoctorList(facilityId)
             }
 
+            mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_1, insuranceCard1: insuranceCard1 || undefined })
+            mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_2, insuranceCard2: insuranceCard2 || undefined })
+            mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_1, drivingLicense1: drivingLicense1 || undefined })
+            mediaDispatch({ type: mediaActionType.SET_DRIVING_LICENSE_2, drivingLicense2: drivingLicense2 || undefined })
+
             if (doctorPatients) {
               const currentDoctor = doctorPatients.map(doctorPatient => {
-                if (doctorPatient.currentProvider) {
-                  return doctorPatient.doctor
+                const { currentProvider, doctorId, doctor } = doctorPatient || {}
+
+                if (currentProvider) {
+                  const { firstName, lastName } = doctor || {}
+                  const fullName = firstName && lastName ? `${firstName} ${lastName}` : N_A
+
+                  doctorId && setValue("providerId", setRecord(doctorId, fullName))
                 }
 
                 return null
               })[0];
 
               if (currentDoctor) {
-                const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
-                usualProviderId && firstName && lastName &&
-                  setValue("providerId", setRecord(usualProviderId, `${firstName} ${lastName}`))
               }
             }
 
@@ -437,7 +439,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 <Box className={classes.mainGridContainer}>
                   <Box mb={2} mr={2}>
                     <CardComponent cardTitle={DEMOGRAPHICS}>
-                      {getPatientLoading ? <ViewDataLoader columns={6} rows={7} hasMedia={false} /> : <>
+                      {getPatientLoading ? <ViewDataLoader columns={6} rows={3} /> : <>
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController

@@ -108,7 +108,7 @@ const RolesTable: FC = (): JSX.Element => {
       )}
 
       {pages > 1 &&
-        <Box display="flex" justifyContent="flex-end" pt={3}>
+        <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
             count={pages}
             shape="rounded"

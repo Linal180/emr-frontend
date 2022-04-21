@@ -18,7 +18,7 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { GRAY_TWO, WHITE } from '../../../../theme';
-import { extendedPatientSchema } from '../../../../validationSchemas';
+import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext, FacilityContext } from '../../../../context';
 import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
@@ -72,7 +72,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const classes = usePublicAppointmentStyles();
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(extendedPatientSchema)
+    resolver: yupResolver(isEdit ? extendedEditPatientSchema : extendedPatientSchema)
   });
   const { handleSubmit, setValue, watch, control } = methods;
   const {
@@ -500,11 +500,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         setValue('basicCity', defaultCity)
         setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-      else {
-        // Alert.error(message)
-      }
-    }
-    else {
+    } else {
       Alert.error(ZIP_CODE_ENTER)
     }
   }, [basicZipCode, setValue])
@@ -513,7 +509,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     if (basicZipCode && basicCity) {
       const { id } = basicState
       const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
-      setUserData((prev) => ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
+      setUserData((prev) =>
+        ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
       const { status, options } = data || {}
 
       if (status) {
@@ -534,7 +531,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     basicZipCode?.length === 5 && getAddressHandler()
   }, [basicZipCode, getAddressHandler]);
 
-  const verifiedAddressHandler = (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => {
+  const verifiedAddressHandler = (
+    deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string
+  ) => {
     deliveryLine1 && setValue('basicAddress', deliveryLine1);
     zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('basicCity', cityName);
@@ -997,9 +996,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={REGISTRATION_DATES}>
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <Grid container spacing={3}>
+                    {!isEdit && <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <Selector
+                          addEmpty
                           isRequired
                           value={EMPTY_OPTION}
                           label={FACILITY}
@@ -1010,6 +1010,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={6} sm={12} xs={12}>
                         <Selector
+                          addEmpty
                           isRequired
                           value={EMPTY_OPTION}
                           label={USUAL_PROVIDER_ID}
@@ -1017,7 +1018,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           options={renderDoctors(doctorList)}
                         />
                       </Grid>
-                    </Grid>
+                    </Grid>}
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>

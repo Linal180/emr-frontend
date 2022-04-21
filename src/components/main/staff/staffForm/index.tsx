@@ -129,17 +129,14 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const fetchList = useCallback((id: string, name: string) => {
-    reset({
-      providerIds: EMPTY_OPTION,
-      facilityId: { id, name }
-    });
-
-    id && fetchAllDoctorList(id);
-  }, [fetchAllDoctorList, reset]);
+  const fetchList = useCallback(async (id: string, name: string) => {  
+    setValue('providerIds', EMPTY_OPTION)
+    
+    id && await fetchAllDoctorList(id);
+  }, [fetchAllDoctorList, setValue]);
 
   useEffect(() => {
-    selectedFacility && selectedFacilityName && fetchList(selectedFacility, selectedFacilityName)
+    selectedFacility && fetchList(selectedFacility, selectedFacilityName || '')
   }, [fetchAllDoctorList, fetchList, selectedFacility, selectedFacilityName, watch]);
 
   useEffect(() => {
@@ -213,6 +210,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     <Grid container spacing={3}>
                       <Grid item md={isEdit ? 12 : 6}>
                         <Selector
+                          addEmpty
                           isRequired
                           value={EMPTY_OPTION}
                           label={FACILITY}
@@ -224,6 +222,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       {!isEdit &&
                         <Grid item md={6}>
                           <Selector
+                            addEmpty
                             isRequired
                             label={ROLE}
                             name="roleType"
@@ -289,7 +288,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 {getStaffLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
                     <Grid container spacing={3}>
-                      <Grid item md={8} sm={isEdit ? 12 : 6} xs={12}>
+                      <Grid item md={isEdit ? 12 : 8} sm={6} xs={12}>
                         <InputController
                           isRequired
                           fieldType="email"
@@ -301,6 +300,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       {!isEdit &&
                         <Grid item md={4} sm={12} xs={12}>
                           <Selector
+                            addEmpty
                             isRequired
                             value={EMPTY_OPTION}
                             label={PROVIDER}

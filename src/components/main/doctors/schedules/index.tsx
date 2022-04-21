@@ -122,7 +122,15 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
             <ViewDataLoader rows={5} columns={12} hasMedia={false} /> : (
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
-                  <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto" pt={3}>
+                <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
+                    <AddSlotIcon />
+
+                    <Typography>
+                      {ADD_MORE_RECORDS_TEXT}
+                    </Typography>
+                  </Box>
+
+                  <Box>
                     {byDaySchedules?.map((schedule: DaySchedule) => {
                       const { day, slots } = schedule || {}
 
@@ -137,14 +145,6 @@ const DoctorScheduleForm: FC<DoctorScheduleSlotProps> = ({ doctorFacilityId }) =
                           </Box>
                         )
                     })}
-                  </Box>
-
-                  <Box onClick={handleSlotCard} className={classes.addSlot} my={2}>
-                    <AddSlotIcon />
-
-                    <Typography>
-                      {ADD_MORE_RECORDS_TEXT}
-                    </Typography>
                   </Box>
                 </Grid>
               </Grid>

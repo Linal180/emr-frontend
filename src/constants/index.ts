@@ -37,7 +37,20 @@ export const MAMMOGRAPHY_CERT_NUMBER_REGEX = /^[A-Z]{3}-[A-Z]{2}-\d{6}$/;
 export const BANK_ACCOUNT_REGEX = /^([0-9]{11})|([0-9]{2}-[0-9]{3}-[0-9]{6})$/;
 export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/g;
 
-// roles
+// system roles
+export enum SYSTEM_ROLES {
+  SuperAdmin = 'super-admin',
+  PracticeAdmin = 'practice-admin',
+  FacilityAdmin = 'facility-admin',
+  Doctor = 'doctor',
+  DoctorAssistant = 'doctor-assistant',
+  Staff = 'staff',
+  OfficeManager = 'office-manager',
+  NursePractitioner = 'nurse-practitioner',
+  Nurse = 'nurse',
+  FrontDesk = 'front-desk',
+  Patient = 'patient'
+}
 export const SUPER_ADMIN = 'super-admin';
 export const ADMIN = 'admin';
 // constants
@@ -58,6 +71,7 @@ export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
+export const FORM_RESPONSES = "Form Responses";
 export const TIME = "Time";
 export const OPTION_TEXT = "Option";
 export const FORM_TEXT = "Form";
@@ -68,6 +82,8 @@ export const FORM_SUBMIT_TEXT = "Form Submit";
 export const FORM_TYPE = "Select a form type";
 export const ADD_COLUMNS_TEXT = "Add Columns";
 export const FORM_EMBED_TITLE = 'Embed your form builder';
+export const FORM_NOT_PUBLISHED = 'Form is not published';
+export const CONTACT_SUPPORT_TEAM = 'Please Contact support team';
 export const CSS_CLASSES = "CSS Classes";
 export const PLACEHOLDER = "Placeholder";
 export const DROP_ITEM_TEXT = "Drop items here";
@@ -83,7 +99,7 @@ export const FORM_NOT_FOUND = "Form not found!";
 export const FORM_UPDATED = "Form updated successfully!";
 export const PUBLIC_FORM_LINK = "Public form preview Link";
 export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
-export const EMPTY_OPTION = { id: "", name: "" };
+export const EMPTY_OPTION = { id: "", name: "--" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
   Monday = "Monday",
@@ -94,6 +110,7 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
 export const DATE_ADDED = "Date Added";
@@ -107,6 +124,7 @@ export const IS_ADMIN = "Is Admin?";
 export const VIEW_PRACTICES = "View Practices";
 export const EIN = "EIN";
 export const ADMIN_NAME = "Admin Name";
+export const PRACTITIONER = "Practitioner";
 export const FINISH = "Finish";
 export const DONE = "Done";
 export const ALL_STAFF = "Staff";
@@ -215,7 +233,7 @@ export const OTHER_DATE = "Other Date";
 export const NO_INVOICE = "No Invoice";
 export const PAY_AMOUNT = "Pay Amount";
 export const UPDATE_TIME = "Update Time";
-export const FACILITY_CONTACT = "Contact";
+export const FACILITY_CONTACT = "Facility Contact";
 export const AMOUNT_DOLLAR = "Amount ($)";
 export const STAFF_LISTING = "Staff Listing";
 export const MEMBERSHIP_ID = "Membership ID";
@@ -240,6 +258,8 @@ export const TO_CHART = "To Chart";
 export const SAVE_TEXT = "Save";
 export const CLEAR_TEXT = "Clear";
 export const PUBLISH = "Publish";
+export const PUBLISHED = "Published";
+export const NOT_PUBLISHED = "Not Published";
 export const TO_BILLING = "To Billing";
 export const UPLOAD_LOGO = "Upload Logo";
 export const SAVE_DRAFT = "Save as Draft";
@@ -800,6 +820,8 @@ export const CREATE_LAB_ORDER = "Create Lab Order";
 export const NO_SLOT_AVAILABLE = "No Slot available";
 export const REGISTRATION_DATE = "Registration Date";
 export const PATIENT_LAST_NAME = "Patient Last Name";
+export const PATIENT_NAME = "Patient Name";
+export const PATIENT_CONTACT = "Patient Contact";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const PATIENT_FIRST_NAME = "Patient First Name";
 export const SEXUAL_ORIENTATION = "Sexual Orientation";
@@ -893,7 +915,10 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
   )} on ${getFormattedDate(
     dateTime || ""
   )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
-
+export const PUBLIC_FORM_SUCCESS_HEADING = 'Record Submitted';
+export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
+export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
+export const PUBLIC_FORM_FAIL_MESSAGE = 'Your record is not created.';
 
 // routes paths
 export const ROOT_ROUTE = "/";
@@ -937,10 +962,12 @@ export const PRACTICE_DETAILS_ROUTE = "/practice-details";
 export const PATIENT_INFORMATION = "/patient-information";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const FORM_BUILDER_EDIT_ROUTE = "/form-builder/edit";
+export const FORM_BUILDER_RESPONSES = "/form-responses";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const PUBLIC_FORM_BUILDER_FAIL_ROUTE = "/public/form-form/fail";
+export const PUBLIC_FORM_BUILDER_SUCCESS_ROUTE = "/public/form-form/success";
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PATIENT_APPOINTMENT_SUCCESS = `${PATIENT_INFORMATION}/success`;
@@ -986,7 +1013,6 @@ export const PASSWORD_VALIDATION_MESSAGE = "Password must contain 8 characters, 
 export const PHASE_CANNOT_CHANGE_NOTE = "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
-export const DROP_FIELD = 'Please drop atleast one field';
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";
 export const ROLE_NOT_FOUND = "Role not found!";
@@ -1001,6 +1027,7 @@ export const PRACTICE_NOT_FOUND = "Practice not found!";
 export const LOCATION_NOT_FOUND = "Location not found!";
 export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
+export const DROP_FIELD = 'Please drop at least one field';
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
 export const ROLE_CREATED = "Role is created successfully";
 export const ROLE_UPDATED = "Role is updated successfully";
@@ -1039,6 +1066,7 @@ export const FAILED_TO_CREATE_PATIENT = "Failed to create patient!";
 export const FAILED_TO_UPDATE_PATIENT = "Failed to update patient!";
 export const FORBIDDEN_ROUTE = "This resource is forbidden for you!";
 export const ATTACHMENT_DELETED = "Attachment deleted successfully!";
+export const NO_ASSOCIATED_PRACTICE = "No associated practice found!";
 export const ALREADY_ACTIVATED_MESSAGE = "User is already activated.";
 export const CANT_UPDATE_SYSTEM_ROLES = "System roles can't be update";
 export const OLD_PASSWORD_DID_NOT_MATCH = "Old password didn't match!";
@@ -2270,31 +2298,31 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: PRACTICE_DETAILS_TEXT,
     link: PRACTICE_DETAILS_ROUTE,
     desc: PRACTICE_DETAILS_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: FACILITY_MANAGEMENT,
-    link: "/",
+    link: FACILITIES_ROUTE,
     desc: FACILITY_MANAGEMENT_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: PROVIDER_MANAGEMENT,
-    link: "/",
+    link: DOCTORS_ROUTE,
     desc: PROVIDER_MANAGEMENT_DESCRIPTION,
+    visible: ['All']
   },
   {
     name: STAFF_MANAGEMENT,
-    link: "/",
+    link: STAFF_ROUTE,
     desc: STAFF_MANAGEMENT_DESCRIPTION,
-  },
-  {
-    name: SCHEDULE,
-    link: "/",
-    desc: SCHEDULE_DESCRIPTION,
+    visible: ['All']
   },
   {
     name: ROLES_PERMISSIONS,
     link: ROLES_ROUTE,
-    desc: ROLES_PERMISSIONS_DESCRIPTION
+    desc: ROLES_PERMISSIONS_DESCRIPTION,
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin]
   },
   {
     name: EMERGENCY_ACCESS,
@@ -2591,6 +2619,7 @@ export const getFormInitialValues = () => [
   {
     id: uuid(),
     col: 12,
+    name: 'Section',
     fields: [],
   },
 ]
@@ -2785,3 +2814,6 @@ export enum USER_PERMISSIONS {
   getPatientProblem = 'getPatientProblem',
   removePatientProblem = 'removePatientProblem'
 }
+
+//Form Builder API urls
+export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`

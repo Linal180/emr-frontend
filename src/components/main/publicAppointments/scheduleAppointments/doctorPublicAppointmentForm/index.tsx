@@ -135,7 +135,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
     if (selectedService && date) {
       setValue('scheduleEndDateTime', '')
       setValue('scheduleStartDateTime', '')
-      
+
       getSlots({
         variables: {
           getSlots: {
@@ -163,7 +163,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
             createExternalAppointmentInput: {
               createGuardianContactInput: { contactType: ContactType.Guardian },
               createExternalAppointmentItemInput: {
-                serviceId: selectedService, providerId: doctorId, paymentType: PaymentType.Self,
+                serviceId: selectedService, providerId: doctorId, paymentType: PaymentType.Self, facilityId: facilityId || '',
                 scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
                 scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
               },

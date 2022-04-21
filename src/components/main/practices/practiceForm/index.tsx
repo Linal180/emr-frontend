@@ -1,7 +1,7 @@
 // packages block
-import { FC, useContext, useEffect, } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
+import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid, Typography } from "@material-ui/core";
 // components block
 import history from '../../../../history';
@@ -12,7 +12,6 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
-import { renderOfficeRoles } from '../../../../utils';
 import { AuthContext, ListContext } from '../../../../context';
 import { CustomPracticeInputProps, GeneralFormProps } from '../../../../interfacesTypes';
 import { updatePracticeSchema, createPracticeSchema } from '../../../../validationSchemas';
@@ -22,22 +21,23 @@ import {
 import {
   ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, USER_DETAILS_TEXT, ZIP_CODE,
   FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER,
-  PRACTICE_NAME, ROLE, PRACTICE_MANAGEMENT_ROUTE, FORBIDDEN_EXCEPTION, COUNTRY, PRACTICE_USER_ALREADY_EXISTS,
+  PRACTICE_NAME, PRACTICE_MANAGEMENT_ROUTE, FORBIDDEN_EXCEPTION, COUNTRY, PRACTICE_USER_ALREADY_EXISTS,
   NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
-  CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD,
+  CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES,
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
   const {
-    fetchAllFacilityList, setFacilityList, addPracticeList, updatePracticeList, roleList
+    fetchAllFacilityList, setFacilityList, addPracticeList, updatePracticeList, setPracticeList,
+    setRoleList
   } = useContext(ListContext)
   const { id: adminId } = user || {}
   const methods = useForm<CustomPracticeInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updatePracticeSchema : createPracticeSchema)
   });
-  const { handleSubmit, setValue, reset, } = methods;
+  const { handleSubmit, setValue, reset } = methods;
 
   const [getPractice, { loading: getPracticeLoading }] = useGetPracticeLazyQuery({
     fetchPolicy: "network-only",
@@ -96,6 +96,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           Alert.success(message);
           addPracticeList(practice)
           setFacilityList([])
+          setRoleList([])
+          setPracticeList([])
           fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }
@@ -135,7 +137,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     const {
       name, phone, fax, upin, ein, medicaid, medicare, champus, facilityName,
       userFirstName, userLastName, userEmail, email,
-      userPhone, roleType, address, address2, city, state, country, zipCode
+      userPhone, address, address2, city, state, country, zipCode
     } = inputs;
 
     const practiceInput = {
@@ -151,7 +153,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         Alert.error(PRACTICE_NOT_FOUND)
     } else {
       const { id: selectedState } = state;
-      const { id: selectedRole } = roleType;
       const { id: selectedCountry } = country;
 
       await createPractice({
@@ -159,14 +160,20 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           createPracticeInput: {
             createPracticeItemInput: { ...practiceInput },
             createFacilityItemInput: { name: facilityName },
-            createContactInput: { firstName: userFirstName, lastName: userLastName, email: userEmail, primaryContact: true },
+            createContactInput: {
+              firstName: userFirstName, lastName: userLastName, email: userEmail,
+              primaryContact: true
+            },
+
             registerUserInput: {
               isAdmin: true, email: userEmail, password: SYSTEM_PASSWORD, firstName: userFirstName || '',
-              lastName: userLastName, phone: userPhone || '',
-              roleType: selectedRole, adminId: adminId || '',
+              lastName: userLastName, phone: userPhone || '', adminId: adminId || '',
+              roleType: SYSTEM_ROLES.PracticeAdmin,
             },
+
             createFacilityContactInput: {
-              primaryContact: true, email, address, address2, city, state: selectedState, country: selectedCountry, zipCode,
+              primaryContact: true, email, address, address2, city, state: selectedState,
+              country: selectedCountry, zipCode,
             }
           }
         }
@@ -181,207 +188,199 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxWidth="100vw">
           <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
-            {!isEdit &&
-              <Grid container spacing={3}>
-                <Grid md={6} item>
-                  <CardComponent cardTitle={PRACTICE_DETAILS_TEXT}>
-                    {getPracticeLoading ? <ViewDataLoader rows={2} columns={6} /> :
-                      <>
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              isRequired
-                              fieldType="text"
-                              controllerName="name"
-                              controllerLabel={PRACTICE_NAME}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <PhoneField name="phone" label={PHONE} />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <PhoneField name="fax" label={FAX} />
-                          </Grid>
-                        </Grid>
-
-                        <Typography>{PRACTICE_IDENTIFIER}</Typography>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={3} sm={12} xs={12}>
-                            <InputController
-                              placeholder={EIN}
-                              fieldType="text"
-                              controllerName="ein"
-                            />
-                          </Grid>
-
-                          <Grid item md={3} sm={12} xs={12}>
-                            <InputController
-                              placeholder={UPIN}
-                              fieldType="text"
-                              controllerName="upin"
-                            />
-                          </Grid>
-
-                          <Grid item md={2} sm={12} xs={12}>
-                            <InputController
-                              placeholder={MEDICARE}
-                              fieldType="text"
-                              controllerName="medicare"
-                            />
-                          </Grid>
-
-                          <Grid item md={2} sm={12} xs={12}>
-                            <InputController
-                              placeholder={MEDICAID}
-                              fieldType="text"
-                              controllerName="medicaid"
-                            />
-                          </Grid>
-
-                          <Grid item md={2} sm={12} xs={12}>
-                            <InputController
-                              placeholder={CHAMPUS}
-                              fieldType="text"
-                              controllerName="champus"
-                            />
-                          </Grid>
-                        </Grid>
-                      </>
-                    }
-                  </CardComponent>
-                </Grid>
-
-                <Grid md={6} item>
-                  <CardComponent cardTitle={USER_DETAILS_TEXT}>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="userFirstName"
-                          controllerLabel={FIRST_NAME}
-                        />
-                      </Grid>
-
-                      <Grid item md={6} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="text"
-                          controllerName="userLastName"
-                          controllerLabel={LAST_NAME}
-                        />
-                      </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={4} sm={12} xs={12}>
-                        <InputController
-                          isRequired
-                          fieldType="email"
-                          controllerName="userEmail"
-                          controllerLabel={EMAIL}
-                        />
-                      </Grid>
-
-                      <Grid item md={4} sm={12} xs={12}>
-                        <PhoneField name="userPhone" label={PHONE} />
-                      </Grid>
-
-                      <Grid item md={4}>
-                        <Selector
-                          isRequired
-                          label={ROLE}
-                          name="roleType"
-                          value={EMPTY_OPTION}
-                          options={renderOfficeRoles(roleList)}
-                        />
-                      </Grid>
-                    </Grid>
-                  </CardComponent>
-                </Grid>
-
-                <Grid md={6} item>
-                  {!isEdit &&
-                    <Grid container spacing={3}>
-                      <Grid md={12} item>
-                        <CardComponent cardTitle={FACILITY_DETAILS_TEXT}>
+            <Grid container spacing={3}>
+              <Grid item md={6}>
+                <Grid container>
+                  <Grid md={12} item>
+                    <CardComponent cardTitle={PRACTICE_DETAILS_TEXT}>
+                      {getPracticeLoading ? <ViewDataLoader rows={2} columns={6} /> :
+                        <>
                           <Grid container spacing={3}>
                             <Grid item md={12} sm={12} xs={12}>
                               <InputController
                                 isRequired
                                 fieldType="text"
-                                controllerName="facilityName"
-                                controllerLabel={FACILITY_NAME}
-                              />
-                            </Grid>
-                          </Grid>
-
-                          <Grid container spacing={3}>
-                            <Grid item md={6} sm={12} xs={12}>
-                              <InputController
-                                isRequired
-                                fieldType="text"
-                                controllerName="address"
-                                controllerLabel={ADDRESS}
+                                controllerName="name"
+                                controllerLabel={PRACTICE_NAME}
                               />
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              <InputController
-                                fieldType="text"
-                                controllerName="address2"
-                                controllerLabel={ADDRESS_CTA}
-                              />
+                              <PhoneField name="phone" label={PHONE} />
+                            </Grid>
+
+                            <Grid item md={6} sm={12} xs={12}>
+                              <PhoneField name="fax" label={FAX} />
                             </Grid>
                           </Grid>
+
+                          <Typography>{PRACTICE_IDENTIFIER}</Typography>
 
                           <Grid container spacing={3}>
                             <Grid item md={3} sm={12} xs={12}>
                               <InputController
+                                placeholder={EIN}
                                 fieldType="text"
-                                controllerName="zipCode"
-                                controllerLabel={ZIP_CODE}
+                                controllerName="ein"
                               />
                             </Grid>
 
                             <Grid item md={3} sm={12} xs={12}>
                               <InputController
+                                placeholder={UPIN}
                                 fieldType="text"
-                                controllerName="city"
-                                controllerLabel={CITY}
+                                controllerName="upin"
                               />
                             </Grid>
 
-                            <Grid item md={3} sm={12} xs={12}>
-                              <Selector
-                                name="state"
-                                value={EMPTY_OPTION}
-                                label={STATE}
-                                options={MAPPED_STATES}
+                            <Grid item md={2} sm={12} xs={12}>
+                              <InputController
+                                placeholder={MEDICARE}
+                                fieldType="text"
+                                controllerName="medicare"
                               />
                             </Grid>
 
-                            <Grid item md={3} sm={12} xs={12}>
-                              <Selector
-                                value={EMPTY_OPTION}
-                                label={COUNTRY}
-                                name="country"
-                                options={MAPPED_COUNTRIES}
+                            <Grid item md={2} sm={12} xs={12}>
+                              <InputController
+                                placeholder={MEDICAID}
+                                fieldType="text"
+                                controllerName="medicaid"
+                              />
+                            </Grid>
+
+                            <Grid item md={2} sm={12} xs={12}>
+                              <InputController
+                                placeholder={CHAMPUS}
+                                fieldType="text"
+                                controllerName="champus"
                               />
                             </Grid>
                           </Grid>
-                        </CardComponent>
-                      </Grid>
+                        </>
+                      }
+                    </CardComponent>
+                  </Grid>
+
+                  <Box p={3} />
+
+                  <Grid md={12} item>
+                    {!isEdit &&
+                      <CardComponent cardTitle={USER_DETAILS_TEXT}>
+                        <Grid container spacing={3}>
+                          <Grid item md={6} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              fieldType="text"
+                              controllerName="userFirstName"
+                              controllerLabel={FIRST_NAME}
+                            />
+                          </Grid>
+
+                          <Grid item md={6} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              fieldType="text"
+                              controllerName="userLastName"
+                              controllerLabel={LAST_NAME}
+                            />
+                          </Grid>
+                        </Grid>
+
+                        <Grid container spacing={3}>
+                          <Grid item md={8} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              fieldType="email"
+                              controllerName="userEmail"
+                              controllerLabel={EMAIL}
+                            />
+                          </Grid>
+
+                          <Grid item md={4} sm={12} xs={12}>
+                            <PhoneField name="userPhone" label={PHONE} />
+                          </Grid>
+                        </Grid>
+                      </CardComponent>
+                    }
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid md={6} item>
+                <Grid container spacing={3}>
+                  {!isEdit &&
+                    <Grid md={12} item>
+                      <CardComponent cardTitle={FACILITY_DETAILS_TEXT}>
+                        <Grid container spacing={3}>
+                          <Grid item md={12} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              fieldType="text"
+                              controllerName="facilityName"
+                              controllerLabel={FACILITY_NAME}
+                            />
+                          </Grid>
+                        </Grid>
+
+                        <Grid container spacing={3}>
+                          <Grid item md={12} sm={12} xs={12}>
+                            <InputController
+                              isRequired
+                              fieldType="text"
+                              controllerName="address"
+                              controllerLabel={ADDRESS}
+                            />
+                          </Grid>
+
+                          <Grid item md={12} sm={12} xs={12}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="address2"
+                              controllerLabel={ADDRESS_CTA}
+                            />
+                          </Grid>
+
+                          <Grid item md={3} sm={12} xs={12}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="zipCode"
+                              controllerLabel={ZIP_CODE}
+                            />
+                          </Grid>
+
+                          <Grid item md={3} sm={12} xs={12}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="city"
+                              controllerLabel={CITY}
+                            />
+                          </Grid>
+
+                          <Grid item md={3} sm={12} xs={12}>
+                            <Selector
+                              name="state"
+                              value={EMPTY_OPTION}
+                              label={STATE}
+                              options={MAPPED_STATES}
+                            />
+                          </Grid>
+
+                          <Grid item md={3} sm={12} xs={12}>
+                            <Selector
+                              value={EMPTY_OPTION}
+                              label={COUNTRY}
+                              name="country"
+                              options={MAPPED_COUNTRIES}
+                            />
+                          </Grid>
+                        </Grid>
+                      </CardComponent>
                     </Grid>
                   }
                 </Grid>
               </Grid>
-            }
+            </Grid>
           </Box>
 
           <Box display="flex" justifyContent="flex-end" pt={2}>
