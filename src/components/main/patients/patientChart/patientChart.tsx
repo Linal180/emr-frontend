@@ -1,13 +1,14 @@
 // packages block
 import moment from "moment";
 import { useState } from "react";
-import { Avatar, Box, Button, Grid, InputAdornment, TextField } from "@material-ui/core";
+import { Avatar, Box, Button, Card, Grid, } from "@material-ui/core";
 // components block
+import Search from "../../../common/Search";
 import PatientChartCards from "./patientChartCards";
 // constants, history, styling block
-import { Search } from "@material-ui/icons";
+// import { Search } from "@material-ui/icons";
 import { getDate } from "../../../../utils";
-import { GRAY, WHITE } from "../../../../theme";
+import { GRAY, } from "../../../../theme";
 import { Patient } from "../../../../generated/graphql";
 import { ProfileUserIcon } from "../../../../assets/svgs";
 import { SEARCH_PLACEHOLDER } from "../../../../constants";
@@ -49,77 +50,71 @@ const PatientDetailsComponent = (): JSX.Element => {
       description: providerName
     },
   ]
+  const search = (query: string) => { }
 
   return (
-    <Box>
-      <Box className={classes.profileDetailsContainer}>
-        <Box className={classes.profileCard}>
-          <Box display="flex" alignItems="center">
-            <Box pl={1}>
-              <Box pr={3.75}>
-                <Avatar variant="square" src='' className={classes.profileImage} />
+    <Box className={classes.profileDetailsContainer}>
+      <Grid container spacing={3}>
+        <Grid item md={12} sm={12} xs={12}>
+          <Box className={classes.profileCard}>
+            <Box display="flex" alignItems="center">
+              <Box pl={1}>
+                <Box pr={3.75}>
+                  <Avatar variant="square" src='' className={classes.profileImage} />
+                </Box>
               </Box>
             </Box>
-          </Box>
 
-          <Box flex={1}>
-            <Box display="flex">
-              <Box flex={1}>
-                <Box display="flex" alignItems="center" className={classes.userName}>
-                  {`${firstName} ${lastName}`}
+            <Box flex={1}>
+              <Box display="flex">
+                <Box flex={1}>
+                  <Box display="flex" alignItems="center" className={classes.userName}>
+                    {`${firstName} ${lastName}`}
+                  </Box>
+
+                  <Box display="flex" width="100%" pt={1} flexWrap="wrap">
+                    {ProfileDetails.map((item, index) => (
+                      <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
+                        <Box>{item.icon}</Box>
+                        <Box>{item.description}</Box>
+                      </Box>
+                    ))}
+                  </Box>
                 </Box>
 
-                <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                  {ProfileDetails.map((item, index) => (
-                    <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
-                      <Box>{item.icon}</Box>
+                <Box display="flex" pr={3}>
+                  {ProfileAdditionalDetails.map((item, index) => (
+                    <Box textAlign="right" key={`${item.title}-${index}`}>
+                      <Box className={classes.profileInfoHeading}>{item.title}</Box>
                       <Box>{item.description}</Box>
                     </Box>
                   ))}
                 </Box>
 
+                <Button color="secondary" variant="contained">Schedule Appointment</Button>
               </Box>
-              <Box display="flex" pr={3}>
-                {ProfileAdditionalDetails.map((item, index) => (
-                  <Box key={`${item.title}-${index}`}>
-                    <Box className={classes.profileInfoHeading}>{item.title}</Box>
-                    <Box>{item.description}</Box>
-                  </Box>
-                ))}
-              </Box>
-
-              <Button color="secondary" variant="contained">Schedule Appointment</Button>
             </Box>
-
-
-          </Box>
-        </Box>
-        <Grid item md={8} sm={12} xs={12}>
-          <Box bgcolor={`${WHITE}`} mt={4} pl={2} boxShadow={`${GRAY}`}>
-            <Grid container spacing={3}>
-              <Grid item md={10} sm={12} xs={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  type="text"
-                  placeholder="Search by keyword, date or value."
-                  InputProps={{
-                    startAdornment: (<InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>)
-                  }}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={6} xs={6}>
-                <Button color="primary" variant="contained">{SEARCH_PLACEHOLDER}</Button>
-              </Grid>
-            </Grid>
           </Box>
         </Grid>
-        <Box pb={3} />
-        <PatientChartCards />
-      </Box>
+
+        <Grid item md={8} sm={12} xs={12}>
+          <Box mr={1}>
+            <Card>
+              <Box px={3} py={2} boxShadow={`${GRAY}`} borderRadius={6} display="flex" justifyContent="space-between" alignItems="center">
+                <Box maxWidth={450}>
+                  <Search search={search} />
+                </Box>
+
+                <Button variant="contained" color="inherit" className="muted">{SEARCH_PLACEHOLDER}</Button>
+              </Box>
+            </Card>
+          </Box>
+        </Grid>
+
+        <Grid item md={12} sm={12} xs={12}>
+          <PatientChartCards />
+        </Grid>
+      </Grid>
     </Box>
   )
 }

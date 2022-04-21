@@ -326,7 +326,6 @@ export const theme = createTheme({
           border: `1px solid ${GRAY_FIVE}`,
         },
       },
-      
 
       input: {
         height: 48,

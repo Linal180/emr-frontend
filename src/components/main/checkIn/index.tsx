@@ -51,6 +51,7 @@ const CheckInComponent = (): JSX.Element => {
   const [activeStep, setActiveStep] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
+  const search = (query: string) => { }
 
   const handleStep = (step: number) => () => {
     setActiveStep(step);
@@ -366,12 +367,10 @@ const CheckInComponent = (): JSX.Element => {
             <Grid item md={6} sm={12} xs={12}>
               <Card>
                 <Box p={2} className={classes.mainTableContainer}>
-                  <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{ICD_TEN_CODES}</Typography>
 
-                    <Box className={classes.searchOuterContainer}>
-                      <Search search={Search} />
-                    </Box>
+                    <Search search={search} />
                   </Box>
 
                   <Box className="table-overflow">
@@ -408,12 +407,10 @@ const CheckInComponent = (): JSX.Element => {
 
               <Card>
                 <Box p={2} className={classes.mainTableContainer}>
-                  <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{HCPCS_CODES}</Typography>
 
-                    <Box className={classes.searchOuterContainer}>
-                      <Search search={Search} />
-                    </Box>
+                    <Search search={search} />
                   </Box>
 
                   <Box className="table-overflow">
@@ -452,12 +449,10 @@ const CheckInComponent = (): JSX.Element => {
             <Grid item md={6} sm={12} xs={12}>
               <Card>
                 <Box p={2} className={classes.mainTableContainer}>
-                  <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{CPT_CODES}</Typography>
 
-                    <Box className={classes.searchOuterContainer}>
-                      <Search search={Search} />
-                    </Box>
+                    <Search search={Search} />
                   </Box>
 
                   <Box className="table-overflow">
@@ -496,12 +491,10 @@ const CheckInComponent = (): JSX.Element => {
 
               <Card>
                 <Box p={2} className={classes.mainTableContainer}>
-                  <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{CUSTOM_CODES}</Typography>
 
-                    <Box className={classes.searchOuterContainer}>
-                      <Search search={Search} />
-                    </Box>
+                    <Search search={search} />
                   </Box>
 
                   <Box className="table-overflow">

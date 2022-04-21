@@ -14,11 +14,12 @@ import { MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, LAB_ORDERS_DUMMY_DATA, 
 const LabOrdersTable = (): JSX.Element => {
   const classes = useTableStyles();
   const { text, textColor } = appointmentStatus('' || '')
+  const search = (query: string) => { }
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box px={2} display="flex" justifyContent="space-between" alignItems="center">
-        <Search search={Search} />
+      <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
+        <Search search={search} />
         
         <Button variant="outlined" color="inherit" className='blue-button-new' startIcon={<Add />} component={Link} to={CREATE_LAB_ORDERS_ROUTE}>
           {MANUAL_ENTRY}

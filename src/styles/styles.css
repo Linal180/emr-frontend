@@ -270,17 +270,23 @@ body .MuiTabPanel-root {
 .react-tel-input {
   font-family: "Inter, sans-serif";
   font-size: 14px;
+  border: 1px solid #EEF6FF;
+}
+
+.react-tel-input:hover {
+  border: 1px solid #1C6DD0;
 }
 
 .react-tel-input .form-control {
   width: 100%;
-  border-color: #ECF0F3;
-  height: 42px;
+  background-color: #F3F4F6;
+  border: none;
+  height: 48px;
   color: currentColor;
 }
 
 .react-tel-input .flag-dropdown {
-  border-color: #ECF0F3;
+  border-color: #F3F4F6;
 }
 
 .MuiCheckbox-colorPrimary.Mui-checked,

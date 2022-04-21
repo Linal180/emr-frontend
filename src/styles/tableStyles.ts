@@ -23,7 +23,6 @@ export const useTableStyles = makeStyles(() => ({
     minHeight: 48,
     display: 'flex',
     alignItems: 'center',
-    marginBottom: theme.spacing(2),
     "&:hover": {
       borderColor: BLUE_TWO,
     },
