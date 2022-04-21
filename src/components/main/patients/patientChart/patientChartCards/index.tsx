@@ -6,9 +6,8 @@ import PatientCardComponent from "./PatientCardComponent";
 // interfaces, graphql, constants block /styles
 import { GeneralFormProps } from '../../../../../interfacesTypes';
 import {
-  ALLERGIES_TEXT, CARE_PLAN_TEXT, FAMILY_HISTORY_TEXT, IMPLANT_HISTORY_TEXT, LAB_RESULTS_TEXT,
-  MEDICAL_HISTORY_TEXT, MEDICATIONS_TEXT, PATIENT_CHARTING_DATA, PROBLEMS_TEXT, SOCIAL_HISTORY_TEXT,
-  SURGICAL_HISTORY_TEXT, VACCINE_TEXT, VITALS_TEXT,
+  CARE_PLAN_TEXT, FAMILY_HISTORY_TEXT, IMPLANT_HISTORY_TEXT, LAB_RESULTS_TEXT, MEDICAL_HISTORY_TEXT, MEDICATIONS_TEXT, 
+  PATIENT_CHARTING_DATA, PROBLEMS_TEXT, SOCIAL_HISTORY_TEXT, SURGICAL_HISTORY_TEXT, VACCINE_TEXT, VITALS_TEXT,
 } from "../../../../../constants";
 import AllergiesComponent from './allergies';
 
@@ -30,6 +29,7 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
               <AllergiesComponent />
 
               <Box pb={3} />
+
               <PatientCardComponent cardTitle={FAMILY_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
 
               <Box pb={3} />

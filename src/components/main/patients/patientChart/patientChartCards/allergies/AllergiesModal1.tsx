@@ -15,7 +15,9 @@ const AllergiesModal1Component: FC = (): JSX.Element => {
   const isMenuOpen = Boolean(anchorEl);
   const cardId = "widget-menu";
   
-  const handleChartingCardsMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
+  const handleChartingCardsMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({ 
+    type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget 
+  })
   const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
 
   return (
