@@ -1,5 +1,7 @@
 //packages import
-import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, Radio, FormGroup, Checkbox } from '@material-ui/core'
+import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, FormGroup, Checkbox } from '@material-ui/core'
+//component
+import RadioButton from '../../components/common/RadioButton'
 //constant & interfaces , util funtions
 import { ElementType } from '../../generated/graphql'
 import { FieldComponentProps } from '../../interfacesTypes';
@@ -35,15 +37,14 @@ export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentPr
 export const RadioGroupComponent = ({ item, field }: FieldComponentProps) => {
   const { name, defaultValue, fieldId } = item;
   return (
-    <FormControl>
+    <FormControl component="fieldset">
       <RadioGroup
         defaultValue={defaultValue}
         name={name}
-        className='checkedRadioButton'
         {...field}
       >
         {item?.options?.map((option, index) => (
-          <FormControlLabel key={`${index}-${fieldId}-${option.value}`} value={option.value} control={<Radio />} label={option.name} />
+          <FormControlLabel key={`${index}-${fieldId}-${option.value}`} value={option.value} control={<RadioButton />} label={option.name} />
         ))}
       </RadioGroup>
     </FormControl>

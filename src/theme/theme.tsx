@@ -3,10 +3,9 @@ import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
-  GREEN, BLUE, WHITE, BLACK, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_NINE,
-  BLACK_TWO, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY,
+  GREEN, BLUE, WHITE, BLACK, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_NINE, BLACK_TWO, GRAY_SIX, ORANGE, GRAY_FIVE,
+  BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY, BLUE_TWO,
 } from ".";
-import { BLUE_TWO, GRAY_FIVE } from "./colors";
 
 const breakpoints = createBreakpoints({})
 const customTheme = createTheme()
@@ -311,27 +310,29 @@ export const theme = createTheme({
 
     MuiOutlinedInput: {
       root: {
+        backgroundColor: GREY,
+
         "& $notchedOutline": {
           borderRadius: 4,
           border: `1px solid ${GREY_FOUR}`,
-          backgroundColor: GREY,
           fontFamily: INTER,
         },
 
         "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {
-          border: `1px solid ${BLUE}`,
+          border: `1px solid ${BLUE_TWO}`,
         },
 
         "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
           border: `1px solid ${GRAY_FIVE}`,
-        }
+        },
       },
+      
 
       input: {
         height: 48,
         padding: '12px 16px',
-        boxSizing: 'border-box'
-      }
+        boxSizing: 'border-box',
+      },
     },
 
     MuiInputLabel: {
@@ -585,6 +586,6 @@ export const theme = createTheme({
           color: GRAY_THREE
         }
       }
-    }
+    },
   },
 });

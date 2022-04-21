@@ -1,5 +1,5 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { BLACK_EIGHT, BLACK_TWO, GRAY_FIVE, GRAY_SIX, WHITE, WHITE_THREE } from "../theme";
+import { BLACK_TWO, BLUE_TWO, GRAY_FIVE, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -14,17 +14,20 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
 }))(Tooltip);
 
 export const useTableStyles = makeStyles(() => ({
-  tableSearchBox: {
-    backgroundColor: WHITE,
+  searchBox: {
+    backgroundColor: GREY,
     borderRadius: 4,
-    border: `1px solid ${BLACK_EIGHT}`,
+    border: `1px solid ${GREY_FOUR}`,
+    minHeight: 48,
     display: 'flex',
     alignItems: 'center',
-    maxWidth: 400,
-    margin: 36,
+    marginBottom: theme.spacing(2),
+    "&:hover": {
+      borderColor: BLUE_TWO,
+    },
   },
 
-  tableSearchInput: {
+  searchInput: {
     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
       border: 'none',
       padding: 0,
@@ -41,6 +44,7 @@ export const useTableStyles = makeStyles(() => ({
     background: WHITE,
     borderRadius: 12,
     overflow: "auto",
+    padding: theme.spacing(2),
     maxHeight: "calc(100vh - 248px)",
   },
 

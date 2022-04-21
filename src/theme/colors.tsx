@@ -64,6 +64,8 @@ export const GREY_TWO = "#A1A5B7";
 export const GREY_THREE = "#7E8299";
 export const GREY_FOUR = "#EEF6FF";
 export const GREY_FIVE = "#D1D5DB";
+export const GREY_SIX = "#9CA3AF";
+export const GREY_SEVEN = "#B5B5C3";
 
 export const WHITE = "#FFFFFF";
 
