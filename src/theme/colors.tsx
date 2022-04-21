@@ -23,11 +23,10 @@ export const BLACK_NINE = "#202020";
 export const WHITE_ONE = "#F2F3F5";
 export const WHITE_TWO = "#E5E5E5";
 export const WHITE_THREE = "#F3F6F9";
-export const WHITE_FOUR = "#E4E6EF;";
-export const WHITE_FIVE = "#A1A5B7;";
+export const WHITE_FOUR = "#E4E6EF";
+export const WHITE_FIVE = "#A1A5B7";
 export const WHITE_SIX = "#F1FAFF";
 export const WHITE_SEVEN = "#F3F4F6";
-export const WHITE_EIGHT = "#a1a5b740";
 
 export const BLUE_THREE = "#00A3FF";
 export const BLUE_FOUR = "#1BC5BD"

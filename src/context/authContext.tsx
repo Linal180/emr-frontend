@@ -1,5 +1,6 @@
 // packages block
 import { createContext, FC, useEffect, useState } from "react";
+import { pluck } from "underscore";
 // graphql, interfaces/types and constants block
 import { TOKEN } from "../constants";
 import { getUserRole, isSuperAdmin } from "../utils";
@@ -11,17 +12,22 @@ import {
 
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
+  userRoles: [],
+  practiceName: '',
   currentUser: null,
   isLoggedIn: false,
   userPermissions: [],
   setIsLoggedIn: () => { },
   setUser: (user: User | null) => { },
+  setPracticeName: (name: string) => { },
   setCurrentUser: (user: Doctor | Staff | null) => { },
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
   const [user, setUser] = useState<User | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+  const [practiceName, setPracticeName] = useState<string>('');
   const [isLoggedIn, _setIsLoggedIn] = useState<boolean>(false);
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
@@ -92,11 +98,12 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
           const { user: userResponse } = me;
 
           if (userResponse) {
-            const { roles, userId } = userResponse;
+            const { roles, userId, facility } = userResponse;
             const isAdmin = isSuperAdmin(roles as RolesPayload['roles'])
 
             if (!isAdmin) {
               const roleName = getUserRole(roles as RolesPayload['roles'])
+
               if (roleName === 'doctor') {
                 getDoctor({
                   variables: { getDoctor: { id: userId } }
@@ -106,15 +113,27 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
                   variables: { getStaff: { id: userId } }
                 })
               }
+
+              if (facility) {
+                const { practice } = facility;
+                const { name } = practice || {}
+
+                name && setPracticeName(name)
+              }
             }
+            
+            if(!!roles){
+              setUserRoles(pluck(roles, 'role'));
 
-            roles?.map(role => {
-              const { rolePermissions } = role || {};
-              let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
-
-              return permissionsList && setUserPermissions(permissionsList as string[])
-            })
-
+              roles?.map(role => {
+                const { rolePermissions } = role || {};
+                let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
+                const allPermissions = permissionsList?.length === 0 ? [''] : permissionsList
+                
+                return permissionsList && setUserPermissions(allPermissions as string[])
+              })
+            }
+              
             setUser(userResponse as User);
           }
         }
@@ -134,11 +153,14 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
       value={{
         user,
         setUser,
+        userRoles,
         isLoggedIn,
         currentUser,
+        practiceName,
         setIsLoggedIn,
         setCurrentUser,
         userPermissions,
+        setPracticeName,
       }}
     >
       {children}

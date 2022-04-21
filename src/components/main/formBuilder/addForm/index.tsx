@@ -18,7 +18,7 @@ import FieldProperties from './fieldProperties';
 import { AuthContext } from '../../../../context';
 import InputController from '../../../../controller';
 import { FormAddIcon } from '../../../../assets/svgs';
-import { WHITE, WHITE_EIGHT, } from '../../../../theme';
+import { WHITE, WHITE_FIVE, } from '../../../../theme';
 import { ListContext } from '../../../../context/listContext'
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import { isSuperAdmin, renderFacilities, setRecord } from '../../../../utils';
@@ -31,7 +31,7 @@ import {
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES, getFormInitialValues,
   FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION,
-  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD
+  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT
 } from '../../../../constants';
 
 //component
@@ -40,6 +40,7 @@ const AddForm = () => {
   const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
   const [selected, setSelected] = useState<FormInitialType>(FIELD_EDIT_INITIAL_VALUES);
   const [colMenu, setColMenu] = useState<null | HTMLElement>(null)
+  const [isActive, setIsActive] = useState<boolean>(false)
   //hooks
   const { id: formId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
@@ -178,6 +179,7 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 12,
+            name: 'Section_1',
             fields: [],
           },
         ]);
@@ -189,11 +191,13 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 6,
+            name: 'Section_1',
             fields: [],
           },
           {
             id: uuid(),
             col: 6,
+            name: 'Section_2',
             fields: [],
           },
         ]);
@@ -205,16 +209,19 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 4,
+            name: 'Section_1',
             fields: [],
           },
           {
             id: uuid(),
             col: 4,
+            name: 'Section_2',
             fields: [],
           },
           {
             id: uuid(),
             col: 4,
+            name: 'Section_3',
             fields: [],
           },
         ]);
@@ -226,6 +233,7 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 12,
+            name: 'Section_1',
             fields: [],
           },
         ]);
@@ -241,7 +249,7 @@ const AddForm = () => {
       const { id: typeId } = type;
       const { id: facility } = selectedFacility;
       const selectedFacilityId = isSuper ? facility : facilityId ? facilityId : '';
-      const data = { name, type: typeId as FormType, facilityId: selectedFacilityId, layout: { sections: formValues } }
+      const data = { name, type: typeId as FormType, facilityId: selectedFacilityId, layout: { sections: formValues }, isActive }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
     else Alert.error(DROP_FIELD)
@@ -325,7 +333,13 @@ const AddForm = () => {
 
               <Box mx={1} />
 
-              <Button type='submit' variant='contained' color='primary' disabled={loading || updateLoading}>
+              <Button type='submit' onClick={() => setIsActive(false)} variant='contained' className='blue-button-new' color='inherit' disabled={loading || updateLoading}>
+                {loading || updateLoading ? <CircularProgress size={20} color="inherit" /> : SAVE_DRAFT}
+              </Button>
+
+              <Box mx={1} />
+
+              <Button type='submit' variant='contained' onClick={() => setIsActive(true)} color='primary' disabled={loading || updateLoading}>
                 {loading || updateLoading ? <CircularProgress size={20} color="inherit" /> : PUBLISH}
               </Button>
             </Box>
@@ -376,7 +390,8 @@ const AddForm = () => {
                 <Grid item md={7} sm={4} xs={12}>
                   <Box p={3} bgcolor={WHITE} borderRadius={6}>
                     {getFormLoader ? <ViewDataLoader rows={3} columns={3} hasMedia={false} /> :
-                      <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
+                      <DropContainer formValues={formValues} changeValues={changeValues}
+                        delFieldHandler={delFieldHandler} delColHandler={delColHandler} setFormValues={setFormValues} />
                     }
                     <Grid container justifyContent='center'>
                       <Grid item md={4} sm={12} xs={12}>
@@ -387,7 +402,7 @@ const AddForm = () => {
                           aria-label="widget's patient"
                           onClick={handleMenuOpen}
                         >
-                          <Box bgcolor={WHITE_EIGHT} borderRadius={6} p={1} mr={1}>
+                          <Box bgcolor={WHITE_FIVE} borderRadius={6} p={1} mr={1}>
                             <FormAddIcon />
                           </Box>
 

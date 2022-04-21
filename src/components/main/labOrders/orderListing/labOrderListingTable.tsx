@@ -66,7 +66,7 @@ const LabOrderListingTable = (): JSX.Element => {
         </Box>
       </Box>
 
-      <Box display="flex" justifyContent="flex-end" p={2}>
+      <Box display="flex" justifyContent="flex-end" p={3}>
         <Pagination
           count={10}
           shape="rounded"

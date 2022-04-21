@@ -17,7 +17,7 @@ import {
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, ResponsePayloadResponse, UsersFormsElements, FormElement,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -39,10 +39,13 @@ export interface CalendarChart {
 
 export interface AuthContextProps {
   user: User | null;
+  userRoles: string[],
   isLoggedIn: boolean;
+  practiceName: string,
   userPermissions: string[],
   currentUser: Doctor | Staff | null;
   setUser: (user: User | null) => void;
+  setPracticeName: (name: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setCurrentUser: (user: Doctor | Staff | null) => void;
 }
@@ -284,6 +287,7 @@ export interface SelectorProps {
   label: string
   error?: string
   disabled?: boolean
+  addEmpty?: boolean
   isRequired?: boolean
   isMultiple?: boolean
   value?: SelectorOption
@@ -792,6 +796,7 @@ export interface FormInitialType extends FieldsInputs {
 export interface FormValuesTypes {
   id: string;
   col: number;
+  name: string;
   fields: FieldsInputs[],
 }
 
@@ -819,6 +824,7 @@ export interface DropContainerPropsTypes {
   changeValues: (id: string, item: FieldsInputs) => void;
   delFieldHandler: (id: number, index: number) => void;
   delColHandler: (index: number) => void
+  setFormValues: Dispatch<SetStateAction<SectionsInputs[]>>
 }
 
 
@@ -836,6 +842,7 @@ export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
   data: SectionsInputs[];
+  formName: string
 }
 
 export interface FieldComponentProps {
@@ -879,4 +886,32 @@ export interface AutoCompleteResponse {
   status: boolean;
   message: string;
   options: any
+}
+
+
+export interface UserFormType {
+  attachmentId: string
+  title: string
+  file: File
+}
+
+export interface FormAttachmentPayload {
+  attachment?: String | null | undefined;
+  response?: ResponsePayloadResponse
+}
+
+export interface FormMediaPreviewProps {
+  open: Boolean;
+  closeModalHandler: () => void;
+  url: string;
+  formId: string
+}
+
+export interface UserFormPreviewModalProps {
+  open: Boolean;
+  closeModalHandler: () => void;
+  formId: string
+  userForms: UsersFormsElements[]
+  formLabels: FormElement[]
+  imagePreviewHandler: (id: string) => void
 }

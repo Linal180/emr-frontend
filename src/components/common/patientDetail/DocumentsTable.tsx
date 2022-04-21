@@ -131,11 +131,9 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+      <Box px={2} display="flex" justifyContent="space-between" alignItems="center">
         <Box display="flex">
-          <Box className={classes.searchOuterContainer}>
-            <Search search={search} />
-          </Box>
+          <Search search={search} />
 
           <Box ml={3} className={classes.RadioButtonsStroke}>
             <Button size="small" variant="contained" color="primary" className="muted">{PENDING}</Button>
