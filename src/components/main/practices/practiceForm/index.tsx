@@ -20,11 +20,10 @@ import {
 } from '../../../../generated/graphql';
 import {
   ADDRESS, ADDRESS_CTA, CITY, EMAIL, EMPTY_OPTION, FACILITY_DETAILS_TEXT, USER_DETAILS_TEXT, ZIP_CODE,
-  FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE,
+  FACILITY_NAME, FAX, FIRST_NAME, LAST_NAME, PHONE, PRACTICE_DETAILS_TEXT, SAVE_TEXT, STATE, PRACTICE_IDENTIFIER,
   PRACTICE_NAME, PRACTICE_MANAGEMENT_ROUTE, FORBIDDEN_EXCEPTION, COUNTRY, PRACTICE_USER_ALREADY_EXISTS,
-  NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES,
-  MAPPED_COUNTRIES, CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD,
-  PRACTICE_IDENTIFIER, SYSTEM_ROLES,
+  NOT_FOUND_EXCEPTION, PRACTICE_NOT_FOUND, EIN, CHAMPUS, MEDICAID, MEDICARE, UPIN, MAPPED_STATES, MAPPED_COUNTRIES,
+  CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES,
 } from "../../../../constants";
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -189,7 +188,6 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxWidth="100vw">
           <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
-
             <Grid container spacing={3}>
               <Grid item md={6}>
                 <Grid container>
@@ -306,10 +304,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </CardComponent>
                     }
                   </Grid>
-
                 </Grid>
               </Grid>
-
 
               <Grid md={6} item>
                 <Grid container spacing={3}>

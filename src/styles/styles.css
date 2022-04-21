@@ -313,6 +313,11 @@ body .MuiTabPanel-root {
   color: #DD1010;
 }
 
+.btnDanger {
+  color: #ffffff !important;
+  background-color: #DD1010 !important;
+}
+
 .logo-container {
   border: 2px solid rgba(0, 0, 0, 0.3);
   border-radius: 8px;
@@ -404,4 +409,35 @@ body .MuiTabPanel-root {
 
 .accordionCustomize .Mui-expanded {
   border-bottom: none !important;
+}
+
+/* Tabs Styling */
+
+.filledTabs {
+  border: 1px solid #EFF2F5;
+  border-radius: 6px;
+  padding: 12px 10px 0 10px;
+}
+
+.filledTabs .MuiTab-root.Mui-selected {
+  background: #A1A5B7;
+  border-radius: 6px;
+  border: none;
+  color: #ffffff;
+}
+
+/* toggle-styling */
+.toggleMain {
+  width: 205px !important;
+}
+
+.toggleMain .MuiSwitch-thumb {
+  width: 100px !important;
+}
+
+.selectBox {
+  color: #B5B5C3;
+  padding: 5px 10px;
+  border-radius: 6px;
+  cursor: pointer;
 }
