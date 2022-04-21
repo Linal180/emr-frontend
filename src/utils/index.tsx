@@ -2,6 +2,7 @@
 import { ReactNode, memo } from "react";
 import axios from "axios";
 import moment from "moment";
+import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
@@ -103,39 +104,29 @@ export const isCurrentUserCanMakeAdmin = (currentUserRole: RolesPayload['roles']
 }
 
 export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
-  let isAdmin: boolean = false
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
-  if (currentUserRole) {
-    for (let role of currentUserRole) {
-      isAdmin = role?.role === SYSTEM_ROLES.PracticeAdmin || role?.role === SYSTEM_ROLES.SuperAdmin
-    }
-  }
+  return userRoles.includes(SYSTEM_ROLES.SuperAdmin) || userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
+}
 
-  return isAdmin;
+export const isPracticeAdmin = (currentUserRole: RolesPayload['roles']) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
 }
 
 export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
-  let isAdmin: boolean = false
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
-  if (currentUserRole) {
-    for (let role of currentUserRole) {
-      isAdmin = role?.role === SYSTEM_ROLES.FacilityAdmin
-    }
-  }
-
-  return isAdmin;
+  return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.Doctor)
+    || userRoles.includes(SYSTEM_ROLES.Staff) || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
 }
 
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
-  let isSupeAdmin: boolean = false
+  const userRoles = roles ? pluck(roles, 'role') : ['']
 
-  if (roles) {
-    for (let role of roles) {
-      isSupeAdmin = role?.role === SUPER_ADMIN
-    }
-  }
-
-  return isSupeAdmin;
+  return userRoles.includes(SYSTEM_ROLES.SuperAdmin)
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {

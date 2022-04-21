@@ -359,7 +359,6 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       else if (type === 'CreditCard') dispatch({ type: ActionType.SET_APP_SHOW_PAY_BTN, appShowPayBtn: false })
     }
   };
-  console.log(appBillingStatus);
 
   return (
     <Dialog

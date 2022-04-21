@@ -18,7 +18,7 @@ import FieldProperties from './fieldProperties';
 import { AuthContext } from '../../../../context';
 import InputController from '../../../../controller';
 import { FormAddIcon } from '../../../../assets/svgs';
-import { WHITE, WHITE_EIGHT, } from '../../../../theme';
+import { WHITE, WHITE_FIVE, } from '../../../../theme';
 import { ListContext } from '../../../../context/listContext'
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import { isSuperAdmin, renderFacilities, setRecord } from '../../../../utils';
@@ -402,7 +402,7 @@ const AddForm = () => {
                           aria-label="widget's patient"
                           onClick={handleMenuOpen}
                         >
-                          <Box bgcolor={WHITE_EIGHT} borderRadius={6} p={1} mr={1}>
+                          <Box bgcolor={WHITE_FIVE} borderRadius={6} p={1} mr={1}>
                             <FormAddIcon />
                           </Box>
 

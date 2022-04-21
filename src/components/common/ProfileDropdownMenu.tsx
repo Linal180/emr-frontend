@@ -3,25 +3,28 @@ import { useState, MouseEvent, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, } from '@material-ui/core';
 // utils and header styles block
-import { AuthContext } from "../../context";
+import { AuthContext, ListContext } from "../../context";
 import { BLACK_TWO, WHITE_FOUR } from "../../theme";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { handleLogout, isSuperAdmin, onIdle } from "../../utils";
+import { handleLogout, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
 
 import {
-  EMAIL, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
+  EMAIL, FACILITY, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
   SECURITY, SUPER_ADMIN
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
   const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName } = useContext(AuthContext);
-  const { email, roles } = user || {};
+  const { setFacilityList, setRoleList, setPracticeList } = useContext(ListContext)
+  const { email, roles, facility } = user || {};
   const { firstName, lastName } = currentUser || {}
+  const { name: facilityName } = facility || {}
   const [isSuper, setIsSuper] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const FacilityAdmin = isUserAdmin(roles)
 
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -39,6 +42,9 @@ const ProfileDropdownMenu = (): JSX.Element => {
     setUser(null)
     setCurrentUser(null)
     handleLogout();
+    setFacilityList([]);
+    setRoleList([])
+    setPracticeList([])
   };
 
   useEffect(() => {
@@ -88,6 +94,14 @@ const ProfileDropdownMenu = (): JSX.Element => {
             </Box>
 
             <Typography variant="body1">{practiceName}</Typography>
+          </Box>}
+
+          {!FacilityAdmin && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+            <Box pr={1} color={BLACK_TWO}>
+              <Typography variant="body1">{FACILITY} :</Typography>
+            </Box>
+
+            <Typography variant="body1">{facilityName}</Typography>
           </Box>}
 
           <Grid container spacing={3}>

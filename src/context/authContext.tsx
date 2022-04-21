@@ -1,5 +1,6 @@
 // packages block
 import { createContext, FC, useEffect, useState } from "react";
+import { pluck } from "underscore";
 // graphql, interfaces/types and constants block
 import { TOKEN } from "../constants";
 import { getUserRole, isSuperAdmin } from "../utils";
@@ -11,6 +12,7 @@ import {
 
 export const AuthContext = createContext<AuthContextProps>({
   user: null,
+  userRoles: [],
   practiceName: '',
   currentUser: null,
   isLoggedIn: false,
@@ -24,10 +26,11 @@ export const AuthContext = createContext<AuthContextProps>({
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const hasToken = localStorage.getItem(TOKEN);
   const [user, setUser] = useState<User | null>(null);
+  const [userRoles, setUserRoles] = useState<string[]>([]);
+  const [practiceName, setPracticeName] = useState<string>('');
   const [isLoggedIn, _setIsLoggedIn] = useState<boolean>(false);
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
-  const [practiceName, setPracticeName] = useState<string>('');
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
@@ -118,14 +121,19 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
                 name && setPracticeName(name)
               }
             }
+            
+            if(!!roles){
+              setUserRoles(pluck(roles, 'role'));
 
-            roles?.map(role => {
-              const { rolePermissions } = role || {};
-              let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
-              const allPermissions = permissionsList?.length === 0 ? [''] : permissionsList
-              return permissionsList && setUserPermissions(allPermissions as string[])
-            })
-
+              roles?.map(role => {
+                const { rolePermissions } = role || {};
+                let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
+                const allPermissions = permissionsList?.length === 0 ? [''] : permissionsList
+                
+                return permissionsList && setUserPermissions(allPermissions as string[])
+              })
+            }
+              
             setUser(userResponse as User);
           }
         }
@@ -145,6 +153,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
       value={{
         user,
         setUser,
+        userRoles,
         isLoggedIn,
         currentUser,
         practiceName,
