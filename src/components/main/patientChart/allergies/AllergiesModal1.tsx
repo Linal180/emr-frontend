@@ -2,11 +2,11 @@
 import { FC, Reducer, useReducer, MouseEvent } from 'react';
 import { Box, InputBase, Menu, Typography } from '@material-ui/core';
 // constants block
-import { SmallSearchIcon } from '../../../../../../assets/svgs';
-import { GRAY_FIVE, GRAY_SIX, WHITE, WHITE_FIVE } from '../../../../../../theme';
-import { DRUG, ENVIRONMENT, FOOD, TYPE } from '../../../../../../constants';
-import { usePatientChartingStyles } from "../../../../../../styles/patientCharting";
-import { patientReducer, Action, initialState, State, ActionType } from "../../../../../../reducers/patientReducer";
+import { SmallSearchIcon } from '../../../../assets/svgs';
+import { GRAY_FIVE, GRAY_SIX, WHITE, WHITE_FIVE } from '../../../../theme';
+import { DRUG, ENVIRONMENT, FOOD, TYPE } from '../../../../constants';
+import { usePatientChartingStyles } from "../../../../styles/patientCharting";
+import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import AllergiesModal2Component from './AllergiesModal2';
 
 const AllergiesModal1Component: FC = (): JSX.Element => {

@@ -3,12 +3,12 @@ import { FC, } from 'react';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
 import { Box, Button, Typography } from '@material-ui/core';
 // component block
-import Selector from '../../../../../common/Selector';
-import InputController from '../../../../../../controller';
+import Selector from '../../../common/Selector';
+import InputController from '../../../../controller';
 // constants block
-import { ModalAddIcon, } from '../../../../../../assets/svgs';
-import { GRAY_NINE, GRAY_SIX, WHITE, WHITE_FIVE, WHITE_FOUR } from '../../../../../../theme';
-import { ADD, ADULTHOOD, CHILDHOOD, DELETE, EMPTY_OPTION, NOTE, ONSET_DATE, REACTION, SEVERITY, UNKNOWN } from '../../../../../../constants';
+import { ModalAddIcon, } from '../../../../assets/svgs';
+import { GRAY_NINE, GRAY_SIX, WHITE, WHITE_FIVE, WHITE_FOUR } from '../../../../theme';
+import { ADD, ADULTHOOD, CHILDHOOD, DELETE, EMPTY_OPTION, NOTE, ONSET_DATE, REACTION, SEVERITY, UNKNOWN } from '../../../../constants';
 
 const AllergiesModal2Component: FC = (): JSX.Element => {
 

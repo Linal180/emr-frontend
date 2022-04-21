@@ -135,7 +135,7 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
                 <Box p={1} />
 
                 <Button type="submit" variant="contained" color="primary" disabled={!!!patientId}>
-                  {/* <Link to={`${PATIENT_INFORMATION}/${patientId}`}> */}
+                  {/* <Link to={`${PATIENT_INFORMATION_ROUTE}/${patientId}`}> */}
                   <Link to={PATIENT_APPOINTMENT_SUCCESS}>
                     <Box color={WHITE}>
                       {CONTINUE_TEXT}

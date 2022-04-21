@@ -5,13 +5,13 @@ import { Card, CardContent, CardHeader, IconButton, Box, Typography, Menu } from
 // components block
 import AllergiesModal1Component from "./AllergiesModal1";
 // interfaces/types block
-import history from "../../../../../../history";
-import { AddChartingIcon } from "../../../../../../assets/svgs";
-import { ChartingCardComponentType } from "../../../../../../interfacesTypes";
-import { usePatientChartingStyles } from "../../../../../../styles/patientCharting";
+import history from "../../../../history";
+import { AddChartingIcon } from "../../../../assets/svgs";
+import { ChartingCardComponentType } from "../../../../interfacesTypes";
+import { usePatientChartingStyles } from "../../../../styles/patientCharting";
 import {
   patientReducer, Action, initialState, State, ActionType
-} from "../../../../../../reducers/patientReducer";
+} from "../../../../reducers/patientReducer";
 
 const AllergiesCardComponent: FC<ChartingCardComponentType> = ({
   cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon, vitalsCard

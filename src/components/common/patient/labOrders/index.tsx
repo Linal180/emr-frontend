@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 import { Add } from '@material-ui/icons';
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, } from "@material-ui/core";
 // components block
-import Search from "../Search";
+import Search from "../../Search";
 // constant, utils and styles block
-import { renderTh } from "../../../utils";
-import StatusSelector from "../../main/dashboard/statusSelector";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, LAB_ORDERS_DUMMY_DATA, CREATE_LAB_ORDERS_ROUTE, } from "../../../constants";
+import { renderTh } from "../../../../utils";
+import StatusSelector from "../../../main/dashboard/statusSelector";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { MANUAL_ENTRY, APPOINTMENT, TESTS, DATE, STATUS, LAB_ORDERS_DUMMY_DATA, CREATE_LAB_ORDERS_ROUTE, } from "../../../../constants";
 
 const LabOrdersTable = (): JSX.Element => {
   const classes = useTableStyles();

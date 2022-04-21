@@ -3,7 +3,7 @@ import { FC } from 'react';
 // component block
 import AllergiesCardComponent from './AllergiesCardComponent';
 // constants block
-import { ALLERGIES_TEXT, PATIENT_CHARTING_DATA } from '../../../../../../constants';
+import { ALLERGIES_TEXT, PATIENT_CHARTING_DATA } from '../../../../constants';
 
 const AllergiesComponent: FC = (): JSX.Element => {
   return (

@@ -11,8 +11,8 @@ import Search from "../../common/Search";
 import Selector from '../../common/Selector';
 import InputController from '../../../controller';
 import PageHeader from "../../common/PageHeader";
-import PatientChartCards from "../patients/patientChart/patientChartCards";
-import VitalsChartingTable from "../patients/patientChart/patientChartCards/vitalsCard/vitalChartComponent";
+import PatientChartCards from "../patientChart/patientChartCards";
+import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
 // constants, history, styling block
 import clsx from 'clsx';
 import { renderTh } from "../../../utils";

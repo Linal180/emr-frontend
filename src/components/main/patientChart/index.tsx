@@ -2,11 +2,11 @@
 import { FC } from 'react';
 import { useParams } from 'react-router';
 // component block
-import PatientChart from "./patientChart";
+import Chart from "./Chart";
 import ChartingPageHeader from './ChartingPageHeader';
 // constants block
-import { ParamsType } from '../../../../interfacesTypes';
-import { EDIT_PATIENT, PATIENTS_BREAD, PATIENT_EDIT_BREAD, USERS_BREAD } from '../../../../constants';
+import { ParamsType } from '../../../interfacesTypes';
+import { PATIENTS_BREAD, USERS_BREAD, PATIENT_CHART, PATIENT_CHART_BREAD } from '../../../constants';
 
 const PatientChartComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -14,12 +14,12 @@ const PatientChartComponent: FC = (): JSX.Element => {
   return (
     <>
       <ChartingPageHeader
-        title={EDIT_PATIENT}
-        path={[USERS_BREAD, PATIENTS_BREAD, PATIENT_EDIT_BREAD]}
+        title={PATIENT_CHART}
+        path={[USERS_BREAD, PATIENTS_BREAD, PATIENT_CHART_BREAD]}
         id={id}
       />
 
-      <PatientChart />
+      <Chart />
     </>
   )
 };

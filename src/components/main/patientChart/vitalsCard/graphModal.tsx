@@ -2,13 +2,13 @@
 import { FC } from "react";
 import { Dialog, Box } from "@material-ui/core";
 // component block
-import Selector from '../../../../../common/Selector';
+import Selector from '../../../common/Selector';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // interfaces/types block/theme/svgs/constants
-import { ActionType } from "../../../../../../reducers/patientReducer";
-import { GraphModalProps } from "../../../../../../interfacesTypes";
-import { BMI_FOR_AGE, CDC, EMPTY_OPTION } from "../../../../../../constants";
-import PATIENT_GRAPH_IMAGE from "../../../../../../assets/images/patient-graph.svg"
+import { ActionType } from "../../../../reducers/patientReducer";
+import { GraphModalProps } from "../../../../interfacesTypes";
+import { BMI_FOR_AGE, CDC, EMPTY_OPTION } from "../../../../constants";
+import PATIENT_GRAPH_IMAGE from "../../../../assets/images/patient-graph.svg"
 
 const GraphModal: FC<GraphModalProps> = ({
   dispatcher, isOpen }): JSX.Element => {

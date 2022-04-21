@@ -8,17 +8,17 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
 import GraphModal from "./graphModal";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../../../utils";
-import { getDate } from "../../../../../../utils";
-import { Patient } from "../../../../../../generated/graphql";
-import { ProfileUserIcon } from "../../../../../../assets/svgs";
+import { renderTh } from "../../../../utils";
+import { getDate } from "../../../../utils";
+import { Patient } from "../../../../generated/graphql";
+import { ProfileUserIcon } from "../../../../assets/svgs";
 import {
   EMAIL, PHONE, NAME, SPECIALTY, FACILITY, dummyVitalsChartingList, GROWTH_CHART, PDF_TEXT
-} from "../../../../../../constants";
-import { patientReducer, State, initialState, Action, ActionType } from "../../../../../../reducers/patientReducer";
-import InputController from "../../../../../../controller";
-import { useProfileDetailsStyles } from "../../../../../../styles/profileDetails";
-import { CalendarChart } from "../../../../../../interfacesTypes";
+} from "../../../../constants";
+import { patientReducer, State, initialState, Action, ActionType } from "../../../../reducers/patientReducer";
+import InputController from "../../../../controller";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { CalendarChart } from "../../../../interfacesTypes";
 
 const VitalsChartingTable: FC<CalendarChart> = ({isCalendar}): JSX.Element => {
   const classes = useProfileDetailsStyles()

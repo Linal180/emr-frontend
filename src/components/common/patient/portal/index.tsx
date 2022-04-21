@@ -6,18 +6,18 @@ import {
   Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, Button, CircularProgress
 } from "@material-ui/core";
 // components block
-import Alert from "../../common/Alert";
-import Search from "../../common/Search";
+import Alert from "../../Alert";
+import Search from "../../Search";
 // constant, utils and styles block
-import { renderTh } from "../../../utils";
-import { AuthContext } from "../../../context";
-import { useTableStyles } from "../../../styles/tableStyles";
-import { ParamsType, PortalTableProps } from "../../../interfacesTypes";
-import { useSendInviteToPatientMutation } from "../../../generated/graphql";
+import { renderTh } from "../../../../utils";
+import { AuthContext } from "../../../../context";
+import { useTableStyles } from "../../../../styles/tableStyles";
+import { ParamsType, PortalTableProps } from "../../../../interfacesTypes";
+import { useSendInviteToPatientMutation } from "../../../../generated/graphql";
 import {
   EMAIL, ENABLED_BY, ACTIVATED_ON, DISABLED, PORTAL_DUMMY_DATA, REVOKE_ACCESS, ENABLE_ACCESS_PORTAL,
   DISABLE_ACCESS_PORTAL
-} from "../../../constants";
+} from "../../../../constants";
 
 const PortalTable: FC<PortalTableProps> = ({ inviteAccepted }): JSX.Element => {
   const classes = useTableStyles();

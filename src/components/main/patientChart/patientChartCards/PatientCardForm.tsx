@@ -3,16 +3,16 @@ import { useState, useContext, ChangeEvent } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { Card, CardContent, CardHeader, Box, Typography, Grid, FormControlLabel, Checkbox, Button, FormControl, InputLabel } from "@material-ui/core";
 // components block
-import Selector from "../../../../common/Selector";
-import DatePicker from "../../../../common/DatePicker";
-import InputController from "../../../../../controller";
+import Selector from "../../../common/Selector";
+import DatePicker from "../../../common/DatePicker";
+import InputController from "../../../../controller";
 // constants, utils block
-import { ListContext } from "../../../../../context";
-import { DOB, STATUS } from "../../../../../constants";
-import { renderFacilities } from "../../../../../utils";
-import { GRAY_TWO, WHITE } from "../../../../../theme";
-import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
-import { AntSwitch } from "../../../../../styles/publicAppointmentStyles/externalPatientStyles";
+import { ListContext } from "../../../../context";
+import { DOB, STATUS } from "../../../../constants";
+import { renderFacilities } from "../../../../utils";
+import { GRAY_TWO, WHITE } from "../../../../theme";
+import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
+import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
 
 const PatientCardForm = (): JSX.Element => {
   const methods = useForm<any>({ mode: "all", });

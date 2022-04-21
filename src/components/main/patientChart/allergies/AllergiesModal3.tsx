@@ -3,13 +3,13 @@ import { FC } from 'react';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
 import { Box, Button, Typography } from '@material-ui/core';
 // component block
-import Selector from '../../../../../common/Selector';
-import InputController from '../../../../../../controller';
+import Selector from '../../../common/Selector';
+import InputController from '../../../../controller';
 // constants block
-import { GRAY_SIX, WHITE, WHITE_FIVE, } from '../../../../../../theme';
+import { GRAY_SIX, WHITE, WHITE_FIVE, } from '../../../../theme';
 import {
   ACTIVE, ACUTE, ADD, APPOINTMENT, CHRONIC, DELETE, EMPTY_OPTION, FUNCTIONAL_HEARTBURN, HISTORICAL, NOTE, ONSET_DATE, STATUS, TYPE,
-} from '../../../../../../constants';
+} from '../../../../constants';
 
 const AllergiesModal3Component: FC = (): JSX.Element => {
 
