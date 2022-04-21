@@ -2,7 +2,7 @@
 import { Search } from "@material-ui/icons";
 import { Box, Button, Grid, InputAdornment, TextField } from "@material-ui/core";
 // components block
-import PatientChartCards from "./patientChartCards";
+import ChartCards from "./chartCards";
 // constants, history, styling block
 import { GRAY, WHITE } from "../../../theme";
 import { SEARCH_PLACEHOLDER } from "../../../constants";
@@ -43,7 +43,7 @@ const Chart = (): JSX.Element => {
 
         <Box pb={3} />
 
-        <PatientChartCards />
+        <ChartCards />
       </Box>
     </Box>
   )

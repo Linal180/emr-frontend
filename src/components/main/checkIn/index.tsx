@@ -11,7 +11,7 @@ import Search from "../../common/Search";
 import Selector from '../../common/Selector';
 import InputController from '../../../controller';
 import PageHeader from "../../common/PageHeader";
-import PatientChartCards from "../patientChart/patientChartCards";
+import ChartCards from "../patientChart/chartCards";
 import VitalsChartingTable from "../patientChart/vitalsCard/vitalChartComponent";
 // constants, history, styling block
 import clsx from 'clsx';
@@ -178,7 +178,7 @@ const CheckInComponent = (): JSX.Element => {
           </Button>
         </Box>
 
-        <PatientChartCards />
+        <ChartCards />
       </Card>
     </>
 

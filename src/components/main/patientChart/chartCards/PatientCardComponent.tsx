@@ -13,7 +13,9 @@ import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
 
-const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, cardTitle, hasAdd, onAddClick, disableAddIcon, vitalsCard }): JSX.Element => {
+const VitalCardComponent: FC<ChartingCardComponentType> = (
+  { cardChartingData, cardTitle, hasAdd, disableAddIcon, vitalsCard }
+): JSX.Element => {
   const classes = usePatientChartingStyles()
   const [{ anchorEl }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const isMenuOpen = Boolean(anchorEl);
@@ -28,7 +30,6 @@ const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, c
   const handleVitalsCard = () => {
     history.push(`./chart/vitals`)
   };
-
 
   return (
     <FormProvider {...methods}>
@@ -52,11 +53,6 @@ const VitalCardComponent: FC<ChartingCardComponentType> = ({ cardChartingData, c
                     onClose={handleMenuClose}
                     className={classes.dropdown}
                   >
-                    {/* <CardSelector
-                      value={EMPTY_OPTION}
-                      name="addWidget"
-                      options={MAPPED_WIDGETS}
-                    /> */}
                     <PatientCardForm />
                   </Menu>
                 </Box>
