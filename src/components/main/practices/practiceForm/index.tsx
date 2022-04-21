@@ -30,7 +30,8 @@ import {
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
   const {
-    fetchAllFacilityList, setFacilityList, addPracticeList, updatePracticeList
+    fetchAllFacilityList, setFacilityList, addPracticeList, updatePracticeList, setPracticeList,
+    setRoleList
   } = useContext(ListContext)
   const { id: adminId } = user || {}
   const methods = useForm<CustomPracticeInputProps>({
@@ -96,6 +97,8 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           Alert.success(message);
           addPracticeList(practice)
           setFacilityList([])
+          setRoleList([])
+          setPracticeList([])
           fetchAllFacilityList();
           history.push(PRACTICE_MANAGEMENT_ROUTE)
         }

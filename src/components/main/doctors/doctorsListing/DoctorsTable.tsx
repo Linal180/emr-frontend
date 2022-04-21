@@ -1,6 +1,7 @@
 // packages block
 import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
 import { Link } from "react-router-dom";
+import { InsertLink } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
@@ -11,22 +12,26 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, formatValue, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
 import { EditIcon, TrashIcon } from "../../../../assets/svgs";
-import { doctorReducer, Action, initialState, State, ActionType } from "../../../../reducers/doctorReducer";
+import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, State as AppointmentState,
-  ActionType as AppointmentActionType
+  formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+} from "../../../../utils";
+import {
+  doctorReducer, Action, initialState, State, ActionType
+} from "../../../../reducers/doctorReducer";
+import {
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState,
+  State as AppointmentState, ActionType as AppointmentActionType
 } from "../../../../reducers/appointmentReducer";
 import {
   AllDoctorPayload, useFindAllDoctorLazyQuery, useRemoveDoctorMutation, DoctorPayload
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, DELETE_DOCTOR_DESCRIPTION, FACILITY, DOCTORS_ROUTE,
-  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, LINK_COPIED, PUBLIC_LINK
+  CANT_DELETE_DOCTOR, DOCTOR, NAME, SPECIALTY, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, LINK_COPIED,
+  PUBLIC_LINK
 } from "../../../../constants";
-import { InsertLink } from "@material-ui/icons";
 
 const DoctorsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -34,7 +39,8 @@ const DoctorsTable: FC = (): JSX.Element => {
   const { facility, roles } = user || {}
   const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
-  const isAdmin = isUserAdmin(roles);
+  const isPracAdmin = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteDoctorId, doctors } = state;
   const [{ copied }, appointmentDispatcher] =
@@ -69,13 +75,14 @@ const DoctorsTable: FC = (): JSX.Element => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const doctorInputs = isSuper ? { ...pageInputs } :
-        !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
+        isPracAdmin ? { practiceId, ...pageInputs } : 
+        isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
-      await findAllDoctor({
+        doctorInputs && await findAllDoctor({
         variables: { doctorInput: { ...doctorInputs, searchString: searchQuery } }
       })
     } catch (error) { }
-  }, [facilityId, findAllDoctor, isAdmin, isSuper, page, practiceId, searchQuery])
+  }, [facilityId, findAllDoctor, isFacAdmin, isPracAdmin, isSuper, page, practiceId, searchQuery])
 
   const [removeDoctor, { loading: deleteDoctorLoading }] = useRemoveDoctorMutation({
     onError() {

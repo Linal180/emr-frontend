@@ -20,7 +20,8 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../reducers/appointmentReducer";
 import {
-  getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin, isUserAdmin
+  getFormattedDate, renderTh, getISOTime, appointmentStatus, getStandardTime, isSuperAdmin,
+  isFacilityAdmin, isPracticeAdmin
 } from "../../utils";
 import {
   AppointmentPayload, AppointmentsPayload, useFindAllAppointmentsLazyQuery, useRemoveAppointmentMutation,
@@ -39,7 +40,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { facility, roles } = user || {}
   const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
-  const isAdmin = isUserAdmin(roles);
+  const isPracAdmin = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
 
@@ -130,22 +132,26 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     try {
       if (doctorId) {
         await getAppointments({
-          variables: { getAppointments: { doctorId, facilityId } }
+          variables: { getAppointments: { doctorId } }
         })
       }
       else {
         const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
-          !isAdmin ? { facilityId, ...pageInputs } : { practiceId, ...pageInputs }
+          isPracAdmin ? { practiceId, ...pageInputs } :
+            isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
-        await findAllAppointments({
+        inputs && await findAllAppointments({
           variables: {
             appointmentInput: { ...inputs, searchString: searchQuery }
           },
         })
       }
     } catch (error) { }
-  }, [doctorId, getAppointments, facilityId, page, isSuper, isAdmin, practiceId, findAllAppointments, searchQuery])
+  }, [
+    doctorId, getAppointments, page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId,
+    findAllAppointments, searchQuery
+  ])
 
   useEffect(() => {
     fetchAppointments();
@@ -266,30 +272,30 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
             </Box>
           )}
 
-        <ConfirmationModal
-          title={APPOINTMENT}
-          isOpen={openDelete}
-          isLoading={deleteAppointmentLoading}
-          description={DELETE_APPOINTMENT_DESCRIPTION}
-          handleDelete={handleCancelAppointment}
-          setOpen={(open: boolean) => dispatch({
-            type: ActionType.SET_OPEN_DELETE, openDelete: open
-          })}
-        />
-      </Box>
+          <ConfirmationModal
+            title={APPOINTMENT}
+            isOpen={openDelete}
+            isLoading={deleteAppointmentLoading}
+            description={DELETE_APPOINTMENT_DESCRIPTION}
+            handleDelete={handleCancelAppointment}
+            setOpen={(open: boolean) => dispatch({
+              type: ActionType.SET_OPEN_DELETE, openDelete: open
+            })}
+          />
         </Box>
+      </Box>
 
-        {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" p={3}>
-            <Pagination
-              shape="rounded"
-              variant="outlined"
-              page={page}
-              count={totalPages}
-              onChange={handleChange}
-            />
-          </Box>
-        )}
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            count={totalPages}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
     </>
   );
 };

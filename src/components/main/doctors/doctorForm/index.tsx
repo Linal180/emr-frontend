@@ -539,7 +539,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid item md={12} sm={12} xs={12}>
                       <InputController
                         isRequired
-                        fieldType="text"
+                        fieldType="email"
                         controllerName="email"
                         controllerLabel={EMAIL}
                       />
