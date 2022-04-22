@@ -52,7 +52,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
-    serviceName, facilityName, providerName, patientName, cancelAppStatus
+    facilityName, cancelAppStatus, patientName
   } = state
 
   const methods = useForm<ExtendedAppointmentInputProps>({
@@ -356,15 +356,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     </Grid>
 
                     <Grid item md={6} sm={12} xs={12}>
-                      {isEdit ? renderItem(APPOINTMENT_TYPE, serviceName) :
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={APPOINTMENT_TYPE}
-                          name="serviceId"
-                          options={renderServices(serviceList)}
-                        />
-                      }
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={APPOINTMENT_TYPE}
+                        name="serviceId"
+                        options={renderServices(serviceList)}
+                      />
                     </Grid>
                   </Grid>
                 )}
@@ -377,14 +375,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(PROVIDER, providerName) :
-                          <Selector
-                            value={EMPTY_OPTION}
-                            label={PROVIDER}
-                            name="providerId"
-                            options={renderDoctors(doctorList)}
-                          />
-                        }
+                        <Selector
+                          value={EMPTY_OPTION}
+                          label={PROVIDER}
+                          name="providerId"
+                          options={renderDoctors(doctorList)}
+                        />
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
@@ -395,8 +391,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                             label={PATIENT}
                             name="patientId"
                             options={renderPatient(patientList)}
-                          />
-                        }
+                          />}
                       </Grid>
                     </Grid>
 

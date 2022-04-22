@@ -21,7 +21,7 @@ import { useCalendarStyles } from '../../../styles/calendarStyles';
 import { getAppointmentDate, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
-  CashAppointmentIcon, DeleteAppointmentIcon, InvoiceAppointmentIcon,
+  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
 } from '../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
@@ -38,6 +38,7 @@ import {
   TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
 } from '../../../constants';
 import { Link } from 'react-router-dom';
+import history from '../../../history';
 
 const AppointmentCard = ({ tooltip, setCurrentView }: AppointmentCardProps): JSX.Element => {
   const { visible, onHide, appointmentMeta } = tooltip
@@ -299,6 +300,8 @@ const AppointmentCard = ({ tooltip, setCurrentView }: AppointmentCardProps): JSX
     handleAppDetail()
   }
 
+  const handleEdit = () => history.push(`${APPOINTMENTS_ROUTE}/${id}`)
+
   useEffect(() => {
     id && fetchAppointment()
   }, [id, fetchAppointment]);
@@ -387,6 +390,10 @@ const AppointmentCard = ({ tooltip, setCurrentView }: AppointmentCardProps): JSX
                   }}>
                     <DeleteAppointmentIcon />
                   </IconButton>}
+
+                  <IconButton aria-label="edit" onClick={handleEdit}>
+                    <EditAppointmentIcon />
+                  </IconButton>
 
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
