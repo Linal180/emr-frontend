@@ -19,6 +19,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, ResponsePayloadResponse, UsersFormsElements, FormElement,
 } from "../generated/graphql";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -913,4 +914,9 @@ export interface UserFormPreviewModalProps {
   userForms: UsersFormsElements[]
   formLabels: FormElement[]
   imagePreviewHandler: (id: string) => void
+}
+
+export interface AppointmentCardProps {
+  tooltip: AppointmentTooltip.LayoutProps
+  setCurrentView: Function
 }

@@ -1,4 +1,4 @@
-import { Plugin, Getter, IDependency } from "@devexpress/dx-react-core";
+import { Plugin, Getter, IDependency, Getters } from "@devexpress/dx-react-core";
 import { memo } from "react";
 
 const pluginDependencies: IDependency[] = [
@@ -105,40 +105,59 @@ export const adjustAppointments = (groups: any, byDay = false) =>
     return [...acc, ...appointments];
   }, []);
 
-const filterAppointments = ({ timeTableAppointments, currentView }: any) => {
+const filterAppointments = ({ timeTableAppointments, currentView }: Getters) => {
   if (currentView.type !== "month") {
     return timeTableAppointments;
   }
+
   const sortedAppointments = timeTableAppointments.map(sortAppointments);
   const groupedAppointments = sortedAppointments.map((sortedGroup: any) =>
     findOverlappingAppointments(sortedGroup, true)
   );
+
   const adjustedAppointments = groupedAppointments.map((group: any) =>
     adjustAppointments(group, true)
   );
+
   const filteredAppointments = adjustedAppointments.map((appointments: any) => {
-    return appointments.filter((appointment: any) => appointment.offset < 1)
+    const arr: any = []
+    appointments.map((appointment: any, index: number) => {
+
+      if (appointment.offset < 2) {
+        arr.push(appointment)
+        return appointment
+      }
+      if (appointment.offset === 2) {
+        const a = {
+          ...appointment, dataItem: {
+            ...appointment.dataItem,
+            title: "Show More"
+          }
+        }
+        arr.push(a)
+        return a
+      }
+      return false
+    })
+    return arr
   }
 
   );
 
   const arr = filteredAppointments.map((appointmentGroup: any) =>
-    appointmentGroup.map(({ offset, ...restProps }: any) => ({ ...restProps }))
+    appointmentGroup.map(({ offset, ...restProps }: any) => {
+      return ({ ...restProps })
+    })
   );
 
-  return (
-    <>
-      <div>{arr}</div>
-      <div>show more</div>
-    </>
-  );
+  return arr
+
 };
 
 export const IntegratedAppointments = memo(() => {
   return (
     <Plugin name="IntegratedAppointments" dependencies={pluginDependencies}>
       <Getter name="timeTableAppointments" computed={filterAppointments} />
-
     </Plugin>
   );
 })

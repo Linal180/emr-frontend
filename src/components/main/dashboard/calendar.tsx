@@ -26,6 +26,7 @@ import { IntegratedAppointments } from "./integratedAppointments";
 const CalendarComponent = (): JSX.Element => {
   const classes = useCalendarStyles()
   const [currentDate, setCurrentDate] = useState(new Date())
+  const [currentView, setCurrentView] = useState<string>('Month')
   const [data, setData] = useState<any[]>([])
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
@@ -125,6 +126,10 @@ const CalendarComponent = (): JSX.Element => {
     } catch (error) { }
   }, [page, isSuper, isAdmin, facilityId, practiceId, findAllAppointments])
 
+  const currentViewNameChange = (currentViewName: string) => {
+    setCurrentView(currentViewName);
+  };
+
   useEffect(() => {
     fetchAppointments()
   }, [fetchAppointments]);
@@ -138,7 +143,7 @@ const CalendarComponent = (): JSX.Element => {
 
         <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
           <Scheduler data={mapAppointmentData(appointments)}>
-            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} currentViewName={currentView} onCurrentViewNameChange={currentViewNameChange} />
             <EditingState onCommitChanges={onCommitChanges} />
             <MonthView timeTableCellComponent={MonthTimeTableCell} />
             <WeekView timeTableCellComponent={WeekTimeTableCell} />
@@ -150,7 +155,7 @@ const CalendarComponent = (): JSX.Element => {
             <IntegratedAppointments />
             <DateNavigator />
             <Appointments appointmentComponent={Appointment} />
-            <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
+            <AppointmentTooltip showCloseButton layoutComponent={(props) => <AppointmentCard tooltip={props} setCurrentView={setCurrentView} />} />
           </Scheduler>
         </Box>
       </Box>
