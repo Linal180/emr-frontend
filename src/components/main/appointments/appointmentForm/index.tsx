@@ -52,7 +52,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
-    facilityName, cancelAppStatus
+    facilityName, cancelAppStatus, patientName
   } = state
 
   const methods = useForm<ExtendedAppointmentInputProps>({
@@ -384,13 +384,14 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={PATIENT}
-                          name="patientId"
-                          options={renderPatient(patientList)}
-                        />
+                        {isEdit ? renderItem(PATIENT, patientName) :
+                          <Selector
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={PATIENT}
+                            name="patientId"
+                            options={renderPatient(patientList)}
+                          />}
                       </Grid>
                     </Grid>
 
