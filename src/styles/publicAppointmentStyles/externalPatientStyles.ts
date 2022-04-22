@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, StepConnector, Switch, withStyles, } from "@material-ui/core";
 import { 
-  theme, WHITE_FOUR, BLUE_ONE, BLACK_TWO, WHITE, WHITE_FIVE, BLACK_ONE, GRAY_SIX, GRAY_TWO, BLACK_SEVEN, BLUE_EIGHT, GREY_TWO,
+  theme, WHITE_FOUR, BLUE_ONE, BLACK_TWO, WHITE, GREY_TWO, BLACK_ONE, GRAY_SIX, GREY_SEVEN, BLACK, BLUE,
 } from "../../theme";
 
 export const CustomConnector = withStyles({
@@ -10,13 +10,13 @@ export const CustomConnector = withStyles({
 
   active: {
     "& $line": {
-      border: `1px solid ${BLUE_EIGHT}`,
+      border: `1px solid ${BLUE}`,
     },
   },
 
   completed: {
     "& $line": {
-      border: `1px solid ${BLUE_EIGHT}`,
+      border: `1px solid ${BLUE}`,
     },
   },
 
@@ -48,7 +48,7 @@ export const useColorLibStepIconStyles = makeStyles({
   },
 
   active: {
-    backgroundColor: BLUE_EIGHT,
+    backgroundColor: BLUE,
     width: 24,
     height: 24,
     zIndex: 1,
@@ -61,12 +61,12 @@ export const useColorLibStepIconStyles = makeStyles({
   completed: {
     zIndex: 1,
     fontSize: 18,
-    color: BLUE_EIGHT,
-    border: `2px solid ${BLUE_EIGHT}`,
+    color: BLUE,
+    border: `2px solid ${BLUE}`,
 
     "& .MuiSvgIcon-root": {
       padding: 2,
-      color: BLUE_EIGHT,
+      color: BLUE,
     },
   },
 });
@@ -120,7 +120,7 @@ export const useExternalPatientStyles = makeStyles({
     },
 
     "& p": {
-      color: WHITE_FIVE,
+      color: GREY_TWO,
       fontWeight: 500,
     },
   },
@@ -132,7 +132,7 @@ export const useExternalPatientStyles = makeStyles({
 
     "& li": {
       padding: "12px 5px",
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     },
 
     "& .MuiCheckbox-root .MuiSvgIcon-root": {
@@ -158,12 +158,12 @@ export const useExternalPatientStyles = makeStyles({
 
     "& .MuiTypography-h4": {
       fontWeight: 500,
-      color: BLACK_SEVEN,
+      color: BLACK,
     },
 
     "& .MuiAccordionSummary-content.Mui-expanded .MuiTypography-root": {
       fontWeight: 500,
-      color: BLACK_SEVEN,
+      color: BLACK,
     },
   },
 
@@ -227,7 +227,7 @@ export const toggleButtonComponent = makeStyles({
     justifyContent: "space-between",
 
     "& .MuiFormLabel-root": {
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     },
 
     "& .MuiToggleButton-root.Mui-selected": {
@@ -275,7 +275,7 @@ export const AntSwitch = withStyles(() =>
       height: 34,
       opacity: 0.8,
       borderRadius: 6,
-      backgroundColor: WHITE_FIVE,
+      backgroundColor: GREY_TWO,
       boxShadow: "none",
       transform: "translateX(93%)",
       transition: "all .3s ease-in",

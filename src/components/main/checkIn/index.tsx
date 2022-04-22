@@ -1,6 +1,6 @@
 // packages block
 import { useState, ChangeEvent } from "react";
-import { AddCircleOutline, Check, ChevronRight, Clear } from '@material-ui/icons';
+import { AddCircleOutline, Check, ChevronRight, } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm, Controller } from 'react-hook-form';
 import {
   Box, Button, Card, colors, Grid, Step, Stepper, Typography, StepLabel, StepIconProps, Table, TableBody, TableHead, TableRow,
@@ -16,8 +16,8 @@ import VitalsChartingTable from "../patients/patientChart/patientChartCards/vita
 // constants, history, styling block
 import clsx from 'clsx';
 import { renderTh } from "../../../utils";
-import { UserIcon } from "../../../assets/svgs";
-import { GRAY_TWO, WHITE } from "../../../theme";
+import { ClearIcon, UserIcon } from "../../../assets/svgs";
+import { GREY_SEVEN, WHITE } from "../../../theme";
 import { useTableStyles } from "../../../styles/tableStyles";
 import PROFILE_IMAGE from "../../../assets/images/profile-image.svg";
 import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
@@ -313,9 +313,9 @@ const CheckInComponent = (): JSX.Element => {
                         <InputLabel shrink>{EMPLOYMENT}</InputLabel>
 
                         <label className="toggle-main">
-                          <Box color={isChecked ? WHITE : GRAY_TWO}>{YES}</Box>
+                          <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
                           <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='employment' />
-                          <Box color={isChecked ? GRAY_TWO : WHITE}>{NO}</Box>
+                          <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
                         </label>
                       </FormControl>
                     )}
@@ -331,9 +331,9 @@ const CheckInComponent = (): JSX.Element => {
                         <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
 
                         <label className="toggle-main">
-                          <Box color={isChecked ? WHITE : GRAY_TWO}>{YES}</Box>
+                          <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
                           <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='autoAccident' />
-                          <Box color={isChecked ? GRAY_TWO : WHITE}>{NO}</Box>
+                          <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
                         </label>
                       </FormControl>
                     )}
@@ -349,9 +349,9 @@ const CheckInComponent = (): JSX.Element => {
                         <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
 
                         <label className="toggle-main">
-                          <Box color={isChecked ? WHITE : GRAY_TWO}>{YES}</Box>
+                          <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
                           <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='otherAccident' />
-                          <Box color={isChecked ? GRAY_TWO : WHITE}>{NO}</Box>
+                          <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
                         </label>
                       </FormControl>
                     )}
@@ -392,7 +392,7 @@ const CheckInComponent = (): JSX.Element => {
                             <TableCell scope="row">{description}</TableCell>
                             <TableCell scope="row">
                               <IconButton>
-                                <Clear />
+                                <ClearIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -434,7 +434,7 @@ const CheckInComponent = (): JSX.Element => {
                             <TableCell scope="row"></TableCell>
                             <TableCell scope="row">
                               <IconButton>
-                                <Clear />
+                                <ClearIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -476,7 +476,7 @@ const CheckInComponent = (): JSX.Element => {
                             <TableCell scope="row"></TableCell>
                             <TableCell scope="row">
                               <IconButton>
-                                <Clear />
+                                <ClearIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -518,7 +518,7 @@ const CheckInComponent = (): JSX.Element => {
                             <TableCell scope="row"></TableCell>
                             <TableCell scope="row">
                               <IconButton>
-                                <Clear />
+                                <ClearIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -547,7 +547,7 @@ const CheckInComponent = (): JSX.Element => {
               <Box display="flex" alignItems="center">
                 <Typography variant="h4">Brad Dennis</Typography>
 
-                <Box ml={1} color={GRAY_TWO}>
+                <Box ml={1} color={GREY_SEVEN}>
                   <Typography variant="body1">(PT23453)</Typography>
                 </Box>
               </Box>
@@ -555,7 +555,7 @@ const CheckInComponent = (): JSX.Element => {
               <Box display="flex" alignItems="center">
                 <UserIcon />
 
-                <Box ml={1} color={GRAY_TWO}>
+                <Box ml={1} color={GREY_SEVEN}>
                   <Typography variant="body1">24 Yrs Old </Typography>
                 </Box>
               </Box>
@@ -566,7 +566,7 @@ const CheckInComponent = (): JSX.Element => {
             <Box mr={2}>
               <Typography variant="h6">{PRIMARY_PROVIDER}</Typography>
 
-              <Box color={GRAY_TWO} textAlign="right">
+              <Box color={GREY_SEVEN} textAlign="right">
                 <Typography variant="body1">John Doe</Typography>
               </Box>
             </Box>

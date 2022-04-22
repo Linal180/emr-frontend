@@ -132,10 +132,6 @@ body {
   overflow-x: auto;
 }
 
-#image-dialog-title h2 {
-  font-size: 20px;
-}
-
 .RoleMultiSelectorStyles>div>div {
   border: none !important;
   box-shadow: none !important;

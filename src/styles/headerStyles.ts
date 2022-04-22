@@ -1,7 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import {
-  BLACK, BLACK_SEVEN, BLACK_THREE, BLUE_EIGHT, GRAY_FIVE, GRAY_TWO, WHITE, WHITE_FOUR,
-} from "../theme";
+import { BLACK, BLACK_THREE, BLUE, GRAY_FIVE, GREY_SEVEN, WHITE, WHITE_FOUR, } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   menuButton: {
@@ -37,7 +35,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
     alignItems: "center",
 
     "& .active": {
-      borderBottom: `2px solid ${BLUE_EIGHT}`,
+      borderBottom: `2px solid ${BLUE}`,
     },
 
     [theme.breakpoints.down("sm")]: {
@@ -49,7 +47,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
     paddingBottom: 5,
     minWidth: 80,
     textAlign: "center",
-    color: BLACK_SEVEN,
+    color: BLACK,
     cursor: "pointer",
     textTransform: "capitalize",
     display: "flex",
@@ -67,7 +65,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   profileItem: {
-    color: BLACK_SEVEN,
+    color: BLACK,
     textTransform: "capitalize",
     minWidth: "auto",
   },
@@ -82,7 +80,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
   roleName: {
     "& .MuiTypography-root": {
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     },
   },
 

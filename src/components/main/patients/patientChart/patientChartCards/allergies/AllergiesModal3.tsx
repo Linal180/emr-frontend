@@ -6,7 +6,7 @@ import { Box, Button, Typography } from '@material-ui/core';
 import Selector from '../../../../../common/Selector';
 import InputController from '../../../../../../controller';
 // constants block
-import { GRAY_SIX, WHITE, WHITE_FIVE, } from '../../../../../../theme';
+import { GRAY_SIX, WHITE, GREY_TWO, } from '../../../../../../theme';
 import {
   ACTIVE, ACUTE, ADD, APPOINTMENT, CHRONIC, DELETE, EMPTY_OPTION, FUNCTIONAL_HEARTBURN, HISTORICAL, NOTE, ONSET_DATE, STATUS, TYPE,
 } from '../../../../../../constants';
@@ -46,7 +46,7 @@ const AllergiesModal3Component: FC = (): JSX.Element => {
         <Typography variant='body1'>{STATUS}</Typography>
 
         <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-          <Box className='selectBox' bgcolor={WHITE_FIVE} color={WHITE}>
+          <Box className='selectBox' bgcolor={GREY_TWO} color={WHITE}>
             <Typography variant='h6'>{ACTIVE}</Typography>
           </Box>
 

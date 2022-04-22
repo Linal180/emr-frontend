@@ -11,7 +11,7 @@ import Search from "../../../common/Search";
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 // constant, utils and styles block
-import { BLUE_EIGHT, GRAY_TEN } from "../../../../theme";
+import { BLUE, GRAY_TEN } from "../../../../theme";
 import { AddInsuranceIcon, RightArrow } from "../../../../assets/svgs";
 import {
   ADDRESS, ADDRESS_CTD, ADD_ANOTHER_COPAY_AMOUNT, ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, CHECK_PRIOR_DATE_OF_SERVICE,
@@ -57,7 +57,7 @@ const InsuranceComponent = (): JSX.Element => {
             </Box>
 
             <Box
-              className='pointer-cursor' bgcolor={GRAY_TEN} border={`1px dashed ${BLUE_EIGHT}`}
+              className='pointer-cursor' bgcolor={GRAY_TEN} border={`1px dashed ${BLUE}`}
               borderRadius={6} p={3} mb={4} display="flex" alignItems="center"
             >
               <AddInsuranceIcon />
@@ -179,7 +179,7 @@ const InsuranceComponent = (): JSX.Element => {
                               onClick={() => setOpenNew(!openNew)}
                               className="billing-box" textAlign="center"
                               maxWidth={280} margin="auto" mb={4}
-                              borderBottom={`1px solid ${BLUE_EIGHT}`}
+                              borderBottom={`1px solid ${BLUE}`}
                             >
                               <Typography>{ADD_ANOTHER_COPAY_AMOUNT}</Typography>
                             </Box>

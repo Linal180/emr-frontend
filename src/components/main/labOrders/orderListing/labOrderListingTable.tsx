@@ -8,7 +8,7 @@ import { renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { appointmentReducer, Action, initialState, State, ActionType } from "../../../../reducers/appointmentReducer";
 import { DATE, STATUS, DOCTOR, LOINC_CODE, DESCRIPTION, SIGN_OFF, COMMENTS, RESULT, FILE, LAB_ORDERS_LISTING_DATA, } from "../../../../constants";
-import { BLUE_EIGHT } from "../../../../theme";
+import { BLUE } from "../../../../theme";
 
 const LabOrderListingTable = (): JSX.Element => {
   const classes = useTableStyles();
@@ -56,7 +56,7 @@ const LabOrderListingTable = (): JSX.Element => {
                   <TableCell scope="row">{status}</TableCell>
                   <TableCell scope="row">{result}</TableCell>
                   <TableCell scope="row">
-                    <Box color={BLUE_EIGHT}> {file} </Box>
+                    <Box color={BLUE}> {file} </Box>
                   </TableCell>
                   <TableCell scope="row">{comments}</TableCell>
                 </TableRow>

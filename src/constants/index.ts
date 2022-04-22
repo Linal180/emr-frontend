@@ -226,6 +226,7 @@ export const EDIT_APPOINTMENT = "Edit Appointment";
 export const CREATE_INVOICE = "Create Invoice";
 export const PRACTICE_SETTINGS = "Practice Settings";
 export const USERS_MANAGEMENT = "Users Management";
+export const ADD_MEDIA = "Add Media";
 export const PAID = "Paid";
 export const UNPAID = "Unpaid";
 export const INVOICE = "Invoice";

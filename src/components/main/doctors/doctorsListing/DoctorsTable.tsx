@@ -12,7 +12,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { EditIcon, TrashIcon } from "../../../../assets/svgs";
+import { EditNewIcon, TrashNewIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
   formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
@@ -205,12 +205,12 @@ const DoctorsTable: FC = (): JSX.Element => {
 
                           <Link to={`${DOCTORS_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
-                              <EditIcon />
+                              <EditNewIcon />
                             </Box>
                           </Link>
 
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashIcon />
+                            <TrashNewIcon />
                           </Box>
                         </Box>
                       </TableCell>
@@ -241,9 +241,10 @@ const DoctorsTable: FC = (): JSX.Element => {
       </Box>
 
       {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" pt={3}>
+        <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
             shape="rounded"
+            variant="outlined"
             page={page}
             count={totalPages}
             onChange={handleChange}

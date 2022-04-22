@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { GRAY_TWO } from "../../theme";
+import { GREY_SEVEN } from "../../theme";
 
 export const consentAgreementStyles = makeStyles({
   agreementContainer: {
@@ -9,7 +9,7 @@ export const consentAgreementStyles = makeStyles({
 
     "& li": {
       padding: "12px 5px",
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     },
 
     "& .MuiCheckbox-root .MuiSvgIcon-root": {

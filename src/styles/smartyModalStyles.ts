@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK_EIGHT, BLACK_ONE } from "../theme";
+import { BLACK_THREE, BLACK_ONE } from "../theme";
 
 export const useSmartyModalStyles = makeStyles((theme) => ({
   formControl: {
@@ -20,6 +20,6 @@ export const useSmartyModalStyles = makeStyles((theme) => ({
     margin: '10px 0px',
     fontSize: 14,
     lineHeight: '22px',
-    color: BLACK_EIGHT,
+    color: BLACK_THREE,
   }
 }));

@@ -3,8 +3,8 @@ import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
-  GREEN, BLUE, WHITE, BLACK, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_NINE, BLACK_TWO, GRAY_SIX, ORANGE, GRAY_FIVE,
-  BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY, BLUE_TWO,
+  GREEN, BLUE, WHITE, BLACK, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, GRAY_SIX, ORANGE, GRAY_FIVE, BLACK_THREE, GRAY_SEVEN, 
+  ORANGE_ONE, BLACK_SIX, RED_THREE, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY, BLUE_TWO,
 } from ".";
 
 const breakpoints = createBreakpoints({})
@@ -98,35 +98,35 @@ export const theme = createTheme({
           "& .MuiPagination-ul": {
             "& li": {
               "& button": {
-                height: 36,
-                minWidth: 36,
+                height: 40,
+                minWidth: 40,
                 borderRadius: 0,
-                color: BLACK_NINE,
+                color: BLACK_TWO,
                 fontSize: 14,
                 margin: 0,
               },
 
               "& .Mui-selected": {
-                backgroundColor: BLUE_EIGHT,
+                backgroundColor: BLUE,
                 color: WHITE,
               },
 
               "& .Mui-selected:hover": {
-                backgroundColor: BLUE_EIGHT,
+                backgroundColor: BLUE,
                 color: WHITE,
               }
             },
 
             "& li:first-child": {
               "& button": {
-                color: BLACK_NINE,
+                color: BLACK_TWO,
                 borderRadius: '8px 0 0 8px',
               }
             },
 
             "& li:last-child": {
               "& button": {
-                color: BLACK_NINE,
+                color: BLACK_TWO,
                 borderRadius: "0 8px 8px 0",
               }
             }
@@ -157,11 +157,12 @@ export const theme = createTheme({
 
     MuiDialogTitle: {
       root: {
-        padding: "18px 30px",
+        padding: "22px 32px",
         borderBottom: `1px solid ${GRAY_SIX}`,
 
         "& h2": {
           fontSize: 20,
+          fontWeight: 700,
           color: BLACK_ONE,
         }
       }
@@ -177,6 +178,10 @@ export const theme = createTheme({
     MuiDialogContent: {
       root: {
         padding: 30,
+
+        "&:first-child": {
+          paddingTop: 'auto',
+        },
 
         "& > div": {
           background: ORANGE,
@@ -198,7 +203,6 @@ export const theme = createTheme({
           color: BLACK_TWO,
           lineHeight: '22px',
           fontWeight: 500,
-          maxWidth: '80%'
         }
       }
     },
@@ -311,6 +315,7 @@ export const theme = createTheme({
     MuiOutlinedInput: {
       root: {
         backgroundColor: GREY,
+        borderRadius: 4,
 
         "& $notchedOutline": {
           borderRadius: 4,
@@ -568,8 +573,8 @@ export const theme = createTheme({
         minHeight: 0,
 
         "&.Mui-selected": {
-          borderBottom: `2px solid ${BLUE_EIGHT}`,
-          color: BLUE_EIGHT,
+          borderBottom: `2px solid ${BLUE}`,
+          color: BLUE,
         }
       },
 
