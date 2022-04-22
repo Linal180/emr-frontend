@@ -51,7 +51,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const {
-    date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident, facilityName, cancelAppStatus
+    date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
+    facilityName, cancelAppStatus
   } = state
 
   const methods = useForm<ExtendedAppointmentInputProps>({

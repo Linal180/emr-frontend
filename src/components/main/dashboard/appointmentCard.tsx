@@ -300,9 +300,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     handleAppDetail()
   }
 
-  const handleEdit = () => {
-    history.push(`${APPOINTMENTS_ROUTE}/${id}`)
-  }
+  const handleEdit = () => history.push(`${APPOINTMENTS_ROUTE}/${id}`)
 
   useEffect(() => {
     id && fetchAppointment()
