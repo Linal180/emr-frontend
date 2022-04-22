@@ -101,7 +101,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : { facilityId, ...pageInputs, isSystemForm: false }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
@@ -223,7 +223,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashNewIcon />
                         </Box>
-                        <Box className={classes.iconsBackground} onClick={() => onViewClick(layout, name)}>
+                        <Box className={classes.iconsBackground} onClick={() => { name && onViewClick(layout, name) }}>
                           <VisibilityIcon />
                         </Box>
                         <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && onShareClick(id || '')}>

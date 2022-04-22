@@ -246,10 +246,69 @@ mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
 mutation getFormPublicMediaUrl($getPublicMediaInput: GetPublicMediaInput!) {
   getFormPublicMediaUrl(getPublicMediaInput: $getPublicMediaInput) {
     publicUrl
+
     response {
       status
       error
       message
+    }
+  }
+}
+
+query getAllFormsTemplates {
+  getAllFormsTemplates {
+
+    forms {
+      id
+      name
+      type
+      createdAt
+
+      layout {
+
+        sections {
+          name
+          id
+          col
+
+          fields {
+            label
+            name
+            type
+            css
+            column
+            placeholder
+            defaultValue
+            required
+            errorMsg
+            fieldId
+            textArea
+
+            options {
+              name
+              value
+            }
+          }
+        }
+      }
+    }
+
+    response {
+      status
+    }
+  }
+}
+
+mutation CreateFormTemplate($createFormInput: CreateFormInput!) {
+  createFormTemplate(createFormInput: $createFormInput) {
+    response {
+      status
+      message
+      error
+    }
+
+    form {
+      id
     }
   }
 }
