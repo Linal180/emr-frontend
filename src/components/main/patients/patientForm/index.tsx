@@ -45,7 +45,7 @@ import {
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS, VERIFIED,
+  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS, VERIFIED, SAME_AS_PATIENT, SSN_FORMAT,
 } from "../../../../constants";
 import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
 import SmartyModal from '../../../common/SmartyModal'
@@ -55,7 +55,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facilityList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
     privacyNotice: false,
@@ -77,7 +77,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { handleSubmit, setValue, watch, control } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2, basicCountry, basicEmail,
   } = watch();
 
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -366,7 +366,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-        previouslastName, motherMaidenName, ssn, statementNote, language, patientNote, email: basicEmail,
+        previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote, email: basicEmail,
         facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, practiceId,
         medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
@@ -403,7 +403,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         employerName: guarantorEmployerName, address2: guarantorAddress2,
         zipCode: guarantorZipCode, city: guarantorCity, state: selectedGuarantorState,
         phone: guarantorPhone, suffix: guarantorSuffix, country: selectedGuarantorCountry,
-        userId: userId, ssn: guarantorSsn, primaryContact: false, address: guarantorAddress,
+        userId: userId, ssn: guarantorSsn || SSN_FORMAT, primaryContact: false, address: guarantorAddress,
       };
 
       const guardianContactInput = {
@@ -527,6 +527,34 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   }
 
+  const copyAddress = () => {
+    basicAddress && setValue("guarantorAddress", basicAddress)
+    basicAddress2 && setValue("guarantorAddress2", basicAddress2)
+    basicZipCode && setValue("guarantorZipCode", basicZipCode)
+    basicCity && setValue("guarantorCity", basicCity)
+    basicState && setValue("guarantorState", basicState)
+    basicCountry && setValue("guarantorCountry", basicCountry)
+    basicEmail && setValue("guarantorEmail", basicEmail)
+  };
+
+  const resetAddress = () => {
+    setValue("guarantorAddress", '')
+    setValue("guarantorAddress2", '')
+    setValue("guarantorZipCode", '')
+    setValue("guarantorCity", '')
+    setValue("guarantorState", setRecord('', ''))
+    setValue("guarantorCountry", setRecord('', ''))
+    setValue("guarantorEmail", '')
+  };
+
+  const setAddressValues = (checked: boolean) => checked ? copyAddress() : resetAddress()
+
+  const handleSameAddress = (checked: boolean) => {
+    dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: checked })
+
+    setAddressValues(checked);
+  }
+
   useEffect(() => {
     basicZipCode?.length === 5 && getAddressHandler()
   }, [basicZipCode, getAddressHandler]);
@@ -638,6 +666,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
+                          isRequired
                           fieldType="text"
                           controllerName="ssn"
                           controllerLabel={SSN}
@@ -1156,6 +1185,21 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={GUARANTOR}>
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
+                    <FormControl component="fieldset">
+                      <FormGroup>
+                        <Box mr={3} mb={2} mt={2}>
+                          <FormControlLabel
+                            label={SAME_AS_PATIENT}
+                            control={
+                              <Checkbox color="primary" checked={sameAddress}
+                                onChange={({ target: { checked } }) => handleSameAddress(checked)}
+                              />
+                            }
+                          />
+                        </Box>
+                      </FormGroup>
+                    </FormControl>
+
                     <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         isRequired
@@ -1267,6 +1311,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
+                          isRequired
                           fieldType="text"
                           controllerName="guarantorSsn"
                           controllerLabel={SSN}
