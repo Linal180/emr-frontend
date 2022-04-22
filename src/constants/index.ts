@@ -686,6 +686,7 @@ export const INSURANCE_CLAIMS_TEXT = "Insurance Claims";
 export const CONTACT_INFORMATION = "Contact Information";
 export const FACILITY_SERVICES_TEXT = "Facility Services";
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
+export const SSN_FORMAT = '000-00-0000';
 export const PRICE = "Price";
 export const SEARCH = "Search";
 export const BILLING = "Billing";
