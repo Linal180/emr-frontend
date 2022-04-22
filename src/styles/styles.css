@@ -441,3 +441,8 @@ body .MuiTabPanel-root {
   border-radius: 6px;
   cursor: pointer;
 }
+
+.selectedBox {
+  background-color: #B5B5C3;
+  color: #ffffff;
+}

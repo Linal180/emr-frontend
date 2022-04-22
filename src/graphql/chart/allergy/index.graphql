@@ -1,0 +1,83 @@
+# ----------------	Allergies	------------------
+query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!){
+  findAllPatientAllergies(patientAllergyInput: $patientAllergyInput){
+    response {
+      status
+      message
+    }
+    
+    patientAllergies {
+      id
+      allergySeverity
+      allergyOnset
+      allergyStartDate
+      
+      allergy {
+        id
+        name
+      }
+    }
+  }
+}
+
+query GetPatientAllergy($getPatientAllergy: GetPatientAllergy!){
+  getPatientAllergy(getPatientAllergy: $getPatientAllergy){
+    response {
+      status
+      message
+    }
+    
+    patientAllergy {
+      id
+      allergySeverity
+      allergyOnset
+      allergyStartDate
+      
+      allergy {
+        id
+        name
+      }
+    }
+  }
+}
+
+mutation AddPatientAllergy($createPatientAllergyInput: CreatePatientAllergyInput!){
+  addPatientAllergy(createPatientAllergyInput: $createPatientAllergyInput){
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation UpdatePatientAllergy($updateAllergyInput: UpdateAllergyInput!){
+  updatePatientAllergy(updateAllergyInput: $updateAllergyInput){
+    response {
+      status
+      message
+    }
+  }
+}
+
+mutation RemovePatientAllergy($removePatientAllergy: RemovePatientAllergy!){
+  removePatientAllergy(removePatientAllergy: $removePatientAllergy){
+    response {
+      status
+      message
+    }
+  }
+}
+
+query FindAllAllergies($allergyInput: AllergyInput!){
+  findAllAllergies(allergyInput: $allergyInput){
+    response {
+      status
+      message
+    }
+    
+    allergies {
+      id
+      name
+    }
+  }
+}

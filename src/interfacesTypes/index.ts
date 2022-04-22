@@ -17,7 +17,8 @@ import {
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, ResponsePayloadResponse, UsersFormsElements, FormElement,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -812,11 +813,10 @@ export interface CustomSelectControlProps extends IControlLabel {
 
 export interface FieldEditModalProps {
   open?: boolean;
-  closeModalHanlder?: () => void;
+  closeModalHandler?: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
 }
-
 
 export interface DropContainerPropsTypes {
   formValues: FormValuesTypes[];
@@ -825,7 +825,6 @@ export interface DropContainerPropsTypes {
   delColHandler: (index: number) => void
   setFormValues: Dispatch<SetStateAction<SectionsInputs[]>>
 }
-
 
 export interface FormBuilderFormInitial {
   name: string;
@@ -913,4 +912,21 @@ export interface UserFormPreviewModalProps {
   userForms: UsersFormsElements[]
   formLabels: FormElement[]
   imagePreviewHandler: (id: string) => void
+}
+
+export interface CardLayoutProps {
+  cardId: string;
+  hasAdd?: boolean;
+  cardTitle: string;
+  isMenuOpen: boolean;
+  children: ReactNode;
+  filterTabs: string[];
+  searchLoading: boolean;
+  disableAddIcon?: boolean;
+  anchorEl: HTMLElement | null;
+  searchComponent: ComponentType<any>;
+  searchData: AllergiesPayload['allergies'];
+  handleMenuClose: () => void;
+  onClickAddIcon: (event: any) => void;
+  onSearch: (tab: string, query: string) => void;
 }
