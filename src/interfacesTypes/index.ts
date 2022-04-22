@@ -919,4 +919,5 @@ export interface UserFormPreviewModalProps {
 export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function
+  setCurrentDate: Function
 }

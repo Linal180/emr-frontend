@@ -18,7 +18,7 @@ import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
 import { AppointmentCardProps, UpdateStatusInputProps } from '../../../interfacesTypes';
 import { useCalendarStyles } from '../../../styles/calendarStyles';
-import { getAppointmentDate, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
+import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
@@ -40,7 +40,7 @@ import {
 import { Link } from 'react-router-dom';
 import history from '../../../history';
 
-const AppointmentCard = ({ tooltip, setCurrentView }: AppointmentCardProps): JSX.Element => {
+const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: AppointmentCardProps): JSX.Element => {
   const { visible, onHide, appointmentMeta } = tooltip
   const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
@@ -140,6 +140,7 @@ const AppointmentCard = ({ tooltip, setCurrentView }: AppointmentCardProps): JSX
   const appReason = appointmentMeta?.data?.reason
   const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
   const facilityName = appointmentMeta?.data?.facilityName
+  const appointmentDatePassingView = appointmentMeta && appointmentMeta?.data.startDate
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -330,12 +331,14 @@ const AppointmentCard = ({ tooltip, setCurrentView }: AppointmentCardProps): JSX
     });
   };
 
+
   useEffect(() => {
     if (patientName === "Show More" && visible === true) {
       onHide && onHide()
-      setCurrentView('Week')
+      setCurrentDate(getAppointmentDatePassingView(appointmentDatePassingView))
+      setCurrentView('Day')
     }
-  }, [onHide, patientName, setCurrentView, visible])
+  }, [appointmentDatePassingView, onHide, patientName, setCurrentDate, setCurrentView, visible])
 
   const cashPaid = () => {
     charge("")

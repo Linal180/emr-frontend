@@ -91,24 +91,60 @@ const CalendarComponent = (): JSX.Element => {
   );
 
 
-  const handleDateChange = () => setCurrentDate(currentDate)
+  const handleDateChange = (currentDate: Date) => setCurrentDate(currentDate)
 
-  const Appointment = ({ children, style, ...restProps }: any) => {
-    const { data: { color } } = restProps
+  const AppointmentContainer = ({ children, style, ...restProps }: any) => {
+    return (
+      <Appointments.Container
+        {...restProps}
+        style={{
+          ...style,
+          height: 20,
+        }}
+      >
+        {children}
+      </Appointments.Container>
+    )
+  };
 
+  const AppointmentContent = ({ children, style, ...restProps }: any) => {
+    const { data: { color, title } } = restProps
+    const showMoreButton = title === 'Show More'
+    return (
+      <Appointments.AppointmentContent
+        {...restProps}
+        style={{
+          ...style,
+          backgroundColor: showMoreButton && "#939393",
+          textDecoration: showMoreButton ? 'none' : 'underline',
+          color: showMoreButton ? 'white' : color,
+          width: 'fit-content',
+          display: showMoreButton && 'flex',
+          border: showMoreButton && '2px solid',
+          fontWeight: !showMoreButton && 700,
+          minHeight: 24,
+        }}
+      >
+        {children}
+      </Appointments.AppointmentContent>
+    )
+  };
+
+  const Appointment = ({ children, style, color, ...restProps }: any) => {
     return (
       <Appointments.Appointment
         {...restProps}
         style={{
           ...style,
-          backgroundColor: color,
-          borderRadius: '8px',
-          whiteSpace: 'normal !important',
-          minHeight: 24,
-        }}
+          backgroundColor: 'transparent',
+          borderBottom: 0,
+          borderRadius: 0,
+          width: 'fit-content'
+        }
+        }
       >
         {children}
-      </Appointments.Appointment>
+      </Appointments.Appointment >
     )
   };
 
@@ -143,7 +179,7 @@ const CalendarComponent = (): JSX.Element => {
 
         <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
           <Scheduler data={mapAppointmentData(appointments)}>
-            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} currentViewName={currentView} onCurrentViewNameChange={currentViewNameChange} />
+            <ViewState currentDate={currentDate} onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }} currentViewName={currentView} onCurrentViewNameChange={currentViewNameChange} />
             <EditingState onCommitChanges={onCommitChanges} />
             <MonthView timeTableCellComponent={MonthTimeTableCell} />
             <WeekView timeTableCellComponent={WeekTimeTableCell} />
@@ -154,8 +190,8 @@ const CalendarComponent = (): JSX.Element => {
             <IntegratedEditing />
             <IntegratedAppointments />
             <DateNavigator />
-            <Appointments appointmentComponent={Appointment} />
-            <AppointmentTooltip showCloseButton layoutComponent={(props) => <AppointmentCard tooltip={props} setCurrentView={setCurrentView} />} />
+            <Appointments appointmentComponent={Appointment} appointmentContentComponent={AppointmentContent} containerComponent={AppointmentContainer} />
+            <AppointmentTooltip showCloseButton layoutComponent={(props) => <AppointmentCard tooltip={props} setCurrentView={setCurrentView} setCurrentDate={setCurrentDate} />} />
           </Scheduler>
         </Box>
       </Box>
