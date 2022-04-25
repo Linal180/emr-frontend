@@ -81,6 +81,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
   roleName: {
     "& .MuiTypography-root": {
       color: GREY_SEVEN,
+      textAlign: 'right',
     },
   },
 
