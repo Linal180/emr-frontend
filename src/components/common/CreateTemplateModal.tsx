@@ -26,11 +26,11 @@ const TemplateModal: FC<CreateTemplateTypes> = ({
       </DialogTitle>
 
       <DialogContent>
-        <Box className={classes.main} >
+        <Box className={classes.main}>
           <Typography component="h4" variant="h5">{title}</Typography>
           <Box mt={2}>
             <FormControl margin="normal" fullWidth>
-              <InputLabel shrink >
+              <InputLabel shrink>
                 {description}
               </InputLabel>
               <TextField variant="outlined" onChange={(e) => setFormName(e.target.value)} value={formName}>
