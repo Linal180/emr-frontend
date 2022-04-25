@@ -58,7 +58,7 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
                 ))}
               </Grid>
               
-              <Box display={'flex'} justifyContent={'flex-end'}>
+              <Box mt={3} display={'flex'} justifyContent={'flex-end'}>
                 <Box marginX={2}>
                   <Button variant='text' color='default' onClick={closeModalHandler}>
                     {CANCEL_TEXT}
