@@ -18,6 +18,7 @@ export interface State {
   paymentMethod: string;
   attachmentUrl: string;
   basicContactId: string;
+  sameAddress: boolean;
   consentAgreed: boolean;
   isAppointment: boolean;
   deletePatientId: string;
@@ -53,6 +54,7 @@ export const initialState: State = {
   openDelete: false,
   openGraph: false,
   basicContactId: '',
+  sameAddress: false,
   attachmentsData: [],
   deletePatientId: '',
   consentAgreed: false,
@@ -81,6 +83,7 @@ export enum ActionType {
   SET_EMPLOYER_ID = 'setEmployerId',
   SET_TOTAL_PAGES = 'setTotalPages',
   SET_IS_EDIT_CARD = 'setIsEditCard',
+  SET_SAME_ADDRESS = 'setSameAddress',
   SET_SEARCH_QUERY = 'setSearchQuery',
   SET_PATIENT_DATA = 'setPatientData',
   SET_ATTACHMENT_ID = 'setAttachmentId',
@@ -112,6 +115,7 @@ export type Action =
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_IS_EDIT_CARD; isEditCard: boolean }
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
+  | { type: ActionType.SET_SAME_ADDRESS, sameAddress: boolean }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_PAYMENT_METHOD, paymentMethod: string }
@@ -140,16 +144,22 @@ export const patientReducer = (state: State, action: Action): State => {
         page: action.page
       }
 
-      case ActionType.SET_PAYMENT_METHOD:
-        return {
-          ...state,
-          paymentMethod: action.paymentMethod
-        }
+    case ActionType.SET_PAYMENT_METHOD:
+      return {
+        ...state,
+        paymentMethod: action.paymentMethod
+      }
 
     case ActionType.SET_CONSENT_AGREED:
       return {
         ...state,
         consentAgreed: action.consentAgreed
+      }
+
+    case ActionType.SET_SAME_ADDRESS:
+      return {
+        ...state,
+        sameAddress: action.sameAddress
       }
 
     case ActionType.SET_ACTIVE_STEP:
