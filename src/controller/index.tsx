@@ -1,6 +1,6 @@
 // packages block
 import { FC, useState } from "react";
-import { InfoOutlined, Search } from "@material-ui/icons";
+import { Search } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, InputLabel, TextField } from "@material-ui/core";
 // components block
@@ -10,6 +10,7 @@ import { PASSWORD, TEXT } from "../constants";
 import { DetailTooltip } from "../styles/tableStyles";
 import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
+import { InfoIcon } from "../assets/svgs";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
@@ -40,7 +41,9 @@ const InputController: FC<CustomInputControlProps> = ({
             {info &&
               <Box>
                 <DetailTooltip placement="top-end" arrow title={info}>
-                  <InfoOutlined color="inherit" fontSize="inherit" />
+                  <Box width={15} height={15}>
+                    <InfoIcon />
+                  </Box>
                 </DetailTooltip>
               </Box>
             }

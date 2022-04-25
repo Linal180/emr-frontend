@@ -1,7 +1,6 @@
 // packages block
 import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { InsertLink } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
@@ -12,7 +11,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { EditNewIcon, TrashNewIcon } from "../../../../assets/svgs";
+import { EditNewIcon, LinkIcon, TrashNewIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
   formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
@@ -199,7 +198,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
                             <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                              <InsertLink />
+                              <LinkIcon />
                             </Box>
                           </DetailTooltip>
 

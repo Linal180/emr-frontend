@@ -3,7 +3,6 @@ import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "r
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
-import { Visibility as VisibilityIcon, InsertLink as InsertLinkIcon, Share as ShareIcon } from '@material-ui/icons'
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -16,7 +15,7 @@ import FormPreviewModal from '../previewModal'
 import { AuthContext, ListContext } from "../../../../context";
 import { getFormatDate, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
-import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs'
+import { EditNewIcon, EyeIcon, LinkIcon, ShareIcon, TrashNewIcon } from '../../../../assets/svgs'
 import {
   useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, SectionsInputs,
   LayoutJsonType
@@ -214,7 +213,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <DetailTooltip title={isActive ? (copied ? LINK_COPIED : PUBLIC_FORM_LINK) : ''}>
                           <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && handleClipboard(id || '')}  >
-                            <InsertLinkIcon />
+                            <LinkIcon />
                           </Box>
                         </DetailTooltip>
                         <Link to={`${FORM_BUILDER_EDIT_ROUTE}/${id}`}>
@@ -226,7 +225,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                           <TrashNewIcon />
                         </Box>
                         <Box className={classes.iconsBackground} onClick={() => onViewClick(layout, name)}>
-                          <VisibilityIcon />
+                          <EyeIcon />
                         </Box>
                         <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && onShareClick(id || '')}>
                           <ShareIcon />
