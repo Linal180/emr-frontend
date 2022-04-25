@@ -139,7 +139,7 @@ const ResponseTable: FC = (): JSX.Element => {
                 return (
                   <TableRow key={`${id}-${FormId}`}>
                     {userFormElements?.map((responseElement, index) => {
-                      const { arrayOfStrings, FormsElementsId, value, id: responseId } = responseElement;
+                      const { arrayOfStrings, FormsElementsId, value, id: responseId, arrayOfObjects } = responseElement;
                       return (
                         <Fragment>
                           {index <= 2 &&
@@ -150,7 +150,7 @@ const ResponseTable: FC = (): JSX.Element => {
                                 </Box>
                                 : value) ||
                                 <ul>
-                                  {arrayOfStrings?.filter((arr) => arr.value === true)?.map((val) => {
+                                  {arrayOfObjects?.filter((arr) => arr.value === true)?.map((val) => {
                                     const { name } = val;
                                     return (
                                       <li key={`${id}-${name}-${responseId}-${index}-${FormId}`}>
@@ -159,6 +159,11 @@ const ResponseTable: FC = (): JSX.Element => {
                                     )
                                   }
                                   )}
+                                  {arrayOfStrings?.map((val) => (
+                                    <li key={`${id}-${val}-${responseId}-${index}-${FormId}`}>
+                                      {val}
+                                    </li>
+                                  ))}
                                 </ul>
                               }
                             </TableCell>}

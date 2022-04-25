@@ -13,13 +13,13 @@ export const FieldController = ({ item, isCreating }: FieldComponentProps) => {
   const { control } = useFormContext();
   const classes = useFormStyles();
   //constants
-  const { required, label, fieldId, type } = item;
+  const { required, label, fieldId, type, isMultiSelect } = item;
   //render
   return (
     <Controller
       name={fieldId}
       control={control}
-      defaultValue={getUserFormDefaultValue(type)}
+      defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
       render={({ field }) => (
         <FormControl fullWidth margin="normal">
           <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>

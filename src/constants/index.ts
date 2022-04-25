@@ -93,7 +93,7 @@ export const NO_TEXT = "No";
 export const CANCEL_TEXT = "Cancel";
 export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
-export const CREATE_FORM_TEMPLATE = "Form is created successfully.";
+export const CREATE_FORM_TEMPLATE = "Form Template is created successfully.";
 export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
 export const FORM_NOT_FOUND = "Form not found!";
@@ -2459,7 +2459,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: [],
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: RadioGroupIcon,
@@ -2474,7 +2475,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: OPTIONS,
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: CheckboxIcon,
@@ -2489,7 +2491,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: OPTIONS,
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: DateIcon,
@@ -2504,7 +2507,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: NumberIcon,
@@ -2519,7 +2523,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: EmailIcon,
@@ -2534,12 +2539,13 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: FileInputIcon,
     fieldId: uuid(),
-    label: 'File Uplaod',
+    label: 'File Upload',
     type: ElementType.File,
     name: uuid(),
     css: '',
@@ -2549,7 +2555,8 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: SelectIcon,
@@ -2567,6 +2574,23 @@ export const ITEMS: ItemsTypes[] = [
     options: OPTIONS
   },
   {
+    icon: SelectIcon,
+    fieldId: uuid(),
+    label: 'Multi Select',
+    type: ElementType.Select,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    textArea: false,
+    options: OPTIONS,
+    isMultiSelect: true,
+  },
+
+  {
     icon: TextAreaIcon,
     fieldId: uuid(),
     label: 'Text Area',
@@ -2579,7 +2603,8 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: true,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
 ];
 

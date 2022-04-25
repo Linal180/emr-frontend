@@ -189,7 +189,8 @@ const AddForm = () => {
             errorMsg: itemField?.defaultValue ?? '',
             defaultValue: itemField?.defaultValue ?? '',
             options: itemField?.options ?? [],
-            textArea: itemField?.textArea ?? false
+            textArea: itemField?.textArea ?? false,
+            isMultiSelect: itemField?.isMultiSelect ?? false
           };
           item?.fields?.splice(destination.index, 0, newField);
           return item;
