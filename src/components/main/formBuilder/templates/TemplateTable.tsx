@@ -109,9 +109,8 @@ const Templates = () => {
                       <TableCell scope="row">
                         {name}
                       </TableCell>
-
-                      <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                       <TableCell scope="row">{type}</TableCell>
+                      <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Link to={`${FORM_BUILDER_COPY_TEMPLATE_ROUTE}/${id}`}>

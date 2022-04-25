@@ -32,8 +32,9 @@ import {
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES, getFormInitialValues,
   FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION,
-  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, DELETE_FORM_DESCRIPTION,
+  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT, FORM_TEXT,
   CREATE_TEMPLATE,
+  CREATE_FORM_TEMPLATE,
 } from '../../../../constants';
 
 //component
@@ -134,8 +135,8 @@ const AddForm = () => {
         const { status } = response
         const { id } = form
         if (status && status === 200 && id) {
-          // setFormValues(getFormInitialValues())
-          Alert.success(CREATE_FORM_BUILDER);
+          setOpenTemplate(false)
+          Alert.success(CREATE_FORM_TEMPLATE);
         }
       }
     }
@@ -357,7 +358,7 @@ const AddForm = () => {
               sections: formValues
             },
             name: formName,
-            isSystemForm: false,
+            isSystemForm: true,
             type: FormType.Template
           }
         }

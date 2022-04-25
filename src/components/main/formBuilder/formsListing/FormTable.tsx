@@ -205,7 +205,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {isSuper && facilityId && <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell>}
+                    {isSuper && facilityId ? <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell scope="row">---</TableCell>}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                     <TableCell scope="row">{isActive ? PUBLISHED : NOT_PUBLISHED}</TableCell>
                     <TableCell scope="row">
