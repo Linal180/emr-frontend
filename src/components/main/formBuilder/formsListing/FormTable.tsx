@@ -100,7 +100,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : { facilityId, ...pageInputs, isSystemForm: false }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
@@ -206,7 +206,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {isSuper && facilityId && <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell>}
+                    {isSuper && facilityId ? <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell scope="row">---</TableCell>}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                     <TableCell scope="row">{isActive ? PUBLISHED : NOT_PUBLISHED}</TableCell>
                     <TableCell scope="row">
@@ -224,7 +224,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashNewIcon />
                         </Box>
-                        <Box className={classes.iconsBackground} onClick={() => onViewClick(layout, name)}>
+                        <Box className={classes.iconsBackground} onClick={() => name && onViewClick(layout, name)}>
                           <EyeIcon />
                         </Box>
                         <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && onShareClick(id || '')}>

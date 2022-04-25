@@ -93,6 +93,7 @@ export const NO_TEXT = "No";
 export const CANCEL_TEXT = "Cancel";
 export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
+export const CREATE_FORM_TEMPLATE = "Form Template is created successfully.";
 export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
 export const FORM_NOT_FOUND = "Form not found!";
@@ -152,6 +153,7 @@ export const SCHEDULE_APPOINTMENT = "Schedule Appointment";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
+export const CREATE_TEMPLATE = "Create Template";
 export const PAYMENT_TYPE = "Payment Type";
 export const SELF_PAY_RESTRICTION = "Self Pay Restriction";
 export const PRIMARY_INSURANCE_FOR_ORDER = "Primary Insurance For Order";
@@ -353,6 +355,7 @@ export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_FIELDS = "Form Fields";
+export const NO_TEMPLATE = "No Template Found";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
@@ -977,6 +980,7 @@ export const PRACTICE_DETAILS_ROUTE = "/practice-details";
 export const PATIENT_INFORMATION = "/patient-information";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
 export const FORM_BUILDER_EDIT_ROUTE = "/form-builder/edit";
+export const FORM_BUILDER_COPY_TEMPLATE_ROUTE = "/form-builder/template";
 export const FORM_BUILDER_RESPONSES = "/form-responses";
 export const PUBLIC_APPOINTMENT_ROUTE = "/public-appointment";
 export const PRACTICE_MANAGEMENT_ROUTE = "/practice-management";
@@ -2468,7 +2472,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: [],
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: RadioGroupIcon,
@@ -2483,7 +2488,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: OPTIONS,
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: CheckboxIcon,
@@ -2498,7 +2504,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: OPTIONS,
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: DateIcon,
@@ -2513,7 +2520,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: NumberIcon,
@@ -2528,7 +2536,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: EmailIcon,
@@ -2543,12 +2552,13 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: FileInputIcon,
     fieldId: uuid(),
-    label: 'File Uplaod',
+    label: 'File Upload',
     type: ElementType.File,
     name: uuid(),
     css: '',
@@ -2558,7 +2568,8 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: SelectIcon,
@@ -2576,6 +2587,23 @@ export const ITEMS: ItemsTypes[] = [
     options: OPTIONS
   },
   {
+    icon: SelectIcon,
+    fieldId: uuid(),
+    label: 'Multi Select',
+    type: ElementType.Select,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    textArea: false,
+    options: OPTIONS,
+    isMultiSelect: true,
+  },
+
+  {
     icon: TextAreaIcon,
     fieldId: uuid(),
     label: 'Text Area',
@@ -2588,7 +2616,8 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: true,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
 ];
 
@@ -2836,3 +2865,14 @@ export enum USER_PERMISSIONS {
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
+
+export const FORM_BUILDER_FIELDS_TABS = [
+  {
+    title: "Fields",
+    value: "1",
+  },
+  {
+    title: "Templates",
+    value: "2",
+  },
+]
