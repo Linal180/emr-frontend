@@ -293,6 +293,8 @@ export interface SelectorProps {
   isMultiple?: boolean
   value?: SelectorOption
   options: SelectorOption[]
+  isModal?: boolean;
+  handlePatientModal?: Function;
 }
 
 export interface CardSelectorProps {
@@ -718,6 +720,11 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
   reload: Function;
   doctorDispatcher: Dispatch<DoctorAction>;
   doctorFacilityId: string | undefined;
+}
+
+export interface AddPatientModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
 }
 
 export interface FacilityScheduleModalProps extends GeneralFormProps {
