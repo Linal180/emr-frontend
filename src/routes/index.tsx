@@ -83,7 +83,6 @@ import {
   CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, TWO_FA_ROUTE,
   USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_BUILDER_RESPONSES
 } from "../constants";
-import DemoComponent from "../components/main/dashboard/demo";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -128,7 +127,6 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={CHANGE_PASSWORD_ROUTE} component={ChangePassword} />
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
       <PrivateRoute exact path={`${CALENDAR_ROUTE}`} component={Calendar} />
-      <PrivateRoute exact path='/demo' component={DemoComponent} />
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} permission={USER_PERMISSIONS.findAllDoctor} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} permission={USER_PERMISSIONS.createDoctor} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id`} component={ViewDoctor} permission={USER_PERMISSIONS.updateDoctor} />
