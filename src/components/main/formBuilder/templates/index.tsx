@@ -1,6 +1,6 @@
 //components block
-import TemplateTable from "./TemplateTable";
+import { TemplatesTable } from "./TemplateTable";
 // constants block
-const FormListing = () => <TemplateTable />
+const FormListing = () => <TemplatesTable />
 
 export default FormListing

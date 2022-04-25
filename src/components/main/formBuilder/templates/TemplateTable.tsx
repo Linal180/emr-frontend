@@ -16,7 +16,7 @@ import { useTableStyles } from '../../../../styles/tableStyles';
 import { getFormatDate, renderTh } from '../../../../utils';
 import { CopyIcon } from '../../../../assets/svgs';
 //component
-const Templates = () => {
+export const TemplatesTable = () => {
   const classes = useTableStyles()
   //states
   const [templates, setTemplates] = useState<FormPayload['form'][]>([])
@@ -79,7 +79,7 @@ const Templates = () => {
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
   return (
-    <Box >
+    <Box>
       <Box className={classes.mainTableContainer}>
         <Search search={search} />
 
@@ -158,5 +158,3 @@ const Templates = () => {
 
   )
 }
-
-export default Templates;

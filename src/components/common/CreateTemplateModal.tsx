@@ -13,17 +13,10 @@ const TemplateModal: FC<CreateTemplateTypes> = ({
   setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success,
   formName, setFormName
 }): JSX.Element => {
-
   const classes = usePreviewModalStyles()
 
-  const handleClose = () => {
-    setOpen && setOpen(!isOpen)
-  }
-
-  const onDelete = () => {
-    handleDelete()
-  }
-
+  const handleClose = () => setOpen && setOpen(!isOpen)
+  const onDelete = () => handleDelete()
   const buttonColor: PropTypes.Color = success ? "primary" : "secondary"
 
   return (

@@ -15,9 +15,9 @@ import DropContainer from './dropContainer';
 import Alert from '../../../common/Alert';
 import FieldProperties from './fieldProperties';
 import InputController from '../../../../controller';
-import { FormAddIcon } from '../../../../assets/svgs';
 import CreateTemplateModal from '../../../common/CreateTemplateModal'
 // constants block
+import { FormAddIcon } from '../../../../assets/svgs';
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
 import { WHITE, WHITE_FIVE, } from '../../../../theme';
@@ -33,8 +33,7 @@ import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES, getFormInitialValues,
   FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION,
   FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT, FORM_TEXT,
-  CREATE_TEMPLATE,
-  CREATE_FORM_TEMPLATE,
+  CREATE_TEMPLATE, CREATE_FORM_TEMPLATE,
 } from '../../../../constants';
 
 //component
@@ -131,9 +130,11 @@ const AddForm = () => {
     },
     onCompleted(data) {
       const { createFormTemplate: { form, response } } = data;
+
       if (response && form) {
         const { status } = response
         const { id } = form
+
         if (status && status === 200 && id) {
           setOpenTemplate(false)
           Alert.success(CREATE_FORM_TEMPLATE);
@@ -143,12 +144,8 @@ const AddForm = () => {
   })
 
   const getFormHandler = useCallback(() => {
-    if (formId) {
-      getForm({ variables: { getForm: { id: formId } } })
-    }
-    if (templateId) {
-      getForm({ variables: { getForm: { id: templateId } } })
-    }
+    formId && getForm({ variables: { getForm: { id: formId } } })
+    templateId && getForm({ variables: { getForm: { id: templateId } } })
   }, [getForm, formId, templateId])
 
   useEffect(() => {
