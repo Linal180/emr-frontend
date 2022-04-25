@@ -1,17 +1,17 @@
 // packages block
 import { FC, useEffect } from "react";
 import { useParams } from "react-router";
-import { Box, Card, colors, Typography } from '@material-ui/core';
+import { Box, Button, Card, colors, Typography } from '@material-ui/core';
 // components block
 import Alert from "../../../common/Alert";
 // utils, styles  block, constants
-import { WHITE_TWO } from '../../../../theme';
+import { GRAY_FIVE, GREY_THREE, GREY_TWO, WHITE_TWO } from '../../../../theme';
 import { ParamsType } from "../../../../interfacesTypes";
 import { useCancelAppointmentMutation } from "../../../../generated/graphql";
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles"
 import {
-  APPOINTMENT_CANCEL, APPOINTMENT_CANCEL_TEXT, APPOINTMENT_NOT_EXIST, CANT_CANCELLED_APPOINTMENT, NOT_FOUND_EXCEPTION,
-  PATIENT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND
+  appointmentCancellationDescription, APPOINTMENT_CANCEL_SUBHEADING, APPOINTMENT_NOT_EXIST, CANCEL_APPOINTMENT_TEXT, CANT_CANCELLED_APPOINTMENT, DISMISS, NOT_FOUND_EXCEPTION,
+  PATIENT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, YES_CANCEL,
 } from "../../../../constants";
 
 const CancelAppointmentComponent: FC = (): JSX.Element => {
@@ -49,11 +49,24 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
     <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
       <Card>
         <Box p={3} borderBottom={`1px solid ${colors.grey[300]}`}>
-          <Typography variant="h4"><strong>{APPOINTMENT_CANCEL}</strong></Typography>
+          <Typography variant="h4"><strong>{CANCEL_APPOINTMENT_TEXT}</strong></Typography>
         </Box>
 
         <Box className={classes.container}>
-          <Typography variant="h5" component="h5">{APPOINTMENT_CANCEL_TEXT}</Typography>
+          <Typography variant="h6">{appointmentCancellationDescription}</Typography>
+
+          <Box mt={3} color={GREY_THREE}>
+            <Typography variant="h6" component="h5">{APPOINTMENT_CANCEL_SUBHEADING}</Typography>
+          </Box>
+
+        </Box>
+
+        <Box py={3} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
+          <Box mr={2} color={GREY_TWO}>
+            <Button type="submit" variant="text" color="inherit" className="muted">{DISMISS}</Button>
+          </Box>
+
+          <Button type="submit" variant="text" color="inherit" className="danger">{YES_CANCEL}</Button>
         </Box>
       </Card>
     </Box>

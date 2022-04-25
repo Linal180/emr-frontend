@@ -8,7 +8,7 @@ import Backdrop from "../../../../components/common/Backdrop";
 import ConfirmationModal from "../../../../components/common/ConfirmationModal";
 // utils, styles  block, constants
 import history from "../../../../history";
-import { GRAY_FIVE, WHITE, WHITE_TWO } from '../../../../theme';
+import { GRAY_FIVE, GREY_THREE, GREY_TWO, WHITE, WHITE_TWO } from '../../../../theme';
 import { ParamsType } from "../../../../interfacesTypes";
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles";
 import {
@@ -18,10 +18,9 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/appointmentReducer";
 import {
-  APPOINTMENT_NOT_FOUND, PATIENT_APPOINTMENT_FAIL,
-  APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND,
-  PATIENT_CANCELLED_APPOINTMENT, PATIENT_APPOINTMENT_CANCEL, APPOINTMENT_CONFIRMED, CANCEL_APPOINTMENT_TEXT,
-  CONTINUE_TEXT, APPOINTMENT_CONFIRM_SUBHEADING, appointmentConfirmationDescription, PATIENT_APPOINTMENT_SUCCESS,
+  APPOINTMENT_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, PATIENT_CANCELLED_APPOINTMENT,
+  PATIENT_APPOINTMENT_CANCEL, APPOINTMENT_CONFIRMED, CANCEL_APPOINTMENT_TEXT, CONTINUE_TEXT, APPOINTMENT_CONFIRM_SUBHEADING, appointmentConfirmationDescription, 
+  PATIENT_INFORMATION,
 } from '../../../../constants';
 
 const AppointmentConfirmationComponent: FC = (): JSX.Element => {
@@ -110,41 +109,40 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
     <Box bgcolor={WHITE_TWO} display="flex" justifyContent="center" alignItems="center">
       {(getAppointmentLoading || !appointment) ? <Backdrop loading={true} /> : (
 
-        <Box>
-          <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
-            <Card>
-              <Box p={3} borderBottom={`1px solid ${colors.grey[300]}`}>
-                <Typography variant="h4"><strong>{APPOINTMENT_CONFIRMED}</strong></Typography>
+        <Box bgcolor={WHITE_TWO} minHeight="100vh" p={3.75} display="flex" justifyContent="center" alignItems="center">
+          <Card>
+            <Box p={3} borderBottom={`1px solid ${colors.grey[300]}`}>
+              <Typography variant="h4"><strong>{APPOINTMENT_CONFIRMED}</strong></Typography>
+            </Box>
+
+            <Box className={classes.container}>
+              <Typography variant="h6">
+                {appointmentConfirmationDescription(scheduleStartDateTime || '')}
+              </Typography>
+
+              <Box mt={3} color={GREY_THREE}>
+                <Typography variant="h6" component="h5">{APPOINTMENT_CONFIRM_SUBHEADING}</Typography>
               </Box>
 
-              <Box className={classes.container}>
-                <Typography variant="h4">
-                  {appointmentConfirmationDescription(scheduleStartDateTime || '')}
-                </Typography>
+            </Box>
 
-                <Box mb={3} />
-
-                <Typography component="h5" variant="h5">{APPOINTMENT_CONFIRM_SUBHEADING}</Typography>
-              </Box>
-
-              <Box mt={5} py={4} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
-                <Button type="submit" variant="outlined" color="secondary" 
-                onClick={() => handleCancelAppointment()}
+            <Box py={3} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
+              <Box mr={2} color={GREY_TWO}>
+                <Button type="submit" variant="text" color="inherit" className="muted"
+                  onClick={() => handleCancelAppointment()}
                 >{CANCEL_APPOINTMENT_TEXT}</Button>
-
-                <Box p={1} />
-
-                <Button type="submit" variant="contained" color="primary" disabled={!!!patientId}>
-                  {/* <Link to={`${PATIENT_INFORMATION}/${patientId}`}> */}
-                  <Link to={PATIENT_APPOINTMENT_SUCCESS}>
-                    <Box color={WHITE}>
-                      {CONTINUE_TEXT}
-                    </Box>
-                  </Link>
-                </Button>
               </Box>
-            </Card>
-          </Box>
+
+              <Button type="submit" variant="contained" color="primary" disabled={!!!patientId}>
+                <Link to={`${PATIENT_INFORMATION}/${patientId}`}>
+                  {/* <Link to={PATIENT_APPOINTMENT_SUCCESS}> */}
+                  <Box color={WHITE}>
+                    {CONTINUE_TEXT}
+                  </Box>
+                </Link>
+              </Button>
+            </Box>
+          </Card>
         </Box>
       )}
 

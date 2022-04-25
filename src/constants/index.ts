@@ -831,6 +831,7 @@ export const NO_SLOT_AVAILABLE = "No Slot available";
 export const REGISTRATION_DATE = "Registration Date";
 export const PATIENT_LAST_NAME = "Patient Last Name";
 export const PATIENT_NAME = "Patient Name";
+export const YES_CANCEL = "Yes, Cancel";
 export const PATIENT_CONTACT = "Patient Contact";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const PATIENT_FIRST_NAME = "Patient First Name";
@@ -917,6 +918,7 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
+export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
 export const APPOINTMENT_CONFIRM_SUBHEADING = "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
 export const TWO_FA_AUTHENTICATION_DESCRIPTION = "When you login you provide an email address and password. This is one “factor” of authenticating who you are. 2-Factor refers to using a second factor to confirm your identity.";
 export const appointmentConfirmationDescription = (dateTime: string) =>
@@ -925,6 +927,7 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
   )} on ${getFormattedDate(
     dateTime || ""
   )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
+export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
 export const PUBLIC_FORM_SUCCESS_HEADING = 'Record Submitted';
 export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
 export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';

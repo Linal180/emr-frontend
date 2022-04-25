@@ -308,7 +308,13 @@ export const theme = createTheme({
           "& .MuiButton-label": {
             color: RED
           }
-        }
+        },
+
+        "&.muted": {
+          "& .MuiButton-label": {
+            color: GREY_TWO,
+          }
+        },
       }
     },
 
