@@ -179,6 +179,10 @@ export const getAppointmentDate = (date: SchedulerDateTime | undefined): string 
   return date ? moment(date).format("MMMM Do YYYY") : moment().format("MMMM Do YYYY")
 };
 
+export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefined): string => {
+  return date ? (moment(new Date(date))).format().toString() : moment().format().toString()
+};
+
 export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
 };
@@ -521,7 +525,6 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
     const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
     const appointmentStatus = status && formatValue(status)
     const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
-
     return {
       token,
       reason,
