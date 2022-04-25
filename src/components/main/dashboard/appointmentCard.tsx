@@ -21,7 +21,7 @@ import { useCalendarStyles } from '../../../styles/calendarStyles';
 import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
-  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon,
+  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
 } from '../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
@@ -592,6 +592,10 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
 
               <Box py={2} borderTop={`1px solid ${WHITE_FOUR}`} maxWidth={250} textAlign="center">
                 <Typography variant="h5"><strong>{patientName}</strong></Typography>
+              </Box>
+
+              <Box onClick={() => window.print()} className={classes.cursor} width={25}>
+                <PrintIcon />
               </Box>
             </Box>
           </Card>

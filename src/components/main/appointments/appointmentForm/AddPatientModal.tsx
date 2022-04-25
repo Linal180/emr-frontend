@@ -1,5 +1,4 @@
 // packages block
-import { useParams } from "react-router";
 import { FC, useCallback, useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
@@ -10,9 +9,9 @@ import Selector from '../../../common/Selector';
 import CardComponent from "../../../common/CardComponent";
 // import ViewDataLoader from "../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
-import { AuthContext, FacilityContext } from '../../../../context';
+import { AuthContext } from '../../../../context';
 import { doctorScheduleSchema } from "../../../../validationSchemas";
-import { ScheduleInputProps, ParamsType, AddPatientModalProps } from "../../../../interfacesTypes";
+import { ScheduleInputProps, AddPatientModalProps } from "../../../../interfacesTypes";
 import { checkPermission } from "../../../../utils";
 import { useCreatePatientMutation } from "../../../../generated/graphql";
 import {
@@ -22,9 +21,7 @@ import InputController from "../../../../controller";
 import DatePicker from "../../../common/DatePicker";
 
 const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.Element => {
-  const { id: doctorId } = useParams<ParamsType>();
   const { userPermissions } = useContext(AuthContext)
-  const { serviceList } = useContext(FacilityContext)
   const methods = useForm<ScheduleInputProps>({
     mode: "all",
     resolver: yupResolver(doctorScheduleSchema)
@@ -44,7 +41,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
   }, [handleClose, userPermissions]);
 
 
-  const [createPatient, { loading: createPatientLoading }] = useCreatePatientMutation({
+  const [, { loading: createPatientLoading }] = useCreatePatientMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)

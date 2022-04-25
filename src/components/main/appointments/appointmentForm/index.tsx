@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext, Reducer, useReducer, useCallback, ChangeEvent } from 'react';
+import { useEffect, FC, useContext, Reducer, useReducer, useCallback, ChangeEvent, useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
@@ -45,8 +45,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
   const { facilityList } = useContext(ListContext)
   const params = new URLSearchParams(window.location.search);
-  let appStartDate = params.get('startDate');
-  let appEndDate = params.get('endDate');
+  const [appStartDate, setAppStartDate] = useState<string>(params.get('startDate') || '')
+  const [appEndDate] = useState<string>(params.get('endDate') || '')
   const {
     serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
@@ -340,8 +340,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }
 
   const dateHandler = (currentDate: MaterialUiPickersDate) => {
-    console.log("param", currentDate)
-    appStartDate = null;
+    setAppStartDate('')
     dispatch({ type: ActionType.SET_DATE, date: currentDate })
   }
 
