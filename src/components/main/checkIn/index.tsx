@@ -1,6 +1,6 @@
 // packages block
 import { useState, ChangeEvent } from "react";
-import { AddCircleOutline, Check, ChevronRight, Clear } from '@material-ui/icons';
+import { AddCircleOutline, Check, ChevronRight, } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm, Controller } from 'react-hook-form';
 import {
   Box, Button, Card, colors, Grid, Step, Stepper, Typography, StepLabel, StepIconProps, Table, TableBody, TableHead, TableRow,
@@ -16,8 +16,8 @@ import VitalsChartingTable from "../patients/patientChart/patientChartCards/vita
 // constants, history, styling block
 import clsx from 'clsx';
 import { renderTh } from "../../../utils";
-import { UserIcon } from "../../../assets/svgs";
-import { GRAY_TWO, WHITE } from "../../../theme";
+import { ClearIcon, UserIcon } from "../../../assets/svgs";
+import { GREY_SEVEN, WHITE } from "../../../theme";
 import { useTableStyles } from "../../../styles/tableStyles";
 import PROFILE_IMAGE from "../../../assets/images/profile-image.svg";
 import { usePublicAppointmentStyles } from "../../../styles/publicAppointmentStyles";
@@ -51,6 +51,7 @@ const CheckInComponent = (): JSX.Element => {
   const [activeStep, setActiveStep] = useState(0);
   const [isChecked, setIsChecked] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
+  const search = (query: string) => { }
 
   const handleStep = (step: number) => () => {
     setActiveStep(step);
@@ -312,9 +313,9 @@ const CheckInComponent = (): JSX.Element => {
                         <InputLabel shrink>{EMPLOYMENT}</InputLabel>
 
                         <label className="toggle-main">
-                          <Box color={isChecked ? WHITE : GRAY_TWO}>{YES}</Box>
+                          <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
                           <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='employment' />
-                          <Box color={isChecked ? GRAY_TWO : WHITE}>{NO}</Box>
+                          <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
                         </label>
                       </FormControl>
                     )}
@@ -330,9 +331,9 @@ const CheckInComponent = (): JSX.Element => {
                         <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
 
                         <label className="toggle-main">
-                          <Box color={isChecked ? WHITE : GRAY_TWO}>{YES}</Box>
+                          <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
                           <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='autoAccident' />
-                          <Box color={isChecked ? GRAY_TWO : WHITE}>{NO}</Box>
+                          <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
                         </label>
                       </FormControl>
                     )}
@@ -348,9 +349,9 @@ const CheckInComponent = (): JSX.Element => {
                         <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
 
                         <label className="toggle-main">
-                          <Box color={isChecked ? WHITE : GRAY_TWO}>{YES}</Box>
+                          <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES}</Box>
                           <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='otherAccident' />
-                          <Box color={isChecked ? GRAY_TWO : WHITE}>{NO}</Box>
+                          <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO}</Box>
                         </label>
                       </FormControl>
                     )}
@@ -366,12 +367,10 @@ const CheckInComponent = (): JSX.Element => {
             <Grid item md={6} sm={12} xs={12}>
               <Card>
                 <Box p={2} className={classes.mainTableContainer}>
-                  <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{ICD_TEN_CODES}</Typography>
 
-                    <Box className={classes.searchOuterContainer}>
-                      <Search search={Search} />
-                    </Box>
+                    <Search search={search} />
                   </Box>
 
                   <Box className="table-overflow">
@@ -393,7 +392,7 @@ const CheckInComponent = (): JSX.Element => {
                             <TableCell scope="row">{description}</TableCell>
                             <TableCell scope="row">
                               <IconButton>
-                                <Clear />
+                                <ClearIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -408,12 +407,10 @@ const CheckInComponent = (): JSX.Element => {
 
               <Card>
                 <Box p={2} className={classes.mainTableContainer}>
-                  <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{HCPCS_CODES}</Typography>
 
-                    <Box className={classes.searchOuterContainer}>
-                      <Search search={Search} />
-                    </Box>
+                    <Search search={search} />
                   </Box>
 
                   <Box className="table-overflow">
@@ -437,7 +434,7 @@ const CheckInComponent = (): JSX.Element => {
                             <TableCell scope="row"></TableCell>
                             <TableCell scope="row">
                               <IconButton>
-                                <Clear />
+                                <ClearIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -452,12 +449,10 @@ const CheckInComponent = (): JSX.Element => {
             <Grid item md={6} sm={12} xs={12}>
               <Card>
                 <Box p={2} className={classes.mainTableContainer}>
-                  <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{CPT_CODES}</Typography>
 
-                    <Box className={classes.searchOuterContainer}>
-                      <Search search={Search} />
-                    </Box>
+                    <Search search={Search} />
                   </Box>
 
                   <Box className="table-overflow">
@@ -481,7 +476,7 @@ const CheckInComponent = (): JSX.Element => {
                             <TableCell scope="row"></TableCell>
                             <TableCell scope="row">
                               <IconButton>
-                                <Clear />
+                                <ClearIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -496,12 +491,10 @@ const CheckInComponent = (): JSX.Element => {
 
               <Card>
                 <Box p={2} className={classes.mainTableContainer}>
-                  <Box pr={3} display="flex" justifyContent="space-between" alignItems="center">
+                  <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
                     <Typography variant="h4">{CUSTOM_CODES}</Typography>
 
-                    <Box className={classes.searchOuterContainer}>
-                      <Search search={Search} />
-                    </Box>
+                    <Search search={search} />
                   </Box>
 
                   <Box className="table-overflow">
@@ -525,7 +518,7 @@ const CheckInComponent = (): JSX.Element => {
                             <TableCell scope="row"></TableCell>
                             <TableCell scope="row">
                               <IconButton>
-                                <Clear />
+                                <ClearIcon />
                               </IconButton>
                             </TableCell>
                           </TableRow>
@@ -554,7 +547,7 @@ const CheckInComponent = (): JSX.Element => {
               <Box display="flex" alignItems="center">
                 <Typography variant="h4">Brad Dennis</Typography>
 
-                <Box ml={1} color={GRAY_TWO}>
+                <Box ml={1} color={GREY_SEVEN}>
                   <Typography variant="body1">(PT23453)</Typography>
                 </Box>
               </Box>
@@ -562,7 +555,7 @@ const CheckInComponent = (): JSX.Element => {
               <Box display="flex" alignItems="center">
                 <UserIcon />
 
-                <Box ml={1} color={GRAY_TWO}>
+                <Box ml={1} color={GREY_SEVEN}>
                   <Typography variant="body1">24 Yrs Old </Typography>
                 </Box>
               </Box>
@@ -573,12 +566,12 @@ const CheckInComponent = (): JSX.Element => {
             <Box mr={2}>
               <Typography variant="h6">{PRIMARY_PROVIDER}</Typography>
 
-              <Box color={GRAY_TWO} textAlign="right">
+              <Box color={GREY_SEVEN} textAlign="right">
                 <Typography variant="body1">John Doe</Typography>
               </Box>
             </Box>
 
-            <Button variant="contained" color="inherit" className="blue-button-new">{GO_TO_PROFILE}</Button>
+            <Button variant="contained" color="secondary">{GO_TO_PROFILE}</Button>
           </Box>
         </Box>
       </Card>

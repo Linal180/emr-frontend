@@ -145,14 +145,13 @@ const ProfileDropdownMenu = (): JSX.Element => {
           <Box mt={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`}>
             <Grid container spacing={3}>
               <Grid item md={8}>
-                <Button onClick={() => handleIdle()} variant="contained" color="inherit" size="small" className="blue-button-new" fullWidth>
+                <Button onClick={() => handleIdle()} variant="contained" color="secondary" size="small" fullWidth>
                   {LOCK_SCREEN}
                 </Button>
               </Grid>
 
               <Grid item md={4}>
-                <Button onClick={() => logout()} variant="outlined" color="secondary" size="small"
-                >
+                <Button onClick={() => logout()} variant="outlined" color="inherit" size="small" className="danger">
                   {LOGOUT_TEXT}
                 </Button>
               </Grid>

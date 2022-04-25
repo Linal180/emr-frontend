@@ -457,7 +457,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                 <Typography variant='body1'>{NO_INVOICE}</Typography>
 
                 <Button type="submit" onClick={createAppointmentInvoice}
-                  variant="contained" className="blue-button-new"
+                  variant="contained" color="secondary"
                 >
                   {CREATE_INVOICE}
                 </Button>

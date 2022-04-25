@@ -17,7 +17,7 @@ import {
 } from '../../../../constants';
 import history from '../../../../history';
 import { EMRLogo } from '../../../../assets/svgs';
-import { WHITE_SEVEN } from '../../../../theme';
+import { GREY } from '../../../../theme';
 //constants
 const initialValues = {};
 //component
@@ -111,7 +111,7 @@ const PublicFormPreview = () => {
 
   //render
   return (
-    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
+    <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
       <EMRLogo />
       <Box mb={3} />
       {!getFormLoader && isActive ?

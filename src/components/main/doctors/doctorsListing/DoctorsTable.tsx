@@ -1,7 +1,6 @@
 // packages block
 import { FC, useEffect, ChangeEvent, useContext, useReducer, Reducer, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { InsertLink } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
 // components block
@@ -12,7 +11,7 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
-import { EditIcon, TrashIcon } from "../../../../assets/svgs";
+import { EditNewIcon, LinkIcon, TrashNewIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
   formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
@@ -152,7 +151,9 @@ const DoctorsTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
+      <Box py={2} mb={2} maxWidth={450}>
         <Search search={search} />
+      </Box>
 
         <Box className="table-overflow">
           <Table aria-label="customized table">
@@ -197,18 +198,18 @@ const DoctorsTable: FC = (): JSX.Element => {
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
                             <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                              <InsertLink />
+                              <LinkIcon />
                             </Box>
                           </DetailTooltip>
 
                           <Link to={`${DOCTORS_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
-                              <EditIcon />
+                              <EditNewIcon />
                             </Box>
                           </Link>
 
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashIcon />
+                            <TrashNewIcon />
                           </Box>
                         </Box>
                       </TableCell>
@@ -239,9 +240,10 @@ const DoctorsTable: FC = (): JSX.Element => {
       </Box>
 
       {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" pt={3}>
+        <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
             shape="rounded"
+            variant="outlined"
             page={page}
             count={totalPages}
             onChange={handleChange}

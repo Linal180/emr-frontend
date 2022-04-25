@@ -1,8 +1,8 @@
 // packages block
 import { FC, useState } from "react";
 import { Box, IconButton, TextField } from "@material-ui/core";
-import { Clear, Search as SearchIcon } from "@material-ui/icons";
-// styles and interfaces block
+// styles, constants, utils and interfaces block
+import { SearchIcon, ClearIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
 
@@ -16,8 +16,8 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
   }
 
   return (
-    <Box className={classes.tableSearchBox}>
-      <IconButton aria-label="search" disabled={!query} onClick={() => search(query)}>
+    <Box className={classes.searchBox}>
+      <IconButton aria-label="search">
         <SearchIcon />
       </IconButton>
 
@@ -25,16 +25,16 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
         fullWidth
         variant="outlined"
         name="searchQuery"
-        placeholder="Search"
+        placeholder="Search here..."
+        className={classes.searchInput}
         value={query}
-        className={classes.tableSearchInput}
         onChange={({ target: { value } }) => setQuery(value)}
         onKeyPress={({ key }) => key === "Enter" && search(query)}
       />
 
       {query &&
         <IconButton type="submit" aria-label="clear" onClick={handleClear}>
-          <Clear />
+          <ClearIcon />
         </IconButton>
       }
     </Box>

@@ -15,7 +15,7 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { GRAY_TWO, WHITE } from '../../../../theme';
+import { GREY_TWO, WHITE } from '../../../../theme';
 import { appointmentSchema } from '../../../../validationSchemas';
 import { FacilityContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
@@ -451,10 +451,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                           disablePast
                           fullWidth
                           disableToolbar
-                          onChange={(currentDate) => {
-                            console.log("currentDate", currentDate)
-                            dateHandler(currentDate)
-                          }}
+                          onChange={(currentDate) => { dateHandler(currentDate) }}
                         />
 
                       </MuiPickersUtilsProvider>
@@ -499,9 +496,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 <InputLabel shrink>{EMPLOYMENT}</InputLabel>
 
                                 <label className="toggle-main">
-                                  <Box color={isEmployment ? WHITE : GRAY_TWO}>Yes</Box>
+                                  <Box color={isEmployment ? WHITE : GREY_TWO}>Yes</Box>
                                   <AntSwitch checked={isEmployment} onChange={(event) => { handleChange(event) }} name='employment' />
-                                  <Box color={isEmployment ? GRAY_TWO : WHITE}>No</Box>
+                                  <Box color={isEmployment ? GREY_TWO : WHITE}>No</Box>
                                 </label>
                               </FormControl>
                             )}
@@ -517,9 +514,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
 
                                 <label className="toggle-main">
-                                  <Box color={isAutoAccident ? WHITE : GRAY_TWO}>Yes</Box>
+                                  <Box color={isAutoAccident ? WHITE : GREY_TWO}>Yes</Box>
                                   <AntSwitch checked={isAutoAccident} onChange={(event) => { handleChange(event) }} name='autoAccident' />
-                                  <Box color={isAutoAccident ? GRAY_TWO : WHITE}>No</Box>
+                                  <Box color={isAutoAccident ? GREY_TWO : WHITE}>No</Box>
                                 </label>
                               </FormControl>
                             )}
@@ -537,9 +534,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                                 <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
 
                                 <label className="toggle-main">
-                                  <Box color={isOtherAccident ? WHITE : GRAY_TWO}>Yes</Box>
+                                  <Box color={isOtherAccident ? WHITE : GREY_TWO}>Yes</Box>
                                   <AntSwitch checked={isOtherAccident} onChange={(event) => { handleChange(event) }} name='otherAccident' />
-                                  <Box color={isOtherAccident ? GRAY_TWO : WHITE}>No</Box>
+                                  <Box color={isOtherAccident ? GREY_TWO : WHITE}>No</Box>
                                 </label>
                               </FormControl>
                             )}

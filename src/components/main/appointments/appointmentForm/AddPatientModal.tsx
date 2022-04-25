@@ -32,7 +32,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facility
     mode: "all",
     resolver: yupResolver(extendedPatientAppointmentSchema)
   });
-  const { reset, handleSubmit, formState: { errors } } = methods;
+  const { reset, handleSubmit } = methods;
 
   const handleClose = useCallback(() => {
     reset();
@@ -139,7 +139,6 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facility
       aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
     >
       <FormProvider {...methods}>
-        {JSON.stringify(errors)}
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardComponent cardTitle={ADD_PATIENT}>
             <Grid container spacing={3}>

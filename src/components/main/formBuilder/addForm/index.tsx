@@ -1,5 +1,5 @@
 //package block
-import { useState, MouseEvent, useContext, useEffect } from 'react';
+import { useState, MouseEvent, useContext, useEffect, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useParams } from 'react-router';
 import { SubmitHandler } from 'react-hook-form';
@@ -9,29 +9,31 @@ import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, } from '@material-ui/core';
 //components block
 import ViewDataLoader from '../../../common/ViewDataLoader';
-import Sidebar from './sidebar';
-import Alert from '../../../common/Alert';
-import history from '../../../../history';
-import DropContainer from './dropContainer';
 import Selector from '../../../common/Selector';
+import Sidebar from './sidebar';
+import DropContainer from './dropContainer';
+import Alert from '../../../common/Alert';
 import FieldProperties from './fieldProperties';
-import { AuthContext } from '../../../../context';
 import InputController from '../../../../controller';
+import CreateTemplateModal from '../../../common/CreateTemplateModal'
+// constants block
 import { FormAddIcon } from '../../../../assets/svgs';
-import { WHITE, WHITE_FIVE, } from '../../../../theme';
+import history from '../../../../history';
+import { AuthContext } from '../../../../context';
+import { GREY_EIGHT, WHITE } from '../../../../theme';
 import { ListContext } from '../../../../context/listContext'
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import { isSuperAdmin, renderFacilities, setRecord } from '../../../../utils';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
 import {
-  FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation
+  FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation, useCreateFormTemplateMutation
 } from '../../../../generated/graphql';
-// constants block
 import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES, getFormInitialValues,
   FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION,
-  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT
+  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT, FORM_TEXT,
+  CREATE_TEMPLATE, CREATE_FORM_TEMPLATE,
 } from '../../../../constants';
 
 //component
@@ -41,8 +43,10 @@ const AddForm = () => {
   const [selected, setSelected] = useState<FormInitialType>(FIELD_EDIT_INITIAL_VALUES);
   const [colMenu, setColMenu] = useState<null | HTMLElement>(null)
   const [isActive, setIsActive] = useState<boolean>(false)
+  const [openTemplate, setOpenTemplate] = useState<boolean>(false)
+  const [formName, setFormName] = useState<string>('')
   //hooks
-  const { id: formId } = useParams<ParamsType>()
+  const { id: formId, templateId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
   const { facilityList } = useContext(ListContext)
   const { user } = useContext(AuthContext);
@@ -92,7 +96,7 @@ const AddForm = () => {
             facilityId && setValue('facilityId', setRecord(facilityId, facilityId))
             const { sections } = layout
             sections?.length > 0 && setFormValues(sections)
-            const facilityName = getFacilityNameHandler(facilityId)
+            const facilityName = facilityId && getFacilityNameHandler(facilityId)
             if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
           }
         }
@@ -120,9 +124,33 @@ const AddForm = () => {
     }
   })
 
-  useEffect(() => {
+  const [createTemplate, { loading: createTemplateLoading }] = useCreateFormTemplateMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+    onCompleted(data) {
+      const { createFormTemplate: { form, response } } = data;
+
+      if (response && form) {
+        const { status } = response
+        const { id } = form
+
+        if (status && status === 200 && id) {
+          setOpenTemplate(false)
+          Alert.success(CREATE_FORM_TEMPLATE);
+        }
+      }
+    }
+  })
+
+  const getFormHandler = useCallback(() => {
     formId && getForm({ variables: { getForm: { id: formId } } })
-  }, [getForm, formId])
+    templateId && getForm({ variables: { getForm: { id: templateId } } })
+  }, [getForm, formId, templateId])
+
+  useEffect(() => {
+    (formId || templateId) && getFormHandler()
+  }, [getFormHandler, formId, templateId])
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
@@ -158,7 +186,8 @@ const AddForm = () => {
             errorMsg: itemField?.defaultValue ?? '',
             defaultValue: itemField?.defaultValue ?? '',
             options: itemField?.options ?? [],
-            textArea: itemField?.textArea ?? false
+            textArea: itemField?.textArea ?? false,
+            isMultiSelect: itemField?.isMultiSelect ?? false
           };
           item?.fields?.splice(destination.index, 0, newField);
           return item;
@@ -261,8 +290,6 @@ const AddForm = () => {
     setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id, options, textArea });
     // modalOpenHandler();
   };
-
-
   //edit field form submit handler
   const setFieldValuesHandler: SubmitHandler<FormInitialType> = (values) => {
     const arr1 = formValues?.map((item) => {
@@ -312,11 +339,39 @@ const AddForm = () => {
     const arr = formValues?.filter((item, i) => i !== index)
     setFormValues(arr)
   }
+
   //get facility name
   const getFacilityNameHandler = (facilityId: string) => {
     const facility = facilityList?.find((item) => item?.id === facilityId)
     const { name } = facility || {}
     return name;
+  }
+
+  const handleCreateTemplate = async () => {
+    try {
+      await createTemplate({
+        variables: {
+          createFormInput: {
+            layout: {
+              sections: formValues
+            },
+            name: formName,
+            isSystemForm: true,
+            type: FormType.Template
+          }
+        }
+      })
+    } catch (error) {
+
+    }
+  }
+
+  const templateCreateClick = () => {
+    const isFieldFound = formValues?.some((item) => item.fields.length > 0);
+    if (isFieldFound) {
+      setOpenTemplate(true)
+    }
+    else Alert.error(DROP_FIELD)
   }
   //render
   return (
@@ -393,8 +448,8 @@ const AddForm = () => {
                       <DropContainer formValues={formValues} changeValues={changeValues}
                         delFieldHandler={delFieldHandler} delColHandler={delColHandler} setFormValues={setFormValues} />
                     }
-                    <Grid container justifyContent='center'>
-                      <Grid item md={4} sm={12} xs={12}>
+                    <Grid container justifyContent='space-between' alignItems='center'>
+                      <Grid item>
                         <Box
                           aria-haspopup="true"
                           aria-controls={'add-column-layout'}
@@ -402,7 +457,7 @@ const AddForm = () => {
                           aria-label="widget's patient"
                           onClick={handleMenuOpen}
                         >
-                          <Box bgcolor={WHITE_FIVE} borderRadius={6} p={1} mr={1}>
+                          <Box bgcolor={GREY_EIGHT} borderRadius={6} p={1} mr={1}>
                             <FormAddIcon />
                           </Box>
 
@@ -427,6 +482,11 @@ const AddForm = () => {
                           ))}
                         </Menu>
                       </Grid>
+                      <Grid item>
+                        <Button type='button' onClick={templateCreateClick} variant={'contained'} color="primary">
+                          {CREATE_TEMPLATE}
+                        </Button>
+                      </Grid>
                     </Grid>
                   </Box>
                 </Grid>
@@ -439,6 +499,11 @@ const AddForm = () => {
           </Box>
         </form>
       </FormProvider>
+      <CreateTemplateModal title={FORM_TEXT} isOpen={openTemplate} isLoading={!!createTemplateLoading}
+        description={'Form Name'} handleDelete={handleCreateTemplate}
+        setFormName={setFormName}
+        formName={formName}
+        setOpen={(open: boolean) => setOpenTemplate(open)} />
     </DragDropContext>
   );
 };

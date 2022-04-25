@@ -350,6 +350,7 @@ export type SubMenuTypes = {
 
 export interface CustomInputControlProps extends IControlLabel {
   controllerName: string;
+  isSearch?: boolean;
   info?: string;
 }
 
@@ -397,6 +398,7 @@ export interface TimePickerProps {
 export type ParamsType = {
   id: string;
   facilityId?: string;
+  templateId?: string;
 }
 
 export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | "roleType" | "gender">
@@ -924,6 +926,16 @@ export interface UserFormPreviewModalProps {
   imagePreviewHandler: (id: string) => void
 }
 
+export interface CreateTemplateTypes extends DialogTypes {
+  title?: string;
+  success?: boolean;
+  actionText?: string;
+  isLoading?: boolean;
+  description?: string;
+  handleDelete: () => void;
+  setFormName: Dispatch<SetStateAction<string>>
+  formName: string
+}
 export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function

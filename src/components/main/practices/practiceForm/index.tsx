@@ -187,7 +187,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box maxWidth="100vw">
-          <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+          <Box maxHeight="calc(100vh - 180px)" className="overflowY-auto">
             <Grid container spacing={3}>
               <Grid item md={6}>
                 <Grid container>

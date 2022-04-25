@@ -8,7 +8,7 @@ import InputController from '../../../../../controller';
 import LabeledInputController from '../../../../../controller';
 //constants & interfaces
 import { Add as AddIcon } from '@material-ui/icons';
-import { GRAY_TWO, WHITE } from '../../../../../theme';
+import { GREY_SEVEN, WHITE } from '../../../../../theme';
 import { TrashOutlinedIcon } from '../../../../../assets/svgs';
 import { ElementType } from '../../../../../generated/graphql';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
@@ -90,11 +90,11 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                   >
                     <InputLabel shrink>{REQUIRED_TEXT}</InputLabel>
                     <label className="toggle-main">
-                      <Box color={isChecked ? WHITE : GRAY_TWO}>{YES_TEXT}</Box>
+                      <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES_TEXT}</Box>
 
                       <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='required' />
 
-                      <Box color={isChecked ? GRAY_TWO : WHITE}>{NO_TEXT}</Box>
+                      <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO_TEXT}</Box>
                     </label>
                   </FormControl>
                 )}
