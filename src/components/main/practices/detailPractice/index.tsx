@@ -138,7 +138,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                   </Box>
 
                   <Box mt={2} ml={1}>
-                    <Button type="submit" variant="outlined" color="inherit" className='blue-button-new'>
+                    <Button type="submit" variant="outlined" color="secondary">
                       {UPLOAD_LOGO}
                     </Button>
                   </Box>

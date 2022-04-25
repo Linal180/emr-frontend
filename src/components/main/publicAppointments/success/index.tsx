@@ -19,11 +19,11 @@ const AppointmentSuccessComponent = () => {
         </Box>
 
         <Box className={classes.container}>
-          <Typography variant="h4">{APPOINTMENT_SUCCESS_DOCUMENTS_HEADING}</Typography>
+          <Typography variant="h6">{APPOINTMENT_SUCCESS_DOCUMENTS_HEADING}</Typography>
 
           <Box mb={3} />
 
-          <Typography component="h5" variant="h5">
+          <Typography variant="body2">
             <ul>
               <li>{APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1}</li>
               <li>{APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2}</li>

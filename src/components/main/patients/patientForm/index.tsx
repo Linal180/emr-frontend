@@ -17,7 +17,7 @@ import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { GRAY_TWO, WHITE } from '../../../../theme';
+import { GREY_SEVEN, WHITE } from '../../../../theme';
 import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext, FacilityContext } from '../../../../context';
 import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
@@ -1008,9 +1008,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <InputLabel shrink>{HOMEBOUND}</InputLabel>
 
                             <label className="toggle-main">
-                              <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
+                              <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
                               <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
-                              <Box color={isChecked ? GRAY_TWO : WHITE}>No</Box>
+                              <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
                             </label>
                           </FormControl>
                         )}
