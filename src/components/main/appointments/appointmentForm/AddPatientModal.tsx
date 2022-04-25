@@ -2,31 +2,37 @@
 import { FC, useCallback, useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Button, Dialog, Box, Grid } from "@material-ui/core";
+import { Button, Dialog, Box, Grid, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import CardComponent from "../../../common/CardComponent";
 // import ViewDataLoader from "../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
-import { AuthContext } from '../../../../context';
-import { doctorScheduleSchema } from "../../../../validationSchemas";
-import { ScheduleInputProps, AddPatientModalProps } from "../../../../interfacesTypes";
-import { checkPermission } from "../../../../utils";
-import { useCreatePatientMutation } from "../../../../generated/graphql";
+import { AuthContext, ListContext } from '../../../../context';
+import { extendedPatientAppointmentSchema } from "../../../../validationSchemas";
+import { AddPatientModalProps, PatientInputProps } from "../../../../interfacesTypes";
+import { checkPermission, getTimestamps } from "../../../../utils";
 import {
-  EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX, MAPPED_GENDER_IDENTITY, DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED,
+  ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation
+} from "../../../../generated/graphql";
+import {
+  EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX, MAPPED_GENDER_IDENTITY,
+  DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE,
 } from "../../../../constants";
 import InputController from "../../../../controller";
 import DatePicker from "../../../common/DatePicker";
+import PhoneField from "../../../common/PhoneInput";
+import history from "../../../../history";
 
-const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.Element => {
-  const { userPermissions } = useContext(AuthContext)
-  const methods = useForm<ScheduleInputProps>({
+const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facilityId }): JSX.Element => {
+  const { userPermissions, user } = useContext(AuthContext)
+  const { facilityList } = useContext(ListContext)
+  const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(doctorScheduleSchema)
+    resolver: yupResolver(extendedPatientAppointmentSchema)
   });
-  const { reset, handleSubmit } = methods;
+  const { reset, handleSubmit, formState: { errors } } = methods;
 
   const handleClose = useCallback(() => {
     reset();
@@ -41,7 +47,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
   }, [handleClose, userPermissions]);
 
 
-  const [, { loading: createPatientLoading }] = useCreatePatientMutation({
+  const [createPatient, { loading: createPatientLoading }] = useCreatePatientMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
         Alert.error(EMAIL_OR_USERNAME_ALREADY_EXISTS)
@@ -57,34 +63,87 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
 
         if (status && status === 200) {
           Alert.success(PATIENT_CREATED);
-          setIsOpen(false)
+          history.push(`${APPOINTMENTS_ROUTE}/new`)
         }
       }
     }
   });
 
-  const onSubmit: SubmitHandler<any> = async () => {
+  const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
+    const { firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth } = inputs;
 
-    // const patientInput = {
+    if (user) {
+      const { id: userId } = user;
+      const { id: selectedSexAtBirth } = sexAtBirth;
 
-    // };
-    // await createPatient({
-    //   variables: {
-    //     createPatientInput: [{ ...patientInput }]
-    //   }
-    // })
-  }
+      let practiceId = '';
+      if (facilityId) {
+        const facility = facilityList?.filter(f => f?.id === facilityId)[0];
+        const { practiceId: pId } = facility || {};
 
+        practiceId = pId || ''
+      }
+
+      const patientItemInput = {
+        deceasedDate: '', registrationDate: '', statementNoteDateTo: '', statementNoteDateFrom: '',
+        suffix: '', firstName, middleName: '', lastName, firstNameUsed: '', prefferedName: '', previousFirstName: '',
+        facilityId: facilityId || '', callToConsent: false, privacyNotice: false, releaseOfInfoBill: false, practiceId,
+        medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No, holdStatement: Holdstatement.None,
+        previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '', email: basicEmail,
+        pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.None, sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None, genderIdentity: Genderidentity.None,
+        maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None, statementDelivereOnline: false, dob: dob ? getTimestamps(dob) : '',
+      };
+
+      const contactInput = {
+        email: basicEmail, city: '', zipCode: '', state: '', facilityId, phone: basicPhone, mobile: basicMobile, address2: '', address: '',
+        contactType: ContactType.Self, country: '', primaryContact: true,
+      };
+
+      const emergencyContactInput = {
+        contactType: ContactType.Emergency, name: '', phone: '', mobile: '', primaryContact: false, relationship: RelationshipType.Other,
+      };
+
+      const guarantorContactInput = {
+        firstName: '', middleName: '', lastName: '', email: '', contactType: ContactType.Guarandor, relationship: RelationshipType.Other, employerName: '',
+        address2: '', zipCode: '', city: '', state: '', phone: '', suffix: '', country: '', userId: userId, ssn: SSN_FORMAT, primaryContact: false, address: '',
+      };
+
+      const guardianContactInput = {
+        firstName: '', middleName: '', userId: userId, primaryContact: false, lastName: '', contactType: ContactType.Guardian, suffix: '',
+      };
+
+      const nextOfKinContactInput = {
+        contactType: ContactType.NextOfKin, name: '', phone: '', relationship: RelationshipType.Other, mobile: '', primaryContact: false,
+      };
+
+      const employerInput = { name: '', email: '', phone: '', usualOccupation: '', industry: '' };
+
+      await createPatient({
+        variables: {
+          createPatientInput: {
+            createPatientItemInput: { ...patientItemInput },
+            createContactInput: { ...contactInput },
+            createEmployerInput: { ...employerInput },
+            createGuardianContactInput: { ...guardianContactInput },
+            createEmergencyContactInput: { ...emergencyContactInput },
+            createGuarantorContactInput: { ...guarantorContactInput },
+            createNextOfKinContactInput: { ...nextOfKinContactInput },
+          }
+        }
+      })
+    }
+  };
 
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
     >
       <FormProvider {...methods}>
+        {JSON.stringify(errors)}
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardComponent cardTitle={ADD_PATIENT}>
             <Grid container spacing={3}>
-              <Grid item md={4} sm={12} xs={12}>
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   isRequired
                   fieldType="text"
@@ -93,7 +152,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
                 />
               </Grid>
 
-              <Grid item md={4} sm={12} xs={12}>
+              <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   isRequired
                   fieldType="text"
@@ -101,19 +160,18 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
                   controllerLabel={LAST_NAME}
                 />
               </Grid>
-
-              <Grid item md={4} sm={12} xs={12}>
-                <InputController
-                  isRequired
-                  fieldType="text"
-                  controllerName="email"
-                  controllerLabel={EMAIL}
-                />
-              </Grid>
             </Grid>
 
             <Grid container spacing={3}>
-              <Grid item md={4} sm={12} xs={12}>
+              <Grid item md={6} sm={12} xs={12}>
+                <DatePicker
+                  isRequired
+                  name="dob"
+                  label={DOB_TEXT}
+                />
+              </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
                 <Selector
                   name="sexAtBirth"
                   label={SEX}
@@ -121,20 +179,42 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.E
                   options={MAPPED_GENDER_IDENTITY}
                 />
               </Grid>
+            </Grid>
 
-              <Grid item md={4} sm={12} xs={12}>
-                <DatePicker
-                  isRequired
-                  name="dob"
-                  label={DOB_TEXT}
-                />
+            <Grid container spacing={3}>
+              <Grid item md={6} sm={12} xs={12}>
+                <PhoneField isRequired name="basicPhone" label={HOME_PHONE} />
               </Grid>
+
+              <Grid item md={6} sm={12} xs={12}>
+                <PhoneField name="basicMobile" label={MOBILE_PHONE} />
+              </Grid>
+            </Grid>
+
+            <Grid md={12} sm={12} xs={12} spacing={3}>
+              <InputController
+                isRequired
+                fieldType="text"
+                controllerName="basicEmail"
+                controllerLabel={EMAIL}
+              />
             </Grid>
           </CardComponent>
 
-          <Box mb={3} display="flex" justifyContent="flex-end" pr={4}>
+          <Box pb={2} display='flex' justifyContent='flex-end' alignItems='center' pr={4}>
+            <Button onClick={handleClose} color="default">
+              {CANCEL}
+            </Button>
 
-            <Button variant="contained" type="submit" color="primary" disabled={createPatientLoading}>{CREATE_PATIENT}</Button>
+            <Box p={1} />
+
+            <Button type="submit" variant="contained" color="primary"
+              disabled={createPatientLoading}
+            >
+              {CREATE_PATIENT}
+
+              {createPatientLoading && <CircularProgress size={20} color="inherit" />}
+            </Button>
           </Box>
         </form>
       </FormProvider>

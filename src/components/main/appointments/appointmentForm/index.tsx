@@ -567,6 +567,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         </form>
       </FormProvider>
       <AddPatientModal
+        facilityId={selectedFacility}
         isOpen={openPatientModal}
         setIsOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: open })}
       />

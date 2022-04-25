@@ -725,6 +725,7 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
 export interface AddPatientModalProps {
   isOpen: boolean;
   setIsOpen: Function;
+  facilityId: string | undefined;
 }
 
 export interface FacilityScheduleModalProps extends GeneralFormProps {
