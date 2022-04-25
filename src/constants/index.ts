@@ -146,13 +146,19 @@ export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
 export const CALENDAR = "Calendar";
+export const PRINT = "Print";
 export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
 export const PAY_LATER = "Pay Later";
+export const SCHEDULE_APPOINTMENT = "Schedule Appointment";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
 export const CREATE_TEMPLATE = "Create Template";
 export const PAYMENT_TYPE = "Payment Type";
+export const SELF_PAY_RESTRICTION = "Self Pay Restriction";
+export const PRIMARY_INSURANCE_FOR_ORDER = "Primary Insurance For Order";
+export const SECONDARY_INSURANCE_FOR_ORDER = "Secondary Insurance For Order";
+export const ORDERING_PROVIDER = "Ordering Provider";
 export const SELECT_PAYMENT = "Select Payment";
 export const AUTO_ACCIDENT = "Auto Accident";
 export const STREET_ADDRESS = "Street Address";
@@ -223,6 +229,7 @@ export const EDIT_APPOINTMENT = "Edit Appointment";
 export const CREATE_INVOICE = "Create Invoice";
 export const PRACTICE_SETTINGS = "Practice Settings";
 export const USERS_MANAGEMENT = "Users Management";
+export const ADD_MEDIA = "Add Media";
 export const PAID = "Paid";
 export const UNPAID = "Unpaid";
 export const INVOICE = "Invoice";
@@ -510,6 +517,7 @@ export const COMMENT = "Comment";
 export const SIGN_IN = "Sign In";
 export const SIGN_OFF = "Sign Off";
 export const RESULT = "Result";
+export const RESULTS = "Results";
 export const FILE = "File";
 export const TOKEN = "emr_token";
 export const BACK_TO = "Back to";
@@ -550,6 +558,7 @@ export const USER_ID = "User ID";
 export const PATIENT = "Patient";
 export const DOCUMENT = "Document";
 export const PRACTICE = "Practice";
+export const IN_PROGRESS = "In Progress";
 export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
 export const REPORTS_TEXT = "Reports";
@@ -693,6 +702,7 @@ export const SSN_FORMAT = '000-00-0000';
 export const PRICE = "Price";
 export const SEARCH = "Search";
 export const BILLING = "Billing";
+export const DIAGNOSES = "Diagnoses";
 export const PRIVACY = "Privacy";
 export const IS_ACTIVE = "Active";
 export const GUARANTOR = "Guarantor";
@@ -826,6 +836,7 @@ export const NO_SLOT_AVAILABLE = "No Slot available";
 export const REGISTRATION_DATE = "Registration Date";
 export const PATIENT_LAST_NAME = "Patient Last Name";
 export const PATIENT_NAME = "Patient Name";
+export const YES_CANCEL = "Yes, Cancel";
 export const PATIENT_CONTACT = "Patient Contact";
 export const FORGOT_PASSWORD_TEXT = "Forgot Password";
 export const PATIENT_FIRST_NAME = "Patient First Name";
@@ -912,6 +923,7 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
+export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
 export const APPOINTMENT_CONFIRM_SUBHEADING = "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
 export const TWO_FA_AUTHENTICATION_DESCRIPTION = "When you login you provide an email address and password. This is one “factor” of authenticating who you are. 2-Factor refers to using a second factor to confirm your identity.";
 export const appointmentConfirmationDescription = (dateTime: string) =>
@@ -920,6 +932,7 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
   )} on ${getFormattedDate(
     dateTime || ""
   )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
+export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
 export const PUBLIC_FORM_SUCCESS_HEADING = 'Record Submitted';
 export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
 export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
@@ -2673,6 +2686,10 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 
 export const CHECK_IN_STEPS = [
   CHECK_IN, PATIENT_INFO, INSURANCE, VITALS_TEXT, CHART_TEXT, BILLING_TEXT
+];
+
+export const LAB_ORDER_STEPS = [
+  LAB_ORDER, PAYMENT
 ];
 
 export const FacilityMenuNav = [

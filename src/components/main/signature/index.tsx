@@ -82,7 +82,7 @@ const SignatureComponent = (): JSX.Element => {
               </Box>
 
               <Box mb={4} onClick={() => setOpen(!open)}>
-                <Button type="submit" variant="outlined" color='inherit' className="blue-button-new">
+                <Button type="submit" variant="outlined" color='secondary'>
                   {UPDATE_SIGNATURE}
                 </Button>
               </Box>

@@ -1,6 +1,6 @@
 // packages block
 import { makeStyles } from "@material-ui/core/styles";
-import { BLUE_THREE, GRAY_EIGHT, POPPINS, WHITE } from "../theme";
+import { BLUE_THREE, GRAY_EIGHT, INTER, WHITE } from "../theme";
 
 export const useNetworkStyles = makeStyles((theme) => ({
   root: {
@@ -35,7 +35,7 @@ export const useNetworkStyles = makeStyles((theme) => ({
   pageNotFoundText: {
     fontSize: 600,
     opacity: 0.03,
-    fontFamily: POPPINS,
+    fontFamily: INTER,
     fontWeight: 100,
     lineHeight: '186px'
   },

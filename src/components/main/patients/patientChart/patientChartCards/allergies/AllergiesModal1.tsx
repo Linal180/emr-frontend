@@ -3,7 +3,7 @@ import { FC, Reducer, useReducer, MouseEvent } from 'react';
 import { Box, InputBase, Menu, Typography } from '@material-ui/core';
 // constants block
 import { SmallSearchIcon } from '../../../../../../assets/svgs';
-import { GRAY_FIVE, GRAY_SIX, WHITE, WHITE_FIVE } from '../../../../../../theme';
+import { GRAY_FIVE, GRAY_SIX, WHITE, GREY_TWO } from '../../../../../../theme';
 import { DRUG, ENVIRONMENT, FOOD, TYPE } from '../../../../../../constants';
 import { usePatientChartingStyles } from "../../../../../../styles/patientCharting";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../../../reducers/patientReducer";
@@ -25,7 +25,7 @@ const AllergiesModal1Component: FC = (): JSX.Element => {
       <Typography variant='h4'>{TYPE}</Typography>
 
       <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-        <Box className='selectBox' bgcolor={WHITE_FIVE} color={WHITE}>
+        <Box className='selectBox' bgcolor={GREY_TWO} color={WHITE}>
           <Typography variant='h6'>{DRUG}</Typography>
         </Box>
 

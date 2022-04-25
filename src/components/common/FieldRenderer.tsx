@@ -1,11 +1,13 @@
 //packages import
-import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, Radio, FormGroup, Checkbox } from '@material-ui/core'
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-//constant & interfaces , util functions
+import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, FormGroup, Checkbox } from '@material-ui/core'
+//component
+import RadioButton from '../../components/common/RadioButton'
+//constant & interfaces , utils
+import { getFieldType } from '../../utils';
 import { ElementType } from '../../generated/graphql'
 import { FieldComponentProps } from '../../interfacesTypes';
-import { getFieldType } from '../../utils';
-//text Field component
+
 export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
   const { type, textArea, placeholder, css, required, defaultValue } = item;
   return (
@@ -54,6 +56,7 @@ export const SelectFieldComponent = ({ item, field, isCreating }: FieldComponent
     </TextField>
   )
 }
+
 //file Field component
 export const FileFieldComponent = ({ item, isCreating }: FieldComponentProps) => {
   const { type, placeholder, css, required, fieldId, defaultValue } = item;
@@ -76,38 +79,33 @@ export const FileFieldComponent = ({ item, isCreating }: FieldComponentProps) =>
     </TextField>
   )
 }
+
 //radio group component
 export const RadioGroupComponent = ({ item, field }: FieldComponentProps) => {
-  const { defaultValue, fieldId } = item;
+  const { defaultValue, fieldId, name } = item;
   return (
-    <FormControl>
+    <FormControl component="fieldset">
       <RadioGroup
-        defaultValue={defaultValue || ''}
-        name={fieldId}
-        className='checkedRadioButton'
+        defaultValue={defaultValue}
+        name={name}
         {...field}
       >
         {item?.options?.map((option, index) => (
-          <FormControlLabel key={`${index}-${fieldId}-${option.value}`} value={option.value} control={<Radio />} label={option.name} />
+          <FormControlLabel key={`${index}-${fieldId}-${option.value}`} value={option.value} control={<RadioButton />} label={option.name} />
         ))}
       </RadioGroup>
     </FormControl>
   )
 }
+
 //checkbox component
 export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
   const { defaultValue, fieldId } = item;
   const { control } = useFormContext();
   useFieldArray({ control, name: fieldId });
 
-  // useEffect(() => {
-  //   options?.length > 0 && prepend(options)
-  // }, [options, prepend])
-
-
   return (
     <FormControl>
-
       <FormGroup
         aria-labelledby={fieldId}
         defaultValue={defaultValue}
@@ -125,6 +123,7 @@ export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
     </FormControl>
   )
 }
+
 //field renderer component
 export const FieldRenderer = ({ item, field, isCreating }: FieldComponentProps) => {
   const { type } = item;
@@ -141,5 +140,5 @@ export const FieldRenderer = ({ item, field, isCreating }: FieldComponentProps) 
       return <TextFieldComponent item={item} field={field} isCreating={isCreating} />
   }
 }
-//default export
+
 export default FieldRenderer

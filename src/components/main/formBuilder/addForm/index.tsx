@@ -20,7 +20,7 @@ import CreateTemplateModal from '../../../common/CreateTemplateModal'
 import { FormAddIcon } from '../../../../assets/svgs';
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
-import { WHITE, WHITE_FIVE, } from '../../../../theme';
+import { GREY_EIGHT, WHITE } from '../../../../theme';
 import { ListContext } from '../../../../context/listContext'
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
 import { isSuperAdmin, renderFacilities, setRecord } from '../../../../utils';
@@ -457,7 +457,7 @@ const AddForm = () => {
                           aria-label="widget's patient"
                           onClick={handleMenuOpen}
                         >
-                          <Box bgcolor={WHITE_FIVE} borderRadius={6} p={1} mr={1}>
+                          <Box bgcolor={GREY_EIGHT} borderRadius={6} p={1} mr={1}>
                             <FormAddIcon />
                           </Box>
 
