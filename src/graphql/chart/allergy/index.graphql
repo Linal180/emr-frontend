@@ -16,6 +16,11 @@ query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!){
         id
         name
       }
+
+      reactions {
+        id
+        name
+      }
     }
   }
 }

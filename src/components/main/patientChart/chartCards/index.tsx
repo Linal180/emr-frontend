@@ -5,11 +5,7 @@ import { Box, Grid } from "@material-ui/core";
 import PatientCardComponent from "./PatientCardComponent";
 import AllergiesComponent from '../allergies';
 // interfaces, graphql, constants block /styles
-import {
-  CARE_PLAN_TEXT, FAMILY_HISTORY_TEXT, IMPLANT_HISTORY_TEXT, LAB_RESULTS_TEXT, MEDICAL_HISTORY_TEXT,
-  MEDICATIONS_TEXT, PATIENT_CHARTING_DATA, PROBLEMS_TEXT, SOCIAL_HISTORY_TEXT, SURGICAL_HISTORY_TEXT,
-  VACCINE_TEXT, VITALS_TEXT,
-} from "../../../../constants";
+import { PATIENT_CHARTING_DATA, PROBLEMS_TEXT, VITALS_TEXT } from "../../../../constants";
 
 const ChartCards: FC = (): JSX.Element => {
   const [isVitals] = useState<boolean>(true)
@@ -29,11 +25,11 @@ const ChartCards: FC = (): JSX.Element => {
 
             <Box pb={3} />
 
-            <PatientCardComponent cardTitle={FAMILY_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+            {/* <PatientCardComponent cardTitle={FAMILY_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
 
             <Box pb={3} />
 
-            <PatientCardComponent cardTitle={MEDICAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+            {/* <PatientCardComponent cardTitle={MEDICAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
           </Grid>
 
           <Grid md={6} item>
@@ -41,33 +37,33 @@ const ChartCards: FC = (): JSX.Element => {
 
             <Box pb={3} />
 
-            <PatientCardComponent cardTitle={VACCINE_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+            {/* <PatientCardComponent cardTitle={VACCINE_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
 
             <Box pb={3} />
 
-            <PatientCardComponent cardTitle={SOCIAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+            {/* <PatientCardComponent cardTitle={SOCIAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
 
             <Box pb={3} />
 
-            <PatientCardComponent cardTitle={IMPLANT_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+            {/* <PatientCardComponent cardTitle={IMPLANT_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
           </Grid>
         </Grid>
       </Grid>
 
       <Grid md={4} item>
-        <PatientCardComponent cardTitle={MEDICATIONS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+        {/* <PatientCardComponent cardTitle={MEDICATIONS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
 
         <Box pb={3} />
 
-        <PatientCardComponent cardTitle={LAB_RESULTS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+        {/* <PatientCardComponent cardTitle={LAB_RESULTS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
 
         <Box pb={3} />
 
-        <PatientCardComponent cardTitle={SURGICAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+        {/* <PatientCardComponent cardTitle={SURGICAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
 
         <Box pb={3} />
 
-        <PatientCardComponent cardTitle={CARE_PLAN_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+        {/* <PatientCardComponent cardTitle={CARE_PLAN_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
       </Grid>
     </Grid>
   );

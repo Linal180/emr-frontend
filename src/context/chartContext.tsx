@@ -27,7 +27,7 @@ export const ChartContextProvider: FC = ({ children }): JSX.Element => {
     onCompleted(data) {
       if (data) {
         const { findAllReactions: { reactions } } = data
-        console.log("reactions", reactions)
+
         !!reactions &&
           setReactionList(reactions as ReactionsPayload['reactions'])
       }

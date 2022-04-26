@@ -7,7 +7,7 @@ import { CardLayoutProps } from "../../../../interfacesTypes";
 
 const CardLayout: FC<CardLayoutProps> = ({
   hasAdd, disableAddIcon, onClickAddIcon, openSearch, cardId, isMenuOpen, handleMenuClose, cardTitle,
-  children, filterTabs, onSearch, searchData, searchLoading, dispatcher
+  children, filterTabs, onSearch, searchData, searchLoading, dispatcher, fetch
 }) => {
   const classes = usePatientChartingStyles()
 
@@ -37,6 +37,7 @@ const CardLayout: FC<CardLayoutProps> = ({
                 className={classes.dropdown}
               >
                 <FilterSearch
+                  fetch={fetch}
                   tabs={filterTabs}
                   dispatcher={dispatcher}
                   loading={searchLoading}

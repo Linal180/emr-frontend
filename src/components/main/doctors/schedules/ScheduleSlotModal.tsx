@@ -140,7 +140,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     const { id: dayName } = day || {}
 
     const scheduleInput = {
-      doctorId, servicesIds: [selectedService] || [],
+      doctorId, servicesIds: [selectedService] || [], day: dayName,
       startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
     if (doctorId) {

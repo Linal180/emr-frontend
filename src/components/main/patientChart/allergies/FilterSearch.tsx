@@ -11,15 +11,16 @@ import AddModal from './AddModal';
 import { Allergies, AllergiesPayload } from '../../../../generated/graphql';
 
 interface FilterSearchProps {
-  dispatcher: Dispatch<Action>;
   tabs: string[];
   loading: boolean;
+  dispatcher: Dispatch<Action>;
   searchData: AllergiesPayload['allergies'];
+  fetch: () => void;
   searchItem: (tab: string, query: string) => void;
 }
 
 const FilterSearch: FC<FilterSearchProps> = (
-  { tabs, searchItem, loading, searchData, dispatcher }
+  { tabs, searchItem, loading, searchData, dispatcher, fetch }
 ): JSX.Element => {
   const classes = usePatientChartingStyles()
   const [tab, setTab] = useState<string>(tabs[0]);
@@ -113,7 +114,7 @@ const FilterSearch: FC<FilterSearchProps> = (
         onClose={handleMenuClose}
         className={classes.dropdown}
       >
-        {selectedItem && <AddModal item={selectedItem} dispatcher={dispatch} />}
+        {selectedItem && <AddModal dispatcher={dispatch} item={selectedItem} fetch={fetch} />}
       </Menu>
 
     </>

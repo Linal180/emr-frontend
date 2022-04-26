@@ -28,10 +28,8 @@ const AsyncSelector: FC<AsyncSelectorProps> = ({ name, label, options, disabled,
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...formattedOptions] : [...formattedOptions]
 
   const promiseOptions = (input: string, callback: (options: any) => void) => {
-    input.length > 2 && fetchData(input.replace(/\W/g, ''))
-    setTimeout(() => {
-      callback((options: any) => console.log("called backs", options))
-    }, 0)
+    const filteredInput = input.replace(/\W/g, '')
+    filteredInput.length > 2 && fetchData(filteredInput)
   }
 
   return (

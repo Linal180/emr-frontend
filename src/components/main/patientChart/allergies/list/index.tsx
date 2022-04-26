@@ -18,6 +18,7 @@ import {
 } from "../../../../../generated/graphql";
 import { Box, Typography } from "@material-ui/core";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
+import { formatValue, getAppointmentDate } from "../../../../../utils";
 
 const AllergyList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
@@ -133,6 +134,7 @@ const AllergyList = (): JSX.Element => {
           filterTabs={Object.keys(AllergyType)}
           searchComponent={AllergiesModal1Component}
           handleMenuClose={() => handleMenuClose()}
+          fetch={async () => await fetchAllergies()}
           onSearch={(type, query) => handleSearch(type, query)}
           onClickAddIcon={(event: MouseEvent<HTMLElement>) => handleMenuOpen(event)}
         >
@@ -141,18 +143,30 @@ const AllergyList = (): JSX.Element => {
             : <>
               {!!patientAllergies && patientAllergies.length > 0 ? (
                 patientAllergies.map((item) => {
-                  const { id, allergySeverity, allergyStartDate, allergy } = item || {}
+                  const { id, allergySeverity, allergyStartDate, allergyOnset, allergy, reactions } = item || {}
                   const { name } = allergy || {}
 
                   return (
                     <Box pb={2} key={id}>
                       <Box display="flex" justifyContent="space-between">
                         <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
-                        <Typography className={classes.cardContentDate}>{allergyStartDate}</Typography>
+                        {allergyStartDate ?
+                          <Typography className={classes.cardContentDate}>{getAppointmentDate(allergyStartDate)}</Typography>
+                          :
+                          <Typography className={classes.cardContentDate}>{formatValue(allergyOnset || '')}</Typography>
+                        }
                       </Box>
 
                       <Box>
                         <Typography className={classes.cardContentDescription}>{allergySeverity}</Typography>
+
+                        {reactions?.map(reaction => {
+                          const { name } = reaction || {}
+
+                          return (
+                            <Typography className={classes.cardContentDescription}>{name}</Typography>
+                          )
+                        })}
                       </Box>
                     </Box>
                   )

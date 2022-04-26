@@ -421,10 +421,10 @@ export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | 
   & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption }
   & { providerIds: SelectorOption };
 
-export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
+export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day">
   & { serviceId: SelectorOption } & { day: SelectorOption };
 
-export type FacilityScheduleInputProps = CreateScheduleInput & { day: SelectorOption };
+export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingFax: string;
@@ -953,6 +953,7 @@ export interface CardLayoutProps {
   dispatcher: Dispatch<ChartAction>;
   searchComponent: ComponentType<any>;
   searchData: AllergiesPayload['allergies'];
+  fetch: () => void;
   handleMenuClose: () => void;
   onClickAddIcon: (event: any) => void;
   onSearch: (tab: string, query: string) => void;
@@ -960,9 +961,10 @@ export interface CardLayoutProps {
 
 export interface AddModalProps {
   item: Allergies;
-  dispatcher: Dispatch<ChartAction>;
   isEdit?: boolean;
   patientAllergyId?: string;
+  dispatcher: Dispatch<ChartAction>;
+  fetch: () => void;
 }
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
