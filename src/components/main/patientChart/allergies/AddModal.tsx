@@ -26,7 +26,7 @@ import {
 } from '../../../../constants';
 
 const AddModal: FC<AddModalProps> = (
-  { item: { id, name }, dispatcher, isEdit, patientAllergyId }
+  { item: { id, name }, dispatcher, isEdit, patientAllergyId, fetch }
 ): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
@@ -52,6 +52,7 @@ const AddModal: FC<AddModalProps> = (
 
         if (status && status === 200) {
           reset()
+          fetch()
           Alert.success(PATIENT_ALLERGY_ADDED);
           dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null })
         }
@@ -80,9 +81,9 @@ const AddModal: FC<AddModalProps> = (
     const inputs = {
       patientId, allergyId: id, reactionsIds: [selectedReaction], comments,
       allergySeverity: selectedSeverity as AllergySeverity,
-    }
+    } 
 
-    const extendedInputs = onset ? { allergyOnset: onset as AllergyOnset, ...inputs }
+    const extendedInputs = onset ? { allergyOnset: onset.toUpperCase() as AllergyOnset, ...inputs }
       :
       { ...inputs, allergyStartDate: getTimestamps(allergyStartDate || '') }
 

@@ -116,7 +116,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
     const { id: dayName } = day || {}
 
     const scheduleInput = {
-      facilityId, servicesIds: [],
+      facilityId, servicesIds: [], day: dayName,
       startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
     if (facilityId) {

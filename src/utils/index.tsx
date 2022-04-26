@@ -183,9 +183,7 @@ export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefine
   return date ? (moment(new Date(date))).format().toString() : moment().format().toString()
 };
 
-export const getDate = (date: string) => {
-  return moment(date, "x").format("YYYY-MM-DD")
-};
+export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")

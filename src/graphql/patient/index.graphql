@@ -47,6 +47,7 @@ query GetPatient($getPatient: GetPatient!) {
       lastName
       suffix
       inviteAccepted
+      patientRecord
       firstNameUsed
       prefferedName
       previousFirstName

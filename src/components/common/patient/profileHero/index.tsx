@@ -12,7 +12,7 @@ import {
 import { Box, Avatar, CircularProgress, Button } from "@material-ui/core";
 import moment from "moment";
 import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT } from "../../../../constants";
+import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A } from "../../../../constants";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import MediaCards from "../../AddMedia/MediaCards";
 import ViewDataLoader from "../../ViewDataLoader";
@@ -29,7 +29,7 @@ interface PatientProfileHeroProps {
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
   const classes = useProfileDetailsStyles();
   const { id } = useParams<ParamsType>();
-  const [{patientData }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [{ patientData }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -90,17 +90,17 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
           attachmentId &&
             mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId })
 
-            dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
-            mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
-            
-            if(attachments){
-              mediaDispatch({
-                type: mediaActionType.SET_ATTACHMENTS_DATA,
-                attachmentsData: attachments.filter(attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads)
-              })
-              
-              !isChart && setAttachmentsData(attachmentData)
-            }
+          dispatch({ type: ActionType.SET_PATIENT_DATA, patientData: patient as Patient })
+          mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profilePicture })
+
+          if (attachments) {
+            mediaDispatch({
+              type: mediaActionType.SET_ATTACHMENTS_DATA,
+              attachmentsData: attachments.filter(attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads)
+            })
+
+            !isChart && setAttachmentsData(attachmentData)
+          }
 
           patient && setPatient(patient)
         }
@@ -110,9 +110,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   const fetchPatient = useCallback(async () => {
     try {
-      await getPatient({
-        variables: { getPatient: { id } }
-      })
+      await getPatient({ variables: { getPatient: { id } } })
     } catch (error) { }
   }, [getPatient, id]);
 
@@ -124,7 +122,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     attachmentId && fetchAttachment();
   }, [attachmentId, fetchAttachment, attachmentData])
 
-  const { firstName, email: patientEmail, lastName, dob, contacts, doctorPatients, createdAt } = patientData || {}
+  const { firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
 
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
@@ -136,10 +134,14 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     const { phone, email, country, state } = selfContact[0]
     selfPhoneNumber = formatPhone(phone || '') || "--"
     selfEmail = patientEmail ? patientEmail : email || "--"
-    selfCurrentLocation = `${country} ${state}` || "--"
+    selfCurrentLocation = `${country ? country : N_A} ${state ? state : ''}`
   }
 
   const ProfileDetails = [
+    {
+      icon: ProfileUserIcon(),
+      description: patientRecord
+    },
     {
       icon: ProfileUserIcon(),
       description: `${PATIENT_AGE} Yrs Old`
