@@ -33,7 +33,7 @@ import {
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
   MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, APPOINTMENT_PAYMENT,
   AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
-  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING,
+  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, DAYS,
 } from "../../../../../constants";
 
 const FacilityPublicAppointmentForm = (): JSX.Element => {
@@ -133,11 +133,14 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
     if (selectedService && date) {
       setValue('scheduleEndDateTime', '')
       setValue('scheduleStartDateTime', '')
+      const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
+      const currentDay = new Date(date).getDay()
 
       getSlots({
         variables: {
           getSlots: {
-            offset, currentDate: date.toString(), serviceId: selectedService, facilityId
+            offset, currentDate: date.toString(), serviceId: selectedService, facilityId,
+            day: days[currentDay]
           }
         }
       })

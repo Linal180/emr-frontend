@@ -13,6 +13,7 @@ import AddPatientModal from './AddPatientModal';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import PatientSelector from '../../../common/Selector/PatientSelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { GREY_TWO, WHITE } from '../../../../theme';
@@ -39,6 +40,7 @@ import {
   PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
   CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  DAYS,
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -249,7 +251,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => {
     if (selectedService && date) {
-      const slotsInput = { offset, currentDate: appStartDate ? appStartDate : date.toString(), serviceId: selectedService };
+      const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
+      const currentDay = new Date(date).getDay()
+
+      const slotsInput = { offset, currentDate: appStartDate ? appStartDate : date.toString(), serviceId: selectedService, day: days[currentDay] };
 
       getSlots({
         variables: {
@@ -398,7 +403,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                         <Grid item md={6} sm={12} xs={12}>
                           {isEdit ? renderItem(PATIENT, patientName) :
-                            <Selector
+                            <PatientSelector
                               handlePatientModal={handlePatientModal}
                               isModal
                               isRequired

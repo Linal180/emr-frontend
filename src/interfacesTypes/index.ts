@@ -345,8 +345,20 @@ export interface SelectorProps {
   isMultiple?: boolean
   value?: SelectorOption
   options: SelectorOption[]
-  isModal?: boolean;
-  handlePatientModal?: Function;
+}
+
+export interface PatientSelectorProps {
+  name: string
+  label: string
+  error?: string
+  disabled?: boolean
+  addEmpty?: boolean
+  isRequired?: boolean
+  isMultiple?: boolean
+  value?: SelectorOption
+  options: SelectorOption[]
+  isModal?: boolean
+  handlePatientModal?: Function
 }
 
 export interface CardSelectorProps {
@@ -411,7 +423,6 @@ export interface CustomInputControlProps extends IControlLabel {
 export interface SearchComponentProps {
   search: Function;
   info?: boolean;
-  infoText?: string;
 }
 
 export interface AppMenuItemTypes {
@@ -464,13 +475,10 @@ export type ExtendedStaffInputProps = Omit<
   gender: SelectorOption;
 } & { providerIds: SelectorOption };
 
-export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds"> & {
-  serviceId: SelectorOption;
-} & { day: SelectorOption };
+export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day">
+  & { serviceId: SelectorOption } & { day: SelectorOption };
 
-export type FacilityScheduleInputProps = CreateScheduleInput & {
-  day: SelectorOption;
-};
+export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingFax: string;

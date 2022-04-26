@@ -667,6 +667,7 @@ export type CreateProblemInput = {
 };
 
 export type CreateScheduleInput = {
+  day: Scalars['String'];
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
   facilityId?: Maybe<Scalars['String']>;
@@ -1178,6 +1179,7 @@ export type GetService = {
 
 export type GetSlots = {
   currentDate: Scalars['String'];
+  day?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   offset: Scalars['Float'];
   providerId?: Maybe<Scalars['String']>;
@@ -1907,6 +1909,7 @@ export type PatientAllergies = {
   id: Scalars['String'];
   isActive?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
   reactions?: Maybe<Array<Maybe<Reactions>>>;
   staff?: Maybe<Staff>;
   staffId?: Maybe<Scalars['String']>;
@@ -2704,6 +2707,7 @@ export enum Status {
 export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
+  day?: Maybe<Scalars['String']>;
   doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
@@ -3407,6 +3411,7 @@ export type UpdateRoleItemInput = {
 };
 
 export type UpdateScheduleInput = {
+  day?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
   endAt?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
