@@ -9,15 +9,15 @@ import { ElementType } from '../../generated/graphql'
 import { FieldComponentProps } from '../../interfacesTypes';
 
 export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
-  const { type, textArea, placeholder, options, css, required, fieldId, defaultValue } = item;
+  const { type, textArea, placeholder, css, required, defaultValue } = item;
   return (
     <TextField
       fullWidth
       variant="outlined"
-      select={type === ElementType.Select}
-      SelectProps={{
-        displayEmpty: true
-      }}
+      // select={type === ElementType.Select}
+      // SelectProps={{
+      //   displayEmpty: true
+      // }}
       defaultValue={defaultValue || ''}
       required={isCreating ? undefined : required}
       className={css}
@@ -28,7 +28,28 @@ export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentPr
       type={getFieldType(type)}
       {...field}
     >
-      <MenuItem value={''} disabled>{placeholder}</MenuItem>
+    </TextField>
+  )
+}
+//select or multi select Field component
+export const SelectFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
+  const { type, placeholder, options, css, required, fieldId, isMultiSelect } = item;
+  return (
+    <TextField
+      fullWidth
+      variant="outlined"
+      select
+      SelectProps={{
+        displayEmpty: true,
+        multiple: !!isMultiSelect
+      }}
+      defaultValue={isMultiSelect ? [] : ''}
+      required={isCreating ? undefined : required}
+      className={css}
+      type={getFieldType(type)}
+      {...field}
+    >
+      <MenuItem value={isMultiSelect ? [] : ''} disabled>{placeholder}</MenuItem>
       {options?.map((option, index) => (
         <MenuItem key={`${index}-${fieldId}-${option.value}`} value={option.value}>{option.name}</MenuItem>
       ))}
@@ -113,6 +134,8 @@ export const FieldRenderer = ({ item, field, isCreating }: FieldComponentProps) 
       return <RadioGroupComponent item={item} field={field} isCreating={isCreating} />
     case ElementType.File:
       return <FileFieldComponent item={item} field={field} isCreating={isCreating} />
+    case ElementType.Select:
+      return <SelectFieldComponent item={item} field={field} isCreating={isCreating} />
     default:
       return <TextFieldComponent item={item} field={field} isCreating={isCreating} />
   }

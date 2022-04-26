@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { WHITE, GRAY_ONE } from "../theme";
+import { WHITE, GRAY_ONE, BLUE_NINE } from "../theme";
 
 export const useFormStyles = makeStyles(() => ({
   detailTooltipBox: {
@@ -7,6 +7,19 @@ export const useFormStyles = makeStyles(() => ({
     justifyContent: "space-between",
     alignItems: "flex-start",
     width: "100%",
+  },
+
+  addModal: {
+    position: 'absolute',
+    right: 0,
+    width: 100,
+    top: '-25px',
+    color: BLUE_NINE,
+    cursor: 'pointer',
+
+    "&:hover": {
+      textDecoration: 'underline',
+    }
   },
 
   formSearchBox: {
@@ -23,5 +36,5 @@ export const useFormStyles = makeStyles(() => ({
       border: 'none',
       padding: 0,
     },
-  },
+  }
 }));

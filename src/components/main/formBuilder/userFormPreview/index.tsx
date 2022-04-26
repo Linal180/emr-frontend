@@ -42,7 +42,7 @@ const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForm
             </Grid>
             <Grid item xs={6}>
               {userForms?.map((responseElement, index) => {
-                const { arrayOfStrings, FormsElementsId, value, id: responseId } = responseElement;
+                const { arrayOfStrings, FormsElementsId, value, id: responseId, arrayOfObjects } = responseElement;
                 return (
                   <Box key={`${FormsElementsId}-FormsElementsId-${formId}`} mb={2} maxHeight={200} minHeight={20} className={classes.tableCell}>
                     {(value?.includes(`form builder/${formId}`) ?
@@ -51,15 +51,20 @@ const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForm
                       </Box>
                       : value) ||
                       <ul>
-                        {arrayOfStrings?.filter((arr) => arr.value === true)?.map((val) => {
+                        {arrayOfObjects?.filter((arr) => arr.value === true)?.map((val) => {
                           const { name } = val;
                           return (
-                            <li key={`${formId}-${name}-${responseId}-${index}-${formId}`}>
+                            <li key={`${responseId}-${name}-${responseId}-${index}`}>
                               {name}
                             </li>
                           )
                         }
                         )}
+                        {arrayOfStrings?.map((val) => (
+                          <li key={`${val}-${responseId}-${index}`}>
+                            {val}
+                          </li>
+                        ))}
                       </ul>
                     }
                   </Box>

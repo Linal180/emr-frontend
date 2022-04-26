@@ -179,6 +179,10 @@ export const getAppointmentDate = (date: SchedulerDateTime | undefined): string 
   return date ? moment(date).format("MMMM Do YYYY") : moment().format("MMMM Do YYYY")
 };
 
+export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefined): string => {
+  return date ? (moment(new Date(date))).format().toString() : moment().format().toString()
+};
+
 export const getDate = (date: string) => {
   return moment(date, "x").format("YYYY-MM-DD")
 };
@@ -451,7 +455,7 @@ export const setTimeDay = (time: string, day: string): string => {
   } else if (currentDay > selectedDay) {
     x = currentDay - selectedDay
 
-    result = moment(date.setDate(date.getDate() - (x % 7))).format().toString()
+    result = moment(date.setDate(date.getDate() + (7 - x))).format().toString()
   }
 
   return result
@@ -521,7 +525,6 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
     const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
     const appointmentStatus = status && formatValue(status)
     const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
-
     return {
       token,
       reason,
@@ -664,14 +667,20 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
   const arr = [];
   for (const property in values) {
     if (Array.isArray(values[property])) {
-      const options = values[property]?.map((val: any) => {
-        const key = Object.keys(val);
-        const name = key[0];
-        const data = Object.values(val);
-        const value = data[0]
-        return { name, value: value ?? false }
-      })
-      arr.push({ FormsElementsId: property, value: '', arrayOfStrings: options })
+      const isStringArray = values[property]?.every((i: any) => typeof i === 'string')
+      if (isStringArray) {
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: values[property], arrayOfObjects: [] })
+      }
+      else {
+        const options = values[property]?.map((val: any) => {
+          const key = Object.keys(val);
+          const name = key[0];
+          const data = Object.values(val);
+          const value = data[0]
+          return { name, value: value ?? false }
+        })
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: options })
+      }
     }
     else if ((values[property] instanceof FileList) && typeof values[property] === 'object') {
       if (values[property][0] instanceof File) {
@@ -679,15 +688,15 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
         const title = values[property][0]?.name;
         const key = await userFormUploadImage(file, property, title, id);
         if (key) {
-          arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [] })
+          arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [], arrayOfObjects: [] })
         }
         else {
-          arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [] })
+          arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: [] })
         }
       }
     }
     else {
-      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [] })
+      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [], arrayOfObjects: [] })
     }
   }
   return arr;
@@ -707,14 +716,12 @@ export const getUserFormFiles = (values: any): UserFormType[] => {
 }
 
 
-export const getUserFormDefaultValue = (type: ElementType) => {
+export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null) => {
   switch (type) {
     case ElementType.Text:
       return ''
-
     case ElementType.Select:
-      return ''
-
+      return isMultiSelect ? [] : ''
     case ElementType.Radio:
       return ''
     case ElementType.Checkbox:

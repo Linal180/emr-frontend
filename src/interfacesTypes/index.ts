@@ -19,6 +19,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, ResponsePayloadResponse, UsersFormsElements, FormElement,
 } from "../generated/graphql";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -292,6 +293,8 @@ export interface SelectorProps {
   isMultiple?: boolean
   value?: SelectorOption
   options: SelectorOption[]
+  isModal?: boolean;
+  handlePatientModal?: Function;
 }
 
 export interface CardSelectorProps {
@@ -397,6 +400,7 @@ export interface TimePickerProps {
 export type ParamsType = {
   id: string;
   facilityId?: string;
+  templateId?: string;
 }
 
 export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | "roleType" | "gender">
@@ -722,6 +726,12 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
   doctorFacilityId: string | undefined;
 }
 
+export interface AddPatientModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  facilityId: string | undefined;
+}
+
 export interface FacilityScheduleModalProps extends GeneralFormProps {
   isOpen: boolean;
   reload: Function;
@@ -916,4 +926,20 @@ export interface UserFormPreviewModalProps {
   userForms: UsersFormsElements[]
   formLabels: FormElement[]
   imagePreviewHandler: (id: string) => void
+}
+
+export interface CreateTemplateTypes extends DialogTypes {
+  title?: string;
+  success?: boolean;
+  actionText?: string;
+  isLoading?: boolean;
+  description?: string;
+  handleDelete: () => void;
+  setFormName: Dispatch<SetStateAction<string>>
+  formName: string
+}
+export interface AppointmentCardProps {
+  tooltip: AppointmentTooltip.LayoutProps
+  setCurrentView: Function
+  setCurrentDate: Function
 }
