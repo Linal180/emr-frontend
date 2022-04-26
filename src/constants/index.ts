@@ -542,6 +542,7 @@ export const USER_ID = "User ID";
 export const PATIENT = "Patient";
 export const DOCUMENT = "Document";
 export const PRACTICE = "Practice";
+export const NO_RECORDS = "No Records";
 export const IN_PROGRESS = "In Progress";
 export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
@@ -2875,7 +2876,7 @@ export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
 
 export const FORM_BUILDER_FIELDS_TABS = [
   {
-    title: "Fields",
+    title: "Custom Form",
     value: "1",
   },
   {

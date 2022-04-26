@@ -8,7 +8,7 @@ import AllergiesModal1Component from "../FilterSearch";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block
 import { ParamsType } from "../../../../../interfacesTypes";
-import { ALLERGIES_TEXT, LIST_PAGE_LIMIT } from "../../../../../constants";
+import { ALLERGIES_TEXT, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
 import {
   chartReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/chartReducer";
@@ -18,6 +18,7 @@ import {
 } from "../../../../../generated/graphql";
 import { Box, Typography } from "@material-ui/core";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
+import { GREY_SEVEN } from "../../../../../theme";
 
 const AllergyList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
@@ -138,7 +139,7 @@ const AllergyList = (): JSX.Element => {
         >
           {loading ?
             <ViewDataLoader columns={12} rows={3} />
-            : <>
+            : <Box mb={2}>
               {!!patientAllergies && patientAllergies.length > 0 ? (
                 patientAllergies.map((item) => {
                   const { id, allergySeverity, allergyStartDate, allergy } = item || {}
@@ -157,8 +158,8 @@ const AllergyList = (): JSX.Element => {
                     </Box>
                   )
                 })
-              ) : (<h1>No data added yet!</h1>)}
-            </>}
+              ) : (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)}
+            </Box>}
         </CardLayout>
       </form>
     </FormProvider>

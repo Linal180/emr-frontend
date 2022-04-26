@@ -226,7 +226,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
           </Box>
 
           <Box flex={1}>
-            <Box display="flex" style={{border:'1px solid red'}}>
+            <Box display="flex">
               <Box flex={1} flexWrap="wrap">
                 <Box display="flex" alignItems="center" className={classes.userName}>
                   {`${firstName} ${lastName}`}
