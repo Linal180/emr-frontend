@@ -1,25 +1,25 @@
-query FindAllRoles($roleInput: RoleInput!){
-  getAllRoles(roleInput: $roleInput){
+query FindAllRoles($roleInput: RoleInput!) {
+  getAllRoles(roleInput: $roleInput) {
     response {
       status
       error
       message
     }
-    
+
     pagination {
       page
       totalPages
     }
-    
+
     roles {
       id
       role
       description
-      
+
       rolePermissions {
         id
 
-        permission { 
+        permission {
           id
           name
         }
@@ -28,20 +28,20 @@ query FindAllRoles($roleInput: RoleInput!){
   }
 }
 
-query GetRole($getRole: GetRole!){
-  getRole(getRole: $getRole){
+query GetRole($getRole: GetRole!) {
+  getRole(getRole: $getRole) {
     response {
       error
       status
       message
     }
-    
+
     role {
       id
       role
       customRole
       description
-      
+
       rolePermissions {
         id
 
@@ -56,14 +56,14 @@ query GetRole($getRole: GetRole!){
   }
 }
 
-mutation CreateRole($roleItemInput: RoleItemInput!){
-  createRole(roleItemInput: $roleItemInput){
+mutation CreateRole($roleItemInput: RoleItemInput!) {
+  createRole(roleItemInput: $roleItemInput) {
     response {
       error
       status
       message
     }
-    
+
     role {
       id
       role
@@ -71,14 +71,14 @@ mutation CreateRole($roleItemInput: RoleItemInput!){
   }
 }
 
-mutation UpdateRole($updateRoleItemInput: UpdateRoleItemInput!){
- updateRole(updateRoleItemInput: $updateRoleItemInput){
+mutation UpdateRole($updateRoleItemInput: UpdateRoleItemInput!) {
+  updateRole(updateRoleItemInput: $updateRoleItemInput) {
     response {
       status
       error
       message
     }
-  
+
     role {
       id
       role
@@ -87,8 +87,34 @@ mutation UpdateRole($updateRoleItemInput: UpdateRoleItemInput!){
   }
 }
 
-mutation RemoveRole($removeRole: RemoveRole!){
-  removeRole(removeRole: $removeRole){
+mutation UpdateUserRole($updateUserRoleItemInput: UpdateRoleInput!) {
+  updateUserRole(user: $updateUserRoleItemInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    user {
+      id
+      roles {
+        id
+        role
+
+        rolePermissions {
+          id 
+          permission{
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+
+mutation RemoveRole($removeRole: RemoveRole!) {
+  removeRole(removeRole: $removeRole) {
     response {
       error
       status
@@ -97,14 +123,14 @@ mutation RemoveRole($removeRole: RemoveRole!){
   }
 }
 
-query FindAllPermission($permissionInput: PermissionInput!){
-  findAllPermissions(permissionInput: $permissionInput){
+query FindAllPermission($permissionInput: PermissionInput!) {
+  findAllPermissions(permissionInput: $permissionInput) {
     response {
       error
       status
       message
     }
-    
+
     permissions {
       id
       name
