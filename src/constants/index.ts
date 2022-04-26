@@ -54,6 +54,7 @@ export enum SYSTEM_ROLES {
 export const SUPER_ADMIN = 'super-admin';
 export const ADMIN = 'admin';
 // constants
+export const CURRENT_DATE = new Date();
 export const NOTE = "Note";
 export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
@@ -430,7 +431,7 @@ export const CHAMPUS = "Champus";
 export const FROM_TEXT = "From:";
 export const MEDICARE = "Medicare";
 export const MEDICAID = "Medicaid";
-export const CHART_ID = "Chart ID";
+export const PRN = "PRN";
 export const ACTIVE_TEXT = "Active";
 export const MERCHANT_ID = "Merchant ID";
 export const BANK_ACCOUNT = "Bank Account";

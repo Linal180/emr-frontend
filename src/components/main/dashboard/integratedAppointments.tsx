@@ -123,11 +123,11 @@ const filterAppointments = ({ timeTableAppointments, currentView }: Getters) => 
     const arr: any = []
     appointments.map((appointment: any, index: number) => {
 
-      if (appointment.offset < 2) {
+      if (appointment.offset < 4) {
         arr.push(appointment)
         return appointment
       }
-      if (appointment.offset === 2) {
+      if (appointment.offset === 4) {
         const a = {
           ...appointment, dataItem: {
             ...appointment.dataItem,

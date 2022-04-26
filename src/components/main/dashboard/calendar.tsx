@@ -7,7 +7,7 @@ import { MonthTimeTableCell } from "./calendarViews/monthView";
 import { Box, Card, CircularProgress } from "@material-ui/core";
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
-  AppointmentTooltip, ViewSwitcher,
+  AppointmentTooltip, ViewSwitcher, CurrentTimeIndicator,
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
 import AppointmentCard from "./appointmentCard";
@@ -202,6 +202,10 @@ const CalendarComponent = (): JSX.Element => {
               layoutComponent={(props) => <AppointmentCard tooltip={props}
                 setCurrentView={setCurrentView}
                 setCurrentDate={setCurrentDate} />} />
+            <CurrentTimeIndicator
+              shadePreviousCells={true}
+              shadePreviousAppointments={true}
+            />
           </Scheduler>
         </Box>
       </Box>

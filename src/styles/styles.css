@@ -441,3 +441,9 @@ body .MuiTabPanel-root {
   background-color: #ffffff !important;
   border: none !important;
 }
+
+.schedulerTableCell {
+  border: 1px solid #E4E6EF !important;
+  width: 200px !important;
+  height: 200px !important;
+}

@@ -22,7 +22,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION,
-  PATIENTS_ROUTE, NAME, CITY, PATIENT, CHART_ID
+  PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN
 } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
@@ -133,7 +133,7 @@ const PatientsTable: FC = (): JSX.Element => {
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
-                {renderTh(CHART_ID)}
+                {renderTh(PRN)}
                 {renderTh(NAME)}
                 {renderTh(EMAIL)}
                 {renderTh(PHONE)}
