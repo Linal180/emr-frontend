@@ -17,7 +17,7 @@ import ViewDataLoader from "../../../../common/ViewDataLoader";
 import history from "../../../../../history";
 import { EMRLogo } from "../../../../../assets/svgs";
 import { FacilityContext } from '../../../../../context';
-import { WHITE, WHITE_SEVEN } from "../../../../../theme";
+import { WHITE, GREY } from "../../../../../theme";
 import { externalAppointmentSchema } from "../../../../../validationSchemas";
 import { usePublicAppointmentStyles } from "../../../../../styles/publicAppointmentStyles";
 import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../../interfacesTypes";
@@ -163,6 +163,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
             createExternalAppointmentInput: {
               createGuardianContactInput: { contactType: ContactType.Guardian },
               createExternalAppointmentItemInput: {
+                practiceId: practiceId,
                 serviceId: selectedService, providerId: doctorId, paymentType: PaymentType.Self, facilityId: facilityId || '',
                 scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
                 scheduleEndDateTime: getTimestamps(scheduleEndDateTime),
@@ -189,7 +190,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
   };
 
   return (
-    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="30px 30px 30px 60px">
+    <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
       <EMRLogo />
 
       <Box mb={3} />

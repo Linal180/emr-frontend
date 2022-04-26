@@ -3,7 +3,6 @@ import { FC, ChangeEvent, useState, useEffect, useContext, useCallback } from "r
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
-import { Visibility as VisibilityIcon, InsertLink as InsertLinkIcon, Share as ShareIcon } from '@material-ui/icons'
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -16,7 +15,7 @@ import FormPreviewModal from '../previewModal'
 import { AuthContext, ListContext } from "../../../../context";
 import { getFormatDate, isSuperAdmin, renderFacility, renderTh } from "../../../../utils";
 import { useTableStyles, DetailTooltip } from "../../../../styles/tableStyles";
-import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs'
+import { EditNewIcon, EyeIcon, LinkIcon, ShareIcon, TrashNewIcon } from '../../../../assets/svgs'
 import {
   useFindAllFormsLazyQuery, FormsPayload, useRemoveFormMutation, FormPayload, SectionsInputs,
   LayoutJsonType
@@ -101,7 +100,7 @@ const FormBuilderTable: FC = (): JSX.Element => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = isSuper ? { ...pageInputs } : { facilityId, ...pageInputs }
+      const formInputs = isSuper ? { ...pageInputs, isSystemForm: false } : { facilityId, ...pageInputs, isSystemForm: false }
       await findAllForms({
         variables: {
           formInput: { ...formInputs }
@@ -172,7 +171,9 @@ const FormBuilderTable: FC = (): JSX.Element => {
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Search search={search} />
+      <Box py={2} mb={2} maxWidth={450}>
+        <Search search={search} />
+      </Box>
 
       <Box className="table-overflow">
         <Table aria-label="customized table">
@@ -205,14 +206,14 @@ const FormBuilderTable: FC = (): JSX.Element => {
                       </Link>
                     </TableCell>
                     <TableCell scope="row">{type}</TableCell>
-                    {isSuper && facilityId && <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell>}
+                    {isSuper && facilityId ? <TableCell scope="row">{renderFacility(facilityId, facilityList)}</TableCell> : <TableCell scope="row">---</TableCell>}
                     <TableCell scope="row">{getFormatDate(createdAt)}</TableCell>
                     <TableCell scope="row">{isActive ? PUBLISHED : NOT_PUBLISHED}</TableCell>
                     <TableCell scope="row">
                       <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                         <DetailTooltip title={isActive ? (copied ? LINK_COPIED : PUBLIC_FORM_LINK) : ''}>
-                          <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && handleClipboard(id || '')}  >
-                            <InsertLinkIcon />
+                          <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && handleClipboard(id || '')}>
+                            <LinkIcon />
                           </Box>
                         </DetailTooltip>
                         <Link to={`${FORM_BUILDER_EDIT_ROUTE}/${id}`}>
@@ -223,8 +224,8 @@ const FormBuilderTable: FC = (): JSX.Element => {
                         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
                           <TrashNewIcon />
                         </Box>
-                        <Box className={classes.iconsBackground} onClick={() => onViewClick(layout, name)}>
-                          <VisibilityIcon />
+                        <Box className={classes.iconsBackground} onClick={() => name && onViewClick(layout, name)}>
+                          <EyeIcon />
                         </Box>
                         <Box className={isActive ? classes.iconsBackground : classes.iconsBackgroundDisabled} onClick={() => isActive && onShareClick(id || '')}>
                           <ShareIcon />

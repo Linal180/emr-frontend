@@ -93,6 +93,7 @@ export const NO_TEXT = "No";
 export const CANCEL_TEXT = "Cancel";
 export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
+export const CREATE_FORM_TEMPLATE = "Form Template is created successfully.";
 export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
 export const FORM_NOT_FOUND = "Form not found!";
@@ -141,16 +142,24 @@ export const PUBLIC_LINK = "Public Appointment Link";
 export const FACILITY_LOCATION = "Facility Location";
 export const ADD_FACILITY_BILLING = "Add billing for this facility";
 export const SAME_AS_FACILITY_LOCATION = "Same as facility location";
+export const SAME_AS_PATIENT = "Same as patient";
 export const APPOINTMENT_NOT_EXIST = "Appointment doesn't exist";
 export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
 export const CALENDAR = "Calendar";
+export const PRINT = "Print";
 export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
 export const PAY_LATER = "Pay Later";
+export const SCHEDULE_APPOINTMENT = "Schedule Appointment";
 export const APARTMENT = "Apartment";
 export const INFORMATION = "Information";
 export const CREATE_STAFF = "Create Staff";
+export const CREATE_TEMPLATE = "Create Template";
 export const PAYMENT_TYPE = "Payment Type";
+export const SELF_PAY_RESTRICTION = "Self Pay Restriction";
+export const PRIMARY_INSURANCE_FOR_ORDER = "Primary Insurance For Order";
+export const SECONDARY_INSURANCE_FOR_ORDER = "Secondary Insurance For Order";
+export const ORDERING_PROVIDER = "Ordering Provider";
 export const SELECT_PAYMENT = "Select Payment";
 export const AUTO_ACCIDENT = "Auto Accident";
 export const STREET_ADDRESS = "Street Address";
@@ -208,6 +217,7 @@ export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
+export const ADD_PATIENT_MODAL = "Add Patient?";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
@@ -221,6 +231,7 @@ export const EDIT_APPOINTMENT = "Edit Appointment";
 export const CREATE_INVOICE = "Create Invoice";
 export const PRACTICE_SETTINGS = "Practice Settings";
 export const USERS_MANAGEMENT = "Users Management";
+export const ADD_MEDIA = "Add Media";
 export const PAID = "Paid";
 export const UNPAID = "Unpaid";
 export const INVOICE = "Invoice";
@@ -339,6 +350,7 @@ export const FACILITY_SCHEDULE_DESCRIPTION = "Set timings of facility and manage
 export const CLINICAL_TEXT = "Clinical";
 export const FORM_BUILDER = "Form Builder";
 export const FORM_FIELDS = "Form Fields";
+export const NO_TEMPLATE = "No Template Found";
 export const FORM_BUILDER_DESCRIPTION = "Design your form by drag and drop";
 export const MISCELLANEOUS_SETTINGS = "Miscellaneous Settings";
 export const TIME_ZONE = "Time Zone Settings";
@@ -500,6 +512,7 @@ export const COMMENT = "Comment";
 export const SIGN_IN = "Sign In";
 export const SIGN_OFF = "Sign Off";
 export const RESULT = "Result";
+export const RESULTS = "Results";
 export const FILE = "File";
 export const TOKEN = "emr_token";
 export const BACK_TO = "Back to";
@@ -529,6 +542,7 @@ export const USER_ID = "User ID";
 export const PATIENT = "Patient";
 export const DOCUMENT = "Document";
 export const PRACTICE = "Practice";
+export const IN_PROGRESS = "In Progress";
 export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
 export const INITIATED = "Initialized";
@@ -669,6 +683,7 @@ export const PRONOUNS = "Pronouns";
 export const UNLOCK_TEXT = "Unlock";
 export const LEGAL_SEX = "Legal Sex";
 export const MORE_INFO = "More Info";
+export const DIAGNOSES = "diagnoses";
 export const GUARANTOR = "Guarantor";
 export const MEMBER_ID = "Member ID";
 export const ID_NUMBER = "ID Number";
@@ -684,6 +699,8 @@ export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
 export const HOME_PHONE = "Home Phone";
 export const SCHEDULE_TEXT = "Schedule";
+export const YES_CANCEL = "Yes, Cancel";
+export const SSN_FORMAT = '000-00-0000';
 export const CONTINUE_TEXT = "Continue";
 export const ADD_ROLE_TEXT = "Add Role";
 export const NEXT_OF_KIN = "Next Of Kin";
@@ -907,6 +924,7 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
+export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
 export const APPOINTMENT_CONFIRM_SUBHEADING = "Skip some of the paperwork at the clinic by adding more information. You can access the information form now or later from your email or text message.";
 export const TWO_FA_AUTHENTICATION_DESCRIPTION = "When you login you provide an email address and password. This is one “factor” of authenticating who you are. 2-Factor refers to using a second factor to confirm your identity.";
 export const appointmentConfirmationDescription = (dateTime: string) =>
@@ -915,6 +933,7 @@ export const appointmentConfirmationDescription = (dateTime: string) =>
   )} on ${getFormattedDate(
     dateTime || ""
   )} has been confirmed. ${APPOINTMENT_CONFIRM_HEADING}`;
+export const appointmentCancellationDescription = `Are you sure you want to cancel Devone Lane’s Appointment on 16 Feb, 2022 at time 11:00am?`;
 
 // routes paths
 export const ROOT_ROUTE = "/";
@@ -964,6 +983,7 @@ export const PATIENT_INFORMATION_ROUTE = "/patient-information";
 export const FACILITY_SERVICES_ROUTE = "/list-facility-services";
 export const PUBLIC_FORM_BUILDER_FAIL_ROUTE = "/public/form-form/fail";
 export const APPOINTMENT_PAYMENT = `${PUBLIC_APPOINTMENT_ROUTE}/payment`;
+export const FORM_BUILDER_COPY_TEMPLATE_ROUTE = "/form-builder/template";
 export const PATIENT_APPOINTMENT_FAIL = `${PUBLIC_APPOINTMENT_ROUTE}/fail`;
 export const PUBLIC_FORM_BUILDER_SUCCESS_ROUTE = "/public/form-form/success";
 export const SLOT_CONFIRMATION = `${PUBLIC_APPOINTMENT_ROUTE}/available-slot`;
@@ -2459,7 +2479,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: [],
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: RadioGroupIcon,
@@ -2474,7 +2495,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: OPTIONS,
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: CheckboxIcon,
@@ -2489,7 +2511,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     options: OPTIONS,
-    textArea: false
+    textArea: false,
+    isMultiSelect: false,
   },
   {
     icon: DateIcon,
@@ -2504,7 +2527,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: NumberIcon,
@@ -2519,7 +2543,8 @@ export const ITEMS: ItemsTypes[] = [
     errorMsg: '',
     defaultValue: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: EmailIcon,
@@ -2534,12 +2559,13 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: FileInputIcon,
     fieldId: uuid(),
-    label: 'File Uplaod',
+    label: 'File Upload',
     type: ElementType.File,
     name: uuid(),
     css: '',
@@ -2549,7 +2575,8 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: false,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
   {
     icon: SelectIcon,
@@ -2567,6 +2594,23 @@ export const ITEMS: ItemsTypes[] = [
     options: OPTIONS
   },
   {
+    icon: SelectIcon,
+    fieldId: uuid(),
+    label: 'Multi Select',
+    type: ElementType.Select,
+    name: uuid(),
+    css: '',
+    column: 12,
+    placeholder: '',
+    required: false,
+    defaultValue: '',
+    errorMsg: '',
+    textArea: false,
+    options: OPTIONS,
+    isMultiSelect: true,
+  },
+
+  {
     icon: TextAreaIcon,
     fieldId: uuid(),
     label: 'Text Area',
@@ -2579,7 +2623,8 @@ export const ITEMS: ItemsTypes[] = [
     defaultValue: '',
     errorMsg: '',
     textArea: true,
-    options: []
+    options: [],
+    isMultiSelect: false,
   },
 ];
 
@@ -2648,6 +2693,10 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 
 export const CHECK_IN_STEPS = [
   CHECK_IN, PATIENT_INFO, INSURANCE, VITALS_TEXT, CHART_TEXT, BILLING_TEXT
+];
+
+export const LAB_ORDER_STEPS = [
+  LAB_ORDER, PAYMENT
 ];
 
 export const FacilityMenuNav = [
@@ -2823,3 +2872,14 @@ export enum USER_PERMISSIONS {
 
 //Form Builder API urls
 export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
+
+export const FORM_BUILDER_FIELDS_TABS = [
+  {
+    title: "Fields",
+    value: "1",
+  },
+  {
+    title: "Templates",
+    value: "2",
+  },
+]

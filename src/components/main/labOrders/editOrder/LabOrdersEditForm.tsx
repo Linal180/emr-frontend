@@ -1,22 +1,20 @@
 // packages block
-import { FC, useState, ChangeEvent } from 'react';
+import { FC, useState, } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Card, colors, Grid, Typography, Checkbox, FormControlLabel, FormGroup, Button, Collapse, } from "@material-ui/core";
+import { Box, Card, colors, Grid, Typography, Button, Collapse, } from "@material-ui/core";
 // components block
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 // interfaces, graphql, constants block
-import { BLACK_TWO } from '../../../../theme';
+import { BLACK_TWO, WHITE } from '../../../../theme';
 import { AddCircleOutline } from '@material-ui/icons';
 import { GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  ABNORMAL_FLAG, ADD_ANOTHER_SPECIMEN, APPOINTMENT_TEXT, COLLECTION_DATE, COLLECTION_TIME, CREATE_LAB_ORDER, DELETE, DESCRIPTION, DOCTOR_SIGNOFF,
-  EDIT_LAB_ORDER, EMPTY_OPTION, NORMAL_RANGE, NORMAL_RANGE_UNITS, RESULT_UNITS, RESULT_VALUE, SAVE_TEXT, SPECIMEN_NOTES, SPECIMEN_TYPE, STATUS, 
-  TEST_DATE, TEST_LOINC_CODE, TEST_NOTES, TEST_TIME
+  ADD_ANOTHER_SPECIMEN, APPOINTMENT_TEXT, COLLECTION_DATE, COLLECTION_TIME, DELETE, DESCRIPTION, EDIT_LAB_ORDER, EMPTY_OPTION, SAVE_TEXT,
+  SEARCH, SPECIMEN_NOTES, SPECIMEN_TYPE, STATUS, TEST_DATE, TEST_LOINC_CODE, TEST_NOTES, TEST_TIME
 } from '../../../../constants';
 
-const LabOrdersForm: FC<GeneralFormProps> = (): JSX.Element => {
-  const [isChecked, setIsChecked] = useState({ one: false });
+const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
   const [open, setOpen] = useState<boolean>(false);
   const methods = useForm<any>({
     mode: "all",
@@ -25,21 +23,11 @@ const LabOrdersForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { handleSubmit } = methods;
   const onSubmit: SubmitHandler<any> = () => { }
 
-  const handleChangeForCheckBox = (name: string) => (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setIsChecked({ ...isChecked, [name]: event.target.checked });
-  };
-
   return (
     <Card>
       <Box px={3}>
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`}>
-              <Typography variant='h4'>{CREATE_LAB_ORDER}</Typography>
-            </Box>
-
             <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`}>
               <Typography variant='h4'>{EDIT_LAB_ORDER}</Typography>
             </Box>
@@ -64,18 +52,28 @@ const LabOrdersForm: FC<GeneralFormProps> = (): JSX.Element => {
               </Grid>
 
               <Grid item md={4} sm={12} xs={12}>
-                <Box pt={2}>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Checkbox color="primary" checked={isChecked.one} onChange={handleChangeForCheckBox("one")} />
-                      }
-                      label={DOCTOR_SIGNOFF}
-                    />
-                  </FormGroup>
+                <Selector
+                  isRequired
+                  name="search"
+                  label={SEARCH}
+                  value={EMPTY_OPTION}
+                  options={[]}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3} justifyContent="flex-end">
+              <Grid item md={4} sm={12} xs={12}>
+                <Box mb={2} mt={0} color={BLACK_TWO} bgcolor={WHITE}>
+                  <ul>
+                    <li>QT.1: High Fever</li>
+                    <li>HT.22: Back Pain</li>
+                  </ul>
                 </Box>
               </Grid>
+            </Grid>
 
+            <Grid container spacing={3}>
               <Grid item md={4} sm={12} xs={12}>
                 <Selector
                   isRequired
@@ -224,53 +222,7 @@ const LabOrdersForm: FC<GeneralFormProps> = (): JSX.Element => {
                   </Grid>
                 </Grid>
               </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="resultValue"
-                  controllerLabel={RESULT_VALUE}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="resultUnits"
-                  controllerLabel={RESULT_UNITS}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="normalRange"
-                  controllerLabel={NORMAL_RANGE}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="normalUnits"
-                  controllerLabel={NORMAL_RANGE_UNITS}
-                />
-              </Grid>
-
-              <Grid item md={4} sm={12} xs={12}>
-                <Selector
-                  isRequired
-                  name="abnormalFlag"
-                  label={ABNORMAL_FLAG}
-                  value={EMPTY_OPTION}
-                  options={[]}
-                />
-              </Grid>
             </Grid>
-
-            <Box mb={3}>
-              <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
-            </Box>
 
             <Box mb={3} display="flex">
               <Button type="submit" variant="outlined" color="secondary">{DELETE}</Button>
@@ -286,4 +238,4 @@ const LabOrdersForm: FC<GeneralFormProps> = (): JSX.Element => {
   );
 };
 
-export default LabOrdersForm;
+export default LabOrdersEditForm;

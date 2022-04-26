@@ -187,7 +187,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2}>
+        <Box py={2} mb={2} maxWidth={450}>
           <Search search={search} />
         </Box>
 

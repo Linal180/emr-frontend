@@ -3,7 +3,6 @@ import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import moment from 'moment';
 import { Close } from '@material-ui/icons';
 import DropIn from 'braintree-web-drop-in-react';
-import { AppointmentTooltip } from '@devexpress/dx-react-scheduler';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 import { Box, Button, Dialog, Card, CardHeader, IconButton, Typography, Collapse, Grid } from '@material-ui/core';
 import {
@@ -17,12 +16,12 @@ import ConfirmationModal from '../../common/ConfirmationModal';
 import { AuthContext } from '../../../context';
 import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
 import SIGN_IMAGE from "../../../assets/images/sign-image.png";
-import { UpdateStatusInputProps } from '../../../interfacesTypes';
+import { AppointmentCardProps, UpdateStatusInputProps } from '../../../interfacesTypes';
 import { useCalendarStyles } from '../../../styles/calendarStyles';
-import { getAppointmentDate, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
+import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
 import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
 import {
-  CashAppointmentIcon, DeleteAppointmentIcon, InvoiceAppointmentIcon,
+  CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
 } from '../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
@@ -39,15 +38,17 @@ import {
   TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
 } from '../../../constants';
 import { Link } from 'react-router-dom';
+import history from '../../../history';
 
-const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentTooltip.LayoutProps): JSX.Element => {
+const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: AppointmentCardProps): JSX.Element => {
+  const { visible, onHide, appointmentMeta } = tooltip
   const classes = useCalendarStyles()
   const { user } = useContext(AuthContext)
   const { id: userId } = user || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
   const {
     appointmentPaymentToken, appEdit, instance, appOpen, appPaid, appStatus, appInvoice, appPayment,
-    appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber, appBillingStatus
+    appInvoiceNumber, appShowPayBtn, appDetail, openDelete, isInvoiceNumber, appBillingStatus,
   } = state;
   const methods = useForm<UpdateStatusInputProps>({ mode: "all", });
   const { handleSubmit, watch, setValue } = methods;
@@ -139,6 +140,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
   const appReason = appointmentMeta?.data?.reason
   const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
   const facilityName = appointmentMeta?.data?.facilityName
+  const appointmentDatePassingView = appointmentMeta && appointmentMeta?.data.startDate
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -299,6 +301,8 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
     handleAppDetail()
   }
 
+  const handleEdit = () => history.push(`${APPOINTMENTS_ROUTE}/${id}`)
+
   useEffect(() => {
     id && fetchAppointment()
   }, [id, fetchAppointment]);
@@ -326,6 +330,15 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
       },
     });
   };
+
+
+  useEffect(() => {
+    if (patientName === "Show More" && visible === true) {
+      onHide && onHide()
+      setCurrentDate(getAppointmentDatePassingView(appointmentDatePassingView))
+      setCurrentView('Day')
+    }
+  }, [appointmentDatePassingView, onHide, patientName, setCurrentDate, setCurrentView, visible])
 
   const cashPaid = () => {
     charge("")
@@ -380,6 +393,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                   }}>
                     <DeleteAppointmentIcon />
                   </IconButton>}
+
+                  <IconButton aria-label="edit" onClick={handleEdit}>
+                    <EditAppointmentIcon />
+                  </IconButton>
 
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
@@ -440,7 +457,7 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
                 <Typography variant='body1'>{NO_INVOICE}</Typography>
 
                 <Button type="submit" onClick={createAppointmentInvoice}
-                  variant="contained" className="blue-button-new"
+                  variant="contained" color="secondary"
                 >
                   {CREATE_INVOICE}
                 </Button>
@@ -575,6 +592,10 @@ const AppointmentCard = ({ visible, onHide, appointmentMeta }: AppointmentToolti
 
               <Box py={2} borderTop={`1px solid ${WHITE_FOUR}`} maxWidth={250} textAlign="center">
                 <Typography variant="h5"><strong>{patientName}</strong></Typography>
+              </Box>
+
+              <Box onClick={() => window.print()} className={classes.cursor} width={25}>
+                <PrintIcon />
               </Box>
             </Box>
           </Card>

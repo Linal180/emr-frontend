@@ -1,26 +1,28 @@
 // packages block
 import { FC, Reducer, useReducer, useState } from "react";
 import moment from "moment";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import {
   Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Avatar
 } from "@material-ui/core";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 // components block
 import GraphModal from "./graphModal";
+import InputController from "../../../../controller";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { renderTh } from "../../../../utils";
-import { getDate } from "../../../../utils";
+import { renderTh, getDate } from "../../../../utils";
 import { Patient } from "../../../../generated/graphql";
 import { ProfileUserIcon } from "../../../../assets/svgs";
-import {
-  EMAIL, PHONE, NAME, SPECIALTY, FACILITY, dummyVitalsChartingList, GROWTH_CHART, PDF_TEXT
-} from "../../../../constants";
-import { patientReducer, State, initialState, Action, ActionType } from "../../../../reducers/patientReducer";
-import InputController from "../../../../controller";
-import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { CalendarChart } from "../../../../interfacesTypes";
+import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import {
+  patientReducer, State, initialState, Action, ActionType
+} from "../../../../reducers/patientReducer";
+import {
+  EMAIL, PHONE, NAME, SPECIALTY, FACILITY, dummyVitalsChartingList, GROWTH_CHART,
+  PDF_TEXT, SCHEDULE_APPOINTMENT
+} from "../../../../constants";
 
-const VitalsChartingTable: FC<CalendarChart> = ({isCalendar}): JSX.Element => {
+const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar }): JSX.Element => {
   const classes = useProfileDetailsStyles()
   const [patientData] = useState<Patient | null>();
   const { firstName, lastName, dob, doctorPatients } = patientData || {}
@@ -66,45 +68,45 @@ const VitalsChartingTable: FC<CalendarChart> = ({isCalendar}): JSX.Element => {
   return (
     <>
       {isCalendar === true
-       && <Box className={classes.profileCard}>
-        <Box display="flex" alignItems="center">
-          <Box pl={1}>
-            <Box pr={3.75}>
-              <Avatar variant="square" src='' className={classes.profileImage} />
+        && <Box className={classes.profileCard}>
+          <Box display="flex" alignItems="center">
+            <Box pl={1}>
+              <Box pr={3.75}>
+                <Avatar variant="square" src='' className={classes.profileImage} />
+              </Box>
             </Box>
           </Box>
-        </Box>
 
-        <Box flex={1}>
-          <Box display="flex">
-            <Box flex={1}>
-              <Box display="flex" alignItems="center" className={classes.userName}>
-                {`${firstName} ${lastName}`}
+          <Box flex={1}>
+            <Box display="flex">
+              <Box flex={1}>
+                <Box display="flex" alignItems="center" className={classes.userName}>
+                  {`${firstName} ${lastName}`}
+                </Box>
+
+                <Box display="flex" width="100%" pt={1} flexWrap="wrap">
+                  {ProfileDetails.map((item, index) => (
+                    <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
+                      <Box>{item.icon}</Box>
+                      <Box>{item.description}</Box>
+                    </Box>
+                  ))}
+                </Box>
               </Box>
 
-              <Box display="flex" width="100%" pt={1} flexWrap="wrap">
-                {ProfileDetails.map((item, index) => (
-                  <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
-                    <Box>{item.icon}</Box>
+              <Box display="flex" pr={3}>
+                {ProfileAdditionalDetails.map((item, index) => (
+                  <Box key={`${item.title}-${index}`}>
+                    <Box className={classes.profileInfoHeading}>{item.title}</Box>
                     <Box>{item.description}</Box>
                   </Box>
                 ))}
               </Box>
-            </Box>
 
-            <Box display="flex" pr={3}>
-              {ProfileAdditionalDetails.map((item, index) => (
-                <Box key={`${item.title}-${index}`}>
-                  <Box className={classes.profileInfoHeading}>{item.title}</Box>
-                  <Box>{item.description}</Box>
-                </Box>
-              ))}
+              <Button color="secondary" variant="contained">{SCHEDULE_APPOINTMENT}</Button>
             </Box>
-
-            <Button color="primary" variant="contained" className="blue-button">Schedule Appointment</Button>
           </Box>
-        </Box>
-      </Box>}
+        </Box>}
 
       <Box pt={3} pb={2} pl={3} display='flex'>
         <Box pr={1}>

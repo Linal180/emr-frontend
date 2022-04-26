@@ -10,7 +10,7 @@ import InputController from "../../../../controller";
 import { ListContext } from "../../../../context";
 import { DOB, STATUS } from "../../../../constants";
 import { renderFacilities } from "../../../../utils";
-import { GRAY_TWO, WHITE } from "../../../../theme";
+import { GREY_SEVEN, WHITE } from "../../../../theme";
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
 import { AntSwitch } from "../../../../styles/publicAppointmentStyles/externalPatientStyles";
 
@@ -104,9 +104,9 @@ const PatientCardForm = (): JSX.Element => {
                       <InputLabel shrink>{STATUS}</InputLabel>
 
                       <label className="toggle-main">
-                        <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
+                        <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
                         <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
-                        <Box color={isChecked ? GRAY_TWO : WHITE}>No</Box>
+                        <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
                       </label>
                     </FormControl>
                   )}

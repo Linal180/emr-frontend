@@ -23,6 +23,7 @@ import {
   CreatePatientAllergyInput,
   Allergies
 } from "../generated/graphql";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -306,6 +307,8 @@ export interface SelectorProps {
   isMultiple?: boolean
   value?: SelectorOption
   options: SelectorOption[]
+  isModal?: boolean;
+  handlePatientModal?: Function;
 }
 
 export interface CardSelectorProps {
@@ -361,11 +364,14 @@ export type SubMenuTypes = {
 
 export interface CustomInputControlProps extends IControlLabel {
   controllerName: string;
+  isSearch?: boolean;
   info?: string;
 }
 
 export interface SearchComponentProps {
   search: Function;
+  info?: boolean;
+  infoText?: string;
 }
 
 export interface AppMenuItemTypes {
@@ -408,6 +414,7 @@ export interface TimePickerProps {
 export type ParamsType = {
   id: string;
   facilityId?: string;
+  templateId?: string;
 }
 
 export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | "roleType" | "gender">
@@ -733,6 +740,12 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
   doctorFacilityId: string | undefined;
 }
 
+export interface AddPatientModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  facilityId: string | undefined;
+}
+
 export interface FacilityScheduleModalProps extends GeneralFormProps {
   isOpen: boolean;
   reload: Function;
@@ -954,3 +967,18 @@ export interface AddModalProps {
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
   & { reactionIds: SelectorOption } & { severityId: SelectorOption }
+export interface CreateTemplateTypes extends DialogTypes {
+  title?: string;
+  success?: boolean;
+  actionText?: string;
+  isLoading?: boolean;
+  description?: string;
+  handleDelete: () => void;
+  setFormName: Dispatch<SetStateAction<string>>
+  formName: string
+}
+export interface AppointmentCardProps {
+  tooltip: AppointmentTooltip.LayoutProps
+  setCurrentView: Function
+  setCurrentDate: Function
+}

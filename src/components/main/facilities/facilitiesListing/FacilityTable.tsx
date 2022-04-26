@@ -1,7 +1,6 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { InsertLink } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 // components block
@@ -13,7 +12,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { EditNewIcon, TrashNewIcon, AddNewIcon } from "../../../../assets/svgs";
+import { EditNewIcon, TrashNewIcon, AddNewIcon, LinkIcon } from "../../../../assets/svgs";
 import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
@@ -151,7 +150,9 @@ const FacilityTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Search search={search} />
+        <Box py={2} mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
 
         <Box className="table-overflow">
           <Table aria-label="customized table">
@@ -195,7 +196,7 @@ const FacilityTable: FC = (): JSX.Element => {
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
                             <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                              <InsertLink />
+                              <LinkIcon />
                             </Box>
                           </DetailTooltip>
 

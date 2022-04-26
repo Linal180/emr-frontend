@@ -1,6 +1,6 @@
 // packages block
 import { useEffect, useCallback, Reducer, useState, useReducer, useContext } from "react";
-import { ViewState } from '@devexpress/dx-react-scheduler';
+import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
 import { DayTimeTableCell } from "./calendarViews/dayView";
 import { WeekTimeTableCell } from "./calendarViews/weekView";
 import { MonthTimeTableCell } from "./calendarViews/monthView";
@@ -21,10 +21,13 @@ import {
 import {
   useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus
 } from "../../../generated/graphql";
+import { IntegratedAppointments } from "./integratedAppointments";
 
 const CalendarComponent = (): JSX.Element => {
   const classes = useCalendarStyles()
   const [currentDate, setCurrentDate] = useState(new Date())
+  const [currentView, setCurrentView] = useState<string>('Month')
+  const [data, setData] = useState<any[]>([])
   const { user } = useContext(AuthContext)
   const { facility, roles } = user || {}
   const { id: facilityId, practiceId } = facility || {}
@@ -57,28 +60,88 @@ const CalendarComponent = (): JSX.Element => {
         const { appointments } = findAllAppointments
         dispatch({
           type: ActionType.SET_APPOINTMENTS,
-          appointments: appointments?.filter(appointment => 
+          appointments: appointments?.filter(appointment =>
             appointment?.status !== Appointmentstatus.Cancelled) as AppointmentsPayload['appointments']
         });
       }
     }
   });
 
-  const handleDateChange = () => setCurrentDate(currentDate)
+  const onCommitChanges = useCallback(
+    ({ added, changed, deleted }) => {
+      if (added) {
+        const startingAddedId =
+          Array.isArray(data) && data.length > 0 ? data && data[data.length - 1].id + 1 : 0;
+        setData([...data, { id: startingAddedId, ...added }]);
+      }
+      if (changed) {
+        setData(
+          data.map(appointment =>
+            changed[appointment.id]
+              ? { ...appointment, ...changed[appointment.id] }
+              : appointment
+          )
+        );
+      }
+      if (deleted !== undefined) {
+        setData(data.filter(appointment => appointment.id !== deleted));
+      }
+    },
+    [setData, data]
+  );
 
-  const Appointment = ({ children, style, ...restProps }: any) => {
-    const { data: { color } } = restProps
 
+  const handleDateChange = (currentDate: Date) => setCurrentDate(currentDate)
+
+  const AppointmentContainer = ({ children, style, ...restProps }: any) => {
+    return (
+      <Appointments.Container
+        {...restProps}
+        style={{
+          ...style,
+          height: 20,
+        }}
+      >
+        {children}
+      </Appointments.Container>
+    )
+  };
+
+  const AppointmentContent = ({ children, style, ...restProps }: any) => {
+    const { data: { color, title } } = restProps
+    const showMoreButton = title === 'Show More'
+    return (
+      <Appointments.AppointmentContent
+        {...restProps}
+        style={{
+          ...style,
+          backgroundColor: showMoreButton && "#939393",
+          textDecoration: showMoreButton ? 'none' : 'underline',
+          color: showMoreButton ? 'white' : color,
+          width: 'fit-content',
+          display: showMoreButton && 'flex',
+          border: showMoreButton && '2px solid',
+          fontWeight: !showMoreButton && 700,
+          minHeight: 24,
+        }}
+      >
+        {children}
+      </Appointments.AppointmentContent>
+    )
+  };
+
+  const Appointment = ({ children, style, color, ...restProps }: any) => {
     return (
       <Appointments.Appointment
         {...restProps}
         style={{
           ...style,
-          backgroundColor: color,
-          borderRadius: '8px',
-          whiteSpace: 'normal !important',
-          minHeight: 24,
-        }}
+          backgroundColor: 'transparent',
+          borderBottom: 0,
+          borderRadius: 0,
+          width: 'fit-content'
+        }
+        }
       >
         {children}
       </Appointments.Appointment>
@@ -99,6 +162,10 @@ const CalendarComponent = (): JSX.Element => {
     } catch (error) { }
   }, [page, isSuper, isAdmin, facilityId, practiceId, findAllAppointments])
 
+  const currentViewNameChange = (currentViewName: string) => {
+    setCurrentView(currentViewName);
+  };
+
   useEffect(() => {
     fetchAppointments()
   }, [fetchAppointments]);
@@ -112,16 +179,29 @@ const CalendarComponent = (): JSX.Element => {
 
         <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
           <Scheduler data={mapAppointmentData(appointments)}>
-            <ViewState defaultCurrentDate={currentDate} onCurrentDateChange={handleDateChange} />
+            <ViewState
+              currentDate={currentDate}
+              onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }}
+              currentViewName={currentView}
+              onCurrentViewNameChange={currentViewNameChange} />
+            <EditingState onCommitChanges={onCommitChanges} />
             <MonthView timeTableCellComponent={MonthTimeTableCell} />
             <WeekView timeTableCellComponent={WeekTimeTableCell} />
             <DayView timeTableCellComponent={DayTimeTableCell} />
             <Toolbar />
             <TodayButton />
             <ViewSwitcher />
+            <IntegratedEditing />
+            <IntegratedAppointments />
             <DateNavigator />
-            <Appointments appointmentComponent={Appointment} />
-            <AppointmentTooltip showCloseButton layoutComponent={AppointmentCard} />
+            <Appointments appointmentComponent={Appointment}
+              appointmentContentComponent={AppointmentContent}
+              containerComponent={AppointmentContainer} />
+            <AppointmentTooltip
+              showCloseButton
+              layoutComponent={(props) => <AppointmentCard tooltip={props}
+                setCurrentView={setCurrentView}
+                setCurrentDate={setCurrentDate} />} />
           </Scheduler>
         </Box>
       </Box>
