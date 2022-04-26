@@ -52,7 +52,7 @@ const ImagePreview = ({ open, closeModalHandler, url, formId }: FormMediaPreview
         <Box className={classes.main}>
           <Box>
             {loading ?
-              <Box minHeight={400} height={400} display={'flex'} justifyContent={'center'} alignItems={'center'} >
+              <Box minHeight={400} height={400} display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <CircularProgress size={100} />
               </Box>
               :

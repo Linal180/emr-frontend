@@ -583,7 +583,7 @@ export const CalendarIcon = () => (
 export const NewAvatarIcon = () => (
   <svg width="35" height="34" viewBox="0 0 35 34" fill="none" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
     <rect x="1.64453" y="1" width="32.3556" height="32" rx="6" fill="url(#pattern0)" />
-    <rect x="1.14453" y="0.5" width="33.3556" height="33" rx="6.5" stroke="black" stroke-opacity="0.2" />
+    <rect x="1.14453" y="0.5" width="33.3556" height="33" rx="6.5" stroke="black" strokeOpacity="0.2" />
     <defs>
       <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
         <use xlinkHref="#image0_5364_29858" transform="translate(0 -0.00555557) scale(0.00263158)" />

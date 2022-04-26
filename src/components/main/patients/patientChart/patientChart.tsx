@@ -66,7 +66,7 @@ const PatientDetailsComponent = (): JSX.Element => {
             </Box>
 
             <Box flex={1}>
-              <Box display="flex">
+              <Box display="flex" flexWrap="wrap">
                 <Box flex={1}>
                   <Box display="flex" alignItems="center" className={classes.userName}>
                     {`${firstName} ${lastName}`}
@@ -74,7 +74,7 @@ const PatientDetailsComponent = (): JSX.Element => {
 
                   <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                     {ProfileDetails.map((item, index) => (
-                      <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
+                      <Box display="flex" flexWrap="wrap"  key={`${item.description}-${index}`} className={classes.profileInfoItem}>
                         <Box>{item.icon}</Box>
                         <Box>{item.description}</Box>
                       </Box>

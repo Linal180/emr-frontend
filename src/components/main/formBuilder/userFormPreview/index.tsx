@@ -34,7 +34,7 @@ const UserFormPreview = ({ open, closeModalHandler, formId, formLabels, userForm
               {formLabels?.map((ele) => {
                 const { label, name } = ele || {}
                 return (
-                  <Box mb={2} maxHeight={200} minHeight={20} >
+                  <Box mb={2} maxHeight={200} minHeight={20}>
                     <Typography variant='h5'>{label || name}</Typography>
                   </Box>
                 )
