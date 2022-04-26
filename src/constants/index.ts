@@ -54,6 +54,7 @@ export enum SYSTEM_ROLES {
 export const SUPER_ADMIN = 'super-admin';
 export const ADMIN = 'admin';
 // constants
+export const CURRENT_DATE = new Date();
 export const NOTE = "Note";
 export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
@@ -430,7 +431,7 @@ export const CHAMPUS = "Champus";
 export const FROM_TEXT = "From:";
 export const MEDICARE = "Medicare";
 export const MEDICAID = "Medicaid";
-export const CHART_ID = "Chart ID";
+export const PRN = "PRN";
 export const ACTIVE_TEXT = "Active";
 export const MERCHANT_ID = "Merchant ID";
 export const BANK_ACCOUNT = "Bank Account";
@@ -700,6 +701,10 @@ export const CONTACT_INFORMATION = "Contact Information";
 export const FACILITY_SERVICES_TEXT = "Facility Services";
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const SSN_FORMAT = '000-00-0000';
+export const DOB_FORMAT = 'YYYY_MM_DD';
+export const PRN_FORMAT = 'AA123456';
+export const EMAIL_FORMAT = 'admin@alxtel.com';
+export const Name_FORMAT = 'First Last';
 export const PRICE = "Price";
 export const SEARCH = "Search";
 export const BILLING = "Billing";
@@ -1842,6 +1847,11 @@ export const VIEW_APPOINTMENTS_BREAD = {
   link: VIEW_APPOINTMENTS_ROUTE,
 };
 
+export const CALENDAR_VIEW_APPOINTMENTS_BREAD = {
+  text: CALENDAR_VIEW_TEXT,
+  link: CALENDAR_ROUTE,
+};
+
 // profile top tabs
 export const PROFILE_TOP_TABS = [
   {
@@ -2877,3 +2887,26 @@ export const FORM_BUILDER_FIELDS_TABS = [
     value: "2",
   },
 ]
+
+export const PatientSearchingTooltipData = [
+  {
+    name: `${NAME}:`,
+    format: Name_FORMAT,
+  },
+  {
+    name: `${EMAIL}:`,
+    format: EMAIL_FORMAT,
+  },
+  {
+    name: `${PRN}:`,
+    format: PRN_FORMAT,
+  },
+  {
+    name: `${DOB}:`,
+    format: DOB_FORMAT,
+  },
+  {
+    name: `${SSN}:`,
+    format: SSN_FORMAT,
+  }
+];

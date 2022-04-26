@@ -116,7 +116,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
     const { id: dayName } = day || {}
 
     const scheduleInput = {
-      facilityId, servicesIds: [],
+      facilityId, servicesIds: [], day: dayName,
       startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
     if (facilityId) {
@@ -189,7 +189,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
             <Box pr={2} display="flex">
               <Button onClick={handleClose} color="default">{CANCEL}</Button>
 
-                <Box p={1}/>
+              <Box p={1} />
 
               <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
                 {isEdit ? UPDATE_SCHEDULE : CREATE_SCHEDULE}
