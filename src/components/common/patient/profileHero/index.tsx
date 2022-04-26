@@ -257,7 +257,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                 </Button>
               </Box>}
 
-              <Button color="primary" variant="contained" className="blue-button">
+              <Button color="secondary" variant="contained">
                 {SCHEDULE_APPOINTMENTS_TEXT}
               </Button>
             </Box>
