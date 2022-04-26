@@ -25,14 +25,20 @@ const FilterSearch: FC<FilterSearchProps> = (
   const classes = usePatientChartingStyles()
   const [tab, setTab] = useState<string>(tabs[0]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [{ isFormOpen, selectedItem }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [{ isFormOpen, selectedItem }, dispatch] =
+    useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const isMenuOpen = Boolean(isFormOpen);
   const cardId = "widget-menu";
+
+  const closeSearchMenu = () => {
+    setSearchQuery('')
+    dispatcher({ type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: null })
+  }
 
   const handleOpenForm = ({ currentTarget }: MouseEvent<HTMLElement>, item: Allergies) => {
     dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: item })
     dispatch({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: currentTarget })
-    dispatcher({ type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: null })
+    closeSearchMenu()
   };
 
   const handleMenuClose = () => dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null });
@@ -85,7 +91,8 @@ const FilterSearch: FC<FilterSearchProps> = (
     <>
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Typography variant='h4'>{TYPE}</Typography>
-        <IconButton>
+
+        <IconButton onClick={closeSearchMenu}>
           <ClearIcon />
         </IconButton>
       </Box>

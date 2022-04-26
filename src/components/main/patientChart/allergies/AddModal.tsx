@@ -18,7 +18,7 @@ import { getTimestamps, renderReactions } from '../../../../utils';
 import { createPatientAllergySchema } from '../../../../validationSchemas';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../interfacesTypes';
 import {
-  AllergyOnset, AllergySeverity, useAddPatientAllergyMutation
+  AllergyOnset, AllergySeverity, PatientAllergyPayload, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery
 } from '../../../../generated/graphql';
 import {
   ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
@@ -26,11 +26,13 @@ import {
 } from '../../../../constants';
 
 const AddModal: FC<AddModalProps> = (
-  { item: { id, name }, dispatcher, isEdit, patientAllergyId, fetch }
+  { item, dispatcher, isEdit, patientAllergyId, fetch }
 ): JSX.Element => {
+  const { id, name } = item || {}
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
   const [onset, setOnset] = useState<string>('')
+  // const [item, setItem] = useState<PatientAllergyPayload['patientAllergy']>(null)
   const { reactionList, fetchAllReactionList } = useContext(ChartContext)
   const methods = useForm<CreatePatientAllergyProps>({
     mode: "all",
@@ -38,6 +40,22 @@ const AddModal: FC<AddModalProps> = (
   });
   const { handleSubmit, reset, watch } = methods;
   const { allergyStartDate } = watch()
+
+  // const [getPatientAllergy, { loading: getAllergyLoading }] = useGetPatientAllergyLazyQuery({
+  //   onError({ message }) {
+  //     Alert.error(message)
+  //   },
+
+  //   onCompleted(data) {
+  //     const { getPatientAllergy: { patientAllergy} } = data;
+
+  //     if (patientAllergy) {
+  //       const {allergyOnset, allergy, allergyStartDate, allergySeverity, reactions} = patientAllergy
+
+  //       allergyOnset && setOnset(allergyOnset)
+  //     }
+  //   }
+  // });
 
   const [addPatientAllergy, { loading: addAllergyLoading }] = useAddPatientAllergyMutation({
     onError({ message }) {
@@ -51,10 +69,9 @@ const AddModal: FC<AddModalProps> = (
         const { status } = response
 
         if (status && status === 200) {
-          reset()
           fetch()
           Alert.success(PATIENT_ALLERGY_ADDED);
-          dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null })
+          closeAddModal()
         }
       }
     }
@@ -67,6 +84,11 @@ const AddModal: FC<AddModalProps> = (
   useEffect(() => {
     setOnset('')
   }, [allergyStartDate])
+
+  const closeAddModal = () => {
+    reset()
+    dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null })
+  }
 
   const handleOnset = (onset: string) => {
     setOnset(onset)
@@ -81,7 +103,7 @@ const AddModal: FC<AddModalProps> = (
     const inputs = {
       patientId, allergyId: id, reactionsIds: [selectedReaction], comments,
       allergySeverity: selectedSeverity as AllergySeverity,
-    } 
+    }
 
     const extendedInputs = onset ? { allergyOnset: onset.toUpperCase() as AllergyOnset, ...inputs }
       :
@@ -101,7 +123,8 @@ const AddModal: FC<AddModalProps> = (
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant='h4'>{name}</Typography>
-          <IconButton>
+
+          <IconButton onClick={closeAddModal}>
             <ClearIcon />
           </IconButton>
         </Box>

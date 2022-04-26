@@ -42,6 +42,11 @@ query GetPatientAllergy($getPatientAllergy: GetPatientAllergy!){
         id
         name
       }
+
+      reactions {
+        id
+        name
+      }
     }
   }
 }

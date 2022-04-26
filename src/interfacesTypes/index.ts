@@ -960,7 +960,7 @@ export interface CardLayoutProps {
 }
 
 export interface AddModalProps {
-  item: Allergies;
+  item?: Allergies;
   isEdit?: boolean;
   patientAllergyId?: string;
   dispatcher: Dispatch<ChartAction>;

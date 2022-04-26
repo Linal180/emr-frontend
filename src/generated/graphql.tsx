@@ -3732,7 +3732,7 @@ export type GetPatientAllergyQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientAllergyQuery = { __typename?: 'Query', getPatientAllergy: { __typename?: 'PatientAllergyPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientAllergy?: { __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null | undefined, allergy?: { __typename?: 'Allergies', id: string, name?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetPatientAllergyQuery = { __typename?: 'Query', getPatientAllergy: { __typename?: 'PatientAllergyPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientAllergy?: { __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null | undefined, allergy?: { __typename?: 'Allergies', id: string, name?: string | null | undefined } | null | undefined, reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } | null | undefined } };
 
 export type AddPatientAllergyMutationVariables = Exact<{
   createPatientAllergyInput: CreatePatientAllergyInput;
@@ -5216,6 +5216,10 @@ export const GetPatientAllergyDocument = gql`
       allergyOnset
       allergyStartDate
       allergy {
+        id
+        name
+      }
+      reactions {
         id
         name
       }

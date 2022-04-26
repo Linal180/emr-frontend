@@ -14,23 +14,21 @@ import {
 } from "../../../../../reducers/chartReducer";
 import {
   PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery,
-  AllergiesPayload, AllergyType,
+  AllergiesPayload, AllergyType, PatientAllergies,
 } from "../../../../../generated/graphql";
 import { Box, Typography } from "@material-ui/core";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
 import { GREY_SEVEN } from "../../../../../theme";
 import { formatValue, getAppointmentDate } from "../../../../../utils";
+// import AddModal from "../AddModal";
 
 const AllergyList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
   const { id } = useParams<ParamsType>()
   const [patientAllergies, setPatientAllergies] = useState<PatientAllergiesPayload['patientAllergies']>([])
-  const [{ isSearchOpen, searchedData }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const [{ isSearchOpen, searchedData }, dispatch] =
+    useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const isMenuOpen = Boolean(isSearchOpen);
-  const methods = useForm<any>({
-    mode: "all",
-  });
-  const { handleSubmit } = methods;
 
   const [findAllPatientAllergies, { loading }] = useFindAllPatientAllergiesLazyQuery({
     variables: {
@@ -102,13 +100,15 @@ const AllergyList = (): JSX.Element => {
   useEffect(() => {
     id && fetchAllergies()
   }, [fetchAllergies, id])
-  const onSubmit: SubmitHandler<any> = () => { }
 
   const handleMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) => dispatch({
     type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: currentTarget
   })
 
   const handleMenuClose = () => dispatch({ type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: null });
+
+  // const handleEdit = (event: MouseEvent<HTMLElement>, id: string) => {
+  // }
 
   const handleSearch = async (type: string, query: string) => {
     try {
@@ -124,59 +124,60 @@ const AllergyList = (): JSX.Element => {
   }
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
-          hasAdd
-          dispatcher={dispatch}
-          isMenuOpen={isMenuOpen}
-          searchData={searchedData}
-          searchLoading={findAllergiesLoading}
-          filterTabs={Object.keys(AllergyType)}
-          searchComponent={AllergiesModal1Component}
-          handleMenuClose={() => handleMenuClose()}
-          fetch={async () => await fetchAllergies()}
-          onSearch={(type, query) => handleSearch(type, query)}
-          onClickAddIcon={(event: MouseEvent<HTMLElement>) => handleMenuOpen(event)}
-        >
-          {loading ?
-            <ViewDataLoader columns={12} rows={3} />
-            : <Box mb={2}>
-              {!!patientAllergies && patientAllergies.length > 0 ? (
-                patientAllergies.map((item) => {
-                  const { id, allergySeverity, allergyStartDate, allergyOnset, allergy, reactions } = item || {}
-                  const { name } = allergy || {}
+    <>
+      <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
+        hasAdd
+        dispatcher={dispatch}
+        isMenuOpen={isMenuOpen}
+        searchData={searchedData}
+        searchLoading={findAllergiesLoading}
+        filterTabs={Object.keys(AllergyType)}
+        searchComponent={AllergiesModal1Component}
+        handleMenuClose={() => handleMenuClose()}
+        fetch={async () => await fetchAllergies()}
+        onSearch={(type, query) => handleSearch(type, query)}
+        onClickAddIcon={(event: MouseEvent<HTMLElement>) => handleMenuOpen(event)}
+      >
+        {loading ?
+          <ViewDataLoader columns={12} rows={3} />
+          : <Box mb={2}>
+            {!!patientAllergies && patientAllergies.length > 0 ? (
+              patientAllergies.map((item) => {
+                const { id, allergySeverity, allergyStartDate, allergyOnset, allergy, reactions } = item || {}
+                const { name } = allergy || {}
 
-                  return (
-                    <Box pb={2} key={id}>
-                      <Box display="flex" justifyContent="space-between">
-                        <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
-                        {allergyStartDate ?
-                          <Typography className={classes.cardContentDate}>{getAppointmentDate(allergyStartDate)}</Typography>
-                          :
-                          <Typography className={classes.cardContentDate}>{formatValue(allergyOnset || '')}</Typography>
-                        }
-                      </Box>
-
+                return (
+                  <Box pb={2} key={id}>
+                    <Box display="flex" justifyContent="space-between">
                       <Box>
-                        <Typography className={classes.cardContentDescription}>{allergySeverity}</Typography>
-
-                        {reactions?.map(reaction => {
-                          const { name } = reaction || {}
-
-                          return (
-                            <Typography className={classes.cardContentDescription}>{name}</Typography>
-                          )
-                        })}
+                        <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
                       </Box>
+
+                      {allergyStartDate ?
+                        <Typography className={classes.cardContentDate}>{getAppointmentDate(allergyStartDate)}</Typography>
+                        :
+                        <Typography className={classes.cardContentDate}>{formatValue(allergyOnset || '')}</Typography>
+                      }
                     </Box>
-                  )
-                })
-              ) : (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)}
-            </Box>}
-        </CardLayout>
-      </form>
-    </FormProvider>
+
+                    <Box>
+                      <Typography className={classes.cardContentDescription}>{allergySeverity}</Typography>
+
+                      {reactions?.map(reaction => {
+                        const { name } = reaction || {}
+
+                        return (
+                          <Typography className={classes.cardContentDescription}>{name}</Typography>
+                        )
+                      })}
+                    </Box>
+                  </Box>
+                )
+              })
+            ) : (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)}
+          </Box>}
+      </CardLayout>
+    </>
   );
 }
 
