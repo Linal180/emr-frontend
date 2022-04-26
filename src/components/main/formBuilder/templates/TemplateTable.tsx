@@ -2,7 +2,7 @@
 import { useState, useEffect, ChangeEvent, useCallback } from 'react'
 import { Pagination } from '@material-ui/lab';
 import { Visibility as VisibilityIcon } from '@material-ui/icons'
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@material-ui/core';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 // components block
 import Search from "../../../common/Search";
@@ -10,7 +10,7 @@ import TableLoader from '../../../common/TableLoader';
 import FormPreviewModal from '../previewModal'
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 //constants block
-import { ACTION, CREATED_ON, FORM_BUILDER_COPY_TEMPLATE_ROUTE, NAME, NO_TEMPLATE, PAGE_LIMIT, TYPE } from '../../../../constants';
+import { ACTION, CREATED_ON, FORM_BUILDER_COPY_TEMPLATE_ROUTE, NAME, PAGE_LIMIT, TYPE } from '../../../../constants';
 import { FormPayload, LayoutJsonType, SectionsInputs, useFindAllFormsLazyQuery } from '../../../../generated/graphql';
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { getFormatDate, renderTh } from '../../../../utils';
@@ -151,9 +151,6 @@ export const TemplatesTable = () => {
           <FormPreviewModal open={openPreview} data={formPreviewData} closeModalHandler={previewCloseHandler} formName={formName} />
         </Box>
       </Box>
-      {templates?.length === 0 && !loading && <Box>
-        <Typography variant='h6'>{NO_TEMPLATE}</Typography>
-      </Box>}
     </Box>
 
   )
