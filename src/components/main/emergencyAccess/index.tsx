@@ -184,6 +184,8 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
   const shoulShowRevokePanel = EMERGENCY_ACCESS_REVOKE_ROLES.some((revokeRole) => userRoles.includes(revokeRole))
 
+  const search = (query: string) => { }
+
   return (
     <>
       <PageHeader title={EMERGENCY_ACCESS} />
@@ -254,7 +256,9 @@ const EmergencyAccessComponent = (): JSX.Element => {
       <Box p={2} />
       {!!transformedEmergencyAccessUser.length && shoulShowRevokePanel ? <Card>
         <Box className={classes.mainTableContainer}>
-          <Search search={Search} />
+          <Box py={2} mb={2} maxWidth={450}>
+            <Search search={search} />
+          </Box>
 
           <Box className="table-overflow" maxHeight={410}>
             <Table aria-label="customized table">

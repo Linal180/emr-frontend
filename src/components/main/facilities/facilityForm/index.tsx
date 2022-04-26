@@ -464,7 +464,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <Collapse in={addBilling} mountOnEnter unmountOnExit>
                               <Box display="flex" alignItems="center" justifyContent="space-between" onClick={cancelBilling}>
                                 <Typography component="p" variant='h5'>{PAYABLE_ADDRESS}</Typography>
-                                <Button color='secondary' variant='contained' className='blue-button'>{CANCEL}</Button>
+                                <Button color='secondary' variant='contained'>{CANCEL}</Button>
                               </Box>
 
                               <FormControl component="fieldset">
@@ -767,7 +767,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <SmartyModal
         isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData}
         verifiedAddressHandler={verifiedAddressHandler} />
-    </TabContext >
+    </TabContext>
   );
 };
 

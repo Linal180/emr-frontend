@@ -24,7 +24,7 @@ import { EMRLogo } from '../../../../../assets/svgs';
 import { FacilityContext } from "../../../../../context";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
-import { GRAY_TWO, WHITE, GREEN, WHITE_SEVEN } from "../../../../../theme";
+import { GREY_SEVEN, WHITE, GREEN, GREY } from "../../../../../theme";
 import { getDocumentByType, renderDoctors, setRecord } from "../../../../../utils";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
@@ -384,7 +384,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   }
 
   return (
-    <Box bgcolor={WHITE_SEVEN} minHeight="100vh" padding="0px 30px 0px 60px">
+    <Box bgcolor={GREY} minHeight="100vh" padding="0px 30px 0px 60px">
       <Box pt={3}>
         <EMRLogo />
       </Box>
@@ -570,9 +570,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
                                   <InputLabel shrink>{RELEASE_BILLING_INFO_PERMISSIONS}</InputLabel>
 
                                   <label className="toggle-main">
-                                    <Box color={isBilling ? WHITE : GRAY_TWO}>Yes</Box>
+                                    <Box color={isBilling ? WHITE : GREY_SEVEN}>Yes</Box>
                                     <AntSwitch checked={isBilling} onChange={(event) => { handleChange(event) }} name='releaseOfInfoBill' />
-                                    <Box color={isBilling ? GRAY_TWO : WHITE}>No</Box>
+                                    <Box color={isBilling ? GREY_SEVEN : WHITE}>No</Box>
                                   </label>
                                 </FormControl>
                               )}
@@ -663,9 +663,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
                                   <InputLabel shrink>{VOICE_MAIL_PERMISSIONS}</InputLabel>
 
                                   <label className="toggle-main">
-                                    <Box color={isVoice ? WHITE : GRAY_TWO}>Yes</Box>
+                                    <Box color={isVoice ? WHITE : GREY_SEVEN}>Yes</Box>
                                     <AntSwitch checked={isVoice} onChange={(event) => { handleChange(event) }} name='voiceCallPermission' />
-                                    <Box color={isVoice ? GRAY_TWO : WHITE}>No</Box>
+                                    <Box color={isVoice ? GREY_SEVEN : WHITE}>No</Box>
                                   </label>
                                 </FormControl>
                               )}
@@ -681,14 +681,14 @@ const PatientFormComponent: FC = (): JSX.Element => {
                                   <InputLabel shrink>{APPOINTMENT_CONFIRMATION_PERMISSIONS}</InputLabel>
 
                                   <label className="toggle-main">
-                                    <Box color={isAppointment ? WHITE : GRAY_TWO}>Yes</Box>
+                                    <Box color={isAppointment ? WHITE : GREY_SEVEN}>Yes</Box>
 
                                     <AntSwitch checked={isAppointment}
                                       onChange={(event) => { handleChange(event) }}
                                       name='phonePermission'
                                     />
 
-                                    <Box color={isAppointment ? GRAY_TWO : WHITE}>No</Box>
+                                    <Box color={isAppointment ? GREY_SEVEN : WHITE}>No</Box>
                                   </label>
                                 </FormControl>
                               )}

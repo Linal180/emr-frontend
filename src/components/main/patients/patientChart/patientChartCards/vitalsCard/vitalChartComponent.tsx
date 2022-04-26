@@ -13,7 +13,7 @@ import { getDate } from "../../../../../../utils";
 import { Patient } from "../../../../../../generated/graphql";
 import { ProfileUserIcon } from "../../../../../../assets/svgs";
 import {
-  EMAIL, PHONE, NAME, SPECIALTY, FACILITY, dummyVitalsChartingList, GROWTH_CHART, PDF_TEXT
+  EMAIL, PHONE, NAME, SPECIALTY, FACILITY, dummyVitalsChartingList, GROWTH_CHART, PDF_TEXT, SCHEDULE_APPOINTMENT
 } from "../../../../../../constants";
 import { patientReducer, State, initialState, Action, ActionType } from "../../../../../../reducers/patientReducer";
 import InputController from "../../../../../../controller";
@@ -101,7 +101,7 @@ const VitalsChartingTable: FC<CalendarChart> = ({isCalendar}): JSX.Element => {
               ))}
             </Box>
 
-            <Button color="primary" variant="contained" className="blue-button">Schedule Appointment</Button>
+            <Button color="secondary" variant="contained">{SCHEDULE_APPOINTMENT}</Button>
           </Box>
         </Box>
       </Box>}

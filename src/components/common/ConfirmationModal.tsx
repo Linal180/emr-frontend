@@ -1,7 +1,8 @@
 // packages block
 import { FC, useState, ChangeEvent } from "react";
-import { CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, FormControlLabel, 
-  Checkbox, Typography, Box } from "@material-ui/core";
+import {
+  CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, FormControlLabel, Checkbox, Typography, Box
+} from "@material-ui/core";
 // interfaces/types block/theme/svgs/constants
 import { DeleteWarningIcon } from "../../assets/svgs";
 import { ConfirmationTypes } from "../../interfacesTypes";
@@ -42,9 +43,11 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
           </Box>
 
           <CardContent>
-            <Typography component="h4" variant="h5">{aboutToDelete(title || '')}</Typography>
+            <Typography variant="h5"><strong>{aboutToDelete(title || '')}</strong></Typography>
 
-            <Typography>
+            <Box p={0.5} />
+
+            <Typography variant="body1">
               {DELETE_RECORD_LEARN_MORE_TEXT}
             </Typography>
           </CardContent>
@@ -59,13 +62,11 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
       </Box>
 
       <DialogActions>
-        <Box pr={1}>
-          <Button onClick={handleClose} color="default">
-            {CANCEL}
-          </Button>
-        </Box>
+        <Button onClick={handleClose} color="default" variant="text">
+          {CANCEL}
+        </Button>
 
-        <Button onClick={onDelete} color="secondary" disabled={!checked || isLoading} variant="contained">
+        <Button onClick={onDelete} color="inherit" disabled={!checked || isLoading} variant="outlined" className={checked ? `danger` : ''}>
           {isLoading && <CircularProgress size={20} color={buttonColor} />}
 
           {actionText ? actionText : DELETE_RECORD}

@@ -1,8 +1,7 @@
 // packages block
 import { FC, useState, ChangeEvent, memo } from "react";
 import {
-  Button, Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, FormControl,
-  FormLabel, FormControlLabel, RadioGroup, Radio
+  Button, Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, FormControl, FormControlLabel, RadioGroup, Radio
 } from "@material-ui/core";
 // constants and interfaces block
 import { SmartyModalComponentType } from "../../interfacesTypes";
@@ -42,29 +41,25 @@ const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, user
 
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="sm"
-      open={isOpen}
-      onClose={handleClose}
-    >
+    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose}>
       <DialogTitle>{CHECK_ADDRESS}</DialogTitle>
 
       <DialogContent>
-        <Typography className={classes.smallText}>{YOU_ENTER}</Typography>
+        <Typography variant="h6" className={classes.smallText}>{YOU_ENTER}</Typography>
 
         <Typography variant="h6" className={classes.yourAddress}>{street}</Typography>
         <Typography variant="h6" className={classes.yourAddress}>{address}</Typography>
-        {data?.length === 0 && <Typography className={classes.smartText}>{SMARTY_0_MATCH}</Typography>}
+        {data?.length === 0 && <Typography variant="h6" className={classes.smallTextTwo}>{SMARTY_0_MATCH}</Typography>}
         {data?.length > 0 &&
           <FormControl component="fieldset" className={classes.formControl}>
-            <FormLabel component="legend" className={classes.smallText}>{data?.length} {POSSIBLE_MATCH}</FormLabel>
+            <Typography variant="h6" className={classes.smallText}>{data?.length} {POSSIBLE_MATCH}</Typography>
+
             <RadioGroup name="address" value={addValue} onChange={handleChange}>
               {data?.map((add, index) => {
                 const { deliveryLine1, lastLine, components } = add || {}
                 const { cityName, state, zipCode, plus4Code } = components
                 return (
-                  <FormControlLabel key={`${index}-${deliveryLine1}-${lastLine}`} value={JSON.stringify({ deliveryLine1, cityName, state, zipCode, plus4Code })} control={<Radio color="primary" />} label={<>{deliveryLine1}<br />{lastLine}</>} />
+                  <FormControlLabel key={`${index}-${deliveryLine1}-${lastLine}`} value={JSON.stringify({ deliveryLine1, cityName, state, zipCode, plus4Code })} control={<Radio color="secondary" />} label={<Typography variant="h6" className={classes.yourAddress}>{deliveryLine1}<br />{lastLine}</Typography>} />
                 )
               })}
             </RadioGroup>
@@ -75,7 +70,7 @@ const SmartyModal: FC<SmartyModalComponentType> = ({ isOpen, setOpen, data, user
       <DialogActions>
         {data?.length !== 0 &&
           <Box pr={1}>
-            <Button onClick={handleClose} variant="outlined" color="default">{DISMISS}</Button>
+            <Button onClick={handleClose} variant="text" color="default">{DISMISS}</Button>
           </Box>
         }
 

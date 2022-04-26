@@ -31,7 +31,7 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
               <Grid container spacing={2}>
                 {data?.map((item, index) => (
                   <Grid item md={parseColumnGrid(item?.col)} key={`${item.id}-${index}`}>
-                    <Box p={2} pl={0}>
+                    <Box mb={2}>
                       <Typography variant='h4'>
                         {item?.name}
                       </Typography>
@@ -57,17 +57,17 @@ const FormPreview = ({ open, closeModalHandler, data, formName }: FormBuilderPre
                   </Grid>
                 ))}
               </Grid>
-              <Box marginY={2} display={'flex'} justifyContent={'flex-end'}>
+              
+              <Box mt={3} display={'flex'} justifyContent={'flex-end'}>
                 <Box marginX={2}>
-                  <Button variant={'contained'} onClick={closeModalHandler}>
+                  <Button variant='text' color='default' onClick={closeModalHandler}>
                     {CANCEL_TEXT}
                   </Button>
                 </Box>
-                <Box>
-                  <Button onClick={closeModalHandler} variant={'contained'} color={'primary'}>
-                    {FORM_SUBMIT_TEXT}
-                  </Button>
-                </Box>
+
+                <Button onClick={closeModalHandler} variant={'contained'} color={'primary'}>
+                  {FORM_SUBMIT_TEXT}
+                </Button>
               </Box>
             </form>
           </FormProvider>

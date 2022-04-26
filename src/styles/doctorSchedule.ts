@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { WHITE_SIX, BLUE_THREE, WHITE_FOUR, BLACK_ONE, GRAY_TWO, WHITE_THREE } from "../theme";
+import { WHITE_SIX, BLUE_THREE, WHITE_FOUR, BLACK_ONE, GREY_SEVEN, WHITE_THREE } from "../theme";
 
 export const useDoctorScheduleStyles = makeStyles(() =>
   createStyles({
@@ -35,7 +35,7 @@ export const useDoctorScheduleStyles = makeStyles(() =>
 
     subHeading: {
       fontSize: 13,
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     },
 
     iconsBackground: {

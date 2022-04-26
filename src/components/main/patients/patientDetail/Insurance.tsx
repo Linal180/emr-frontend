@@ -11,8 +11,7 @@ import Search from "../../../common/Search";
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 // constant, utils and styles block
-import { BLUE_EIGHT, GRAY_TEN } from "../../../../theme";
-import { useTableStyles } from "../../../../styles/tableStyles";
+import { BLUE, GRAY_TEN } from "../../../../theme";
 import { AddInsuranceIcon, RightArrow } from "../../../../assets/svgs";
 import {
   ADDRESS, ADDRESS_CTD, ADD_ANOTHER_COPAY_AMOUNT, ADD_INSURANCE, ADD_INSURANCE_INFORMATION, CHECK_ELIGIBILITY_TODAY, CHECK_PRIOR_DATE_OF_SERVICE,
@@ -25,7 +24,6 @@ import {
 
 const InsuranceComponent = (): JSX.Element => {
 
-  const classes = useTableStyles();
   const [open, setOpen] = useState<boolean>(false)
   const [openNew, setOpenNew] = useState<boolean>(false)
   const [expanded, setExpanded] = useState<string | false>(false);
@@ -47,6 +45,8 @@ const InsuranceComponent = (): JSX.Element => {
     setState({ ...state, [name]: event.target.checked });
   };
 
+  const search = (query: string) => { }
+
   return (
     <Card>
       <Box p={3}>
@@ -57,7 +57,7 @@ const InsuranceComponent = (): JSX.Element => {
             </Box>
 
             <Box
-              className='pointer-cursor' bgcolor={GRAY_TEN} border={`1px dashed ${BLUE_EIGHT}`}
+              className='pointer-cursor' bgcolor={GRAY_TEN} border={`1px dashed ${BLUE}`}
               borderRadius={6} p={3} mb={4} display="flex" alignItems="center"
             >
               <AddInsuranceIcon />
@@ -82,12 +82,10 @@ const InsuranceComponent = (): JSX.Element => {
               <form onSubmit={handleSubmit(onSubmit)}>
                 <Grid container spacing={3}>
                   <Grid item md={2} sm={12} xs={12}>
-                    <Box className={classes.searchOuterContainer} pb={0}>
-                      <Box pl={3.8}>
-                        <Typography variant='body1'>{INSURANCE_PAYER_NAME}</Typography>
-                      </Box>
-                      <Search search={Search} />
+                    <Box mb={1.8}>
+                      <Typography variant='body1'>{INSURANCE_PAYER_NAME}</Typography>
                     </Box>
+                    <Search search={search} />
                   </Grid>
 
                   <Grid item md={2} sm={12} xs={12}>
@@ -180,8 +178,8 @@ const InsuranceComponent = (): JSX.Element => {
                             <Box
                               onClick={() => setOpenNew(!openNew)}
                               className="billing-box" textAlign="center"
-                              maxWidth={240} margin="auto"
-                              borderBottom={`1px solid ${BLUE_EIGHT}`}
+                              maxWidth={280} margin="auto" mb={4}
+                              borderBottom={`1px solid ${BLUE}`}
                             >
                               <Typography>{ADD_ANOTHER_COPAY_AMOUNT}</Typography>
                             </Box>

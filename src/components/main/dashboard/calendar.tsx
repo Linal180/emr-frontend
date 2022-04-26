@@ -144,7 +144,7 @@ const CalendarComponent = (): JSX.Element => {
         }
       >
         {children}
-      </Appointments.Appointment >
+      </Appointments.Appointment>
     )
   };
 
@@ -179,7 +179,11 @@ const CalendarComponent = (): JSX.Element => {
 
         <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
           <Scheduler data={mapAppointmentData(appointments)}>
-            <ViewState currentDate={currentDate} onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }} currentViewName={currentView} onCurrentViewNameChange={currentViewNameChange} />
+            <ViewState
+              currentDate={currentDate}
+              onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }}
+              currentViewName={currentView}
+              onCurrentViewNameChange={currentViewNameChange} />
             <EditingState onCommitChanges={onCommitChanges} />
             <MonthView timeTableCellComponent={MonthTimeTableCell} />
             <WeekView timeTableCellComponent={WeekTimeTableCell} />
@@ -190,8 +194,14 @@ const CalendarComponent = (): JSX.Element => {
             <IntegratedEditing />
             <IntegratedAppointments />
             <DateNavigator />
-            <Appointments appointmentComponent={Appointment} appointmentContentComponent={AppointmentContent} containerComponent={AppointmentContainer} />
-            <AppointmentTooltip showCloseButton layoutComponent={(props) => <AppointmentCard tooltip={props} setCurrentView={setCurrentView} setCurrentDate={setCurrentDate} />} />
+            <Appointments appointmentComponent={Appointment}
+              appointmentContentComponent={AppointmentContent}
+              containerComponent={AppointmentContainer} />
+            <AppointmentTooltip
+              showCloseButton
+              layoutComponent={(props) => <AppointmentCard tooltip={props}
+                setCurrentView={setCurrentView}
+                setCurrentDate={setCurrentDate} />} />
           </Scheduler>
         </Box>
       </Box>

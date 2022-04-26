@@ -11,7 +11,7 @@ import Alert from '../../../common/Alert';
 import BackdropLoader from '../../../common/Backdrop';
 // constants and types block
 import history from '../../../../history';
-import { WHITE_SEVEN } from '../../../../theme';
+import { GREY } from '../../../../theme';
 import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
@@ -168,7 +168,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
   };
 
   return (
-    <Box bgcolor={WHITE_SEVEN} minHeight='100vh' padding='30px 30px 30px 60px'>
+    <Box bgcolor={GREY} minHeight='100vh' padding='30px 30px 30px 60px'>
       <EMRLogo />
       <Box mt={3} mb={1}>
         <Typography variant='h4'>{CHOOSE_YOUR_PAYMENT_METHOD}</Typography>

@@ -336,15 +336,17 @@ export interface CardChartingOption {
 }
 
 export interface SelectorProps {
-  name: string;
-  label: string;
-  error?: string;
-  disabled?: boolean;
-  addEmpty?: boolean;
-  isRequired?: boolean;
-  isMultiple?: boolean;
-  value?: SelectorOption;
-  options: SelectorOption[];
+  name: string
+  label: string
+  error?: string
+  disabled?: boolean
+  addEmpty?: boolean
+  isRequired?: boolean
+  isMultiple?: boolean
+  value?: SelectorOption
+  options: SelectorOption[]
+  isModal?: boolean;
+  handlePatientModal?: Function;
 }
 
 export interface CardSelectorProps {
@@ -402,11 +404,14 @@ export type SubMenuTypes = {
 
 export interface CustomInputControlProps extends IControlLabel {
   controllerName: string;
+  isSearch?: boolean;
   info?: string;
 }
 
 export interface SearchComponentProps {
   search: Function;
+  info?: boolean;
+  infoText?: string;
 }
 
 export interface AppMenuItemTypes {
@@ -449,7 +454,8 @@ export interface TimePickerProps {
 export type ParamsType = {
   id: string;
   facilityId?: string;
-};
+  templateId?: string;
+}
 
 export type ExtendedStaffInputProps = Omit<
   CreateStaffItemInput,
@@ -869,6 +875,12 @@ export interface DoctorScheduleModalProps extends GeneralFormProps {
   doctorFacilityId: string | undefined;
 }
 
+export interface AddPatientModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  facilityId: string | undefined;
+}
+
 export interface FacilityScheduleModalProps extends GeneralFormProps {
   isOpen: boolean;
   reload: Function;
@@ -1074,6 +1086,16 @@ export interface UserFormPreviewModalProps {
   imagePreviewHandler: (id: string) => void;
 }
 
+export interface CreateTemplateTypes extends DialogTypes {
+  title?: string;
+  success?: boolean;
+  actionText?: string;
+  isLoading?: boolean;
+  description?: string;
+  handleDelete: () => void;
+  setFormName: Dispatch<SetStateAction<string>>
+  formName: string
+}
 export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps;
   setCurrentView: Function;

@@ -3,10 +3,6 @@ import { FC } from "react";
 // constants block
 import LabOrderListingTable from "./labOrderListingTable";
 
-const LabOrdersComponent: FC = (): JSX.Element => {
-  return (
-    <LabOrderListingTable />
-  )
-}
+const LabOrdersComponent: FC = (): JSX.Element => <LabOrderListingTable />
 
 export default LabOrdersComponent;

@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { GRAY_TWO } from "../../theme";
+import { GREY_SEVEN } from "../../theme";
 
 export const failStyles = makeStyles((theme) => ({
   container: {
@@ -22,7 +22,7 @@ export const failStyles = makeStyles((theme) => ({
     },
 
     "& h5": {
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     },
 
     "& ul * + *": {
@@ -30,7 +30,7 @@ export const failStyles = makeStyles((theme) => ({
     },
 
     "& li::marker": {
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     }
   },
 }));

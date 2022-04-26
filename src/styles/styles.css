@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 * {
   margin: 0;
@@ -22,7 +22,7 @@ svg {
 }
 
 body {
-  font-family: Poppins, sans-serif;
+  font-family: Inter, sans-serif;
 }
 
 .MuiButton-root .MuiCircularProgress-root {
@@ -130,10 +130,6 @@ body {
 
 .table-overflow {
   overflow-x: auto;
-}
-
-#image-dialog-title h2 {
-  font-size: 20px;
 }
 
 .RoleMultiSelectorStyles>div>div {
@@ -268,24 +264,30 @@ body .MuiTabPanel-root {
 }
 
 .react-tel-input {
-  font-family: "Poppins, sans-serif";
+  font-family: "Inter, sans-serif";
   font-size: 14px;
+  border: 1px solid #EEF6FF;
+}
+
+.react-tel-input:hover {
+  border: 1px solid #1C6DD0;
 }
 
 .react-tel-input .form-control {
   width: 100%;
-  border-color: #ECF0F3;
-  height: 42px;
+  background-color: #F3F4F6;
+  border: none;
+  height: 48px;
   color: currentColor;
 }
 
 .react-tel-input .flag-dropdown {
-  border-color: #ECF0F3;
+  border-color: #F3F4F6;
 }
 
 .MuiCheckbox-colorPrimary.Mui-checked,
 .MuiCheckbox-root.Mui-checked .MuiSvgIcon-root {
-  color: #00A3FF;
+  color: #204ECF;
 }
 
 .MuiCheckbox-root.Mui-checked .MuiIconButton-label:before {
@@ -389,13 +391,6 @@ body .MuiTabPanel-root {
   background-color: #0056B1 !important;
 }
 
-.checkedRadioButton .MuiRadio-root {
-  color: #9CA3AF !important;
-}
-
-.checkedRadioButton .MuiRadio-colorSecondary.Mui-checked {
-  color: #204ECF !important;
-}
 /* ACCORDION-STYLING */
 
 .accordionCustomize {
@@ -440,4 +435,13 @@ body .MuiTabPanel-root {
   padding: 5px 10px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.dialogBg {
+  background-color: #ffffff !important;
+  border: none !important;
+}
+
+.selectorClass .MuiSvgIcon-root {
+  color: #202020 !important;
 }

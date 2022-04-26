@@ -24,6 +24,7 @@ export interface State {
   isEmployment: boolean;
   isAutoAccident: boolean;
   isOtherAccident: boolean;
+  openPatientModal: boolean;
   deleteAppointmentId: string;
   date: MaterialUiPickersDate;
   doctor: DoctorPayload['doctor'];
@@ -89,6 +90,7 @@ export const initialState: State = {
   cancelAppStatus: false,
   isInvoiceNumber: false,
   isOtherAccident: false,
+  openPatientModal: false,
   deleteAppointmentId: '',
   appointmentPaymentToken: "",
   offset: moment.tz().utcOffset(),
@@ -141,6 +143,7 @@ export enum ActionType {
   SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
   SET_IS_INVOICE_NUMBER = 'setIsInvoiceNumber',
   SET_APP_INVOICE_NUMBER = 'setAppInvoiceNumber',
+  SET_OPEN_PATIENT_MODAL = 'setOpenPatientModal',
   SET_EXTERNAL_APPOINTMENT = 'setExternalAppointment',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
@@ -180,6 +183,7 @@ export type Action =
   | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
   | { type: ActionType.SET_IS_INVOICE_NUMBER; isInvoiceNumber: boolean }
   | { type: ActionType.SET_APP_INVOICE_NUMBER; appInvoiceNumber: string }
+  | { type: ActionType.SET_OPEN_PATIENT_MODAL; openPatientModal: boolean }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: SlotsPayload['slots'] }
@@ -423,6 +427,11 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         appBillingStatus: action.appBillingStatus
+      }
+    case ActionType.SET_OPEN_PATIENT_MODAL:
+      return {
+        ...state,
+        openPatientModal: action.openPatientModal
       }
   }
 };
