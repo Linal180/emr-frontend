@@ -79,6 +79,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, options, disab
             options={options.length ? updatedOptions : []}
             value={field.value}
             disabled={disabled}
+            disableClearable
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
