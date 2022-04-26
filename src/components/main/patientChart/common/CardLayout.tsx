@@ -6,8 +6,8 @@ import FilterSearch from "../allergies/FilterSearch";
 import { CardLayoutProps } from "../../../../interfacesTypes";
 
 const CardLayout: FC<CardLayoutProps> = ({
-  hasAdd, disableAddIcon, onClickAddIcon, anchorEl, cardId, isMenuOpen, handleMenuClose, cardTitle,
-  children, filterTabs, onSearch, searchData, searchLoading
+  hasAdd, disableAddIcon, onClickAddIcon, openSearch, cardId, isMenuOpen, handleMenuClose, cardTitle,
+  children, filterTabs, onSearch, searchData, searchLoading, dispatcher
 }) => {
   const classes = usePatientChartingStyles()
 
@@ -27,7 +27,7 @@ const CardLayout: FC<CardLayoutProps> = ({
 
               <Menu
                 getContentAnchorEl={null}
-                anchorEl={anchorEl}
+                anchorEl={openSearch}
                 anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
                 id={cardId}
                 keepMounted
@@ -38,9 +38,10 @@ const CardLayout: FC<CardLayoutProps> = ({
               >
                 <FilterSearch
                   tabs={filterTabs}
-                  searchItem={(tab, query) => onSearch(tab, query)}
-                  searchData={searchData}
+                  dispatcher={dispatcher}
                   loading={searchLoading}
+                  searchData={searchData}
+                  searchItem={(tab, query) => onSearch(tab, query)}
                 />
               </Menu>
             </Box>

@@ -8,9 +8,10 @@ import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
+import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PatientAction } from "../reducers/patientReducer";
+import { Action as FacilityAction } from "../reducers/facilityReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
@@ -18,7 +19,9 @@ import {
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
-  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
+  CreatePatientAllergyInput,
+  Allergies
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -102,6 +105,11 @@ export interface AppointmentContextInterface {
   appointmentList: AppointmentsPayload['appointments'];
   setAppointmentList: Function;
   fetchAllAppointmentList: Function;
+}
+
+export interface ChartContextInterface {
+  reactionList: ReactionsPayload['reactions'];
+  fetchAllReactionList: Function;
 }
 
 export interface Children {
@@ -270,6 +278,11 @@ export interface IDetailCellProps {
 export interface SelectorOption {
   id: string
   name: string | undefined | null
+}
+
+export interface AsyncSelectorOption {
+  value: string
+  label: string | undefined | null
 }
 
 export interface DropDownOption {
@@ -923,10 +936,21 @@ export interface CardLayoutProps {
   filterTabs: string[];
   searchLoading: boolean;
   disableAddIcon?: boolean;
-  anchorEl: HTMLElement | null;
+  openSearch: HTMLElement | null;
+  dispatcher: Dispatch<ChartAction>;
   searchComponent: ComponentType<any>;
   searchData: AllergiesPayload['allergies'];
   handleMenuClose: () => void;
   onClickAddIcon: (event: any) => void;
   onSearch: (tab: string, query: string) => void;
 }
+
+export interface AddModalProps {
+  item: Allergies;
+  dispatcher: Dispatch<ChartAction>;
+  isEdit?: boolean;
+  patientAllergyId?: string;
+}
+
+export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
+  & { reactionIds: SelectorOption } & { severityId: SelectorOption }

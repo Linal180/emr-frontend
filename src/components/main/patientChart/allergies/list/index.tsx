@@ -10,12 +10,11 @@ import ViewDataLoader from "../../../../common/ViewDataLoader";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { ALLERGIES_TEXT, LIST_PAGE_LIMIT } from "../../../../../constants";
 import {
-  patientReducer, Action, initialState, State, ActionType
-} from "../../../../../reducers/patientReducer";
+  chartReducer, Action, initialState, State, ActionType
+} from "../../../../../reducers/chartReducer";
 import {
-  AllergiesPayload,
-  AllergyType,
-  PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery
+  PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery,
+  AllergiesPayload, AllergyType,
 } from "../../../../../generated/graphql";
 import { Box, Typography } from "@material-ui/core";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
@@ -24,9 +23,8 @@ const AllergyList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
   const { id } = useParams<ParamsType>()
   const [patientAllergies, setPatientAllergies] = useState<PatientAllergiesPayload['patientAllergies']>([])
-  const [allergies, setAllergies] = useState<AllergiesPayload['allergies']>([])
-  const [{ anchorEl }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const isMenuOpen = Boolean(anchorEl);
+  const [{ isSearchOpen, searchedData }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
+  const isMenuOpen = Boolean(isSearchOpen);
   const methods = useForm<any>({
     mode: "all",
   });
@@ -41,7 +39,7 @@ const AllergyList = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      setAllergies([])
+      setPatientAllergies([])
     },
 
     onCompleted(data) {
@@ -68,7 +66,7 @@ const AllergyList = (): JSX.Element => {
     fetchPolicy: "network-only",
 
     onError() {
-      setAllergies([])
+      dispatch({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
     },
 
     onCompleted(data) {
@@ -81,9 +79,11 @@ const AllergyList = (): JSX.Element => {
           if (response) {
             const { status } = response
 
-            if (patientAllergies && status && status === 200) {
-              console.log(allergies, "searched")
-              setAllergies(allergies as AllergiesPayload['allergies'])
+            if (allergies && status && status === 200) {
+              dispatch({
+                type: ActionType.SET_SEARCHED_DATA,
+                searchedData: allergies as AllergiesPayload['allergies']
+              })
             }
           }
         }
@@ -102,11 +102,11 @@ const AllergyList = (): JSX.Element => {
   }, [fetchAllergies, id])
   const onSubmit: SubmitHandler<any> = () => { }
 
-  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => dispatch({
-    type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget
+  const handleMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) => dispatch({
+    type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: currentTarget
   })
 
-  const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
+  const handleMenuClose = () => dispatch({ type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: null });
 
   const handleSearch = async (type: string, query: string) => {
     try {
@@ -124,10 +124,11 @@ const AllergyList = (): JSX.Element => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <CardLayout anchorEl={anchorEl} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
+        <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
           hasAdd
-          searchData={allergies}
+          dispatcher={dispatch}
           isMenuOpen={isMenuOpen}
+          searchData={searchedData}
           searchLoading={findAllergiesLoading}
           filterTabs={Object.keys(AllergyType)}
           searchComponent={AllergiesModal1Component}
@@ -137,31 +138,27 @@ const AllergyList = (): JSX.Element => {
         >
           {loading ?
             <ViewDataLoader columns={12} rows={3} />
-            :
-            (
-              <>
-                {!!patientAllergies && patientAllergies.length > 0 ? (
-                  patientAllergies.map((item) => {
-                    const { id, allergySeverity, allergyStartDate, allergy } = item || {}
-                    const { name } = allergy || {}
+            : <>
+              {!!patientAllergies && patientAllergies.length > 0 ? (
+                patientAllergies.map((item) => {
+                  const { id, allergySeverity, allergyStartDate, allergy } = item || {}
+                  const { name } = allergy || {}
 
-                    return (
-                      <Box pb={2} key={id}>
-                        <Box display="flex" justifyContent="space-between">
-                          <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
-                          <Typography className={classes.cardContentDate}>{allergyStartDate}</Typography>
-                        </Box>
-
-                        <Box>
-                          <Typography className={classes.cardContentDescription}>{allergySeverity}</Typography>
-                        </Box>
+                  return (
+                    <Box pb={2} key={id}>
+                      <Box display="flex" justifyContent="space-between">
+                        <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
+                        <Typography className={classes.cardContentDate}>{allergyStartDate}</Typography>
                       </Box>
-                    )
-                  })
-                ) : (<h1>No data added yet!</h1>)}
-              </>
-            )
-          }
+
+                      <Box>
+                        <Typography className={classes.cardContentDescription}>{allergySeverity}</Typography>
+                      </Box>
+                    </Box>
+                  )
+                })
+              ) : (<h1>No data added yet!</h1>)}
+            </>}
         </CardLayout>
       </form>
     </FormProvider>

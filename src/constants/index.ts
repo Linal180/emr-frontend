@@ -15,7 +15,7 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality,
-  Communicationtype, Gender, FormType, ElementType, FieldOptionsInputType, Appointmentstatus,
+  Communicationtype, Gender, FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity,
 } from "../generated/graphql";
 
 // regex
@@ -113,6 +113,7 @@ export enum DAYS {
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
+export const UPDATE = "Update";
 export const DATE_ADDED = "Date Added";
 export const BMI_FOR_AGE = "BMI for Age";
 export const SYSTEM_PASSWORD = "admin@123";
@@ -545,6 +546,7 @@ export const UNVERIFIED = "Unverified";
 export const SEND_EMAIL = "Send Email";
 export const FIRST_NAME = "First Name";
 export const START_TIME = "Start Time";
+export const START_DATE = "Start Date";
 export const REQUESTS_TEXT = "Requests";
 export const INVOICES_TEXT = "Invoices";
 export const PATIENTS_TEXT = "Patients";
@@ -981,6 +983,7 @@ export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
+export const ALLERGY_DATE_VALIDATION_MESSAGE = "Allergy start date is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
@@ -1070,6 +1073,7 @@ export const EMAIL_OR_USERNAME_ALREADY_EXISTS = "Email already exists!";
 export const ROLE_ALREADY_EXIST = "Role already exists with this name!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment.";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
+export const PATIENT_ALLERGY_ADDED = "Patient allergy added successfully!";
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Admins can access Admin Portal!";
@@ -1286,6 +1290,13 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
   { id: "two", name: "two" },
   { id: "three", name: "three" },
   { id: "four", name: "four" },
+];
+
+export const MAPPED_ALLERGY_SEVERITY: SelectorOption[] = [
+  { id: AllergySeverity.Acute, name: formatValue(AllergySeverity.Acute) },
+  { id: AllergySeverity.Mild, name: formatValue(AllergySeverity.Mild) },
+  { id: AllergySeverity.Moderate, name: formatValue(AllergySeverity.Moderate) },
+  { id: AllergySeverity.VeryMild, name: formatValue(AllergySeverity.VeryMild) }
 ];
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [

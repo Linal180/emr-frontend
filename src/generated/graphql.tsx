@@ -2168,6 +2168,7 @@ export type Query = {
   findAllPatientVitals: PatientVitalsPayload;
   findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
+  findAllReactions: ReactionsPayload;
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
@@ -2272,6 +2273,11 @@ export type QueryFindAllPermissionsArgs = {
 
 export type QueryFindAllPracticesArgs = {
   practiceInput: PracticeInput;
+};
+
+
+export type QueryFindAllReactionsArgs = {
+  reactionInput: ReactionInput;
 };
 
 
@@ -2444,6 +2450,11 @@ export enum Race {
   White = 'WHITE'
 }
 
+export type ReactionInput = {
+  paginationOptions: PaginationInput;
+  reactionName?: Maybe<Scalars['String']>;
+};
+
 export type Reactions = {
   __typename?: 'Reactions';
   createdAt?: Maybe<Scalars['String']>;
@@ -2451,6 +2462,13 @@ export type Reactions = {
   name: Scalars['String'];
   patientAllergies?: Maybe<PatientAllergies>;
   updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ReactionsPayload = {
+  __typename?: 'ReactionsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  reactions?: Maybe<Array<Maybe<Reactions>>>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type RegisterUserInput = {
@@ -4067,6 +4085,13 @@ export type RemovePracticeMutationVariables = Exact<{
 
 
 export type RemovePracticeMutation = { __typename?: 'Mutation', removePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type FindAllReactionsQueryVariables = Exact<{
+  reactionInput: ReactionInput;
+}>;
+
+
+export type FindAllReactionsQuery = { __typename?: 'Query', findAllReactions: { __typename?: 'ReactionsPayload', reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } };
 
 export type FindAllRolesQueryVariables = Exact<{
   roleInput: RoleInput;
@@ -7885,6 +7910,44 @@ export function useRemovePracticeMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemovePracticeMutationHookResult = ReturnType<typeof useRemovePracticeMutation>;
 export type RemovePracticeMutationResult = Apollo.MutationResult<RemovePracticeMutation>;
 export type RemovePracticeMutationOptions = Apollo.BaseMutationOptions<RemovePracticeMutation, RemovePracticeMutationVariables>;
+export const FindAllReactionsDocument = gql`
+    query FindAllReactions($reactionInput: ReactionInput!) {
+  findAllReactions(reactionInput: $reactionInput) {
+    reactions {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllReactionsQuery__
+ *
+ * To run a query within a React component, call `useFindAllReactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllReactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllReactionsQuery({
+ *   variables: {
+ *      reactionInput: // value for 'reactionInput'
+ *   },
+ * });
+ */
+export function useFindAllReactionsQuery(baseOptions: Apollo.QueryHookOptions<FindAllReactionsQuery, FindAllReactionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllReactionsQuery, FindAllReactionsQueryVariables>(FindAllReactionsDocument, options);
+      }
+export function useFindAllReactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllReactionsQuery, FindAllReactionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllReactionsQuery, FindAllReactionsQueryVariables>(FindAllReactionsDocument, options);
+        }
+export type FindAllReactionsQueryHookResult = ReturnType<typeof useFindAllReactionsQuery>;
+export type FindAllReactionsLazyQueryHookResult = ReturnType<typeof useFindAllReactionsLazyQuery>;
+export type FindAllReactionsQueryResult = Apollo.QueryResult<FindAllReactionsQuery, FindAllReactionsQueryVariables>;
 export const FindAllRolesDocument = gql`
     query FindAllRoles($roleInput: RoleInput!) {
   getAllRoles(roleInput: $roleInput) {
