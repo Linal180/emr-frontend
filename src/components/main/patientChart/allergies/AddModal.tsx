@@ -1,26 +1,32 @@
 // packages block
 import { FC, useContext, useEffect, useState, } from 'react';
+import { useParams } from 'react-router';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
 import { Box, Button, CircularProgress, Typography } from '@material-ui/core';
 // component block
+import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
+import DatePicker from '../../../common/DatePicker';
 import InputController from '../../../../controller';
 // constants block
-import { ModalAddIcon, } from '../../../../assets/svgs';
-import { GRAY_NINE, GRAY_SIX, WHITE, WHITE_FIVE, WHITE_FOUR } from '../../../../theme';
-import { ADD, ADULTHOOD, CHILDHOOD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED, REACTION, SEVERITY, START_DATE, UNKNOWN, UPDATE } from '../../../../constants';
+import { GRAY_SIX } from '../../../../theme';
 import { ChartContext } from '../../../../context';
-import { getTimestamps, renderReactions } from '../../../../utils';
-import { Allergies, AllergyOnset, AllergySeverity, CreatePatientAllergyInput, useAddPatientAllergyMutation } from '../../../../generated/graphql';
-import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../interfacesTypes';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { createPatientAllergySchema } from '../../../../validationSchemas';
-import Alert from '../../../common/Alert';
 import { ActionType } from '../../../../reducers/chartReducer';
-import { useParams } from 'react-router';
-import DatePicker from '../../../common/DatePicker';
+import { getTimestamps, renderReactions } from '../../../../utils';
+import { createPatientAllergySchema } from '../../../../validationSchemas';
+import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../interfacesTypes';
+import {
+  AllergyOnset, AllergySeverity, useAddPatientAllergyMutation
+} from '../../../../generated/graphql';
+import {
+  ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
+  REACTION, SEVERITY, START_DATE, UPDATE
+} from '../../../../constants';
 
-const AddModal: FC<AddModalProps> = ({ item: { id, name }, dispatcher, isEdit, patientAllergyId }): JSX.Element => {
+const AddModal: FC<AddModalProps> = (
+  { item: { id, name }, dispatcher, isEdit, patientAllergyId }
+): JSX.Element => {
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
   const [onset, setOnset] = useState<string>('')
