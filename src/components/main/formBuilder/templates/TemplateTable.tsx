@@ -152,7 +152,7 @@ export const TemplatesTable = () => {
         </Box>
       </Box>
       {templates?.length === 0 && !loading && <Box>
-        <Typography variant='h6' >{NO_TEMPLATE}</Typography>
+        <Typography variant='h6'>{NO_TEMPLATE}</Typography>
       </Box>}
     </Box>
 

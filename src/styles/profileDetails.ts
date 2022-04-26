@@ -25,7 +25,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
       padding: 30,
       background: WHITE,
       borderRadius: 12,
-      display: 'flex'
+      display: 'flex',
     },
 
     patientProfileCard: {
@@ -39,8 +39,8 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileImage: {
-      height: 160,
-      width: 160,
+      height: 120,
+      width: 120,
       borderRadius: 12,
       
       "& > img": {

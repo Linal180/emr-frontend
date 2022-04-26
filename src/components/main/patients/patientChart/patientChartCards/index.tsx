@@ -15,63 +15,61 @@ const PatientChartCards: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element =>
   const [isVitals,] = useState<boolean>(true)
 
   return (
-    <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
-      <Grid container spacing={3}>
-        <Grid md={8} item>
-          <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} vitalsCard={isVitals} />
+    <Grid container spacing={3}>
+      <Grid md={8} item>
+        <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} vitalsCard={isVitals} />
 
-          <Box pb={3} />
+        <Box pb={3} />
 
-          <Grid container spacing={3}>
-            <Grid md={6} item>
-              {/* <PatientCardComponent cardTitle={ALLERGIES_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
+        <Grid container spacing={3}>
+          <Grid md={6} item>
+            {/* <PatientCardComponent cardTitle={ALLERGIES_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
 
-              <AllergiesComponent />
+            <AllergiesComponent />
 
-              <Box pb={3} />
+            <Box pb={3} />
 
-              <PatientCardComponent cardTitle={FAMILY_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+            <PatientCardComponent cardTitle={FAMILY_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
 
-              <Box pb={3} />
+            <Box pb={3} />
 
-              <PatientCardComponent cardTitle={MEDICAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
-            </Grid>
+            <PatientCardComponent cardTitle={MEDICAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+          </Grid>
 
-            <Grid md={6} item>
-              <PatientCardComponent cardTitle={PROBLEMS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+          <Grid md={6} item>
+            <PatientCardComponent cardTitle={PROBLEMS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
 
-              <Box pb={3} />
+            <Box pb={3} />
 
-              <PatientCardComponent cardTitle={VACCINE_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+            <PatientCardComponent cardTitle={VACCINE_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
 
-              <Box pb={3} />
+            <Box pb={3} />
 
-              <PatientCardComponent cardTitle={SOCIAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+            <PatientCardComponent cardTitle={SOCIAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
 
-              <Box pb={3} />
+            <Box pb={3} />
 
-              <PatientCardComponent cardTitle={IMPLANT_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
-            </Grid>
+            <PatientCardComponent cardTitle={IMPLANT_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
           </Grid>
         </Grid>
-
-        <Grid md={4} item>
-          <PatientCardComponent cardTitle={MEDICATIONS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
-
-          <Box pb={3} />
-
-          <PatientCardComponent cardTitle={LAB_RESULTS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
-
-          <Box pb={3} />
-
-          <PatientCardComponent cardTitle={SURGICAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
-
-          <Box pb={3} />
-
-          <PatientCardComponent cardTitle={CARE_PLAN_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
-        </Grid>
       </Grid>
-    </Box>
+
+      <Grid md={4} item>
+        <PatientCardComponent cardTitle={MEDICATIONS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+
+        <Box pb={3} />
+
+        <PatientCardComponent cardTitle={LAB_RESULTS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+
+        <Box pb={3} />
+
+        <PatientCardComponent cardTitle={SURGICAL_HISTORY_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+
+        <Box pb={3} />
+
+        <PatientCardComponent cardTitle={CARE_PLAN_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} />
+      </Grid>
+    </Grid>
   );
 };
 export default PatientChartCards;

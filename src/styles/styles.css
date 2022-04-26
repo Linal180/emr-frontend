@@ -441,3 +441,7 @@ body .MuiTabPanel-root {
   background-color: #ffffff !important;
   border: none !important;
 }
+
+.selectorClass .MuiSvgIcon-root {
+  color: #202020 !important;
+}

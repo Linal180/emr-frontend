@@ -2178,6 +2178,7 @@ export type Query = {
   findAllPatientVitals: PatientVitalsPayload;
   findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
+  findAllReactions: ReactionsPayload;
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
@@ -2282,6 +2283,11 @@ export type QueryFindAllPermissionsArgs = {
 
 export type QueryFindAllPracticesArgs = {
   practiceInput: PracticeInput;
+};
+
+
+export type QueryFindAllReactionsArgs = {
+  reactionInput: ReactionInput;
 };
 
 
@@ -2454,6 +2460,11 @@ export enum Race {
   White = 'WHITE'
 }
 
+export type ReactionInput = {
+  paginationOptions: PaginationInput;
+  reactionName?: Maybe<Scalars['String']>;
+};
+
 export type Reactions = {
   __typename?: 'Reactions';
   createdAt?: Maybe<Scalars['String']>;
@@ -2461,6 +2472,13 @@ export type Reactions = {
   name: Scalars['String'];
   patientAllergies?: Maybe<PatientAllergies>;
   updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ReactionsPayload = {
+  __typename?: 'ReactionsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  reactions?: Maybe<Array<Maybe<Reactions>>>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type RegisterUserInput = {
