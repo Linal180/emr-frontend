@@ -126,7 +126,7 @@ const PatientsTable: FC = (): JSX.Element => {
     <>
       <Box className={classes.mainTableContainer}>
         <Box py={2} mb={2} maxWidth={450}>
-          <Search search={search} />
+          <Search search={search} info />
         </Box>
 
         <Box className="table-overflow">

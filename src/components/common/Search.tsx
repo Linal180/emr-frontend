@@ -2,13 +2,12 @@
 import { FC, Fragment, useState } from "react";
 import { Box, ClickAwayListener, IconButton, TextField, Tooltip, Typography } from "@material-ui/core";
 // styles, constants, utils and interfaces block
-import { SearchIcon, ClearIcon } from "../../assets/svgs";
+import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
-import { Info } from "@material-ui/icons";
 import { useCalendarStyles } from "../../styles/calendarStyles";
 
-const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
+const Search: FC<SearchComponentProps> = ({ search, info }): JSX.Element => {
   const classes = useTableStyles()
   const iconClass = useCalendarStyles()
   const [query, setQuery] = useState<string>('')
@@ -49,7 +48,7 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
           <ClearIcon />
         </IconButton>
       }
-      <ClickAwayListener onClickAway={handleTooltipClose}>
+      {info && <ClickAwayListener onClickAway={handleTooltipClose}>
         <div>
           <Tooltip
             PopperProps={{
@@ -86,11 +85,13 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
             }
           >
             <Box onClick={handleTooltipOpen} pr={2} className={iconClass.cursor}>
-              <Info />
+              <IconButton aria-label="search">
+                <InfoSearchIcon />
+              </IconButton>
             </Box>
           </Tooltip>
         </div>
-      </ClickAwayListener>
+      </ClickAwayListener>}
     </Box>
   );
 };

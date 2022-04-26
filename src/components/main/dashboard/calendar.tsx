@@ -144,7 +144,7 @@ const CalendarComponent = (): JSX.Element => {
         }
       >
         {children}
-      </Appointments.Appointment >
+      </Appointments.Appointment>
     )
   };
 

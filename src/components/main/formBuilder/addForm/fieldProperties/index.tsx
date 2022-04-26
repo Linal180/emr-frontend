@@ -148,12 +148,12 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                     <tr>
                       <th align="center">{NAME}</th>
                       <th align="center">{VALUE}</th>
-                      {fields?.length > 1 && <th >{ACTION}</th>}
+                      {fields?.length > 1 && <th>{ACTION}</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {fields?.map((option, index) => (
-                      <tr key={`${option.value}-${index}-${option.name}`} >
+                      <tr key={`${option.value}-${index}-${option.name}`}>
                         <td>
                           <InputController
                             fieldType="text"
@@ -181,7 +181,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 </table>
 
                 <Box display='flex' justifyContent='flex-end'>
-                  <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />} >
+                  <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />}>
                     {OPTION_TEXT}
                   </Button>
                 </Box>

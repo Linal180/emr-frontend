@@ -49,6 +49,7 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
                   {...params}
                   variant="outlined"
                   error={invalid}
+                  className="selectorClass"
                 />
 
                 <FormHelperText>{message}</FormHelperText>

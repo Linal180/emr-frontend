@@ -95,9 +95,10 @@ export const useTableStyles = makeStyles(() => ({
     justifyContent: 'center',
     borderRadius: 6,
     marginLeft: 6,
+    opacity: 0.5,
 
     "& svg": {
-      maxWidth: 16
+      maxWidth: 16,
     }
   },
 
