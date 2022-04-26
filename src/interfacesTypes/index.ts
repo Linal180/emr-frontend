@@ -418,10 +418,10 @@ export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | 
   & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption }
   & { providerIds: SelectorOption };
 
-export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
+export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day">
   & { serviceId: SelectorOption } & { day: SelectorOption };
 
-export type FacilityScheduleInputProps = CreateScheduleInput & { day: SelectorOption };
+export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingFax: string;
