@@ -1,15 +1,6 @@
 // packages block
 import {
-  Box,
-  Button,
-  Card,
-  colors,
-  Typography,
-  Table,
-  TableBody,
-  TableHead,
-  TableRow,
-  TableCell,
+  Box, Button, Card, colors, Typography, Table, TableBody, TableHead, TableRow, TableCell
 } from "@material-ui/core";
 // component block
 import Search from "../../common/Search";
@@ -18,23 +9,9 @@ import PageHeader from "../../common/PageHeader";
 import { renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
 import {
-  ACCESS_ACTIVATED,
-  ACTION,
-  ACTIVATE_EMERGENCY_ACCESS_MODE,
-  DEACTIVATE_EMERGENCY_ACCESS_MODE,
-  EMERGENCY_ACCESS,
-  EMERGENCY_ACCESS_ENABLED,
-  NAME,
-  REVOKE_ACCESS,
-  STATUS,
-  TEMPORARY_EMERGENCY_ACCESS,
-  TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION,
-  EMERGENCY_ACCESS_DENIED,
-  FORBIDDEN_EXCEPTION,
-  EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  EMERGENCY_ACCESS_UPDATE,
-  EMERGENCY_ACCESS_VALUE,
-  EMERGENCY_ACCESS_REVOKE_ROLES,
+  ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS,
+  EMERGENCY_ACCESS_ENABLED, NAME, REVOKE_ACCESS, STATUS, TEMPORARY_EMERGENCY_ACCESS, TEMPORARY_EMERGENCY_ACCESS_DESCRIPTION,
+  EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, EMERGENCY_ACCESS_REVOKE_ROLES,
 } from "../../../constants";
 import Alert from "../../common/Alert";
 import { Role, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
