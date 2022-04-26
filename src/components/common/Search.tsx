@@ -12,13 +12,9 @@ const Search: FC<SearchComponentProps> = ({ search, info }): JSX.Element => {
   const [query, setQuery] = useState<string>('')
   const [open, setOpen] = useState(false);
 
-  const handleTooltipClose = () => {
-    setOpen(false);
-  };
+  const handleTooltipClose = () => setOpen(false);
 
-  const handleTooltipOpen = () => {
-    setOpen(true);
-  };
+  const handleTooltipOpen = () => setOpen(true);
 
   const handleClear = () => {
     setQuery('')
