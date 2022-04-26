@@ -561,7 +561,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                   <Typography variant="body1">{appDate}</Typography>
                 </Box>
 
-                <Typography variant="h4">{appointmentPrice ?? 'N/A'}</Typography>
+                <Typography variant="h4">{`$${appointmentPrice}` ?? 'N/A'}</Typography>
               </Box>
 
               <Box
@@ -574,8 +574,8 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                 </Box>
 
                 <Box>
-                  <Typography variant="body2">{appointmentPrice ?? 'N/A'}</Typography>
-                  <Typography variant="body2">{appointmentPrice ?? 'N/A'}</Typography>
+                  <Typography variant="body2">{`$${appointmentPrice}` ?? 'N/A'}</Typography>
+                  <Typography variant="body2">{`$${appointmentPrice}` ?? 'N/A'}</Typography>
                 </Box>
               </Box>
 
@@ -583,7 +583,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                 borderBottom={`1px solid ${WHITE_FOUR}`}
               >
                 <Typography variant="h5"><strong>{OUTSTANDING_TEXT}</strong></Typography>
-                <Typography variant="h4">{appointmentPrice ?? 'N/A'}</Typography>
+                <Typography variant="h4">{`$${appointmentPrice}` ?? 'N/A'}</Typography>
               </Box>
 
               <Box mt={5} px={3}>
@@ -618,7 +618,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
             <Box className={classes.cardText}>
               <Box display='flex' justifyContent='space-between' borderBottom={`1px solid ${WHITE_FOUR}`}>
                 <Typography variant="body1"><strong>{PAY_AMOUNT}</strong></Typography>
-                <Typography variant="h6"><strong>{appointmentPrice ?? 'N/A'}</strong></Typography>
+                <Typography variant="h6"><strong>{`$${appointmentPrice}` ?? 'N/A'}</strong></Typography>
               </Box>
 
               <Box mt={5} p={5}>

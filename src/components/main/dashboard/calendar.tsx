@@ -124,6 +124,7 @@ const CalendarComponent = (): JSX.Element => {
           width: 'fit-content',
           display: showMoreButton && 'flex',
           border: showMoreButton && '2px solid',
+          borderRadius: showMoreButton && '5px',
           fontWeight: !showMoreButton && 700,
           minHeight: 24,
         }}
@@ -142,7 +143,8 @@ const CalendarComponent = (): JSX.Element => {
           backgroundColor: 'transparent',
           borderBottom: 0,
           borderRadius: 0,
-          width: 'fit-content'
+          width: 'fit-content',
+          minHeight: 24,
         }
         }
       >

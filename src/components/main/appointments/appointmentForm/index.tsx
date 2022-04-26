@@ -13,6 +13,7 @@ import AddPatientModal from './AddPatientModal';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import PatientSelector from '../../../common/Selector/PatientSelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { GREY_TWO, WHITE } from '../../../../theme';
@@ -398,7 +399,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                         <Grid item md={6} sm={12} xs={12}>
                           {isEdit ? renderItem(PATIENT, patientName) :
-                            <Selector
+                            <PatientSelector
                               handlePatientModal={handlePatientModal}
                               isModal
                               isRequired

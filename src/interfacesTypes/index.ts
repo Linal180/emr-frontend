@@ -293,8 +293,20 @@ export interface SelectorProps {
   isMultiple?: boolean
   value?: SelectorOption
   options: SelectorOption[]
-  isModal?: boolean;
-  handlePatientModal?: Function;
+}
+
+export interface PatientSelectorProps {
+  name: string
+  label: string
+  error?: string
+  disabled?: boolean
+  addEmpty?: boolean
+  isRequired?: boolean
+  isMultiple?: boolean
+  value?: SelectorOption
+  options: SelectorOption[]
+  isModal?: boolean
+  handlePatientModal?: Function
 }
 
 export interface CardSelectorProps {
