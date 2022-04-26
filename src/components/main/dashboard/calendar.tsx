@@ -1,9 +1,7 @@
 // packages block
 import { useEffect, useCallback, Reducer, useState, useReducer, useContext } from "react";
 import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
-import { DayTimeTableCell } from "./calendarViews/dayView";
-import { WeekTimeTableCell } from "./calendarViews/weekView";
-import { MonthTimeTableCell } from "./calendarViews/monthView";
+
 import { Box, Card, CircularProgress } from "@material-ui/core";
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
@@ -11,6 +9,10 @@ import {
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
 import AppointmentCard from "./appointmentCard";
+import { DayTimeTableCell } from "./calendarViews/dayView";
+import { WeekTimeTableCell } from "./calendarViews/weekView";
+import { MonthTimeTableCell } from "./calendarViews/monthView";
+import { IntegratedAppointments } from "./integratedAppointments";
 // context, constants block
 import { AuthContext } from "../../../context";
 import { isSuperAdmin, isUserAdmin, mapAppointmentData } from "../../../utils"
@@ -21,7 +23,6 @@ import {
 import {
   useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus
 } from "../../../generated/graphql";
-import { IntegratedAppointments } from "./integratedAppointments";
 import PageHeader from "../../common/PageHeader";
 import { APPOINTMENTS_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT } from "../../../constants";
 
