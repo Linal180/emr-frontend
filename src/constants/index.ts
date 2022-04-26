@@ -701,6 +701,10 @@ export const CONTACT_INFORMATION = "Contact Information";
 export const FACILITY_SERVICES_TEXT = "Facility Services";
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const SSN_FORMAT = '000-00-0000';
+export const DOB_FORMAT = 'YYYY_MM_DD';
+export const PRN_FORMAT = 'AA123456';
+export const EMAIL_FORMAT = 'admin@alxtel.com';
+export const Name_FORMAT = 'First Last';
 export const PRICE = "Price";
 export const SEARCH = "Search";
 export const BILLING = "Billing";
@@ -2878,3 +2882,26 @@ export const FORM_BUILDER_FIELDS_TABS = [
     value: "2",
   },
 ]
+
+export const PatientSearchingTooltipData = [
+  {
+    name: `${NAME}:`,
+    format: Name_FORMAT,
+  },
+  {
+    name: `${EMAIL}:`,
+    format: EMAIL_FORMAT,
+  },
+  {
+    name: `${PRN}:`,
+    format: PRN_FORMAT,
+  },
+  {
+    name: `${DOB}:`,
+    format: DOB_FORMAT,
+  },
+  {
+    name: `${SSN}:`,
+    format: SSN_FORMAT,
+  }
+];

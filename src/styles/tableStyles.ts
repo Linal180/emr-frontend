@@ -1,7 +1,7 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { 
+import {
   BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GRAY_FIVE, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE
- } from "../theme";
+} from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -127,4 +127,21 @@ export const useTableStyles = makeStyles(() => ({
       maxWidth: 20
     }
   },
+
+  tooltipContainer: {
+    cursor: 'pointer'
+  },
+
+  tooltip: {
+    backgroundColor: 'white',
+    padding: 5
+  },
+
+  tooltipContentHeading: {
+    color: 'black'
+  },
+
+  tooltipContentDescription: {
+    color: 'green'
+  }
 }))

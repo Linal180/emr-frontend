@@ -5,11 +5,10 @@ import { Box, ClickAwayListener, IconButton, TextField, Tooltip, Typography } fr
 import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
-import { useCalendarStyles } from "../../styles/calendarStyles";
+import { PatientSearchingTooltipData } from "../../constants";
 
 const Search: FC<SearchComponentProps> = ({ search, info }): JSX.Element => {
   const classes = useTableStyles()
-  const iconClass = useCalendarStyles()
   const [query, setQuery] = useState<string>('')
   const [open, setOpen] = useState(false);
 
@@ -49,48 +48,33 @@ const Search: FC<SearchComponentProps> = ({ search, info }): JSX.Element => {
         </IconButton>
       }
       {info && <ClickAwayListener onClickAway={handleTooltipClose}>
-        <div>
-          <Tooltip
-            PopperProps={{
-              disablePortal: true,
-            }}
-            onClose={handleTooltipClose}
-            open={open}
-            disableFocusListener
-            disableHoverListener
-            disableTouchListener
-            title={
-              <Fragment>
-                <Box display='flex' justifyContent='space-between'>
-                  <Typography color="inherit">Name:</Typography>
-                  <Typography color="inherit">First Last</Typography>
-                </Box>
-                <Box display='flex' justifyContent='space-between'>
-                  <Typography color="inherit">Email:</Typography>
-                  <Typography color="inherit">admin@alxtel.com</Typography>
-                </Box>
-                <Box display='flex' justifyContent='space-between'>
-                  <Typography color="inherit">PRN:</Typography>
-                  <Typography color="inherit">AA123456</Typography>
-                </Box>
-                <Box display='flex' justifyContent='space-between'>
-                  <Typography color="inherit">DOB:</Typography>
-                  <Typography color="inherit">yyyy-mm-dd</Typography>
-                </Box>
-                <Box display='flex' justifyContent='space-between'>
-                  <Typography color="inherit">SSN#</Typography>
-                  <Typography color="inherit">000-00-0000</Typography>
-                </Box>
-              </Fragment>
-            }
-          >
-            <Box onClick={handleTooltipOpen} pr={2} className={iconClass.cursor}>
-              <IconButton aria-label="search">
-                <InfoSearchIcon />
-              </IconButton>
-            </Box>
-          </Tooltip>
-        </div>
+        <Tooltip
+          PopperProps={{
+            disablePortal: true,
+          }}
+          onClose={handleTooltipClose}
+          open={open}
+          disableFocusListener
+          disableHoverListener
+          disableTouchListener
+          className={classes.tooltipContainer}
+          title={
+            <Fragment>
+              {PatientSearchingTooltipData.map((item) => {
+                return (
+                  <Box display='flex' justifyContent='space-between' className={classes.tooltip}>
+                    <Typography variant="h6" className={classes.tooltipContentHeading}>{item.name}</Typography>
+                    <Typography variant="caption" className={classes.tooltipContentDescription}>{item.format}</Typography>
+                  </Box>
+                )
+              })}
+            </Fragment>
+          }
+        >
+          <Box onClick={handleTooltipOpen} pr={2}>
+            <InfoSearchIcon />
+          </Box>
+        </Tooltip>
       </ClickAwayListener>}
     </Box>
   );
