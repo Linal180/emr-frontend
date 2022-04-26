@@ -1847,6 +1847,11 @@ export const VIEW_APPOINTMENTS_BREAD = {
   link: VIEW_APPOINTMENTS_ROUTE,
 };
 
+export const CALENDAR_VIEW_APPOINTMENTS_BREAD = {
+  text: CALENDAR_VIEW_TEXT,
+  link: CALENDAR_ROUTE,
+};
+
 // profile top tabs
 export const PROFILE_TOP_TABS = [
   {

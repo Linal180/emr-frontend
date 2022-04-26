@@ -22,6 +22,8 @@ import {
   useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus
 } from "../../../generated/graphql";
 import { IntegratedAppointments } from "./integratedAppointments";
+import PageHeader from "../../common/PageHeader";
+import { APPOINTMENTS_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT } from "../../../constants";
 
 const CalendarComponent = (): JSX.Element => {
   const classes = useCalendarStyles()
@@ -171,45 +173,51 @@ const CalendarComponent = (): JSX.Element => {
   }, [fetchAppointments]);
 
   return (
-    <Card>
-      <Box>
-        {fetchAllAppointmentsLoading &&
-          <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
-        }
+    <>
+      <PageHeader
+        title={CALENDAR_VIEW_TEXT}
+        path={[APPOINTMENTS_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD]}
+      />
+      <Card>
+        <Box>
+          {fetchAllAppointmentsLoading &&
+            <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
+          }
 
-        <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
-          <Scheduler data={mapAppointmentData(appointments)}>
-            <ViewState
-              currentDate={currentDate}
-              onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }}
-              currentViewName={currentView}
-              onCurrentViewNameChange={currentViewNameChange} />
-            <EditingState onCommitChanges={onCommitChanges} />
-            <MonthView timeTableCellComponent={MonthTimeTableCell} />
-            <WeekView timeTableCellComponent={WeekTimeTableCell} />
-            <DayView timeTableCellComponent={DayTimeTableCell} />
-            <Toolbar />
-            <TodayButton />
-            <ViewSwitcher />
-            <IntegratedEditing />
-            <IntegratedAppointments />
-            <DateNavigator />
-            <Appointments appointmentComponent={Appointment}
-              appointmentContentComponent={AppointmentContent}
-              containerComponent={AppointmentContainer} />
-            <AppointmentTooltip
-              showCloseButton
-              layoutComponent={(props) => <AppointmentCard tooltip={props}
-                setCurrentView={setCurrentView}
-                setCurrentDate={setCurrentDate} />} />
-            <CurrentTimeIndicator
-              shadePreviousCells={true}
-              shadePreviousAppointments={true}
-            />
-          </Scheduler>
+          <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
+            <Scheduler data={mapAppointmentData(appointments)}>
+              <ViewState
+                currentDate={currentDate}
+                onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }}
+                currentViewName={currentView}
+                onCurrentViewNameChange={currentViewNameChange} />
+              <EditingState onCommitChanges={onCommitChanges} />
+              <MonthView timeTableCellComponent={MonthTimeTableCell} />
+              <WeekView timeTableCellComponent={WeekTimeTableCell} />
+              <DayView timeTableCellComponent={DayTimeTableCell} />
+              <Toolbar />
+              <TodayButton />
+              <ViewSwitcher />
+              <IntegratedEditing />
+              <IntegratedAppointments />
+              <DateNavigator />
+              <Appointments appointmentComponent={Appointment}
+                appointmentContentComponent={AppointmentContent}
+                containerComponent={AppointmentContainer} />
+              <AppointmentTooltip
+                showCloseButton
+                layoutComponent={(props) => <AppointmentCard tooltip={props}
+                  setCurrentView={setCurrentView}
+                  setCurrentDate={setCurrentDate} />} />
+              <CurrentTimeIndicator
+                shadePreviousCells={true}
+                shadePreviousAppointments={true}
+              />
+            </Scheduler>
+          </Box>
         </Box>
-      </Box>
-    </Card>
+      </Card>
+    </>
   )
 };
 
