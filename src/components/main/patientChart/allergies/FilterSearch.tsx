@@ -3,8 +3,8 @@ import { FC, Reducer, useReducer, MouseEvent, useState, Dispatch } from 'react';
 import { Box, CircularProgress, IconButton, InputBase, Menu, Typography } from '@material-ui/core';
 // constants block
 import { ClearIcon, SmallSearchIcon } from '../../../../assets/svgs';
-import { TYPE } from '../../../../constants';
-import { GRAY_FIVE, GRAY_SIX } from '../../../../theme';
+import { NO_RECORDS, TYPE } from '../../../../constants';
+import { GRAY_FIVE, GRAY_SIX, GREY_SEVEN } from '../../../../theme';
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
 import { chartReducer, Action, initialState, State, ActionType } from "../../../../reducers/chartReducer";
 import AddModal from './AddModal';
@@ -74,17 +74,20 @@ const FilterSearch: FC<FilterSearchProps> = (
           <CircularProgress size={25} color="inherit" />
         </Box>
         :
-        searchData?.map(item => {
-          const { name } = item || {}
+        (searchData && searchData.length > 0 ?
+          searchData?.map(item => {
+            const { name } = item || {}
 
-          return (
-            <Box key={name} className='pointer-cursor' my={0.2}
-              onClick={(event) => item && handleOpenForm(event, item)}
-            >
-              <Typography variant='body1'>{name}</Typography>
-            </Box>
-          )
-        })}
+            return (
+              <Box key={name} className='pointer-cursor' my={0.2}
+                onClick={(event) => item && handleOpenForm(event, item)}
+              >
+                <Typography variant='body1' className="hoverClass">{name}</Typography>
+              </Box>
+            )
+          }) :
+          <Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)
+      }
     </Box>
 
   return (
