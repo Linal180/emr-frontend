@@ -1,12 +1,14 @@
 //packages import
 import { Controller, useFieldArray, useFormContext } from 'react-hook-form';
-import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, FormGroup, Checkbox } from '@material-ui/core'
+import { TextField, MenuItem, FormControl, RadioGroup, FormControlLabel, FormGroup, Checkbox, Chip } from '@material-ui/core'
 //component
 import RadioButton from '../../components/common/RadioButton'
 //constant & interfaces , utils
 import { getFieldType } from '../../utils';
 import { ElementType } from '../../generated/graphql'
 import { FieldComponentProps } from '../../interfacesTypes';
+import { useFormBuilderSidebarStyles } from '../../styles/formbuilder/sidebarStyle';
+
 
 export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
   const { type, textArea, placeholder, css, required, defaultValue } = item;
@@ -33,6 +35,7 @@ export const TextFieldComponent = ({ item, field, isCreating }: FieldComponentPr
 }
 //select or multi select Field component
 export const SelectFieldComponent = ({ item, field, isCreating }: FieldComponentProps) => {
+  const classes = useFormBuilderSidebarStyles()
   const { type, placeholder, options, css, required, fieldId, isMultiSelect } = item;
   return (
     <TextField
@@ -41,7 +44,14 @@ export const SelectFieldComponent = ({ item, field, isCreating }: FieldComponent
       select
       SelectProps={{
         displayEmpty: true,
-        multiple: !!isMultiSelect
+        multiple: !!isMultiSelect,
+        renderValue: (selected) => (
+          <div className={classes.chips}>
+            {(selected as string[]).map((value) => (
+              <Chip key={value} label={value} className={classes.chip} />
+            ))}
+          </div>
+        )
       }}
       defaultValue={isMultiSelect ? [] : ''}
       required={isCreating ? undefined : required}

@@ -1,8 +1,8 @@
 // packages block
 import { FC, Reducer, useReducer, MouseEvent, useState, Dispatch } from 'react';
-import { Box, CircularProgress, InputBase, Menu, Typography } from '@material-ui/core';
+import { Box, CircularProgress, IconButton, InputBase, Menu, Typography } from '@material-ui/core';
 // constants block
-import { SmallSearchIcon } from '../../../../assets/svgs';
+import { ClearIcon, SmallSearchIcon } from '../../../../assets/svgs';
 import { TYPE } from '../../../../constants';
 import { GRAY_FIVE, GRAY_SIX } from '../../../../theme';
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
@@ -46,7 +46,7 @@ const FilterSearch: FC<FilterSearchProps> = (
   };
 
   const renderTabs = () => (
-    <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+    <Box p={1} mb={3} mt={2} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
 
       {tabs.map(tabName =>
         <Box key={tabName}
@@ -60,7 +60,7 @@ const FilterSearch: FC<FilterSearchProps> = (
   );
 
   const renderSearchData = () =>
-    <Box minHeight={100} maxHeight={300} className="overflowY-auto" display="flex"
+    <Box maxHeight={300} className="overflowY-auto" display="flex"
       flexDirection="column" justifyContent="center" alignItems="flex-start"
     >
       {loading ?
@@ -83,7 +83,13 @@ const FilterSearch: FC<FilterSearchProps> = (
 
   return (
     <>
-      <Typography variant='h4'>{TYPE}</Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Typography variant='h4'>{TYPE}</Typography>
+        <IconButton>
+          <ClearIcon />
+        </IconButton>
+      </Box>
+
       {renderTabs()}
 
       <Box px={1.5} display='flex' alignItems='center' bgcolor={GRAY_FIVE} borderRadius={6}>
@@ -116,7 +122,6 @@ const FilterSearch: FC<FilterSearchProps> = (
       >
         {selectedItem && <AddModal dispatcher={dispatch} item={selectedItem} fetch={fetch} />}
       </Menu>
-
     </>
   )
 };

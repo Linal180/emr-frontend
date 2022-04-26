@@ -1,13 +1,13 @@
 // packages block
-import { Search } from "@material-ui/icons";
-import { Box, Button, Grid, InputAdornment, TextField } from "@material-ui/core";
+import { Box, Button, Card, Grid,} from "@material-ui/core";
 // components block
 import ChartCards from "./chartCards";
 // constants, history, styling block
-import { GRAY, WHITE } from "../../../theme";
+import { GRAY, } from "../../../theme";
 import { SEARCH_PLACEHOLDER } from "../../../constants";
 import PatientProfileHero from "../../common/patient/profileHero";
 import { useProfileDetailsStyles } from "../../../styles/profileDetails";
+import Search from "../../common/Search";
 
 const Chart = (): JSX.Element => {
   const classes = useProfileDetailsStyles()
@@ -18,26 +18,16 @@ const Chart = (): JSX.Element => {
         <PatientProfileHero isChart setAttachmentsData={() => {}} setPatient={() => { }} />
 
         <Grid item md={8} sm={12} xs={12}>
-          <Box bgcolor={`${WHITE}`} mt={4} pl={2} boxShadow={`${GRAY}`}>
-            <Grid container spacing={3}>
-              <Grid item md={10} sm={12} xs={12}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  type="text"
-                  placeholder="Search by keyword, date or value."
-                  InputProps={{
-                    startAdornment: (<InputAdornment position="start">
-                      <Search />
-                    </InputAdornment>)
-                  }}
-                />
-              </Grid>
+          <Box mt={3} mr={1}>
+            <Card>
+              <Box px={3} py={2} boxShadow={`${GRAY}`} borderRadius={6} display="flex" justifyContent="space-between" alignItems="center">
+                <Box width="88%" maxWidth="88%">
+                  <Search search={Search} />
+                </Box>
 
-              <Grid item md={2} sm={6} xs={6}>
-                <Button color="primary" variant="contained">{SEARCH_PLACEHOLDER}</Button>
-              </Grid>
-            </Grid>
+                <Button variant="contained" color="inherit" className="muted">{SEARCH_PLACEHOLDER}</Button>
+              </Box>
+            </Card>
           </Box>
         </Grid>
 

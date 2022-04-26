@@ -61,7 +61,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileInfoItem: {
-      width: "25%",
+      minWidth: "25%",
       alignItems: 'center',
       color: GREY_SEVEN,
       marginBottom: 8,

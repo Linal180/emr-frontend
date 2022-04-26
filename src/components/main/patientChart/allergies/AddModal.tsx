@@ -3,7 +3,7 @@ import { FC, useContext, useEffect, useState, } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
-import { Box, Button, CircularProgress, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, IconButton, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
@@ -12,6 +12,7 @@ import InputController from '../../../../controller';
 // constants block
 import { GRAY_SIX } from '../../../../theme';
 import { ChartContext } from '../../../../context';
+import { ClearIcon } from '../../../../assets/svgs';
 import { ActionType } from '../../../../reducers/chartReducer';
 import { getTimestamps, renderReactions } from '../../../../utils';
 import { createPatientAllergySchema } from '../../../../validationSchemas';
@@ -98,9 +99,12 @@ const AddModal: FC<AddModalProps> = (
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant='h4'>{name}</Typography>
-
-        <Box p={1} />
+        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant='h4'>{name}</Typography>
+          <IconButton>
+            <ClearIcon />
+          </IconButton>
+        </Box>
 
         <Selector
           value={EMPTY_OPTION}
