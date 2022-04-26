@@ -353,6 +353,8 @@ export interface CustomInputControlProps extends IControlLabel {
 
 export interface SearchComponentProps {
   search: Function;
+  info?: boolean;
+  infoText?: string;
 }
 
 export interface AppMenuItemTypes {

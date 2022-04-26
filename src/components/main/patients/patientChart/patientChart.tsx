@@ -101,7 +101,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           <Box mr={1}>
             <Card>
               <Box px={3} py={2} boxShadow={`${GRAY}`} borderRadius={6} display="flex" justifyContent="space-between" alignItems="center">
-                <Box maxWidth={450}>
+                <Box width='88%' maxWidth='90%'>
                   <Search search={search} />
                 </Box>
 

@@ -195,20 +195,22 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box pb={2.25} display='flex' justifyContent='space-between' alignItems='center'>
+        <Box pb={2.25}>
           <Typography variant='h4'>{isEdit ? EDIT_ROLE_TEXT : ADD_ROLE_TEXT}</Typography>
-
-          {custom &&
-            <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
-              {SAVE_TEXT}
-            </Button>
-          }
         </Box>
 
-        <Box maxHeight="calc(100vh - 280px)" className="overflowY-auto">
+        <Box>
           <Card>
             <Box p={4}>
-              <Typography variant="h4">{ROLE_DETAILS_TEXT}</Typography>
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant="h4">{ROLE_DETAILS_TEXT}</Typography>
+                
+                {custom &&
+                <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
+                  {SAVE_TEXT}
+                </Button>
+                }
+              </Box>
 
               <Box p={2} />
 
@@ -274,8 +276,8 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
 
                       {index === 0 && custom &&
-                        <Button onClick={setPermissions} variant='contained' color='inherit' disabled={isLoading}
-                          className='blue-button-new'>{SET_PERMISSIONS}</Button>
+                      <Button onClick={setPermissions} variant='contained' color='inherit' disabled={isLoading}
+                        className='blue-button-new'>{SET_PERMISSIONS}</Button>
                       }
                     </Box>
 

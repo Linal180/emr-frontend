@@ -2,11 +2,11 @@
 import { FC, useState } from "react";
 import { Box, IconButton, TextField } from "@material-ui/core";
 // styles, constants, utils and interfaces block
-import { SearchIcon, ClearIcon } from "../../assets/svgs";
-import { useTableStyles } from "../../styles/tableStyles";
+import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
+import { DetailTooltip, useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
 
-const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
+const Search: FC<SearchComponentProps> = ({ search, info, infoText }): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
 
@@ -36,6 +36,14 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
         <IconButton type="submit" aria-label="clear" onClick={handleClear}>
           <ClearIcon />
         </IconButton>
+      }
+
+      {info && infoText &&
+        <DetailTooltip placement="top-end" arrow title={infoText}>
+          <IconButton aria-label="search">
+            <InfoSearchIcon />
+          </IconButton>
+        </DetailTooltip>
       }
     </Box>
   );

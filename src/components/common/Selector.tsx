@@ -32,11 +32,11 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
                 <InputLabel id={`${name}-autocomplete`} shrink>
                   {isRequired ? requiredLabel(label) : label}
                 </InputLabel>
-
                 <TextField
                   {...params}
                   variant="outlined"
                   error={invalid}
+                  className="selectorClass"
                 />
 
                 <FormHelperText>{message}</FormHelperText>
