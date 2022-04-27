@@ -171,6 +171,10 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
 };
 
+export const getTimestampsForDob = (date: string): string => {
+  return date ? moment(date).format("DD-MM-YYYY").toString() : moment().format("DD-MM-YYYY").toString()
+};
+
 export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
   return date ? moment(date).format("h:mm a") : moment().format("h:mm a")
 };
@@ -193,8 +197,16 @@ export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
 
+export const UpdateRecordTitle = (recordType: string) => {
+  return `Update ${recordType} Record`;
+}
+
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const aboutToUpdate = (recordType: string) => {
+  return `You are about to update ${recordType.toLowerCase()} record`;
 }
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {

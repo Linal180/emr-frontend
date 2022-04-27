@@ -447,6 +447,12 @@ body .MuiTabPanel-root {
   border: none !important;
 }
 
+.schedulerTableCell {
+  border: 1px solid #E4E6EF !important;
+  width: 200px !important;
+  height: 200px !important;
+}
+
 .selectorClass .MuiSvgIcon-root {
   color: #202020 !important;
 }

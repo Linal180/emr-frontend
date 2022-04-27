@@ -24,7 +24,7 @@ import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../.
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
-import { getStandardTime, getTimestamps, renderServices } from "../../../../../utils";
+import { getStandardTime, getTimestamps, getTimestampsForDob, renderServices } from "../../../../../utils";
 import {
   ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation,
   useGetSlotsLazyQuery, BillingStatus, useGetDoctorLazyQuery, DoctorPayload
@@ -33,7 +33,7 @@ import {
   MAPPED_GENDER_IDENTITY, PATIENT_DETAILS, SELECT_SERVICES, BOOK_APPOINTMENT, DOCTOR_NOT_FOUND,
   APPOINTMENT_TYPE, EMAIL, EMPTY_OPTION, SEX, DOB_TEXT, AGREEMENT_TEXT, FIRST_NAME, LAST_NAME,
   AVAILABLE_SLOTS, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE, AGREEMENT_HEADING,
-  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, APPOINTMENT_PAYMENT,
+  NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, APPOINTMENT_PAYMENT, DAYS,
 } from "../../../../../constants";
 
 const DoctorPublicAppointmentForm = (): JSX.Element => {
@@ -135,12 +135,14 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
     if (selectedService && date) {
       setValue('scheduleEndDateTime', '')
       setValue('scheduleStartDateTime', '')
+      const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
+      const currentDay = new Date(date).getDay()
 
       getSlots({
         variables: {
           getSlots: {
             providerId: doctorId, offset, currentDate: date.toString(),
-            serviceId: selectedService,
+            serviceId: selectedService, day: days[currentDay]
           }
         }
       })
@@ -170,7 +172,7 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
               },
 
               createPatientItemInput: {
-                email, firstName, lastName, dob: dob ? getTimestamps(dob) : '', facilityId: facilityId || '',
+                email, firstName, lastName, dob: dob ? getTimestampsForDob(dob) : '', facilityId: facilityId || '',
                 usualProviderId: doctorId, sexAtBirth: selectedSexAtBirth as Genderidentity, practiceId: practiceId || ''
               },
             }

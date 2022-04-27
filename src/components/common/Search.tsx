@@ -1,14 +1,19 @@
 // packages block
-import { FC, useState } from "react";
-import { Box, IconButton, TextField } from "@material-ui/core";
+import { FC, Fragment, useState } from "react";
+import { Box, ClickAwayListener, IconButton, TextField, Tooltip, Typography } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
-import { DetailTooltip, useTableStyles } from "../../styles/tableStyles";
+import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
 
-const Search: FC<SearchComponentProps> = ({ search, info, infoText }): JSX.Element => {
+const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
+  const [open, setOpen] = useState(false);
+
+  const handleTooltipClose = () => setOpen(false);
+
+  const handleTooltipOpen = () => setOpen(true);
 
   const handleClear = () => {
     setQuery('')
@@ -37,14 +42,35 @@ const Search: FC<SearchComponentProps> = ({ search, info, infoText }): JSX.Eleme
           <ClearIcon />
         </IconButton>
       }
-
-      {info && infoText &&
-        <DetailTooltip placement="top-end" arrow title={infoText}>
-          <IconButton aria-label="search">
+      {info && <ClickAwayListener onClickAway={handleTooltipClose}>
+        <Tooltip
+          PopperProps={{
+            disablePortal: true,
+          }}
+          onClose={handleTooltipClose}
+          open={open}
+          disableFocusListener
+          disableHoverListener
+          disableTouchListener
+          className={classes.tooltipContainer}
+          title={
+            <Fragment>
+              {tooltipData?.map((item) => {
+                return (
+                  <Box display='flex' justifyContent='space-between' className={classes.tooltip}>
+                    <Typography variant="h6" className={classes.tooltipContentHeading}>{item.name}</Typography>
+                    <Typography variant="caption" className={classes.tooltipContentDescription}>{item.format}</Typography>
+                  </Box>
+                )
+              })}
+            </Fragment>
+          }
+        >
+          <Box onClick={handleTooltipOpen} pr={2}>
             <InfoSearchIcon />
-          </IconButton>
-        </DetailTooltip>
-      }
+          </Box>
+        </Tooltip>
+      </ClickAwayListener>}
     </Box>
   );
 };

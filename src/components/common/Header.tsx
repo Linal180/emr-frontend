@@ -25,6 +25,7 @@ const HeaderNew: FC = (): JSX.Element => {
   const { roles } = user || {};
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
+  const roleName = userRoles[0]
 
   useEffect(() => {
     setIsSuper(isSuperAdmin(roles))
@@ -123,9 +124,7 @@ const HeaderNew: FC = (): JSX.Element => {
                     <Typography variant="h6">{firstName} {lastName}</Typography>
 
                     <Box className={classes.roleName}>
-                      {userRoles.map(roleName =>
-                        <Typography variant="body1">{formatRoleName(roleName)}</Typography>
-                      )}
+                      <Typography variant="body1">{formatRoleName(roleName)}</Typography>
                     </Box>
                   </>
                 )}

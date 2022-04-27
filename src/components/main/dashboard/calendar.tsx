@@ -1,16 +1,22 @@
 // packages block
-import { useEffect, useCallback, Reducer, useState, useReducer, useContext } from "react";
+import classNames from "clsx";
+import { useEffect, useCallback, Reducer, useState, useReducer, useContext, useRef } from "react";
 import { EditingState, IntegratedEditing, ViewState } from '@devexpress/dx-react-scheduler';
-import { DayTimeTableCell } from "./calendarViews/dayView";
-import { WeekTimeTableCell } from "./calendarViews/weekView";
-import { MonthTimeTableCell } from "./calendarViews/monthView";
+
 import { Box, Card, CircularProgress } from "@material-ui/core";
 import {
   Scheduler, MonthView, Appointments, TodayButton, Toolbar, DateNavigator, DayView, WeekView,
-  AppointmentTooltip, ViewSwitcher,
+  AppointmentTooltip, ViewSwitcher, CurrentTimeIndicator,
 } from '@devexpress/dx-react-scheduler-material-ui';
 // component block
-import AppointmentCard from "./appointmentCard";
+import AppointmentCard from "./appointmentsComponent/appointmentCard";
+import { DayTimeTableCell } from "./calendarViews/dayView";
+import { WeekTimeTableCell } from "./calendarViews/weekView";
+import { MonthTimeTableCell } from "./calendarViews/monthView";
+import { IntegratedAppointments } from "./integratedAppointments";
+import { Appointment } from "./appointmentsComponent/appointments";
+import { AppointmentContent } from "./appointmentsComponent/appointmentContent";
+import { AppointmentContainer } from "./appointmentsComponent/appointmentContainer";
 // context, constants block
 import { AuthContext } from "../../../context";
 import { isSuperAdmin, isUserAdmin, mapAppointmentData } from "../../../utils"
@@ -21,7 +27,10 @@ import {
 import {
   useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus
 } from "../../../generated/graphql";
-import { IntegratedAppointments } from "./integratedAppointments";
+import PageHeader from "../../common/PageHeader";
+import { APPOINTMENTS_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT } from "../../../constants";
+import { useIndicatorStyles } from "../../../styles/indicatorStyles";
+
 
 const CalendarComponent = (): JSX.Element => {
   const classes = useCalendarStyles()
@@ -34,6 +43,18 @@ const CalendarComponent = (): JSX.Element => {
   const isSuper = isSuperAdmin(roles);
   const isAdmin = isUserAdmin(roles);
   const [{ appointments, page }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const indicatorRef = useRef<Element>(null);
+
+  const Indicator = ({ top, ...restProps }: any) => {
+    const classes = useIndicatorStyles({ top });
+
+    return (
+      <div {...restProps} ref={indicatorRef}>
+        <div className={classNames(classes.nowIndicator, classes.circle)} />
+        <div className={classNames(classes.nowIndicator, classes.line)} />
+      </div>
+    );
+  };
 
   const [findAllAppointments, { loading: fetchAllAppointmentsLoading }] = useFindAllAppointmentsLazyQuery({
     variables: {
@@ -93,61 +114,6 @@ const CalendarComponent = (): JSX.Element => {
 
   const handleDateChange = (currentDate: Date) => setCurrentDate(currentDate)
 
-  const AppointmentContainer = ({ children, style, ...restProps }: any) => {
-    return (
-      <Appointments.Container
-        {...restProps}
-        style={{
-          ...style,
-          height: 20,
-        }}
-      >
-        {children}
-      </Appointments.Container>
-    )
-  };
-
-  const AppointmentContent = ({ children, style, ...restProps }: any) => {
-    const { data: { color, title } } = restProps
-    const showMoreButton = title === 'Show More'
-    return (
-      <Appointments.AppointmentContent
-        {...restProps}
-        style={{
-          ...style,
-          backgroundColor: showMoreButton && "#939393",
-          textDecoration: showMoreButton ? 'none' : 'underline',
-          color: showMoreButton ? 'white' : color,
-          width: 'fit-content',
-          display: showMoreButton && 'flex',
-          border: showMoreButton && '2px solid',
-          fontWeight: !showMoreButton && 700,
-          minHeight: 24,
-        }}
-      >
-        {children}
-      </Appointments.AppointmentContent>
-    )
-  };
-
-  const Appointment = ({ children, style, color, ...restProps }: any) => {
-    return (
-      <Appointments.Appointment
-        {...restProps}
-        style={{
-          ...style,
-          backgroundColor: 'transparent',
-          borderBottom: 0,
-          borderRadius: 0,
-          width: 'fit-content'
-        }
-        }
-      >
-        {children}
-      </Appointments.Appointment>
-    )
-  };
-
   const fetchAppointments = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: 25 } }
@@ -167,45 +133,61 @@ const CalendarComponent = (): JSX.Element => {
   };
 
   useEffect(() => {
+    indicatorRef?.current?.scrollIntoView({ block: "center" });
+  });
+
+  useEffect(() => {
     fetchAppointments()
   }, [fetchAppointments]);
 
-  return (
-    <Card>
-      <Box>
-        {fetchAllAppointmentsLoading &&
-          <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
-        }
 
-        <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
-          <Scheduler data={mapAppointmentData(appointments)}>
-            <ViewState
-              currentDate={currentDate}
-              onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }}
-              currentViewName={currentView}
-              onCurrentViewNameChange={currentViewNameChange} />
-            <EditingState onCommitChanges={onCommitChanges} />
-            <MonthView timeTableCellComponent={MonthTimeTableCell} />
-            <WeekView timeTableCellComponent={WeekTimeTableCell} />
-            <DayView timeTableCellComponent={DayTimeTableCell} />
-            <Toolbar />
-            <TodayButton />
-            <ViewSwitcher />
-            <IntegratedEditing />
-            <IntegratedAppointments />
-            <DateNavigator />
-            <Appointments appointmentComponent={Appointment}
-              appointmentContentComponent={AppointmentContent}
-              containerComponent={AppointmentContainer} />
-            <AppointmentTooltip
-              showCloseButton
-              layoutComponent={(props) => <AppointmentCard tooltip={props}
-                setCurrentView={setCurrentView}
-                setCurrentDate={setCurrentDate} />} />
-          </Scheduler>
+  return (
+    <>
+      <PageHeader
+        title={CALENDAR_VIEW_TEXT}
+        path={[APPOINTMENTS_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD]}
+      />
+      <Card>
+        <Box>
+          {fetchAllAppointmentsLoading &&
+            <Box className={classes.loader}><CircularProgress color="inherit" /></Box>
+          }
+
+          <Box className={fetchAllAppointmentsLoading ? classes.blur : classes.cursor}>
+            <Scheduler data={mapAppointmentData(appointments)}>
+              <ViewState
+                currentDate={currentDate}
+                onCurrentDateChange={(currentDate) => { handleDateChange(currentDate) }}
+                currentViewName={currentView}
+                onCurrentViewNameChange={currentViewNameChange} />
+              <EditingState onCommitChanges={onCommitChanges} />
+              <MonthView timeTableCellComponent={MonthTimeTableCell} />
+              <WeekView timeTableCellComponent={WeekTimeTableCell} />
+              <DayView timeTableCellComponent={DayTimeTableCell} />
+              <Toolbar />
+              <TodayButton />
+              <ViewSwitcher />
+              <IntegratedEditing />
+              <IntegratedAppointments />
+              <DateNavigator />
+              <Appointments appointmentComponent={Appointment}
+                appointmentContentComponent={AppointmentContent}
+                containerComponent={AppointmentContainer} />
+              <AppointmentTooltip
+                showCloseButton
+                layoutComponent={(props) => <AppointmentCard tooltip={props}
+                  setCurrentView={setCurrentView}
+                  setCurrentDate={setCurrentDate} />} />
+              <CurrentTimeIndicator
+                shadePreviousCells={true}
+                shadePreviousAppointments={true}
+                indicatorComponent={Indicator}
+              />
+            </Scheduler>
+          </Box>
         </Box>
-      </Box>
-    </Card>
+      </Card>
+    </>
   )
 };
 

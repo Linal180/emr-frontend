@@ -1,6 +1,7 @@
 // packages block
 import { Reducer, useCallback, useContext, useEffect, useReducer } from 'react';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 import { Close } from '@material-ui/icons';
 import DropIn from 'braintree-web-drop-in-react';
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
@@ -9,36 +10,35 @@ import {
   PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload
 } from 'braintree-web-drop-in';
 // component block
-import Alert from '../../common/Alert';
-import BackdropLoader from '../../common/Backdrop';
-import ConfirmationModal from '../../common/ConfirmationModal';
+import Alert from '../../../common/Alert';
+import history from '../../../../history';
+import BackdropLoader from '../../../common/Backdrop';
+import ConfirmationModal from '../../../common/ConfirmationModal';
 // constant, assets and styles block
-import { AuthContext } from '../../../context';
-import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
-import SIGN_IMAGE from "../../../assets/images/sign-image.png";
-import { AppointmentCardProps, UpdateStatusInputProps } from '../../../interfacesTypes';
-import { useCalendarStyles } from '../../../styles/calendarStyles';
-import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
-import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
+import { AuthContext } from '../../../../context';
+import { GRAY_ONE, WHITE_FOUR } from '../../../../theme';
+import SIGN_IMAGE from "../../../../assets/images/sign-image.png";
+import { useCalendarStyles } from '../../../../styles/calendarStyles';
+import { AppointmentCardProps, UpdateStatusInputProps } from '../../../../interfacesTypes';
+import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
+import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../../utils';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
-} from '../../../assets/svgs';
+} from '../../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
   useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus
-} from '../../../generated/graphql';
+} from '../../../../generated/graphql';
 import {
-  PATIENT_NAME, FACILITY_CONTACT, PATIENT_CONTACT, FACILITY_NAME,
-  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE,
-  PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD,
-  FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, PAY_AMOUNT,
-  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, APPOINTMENT_TYPE,
-  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, CASH_PAID, CHECKOUT, CREATE_INVOICE,
-  PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, PROVIDER_NAME,
-  TRANSACTION_PAID_SUCCESSFULLY, CHECK_IN, CHECK_IN_ROUTE, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
-} from '../../../constants';
-import { Link } from 'react-router-dom';
-import history from '../../../history';
+  DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE, PROVIDER_NAME,
+  PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD, PAY_AMOUNT,
+  PATIENT_NAME, FACILITY_CONTACT, PATIENT_CONTACT, FACILITY_NAME, CURRENT_DATE, APPOINTMENT_TYPE,
+  FORBIDDEN_EXCEPTION, INVOICE_CREATED, NO_INVOICE, OUTSTANDING_TEXT, PAID, PAY, CREATE_INVOICE,
+  APPOINTMENT, APPOINTMENT_DETAILS, APPOINTMENT_STATUS_UPDATED_SUCCESSFULLY, CASH_PAID, CHECKOUT,
+  CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
+  PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,
+  TRANSACTION_PAID_SUCCESSFULLY,
+} from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: AppointmentCardProps): JSX.Element => {
   const { visible, onHide, appointmentMeta } = tooltip
@@ -125,22 +125,23 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
   });
 
   const id = appointmentMeta?.data.appointmentId
-  const facilityId = appointmentMeta?.data.facilityId
-  const patientId = appointmentMeta?.data.patientId
-  const providerId = appointmentMeta?.data.providerId
-  const serviceId = appointmentMeta?.data.serviceId
-  const appointmentPrice = appointmentMeta?.data.price
-  const patientName = appointmentMeta?.data.title
-  const appDate = getAppointmentDate(appointmentMeta?.data.startDate)
-  const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
-  const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
-  const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
-  const appCancelToken = appointmentMeta?.data.token
-  const providerName = appointmentMeta?.data?.providerName
   const appReason = appointmentMeta?.data?.reason
-  const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
+  const patientName = appointmentMeta?.data.title
+  const patientId = appointmentMeta?.data.patientId
+  const serviceId = appointmentMeta?.data.serviceId
+  const appCancelToken = appointmentMeta?.data.token
+  const facilityId = appointmentMeta?.data.facilityId
+  const providerId = appointmentMeta?.data.providerId
+  const appointmentPrice = appointmentMeta?.data.price
   const facilityName = appointmentMeta?.data?.facilityName
+  const providerName = appointmentMeta?.data?.providerName
+  const appDate = getAppointmentDate(appointmentMeta?.data.startDate)
+  const appEndTime = getAppointmentTime(appointmentMeta?.data.endDate)
+  const appStartTime = getAppointmentTime(appointmentMeta?.data.startDate)
+  const scheduleStartDateTime = appointmentMeta?.data.scheduleStartDateTime
+  const appPrimaryInsurance = appointmentMeta?.data?.primaryInsurance
   const appointmentDatePassingView = appointmentMeta && appointmentMeta?.data.startDate
+  const isEditableAppointment = appointmentDatePassingView && (CURRENT_DATE < appointmentDatePassingView)
 
   const [getAppointment] = useGetAppointmentLazyQuery({
     fetchPolicy: 'network-only',
@@ -331,7 +332,6 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
     });
   };
 
-
   useEffect(() => {
     if (patientName === "Show More" && visible === true) {
       onHide && onHide()
@@ -394,9 +394,9 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                     <DeleteAppointmentIcon />
                   </IconButton>}
 
-                  <IconButton aria-label="edit" onClick={handleEdit}>
+                  {isEditableAppointment && <IconButton aria-label="edit" onClick={handleEdit}>
                     <EditAppointmentIcon />
-                  </IconButton>
+                  </IconButton>}
 
                   <IconButton aria-label="close" onClick={handleClose}>
                     <Close />
@@ -561,7 +561,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                   <Typography variant="body1">{appDate}</Typography>
                 </Box>
 
-                <Typography variant="h4">{appointmentPrice ?? 'N/A'}</Typography>
+                <Typography variant="h4">{`$${appointmentPrice}` ?? 'N/A'}</Typography>
               </Box>
 
               <Box
@@ -574,8 +574,8 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                 </Box>
 
                 <Box>
-                  <Typography variant="body2">{appointmentPrice ?? 'N/A'}</Typography>
-                  <Typography variant="body2">{appointmentPrice ?? 'N/A'}</Typography>
+                  <Typography variant="body2">{`$${appointmentPrice}` ?? 'N/A'}</Typography>
+                  <Typography variant="body2">{`$${appointmentPrice}` ?? 'N/A'}</Typography>
                 </Box>
               </Box>
 
@@ -583,7 +583,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
                 borderBottom={`1px solid ${WHITE_FOUR}`}
               >
                 <Typography variant="h5"><strong>{OUTSTANDING_TEXT}</strong></Typography>
-                <Typography variant="h4">{appointmentPrice ?? 'N/A'}</Typography>
+                <Typography variant="h4">{`$${appointmentPrice}` ?? 'N/A'}</Typography>
               </Box>
 
               <Box mt={5} px={3}>
@@ -618,7 +618,7 @@ const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: Appointmen
             <Box className={classes.cardText}>
               <Box display='flex' justifyContent='space-between' borderBottom={`1px solid ${WHITE_FOUR}`}>
                 <Typography variant="body1"><strong>{PAY_AMOUNT}</strong></Typography>
-                <Typography variant="h6"><strong>{appointmentPrice ?? 'N/A'}</strong></Typography>
+                <Typography variant="h6"><strong>{`$${appointmentPrice}` ?? 'N/A'}</strong></Typography>
               </Box>
 
               <Box mt={5} p={5}>

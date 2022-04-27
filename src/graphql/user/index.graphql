@@ -1,0 +1,30 @@
+query fetchEmergencyAccessUser($emergencyAccessUsersInput: EmergencyAccessUserInput!) {
+  fetchEmergencyAccessUsers(emergencyAccessUsersInput: $emergencyAccessUsersInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    
+    emergencyAccessUsers {
+      id
+      email
+      facilityId
+      roles{
+        role 
+        rolePermissions {
+          permission {
+            id
+            name
+          }
+        }
+      }
+    }
+}
+}

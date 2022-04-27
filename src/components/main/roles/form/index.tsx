@@ -12,10 +12,10 @@ import ViewDataLoader from '../../../common/ViewDataLoader';
 // constants and types block
 import Alert from '../../../common/Alert';
 import history from '../../../../history';
-import { formatPermissionName } from '../../../../utils';
+import { formatPermissionName, isSuperAdmin } from '../../../../utils';
 import { roleSchema } from '../../../../validationSchemas';
 import { GeneralFormProps } from '../../../../interfacesTypes';
-import { ListContext, PermissionContext } from '../../../../context';
+import { AuthContext, ListContext, PermissionContext } from '../../../../context';
 import {
   RoleItemInput, useAssignPermissionToRoleMutation, useCreateRoleMutation, useGetRoleLazyQuery,
   useUpdateRoleMutation
@@ -32,6 +32,9 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const [ids, setIds] = useState<string[]>([])
   const [modules, setModules] = useState<string[]>([])
   const [custom, setCustom] = useState<boolean>(true)
+  const { user } = useContext(AuthContext)
+  const { roles } = user || {}
+  const isSuper = isSuperAdmin(roles);
 
   const methods = useForm<RoleItemInput>({
     mode: "all", resolver: yupResolver(roleSchema)
@@ -116,7 +119,6 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           if (status && status === 200) {
             reset()
             Alert.success(PERMISSIONS_SET);
-            history.push(ROLES_ROUTE)
           }
         }
       }
@@ -158,6 +160,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (status && status === 200) {
           updateRoleList(role)
           Alert.success(ROLE_UPDATED)
+          history.push(ROLES_ROUTE)
         }
       }
     }
@@ -188,7 +191,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   useEffect(() => {
     isEdit && fetchRole()
-  }, [fetchRole, isEdit])
+  }, [fetchRole, isEdit, assignPermissionLoading])
 
   const isLoading = loading || createRoleLoading || updateRoleLoading || assignPermissionLoading;
 
@@ -197,6 +200,8 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box pb={2.25}>
           <Typography variant='h4'>{isEdit ? EDIT_ROLE_TEXT : ADD_ROLE_TEXT}</Typography>
+
+
         </Box>
 
         <Box>
@@ -204,11 +209,11 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             <Box p={4}>
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h4">{ROLE_DETAILS_TEXT}</Typography>
-                
-                {custom &&
-                <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
-                  {SAVE_TEXT}
-                </Button>
+
+                {(custom || isSuper) &&
+                  <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
+                    {SAVE_TEXT}
+                  </Button>
                 }
               </Box>
 
@@ -264,7 +269,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           <FormControlLabel
                             control={
                               <Box className='permissionDenied'>
-                                <Checkbox disabled={!custom} color="primary" checked={modules.includes(module)}
+                                <Checkbox disabled={!(custom || isSuper)} color="primary" checked={modules.includes(module)}
                                   onChange={() => handleAllIds(module, allIds)} />
                               </Box>
                             }
@@ -275,9 +280,9 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       </Grid>
 
 
-                      {index === 0 && custom &&
-                      <Button onClick={setPermissions} variant='contained' color='inherit' disabled={isLoading}
-                        className='blue-button-new'>{SET_PERMISSIONS}</Button>
+                      {index === 0 && (custom || isSuper) &&
+                        <Button onClick={setPermissions} variant='contained' color='secondary' disabled={assignPermissionLoading}
+                          className='blue-button-new'>{SET_PERMISSIONS}</Button>
                       }
                     </Box>
 
@@ -294,7 +299,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                                 <FormControlLabel
                                   control={
                                     <Box className='permissionDenied'>
-                                      <Checkbox disabled={!custom} color="primary" checked={ids.includes(id || '')}
+                                      <Checkbox disabled={!(custom || isSuper)} color="primary" checked={ids.includes(id || '')}
                                         onChange={() => handleChangeForCheckBox(id || '')} />
                                     </Box>
                                   }

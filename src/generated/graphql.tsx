@@ -865,6 +865,19 @@ export enum ElementType {
   Week = 'WEEK'
 }
 
+export type EmergencyAccessUserInput = {
+  facilityId?: Maybe<Scalars['String']>;
+  paginationInput?: Maybe<PaginationInput>;
+  practiceId?: Maybe<Scalars['String']>;
+};
+
+export type EmergencyAccessUserPayload = {
+  __typename?: 'EmergencyAccessUserPayload';
+  emergencyAccessUsers?: Maybe<Array<User>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type Employer = {
   __typename?: 'Employer';
   createdAt: Scalars['String'];
@@ -2168,6 +2181,7 @@ export type Query = {
   GetPermission: PermissionPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
+  fetchEmergencyAccessUsers: EmergencyAccessUserPayload;
   fetchUser: UserPayload;
   findAllAllergies: AllergiesPayload;
   findAllAppointments: AppointmentsPayload;
@@ -2226,6 +2240,11 @@ export type QueryGetPermissionArgs = {
 
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
+};
+
+
+export type QueryFetchEmergencyAccessUsersArgs = {
+  emergencyAccessUsersInput: EmergencyAccessUserInput;
 };
 
 
@@ -3415,7 +3434,7 @@ export type UpdateServiceInput = {
 };
 
 export type UpdateStaffInput = {
-  providers: Array<Scalars['String']>;
+  providers?: Maybe<Array<Scalars['String']>>;
   updateStaffItemInput: UpdateStaffItemInput;
 };
 
@@ -4145,6 +4164,13 @@ export type UpdateRoleMutationVariables = Exact<{
 
 export type UpdateRoleMutation = { __typename?: 'Mutation', updateRole: { __typename?: 'RolePayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, role?: { __typename?: 'Role', id: string, role?: string | null | undefined, description?: string | null | undefined } | null | undefined } };
 
+export type UpdateUserRoleMutationVariables = Exact<{
+  updateUserRoleItemInput: UpdateRoleInput;
+}>;
+
+
+export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', id: string, permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined } | null | undefined } };
+
 export type RemoveRoleMutationVariables = Exact<{
   removeRole: RemoveRole;
 }>;
@@ -4291,6 +4317,13 @@ export type CreateStaffMutationVariables = Exact<{
 
 
 export type CreateStaffMutation = { __typename?: 'Mutation', createStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type FetchEmergencyAccessUserQueryVariables = Exact<{
+  emergencyAccessUsersInput: EmergencyAccessUserInput;
+}>;
+
+
+export type FetchEmergencyAccessUserQuery = { __typename?: 'Query', fetchEmergencyAccessUsers: { __typename?: 'EmergencyAccessUserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, emergencyAccessUsers?: Array<{ __typename?: 'User', id: string, email: string, facilityId?: string | null | undefined, roles?: Array<{ __typename?: 'Role', role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined }> | null | undefined } };
 
 
 export const FindAllAppointmentsDocument = gql`
@@ -8217,6 +8250,57 @@ export function useUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateRoleMutationHookResult = ReturnType<typeof useUpdateRoleMutation>;
 export type UpdateRoleMutationResult = Apollo.MutationResult<UpdateRoleMutation>;
 export type UpdateRoleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>;
+export const UpdateUserRoleDocument = gql`
+    mutation UpdateUserRole($updateUserRoleItemInput: UpdateRoleInput!) {
+  updateUserRole(user: $updateUserRoleItemInput) {
+    response {
+      status
+      error
+      message
+    }
+    user {
+      id
+      roles {
+        id
+        role
+        rolePermissions {
+          id
+          permission {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type UpdateUserRoleMutationFn = Apollo.MutationFunction<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>;
+
+/**
+ * __useUpdateUserRoleMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserRoleMutation, { data, loading, error }] = useUpdateUserRoleMutation({
+ *   variables: {
+ *      updateUserRoleItemInput: // value for 'updateUserRoleItemInput'
+ *   },
+ * });
+ */
+export function useUpdateUserRoleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>(UpdateUserRoleDocument, options);
+      }
+export type UpdateUserRoleMutationHookResult = ReturnType<typeof useUpdateUserRoleMutation>;
+export type UpdateUserRoleMutationResult = Apollo.MutationResult<UpdateUserRoleMutation>;
+export type UpdateUserRoleMutationOptions = Apollo.BaseMutationOptions<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>;
 export const RemoveRoleDocument = gql`
     mutation RemoveRole($removeRole: RemoveRole!) {
   removeRole(removeRole: $removeRole) {
@@ -9165,3 +9249,60 @@ export function useCreateStaffMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateStaffMutationHookResult = ReturnType<typeof useCreateStaffMutation>;
 export type CreateStaffMutationResult = Apollo.MutationResult<CreateStaffMutation>;
 export type CreateStaffMutationOptions = Apollo.BaseMutationOptions<CreateStaffMutation, CreateStaffMutationVariables>;
+export const FetchEmergencyAccessUserDocument = gql`
+    query fetchEmergencyAccessUser($emergencyAccessUsersInput: EmergencyAccessUserInput!) {
+  fetchEmergencyAccessUsers(emergencyAccessUsersInput: $emergencyAccessUsersInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    emergencyAccessUsers {
+      id
+      email
+      facilityId
+      roles {
+        role
+        rolePermissions {
+          permission {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchEmergencyAccessUserQuery__
+ *
+ * To run a query within a React component, call `useFetchEmergencyAccessUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchEmergencyAccessUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchEmergencyAccessUserQuery({
+ *   variables: {
+ *      emergencyAccessUsersInput: // value for 'emergencyAccessUsersInput'
+ *   },
+ * });
+ */
+export function useFetchEmergencyAccessUserQuery(baseOptions: Apollo.QueryHookOptions<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>(FetchEmergencyAccessUserDocument, options);
+      }
+export function useFetchEmergencyAccessUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>(FetchEmergencyAccessUserDocument, options);
+        }
+export type FetchEmergencyAccessUserQueryHookResult = ReturnType<typeof useFetchEmergencyAccessUserQuery>;
+export type FetchEmergencyAccessUserLazyQueryHookResult = ReturnType<typeof useFetchEmergencyAccessUserLazyQuery>;
+export type FetchEmergencyAccessUserQueryResult = Apollo.QueryResult<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>;
