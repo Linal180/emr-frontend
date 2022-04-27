@@ -1110,3 +1110,8 @@ export interface AppointmentCardProps {
   setCurrentView: Function;
   setCurrentDate: Function;
 }
+
+export interface RolePayloadInterface {
+  id: string
+  roles?: RolesPayload['roles']
+}

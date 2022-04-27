@@ -14,18 +14,13 @@ import {
   EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, EMERGENCY_ACCESS_REVOKE_ROLES,
 } from "../../../constants";
 import Alert from "../../common/Alert";
-import { RolesPayload, UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
+import { UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
 import { AuthContext } from "../../../context";
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 
 import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
 import { Pagination } from "@material-ui/lab";
-
-interface RolePayloadInterface {
-  id: string
-  roles?: RolesPayload['roles']
-}
-
+import { RolePayloadInterface } from "../../../interfacesTypes";
 
 
 const EmergencyAccessComponent = (): JSX.Element => {
