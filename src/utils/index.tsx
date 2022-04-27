@@ -120,7 +120,7 @@ export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
 
   return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.Doctor)
     || userRoles.includes(SYSTEM_ROLES.Staff) || userRoles.includes(SYSTEM_ROLES.Nurse)
-    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
 }
 
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {

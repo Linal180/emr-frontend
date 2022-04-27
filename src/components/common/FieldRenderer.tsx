@@ -45,13 +45,20 @@ export const SelectFieldComponent = ({ item, field, isCreating }: FieldComponent
       SelectProps={{
         displayEmpty: true,
         multiple: !!isMultiSelect,
-        renderValue: (selected) => (
-          <div className={classes.chips}>
-            {(selected as string[]).map((value) => (
-              <Chip key={value} label={value} className={classes.chip} />
-            ))}
-          </div>
-        )
+        renderValue: (selected) => {
+          if (selected && Array.isArray(selected) && !!isMultiSelect) {
+            return (
+              <div className={classes.chips}>
+                {(selected as string[])?.map((value) => (
+                  <Chip key={value} label={value} className={classes.chip} />
+                ))}
+              </div>
+            )
+          }
+          else {
+            return <>{selected}</>
+          }
+        }
       }}
       defaultValue={isMultiSelect ? [] : ''}
       required={isCreating ? undefined : required}

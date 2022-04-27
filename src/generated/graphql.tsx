@@ -4288,7 +4288,7 @@ export type FindAllStaffQueryVariables = Exact<{
 }>;
 
 
-export type FindAllStaffQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, allstaff?: Array<{ __typename?: 'Staff', id: string, email: string, firstName: string, lastName: string, username?: string | null | undefined, phone?: string | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllStaffQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, allstaff?: Array<{ __typename?: 'Staff', id: string, email: string, firstName: string, lastName: string, username?: string | null | undefined, phone?: string | null | undefined, user?: { __typename?: 'User', id: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetStaffQueryVariables = Exact<{
   getStaff: GetStaff;
@@ -9056,6 +9056,9 @@ export const FindAllStaffDocument = gql`
       lastName
       username
       phone
+      user {
+        id
+      }
     }
   }
 }
