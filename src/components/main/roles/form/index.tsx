@@ -119,7 +119,6 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           if (status && status === 200) {
             reset()
             Alert.success(PERMISSIONS_SET);
-            // history.push(ROLES_ROUTE)
           }
         }
       }

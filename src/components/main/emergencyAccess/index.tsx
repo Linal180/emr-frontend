@@ -14,16 +14,16 @@ import {
   EMERGENCY_ACCESS_DENIED, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, EMERGENCY_ACCESS_UPDATE, EMERGENCY_ACCESS_VALUE, EMERGENCY_ACCESS_REVOKE_ROLES,
 } from "../../../constants";
 import Alert from "../../common/Alert";
-import { Role, UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
+import { RolesPayload, UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
 import { AuthContext } from "../../../context";
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
-import { Maybe } from "graphql/jsutils/Maybe";
+
 import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
 import { Pagination } from "@material-ui/lab";
 
 interface RolePayloadInterface {
   id: string
-  roles?: Maybe<Maybe<Role>[]> | undefined
+  roles?: RolesPayload['roles']
 }
 
 
@@ -333,8 +333,6 @@ const EmergencyAccessComponent = (): JSX.Element => {
           </Box>
         )}
       </Card> : null}
-
-
 
       <UpdateConfirmationModal title={EMERGENCY_ACCESS} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
         description={rolePayload ? 'Confirm to revoke access' : 'Confirm to update emergency access'} handleDelete={handleEmergencyAccessRevoke}
