@@ -394,6 +394,12 @@ const AddForm = () => {
 
               <Box mx={1} />
 
+              <Button type='button' onClick={templateCreateClick} variant={'contained'} color="primary">
+                {CREATE_TEMPLATE}
+              </Button>
+
+              <Box mx={1} />
+
               <Button type='submit' variant='contained' onClick={() => setIsActive(true)} color='primary' disabled={loading || updateLoading}>
                 {loading || updateLoading ? <CircularProgress size={20} color="inherit" /> : PUBLISH}
               </Button>
@@ -448,7 +454,7 @@ const AddForm = () => {
                       <DropContainer formValues={formValues} changeValues={changeValues}
                         delFieldHandler={delFieldHandler} delColHandler={delColHandler} setFormValues={setFormValues} />
                     }
-                    <Grid container justifyContent='space-between' alignItems='center'>
+                    <Grid container justifyContent='center' alignItems='center'>
                       <Grid item>
                         <Box
                           aria-haspopup="true"
@@ -482,11 +488,7 @@ const AddForm = () => {
                           ))}
                         </Menu>
                       </Grid>
-                      <Grid item>
-                        <Button type='button' onClick={templateCreateClick} variant={'contained'} color="primary">
-                          {CREATE_TEMPLATE}
-                        </Button>
-                      </Grid>
+
                     </Grid>
                   </Box>
                 </Grid>
