@@ -1,67 +1,30 @@
 // packages block
-import {
-  ComponentType,
-  Dispatch,
-  ReactNode,
-  ElementType,
-  SetStateAction,
-} from "react";
+import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import {
-  Control,
-  ValidationRule,
-  FieldValues,
-  Ref,
-  ControllerRenderProps,
-} from "react-hook-form";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import {
+  Control, ValidationRule, FieldValues, Ref, ControllerRenderProps,
+} from "react-hook-form";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
+import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PatientAction } from "../reducers/patientReducer";
+import { Action as FacilityAction } from "../reducers/facilityReducer";
 import {
-  LoginUserInput,
-  User,
-  UpdateContactInput,
-  CreateScheduleInput,
-  CreateAppointmentInput,
-  Staff,
-  UpdateFacilityItemInput,
-  FacilitiesPayload,
-  CreateContactInput,
-  CreateDoctorItemInput,
-  Gender,
-  CreatePatientItemInput,
-  ServicesPayload,
-  CreateExternalAppointmentItemInput,
-  CreatePracticeItemInput,
-  CreateServiceInput,
-  AllDoctorPayload,
-  Attachment,
-  AttachmentType,
-  Patient,
-  PatientsPayload,
-  Schedule,
-  UpdateAppointmentInput,
-  AppointmentsPayload,
-  RolesPayload,
-  PermissionsPayload,
-  SectionsInputs,
-  Doctor,
-  UpdateFacilityTimeZoneInput,
-  PracticesPayload,
-  CreateStaffItemInput,
-  AttachmentsPayload,
-  FieldsInputs,
-  ResponsePayloadResponse,
-  UsersFormsElements,
-  FormElement,
+  LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
+  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
+  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
+  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
+  CreatePatientAllergyInput, Allergies
 } from "../generated/graphql";
-import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -148,6 +111,11 @@ export interface AppointmentContextInterface {
   appointmentList: AppointmentsPayload["appointments"];
   setAppointmentList: Function;
   fetchAllAppointmentList: Function;
+}
+
+export interface ChartContextInterface {
+  reactionList: ReactionsPayload['reactions'];
+  fetchAllReactionList: Function;
 }
 
 export interface Children {
@@ -323,6 +291,11 @@ export interface IDetailCellProps {
 export interface SelectorOption {
   id: string;
   name: string | undefined | null;
+}
+
+export interface AsyncSelectorOption {
+  value: string
+  label: string | undefined | null
 }
 
 export interface DropDownOption {
@@ -997,7 +970,7 @@ export interface CustomSelectControlProps extends IControlLabel {
 
 export interface FieldEditModalProps {
   open?: boolean;
-  closeModalHanlder?: () => void;
+  closeModalHandler?: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
 }
@@ -1101,6 +1074,36 @@ export interface UserFormPreviewModalProps {
   formLabels: FormElement[];
   imagePreviewHandler: (id: string) => void;
 }
+
+export interface CardLayoutProps {
+  cardId: string;
+  hasAdd?: boolean;
+  cardTitle: string;
+  isMenuOpen: boolean;
+  children: ReactNode;
+  filterTabs: string[];
+  searchLoading: boolean;
+  disableAddIcon?: boolean;
+  openSearch: HTMLElement | null;
+  dispatcher: Dispatch<ChartAction>;
+  searchComponent: ComponentType<any>;
+  searchData: AllergiesPayload['allergies'];
+  fetch: () => void;
+  handleMenuClose: () => void;
+  onClickAddIcon: (event: any) => void;
+  onSearch: (tab: string, query: string) => void;
+}
+
+export interface AddModalProps {
+  item?: Allergies;
+  isEdit?: boolean;
+  patientAllergyId?: string;
+  dispatcher: Dispatch<ChartAction>;
+  fetch: () => void;
+}
+
+export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
+  & { reactionIds: SelectorOption } & { severityId: SelectorOption }
 
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;

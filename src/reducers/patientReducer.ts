@@ -72,12 +72,12 @@ export const initialState: State = {
 export enum ActionType {
   SET_PAGE = 'setPage',
   SET_IS_OPEN = "setIsOpen",
-  SET_OPEN_GRAPH = "setOpenGraph",
   SET_IS_VOICE = 'setIsVoice',
   SET_PATIENTS = 'setPatients',
   SET_TAB_VALUE = 'setTabValue',
   SET_ANCHOR_EL = 'setAnchorEl',
   SET_SELECTION = 'setSelection',
+  SET_OPEN_GRAPH = "setOpenGraph",
   SET_IS_BILLING = 'setIsBilling',
   SET_PATIENT_ID = 'setPatientId',
   SET_ACTIVE_STEP = 'setActiveStep',

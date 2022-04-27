@@ -127,11 +127,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
             if (!!roles) {
               setUserRoles(pluck(roles, 'role'));
 
-              console.log("roles inside authCOntext", roles)
-
               roles?.map(role => {
                 const { rolePermissions } = role || {};
-                console.log(rolePermissions, "rolePermissions")
                 let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
                 const allPermissions = permissionsList?.length === 0 ? [''] : permissionsList
 

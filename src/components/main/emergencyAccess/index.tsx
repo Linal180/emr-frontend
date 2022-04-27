@@ -28,7 +28,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
   const { user, userRoles, setUserRoles, setUserPermissions } = useContext(AuthContext);
   const [emergencyAccessUsers, setEmergencyAccessUsers] = useState<User[] | null>(null);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
-  const [shoudlFetchEmergencyUser, setShoudlFetchEmergencyUser] = useState(true)
+  const [shouldFetchEmergencyUser, setShouldFetchEmergencyUser] = useState(true)
   const [totalPages, setTotalPages] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [rolePayload, setRolePayload] = useState<UpdateRoleInput | null>(null)
@@ -55,7 +55,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
           if (status && status === 200) {
             if (responseUser?.id !== user?.id) {
               Alert.success(EMERGENCY_ACCESS_UPDATE);
-              setShoudlFetchEmergencyUser(true)
+              setShouldFetchEmergencyUser(true)
               setRolePayload(null)
               setOpenDelete(false)
               return
@@ -75,7 +75,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
             setUserPermissions(transformedUserPermissions)
             setUserRoles(userRoles);
             Alert.success(EMERGENCY_ACCESS_UPDATE);
-            setShoudlFetchEmergencyUser(true)
+            setShouldFetchEmergencyUser(true)
             setOpenDelete(false)
           }
         }
@@ -100,7 +100,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
           if (emergencyAccessUsers) {
 
             setEmergencyAccessUsers(emergencyAccessUsers as User[]);
-            setShoudlFetchEmergencyUser(false)
+            setShouldFetchEmergencyUser(false)
 
             if (pagination) {
               const { totalPages } = pagination
@@ -113,9 +113,8 @@ const EmergencyAccessComponent = (): JSX.Element => {
   });
 
   useEffect(() => {
-    if (shoudlFetchEmergencyUser) {
+    if (shouldFetchEmergencyUser) {
       if (isFacAdmin) {
-        console.log("hello")
         fetchEmergencyAccessUsers({
           variables: {
             emergencyAccessUsersInput: {
@@ -134,7 +133,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
         }
       })
     }
-  }, [fetchEmergencyAccessUsers, isFacAdmin, page, shoudlFetchEmergencyUser, user?.facilityId]);
+  }, [fetchEmergencyAccessUsers, isFacAdmin, page, shouldFetchEmergencyUser, user?.facilityId]);
 
   const handleEmergencyAccessToggle = async () => {
     const transformedUserRoles = userRoles.filter(

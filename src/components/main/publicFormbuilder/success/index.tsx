@@ -6,6 +6,7 @@ import { successStyles } from '../../../../styles/publicAppointmentStyles/succes
 import {
   PUBLIC_FORM_SUCCESS_HEADING, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_SUCCESS_DESCRIPTION_1,
 } from '../../../../constants';
+import history from '../../../../history';
 
 const UserFormSuccessComponent = () => {
   const classes = successStyles();
@@ -30,7 +31,7 @@ const UserFormSuccessComponent = () => {
             </Typography>
 
             <Box mt={2} display="flex" justifyContent="flex-end">
-              <Button variant='outlined' color='secondary'>Go Back</Button>
+              <Button variant='outlined' color='secondary' onClick={() => history.goBack()}>Go Back</Button>
             </Box>
           </Box>
         </Box>

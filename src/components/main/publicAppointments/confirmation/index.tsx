@@ -8,8 +8,8 @@ import Backdrop from "../../../../components/common/Backdrop";
 import ConfirmationModal from "../../../../components/common/ConfirmationModal";
 // utils, styles  block, constants
 import history from "../../../../history";
-import { GRAY_FIVE, GREY_THREE, GREY_TWO, WHITE, WHITE_TWO } from '../../../../theme';
 import { ParamsType } from "../../../../interfacesTypes";
+import { GRAY_FIVE, GREY_THREE, GREY_TWO, WHITE, WHITE_TWO } from '../../../../theme';
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles";
 import {
   AppointmentPayload, Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery
@@ -18,15 +18,17 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/appointmentReducer";
 import {
-  APPOINTMENT_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION, CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, PATIENT_CANCELLED_APPOINTMENT,
-  PATIENT_APPOINTMENT_CANCEL, APPOINTMENT_CONFIRMED, CANCEL_APPOINTMENT_TEXT, CONTINUE_TEXT, APPOINTMENT_CONFIRM_SUBHEADING, appointmentConfirmationDescription, 
-  PATIENT_INFORMATION,
+  APPOINTMENT_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT, DELETE_APPOINTMENT_DESCRIPTION,
+  CANT_CANCELLED_APPOINTMENT, TOKEN_NOT_FOUND, PATIENT_CANCELLED_APPOINTMENT, PATIENT_APPOINTMENT_CANCEL,
+  APPOINTMENT_CONFIRMED, CANCEL_APPOINTMENT_TEXT, CONTINUE_TEXT, APPOINTMENT_CONFIRM_SUBHEADING,
+  appointmentConfirmationDescription, PATIENT_INFORMATION_ROUTE
 } from '../../../../constants';
 
 const AppointmentConfirmationComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = confirmationStyles();
-  const [{ appointment, openDelete }, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
+  const [{ appointment, openDelete }, dispatch] =
+    useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { scheduleStartDateTime, token, patientId } = appointment || {}
 
   const [getAppointment, { loading: getAppointmentLoading }] = useGetAppointmentLazyQuery({
@@ -52,7 +54,10 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
               history.push(PATIENT_APPOINTMENT_CANCEL)
             }
 
-            dispatch({ type: ActionType.SET_APPOINTMENT, appointment: appointment as AppointmentPayload['appointment'] })
+            dispatch({
+              type: ActionType.SET_APPOINTMENT,
+              appointment: appointment as AppointmentPayload['appointment']
+            })
           }
         }
       } catch (error) { }
@@ -134,7 +139,7 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
               </Box>
 
               <Button type="submit" variant="contained" color="primary" disabled={!!!patientId}>
-                <Link to={`${PATIENT_INFORMATION}/${patientId}`}>
+                <Link to={`${PATIENT_INFORMATION_ROUTE}/${patientId}`}>
                   {/* <Link to={PATIENT_APPOINTMENT_SUCCESS}> */}
                   <Box color={WHITE}>
                     {CONTINUE_TEXT}
