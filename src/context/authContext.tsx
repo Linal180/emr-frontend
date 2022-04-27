@@ -25,6 +25,8 @@ export const AuthContext = createContext<AuthContextProps>({
   setCurrentUser: (user: Doctor | Staff | null) => { },
   setCurrentDoctor: (doctor: Doctor | null) => { },
   setCurrentStaff: (staff: Staff | null) => { },
+  setUserRoles: (roles: string[]) => { },
+  setUserPermissions: (permissions: string[]) => { }
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
@@ -133,8 +135,11 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
             if (!!roles) {
               setUserRoles(pluck(roles, 'role'));
 
+              console.log("roles inside authCOntext", roles)
+
               roles?.map(role => {
                 const { rolePermissions } = role || {};
+                console.log(rolePermissions, "rolePermissions")
                 let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
                 const allPermissions = permissionsList?.length === 0 ? [''] : permissionsList
 
@@ -172,7 +177,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
         setCurrentDoctor,
         setCurrentStaff,
         currentStaff,
-        currentDoctor
+        currentDoctor,
+        setUserPermissions,
+        setUserRoles
       }}
     >
       {children}

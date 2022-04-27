@@ -455,7 +455,7 @@ export const setTimeDay = (time: string, day: string): string => {
   } else if (currentDay > selectedDay) {
     x = currentDay - selectedDay
 
-    result = moment(date.setDate(date.getDate() - (x % 7))).format().toString()
+    result = moment(date.setDate(date.getDate() + (7 - x))).format().toString()
   }
 
   return result

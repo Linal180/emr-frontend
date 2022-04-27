@@ -158,9 +158,9 @@ const PublicFormPreview = () => {
             </form>
           </FormProvider>
         </Box> :
-        <Grid container >
+        <Grid container>
           <Grid item xs={false} sm={false} md={4} />
-          <Grid item xs={12} sm={12} md={4} >
+          <Grid item xs={12} sm={12} md={4}>
             <Card>
               <Box minHeight="400px" display={'flex'} justifyContent={'center'} alignItems={'center'}>
                 <Box maxWidth="700px">

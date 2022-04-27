@@ -18,6 +18,8 @@ export const useHeaderStyles = makeStyles((theme) => ({
     borderBottom: `1px solid ${WHITE_FOUR}`,
     boxShadow: "none",
     padding: theme.spacing(0, 4),
+    height: 80,
+    overflow: 'hidden',
 
     [theme.breakpoints.down("sm")]: {
       padding: 0,

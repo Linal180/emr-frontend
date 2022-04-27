@@ -355,6 +355,13 @@ export const basicContactSchema = {
     .required(requiredMessage(PHONE_NUMBER)),
 };
 
+export const basicContactViaAppointmentSchema = {
+  basicMobile: notRequiredPhone(MOBILE_NUMBER),
+  basicEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
+  basicPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10)).max(15, MaxLength(PHONE_NUMBER, 15))
+    .required(requiredMessage(PHONE_NUMBER)),
+};
+
 export const billingAddressSchema = {
   billingState: stateSchema(false),
   billingFax: notRequiredPhone(FAX),
@@ -593,6 +600,11 @@ export const extendedEditPatientSchema = yup.object({
   ...guardianPatientSchema,
   ...emergencyPatientSchema,
   ...guarantorPatientSchema,
+})
+
+export const extendedPatientAppointmentSchema = yup.object({
+  ...PatientSchema,
+  ...basicContactViaAppointmentSchema,
 })
 
 export const settingSchema = yup.object({

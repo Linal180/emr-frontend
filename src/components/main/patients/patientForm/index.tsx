@@ -26,7 +26,7 @@ import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPa
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
-import { getDate, getTimestamps, renderDoctors, renderFacilities, setRecord } from '../../../../utils';
+import { getDate, getTimestamps, renderDoctors, renderFacilities, renderItem, setRecord } from '../../../../utils';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
   Pronouns, Race, RelationshipType, Sexualorientation, useGetPatientLazyQuery,
@@ -55,7 +55,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facilityList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress, facilityName
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
     privacyNotice: false,
@@ -118,6 +118,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             if (facilityId) {
               fetchAllDoctorList(facilityId)
               name && setValue("facilityId", setRecord(facilityId, name))
+              dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName: name })
             }
           }
 
@@ -1025,29 +1026,30 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={REGISTRATION_DATES}>
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    {!isEdit && <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          addEmpty
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={FACILITY}
-                          name="facilityId"
-                          options={renderFacilities(facilityList)}
-                        />
-                      </Grid>
+                    {isEdit ? renderItem(FACILITY, facilityName)
+                      : <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <Selector
+                            addEmpty
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={FACILITY}
+                            name="facilityId"
+                            options={renderFacilities(facilityList)}
+                          />
+                        </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          addEmpty
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={USUAL_PROVIDER_ID}
-                          name="usualProviderId"
-                          options={renderDoctors(doctorList)}
-                        />
-                      </Grid>
-                    </Grid>}
+                        <Grid item md={6} sm={12} xs={12}>
+                          <Selector
+                            addEmpty
+                            isRequired
+                            value={EMPTY_OPTION}
+                            label={USUAL_PROVIDER_ID}
+                            name="usualProviderId"
+                            options={renderDoctors(doctorList)}
+                          />
+                        </Grid>
+                      </Grid>}
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>

@@ -287,7 +287,7 @@ body .MuiTabPanel-root {
 
 .MuiCheckbox-colorPrimary.Mui-checked,
 .MuiCheckbox-root.Mui-checked .MuiSvgIcon-root {
-  color: #00A3FF;
+  color: #204ECF;
 }
 
 .MuiCheckbox-root.Mui-checked .MuiIconButton-label:before {
@@ -440,4 +440,14 @@ body .MuiTabPanel-root {
 .dialogBg {
   background-color: #ffffff !important;
   border: none !important;
+}
+
+.schedulerTableCell {
+  border: 1px solid #E4E6EF !important;
+  width: 200px !important;
+  height: 200px !important;
+}
+
+.selectorClass .MuiSvgIcon-root {
+  color: #202020 !important;
 }
