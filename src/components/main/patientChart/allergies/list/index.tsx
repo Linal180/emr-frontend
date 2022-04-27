@@ -8,7 +8,7 @@ import CardLayout from "../../common/CardLayout";
 import AllergiesModal1Component from "../FilterSearch";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block
-import { GREY_SEVEN } from "../../../../../theme";
+import { GREY_SEVEN, RED } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { formatValue, getAppointmentDate } from "../../../../../utils";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
@@ -114,9 +114,6 @@ const AllergyList = (): JSX.Element => {
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
   };
 
-  // const handleEdit = (event: MouseEvent<HTMLElement>, id: string) => {
-  // }
-
   const handleSearch = async (type: string, query: string) => {
     try {
       query && await findAllAllergies({
@@ -131,7 +128,6 @@ const AllergyList = (): JSX.Element => {
   }
 
   return (
-    <>
       <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
         hasAdd
         dispatcher={dispatch}
@@ -167,8 +163,10 @@ const AllergyList = (): JSX.Element => {
                       }
                     </Box>
 
-                    <Box>
-                      <Typography className={classes.cardContentDescription}>{allergySeverity}</Typography>
+                    <Box mt={1} display="flex" alignItems="center">
+                      <Box mr={2} color={RED}>
+                        <Typography>{allergySeverity}</Typography>
+                      </Box>
 
                       {reactions?.map(reaction => {
                         const { name } = reaction || {}
@@ -200,7 +198,6 @@ const AllergyList = (): JSX.Element => {
           }
         </Menu>
       </CardLayout>
-    </>
   );
 }
 

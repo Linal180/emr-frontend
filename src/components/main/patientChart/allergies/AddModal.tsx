@@ -24,9 +24,7 @@ import {
 } from '../../../../generated/graphql';
 import {
   ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
-  PATIENT_ALLERGY_DELETED,
-  PATIENT_ALLERGY_UPDATED,
-  REACTION, SEVERITY, START_DATE, UPDATE
+  PATIENT_ALLERGY_DELETED, PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, START_DATE, UPDATE
 } from '../../../../constants';
 
 const AddModal: FC<AddModalProps> = (
@@ -67,8 +65,8 @@ const AddModal: FC<AddModalProps> = (
         }
 
         id && name && setValue('severityId', setRecord(id, name))
-        allergyOnset && setOnset(formatValue(allergyOnset).trim())
-        !allergyOnset && allergyStartDate && setValue('allergyStartDate', allergyStartDate)
+        !allergyStartDate && allergyOnset && setOnset(formatValue(allergyOnset).trim())
+        setValue('allergyStartDate', allergyStartDate || '')
         allergySeverity && setValue('severityId', setRecord(allergySeverity, allergySeverity))
       }
     }
@@ -178,23 +176,25 @@ const AddModal: FC<AddModalProps> = (
     }
 
     const inputs = {
-      allergyOnset: onset.toUpperCase() as AllergyOnset, comments, isActive: true,
-      allergySeverity: selectedSeverity as AllergySeverity,
-      allergyStartDate: getTimestamps(allergyStartDate || ''),
+      comments, isActive: true, allergySeverity: selectedSeverity as AllergySeverity,
+      allergyStartDate: ''
     }
+
+    const extendedInputs = onset ? { ...inputs, allergyOnset: onset.toUpperCase() as AllergyOnset } :
+      allergyStartDate ? { ...inputs, allergyStartDate: getTimestamps(allergyStartDate || '') } : { ...inputs }
 
     if (isEdit) {
       patientAllergyId && await updatePatientAllergy({
         variables: {
           updateAllergyInput: {
-            ...commonInputs, updatePatientAllergyInput: { id: patientAllergyId, ...inputs }
+            ...commonInputs, updatePatientAllergyInput: { id: patientAllergyId, ...extendedInputs }
           }
         }
       })
     } else {
       await addPatientAllergy({
         variables: {
-          createPatientAllergyInput: { ...commonInputs, ...inputs, }
+          createPatientAllergyInput: { ...commonInputs, ...extendedInputs, }
         }
       })
     }
@@ -204,65 +204,70 @@ const AddModal: FC<AddModalProps> = (
 
   return (
     <FormProvider {...methods}>
-      {getAllergyLoading ? <ViewDataLoader columns={12} rows={4} /> :
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-            <Typography variant='h4'>{name}</Typography>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center" >
+          <Typography variant='h4'>{name}</Typography>
 
-            <IconButton onClick={closeAddModal}>
-              <ClearIcon />
-            </IconButton>
-          </Box>
+          <IconButton onClick={closeAddModal}>
+            <ClearIcon />
+          </IconButton>
+        </Box>
 
-          <Selector
-            value={EMPTY_OPTION}
-            label={REACTION}
-            name="reactionIds"
-            options={renderReactions(reactionList)}
-          />
+        {getAllergyLoading ?
+          <ViewDataLoader columns={12} rows={4} />
+          :
+          <>
+            <Selector
+              value={EMPTY_OPTION}
+              label={REACTION}
+              name="reactionIds"
+              options={renderReactions(reactionList)}
+            />
 
-          <Selector
-            value={EMPTY_OPTION}
-            label={SEVERITY}
-            name="severityId"
-            options={MAPPED_ALLERGY_SEVERITY}
-          />
+            <Selector
+              value={EMPTY_OPTION}
+              label={SEVERITY}
+              name="severityId"
+              options={MAPPED_ALLERGY_SEVERITY}
+            />
 
-          <DatePicker name="allergyStartDate" label={START_DATE} />
+            <DatePicker name="allergyStartDate" label={START_DATE} />
 
-          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-            {onsets.map(onSet =>
-              <Box onClick={() => handleOnset(onSet)} className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
-                <Typography variant='h6'>{onSet}</Typography>
-              </Box>
-            )}
-          </Box>
+            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+              {onsets.map(onSet =>
+                <Box onClick={() => handleOnset(onSet)} className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
+                  <Typography variant='h6'>{onSet}</Typography>
+                </Box>
+              )}
+            </Box>
 
-          <InputController
-            fieldType="text"
-            controllerName="comments"
-            controllerLabel={NOTE}
-          />
+            <InputController
+              fieldType="text"
+              controllerName="comments"
+              controllerLabel={NOTE}
+            />
+          </>
+        }
 
-          <Box display='flex' justifyContent='flex-end'>
-            {isEdit &&
-              <Button disabled={removeAllergyLoading} onClick={handleDelete} variant='contained'
-                className='btnDanger'
-              >
-                {DELETE}
-              </Button>
-            }
 
-            <Box p={1} />
-
-            <Button type='submit' disabled={isDisable} variant='contained' color='primary'>
-              {isEdit ? UPDATE : ADD}
-
-              {isDisable && <CircularProgress size={20} color="inherit" />}
+        <Box display='flex' justifyContent='flex-end'>
+          {isEdit &&
+            <Button disabled={removeAllergyLoading} onClick={handleDelete} variant='contained'
+              className='btnDanger'
+            >
+              {DELETE}
             </Button>
-          </Box>
-        </form>
-      }
+          }
+
+          <Box p={1} />
+
+          <Button type='submit' disabled={isDisable} variant='contained' color='primary'>
+            {isEdit ? UPDATE : ADD}
+
+            {isDisable && <CircularProgress size={20} color="inherit" />}
+          </Button>
+        </Box>
+      </form>
     </FormProvider>
   )
 };
