@@ -3081,7 +3081,7 @@ export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
 
 export const FORM_BUILDER_FIELDS_TABS = [
   {
-    title: "Fields",
+    title: "Custom Forms",
     value: "1",
   },
   {
