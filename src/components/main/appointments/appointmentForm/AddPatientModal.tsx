@@ -12,7 +12,7 @@ import CardComponent from "../../../common/CardComponent";
 import { AuthContext, ListContext } from '../../../../context';
 import { extendedPatientAppointmentSchema } from "../../../../validationSchemas";
 import { AddPatientModalProps, PatientInputProps } from "../../../../interfacesTypes";
-import { checkPermission, getTimestamps } from "../../../../utils";
+import { checkPermission, getTimestampsForDob } from "../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation
 } from "../../../../generated/graphql";
@@ -91,7 +91,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facility
         medicationHistoryAuthority: false, ethnicity: Ethnicity.None, homeBound: Homebound.No, holdStatement: Holdstatement.None,
         previouslastName: '', motherMaidenName: '', ssn: SSN_FORMAT, statementNote: '', language: '', patientNote: '', email: basicEmail,
         pronouns: Pronouns.None, race: Race.White, gender: Genderidentity.None, sexAtBirth: selectedSexAtBirth as Genderidentity || Genderidentity.None, genderIdentity: Genderidentity.None,
-        maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None, statementDelivereOnline: false, dob: dob ? getTimestamps(dob) : '',
+        maritialStatus: Maritialstatus.Single, sexualOrientation: Sexualorientation.None, statementDelivereOnline: false, dob: dob ? getTimestampsForDob(dob) : '',
       };
 
       const contactInput = {

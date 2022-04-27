@@ -755,7 +755,8 @@ export const SSN_FORMAT = '000-00-0000';
 export const DOB_FORMAT = 'DD-MM-YYYY';
 export const PRN_FORMAT = 'AA123456';
 export const EMAIL_FORMAT = 'example@email.com';
-export const Name_FORMAT = 'First Last';
+export const NAME_FORMAT = 'First Last';
+export const APP_NAME_FORMAT = 'First Middle Last';
 export const PRICE = "Price";
 export const SEARCH = "Search";
 export const BILLING = "Billing";
@@ -3092,7 +3093,7 @@ export const FORM_BUILDER_FIELDS_TABS = [
 export const PatientSearchingTooltipData = [
   {
     name: `${NAME}:`,
-    format: Name_FORMAT,
+    format: NAME_FORMAT,
   },
   {
     name: `${EMAIL}:`,
@@ -3101,6 +3102,25 @@ export const PatientSearchingTooltipData = [
   {
     name: `${PRN}:`,
     format: PRN_FORMAT,
+  },
+  {
+    name: `${DOB}:`,
+    format: DOB_FORMAT,
+  },
+  {
+    name: `${SSN}:`,
+    format: SSN_FORMAT,
+  }
+];
+
+export const AppointmentSearchingTooltipData = [
+  {
+    name: `${NAME}:`,
+    format: APP_NAME_FORMAT,
+  },
+  {
+    name: `${EMAIL}:`,
+    format: EMAIL_FORMAT,
   },
   {
     name: `${DOB}:`,

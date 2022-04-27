@@ -420,9 +420,16 @@ export interface CustomInputControlProps extends IControlLabel {
   info?: string;
 }
 
+export interface TooltipData {
+  name: string;
+  format: string;
+}
+
+
 export interface SearchComponentProps {
   search: Function;
   info?: boolean;
+  tooltipData?: TooltipData[]
 }
 
 export interface AppMenuItemTypes {
@@ -668,13 +675,13 @@ export type ExternalPatientInputProps = {
 } & { emergencyCountry: SelectorOption } & {
   emergencyState: SelectorOption;
 } & Pick<
-    CreatePatientItemInput,
-    | "pharmacy"
-    | "voiceCallPermission"
-    | "phonePermission"
-    | "callToConsent"
-    | "releaseOfInfoBill"
-  > &
+  CreatePatientItemInput,
+  | "pharmacy"
+  | "voiceCallPermission"
+  | "phonePermission"
+  | "callToConsent"
+  | "releaseOfInfoBill"
+> &
   Pick<
     CreateContactInput,
     "address" | "address2" | "city" | "zipCode" | "ssn"
@@ -701,9 +708,9 @@ export type ExtendedExternalAppointmentInputProps = Pick<
   CreateExternalAppointmentItemInput,
   "scheduleEndDateTime" | "scheduleStartDateTime"
 > & { serviceId: SelectorOption } & { providerId: SelectorOption } & Pick<
-    CreatePatientItemInput,
-    "firstName" | "lastName" | "email" | "dob"
-  > & { phone: string } & { sexAtBirth: SelectorOption };
+  CreatePatientItemInput,
+  "firstName" | "lastName" | "email" | "dob"
+> & { phone: string } & { sexAtBirth: SelectorOption };
 
 export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & {
   facilityId: SelectorOption;
