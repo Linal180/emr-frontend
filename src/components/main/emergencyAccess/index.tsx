@@ -16,9 +16,10 @@ import {
 import Alert from "../../common/Alert";
 import { Role, UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
 import { AuthContext } from "../../../context";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 import { Maybe } from "graphql/jsutils/Maybe";
 import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
+import { Pagination } from "@material-ui/lab";
 
 interface RolePayloadInterface {
   id: string
@@ -33,9 +34,13 @@ const EmergencyAccessComponent = (): JSX.Element => {
   const [emergencyAccessUsers, setEmergencyAccessUsers] = useState<User[] | null>(null);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [shoudlFetchEmergencyUser, setShoudlFetchEmergencyUser] = useState(true)
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
   const [rolePayload, setRolePayload] = useState<UpdateRoleInput | null>(null)
 
   const isFacAdmin = isFacilityAdmin(user?.roles);
+
+  const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
   const [updateUserRole, { loading: UpdateUserRoleLoading }] =
     useUpdateUserRoleMutation({
@@ -96,11 +101,16 @@ const EmergencyAccessComponent = (): JSX.Element => {
         const { fetchEmergencyAccessUsers } = data
 
         if (fetchEmergencyAccessUsers) {
-          const { emergencyAccessUsers } = fetchEmergencyAccessUsers;
+          const { emergencyAccessUsers, pagination } = fetchEmergencyAccessUsers;
           if (emergencyAccessUsers) {
 
             setEmergencyAccessUsers(emergencyAccessUsers as User[]);
             setShoudlFetchEmergencyUser(false)
+
+            if (pagination) {
+              const { totalPages } = pagination
+              totalPages && setTotalPages(totalPages)
+            }
           }
         }
       }
@@ -114,7 +124,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
         fetchEmergencyAccessUsers({
           variables: {
             emergencyAccessUsersInput: {
-              paginationInput: { page: 1, limit: 10 },
+              paginationInput: { page, limit: 10 },
               facilityId: user?.facilityId
             }
           }
@@ -124,12 +134,12 @@ const EmergencyAccessComponent = (): JSX.Element => {
       fetchEmergencyAccessUsers({
         variables: {
           emergencyAccessUsersInput: {
-            paginationInput: { limit: 10, page: 1 }
+            paginationInput: { limit: 10, page }
           }
         }
       })
     }
-  }, [fetchEmergencyAccessUsers, isFacAdmin, shoudlFetchEmergencyUser, user?.facilityId]);
+  }, [fetchEmergencyAccessUsers, isFacAdmin, page, shoudlFetchEmergencyUser, user?.facilityId]);
 
   const handleEmergencyAccessToggle = async () => {
     const transformedUserRoles = userRoles.filter(
@@ -310,7 +320,21 @@ const EmergencyAccessComponent = (): JSX.Element => {
             </Table>
           </Box>
         </Box>
+
+        {totalPages > 1 && (
+          <Box display="flex" justifyContent="flex-end" p={3}>
+            <Pagination
+              count={totalPages}
+              shape="rounded"
+              variant="outlined"
+              page={page}
+              onChange={handleChange}
+            />
+          </Box>
+        )}
       </Card> : null}
+
+
 
       <UpdateConfirmationModal title={EMERGENCY_ACCESS} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
         description={rolePayload ? 'Confirm to revoke access' : 'Confirm to update emergency access'} handleDelete={handleEmergencyAccessRevoke}
