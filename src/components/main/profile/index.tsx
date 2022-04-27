@@ -9,6 +9,7 @@ import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
 import PhoneField from '../../common/PhoneInput';
 import Selector from '../../common/Selector';
+import AddImageModal from '../../common/AddMedia';
 // constants, history, styling block
 import { WHITE } from '../../../theme';
 import { renderItem, setRecord } from '../../../utils';
@@ -16,14 +17,15 @@ import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import { patientReducer, Action, initialState, State } from "../../../reducers/patientReducer";
 import {
-  ADDRESS_NUMBER, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME, GENERAL,
+  ADDRESS_NUMBER, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME, GENERAL,
   LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
   PROFILE_UPDATE, SAVE_TEXT, SECURITY, STATE, UPLOAD_PICTURE, USER_SETTINGS, ZIP_CODE
 } from "../../../constants";
 import { AuthContext } from '../../../context';
 import { ProfileEditFormType } from '../../../interfacesTypes';
-import {  useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
+import { AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
 import Alert from '../../common/Alert';
+import MediaCards from '../../common/AddMedia/MediaCards';
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
@@ -37,6 +39,7 @@ const ProfileComponent = (): JSX.Element => {
   const [state] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { attachmentUrl, attachmentId } = state
   const [edit, setEdit] = useState<boolean>(false)
+  const [openMedia, setOpenMedia] = useState(false)
   const methods = useForm<ProfileEditFormType>({
     mode: "all",
     defaultValues: {
@@ -203,7 +206,7 @@ const ProfileComponent = (): JSX.Element => {
                 </Box>
 
                 <Box pt={2}>
-                  <Button type="submit" variant="outlined" color="primary">
+                  <Button type="submit" variant="outlined" color="primary" onClick={() => setOpenMedia(!openMedia)}>
                     {UPLOAD_PICTURE}
                   </Button>
                 </Box>
@@ -376,6 +379,9 @@ const ProfileComponent = (): JSX.Element => {
           </Box>
         </Grid>
       </Grid>
+      
+      <AddImageModal isOpen={openMedia} setOpen={setOpenMedia} itemId={userId || ''} isProfile={true} isEdit={false} reload={() => { }}
+        imageModuleType={AttachmentType.Doctor} setEdit={() => { }} setAttachments={() => { }} title={ATTACHMENT_TITLES.ProfilePicture} />
     </Box>
   )
 }
