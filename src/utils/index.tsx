@@ -171,6 +171,10 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
 };
 
+export const getTimestampsForDob = (date: string): string => {
+  return date ? moment(date).format("DD-MM-YYYY").toString() : moment().format("DD-MM-YYYY").toString()
+};
+
 export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
   return date ? moment(date).format("h:mm a") : moment().format("h:mm a")
 };
