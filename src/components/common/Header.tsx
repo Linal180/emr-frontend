@@ -10,7 +10,7 @@ import history from "../../history";
 import { AuthContext } from "../../context";
 import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { activeClass, checkPermission, formatRoleName, isSuperAdmin } from "../../utils";
+import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
 import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
@@ -25,7 +25,7 @@ const HeaderNew: FC = (): JSX.Element => {
   const { roles } = user || {};
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
-  const roleName = userRoles[0]
+  const roleName = getHigherRole(userRoles) || ''
 
   useEffect(() => {
     setIsSuper(isSuperAdmin(roles))
@@ -124,7 +124,7 @@ const HeaderNew: FC = (): JSX.Element => {
                     <Typography variant="h6">{firstName} {lastName}</Typography>
 
                     <Box className={classes.roleName}>
-                      <Typography variant="body1">{formatRoleName(roleName)}</Typography>
+                      <Typography variant="body1">{roleName}</Typography>
                     </Box>
                   </>
                 )}
