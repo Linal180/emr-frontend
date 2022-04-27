@@ -43,6 +43,7 @@ export const PASSWORD_REGEX =
 
 // system roles
 export enum SYSTEM_ROLES {
+  EmergencyAccess = "emergency-access",
   SuperAdmin = "super-admin",
   PracticeAdmin = "practice-admin",
   FacilityAdmin = "facility-admin",
@@ -1089,6 +1090,7 @@ export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const DROP_FIELD = "Please drop at least one field";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
+export const CANT_DELETE_SELF_STAFF = "Staff can't delete itself";
 export const ROLE_CREATED = "Role is created successfully";
 export const ROLE_UPDATED = "Role is updated successfully";
 export const STAFF_CREATED = "Staff created successfully!";
