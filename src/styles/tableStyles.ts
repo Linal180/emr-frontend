@@ -131,17 +131,4 @@ export const useTableStyles = makeStyles(() => ({
   tooltipContainer: {
     cursor: 'pointer'
   },
-
-  tooltip: {
-    backgroundColor: 'white',
-    padding: 5
-  },
-
-  tooltipContentHeading: {
-    color: 'black'
-  },
-
-  tooltipContentDescription: {
-    color: 'green'
-  }
 }))
