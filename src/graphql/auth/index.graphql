@@ -1,7 +1,7 @@
 mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
     access_token
-    
+
     response {
       status
       message
@@ -29,6 +29,8 @@ query GetLoggedInUser {
       email
       token
       userId
+      userType
+      phone
 
       roles {
         id
@@ -45,12 +47,12 @@ query GetLoggedInUser {
       facility {
         id
         name
-        practiceId 
-        
+        practiceId
+
         practice {
           id
           name
-        }       
+        }
       }
     }
   }
@@ -66,9 +68,9 @@ mutation ForgetPassword($forgotPasswordInput: ForgotPasswordInput!) {
   }
 }
 
-mutation ResetPassword($resetPassword: ResetPasswordInput!){
-  resetPassword(resetPassword:$resetPassword){
-    response{
+mutation ResetPassword($resetPassword: ResetPasswordInput!) {
+  resetPassword(resetPassword: $resetPassword) {
+    response {
       error
       status
       message
@@ -76,8 +78,8 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
   }
 }
 
-mutation updatePassword($updatePasswordInput: UpdatePasswordInput!){
-  updatePassword(updatePasswordInput: $updatePasswordInput){
+mutation updatePassword($updatePasswordInput: UpdatePasswordInput!) {
+  updatePassword(updatePasswordInput: $updatePasswordInput) {
     response {
       error
       status
@@ -92,6 +94,18 @@ query GetDoctorUser($getDoctor: GetDoctor!) {
       id
       firstName
       lastName
+
+      contacts {
+        id
+        email
+        phone
+        address
+        zipCode
+        city
+        state
+        country
+        primaryContact
+      }
     }
 
     response {
@@ -100,8 +114,8 @@ query GetDoctorUser($getDoctor: GetDoctor!) {
   }
 }
 
-query GetStaffUser($getStaff: GetStaff!){
-  getStaff(getStaff: $getStaff){
+query GetStaffUser($getStaff: GetStaff!) {
+  getStaff(getStaff: $getStaff) {
     response {
       status
     }
@@ -111,6 +125,7 @@ query GetStaffUser($getStaff: GetStaff!){
       email
       lastName
       firstName
+      phone
     }
   }
 }

@@ -1,6 +1,7 @@
 // packages block
 import { createContext, FC, useEffect, useState } from "react";
 import { pluck } from "underscore";
+import { useCallback } from "react";
 // graphql, interfaces/types and constants block
 import { TOKEN } from "../constants";
 import { getUserRole, isSuperAdmin } from "../utils";
@@ -15,14 +16,19 @@ export const AuthContext = createContext<AuthContextProps>({
   userRoles: [],
   practiceName: '',
   currentUser: null,
+  currentStaff: null,
+  currentDoctor: null,
   isLoggedIn: false,
   userPermissions: [],
   setIsLoggedIn: () => { },
   setUser: (user: User | null) => { },
   setPracticeName: (name: string) => { },
   setCurrentUser: (user: Doctor | Staff | null) => { },
+  setCurrentDoctor: (doctor: Doctor | null) => { },
+  setCurrentStaff: (staff: Staff | null) => { },
   setUserRoles: (roles: string[]) => { },
-  setUserPermissions: (permissions: string[]) => { }
+  setUserPermissions: (permissions: string[]) => { },
+  setGetCall: (call: boolean) => { }
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
@@ -33,6 +39,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const [isLoggedIn, _setIsLoggedIn] = useState<boolean>(false);
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
+  const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
+  const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null);
+  const [getCall, setGetCall] = useState<boolean>(true)
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
@@ -52,6 +61,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
           if (doctor && status && status === 200) {
             setCurrentUser(doctor as Doctor)
+            setCurrentDoctor(doctor as Doctor)
           }
         }
       }
@@ -76,6 +86,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
           if (staff && status && status === 200) {
             setCurrentUser(staff as Staff)
+            setCurrentStaff(staff as Staff)
           }
         }
       }
@@ -127,11 +138,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
             if (!!roles) {
               setUserRoles(pluck(roles, 'role'));
 
-              console.log("roles inside authCOntext", roles)
-
               roles?.map(role => {
                 const { rolePermissions } = role || {};
-                console.log(rolePermissions, "rolePermissions")
                 let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
                 const allPermissions = permissionsList?.length === 0 ? [''] : permissionsList
 
@@ -148,10 +156,15 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);
 
+  const getUser = useCallback(async () => {
+    setGetCall(false)
+    await fetchUser()
+  }, [fetchUser])
+
   useEffect(() => {
     hasToken && setIsLoggedIn(true);
-    isLoggedIn && hasToken && fetchUser();
-  }, [isLoggedIn, hasToken, fetchUser]);
+    getCall && isLoggedIn && hasToken && getUser();
+  }, [getCall, isLoggedIn, hasToken, getUser]);
 
   return (
     <AuthContext.Provider
@@ -166,6 +179,11 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
         setCurrentUser,
         userPermissions,
         setPracticeName,
+        setCurrentDoctor,
+        setCurrentStaff,
+        setGetCall,
+        currentStaff,
+        currentDoctor,
         setUserPermissions,
         setUserRoles
       }}

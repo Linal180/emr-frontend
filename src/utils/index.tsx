@@ -9,11 +9,11 @@ import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { DaySchedule, FormAttachmentPayload, LoaderProps, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
+import { AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
@@ -187,9 +187,7 @@ export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefine
   return date ? (moment(new Date(date))).format().toString() : moment().format().toString()
 };
 
-export const getDate = (date: string) => {
-  return moment(date, "x").format("YYYY-MM-DD")
-};
+export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
@@ -199,8 +197,16 @@ export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
 
+export const UpdateRecordTitle = (recordType: string) => {
+  return `Update ${recordType} Record`;
+}
+
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const aboutToUpdate = (recordType: string) => {
+  return `You are about to update ${recordType.toLowerCase()} record`;
 }
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {
@@ -341,6 +347,38 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
       if (patient) {
         const { id, firstName, lastName } = patient;
         data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderOptionsForSelector = (options:SelectorOption[] ) => {
+  const data: AsyncSelectorOption[] = [];
+
+  if (!!options) {
+    for (let option of options) {
+      if (option) {
+        const { id, name } = option;
+
+        name && data.push({ value: id, label: formatValue(name) })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!reactions) {
+    for (let reaction of reactions) {
+      if (reaction) {
+        const { id, name } = reaction;
+
+        name && data.push({ id, name: formatValue(name) })
       }
     }
   }

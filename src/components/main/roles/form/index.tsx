@@ -119,7 +119,6 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           if (status && status === 200) {
             reset()
             Alert.success(PERMISSIONS_SET);
-            history.push(ROLES_ROUTE)
           }
         }
       }
@@ -161,6 +160,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (status && status === 200) {
           updateRoleList(role)
           Alert.success(ROLE_UPDATED)
+          history.push(ROLES_ROUTE)
         }
       }
     }
@@ -191,7 +191,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   useEffect(() => {
     isEdit && fetchRole()
-  }, [fetchRole, isEdit])
+  }, [fetchRole, isEdit, assignPermissionLoading])
 
   const isLoading = loading || createRoleLoading || updateRoleLoading || assignPermissionLoading;
 
@@ -201,11 +201,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         <Box pb={2.25}>
           <Typography variant='h4'>{isEdit ? EDIT_ROLE_TEXT : ADD_ROLE_TEXT}</Typography>
 
-          {(custom || isSuper) &&
-            <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
-              {SAVE_TEXT}
-            </Button>
-          }
+
         </Box>
 
         <Box>
@@ -214,7 +210,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <Box display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h4">{ROLE_DETAILS_TEXT}</Typography>
 
-                {custom &&
+                {(custom || isSuper) &&
                   <Button variant='contained' color='primary' disabled={isLoading} type='submit'>
                     {SAVE_TEXT}
                   </Button>
@@ -285,7 +281,7 @@ const RoleForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
 
                       {index === 0 && (custom || isSuper) &&
-                        <Button onClick={setPermissions} variant='contained' color='inherit' disabled={isLoading}
+                        <Button onClick={setPermissions} variant='contained' color='secondary' disabled={assignPermissionLoading}
                           className='blue-button-new'>{SET_PERMISSIONS}</Button>
                       }
                     </Box>

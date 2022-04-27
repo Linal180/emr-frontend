@@ -35,4 +35,11 @@ export const useFormBuilderSidebarStyles = makeStyles((theme) => ({
     display: "none",
     userSelect: "none",
   },
+  chips: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  chip: {
+    margin: 2,
+  },
 }));

@@ -17,7 +17,7 @@ import {
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
-  SERVICE_NAME_TEXT, DOB, FORM_NAME, PAGER,
+  SERVICE_NAME_TEXT, DOB, FORM_NAME, PAGER, ALLERGY_DATE_VALIDATION_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -701,7 +701,7 @@ export const roleSchema = yup.object({
 
 export const createFormBuilderSchemaWithFacility = yup.object({
   name: yup.string().min(3, MinLength(FORM_NAME, 3))
-    .max(30, MaxLength(FORM_NAME, 30)).required(),
+    .max(250, MaxLength(FORM_NAME, 250)).required(),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -714,7 +714,7 @@ export const createFormBuilderSchemaWithFacility = yup.object({
 
 export const createFormBuilderSchema = yup.object({
   name: yup.string().min(3, MinLength(FORM_NAME, 3))
-    .max(30, MaxLength(FORM_NAME, 30)).required(),
+    .max(250, MaxLength(FORM_NAME, 250)).required(),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -727,4 +727,17 @@ export const facilityScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(DAY), ({ id }) => !!id),
+})
+
+export const createPatientAllergySchema = (onset: string) => yup.object({
+  allergyStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
+    value => !!onset || new Date(value || '') <= new Date()),
+  severityId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+  reactionIds: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
 })

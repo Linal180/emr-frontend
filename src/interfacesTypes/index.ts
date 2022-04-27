@@ -1,67 +1,30 @@
 // packages block
-import {
-  ComponentType,
-  Dispatch,
-  ReactNode,
-  ElementType,
-  SetStateAction,
-} from "react";
+import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import { GridSize } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
-import {
-  Control,
-  ValidationRule,
-  FieldValues,
-  Ref,
-  ControllerRenderProps,
-} from "react-hook-form";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import {
+  Control, ValidationRule, FieldValues, Ref, ControllerRenderProps,
+} from "react-hook-form";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
+import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as FacilityAction } from "../reducers/facilityReducer";
 import { Action as PatientAction } from "../reducers/patientReducer";
+import { Action as FacilityAction } from "../reducers/facilityReducer";
 import {
-  LoginUserInput,
-  User,
-  UpdateContactInput,
-  CreateScheduleInput,
-  CreateAppointmentInput,
-  Staff,
-  UpdateFacilityItemInput,
-  FacilitiesPayload,
-  CreateContactInput,
-  CreateDoctorItemInput,
-  Gender,
-  CreatePatientItemInput,
-  ServicesPayload,
-  CreateExternalAppointmentItemInput,
-  CreatePracticeItemInput,
-  CreateServiceInput,
-  AllDoctorPayload,
-  Attachment,
-  AttachmentType,
-  Patient,
-  PatientsPayload,
-  Schedule,
-  UpdateAppointmentInput,
-  AppointmentsPayload,
-  RolesPayload,
-  PermissionsPayload,
-  SectionsInputs,
-  Doctor,
-  UpdateFacilityTimeZoneInput,
-  PracticesPayload,
-  CreateStaffItemInput,
-  AttachmentsPayload,
-  FieldsInputs,
-  ResponsePayloadResponse,
-  UsersFormsElements,
-  FormElement,
+  LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
+  UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
+  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
+  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
+  CreatePatientAllergyInput, Allergies
 } from "../generated/graphql";
-import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -89,12 +52,17 @@ export interface AuthContextProps {
   practiceName: string;
   userPermissions: string[];
   currentUser: Doctor | Staff | null;
+  currentDoctor: Doctor | null;
+  currentStaff: Staff | null;
   setUser: (user: User | null) => void;
   setPracticeName: (name: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setCurrentUser: (user: Doctor | Staff | null) => void;
+  setCurrentDoctor: (doctor: Doctor | null) => void;
+  setCurrentStaff: (staff: Staff | null) => void;
   setUserRoles: (roles: string[]) => void;
   setUserPermissions: (permissions: string[]) => void;
+  setGetCall: (call: boolean) => void
 }
 
 export interface DoctorScheduleSlotProps {
@@ -150,6 +118,11 @@ export interface AppointmentContextInterface {
   fetchAllAppointmentList: Function;
 }
 
+export interface ChartContextInterface {
+  reactionList: ReactionsPayload['reactions'];
+  fetchAllReactionList: Function;
+}
+
 export interface Children {
   children: ReactNode;
 }
@@ -193,6 +166,7 @@ export interface ConfirmationTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
+  learnMoreText?: string
 }
 
 export interface ConfirmationDaysTypes extends DialogTypes {
@@ -322,6 +296,11 @@ export interface IDetailCellProps {
 export interface SelectorOption {
   id: string;
   name: string | undefined | null;
+}
+
+export interface AsyncSelectorOption {
+  value: string
+  label: string | undefined | null
 }
 
 export interface DropDownOption {
@@ -996,7 +975,7 @@ export interface CustomSelectControlProps extends IControlLabel {
 
 export interface FieldEditModalProps {
   open?: boolean;
-  closeModalHanlder?: () => void;
+  closeModalHandler?: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
 }
@@ -1101,6 +1080,36 @@ export interface UserFormPreviewModalProps {
   imagePreviewHandler: (id: string) => void;
 }
 
+export interface CardLayoutProps {
+  cardId: string;
+  hasAdd?: boolean;
+  cardTitle: string;
+  isMenuOpen: boolean;
+  children: ReactNode;
+  filterTabs: string[];
+  searchLoading: boolean;
+  disableAddIcon?: boolean;
+  openSearch: HTMLElement | null;
+  dispatcher: Dispatch<ChartAction>;
+  searchComponent: ComponentType<any>;
+  searchData: AllergiesPayload['allergies'];
+  fetch: () => void;
+  handleMenuClose: () => void;
+  onClickAddIcon: (event: any) => void;
+  onSearch: (tab: string, query: string) => void;
+}
+
+export interface AddModalProps {
+  item?: Allergies;
+  isEdit?: boolean;
+  patientAllergyId?: string;
+  dispatcher: Dispatch<ChartAction>;
+  fetch: () => void;
+}
+
+export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
+  & { reactionIds: SelectorOption } & { severityId: SelectorOption }
+
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;
   success?: boolean;
@@ -1112,7 +1121,25 @@ export interface CreateTemplateTypes extends DialogTypes {
   formName: string
 }
 export interface AppointmentCardProps {
-  tooltip: AppointmentTooltip.LayoutProps;
-  setCurrentView: Function;
-  setCurrentDate: Function;
+  tooltip: AppointmentTooltip.LayoutProps
+  setCurrentView: Function
+  setCurrentDate: Function
+}
+
+export interface ProfileEditFormType {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  addressNumber: string
+  city: string
+  state: SelectorOption
+  country: SelectorOption
+  zipCode: string
+  contactId: string
+}
+
+export interface RolePayloadInterface {
+  id: string
+  roles?: RolesPayload['roles']
 }
