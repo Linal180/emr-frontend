@@ -43,7 +43,7 @@ const MainLayout: FC<MainLayoutProps> = ({ children }): JSX.Element => {
     <>
       <IdleTimer element={document} onIdle={onIdle} timeout={timeout} />
       {!getToken() && <Redirect to={{ pathname: LOGIN_ROUTE }} />}
-
+      
       {isLoggedIn &&
         ((!user || !userPermissions.length) ? <BackdropLoader loading={true} /> : <AppLayout />)
       }
