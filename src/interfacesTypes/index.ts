@@ -1152,6 +1152,7 @@ export type multiOptionType = {
 export interface MultiSelectorInterface {
   name: string
   label: string
+  isEdit?: boolean;
   disable?: boolean
   isRequired?: boolean
   selectDisabled?: boolean

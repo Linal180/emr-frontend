@@ -9,7 +9,10 @@ import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
+import {
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
+  SelectorOption, TableAlignType, UserFormType
+} from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
@@ -18,8 +21,8 @@ import {
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL, SYSTEM_ROLES,
-  USER_FORM_IMAGE_UPLOAD_URL
+  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
+  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL
 } from "../constants";
 
 export const handleLogout = () => {
@@ -354,7 +357,7 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
   return data;
 }
 
-export const renderOptionsForSelector = (options:SelectorOption[] ) => {
+export const renderOptionsForSelector = (options: SelectorOption[]) => {
   const data: AsyncSelectorOption[] = [];
 
   if (!!options) {
@@ -817,4 +820,18 @@ export const visibleToUser = (userRoles: string[], visible: string[] | undefined
   visible && userRoles.map(role => allow = visible.includes(role))
 
   return allow;
-}; 
+};
+
+export const getReactionData = (data: ReactionsPayload['reactions']) => {
+  let result: multiOptionType[] = [];
+
+  if (!!data) {
+    data.map(reaction => {
+      const { id, name } = reaction || {}
+
+      return id && name && result.push({ value: id, label: formatValue(name).trim() })
+    })
+  }
+
+  return result;
+}

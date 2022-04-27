@@ -18,10 +18,10 @@ import { ClearIcon } from '../../../../assets/svgs';
 import ViewDataLoader from '../../../common/ViewDataLoader';
 import { ActionType } from '../../../../reducers/chartReducer';
 import { createPatientAllergySchema } from '../../../../validationSchemas';
-import { formatValue, getTimestamps, renderReactions, setRecord } from '../../../../utils';
+import { formatValue, getReactionData, getTimestamps, setRecord } from '../../../../utils';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../interfacesTypes';
 import {
-  AllergyOnset, AllergySeverity, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
+  AllergyOnset, AllergySeverity, ReactionsPayload, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
   useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation
 } from '../../../../generated/graphql';
 import {
@@ -41,7 +41,7 @@ const AddModal: FC<AddModalProps> = (
     mode: "all",
     resolver: yupResolver(createPatientAllergySchema(onset))
   });
-  const { handleSubmit, reset, setValue, watch, formState: { errors } } = methods;
+  const { handleSubmit, reset, setValue, watch } = methods;
   const { allergyStartDate, reactionIds } = watch()
 
   const [getPatientAllergy, { loading: getAllergyLoading }] = useGetPatientAllergyLazyQuery({
@@ -58,12 +58,11 @@ const AddModal: FC<AddModalProps> = (
 
       if (patientAllergy) {
         const { allergyOnset, allergyStartDate, allergySeverity, reactions } = patientAllergy
-        const allergyReaction = reactions && reactions[0]
 
-        if (allergyReaction) {
-          const { id, name } = allergyReaction
+        if (!!reactions) {
+          const reactionData = getReactionData(reactions as ReactionsPayload['reactions'])
 
-          // id && name && setValue('reactionIds', setRecord(id, name))
+          id && name && setValue('reactionIds', reactionData)
         }
 
         id && name && setValue('severityId', setRecord(id, name))
@@ -208,8 +207,6 @@ const AddModal: FC<AddModalProps> = (
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {JSON.stringify(reactionIds)}--------------
-        {JSON.stringify(errors)}
         <Box mb={2} display="flex" justifyContent="space-between" alignItems="center" >
           <Typography variant='h4'>{name}</Typography>
 
@@ -230,9 +227,10 @@ const AddModal: FC<AddModalProps> = (
             /> */}
 
             <MultiSelect
+              isEdit={isEdit}
               label={REACTION}
               name="reactionIds"
-              optionsArray={renderReactions(reactionList)}
+              optionsArray={reactionIds}
             />
 
             <Selector

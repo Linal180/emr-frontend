@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState } from 'react'
+import { FC, useEffect, useState } from 'react'
 import Select from 'react-select';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, FormHelperText, Box } from '@material-ui/core'
@@ -8,7 +8,7 @@ import { renderReactions, requiredLabel } from "../../utils";
 import { multiOptionType, MultiSelectorInterface } from '../../interfacesTypes';
 import { ReactionsPayload, useFindAllReactionsLazyQuery } from '../../generated/graphql';
 
-const MultiSelect: FC<MultiSelectorInterface> = ({ name, label, isRequired }) => {
+const MultiSelect: FC<MultiSelectorInterface> = ({ name, isEdit, label, isRequired, optionsArray }) => {
   const { control } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[]>([])
 
@@ -38,11 +38,17 @@ const MultiSelect: FC<MultiSelectorInterface> = ({ name, label, isRequired }) =>
     } catch (error) { }
   }
 
+  useEffect(() => {
+    if(isEdit){
+      setOptions(optionsArray)
+    }
+  },[isEdit, optionsArray])
+  
   return (
     <Controller
       name={name}
       control={control}
-      defaultValue={options[0]}
+      defaultValue={[]}
       render={({ field, fieldState: { invalid } }) => {
         return (
           <FormControl margin="normal" fullWidth error={Boolean(invalid)}>
