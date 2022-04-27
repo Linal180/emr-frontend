@@ -380,7 +380,7 @@ const ProfileComponent = (): JSX.Element => {
         </Grid>
       </Grid>
       
-      <AddImageModal isOpen={openMedia} setOpen={setOpenMedia} itemId={userId || ''} isProfile={true} isEdit={false} reload={() => { }}
+      <AddImageModal isOpen={openMedia} setOpen={setOpenMedia} itemId={userId || ''}  isEdit={false} reload={() => { }}
         imageModuleType={AttachmentType.Doctor} setEdit={() => { }} setAttachments={() => { }} title={ATTACHMENT_TITLES.ProfilePicture} />
     </Box>
   )
