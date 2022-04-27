@@ -1,7 +1,6 @@
 // packages block
 import { Reducer, useReducer, MouseEvent, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router";
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
 // components block
 import CardLayout from "../../common/CardLayout";
 import AllergiesModal1Component from "../FilterSearch";
@@ -14,11 +13,11 @@ import {
 } from "../../../../../reducers/chartReducer";
 import {
   PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery,
-  AllergiesPayload, AllergyType, PatientAllergies,
+  AllergiesPayload, AllergyType,
 } from "../../../../../generated/graphql";
 import { Box, Typography } from "@material-ui/core";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
-import { GREY_SEVEN } from "../../../../../theme";
+import { GREY_SEVEN, RED } from "../../../../../theme";
 import { formatValue, getAppointmentDate } from "../../../../../utils";
 // import AddModal from "../AddModal";
 
@@ -160,8 +159,10 @@ const AllergyList = (): JSX.Element => {
                       }
                     </Box>
 
-                    <Box>
-                      <Typography className={classes.cardContentDescription}>{allergySeverity}</Typography>
+                    <Box mt={1} display="flex" alignItems="center">
+                      <Box mr={2} color={RED}>
+                        <Typography>{allergySeverity}</Typography>
+                      </Box>
 
                       {reactions?.map(reaction => {
                         const { name } = reaction || {}

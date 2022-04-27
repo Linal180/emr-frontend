@@ -17,9 +17,7 @@ import { ActionType } from '../../../../reducers/chartReducer';
 import { getTimestamps, renderReactions } from '../../../../utils';
 import { createPatientAllergySchema } from '../../../../validationSchemas';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../interfacesTypes';
-import {
-  AllergyOnset, AllergySeverity, PatientAllergyPayload, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery
-} from '../../../../generated/graphql';
+import { AllergyOnset, AllergySeverity, useAddPatientAllergyMutation } from '../../../../generated/graphql';
 import {
   ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
   REACTION, SEVERITY, START_DATE, UPDATE
