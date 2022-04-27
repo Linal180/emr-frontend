@@ -1,6 +1,7 @@
 import { Allergies, AllergiesPayload, ReactionsPayload } from "../generated/graphql"
 
 export interface State {
+  itemId: string;
   reactionList: ReactionsPayload['reactions'];
   selectedItem: Allergies | undefined;
   reactionPage: number;
@@ -10,6 +11,7 @@ export interface State {
 }
 
 export const initialState: State = {
+  itemId: '',
   reactionList: [],
   selectedItem: undefined,
   reactionPage: 1,
@@ -19,6 +21,7 @@ export const initialState: State = {
 }
 
 export enum ActionType {
+  SET_ITEM_ID = 'setItemId',
   SET_SELECTED_ITEM = 'setSelectedItem',
   SET_REACTION_PAGE = 'setReactionPage',
   SET_REACTION_LIST = 'setReactionList',
@@ -30,6 +33,7 @@ export enum ActionType {
 export type Action =
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
   | { type: ActionType.SET_REACTION_PAGE, reactionPage: number }
+  | { type: ActionType.SET_ITEM_ID, itemId: string }
   | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | undefined }
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_IS_FORM_OPEN, isFormOpen: HTMLElement | null }
@@ -42,6 +46,12 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isSearchOpen: action.isSearchOpen
+      }
+
+    case ActionType.SET_ITEM_ID:
+      return {
+        ...state,
+        itemId: action.itemId
       }
 
     case ActionType.SET_IS_FORM_OPEN:

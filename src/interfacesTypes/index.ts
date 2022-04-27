@@ -969,6 +969,7 @@ export interface AddModalProps {
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
   & { reactionIds: SelectorOption } & { severityId: SelectorOption }
+
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;
   success?: boolean;

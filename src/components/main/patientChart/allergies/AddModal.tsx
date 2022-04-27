@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext, useEffect, useState, } from 'react';
+import { FC, useCallback, useContext, useEffect, useState, } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
@@ -13,15 +13,19 @@ import InputController from '../../../../controller';
 import { GRAY_SIX } from '../../../../theme';
 import { ChartContext } from '../../../../context';
 import { ClearIcon } from '../../../../assets/svgs';
+import ViewDataLoader from '../../../common/ViewDataLoader';
 import { ActionType } from '../../../../reducers/chartReducer';
-import { getTimestamps, renderReactions } from '../../../../utils';
 import { createPatientAllergySchema } from '../../../../validationSchemas';
+import { formatValue, getTimestamps, renderReactions, setRecord } from '../../../../utils';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../interfacesTypes';
 import {
-  AllergyOnset, AllergySeverity, PatientAllergyPayload, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery
+  AllergyOnset, AllergySeverity, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
+  useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation
 } from '../../../../generated/graphql';
 import {
   ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
+  PATIENT_ALLERGY_DELETED,
+  PATIENT_ALLERGY_UPDATED,
   REACTION, SEVERITY, START_DATE, UPDATE
 } from '../../../../constants';
 
@@ -32,30 +36,43 @@ const AddModal: FC<AddModalProps> = (
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
   const [onset, setOnset] = useState<string>('')
-  // const [item, setItem] = useState<PatientAllergyPayload['patientAllergy']>(null)
   const { reactionList, fetchAllReactionList } = useContext(ChartContext)
   const methods = useForm<CreatePatientAllergyProps>({
     mode: "all",
     resolver: yupResolver(createPatientAllergySchema(onset))
   });
-  const { handleSubmit, reset, watch } = methods;
+  const { handleSubmit, reset, setValue, watch } = methods;
   const { allergyStartDate } = watch()
 
-  // const [getPatientAllergy, { loading: getAllergyLoading }] = useGetPatientAllergyLazyQuery({
-  //   onError({ message }) {
-  //     Alert.error(message)
-  //   },
+  const [getPatientAllergy, { loading: getAllergyLoading }] = useGetPatientAllergyLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
-  //   onCompleted(data) {
-  //     const { getPatientAllergy: { patientAllergy} } = data;
+    onError({ message }) {
+      Alert.error(message)
+    },
 
-  //     if (patientAllergy) {
-  //       const {allergyOnset, allergy, allergyStartDate, allergySeverity, reactions} = patientAllergy
+    onCompleted(data) {
+      const { getPatientAllergy: { patientAllergy } } = data;
 
-  //       allergyOnset && setOnset(allergyOnset)
-  //     }
-  //   }
-  // });
+      if (patientAllergy) {
+        const { allergyOnset, allergyStartDate, allergySeverity, reactions } = patientAllergy
+        const allergyReaction = reactions && reactions[0]
+
+        if (allergyReaction) {
+          const { id, name } = allergyReaction
+
+          id && name && setValue('reactionIds', setRecord(id, name))
+        }
+
+        id && name && setValue('severityId', setRecord(id, name))
+        allergyOnset && setOnset(formatValue(allergyOnset).trim())
+        !allergyOnset && allergyStartDate && setValue('allergyStartDate', allergyStartDate)
+        allergySeverity && setValue('severityId', setRecord(allergySeverity, allergySeverity))
+      }
+    }
+  });
 
   const [addPatientAllergy, { loading: addAllergyLoading }] = useAddPatientAllergyMutation({
     onError({ message }) {
@@ -70,7 +87,47 @@ const AddModal: FC<AddModalProps> = (
 
         if (status && status === 200) {
           fetch()
+          closeAddModal()
           Alert.success(PATIENT_ALLERGY_ADDED);
+        }
+      }
+    }
+  });
+
+  const [updatePatientAllergy, { loading: updateAllergyLoading }] = useUpdatePatientAllergyMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updatePatientAllergy: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          fetch()
+          closeAddModal()
+          Alert.success(PATIENT_ALLERGY_UPDATED);
+        }
+      }
+    }
+  });
+
+  const [removePatientAllergy, { loading: removeAllergyLoading }] = useRemovePatientAllergyMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { removePatientAllergy: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          fetch()
+          Alert.success(PATIENT_ALLERGY_DELETED);
           closeAddModal()
         }
       }
@@ -85,6 +142,16 @@ const AddModal: FC<AddModalProps> = (
     setOnset('')
   }, [allergyStartDate])
 
+  const fetchPatientAllergy = useCallback(async () => {
+    patientAllergyId && await getPatientAllergy({
+      variables: { getPatientAllergy: { id: patientAllergyId } }
+    })
+  }, [getPatientAllergy, patientAllergyId])
+
+  useEffect(() => {
+    isEdit && fetchPatientAllergy()
+  }, [fetchPatientAllergy, isEdit, patientAllergyId])
+
   const closeAddModal = () => {
     reset()
     dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null })
@@ -94,85 +161,108 @@ const AddModal: FC<AddModalProps> = (
     setOnset(onset)
   }
 
+  const handleDelete = async () => {
+    patientAllergyId && await removePatientAllergy({
+      variables: { removePatientAllergy: { id: patientAllergyId } }
+    })
+  }
+
   const onSubmit: SubmitHandler<CreatePatientAllergyProps> = async ({
     reactionIds, severityId, comments
   }) => {
     const { id: selectedReaction } = reactionIds || {}
     const { id: selectedSeverity } = severityId || {}
 
-    const inputs = {
-      patientId, allergyId: id, reactionsIds: [selectedReaction], comments,
-      allergySeverity: selectedSeverity as AllergySeverity,
+    const commonInputs = {
+      patientId, allergyId: id, reactionsIds: [selectedReaction],
     }
 
-    const extendedInputs = onset ? { allergyOnset: onset.toUpperCase() as AllergyOnset, ...inputs }
-      :
-      { ...inputs, allergyStartDate: getTimestamps(allergyStartDate || '') }
+    const inputs = {
+      allergyOnset: onset.toUpperCase() as AllergyOnset, comments, isActive: true,
+      allergySeverity: selectedSeverity as AllergySeverity,
+      allergyStartDate: getTimestamps(allergyStartDate || ''),
+    }
 
-    await addPatientAllergy({
-      variables: {
-        createPatientAllergyInput: { ...extendedInputs, }
-      }
-    })
+    if (isEdit) {
+      patientAllergyId && await updatePatientAllergy({
+        variables: {
+          updateAllergyInput: {
+            ...commonInputs, updatePatientAllergyInput: { id: patientAllergyId, ...inputs }
+          }
+        }
+      })
+    } else {
+      await addPatientAllergy({
+        variables: {
+          createPatientAllergyInput: { ...commonInputs, ...inputs, }
+        }
+      })
+    }
   }
 
-  const isDisable = addAllergyLoading
+  const isDisable = addAllergyLoading || updateAllergyLoading || getAllergyLoading
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
-          <Typography variant='h4'>{name}</Typography>
+      {getAllergyLoading ? <ViewDataLoader columns={12} rows={4} /> :
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant='h4'>{name}</Typography>
 
-          <IconButton onClick={closeAddModal}>
-            <ClearIcon />
-          </IconButton>
-        </Box>
+            <IconButton onClick={closeAddModal}>
+              <ClearIcon />
+            </IconButton>
+          </Box>
 
-        <Selector
-          value={EMPTY_OPTION}
-          label={REACTION}
-          name="reactionIds"
-          options={renderReactions(reactionList)}
-        />
+          <Selector
+            value={EMPTY_OPTION}
+            label={REACTION}
+            name="reactionIds"
+            options={renderReactions(reactionList)}
+          />
 
-        <Selector
-          value={EMPTY_OPTION}
-          label={SEVERITY}
-          name="severityId"
-          options={MAPPED_ALLERGY_SEVERITY}
-        />
+          <Selector
+            value={EMPTY_OPTION}
+            label={SEVERITY}
+            name="severityId"
+            options={MAPPED_ALLERGY_SEVERITY}
+          />
 
-        <DatePicker name="allergyStartDate" label={START_DATE} />
+          <DatePicker name="allergyStartDate" label={START_DATE} />
 
-        <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
-          {onsets.map(onSet =>
-            <Box onClick={() => handleOnset(onSet)} className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
-              <Typography variant='h6'>{onSet}</Typography>
-            </Box>
-          )}
-        </Box>
+          <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+            {onsets.map(onSet =>
+              <Box onClick={() => handleOnset(onSet)} className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
+                <Typography variant='h6'>{onSet}</Typography>
+              </Box>
+            )}
+          </Box>
 
-        <InputController
-          fieldType="text"
-          controllerName="comments"
-          controllerLabel={NOTE}
-        />
+          <InputController
+            fieldType="text"
+            controllerName="comments"
+            controllerLabel={NOTE}
+          />
 
-        <Box display='flex' justifyContent='flex-end'>
-          {isEdit &&
-            <Button disabled={isDisable} variant='contained' className='btnDanger'>{DELETE}</Button>
-          }
+          <Box display='flex' justifyContent='flex-end'>
+            {isEdit &&
+              <Button disabled={removeAllergyLoading} onClick={handleDelete} variant='contained'
+                className='btnDanger'
+              >
+                {DELETE}
+              </Button>
+            }
 
-          <Box p={1} />
+            <Box p={1} />
 
-          <Button type='submit' disabled={isDisable} variant='contained' color='primary'>
-            {isEdit ? UPDATE : ADD}
+            <Button type='submit' disabled={isDisable} variant='contained' color='primary'>
+              {isEdit ? UPDATE : ADD}
 
-            {isDisable && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>
-      </form>
+              {isDisable && <CircularProgress size={20} color="inherit" />}
+            </Button>
+          </Box>
+        </form>
+      }
     </FormProvider>
   )
 };

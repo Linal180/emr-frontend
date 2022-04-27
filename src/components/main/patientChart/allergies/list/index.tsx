@@ -1,34 +1,35 @@
 // packages block
 import { Reducer, useReducer, MouseEvent, useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router";
-import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
+import { Box, Menu, Typography } from "@material-ui/core";
 // components block
+import AddModal from "../AddModal";
 import CardLayout from "../../common/CardLayout";
 import AllergiesModal1Component from "../FilterSearch";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block
+import { GREY_SEVEN } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
+import { formatValue, getAppointmentDate } from "../../../../../utils";
+import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
 import { ALLERGIES_TEXT, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
 import {
   chartReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/chartReducer";
 import {
   PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery,
-  AllergiesPayload, AllergyType, PatientAllergies,
+  AllergiesPayload, AllergyType, Allergies,
 } from "../../../../../generated/graphql";
-import { Box, Typography } from "@material-ui/core";
-import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
-import { GREY_SEVEN } from "../../../../../theme";
-import { formatValue, getAppointmentDate } from "../../../../../utils";
-// import AddModal from "../AddModal";
 
 const AllergyList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
   const { id } = useParams<ParamsType>()
   const [patientAllergies, setPatientAllergies] = useState<PatientAllergiesPayload['patientAllergies']>([])
-  const [{ isSearchOpen, searchedData }, dispatch] =
+  const [{ isSearchOpen, selectedItem, searchedData, itemId, isFormOpen }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const isMenuOpen = Boolean(isSearchOpen);
+  const isFormMenuOpen = Boolean(isFormOpen);
+  const cardId = "widget-menu";
 
   const [findAllPatientAllergies, { loading }] = useFindAllPatientAllergiesLazyQuery({
     variables: {
@@ -103,9 +104,15 @@ const AllergyList = (): JSX.Element => {
 
   const handleMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) => dispatch({
     type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: currentTarget
-  })
+  });
 
   const handleMenuClose = () => dispatch({ type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: null });
+
+  const handleEdit = ({ currentTarget }: MouseEvent<HTMLElement>, id: string, allergy: Allergies) => {
+    dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: allergy })
+    dispatch({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: currentTarget })
+    dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
+  };
 
   // const handleEdit = (event: MouseEvent<HTMLElement>, id: string) => {
   // }
@@ -149,7 +156,7 @@ const AllergyList = (): JSX.Element => {
                 return (
                   <Box pb={2} key={id}>
                     <Box display="flex" justifyContent="space-between">
-                      <Box>
+                      <Box onClick={(event) => id && allergy && handleEdit(event, id, allergy)}>
                         <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
                       </Box>
 
@@ -176,6 +183,22 @@ const AllergyList = (): JSX.Element => {
               })
             ) : (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)}
           </Box>}
+
+        <Menu
+          getContentAnchorEl={null}
+          anchorEl={isFormOpen}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          id={cardId}
+          keepMounted
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          open={isFormMenuOpen}
+          onClose={handleMenuClose}
+          className={classes.dropdown}
+        >
+          {itemId && selectedItem &&
+            <AddModal item={selectedItem} dispatcher={dispatch} isEdit patientAllergyId={itemId} fetch={async () => fetchAllergies()} />
+          }
+        </Menu>
       </CardLayout>
     </>
   );
