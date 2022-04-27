@@ -193,6 +193,7 @@ export interface ConfirmationTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
+  learnMoreText?: string
 }
 
 export interface ConfirmationDaysTypes extends DialogTypes {
