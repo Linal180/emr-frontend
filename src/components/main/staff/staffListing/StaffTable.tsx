@@ -19,7 +19,7 @@ import {
   AllStaffPayload, StaffPayload, useFindAllStaffLazyQuery, useRemoveStaffMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF, STAFF_TEXT
+  ACTION, EMAIL, NAME, PAGE_LIMIT, PHONE, STAFF_ROUTE, DELETE_STAFF_DESCRIPTION, CANT_DELETE_STAFF, STAFF_TEXT, CANT_DELETE_SELF_STAFF
 } from "../../../../constants";
 
 const StaffTable: FC = (): JSX.Element => {
@@ -112,11 +112,21 @@ const StaffTable: FC = (): JSX.Element => {
     }
   };
 
-  const handleDeleteStaff = async () => deleteStaffId && await removeStaff({
-    variables: {
-      removeStaff: { id: deleteStaffId }
+  const handleDeleteStaff = async () => {
+    const userStaffId = allStaff?.find((staff) => staff?.id === deleteStaffId)?.user?.id ?? ''
+    console.log(userStaffId)
+    if (user?.id !== userStaffId) {
+      deleteStaffId && await removeStaff({
+        variables: {
+          removeStaff: { id: deleteStaffId }
+        }
+      })
+    } else {
+      Alert.error(CANT_DELETE_SELF_STAFF)
+      dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
     }
-  });
+
+  };
 
   return (
     <>
