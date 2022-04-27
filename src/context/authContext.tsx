@@ -15,12 +15,16 @@ export const AuthContext = createContext<AuthContextProps>({
   userRoles: [],
   practiceName: '',
   currentUser: null,
+  currentStaff: null,
+  currentDoctor: null,
   isLoggedIn: false,
   userPermissions: [],
   setIsLoggedIn: () => { },
   setUser: (user: User | null) => { },
   setPracticeName: (name: string) => { },
   setCurrentUser: (user: Doctor | Staff | null) => { },
+  setCurrentDoctor: (doctor: Doctor | null) => { },
+  setCurrentStaff: (staff: Staff | null) => { },
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
@@ -31,6 +35,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const [isLoggedIn, _setIsLoggedIn] = useState<boolean>(false);
   const [userPermissions, setUserPermissions] = useState<string[]>([]);
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
+  const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
+  const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null);
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
@@ -50,6 +56,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
           if (doctor && status && status === 200) {
             setCurrentUser(doctor as Doctor)
+            setCurrentDoctor(doctor as Doctor)
           }
         }
       }
@@ -74,6 +81,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
           if (staff && status && status === 200) {
             setCurrentUser(staff as Staff)
+            setCurrentStaff(staff as Staff)
           }
         }
       }
@@ -121,19 +129,19 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
                 name && setPracticeName(name)
               }
             }
-            
-            if(!!roles){
+
+            if (!!roles) {
               setUserRoles(pluck(roles, 'role'));
 
               roles?.map(role => {
                 const { rolePermissions } = role || {};
                 let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
                 const allPermissions = permissionsList?.length === 0 ? [''] : permissionsList
-                
+
                 return permissionsList && setUserPermissions(allPermissions as string[])
               })
             }
-              
+
             setUser(userResponse as User);
           }
         }
@@ -161,6 +169,10 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
         setCurrentUser,
         userPermissions,
         setPracticeName,
+        setCurrentDoctor,
+        setCurrentStaff,
+        currentStaff,
+        currentDoctor
       }}
     >
       {children}

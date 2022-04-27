@@ -1,34 +1,122 @@
 // packages block
-import { Reducer, useReducer, useState } from 'react';
+import { Reducer, useReducer, useState, useContext, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { Edit } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Avatar, Box, Button, Collapse, Grid, MenuItem, Typography } from "@material-ui/core";
+import { Avatar, Box, Button, CircularProgress, Collapse, Grid, MenuItem, Typography } from "@material-ui/core";
 //components block
 import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
+import PhoneField from '../../common/PhoneInput';
+import Selector from '../../common/Selector';
 // constants, history, styling block
 import { WHITE } from '../../../theme';
-import { renderItem } from '../../../utils';
+import { renderItem, setRecord } from '../../../utils';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import { patientReducer, Action, initialState, State } from "../../../reducers/patientReducer";
 import {
-  ADDRESS_NUMBER, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, FIRST_NAME, GENERAL, LAST_NAME, PROFILE_GENERAL_MENU_ITEMS, 
+  ADDRESS_NUMBER, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, DOCTOR_UPDATED, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME, GENERAL, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_GENERAL_MENU_ITEMS,
   PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY, STATE, UPLOAD_PICTURE, USER_SETTINGS, ZIP_CODE
 } from "../../../constants";
+import { AuthContext } from '../../../context';
+import { ProfileEditFormType } from '../../../interfacesTypes';
+import { useUpdateDoctorMutation } from '../../../generated/graphql';
+import Alert from '../../common/Alert';
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
+  const { user, currentDoctor, currentStaff } = useContext(AuthContext);
+  const { email, userType, userId, phone: userPhone } = user || {}
+  const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
+  const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
+  const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
+  const { address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId } = primaryContact || {}
+debugger
+
   const [state] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { attachmentUrl, attachmentId } = state
   const [edit, setEdit] = useState<boolean>(false)
-  const methods = useForm<any>({
+  const methods = useForm<ProfileEditFormType>({
     mode: "all",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      addressNumber: "",
+      city: "",
+      state: EMPTY_OPTION,
+      country: EMPTY_OPTION,
+      zipCode: "",
+    }
   });
-  const { handleSubmit } = methods;
+  const { handleSubmit, setValue, reset } = methods;
 
-  const onSubmit: SubmitHandler<any> = () => { }
+  const [updateDoctor, { loading: updateDoctorLoading }] = useUpdateDoctorMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updateDoctor: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          Alert.success(DOCTOR_UPDATED);
+          reset()
+        }
+      }
+    }
+  });
+
+  const onSubmit: SubmitHandler<ProfileEditFormType> = async (values) => {
+    const { firstName, lastName, addressNumber, city, phone, country, state, zipCode } = values || {}
+    const { id: stateId } = state;
+    const { id: countryId } = country
+
+    if (userType === 'doctor' && userId) {
+      await updateDoctor({
+        variables: {
+          updateDoctorInput: {
+            updateDoctorItemInput: { id: userId, firstName, lastName },
+            updateContactInput: {
+              id: contactId, primaryContact: true, address: addressNumber, city: city, state: stateId || '',
+              zipCode, country: countryId, phone: phone
+            },
+            updateBillingAddressInput: {}
+          }
+        }
+      })
+    }
+    else {
+
+    }
+
+  }
+
+  const editHandler = () => {
+
+    if (userType === 'doctor') {
+      setValue('firstName', doctorFirstName || staffFirstName || '')
+      setValue('lastName', doctorLastName || staffLastName || '')
+      setValue('email', email || '')
+      setValue('phone', phone || doctorPhone || '')
+      setValue('addressNumber', address || '')
+      setValue('city', city || '')
+      doctorState && setValue('state', setRecord(doctorState, doctorState))
+      country && setValue('country', setRecord(country, country))
+      setValue('zipCode', zipCode || '')
+    } else {
+      setValue('firstName', doctorFirstName || staffFirstName || '')
+      setValue('lastName', doctorLastName || staffLastName || '')
+      setValue('email', email || '')
+      setValue('phone', doctorLastName || staffLastName || '')
+    }
+    setEdit(!edit)
+  }
 
   return (
     <Box mt={5}>
@@ -70,7 +158,7 @@ const ProfileComponent = (): JSX.Element => {
             </CardComponent>
           </Box>
         </Grid>
-        
+
         <Grid item md={8} sm={12} xs={12}>
           <Box className={classes.profileContainer}>
             <Grid container>
@@ -87,7 +175,7 @@ const ProfileComponent = (): JSX.Element => {
               </Grid>
 
               <Grid item md={8} sm={12} xs={12}>
-                <Box onClick={() => setEdit(!edit)} mb={3} display="flex" justifyContent="flex-end">
+                <Box onClick={editHandler} mb={3} display="flex" justifyContent="flex-end">
                   {edit ?
                     <Button variant="contained" color="secondary">{CANCEL}</Button>
                     :
@@ -101,49 +189,51 @@ const ProfileComponent = (): JSX.Element => {
                       <Box py={2}>
                         <Grid container spacing={5}>
                           <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(FIRST_NAME, 'Richard')}
+                            {renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')}
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(LAST_NAME, 'Robinson')}
+                            {renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')}
                           </Grid>
                         </Grid>
 
                         <Grid container spacing={5}>
                           <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(EMAIL, 'richardrobinson@emr.com')}
+                            {renderItem(EMAIL, email)}
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(CONTACT_NUMBER, '661-724-7734')}
+                            {renderItem(CONTACT_NUMBER, userPhone || phone || doctorPhone || 'N/A')}
                           </Grid>
                         </Grid>
+                        {userType === 'doctor' &&
+                          <Fragment>
+                            <Grid container spacing={5}>
+                              <Grid item md={12} sm={12} xs={12}>
+                                {renderItem(ADDRESS_NUMBER, address || 'N/A')}
+                              </Grid>
+                            </Grid>
 
-                        <Grid container spacing={5}>
-                          <Grid item md={12} sm={12} xs={12}>
-                            {renderItem(ADDRESS_NUMBER, '1368 Hayhurst Lane.')}
-                          </Grid>
-                        </Grid>
+                            <Grid container spacing={5}>
+                              <Grid item md={6} sm={12} xs={12}>
+                                {renderItem(CITY, city || 'N/A')}
+                              </Grid>
 
-                        <Grid container spacing={5}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(CITY, 'Mcallen')}
-                          </Grid>
+                              <Grid item md={6} sm={12} xs={12}>
+                                {renderItem(STATE, doctorState || 'N/A')}
+                              </Grid>
+                            </Grid>
 
-                          <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(STATE, 'New York')}
-                          </Grid>
-                        </Grid>
+                            <Grid container spacing={5}>
+                              <Grid item md={6} sm={12} xs={12}>
+                                {renderItem(ZIP_CODE, zipCode || 'N/A')}
+                              </Grid>
 
-                        <Grid container spacing={5}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(ZIP_CODE, '11357')}
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(COUNTRY, 'United States')}
-                          </Grid>
-                        </Grid>
+                              <Grid item md={6} sm={12} xs={12}>
+                                {renderItem(COUNTRY, country || '')}
+                              </Grid>
+                            </Grid>
+                          </Fragment>}
                       </Box>
                     </Collapse>
 
@@ -172,16 +262,13 @@ const ProfileComponent = (): JSX.Element => {
                             <InputController
                               fieldType="text"
                               controllerName="email"
+                              disabled
                               controllerLabel={EMAIL}
                             />
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="contactNumber"
-                              controllerLabel={CONTACT_NUMBER}
-                            />
+                            <PhoneField name="phone" label={CONTACT_NUMBER} />
                           </Grid>
                         </Grid>
 
@@ -199,24 +286,6 @@ const ProfileComponent = (): JSX.Element => {
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
-                              controllerName="city"
-                              controllerLabel={CITY}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="state"
-                              controllerLabel={STATE}
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
                               controllerName="zipCode"
                               controllerLabel={ZIP_CODE}
                             />
@@ -225,15 +294,39 @@ const ProfileComponent = (): JSX.Element => {
                           <Grid item md={6} sm={12} xs={12}>
                             <InputController
                               fieldType="text"
-                              controllerName="country"
-                              controllerLabel={COUNTRY}
+                              controllerName="city"
+                              controllerLabel={CITY}
                             />
                           </Grid>
                         </Grid>
 
+                        <Grid container spacing={3}>
+                          <Grid item md={6} sm={12} xs={12}>
+                            <Selector
+                              name="state"
+                              label={STATE}
+                              value={EMPTY_OPTION}
+                              options={MAPPED_STATES}
+                            />
+                          </Grid>
+                          <Grid item md={6} sm={12} xs={12}>
+                            <Selector
+                              value={EMPTY_OPTION}
+                              label={COUNTRY}
+                              name="country"
+                              options={MAPPED_COUNTRIES}
+                            />
+                          </Grid>
+                        </Grid>
+                        {updateDoctorLoading}
                         <Box display="flex" justifyContent="flex-start" pt={2}>
-                          <Button type="submit" variant="contained" color="primary">
+                          <Button type="submit" variant="contained" color="primary"
+                            disabled={updateDoctorLoading}
+                          >
                             {SAVE_TEXT}
+                            {(updateDoctorLoading) &&
+                              <CircularProgress size={20} color="inherit" />
+                            }
                           </Button>
                         </Box>
                       </Box>

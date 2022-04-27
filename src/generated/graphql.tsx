@@ -667,6 +667,7 @@ export type CreateProblemInput = {
 };
 
 export type CreateScheduleInput = {
+  day: Scalars['String'];
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
   facilityId?: Maybe<Scalars['String']>;
@@ -1165,6 +1166,7 @@ export type GetService = {
 
 export type GetSlots = {
   currentDate: Scalars['String'];
+  day?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   offset: Scalars['Float'];
   providerId?: Maybe<Scalars['String']>;
@@ -1894,6 +1896,7 @@ export type PatientAllergies = {
   id: Scalars['String'];
   isActive?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
   reactions?: Maybe<Array<Maybe<Reactions>>>;
   staff?: Maybe<Staff>;
   staffId?: Maybe<Scalars['String']>;
@@ -2178,6 +2181,7 @@ export type Query = {
   findAllPatientVitals: PatientVitalsPayload;
   findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
+  findAllReactions: ReactionsPayload;
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
@@ -2282,6 +2286,11 @@ export type QueryFindAllPermissionsArgs = {
 
 export type QueryFindAllPracticesArgs = {
   practiceInput: PracticeInput;
+};
+
+
+export type QueryFindAllReactionsArgs = {
+  reactionInput: ReactionInput;
 };
 
 
@@ -2454,6 +2463,11 @@ export enum Race {
   White = 'WHITE'
 }
 
+export type ReactionInput = {
+  paginationOptions: PaginationInput;
+  reactionName?: Maybe<Scalars['String']>;
+};
+
 export type Reactions = {
   __typename?: 'Reactions';
   createdAt?: Maybe<Scalars['String']>;
@@ -2461,6 +2475,13 @@ export type Reactions = {
   name: Scalars['String'];
   patientAllergies?: Maybe<PatientAllergies>;
   updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ReactionsPayload = {
+  __typename?: 'ReactionsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  reactions?: Maybe<Array<Maybe<Reactions>>>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type RegisterUserInput = {
@@ -2667,6 +2688,7 @@ export enum Status {
 export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
+  day?: Maybe<Scalars['String']>;
   doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
@@ -3370,6 +3392,7 @@ export type UpdateRoleItemInput = {
 };
 
 export type UpdateScheduleInput = {
+  day?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
   endAt?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
@@ -3660,7 +3683,7 @@ export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'Ac
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, userId: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } | null | undefined } | null | undefined } };
+export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, userId: string, userType: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } | null | undefined } | null | undefined } };
 
 export type ForgetPasswordMutationVariables = Exact<{
   forgotPasswordInput: ForgotPasswordInput;
@@ -3688,14 +3711,14 @@ export type GetDoctorUserQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorUserQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined } };
+export type GetDoctorUserQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined }> | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined } };
 
 export type GetStaffUserQueryVariables = Exact<{
   getStaff: GetStaff;
 }>;
 
 
-export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename?: 'Staff', id: string, email: string, lastName: string, firstName: string } | null | undefined } };
+export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename?: 'Staff', id: string, email: string, lastName: string, firstName: string, phone?: string | null | undefined } | null | undefined } };
 
 export type FindAllRoleListQueryVariables = Exact<{
   roleInput: RoleInput;
@@ -4805,6 +4828,7 @@ export const GetLoggedInUserDocument = gql`
       email
       token
       userId
+      userType
       roles {
         id
         role
@@ -4973,6 +4997,16 @@ export const GetDoctorUserDocument = gql`
       id
       firstName
       lastName
+      contacts {
+        id
+        email
+        mobile
+        address
+        zipCode
+        city
+        state
+        country
+      }
     }
     response {
       status
@@ -5019,6 +5053,7 @@ export const GetStaffUserDocument = gql`
       email
       lastName
       firstName
+      phone
     }
   }
 }

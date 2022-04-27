@@ -45,10 +45,14 @@ export interface AuthContextProps {
   practiceName: string,
   userPermissions: string[],
   currentUser: Doctor | Staff | null;
+  currentDoctor: Doctor | null;
+  currentStaff: Staff | null;
   setUser: (user: User | null) => void;
   setPracticeName: (name: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setCurrentUser: (user: Doctor | Staff | null) => void;
+  setCurrentDoctor: (doctor: Doctor | null) => void;
+  setCurrentStaff: (staff: Staff | null) => void;
 }
 
 export interface DoctorScheduleSlotProps {
@@ -932,4 +936,16 @@ export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function
   setCurrentDate: Function
+}
+
+export interface ProfileEditFormType {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  addressNumber: string
+  city: string
+  state: SelectorOption
+  country: SelectorOption
+  zipCode: string
 }
