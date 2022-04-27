@@ -199,8 +199,16 @@ export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
 
+export const UpdateRecordTitle = (recordType: string) => {
+  return `Update ${recordType} Record`;
+}
+
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const aboutToUpdate = (recordType: string) => {
+  return `You are about to update ${recordType.toLowerCase()} record`;
 }
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {

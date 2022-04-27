@@ -193,6 +193,7 @@ export interface ConfirmationTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
+  learnMoreText?: string
 }
 
 export interface ConfirmationDaysTypes extends DialogTypes {
@@ -1115,4 +1116,9 @@ export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps;
   setCurrentView: Function;
   setCurrentDate: Function;
+}
+
+export interface RolePayloadInterface {
+  id: string
+  roles?: RolesPayload['roles']
 }
