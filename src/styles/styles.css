@@ -457,6 +457,16 @@ body .MuiTabPanel-root {
   color: #202020 !important;
 }
 
+.selectorClassTwo div {
+  border: 1px solid #F3F4F6 !important;
+  background-color: #F3F4F6 !important;
+  max-width: 330px !important;
+}
+
+.selectorClassTwo svg, .selectorClassTwo span {
+  color: #202020 !important;
+}
+
 .selectedBox {
   background-color: #B5B5C3;
   color: #ffffff;

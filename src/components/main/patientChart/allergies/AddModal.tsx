@@ -219,13 +219,6 @@ const AddModal: FC<AddModalProps> = (
           <ViewDataLoader columns={12} rows={4} />
           :
           <>
-            {/* <Selector
-              value={EMPTY_OPTION}
-              label={REACTION}
-              name="reactionIds"
-              options={renderReactions(reactionList)}
-            /> */}
-
             <MultiSelect
               isEdit={isEdit}
               label={REACTION}
