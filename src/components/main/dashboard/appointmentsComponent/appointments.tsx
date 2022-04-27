@@ -10,7 +10,6 @@ export const Appointment = ({ children, style, color, ...restProps }: any) => {
         backgroundColor: 'transparent',
         borderBottom: 0,
         borderRadius: 0,
-        minHeight: 24,
       }
       }
     >

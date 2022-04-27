@@ -1,5 +1,6 @@
 // packages block
 import { Appointments } from "@devexpress/dx-react-scheduler-material-ui";
+import { BLUE } from "../../../../theme";
 
 export const AppointmentContent = ({ children, style, ...restProps }: any) => {
   const { data: { color, title } } = restProps
@@ -9,13 +10,14 @@ export const AppointmentContent = ({ children, style, ...restProps }: any) => {
       {...restProps}
       style={{
         ...style,
-        backgroundColor: showMoreButton ? "#939393" : color,
+        backgroundColor: !showMoreButton && color,
         display: showMoreButton && 'flex',
-        border: showMoreButton && '2px solid',
         borderRadius: showMoreButton && '5px',
-        fontWeight: !showMoreButton && 700,
-        minHeight: 24,
+        fontWeight: 700,
         width: showMoreButton && 'fit-content',
+        marginLeft: showMoreButton && 'auto',
+        color: showMoreButton && BLUE,
+        textDecoration: showMoreButton && 'underline',
       }}
     >
       {children}
