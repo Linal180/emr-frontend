@@ -16,23 +16,23 @@ import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import { patientReducer, Action, initialState, State } from "../../../reducers/patientReducer";
 import {
-  ADDRESS_NUMBER, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, DOCTOR_UPDATED, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME, GENERAL, LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_GENERAL_MENU_ITEMS,
-  PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY, STATE, UPLOAD_PICTURE, USER_SETTINGS, ZIP_CODE
+  ADDRESS_NUMBER, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME, GENERAL,
+  LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
+  PROFILE_UPDATE, SAVE_TEXT, SECURITY, STATE, UPLOAD_PICTURE, USER_SETTINGS, ZIP_CODE
 } from "../../../constants";
 import { AuthContext } from '../../../context';
 import { ProfileEditFormType } from '../../../interfacesTypes';
-import { useUpdateDoctorMutation } from '../../../generated/graphql';
+import {  useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
 import Alert from '../../common/Alert';
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
-  const { user, currentDoctor, currentStaff } = useContext(AuthContext);
+  const { user, currentDoctor, currentStaff, setGetCall } = useContext(AuthContext);
   const { email, userType, userId, phone: userPhone } = user || {}
   const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
   const { address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId } = primaryContact || {}
-debugger
 
   const [state] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { attachmentUrl, attachmentId } = state
@@ -40,8 +40,8 @@ debugger
   const methods = useForm<ProfileEditFormType>({
     mode: "all",
     defaultValues: {
-      firstName: "",
-      lastName: "",
+      firstName: "Super",
+      lastName: "Admin",
       email: "",
       phone: "",
       addressNumber: "",
@@ -49,6 +49,7 @@ debugger
       state: EMPTY_OPTION,
       country: EMPTY_OPTION,
       zipCode: "",
+      contactId: ""
     }
   });
   const { handleSubmit, setValue, reset } = methods;
@@ -65,8 +66,33 @@ debugger
         const { status } = response
 
         if (status && status === 200) {
-          Alert.success(DOCTOR_UPDATED);
+          setGetCall(true)
+          Alert.success(PROFILE_UPDATE);
           reset()
+          setEdit(!edit)
+        }
+      }
+    }
+  });
+
+  const [updateStaff, { loading: updateStaffLoading }] = useUpdateStaffMutation({
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { updateStaff: { response } } = data;
+
+      if (response) {
+        const { status } = response
+
+        if (status && status === 200) {
+          setGetCall(true)
+          Alert.success(PROFILE_UPDATE);
+          reset()
+          setEdit(!edit)
         }
       }
     }
@@ -77,7 +103,7 @@ debugger
     const { id: stateId } = state;
     const { id: countryId } = country
 
-    if (userType === 'doctor' && userId) {
+    if (userType === 'doctor' && userId && contactId) {
       await updateDoctor({
         variables: {
           updateDoctorInput: {
@@ -91,8 +117,16 @@ debugger
         }
       })
     }
+    else if (userType === 'super-admin') {
+
+    }
     else {
 
+      if (userId) {
+        await updateStaff({
+          variables: { updateStaffInput: { updateStaffItemInput: { id: userId, firstName, lastName, phone } } }
+        })
+      }
     }
 
   }
@@ -109,11 +143,12 @@ debugger
       doctorState && setValue('state', setRecord(doctorState, doctorState))
       country && setValue('country', setRecord(country, country))
       setValue('zipCode', zipCode || '')
+      contactId && setValue('contactId', contactId)
     } else {
       setValue('firstName', doctorFirstName || staffFirstName || '')
       setValue('lastName', doctorLastName || staffLastName || '')
       setValue('email', email || '')
-      setValue('phone', doctorLastName || staffLastName || '')
+      setValue('phone', phone || userPhone || '')
     }
     setEdit(!edit)
   }
@@ -175,13 +210,15 @@ debugger
               </Grid>
 
               <Grid item md={8} sm={12} xs={12}>
-                <Box onClick={editHandler} mb={3} display="flex" justifyContent="flex-end">
-                  {edit ?
-                    <Button variant="contained" color="secondary">{CANCEL}</Button>
-                    :
-                    <Button variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
-                  }
-                </Box>
+                {userType !== 'super-admin' &&
+                  <Box onClick={editHandler} mb={3} display="flex" justifyContent="flex-end">
+                    {edit ?
+                      <Button variant="contained" color="secondary">{CANCEL}</Button>
+                      :
+                      <Button variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
+                    }
+                  </Box>
+                }
 
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(onSubmit)}>
@@ -268,63 +305,64 @@ debugger
                           </Grid>
 
                           <Grid item md={6} sm={12} xs={12}>
-                            <PhoneField name="phone" label={CONTACT_NUMBER} />
+                            <PhoneField name="phone" label={CONTACT_NUMBER} isRequired={false} />
                           </Grid>
                         </Grid>
+                        {userType === 'doctor' &&
+                          <Fragment>
+                            <Grid container spacing={3}>
+                              <Grid item md={12} sm={12} xs={12}>
+                                <InputController
+                                  fieldType="text"
+                                  controllerName="addressNumber"
+                                  controllerLabel={ADDRESS_NUMBER}
+                                />
+                              </Grid>
+                            </Grid>
 
-                        <Grid container spacing={3}>
-                          <Grid item md={12} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="addressNumber"
-                              controllerLabel={ADDRESS_NUMBER}
-                            />
-                          </Grid>
-                        </Grid>
+                            <Grid container spacing={3}>
+                              <Grid item md={6} sm={12} xs={12}>
+                                <InputController
+                                  fieldType="text"
+                                  controllerName="zipCode"
+                                  controllerLabel={ZIP_CODE}
+                                />
+                              </Grid>
 
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="zipCode"
-                              controllerLabel={ZIP_CODE}
-                            />
-                          </Grid>
+                              <Grid item md={6} sm={12} xs={12}>
+                                <InputController
+                                  fieldType="text"
+                                  controllerName="city"
+                                  controllerLabel={CITY}
+                                />
+                              </Grid>
+                            </Grid>
 
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="city"
-                              controllerLabel={CITY}
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <Selector
-                              name="state"
-                              label={STATE}
-                              value={EMPTY_OPTION}
-                              options={MAPPED_STATES}
-                            />
-                          </Grid>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <Selector
-                              value={EMPTY_OPTION}
-                              label={COUNTRY}
-                              name="country"
-                              options={MAPPED_COUNTRIES}
-                            />
-                          </Grid>
-                        </Grid>
-                        {updateDoctorLoading}
+                            <Grid container spacing={3}>
+                              <Grid item md={6} sm={12} xs={12}>
+                                <Selector
+                                  name="state"
+                                  label={STATE}
+                                  value={EMPTY_OPTION}
+                                  options={MAPPED_STATES}
+                                />
+                              </Grid>
+                              <Grid item md={6} sm={12} xs={12}>
+                                <Selector
+                                  value={EMPTY_OPTION}
+                                  label={COUNTRY}
+                                  name="country"
+                                  options={MAPPED_COUNTRIES}
+                                />
+                              </Grid>
+                            </Grid>
+                          </Fragment>}
                         <Box display="flex" justifyContent="flex-start" pt={2}>
                           <Button type="submit" variant="contained" color="primary"
-                            disabled={updateDoctorLoading}
+                            disabled={updateDoctorLoading || updateStaffLoading}
                           >
                             {SAVE_TEXT}
-                            {(updateDoctorLoading) &&
+                            {(updateDoctorLoading || updateStaffLoading) &&
                               <CircularProgress size={20} color="inherit" />
                             }
                           </Button>

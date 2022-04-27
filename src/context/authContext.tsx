@@ -1,6 +1,7 @@
 // packages block
 import { createContext, FC, useEffect, useState } from "react";
 import { pluck } from "underscore";
+import { useCallback } from "react";
 // graphql, interfaces/types and constants block
 import { TOKEN } from "../constants";
 import { getUserRole, isSuperAdmin } from "../utils";
@@ -26,7 +27,8 @@ export const AuthContext = createContext<AuthContextProps>({
   setCurrentDoctor: (doctor: Doctor | null) => { },
   setCurrentStaff: (staff: Staff | null) => { },
   setUserRoles: (roles: string[]) => { },
-  setUserPermissions: (permissions: string[]) => { }
+  setUserPermissions: (permissions: string[]) => { },
+  setGetCall: (call: boolean) => { }
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
@@ -39,6 +41,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
   const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
   const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null);
+  const [getCall, setGetCall] = useState<boolean>(true)
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
@@ -156,10 +159,15 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
 
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);
 
+  const getUser = useCallback(async () => {
+    setGetCall(false)
+    await fetchUser()
+  }, [fetchUser])
+
   useEffect(() => {
     hasToken && setIsLoggedIn(true);
-    isLoggedIn && hasToken && fetchUser();
-  }, [isLoggedIn, hasToken, fetchUser]);
+    getCall && isLoggedIn && hasToken && getUser();
+  }, [getCall, isLoggedIn, hasToken, getUser]);
 
   return (
     <AuthContext.Provider
@@ -176,6 +184,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
         setPracticeName,
         setCurrentDoctor,
         setCurrentStaff,
+        setGetCall,
         currentStaff,
         currentDoctor,
         setUserPermissions,

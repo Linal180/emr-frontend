@@ -30,6 +30,7 @@ query GetLoggedInUser {
       token
       userId
       userType
+      phone
 
       roles {
         id
@@ -97,12 +98,13 @@ query GetDoctorUser($getDoctor: GetDoctor!) {
       contacts {
         id
         email
-        mobile
+        phone
         address
         zipCode
         city
         state
         country
+        primaryContact
       }
     }
 

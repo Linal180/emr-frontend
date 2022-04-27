@@ -1113,6 +1113,7 @@ export const PHASE_CANNOT_CHANGE_NOTE =
   "Note: Phase cannot be changed since user has already initiated the request, to change the phase first delete the request.";
 
 // ALERT MESSAGES
+export const PROFILE_UPDATE = "Profile is updated successfully";
 export const EMERGENCY_ACCESS_UPDATE = "Emergency Access updated successfully";
 export const SCHEDULE_END = "Schedule End Time";
 export const STAFF_NOT_FOUND = "Staff not found!";

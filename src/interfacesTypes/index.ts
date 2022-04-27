@@ -99,6 +99,7 @@ export interface AuthContextProps {
   setCurrentStaff: (staff: Staff | null) => void;
   setUserRoles: (roles: string[]) => void;
   setUserPermissions: (permissions: string[]) => void;
+  setGetCall: (call: boolean) => void
 }
 
 export interface DoctorScheduleSlotProps {
@@ -1124,4 +1125,5 @@ export interface ProfileEditFormType {
   state: SelectorOption
   country: SelectorOption
   zipCode: string
+  contactId: string
 }
