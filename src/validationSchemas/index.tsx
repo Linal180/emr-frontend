@@ -701,7 +701,7 @@ export const roleSchema = yup.object({
 
 export const createFormBuilderSchemaWithFacility = yup.object({
   name: yup.string().min(3, MinLength(FORM_NAME, 3))
-    .max(30, MaxLength(FORM_NAME, 30)).required(),
+    .max(250, MaxLength(FORM_NAME, 250)).required(),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -714,7 +714,7 @@ export const createFormBuilderSchemaWithFacility = yup.object({
 
 export const createFormBuilderSchema = yup.object({
   name: yup.string().min(3, MinLength(FORM_NAME, 3))
-    .max(30, MaxLength(FORM_NAME, 30)).required(),
+    .max(250, MaxLength(FORM_NAME, 250)).required(),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
