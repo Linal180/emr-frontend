@@ -10,25 +10,25 @@ import {
   PaymentMethodPayload, PaymentMethodRequestablePayload, PaymentOptionSelectedPayload
 } from 'braintree-web-drop-in';
 // component block
-import Alert from '../../common/Alert';
-import history from '../../../history';
-import BackdropLoader from '../../common/Backdrop';
-import ConfirmationModal from '../../common/ConfirmationModal';
+import Alert from '../../../common/Alert';
+import history from '../../../../history';
+import BackdropLoader from '../../../common/Backdrop';
+import ConfirmationModal from '../../../common/ConfirmationModal';
 // constant, assets and styles block
-import { AuthContext } from '../../../context';
-import { GRAY_ONE, WHITE_FOUR } from '../../../theme';
-import SIGN_IMAGE from "../../../assets/images/sign-image.png";
-import { useCalendarStyles } from '../../../styles/calendarStyles';
-import { AppointmentCardProps, UpdateStatusInputProps } from '../../../interfacesTypes';
-import { Action, appointmentReducer, initialState, State, ActionType } from '../../../reducers/appointmentReducer';
-import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../utils';
+import { AuthContext } from '../../../../context';
+import { GRAY_ONE, WHITE_FOUR } from '../../../../theme';
+import SIGN_IMAGE from "../../../../assets/images/sign-image.png";
+import { useCalendarStyles } from '../../../../styles/calendarStyles';
+import { AppointmentCardProps, UpdateStatusInputProps } from '../../../../interfacesTypes';
+import { Action, appointmentReducer, initialState, State, ActionType } from '../../../../reducers/appointmentReducer';
+import { getAppointmentDate, getAppointmentDatePassingView, getAppointmentTime, getISOTime, setRecord } from '../../../../utils';
 import {
   CashAppointmentIcon, DeleteAppointmentIcon, EditAppointmentIcon, InvoiceAppointmentIcon, PrintIcon,
-} from '../../../assets/svgs';
+} from '../../../../assets/svgs';
 import {
   Appointmentstatus, useGetTokenLazyQuery, useUpdateAppointmentStatusMutation, useChargePaymentMutation,
   useCreateInvoiceMutation, Billing_Type, Status, useGetAppointmentLazyQuery, useCancelAppointmentMutation, BillingStatus
-} from '../../../generated/graphql';
+} from '../../../../generated/graphql';
 import {
   DELETE_APPOINTMENT_DESCRIPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, INVOICE, PROVIDER_NAME,
   PRODUCT_AND_SERVICES_TEXT, REASON, SUB_TOTAL_TEXT, TOTAL_TEXT, UNPAID, USD, PAY_AMOUNT,
@@ -38,7 +38,7 @@ import {
   CANCEL_TIME_EXPIRED_MESSAGE, CANT_CANCELLED_APPOINTMENT, APPOINTMENTS_ROUTE, APPOINTMENT_CANCEL_REASON,
   PAY_VIA_CASH, PAY_VIA_DEBIT_OR_CREDIT_CARD, PAY_VIA_PAYPAL, PRIMARY_INSURANCE, CHECK_IN, CHECK_IN_ROUTE,
   TRANSACTION_PAID_SUCCESSFULLY,
-} from '../../../constants';
+} from '../../../../constants';
 
 const AppointmentCard = ({ tooltip, setCurrentView, setCurrentDate }: AppointmentCardProps): JSX.Element => {
   const { visible, onHide, appointmentMeta } = tooltip

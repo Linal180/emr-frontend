@@ -5,9 +5,8 @@ import { Box, ClickAwayListener, IconButton, TextField, Tooltip, Typography } fr
 import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
-import { PatientSearchingTooltipData } from "../../constants";
 
-const Search: FC<SearchComponentProps> = ({ search, info }): JSX.Element => {
+const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
   const [open, setOpen] = useState(false);
@@ -56,7 +55,7 @@ const Search: FC<SearchComponentProps> = ({ search, info }): JSX.Element => {
           className={classes.tooltipContainer}
           title={
             <Fragment>
-              {PatientSearchingTooltipData.map((item) => {
+              {tooltipData?.map((item) => {
                 return (
                   <Box display='flex' justifyContent='space-between' className={classes.tooltip}>
                     <Typography variant="h6" className={classes.tooltipContentHeading}>{item.name}</Typography>

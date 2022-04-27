@@ -29,7 +29,7 @@ import {
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
+  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME, AppointmentSearchingTooltipData,
 } from "../../constants";
 
 dotenv.config()
@@ -188,7 +188,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
     <>
       <Box className={classes.mainTableContainer}>
         <Box py={2} mb={2} maxWidth={450}>
-          <Search search={search} />
+          <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
         </Box>
 
         <Box className="table-overflow">

@@ -4246,7 +4246,7 @@ export type FetchEmergencyAccessUserQueryVariables = Exact<{
 }>;
 
 
-export type FetchEmergencyAccessUserQuery = { __typename?: 'Query', fetchEmergencyAccessUsers: { __typename?: 'EmergencyAccessUserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, emergencyAccessUsers?: Array<{ __typename?: 'User', id: string, facilityId?: string | null | undefined, roles?: Array<{ __typename?: 'Role', role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined }> | null | undefined } };
+export type FetchEmergencyAccessUserQuery = { __typename?: 'Query', fetchEmergencyAccessUsers: { __typename?: 'EmergencyAccessUserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, emergencyAccessUsers?: Array<{ __typename?: 'User', id: string, email: string, facilityId?: string | null | undefined, roles?: Array<{ __typename?: 'Role', role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined }> | null | undefined } };
 
 
 export const FindAllAppointmentsDocument = gql`
@@ -8732,6 +8732,7 @@ export const FetchEmergencyAccessUserDocument = gql`
     }
     emergencyAccessUsers {
       id
+      email
       facilityId
       roles {
         role
