@@ -1,7 +1,6 @@
 //packages block
 import { useState, useEffect, ChangeEvent, useCallback } from 'react'
 import { Pagination } from '@material-ui/lab';
-import { Visibility as VisibilityIcon } from '@material-ui/icons'
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 // components block
