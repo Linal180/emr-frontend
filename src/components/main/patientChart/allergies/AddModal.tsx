@@ -1,5 +1,6 @@
 // packages block
 import { FC, useCallback, useContext, useEffect, useState, } from 'react';
+import { pluck } from 'underscore';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
@@ -9,6 +10,7 @@ import Alert from '../../../common/Alert';
 import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
 import InputController from '../../../../controller';
+import MultiSelect from '../../../common/MultiSelect';
 // constants block
 import { GRAY_SIX } from '../../../../theme';
 import { ChartContext } from '../../../../context';
@@ -39,8 +41,8 @@ const AddModal: FC<AddModalProps> = (
     mode: "all",
     resolver: yupResolver(createPatientAllergySchema(onset))
   });
-  const { handleSubmit, reset, setValue, watch } = methods;
-  const { allergyStartDate } = watch()
+  const { handleSubmit, reset, setValue, watch, formState: { errors } } = methods;
+  const { allergyStartDate, reactionIds } = watch()
 
   const [getPatientAllergy, { loading: getAllergyLoading }] = useGetPatientAllergyLazyQuery({
     fetchPolicy: "network-only",
@@ -61,7 +63,7 @@ const AddModal: FC<AddModalProps> = (
         if (allergyReaction) {
           const { id, name } = allergyReaction
 
-          id && name && setValue('reactionIds', setRecord(id, name))
+          // id && name && setValue('reactionIds', setRecord(id, name))
         }
 
         id && name && setValue('severityId', setRecord(id, name))
@@ -168,11 +170,12 @@ const AddModal: FC<AddModalProps> = (
   const onSubmit: SubmitHandler<CreatePatientAllergyProps> = async ({
     reactionIds, severityId, comments
   }) => {
-    const { id: selectedReaction } = reactionIds || {}
+
+    const selectedReactions = pluck(reactionIds || [], 'value')
     const { id: selectedSeverity } = severityId || {}
 
     const commonInputs = {
-      patientId, allergyId: id, reactionsIds: [selectedReaction],
+      patientId, allergyId: id, reactionsIds: selectedReactions,
     }
 
     const inputs = {
@@ -194,7 +197,7 @@ const AddModal: FC<AddModalProps> = (
     } else {
       await addPatientAllergy({
         variables: {
-          createPatientAllergyInput: { ...commonInputs, ...extendedInputs, }
+          createPatientAllergyInput: { ...commonInputs, ...extendedInputs }
         }
       })
     }
@@ -205,6 +208,8 @@ const AddModal: FC<AddModalProps> = (
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
+        {JSON.stringify(reactionIds)}--------------
+        {JSON.stringify(errors)}
         <Box mb={2} display="flex" justifyContent="space-between" alignItems="center" >
           <Typography variant='h4'>{name}</Typography>
 
@@ -217,11 +222,17 @@ const AddModal: FC<AddModalProps> = (
           <ViewDataLoader columns={12} rows={4} />
           :
           <>
-            <Selector
+            {/* <Selector
               value={EMPTY_OPTION}
               label={REACTION}
               name="reactionIds"
               options={renderReactions(reactionList)}
+            /> */}
+
+            <MultiSelect
+              label={REACTION}
+              name="reactionIds"
+              optionsArray={renderReactions(reactionList)}
             />
 
             <Selector
@@ -248,7 +259,6 @@ const AddModal: FC<AddModalProps> = (
             />
           </>
         }
-
 
         <Box display='flex' justifyContent='flex-end'>
           {isEdit &&

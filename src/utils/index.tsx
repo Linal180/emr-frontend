@@ -9,7 +9,7 @@ import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from
 import client from "../apollo";
 import history from "../history";
 import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
+import { AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
@@ -370,15 +370,31 @@ export const renderOptionsForSelector = (options:SelectorOption[] ) => {
   return data;
 }
 
+// export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
+//   const data: SelectorOption[] = [];
+
+//   if (!!reactions) {
+//     for (let reaction of reactions) {
+//       if (reaction) {
+//         const { id, name } = reaction;
+
+//         name && data.push({ id, name: formatValue(name) })
+//       }
+//     }
+//   }
+
+//   return data;
+// }
+
 export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
-  const data: SelectorOption[] = [];
+  const data: multiOptionType[] = [];
 
   if (!!reactions) {
     for (let reaction of reactions) {
       if (reaction) {
         const { id, name } = reaction;
 
-        name && data.push({ id, name: formatValue(name) })
+        name && data.push({ value: id, label: formatValue(name) })
       }
     }
   }

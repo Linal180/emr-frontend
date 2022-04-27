@@ -1108,7 +1108,7 @@ export interface AddModalProps {
 }
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
-  & { reactionIds: SelectorOption } & { severityId: SelectorOption }
+  & { reactionIds: multiOptionType[] } & { severityId: SelectorOption }
 
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;
@@ -1142,4 +1142,20 @@ export interface ProfileEditFormType {
 export interface RolePayloadInterface {
   id: string
   roles?: RolesPayload['roles']
+}
+
+export type multiOptionType = {
+  value: string,
+  label: string
+}
+
+export interface MultiSelectorInterface {
+  name: string
+  label: string
+  disable?: boolean
+  isRequired?: boolean
+  selectDisabled?: boolean
+  selectedOptions?: string
+  optionsArray: multiOptionType[]
+  setFieldValue?: Function
 }

@@ -736,8 +736,11 @@ export const createPatientAllergySchema = (onset: string) => yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', 'required', ({ id }) => !!id),
-  reactionIds: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).test('', 'required', ({ id }) => !!id),
+  reactionIds: yup.array().of(
+    yup.object().shape({
+      label: yup.string(),
+      value: yup.string()
+    })
+  )
+  // reactionIds: yup.array().required()
 })
