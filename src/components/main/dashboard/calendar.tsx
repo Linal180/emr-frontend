@@ -118,15 +118,13 @@ const CalendarComponent = (): JSX.Element => {
         {...restProps}
         style={{
           ...style,
-          backgroundColor: showMoreButton && "#939393",
-          textDecoration: showMoreButton ? 'none' : 'underline',
-          color: showMoreButton ? 'white' : color,
-          width: 'fit-content',
+          backgroundColor: showMoreButton ? "#939393" : color,
           display: showMoreButton && 'flex',
           border: showMoreButton && '2px solid',
           borderRadius: showMoreButton && '5px',
           fontWeight: !showMoreButton && 700,
           minHeight: 24,
+          width: showMoreButton && 'fit-content',
         }}
       >
         {children}
@@ -143,7 +141,6 @@ const CalendarComponent = (): JSX.Element => {
           backgroundColor: 'transparent',
           borderBottom: 0,
           borderRadius: 0,
-          width: 'fit-content',
           minHeight: 24,
         }
         }
