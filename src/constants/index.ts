@@ -344,7 +344,7 @@ export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
 export const STAFF_MANAGEMENT = "Staff Management";
 export const EMERGENCY_ACCESS = "Emergency Access";
-export const EMERGENCY_ACCESS_REVOKE_ROLES=[SUPER_ADMIN,"facility-admin","practice-admin"]
+export const EMERGENCY_ACCESS_REVOKE_ROLES = [SUPER_ADMIN, "facility-admin", "practice-admin"]
 export const EMERGENCY_ACCESS_VALUE = "emergency-access";
 export const ACCESS_ACTIVATED = "Access Activated";
 export const EMERGENCY_ACCESS_DENIED = "Emergency Access Denied";
@@ -752,10 +752,11 @@ export const CONTACT_INFORMATION = "Contact Information";
 export const FACILITY_SERVICES_TEXT = "Facility Services";
 export const FACILITY_LOCATIONS_TEXT = "Facility Locations";
 export const SSN_FORMAT = '000-00-0000';
-export const DOB_FORMAT = 'YYYY_MM_DD';
+export const DOB_FORMAT = 'DD-MM-YYYY';
 export const PRN_FORMAT = 'AA123456';
-export const EMAIL_FORMAT = 'admin@alxtel.com';
-export const Name_FORMAT = 'First Last';
+export const EMAIL_FORMAT = 'example@email.com';
+export const NAME_FORMAT = 'First Last';
+export const APP_NAME_FORMAT = 'First Middle Last';
 export const PRICE = "Price";
 export const SEARCH = "Search";
 export const BILLING = "Billing";
@@ -3092,7 +3093,7 @@ export const FORM_BUILDER_FIELDS_TABS = [
 export const PatientSearchingTooltipData = [
   {
     name: `${NAME}:`,
-    format: Name_FORMAT,
+    format: NAME_FORMAT,
   },
   {
     name: `${EMAIL}:`,
@@ -3101,6 +3102,25 @@ export const PatientSearchingTooltipData = [
   {
     name: `${PRN}:`,
     format: PRN_FORMAT,
+  },
+  {
+    name: `${DOB}:`,
+    format: DOB_FORMAT,
+  },
+  {
+    name: `${SSN}:`,
+    format: SSN_FORMAT,
+  }
+];
+
+export const AppointmentSearchingTooltipData = [
+  {
+    name: `${NAME}:`,
+    format: APP_NAME_FORMAT,
+  },
+  {
+    name: `${EMAIL}:`,
+    format: EMAIL_FORMAT,
   },
   {
     name: `${DOB}:`,

@@ -26,7 +26,7 @@ import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPa
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
-import { getDate, getTimestamps, renderDoctors, renderFacilities, renderItem, setRecord } from '../../../../utils';
+import { getDate, getTimestamps, getTimestampsForDob, renderDoctors, renderFacilities, renderItem, setRecord } from '../../../../utils';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
   Pronouns, Race, RelationshipType, Sexualorientation, useGetPatientLazyQuery,
@@ -377,7 +377,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
-        statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestamps(dob) : '',
+        statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestampsForDob(dob) : '',
         deceasedDate: deceasedDate ? getTimestamps(deceasedDate) : '',
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',

@@ -22,7 +22,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION,
-  PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN
+  PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN, PatientSearchingTooltipData
 } from "../../../../constants";
 
 const PatientsTable: FC = (): JSX.Element => {
@@ -126,7 +126,7 @@ const PatientsTable: FC = (): JSX.Element => {
     <>
       <Box className={classes.mainTableContainer}>
         <Box py={2} mb={2} maxWidth={450}>
-          <Search search={search} info />
+          <Search search={search} info tooltipData={PatientSearchingTooltipData} />
         </Box>
 
         <Box className="table-overflow">
