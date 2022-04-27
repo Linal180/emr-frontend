@@ -61,6 +61,7 @@ const MultiSelect: FC<MultiSelectorInterface> = ({ name, label, isRequired }) =>
               onInputChange={(query: string) => {
                 query.length > 2 && fetchReactions(query)
               }}
+              className="selectorClassTwo"
             />
 
             <FormHelperText></FormHelperText>

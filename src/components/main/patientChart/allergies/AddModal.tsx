@@ -208,8 +208,8 @@ const AddModal: FC<AddModalProps> = (
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {JSON.stringify(reactionIds)}--------------
-        {JSON.stringify(errors)}
+        {/* {JSON.stringify(reactionIds)}-------------- */}
+        {/* {JSON.stringify(errors)} */}
         <Box mb={2} display="flex" justifyContent="space-between" alignItems="center" >
           <Typography variant='h4'>{name}</Typography>
 
