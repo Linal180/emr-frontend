@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useReducer, useState, useContext, Fragment } from 'react';
+import { Reducer, useReducer, useState, useContext, Fragment, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { Edit } from '@material-ui/icons';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -15,7 +15,6 @@ import { WHITE } from '../../../theme';
 import { renderItem, setRecord } from '../../../utils';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";
-import { patientReducer, Action, initialState, State } from "../../../reducers/patientReducer";
 import {
   ADDRESS_NUMBER, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME, GENERAL,
   LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
@@ -23,23 +22,26 @@ import {
 } from "../../../constants";
 import { AuthContext } from '../../../context';
 import { ProfileEditFormType } from '../../../interfacesTypes';
-import { AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
+import { Attachment, AttachmentType, useGetAttachmentLazyQuery, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
 import Alert from '../../common/Alert';
-import MediaCards from '../../common/AddMedia/MediaCards';
+import { Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as MediaState } from '../../../reducers/mediaReducer';
+import EditMediaModal from '../../common/AddMedia/EditMediaModal';
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
   const { user, currentDoctor, currentStaff, setGetCall } = useContext(AuthContext);
   const { email, userType, userId, phone: userPhone } = user || {}
-  const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
+  const { firstName: doctorFirstName, lastName: doctorLastName, contacts, attachments: doctorAttachments } = currentDoctor || {}
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
   const { address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId } = primaryContact || {}
+  const doctorAttachment = doctorAttachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture)
 
-  const [state] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { attachmentUrl, attachmentId } = state
+  const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
+  const { isOpen, attachment, isEdit, isEditModalOpen, attachmentUrl, attachmentId } = mediaState
+
   const [edit, setEdit] = useState<boolean>(false)
-  const [openMedia, setOpenMedia] = useState(false)
+
   const methods = useForm<ProfileEditFormType>({
     mode: "all",
     defaultValues: {
@@ -101,6 +103,25 @@ const ProfileComponent = (): JSX.Element => {
     }
   });
 
+  const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {
+      return null
+    },
+
+    onCompleted(data) {
+      const { getAttachment } = data || {};
+
+      if (getAttachment) {
+        const { preSignedUrl } = getAttachment
+        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
+      }
+    },
+  });
+
   const onSubmit: SubmitHandler<ProfileEditFormType> = async (values) => {
     const { firstName, lastName, addressNumber, city, phone, country, state, zipCode } = values || {}
     const { id: stateId } = state;
@@ -156,6 +177,51 @@ const ProfileComponent = (): JSX.Element => {
     setEdit(!edit)
   }
 
+  const uploadImageHandler = () => {
+
+    if (attachmentUrl) {
+      mediaDispatch({
+        type: mediaActionType.SET_IS_EDIT,
+        isEdit: true,
+      })
+      mediaDispatch({
+        type: mediaActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN,
+        isEditModalOpen: true,
+      })
+    }
+    else {
+      mediaDispatch({
+        type: mediaActionType.SET_IS_OPEN,
+        isOpen: true
+      })
+    }
+  }
+
+  const fetchAttachment = useCallback(async () => {
+    try {
+      await getAttachment({
+        variables: {
+          getMedia: { id: attachmentId }
+        },
+      })
+    } catch (error) { }
+  }, [attachmentId, getAttachment])
+
+  const dispatchAttachmentHandler = useCallback(() => {
+    mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: doctorAttachment })
+    const { id: doctorAttachmentId } = doctorAttachment || {}
+    doctorAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: doctorAttachmentId })
+  }, [doctorAttachment])
+
+  useEffect(() => {
+    doctorAttachment && dispatchAttachmentHandler()
+  }, [doctorAttachment, dispatchAttachmentHandler])
+
+  useEffect(() => {
+    attachmentId && fetchAttachment();
+  }, [attachmentId, fetchAttachment])
+
+
   return (
     <Box mt={5}>
       <Grid container spacing={3}>
@@ -206,8 +272,9 @@ const ProfileComponent = (): JSX.Element => {
                 </Box>
 
                 <Box pt={2}>
-                  <Button type="submit" variant="outlined" color="primary" onClick={() => setOpenMedia(!openMedia)}>
+                  <Button type="submit" variant="outlined" color="primary" onClick={uploadImageHandler} disabled={getAttachmentLoading}>
                     {UPLOAD_PICTURE}
+                    {getAttachmentLoading && <CircularProgress color='inherit' />}
                   </Button>
                 </Box>
               </Grid>
@@ -379,9 +446,68 @@ const ProfileComponent = (): JSX.Element => {
           </Box>
         </Grid>
       </Grid>
-      
-      <AddImageModal isOpen={openMedia} setOpen={setOpenMedia} itemId={userId || ''}  isEdit={false} reload={() => { }}
-        imageModuleType={AttachmentType.Doctor} setEdit={() => { }} setAttachments={() => { }} title={ATTACHMENT_TITLES.ProfilePicture} />
+      <AddImageModal
+        title={ATTACHMENT_TITLES.ProfilePicture}
+        reload={() => { }}
+        imageModuleType={AttachmentType.Doctor}
+        setOpen={(isOpen: boolean) => {
+          mediaDispatch({
+            type: mediaActionType.SET_IS_OPEN,
+            isOpen: isOpen
+          })
+        }}
+
+        setEdit={(edit: boolean) => {
+          mediaDispatch({
+            type: mediaActionType.SET_IS_EDIT,
+            isEdit: edit,
+          })
+        }}
+
+        isEdit={!!attachment}
+        isOpen={isOpen}
+        itemId={userId || ''}
+        setAttachments={(attachment: Attachment) => {
+          mediaDispatch({
+            type: mediaActionType.SET_ATTACHMENT,
+            attachment: attachment
+          })
+        }}
+
+        attachment={attachment}
+        preSignedUrl={attachmentUrl}
+      />
+      <EditMediaModal
+        reload={() => fetchAttachment()}
+        imageModuleType={AttachmentType.Doctor}
+        setOpen={(isOpen: boolean) => {
+          mediaDispatch({
+            type: mediaActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN,
+            isEditModalOpen: isOpen
+          })
+        }}
+
+        setEdit={(edit: boolean) => {
+          mediaDispatch({
+            type: mediaActionType.SET_IS_EDIT,
+            isEdit: edit,
+          })
+        }}
+
+        isOpen={isEditModalOpen}
+        itemId={userId || ''}
+        setAttachments={(attachment: Attachment) => {
+          mediaDispatch({
+            type: mediaActionType.SET_ATTACHMENT,
+            attachment: attachment
+          })
+        }}
+        isEdit={isEdit}
+        title={ATTACHMENT_TITLES.ProfilePicture}
+        attachment={doctorAttachment}
+
+        preSignedUrl={attachmentUrl}
+      />
     </Box>
   )
 }

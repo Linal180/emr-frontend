@@ -106,6 +106,17 @@ query GetDoctorUser($getDoctor: GetDoctor!) {
         country
         primaryContact
       }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
 
     response {
