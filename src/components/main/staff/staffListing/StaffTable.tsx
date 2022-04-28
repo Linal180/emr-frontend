@@ -114,7 +114,7 @@ const StaffTable: FC = (): JSX.Element => {
 
   const handleDeleteStaff = async () => {
     const userStaffId = allStaff?.find((staff) => staff?.id === deleteStaffId)?.user?.id ?? ''
-    console.log(userStaffId)
+
     if (user?.id !== userStaffId) {
       deleteStaffId && await removeStaff({
         variables: {

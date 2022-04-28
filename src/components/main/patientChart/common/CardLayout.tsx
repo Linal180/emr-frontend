@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Box, Card, CardContent, CardHeader, IconButton, Menu } from "@material-ui/core";
 import { AddChartingIcon } from "../../../../assets/svgs";
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
-import FilterSearch from "../allergies/FilterSearch";
+import FilterSearch from "../common/FilterSearch";
 import { CardLayoutProps } from "../../../../interfacesTypes";
 
 const CardLayout: FC<CardLayoutProps> = ({

@@ -5,11 +5,11 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, FormHelperText, Box } from '@material-ui/core'
 // constants and type/interfaces block
 import { renderReactions, requiredLabel } from "../../utils";
-import { multiOptionType, MultiSelectorInterface } from '../../interfacesTypes';
+import { multiOptionType, ReactionSelectorInterface } from '../../interfacesTypes';
 import { ReactionsPayload, useFindAllReactionsLazyQuery } from '../../generated/graphql';
 
-const MultiSelect: FC<MultiSelectorInterface> = ({ name, isEdit, label, isRequired, optionsArray }) => {
-  const { control } = useFormContext();
+const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, isRequired, defaultValues }) => {
+  const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[]>([])
 
   const [findAllReactions] = useFindAllReactionsLazyQuery({
@@ -39,11 +39,14 @@ const MultiSelect: FC<MultiSelectorInterface> = ({ name, isEdit, label, isRequir
   }
 
   useEffect(() => {
-    if(isEdit){
-      setOptions(optionsArray)
+    if (isEdit) {
+      if (defaultValues) {
+        setOptions(defaultValues)
+        setValue('reactionIds', defaultValues.map(option => option))
+      }
     }
-  },[isEdit, optionsArray])
-  
+  }, [defaultValues, isEdit, setValue])
+
   return (
     <Controller
       name={name}
@@ -61,6 +64,7 @@ const MultiSelect: FC<MultiSelectorInterface> = ({ name, isEdit, label, isRequir
             <Select
               isMulti
               name={name}
+              defaultValue={defaultValues?.map(option => option)}
               id="selectedId"
               options={options}
               onChange={field.onChange}
@@ -78,4 +82,4 @@ const MultiSelect: FC<MultiSelectorInterface> = ({ name, isEdit, label, isRequir
   )
 }
 
-export default MultiSelect;
+export default ReactionSelector;

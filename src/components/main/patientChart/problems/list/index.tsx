@@ -4,9 +4,8 @@ import { useParams } from "react-router";
 import { Box, Menu, Typography } from "@material-ui/core";
 // components block
 import CardLayout from "../../common/CardLayout";
-import AllergyModal from "../modals/AllergyModal";
-import ViewDataLoader from "../../../../common/ViewDataLoader";
 import AllergiesModal1Component from "../../common/FilterSearch";
+import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block
 import { GREY_SEVEN } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
@@ -18,43 +17,43 @@ import {
 } from "../../../../../reducers/chartReducer";
 import {
   PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery,
-  AllergiesPayload, AllergyType, Allergies, AllergySeverity,
+  AllergiesPayload, AllergyType, Allergies, AllergySeverity, PatientProblemPayload, useFindAllPatientProblemsLazyQuery, useSearchIcdCodesLazyQuery, IcdCodesPayload,
 } from "../../../../../generated/graphql";
 
-const AllergyList = (): JSX.Element => {
+const ProblemList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
   const { id } = useParams<ParamsType>()
-  const [patientAllergies, setPatientAllergies] = useState<PatientAllergiesPayload['patientAllergies']>([])
+  const [patientProblems, setPatientProblems] = useState<PatientProblemPayload['patientProblem']>([])
   const [{ isSearchOpen, selectedItem, searchedData, itemId, isFormOpen }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const isMenuOpen = Boolean(isSearchOpen);
   const isFormMenuOpen = Boolean(isFormOpen);
   const cardId = "widget-menu";
 
-  const [findAllPatientAllergies, { loading }] = useFindAllPatientAllergiesLazyQuery({
+  const [findAllPatientProblem, { loading }] = useFindAllPatientProblemsLazyQuery({
     variables: {
-      patientAllergyInput: { patientId: id, paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT } }
+      patientProblemInput: { patientId: id, paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT } }
     },
 
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
     onError() {
-      setPatientAllergies([])
+      setPatientProblems([])
     },
 
     onCompleted(data) {
       if (data) {
-        const { findAllPatientAllergies } = data;
+        const { findAllPatientProblem } = data;
 
-        if (findAllPatientAllergies) {
-          const { response, patientAllergies } = findAllPatientAllergies
+        if (findAllPatientProblem) {
+          const { response, patientProblems } = findAllPatientProblem
 
           if (response) {
             const { status } = response
 
-            if (patientAllergies && status && status === 200) {
-              setPatientAllergies(patientAllergies as PatientAllergiesPayload['patientAllergies'])
+            if (patientProblems && status && status === 200) {
+              setPatientProblems(patientProblems as PatientProblemPayload['patientProblem'])
             }
           }
         }
@@ -62,7 +61,7 @@ const AllergyList = (): JSX.Element => {
     }
   });
 
-  const [findAllAllergies, { loading: findAllergiesLoading }] = useFindAllAllergiesLazyQuery({
+  const [searchIcdCodes, { loading: findAllergiesLoading }] = useSearchIcdCodesLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -72,35 +71,29 @@ const AllergyList = (): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { findAllAllergies } = data;
+        const { searchIcdCodes } = data;
 
-        if (findAllAllergies) {
-          const { response, allergies } = findAllAllergies
+        if (searchIcdCodes) {
+          const { icdCodes } = searchIcdCodes
 
-          if (response) {
-            const { status } = response
-
-            if (allergies && status && status === 200) {
-              dispatch({
-                type: ActionType.SET_SEARCHED_DATA,
-                searchedData: allergies as AllergiesPayload['allergies']
-              })
-            }
-          }
+          icdCodes && dispatch({
+            type: ActionType.SET_SEARCHED_DATA,
+            searchedData: icdCodes as IcdCodesPayload['icdCodes']
+          })
         }
       }
     }
   });
 
-  const fetchAllergies = useCallback(async () => {
+  const fetchProblems = useCallback(async () => {
     try {
-      await findAllPatientAllergies()
+      await findAllPatientProblem()
     } catch (error) { }
-  }, [findAllPatientAllergies]);
+  }, [findAllPatientProblem]);
 
   useEffect(() => {
-    id && fetchAllergies()
-  }, [fetchAllergies, id])
+    id && fetchProblems()
+  }, [fetchProblems, id])
 
   const handleMenuOpen = ({ currentTarget }: MouseEvent<HTMLElement>) => dispatch({
     type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: currentTarget
@@ -114,14 +107,11 @@ const AllergyList = (): JSX.Element => {
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
   };
 
-  const handleSearch = async (type: string, query: string) => {
+  const handleSearch = async (query: string) => {
     try {
-      query && await findAllAllergies({
+      query && await searchIcdCodes({
         variables: {
-          allergyInput: {
-            allergyName: query, allergyType: type.toLowerCase(),
-            paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT }
-          }
+          searchIcdCodesInput: { searchTerm: query }
         }
       })
     } catch (error) { }

@@ -4129,6 +4129,13 @@ export type RemovePracticeMutationVariables = Exact<{
 
 export type RemovePracticeMutation = { __typename?: 'Mutation', removePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
+export type SearchIcdCodesQueryVariables = Exact<{
+  searchIcdCodesInput: SearchIcdCodesInput;
+}>;
+
+
+export type SearchIcdCodesQuery = { __typename?: 'Query', searchIcdCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string } | null | undefined> | null | undefined } };
+
 export type FindAllReactionsQueryVariables = Exact<{
   reactionInput: ReactionInput;
 }>;
@@ -8034,6 +8041,44 @@ export function useRemovePracticeMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemovePracticeMutationHookResult = ReturnType<typeof useRemovePracticeMutation>;
 export type RemovePracticeMutationResult = Apollo.MutationResult<RemovePracticeMutation>;
 export type RemovePracticeMutationOptions = Apollo.BaseMutationOptions<RemovePracticeMutation, RemovePracticeMutationVariables>;
+export const SearchIcdCodesDocument = gql`
+    query SearchIcdCodes($searchIcdCodesInput: SearchIcdCodesInput!) {
+  searchIcdCodes(searchIcdCodesInput: $searchIcdCodesInput) {
+    icdCodes {
+      id
+      code
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchIcdCodesQuery__
+ *
+ * To run a query within a React component, call `useSearchIcdCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchIcdCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchIcdCodesQuery({
+ *   variables: {
+ *      searchIcdCodesInput: // value for 'searchIcdCodesInput'
+ *   },
+ * });
+ */
+export function useSearchIcdCodesQuery(baseOptions: Apollo.QueryHookOptions<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>(SearchIcdCodesDocument, options);
+      }
+export function useSearchIcdCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>(SearchIcdCodesDocument, options);
+        }
+export type SearchIcdCodesQueryHookResult = ReturnType<typeof useSearchIcdCodesQuery>;
+export type SearchIcdCodesLazyQueryHookResult = ReturnType<typeof useSearchIcdCodesLazyQuery>;
+export type SearchIcdCodesQueryResult = Apollo.QueryResult<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>;
 export const FindAllReactionsDocument = gql`
     query FindAllReactions($reactionInput: ReactionInput!) {
   findAllReactions(reactionInput: $reactionInput) {

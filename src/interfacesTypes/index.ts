@@ -23,7 +23,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
-  CreatePatientAllergyInput, Allergies
+  CreatePatientAllergyInput, Allergies, IcdCodesPayload
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -1092,7 +1092,7 @@ export interface CardLayoutProps {
   openSearch: HTMLElement | null;
   dispatcher: Dispatch<ChartAction>;
   searchComponent: ComponentType<any>;
-  searchData: AllergiesPayload['allergies'];
+  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
   fetch: () => void;
   handleMenuClose: () => void;
   onClickAddIcon: (event: any) => void;
@@ -1149,7 +1149,7 @@ export type multiOptionType = {
   label: string
 }
 
-export interface MultiSelectorInterface {
+export interface ReactionSelectorInterface {
   name: string
   label: string
   isEdit?: boolean;
@@ -1157,6 +1157,6 @@ export interface MultiSelectorInterface {
   isRequired?: boolean
   selectDisabled?: boolean
   selectedOptions?: string
-  optionsArray: multiOptionType[]
+  defaultValues?: multiOptionType[]
   setFieldValue?: Function
 }

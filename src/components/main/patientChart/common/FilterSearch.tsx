@@ -7,14 +7,14 @@ import { NO_RECORDS, TYPE } from '../../../../constants';
 import { GRAY_FIVE, GRAY_SIX, GREY_SEVEN } from '../../../../theme';
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
 import { chartReducer, Action, initialState, State, ActionType } from "../../../../reducers/chartReducer";
-import AddModal from './AddModal';
-import { Allergies, AllergiesPayload } from '../../../../generated/graphql';
+import AllergyModal from '../allergies/modals/AllergyModal';
+import { Allergies, AllergiesPayload, IcdCodesPayload } from '../../../../generated/graphql';
 
 interface FilterSearchProps {
   tabs: string[];
   loading: boolean;
   dispatcher: Dispatch<Action>;
-  searchData: AllergiesPayload['allergies'];
+  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
   fetch: () => void;
   searchItem: (tab: string, query: string) => void;
 }
@@ -130,7 +130,7 @@ const FilterSearch: FC<FilterSearchProps> = (
         onClose={handleMenuClose}
         className={classes.dropdown}
       >
-        {selectedItem && <AddModal dispatcher={dispatch} item={selectedItem} fetch={fetch} />}
+        {selectedItem && <AllergyModal dispatcher={dispatch} item={selectedItem} fetch={fetch} />}
       </Menu>
     </>
   )

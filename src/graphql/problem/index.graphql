@@ -1,0 +1,8 @@
+query SearchIcdCodes($searchIcdCodesInput: SearchIcdCodesInput!){
+  searchIcdCodes(searchIcdCodesInput: $searchIcdCodesInput){
+    icdCodes {
+      id
+      code
+    }
+  }
+}

@@ -1,17 +1,20 @@
-import { Allergies, AllergiesPayload, ReactionsPayload } from "../generated/graphql"
+import { Allergies, AllergiesPayload, IcdCodesPayload, ReactionsPayload } from "../generated/graphql"
+import { multiOptionType } from "../interfacesTypes";
 
 export interface State {
   itemId: string;
+  selectedReactions: multiOptionType[]
   reactionList: ReactionsPayload['reactions'];
   selectedItem: Allergies | undefined;
   reactionPage: number;
   isSearchOpen: HTMLElement | null;
   isFormOpen: HTMLElement | null;
-  searchedData: AllergiesPayload['allergies'];
+  searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
 }
 
 export const initialState: State = {
   itemId: '',
+  selectedReactions: [],
   reactionList: [],
   selectedItem: undefined,
   reactionPage: 1,
@@ -22,6 +25,7 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_ITEM_ID = 'setItemId',
+  SET_SELECTED_REACTIONS = 'setSelectedReactions',
   SET_SELECTED_ITEM = 'setSelectedItem',
   SET_REACTION_PAGE = 'setReactionPage',
   SET_REACTION_LIST = 'setReactionList',
@@ -31,13 +35,14 @@ export enum ActionType {
 }
 
 export type Action =
+  | { type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: multiOptionType[] }
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
   | { type: ActionType.SET_REACTION_PAGE, reactionPage: number }
   | { type: ActionType.SET_ITEM_ID, itemId: string }
   | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | undefined }
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_IS_FORM_OPEN, isFormOpen: HTMLElement | null }
-  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] }
+  | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] }
 
 
 export const chartReducer = (state: State, action: Action): State => {
@@ -52,6 +57,12 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         itemId: action.itemId
+      }
+
+    case ActionType.SET_SELECTED_REACTIONS:
+      return {
+        ...state,
+        selectedReactions: action.selectedReactions
       }
 
     case ActionType.SET_IS_FORM_OPEN:

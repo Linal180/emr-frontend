@@ -8,7 +8,7 @@ import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
+import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
 import {
   AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
   SelectorOption, TableAlignType, UserFormType
@@ -16,7 +16,8 @@ import {
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload, 
+  AllergySeverity
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
@@ -86,7 +87,7 @@ export const requiredLabel = (label: string) => {
   return (
     <Box>
       {label}
-      <Box component="span" color="red">
+      <Box component="span">
         {' '}
         *
       </Box>
@@ -619,6 +620,24 @@ export const appointmentStatus = (status: string) => {
   }
 };
 
+export const getSeverityColor = (severity: AllergySeverity) => {
+
+  switch (severity) {
+    case AllergySeverity.VeryMild:
+      return VERY_MILD;
+
+    case AllergySeverity.Mild:
+      return MILD;
+
+    case AllergySeverity.Moderate:
+      return MODERATE;
+
+    case AllergySeverity.Acute:
+      return ACUTE;
+  }
+
+};
+
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
   const drivingLicense1 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense1)[0] || undefined
   const drivingLicense2 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense2)[0] || undefined
@@ -834,20 +853,20 @@ export const getReactionData = (data: ReactionsPayload['reactions']) => {
   }
 
   return result;
-}; 
+};
 
 export const getHigherRole = (roles: string[]) => {
-  if(roles.includes(SYSTEM_ROLES.SuperAdmin)) return formatRoleName(SYSTEM_ROLES.SuperAdmin)
-  if(roles.includes(SYSTEM_ROLES.PracticeAdmin)) return formatRoleName(SYSTEM_ROLES.PracticeAdmin)
-  if(roles.includes(SYSTEM_ROLES.FacilityAdmin)) return formatRoleName(SYSTEM_ROLES.FacilityAdmin)
-  if(roles.includes(SYSTEM_ROLES.EmergencyAccess)) return formatRoleName(SYSTEM_ROLES.EmergencyAccess)
-  if(roles.includes(SYSTEM_ROLES.Doctor)) return formatRoleName(SYSTEM_ROLES.Doctor)
-  if(roles.includes(SYSTEM_ROLES.NursePractitioner)) return formatRoleName(SYSTEM_ROLES.NursePractitioner)
-  if(roles.includes(SYSTEM_ROLES.DoctorAssistant)) return formatRoleName(SYSTEM_ROLES.DoctorAssistant)
-  if(roles.includes(SYSTEM_ROLES.Staff)) return formatRoleName(SYSTEM_ROLES.Staff)
-  if(roles.includes(SYSTEM_ROLES.Nurse)) return formatRoleName(SYSTEM_ROLES.Nurse)
-  if(roles.includes(SYSTEM_ROLES.FrontDesk)) return formatRoleName(SYSTEM_ROLES.FrontDesk)
-  if(roles.includes(SYSTEM_ROLES.OfficeManager)) return formatRoleName(SYSTEM_ROLES.OfficeManager)
+  if (roles.includes(SYSTEM_ROLES.SuperAdmin)) return formatRoleName(SYSTEM_ROLES.SuperAdmin)
+  if (roles.includes(SYSTEM_ROLES.PracticeAdmin)) return formatRoleName(SYSTEM_ROLES.PracticeAdmin)
+  if (roles.includes(SYSTEM_ROLES.FacilityAdmin)) return formatRoleName(SYSTEM_ROLES.FacilityAdmin)
+  if (roles.includes(SYSTEM_ROLES.EmergencyAccess)) return formatRoleName(SYSTEM_ROLES.EmergencyAccess)
+  if (roles.includes(SYSTEM_ROLES.Doctor)) return formatRoleName(SYSTEM_ROLES.Doctor)
+  if (roles.includes(SYSTEM_ROLES.NursePractitioner)) return formatRoleName(SYSTEM_ROLES.NursePractitioner)
+  if (roles.includes(SYSTEM_ROLES.DoctorAssistant)) return formatRoleName(SYSTEM_ROLES.DoctorAssistant)
+  if (roles.includes(SYSTEM_ROLES.Staff)) return formatRoleName(SYSTEM_ROLES.Staff)
+  if (roles.includes(SYSTEM_ROLES.Nurse)) return formatRoleName(SYSTEM_ROLES.Nurse)
+  if (roles.includes(SYSTEM_ROLES.FrontDesk)) return formatRoleName(SYSTEM_ROLES.FrontDesk)
+  if (roles.includes(SYSTEM_ROLES.OfficeManager)) return formatRoleName(SYSTEM_ROLES.OfficeManager)
 
   return roles[0]
 }
