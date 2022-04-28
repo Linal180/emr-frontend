@@ -301,7 +301,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         <Grid item md={4} sm={12} xs={12}>
                           <Selector
                             addEmpty
-                            isRequired
                             value={EMPTY_OPTION}
                             label={PROVIDER}
                             name="providerIds"
