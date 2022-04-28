@@ -1,7 +1,6 @@
 //packages block
 import { useState, useEffect, ChangeEvent, useCallback } from 'react'
 import { Pagination } from '@material-ui/lab';
-import { Visibility as VisibilityIcon } from '@material-ui/icons'
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 // components block
@@ -14,7 +13,7 @@ import { ACTION, CREATED_ON, FORM_BUILDER_COPY_TEMPLATE_ROUTE, NAME, PAGE_LIMIT,
 import { FormPayload, LayoutJsonType, SectionsInputs, useFindAllFormsLazyQuery } from '../../../../generated/graphql';
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { getFormatDate, renderTh } from '../../../../utils';
-import { CopyIcon } from '../../../../assets/svgs';
+import { CopyIcon, EyeIcon } from '../../../../assets/svgs';
 //component
 export const TemplatesTable = () => {
   const classes = useTableStyles()
@@ -81,7 +80,9 @@ export const TemplatesTable = () => {
   return (
     <Box>
       <Box className={classes.mainTableContainer}>
-        <Search search={search} />
+        <Box py={2} mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
 
         <Box className="table-overflow">
           <Table aria-label="customized table">
@@ -119,7 +120,7 @@ export const TemplatesTable = () => {
                             </Box>
                           </Link>
                           <Box className={classes.iconsBackground} onClick={() => { name && onViewClick(layout, name) }}>
-                            <VisibilityIcon />
+                            <EyeIcon />
                           </Box>
                         </Box>
                       </TableCell>

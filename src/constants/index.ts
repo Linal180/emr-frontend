@@ -43,6 +43,7 @@ export const PASSWORD_REGEX =
 
 // system roles
 export enum SYSTEM_ROLES {
+  EmergencyAccess = "emergency-access",
   SuperAdmin = "super-admin",
   PracticeAdmin = "practice-admin",
   FacilityAdmin = "facility-admin",
@@ -717,7 +718,7 @@ export const ADD_POLICY = "Add Policy";
 export const EMPLOYMENT = "Employment";
 export const LOINC_CODE = "LOINC Code";
 export const ISSUE_DATE = "Issue Date";
-export const DOB_FORMAT = 'DD-MM-YYYY';
+export const DOB_FORMAT = 'MM-DD-YYYY';
 export const HOME_PHONE = "Home Phone";
 export const SCHEDULE_TEXT = "Schedule";
 export const YES_CANCEL = "Yes, Cancel";
@@ -1089,6 +1090,7 @@ export const SCHEDULE_NOT_FOUND = "Schedule not found!";
 export const STAFF_ALREADY_EXIST = "Staff already exists";
 export const DROP_FIELD = "Please drop at least one field";
 export const CANT_DELETE_STAFF = "Staff can't be deleted.";
+export const CANT_DELETE_SELF_STAFF = "Staff can't delete itself";
 export const ROLE_CREATED = "Role is created successfully";
 export const ROLE_UPDATED = "Role is updated successfully";
 export const STAFF_CREATED = "Staff created successfully!";
@@ -3050,7 +3052,7 @@ export const USER_FORM_IMAGE_UPLOAD_URL = `/user-form/upload`
 
 export const FORM_BUILDER_FIELDS_TABS = [
   {
-    title: "Custom Form",
+    title: "Custom Forms",
     value: "1",
   },
   {

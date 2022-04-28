@@ -1,10 +1,11 @@
 // packages block
 import { FC, Fragment, useState } from "react";
-import { Box, ClickAwayListener, IconButton, TextField, Tooltip, Typography } from "@material-ui/core";
+import { Box, ClickAwayListener, IconButton, TextField, Typography } from "@material-ui/core";
 // styles, constants, utils and interfaces block
 import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
+import { SearchTooltip } from "../../styles/searchTooltip";
 
 const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.Element => {
   const classes = useTableStyles()
@@ -43,11 +44,13 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.El
         </IconButton>
       }
       {info && <ClickAwayListener onClickAway={handleTooltipClose}>
-        <Tooltip
+        <SearchTooltip
           PopperProps={{
             disablePortal: true,
           }}
           onClose={handleTooltipClose}
+          arrow
+          placement="right"
           open={open}
           disableFocusListener
           disableHoverListener
@@ -57,9 +60,9 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.El
             <Fragment>
               {tooltipData?.map((item) => {
                 return (
-                  <Box display='flex' justifyContent='space-between' className={classes.tooltip}>
-                    <Typography variant="h6" className={classes.tooltipContentHeading}>{item.name}</Typography>
-                    <Typography variant="caption" className={classes.tooltipContentDescription}>{item.format}</Typography>
+                  <Box display='flex' justifyContent='space-between'>
+                    <Typography variant="h6">{item.name}</Typography>
+                    <Typography variant="caption">{item.format}</Typography>
                   </Box>
                 )
               })}
@@ -69,7 +72,7 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.El
           <Box onClick={handleTooltipOpen} pr={2}>
             <InfoSearchIcon />
           </Box>
-        </Tooltip>
+        </SearchTooltip>
       </ClickAwayListener>}
     </Box>
   );

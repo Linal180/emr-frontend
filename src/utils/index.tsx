@@ -123,7 +123,7 @@ export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
 
   return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.Doctor)
     || userRoles.includes(SYSTEM_ROLES.Staff) || userRoles.includes(SYSTEM_ROLES.Nurse)
-    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
 }
 
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
@@ -175,7 +175,7 @@ export const getTimestamps = (date: string): string => {
 };
 
 export const getTimestampsForDob = (date: string): string => {
-  return date ? moment(date).format("DD-MM-YYYY").toString() : moment().format("DD-MM-YYYY").toString()
+  return date ? moment(date).format("MM-DD-YYYY").toString() : moment().format("MM-DD-YYYY").toString()
 };
 
 export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
@@ -834,4 +834,20 @@ export const getReactionData = (data: ReactionsPayload['reactions']) => {
   }
 
   return result;
+}; 
+
+export const getHigherRole = (roles: string[]) => {
+  if(roles.includes(SYSTEM_ROLES.SuperAdmin)) return formatRoleName(SYSTEM_ROLES.SuperAdmin)
+  if(roles.includes(SYSTEM_ROLES.PracticeAdmin)) return formatRoleName(SYSTEM_ROLES.PracticeAdmin)
+  if(roles.includes(SYSTEM_ROLES.FacilityAdmin)) return formatRoleName(SYSTEM_ROLES.FacilityAdmin)
+  if(roles.includes(SYSTEM_ROLES.EmergencyAccess)) return formatRoleName(SYSTEM_ROLES.EmergencyAccess)
+  if(roles.includes(SYSTEM_ROLES.Doctor)) return formatRoleName(SYSTEM_ROLES.Doctor)
+  if(roles.includes(SYSTEM_ROLES.NursePractitioner)) return formatRoleName(SYSTEM_ROLES.NursePractitioner)
+  if(roles.includes(SYSTEM_ROLES.DoctorAssistant)) return formatRoleName(SYSTEM_ROLES.DoctorAssistant)
+  if(roles.includes(SYSTEM_ROLES.Staff)) return formatRoleName(SYSTEM_ROLES.Staff)
+  if(roles.includes(SYSTEM_ROLES.Nurse)) return formatRoleName(SYSTEM_ROLES.Nurse)
+  if(roles.includes(SYSTEM_ROLES.FrontDesk)) return formatRoleName(SYSTEM_ROLES.FrontDesk)
+  if(roles.includes(SYSTEM_ROLES.OfficeManager)) return formatRoleName(SYSTEM_ROLES.OfficeManager)
+
+  return roles[0]
 }

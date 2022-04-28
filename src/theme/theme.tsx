@@ -257,7 +257,7 @@ export const theme = createTheme({
       contained: {
         borderRadius: 6,
         maxHeight: 40,
-        padding: '12px 20px',
+        height: 40,
         boxShadow: 'none',
         color: BLACK,
 
@@ -275,7 +275,7 @@ export const theme = createTheme({
       outlined: {
         borderRadius: 6,
         maxHeight: 40,
-        padding: '12px 20px',
+        height: 40,
         boxShadow: 'none',
         color: BLACK,
 

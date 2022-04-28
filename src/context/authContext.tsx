@@ -138,13 +138,15 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
             if (!!roles) {
               setUserRoles(pluck(roles, 'role'));
 
-              roles?.map(role => {
+              const transformedUserPermissions = roles?.reduce<string[]>((acc, role) => {
                 const { rolePermissions } = role || {};
-                let permissionsList = rolePermissions?.map(rolePermission => rolePermission.permission?.name)
-                const allPermissions = permissionsList?.length === 0 ? [''] : permissionsList
+                const permissions = rolePermissions?.map(rolePermission => rolePermission.permission?.name ?? '') ?? []
 
-                return permissionsList && setUserPermissions(allPermissions as string[])
-              })
+                acc.push(...Array.from(new Set(permissions)))
+                return acc
+              }, []) ?? []
+
+              setUserPermissions(transformedUserPermissions)
             }
 
             setUser(userResponse as User);

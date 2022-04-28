@@ -1,12 +1,11 @@
 // packages block
-import { Box, Button, Card, colors, Typography } from '@material-ui/core';
+import { Box, Card, colors, Typography } from '@material-ui/core';
 // styles and constants block
 import { WHITE_TWO } from '../../../../theme';
 import { successStyles } from '../../../../styles/publicAppointmentStyles/successStyles';
 import {
   PUBLIC_FORM_SUCCESS_HEADING, PUBLIC_FORM_SUCCESS_TITLE, PUBLIC_FORM_SUCCESS_DESCRIPTION_1,
 } from '../../../../constants';
-import history from '../../../../history';
 
 const UserFormSuccessComponent = () => {
   const classes = successStyles();
@@ -29,10 +28,6 @@ const UserFormSuccessComponent = () => {
                 <li>{PUBLIC_FORM_SUCCESS_DESCRIPTION_1}</li>
               </ul>
             </Typography>
-
-            <Box mt={2} display="flex" justifyContent="flex-end">
-              <Button variant='outlined' color='secondary' onClick={() => history.goBack()}>Go Back</Button>
-            </Box>
           </Box>
         </Box>
       </Card>

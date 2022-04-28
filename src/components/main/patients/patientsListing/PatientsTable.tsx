@@ -158,12 +158,12 @@ const PatientsTable: FC = (): JSX.Element => {
 
                   return (
                     <TableRow key={id}>
-                      <TableCell scope="row">{patientRecord}</TableCell>
                       <TableCell scope="row">
                         <Link to={`${PATIENTS_ROUTE}/${id}/details`}>
-                          {`${firstName} ${lastName}`}
+                          {patientRecord}
                         </Link>
                       </TableCell>
+                      <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{city}</TableCell>

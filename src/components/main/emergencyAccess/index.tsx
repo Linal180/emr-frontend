@@ -21,6 +21,7 @@ import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
 import { Pagination } from "@material-ui/lab";
 import { RolePayloadInterface } from "../../../interfacesTypes";
+import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 
 
 const EmergencyAccessComponent = (): JSX.Element => {
@@ -68,7 +69,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
               const { rolePermissions } = role || {};
               const permissions = rolePermissions?.map(rolePermission => rolePermission.permission?.name ?? '') ?? []
 
-              acc.push(...permissions)
+              acc.push(...Array.from(new Set(permissions)))
               return acc
             }, []) ?? []
 
@@ -271,13 +272,14 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
 
       <Box p={2} />
-      {!!transformedEmergencyAccessUser.length && shoulShowRevokePanel ? <Card>
+      {shoulShowRevokePanel && <Card>
         <Box className={classes.mainTableContainer}>
           <Box py={2} mb={2} maxWidth={450}>
             <Search search={search} />
           </Box>
 
           <Box className="table-overflow" maxHeight={410}>
+
             <Table aria-label="customized table">
               <TableHead>
                 <TableRow>
@@ -286,32 +288,37 @@ const EmergencyAccessComponent = (): JSX.Element => {
                   {renderTh(ACTION)}
                 </TableRow>
               </TableHead>
-
-              <TableBody>
-                {transformedEmergencyAccessUser?.map(
-                  ({ email, id, roles }) => (
-                    <TableRow key={id}>
-                      <TableCell scope="row">{email}</TableCell>
-                      <TableCell scope="row">
-                        <Typography variant="body1">{'11/12/2020'}</Typography>
-                      </TableCell>
-                      <TableCell scope="row">
-                        <Button
-                          variant="text"
-                          color="secondary"
-                          className="danger"
-                          onClick={() => onRevokeAccessClick({ id, roles })}
-                        >
-                          {REVOKE_ACCESS}
-                        </Button>
-                        {/* <Typography variant="body2">{drName}</Typography>
+              {(!!transformedEmergencyAccessUser.length) && (
+                <TableBody>
+                  {transformedEmergencyAccessUser?.map(
+                    ({ email, id, roles }) => (
+                      <TableRow key={id}>
+                        <TableCell scope="row">{email}</TableCell>
+                        <TableCell scope="row">
+                          <Typography variant="body1">{'11/12/2020'}</Typography>
+                        </TableCell>
+                        <TableCell scope="row">
+                          <Button
+                            variant="text"
+                            color="secondary"
+                            className="danger"
+                            onClick={() => onRevokeAccessClick({ id, roles })}
+                          >
+                            {REVOKE_ACCESS}
+                          </Button>
+                          {/* <Typography variant="body2">{drName}</Typography>
                         <Typography variant="body1">{actionDate}</Typography> */}
-                      </TableCell>
-                    </TableRow>
-                  )
-                )}
-              </TableBody>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  )}
+                </TableBody>)}
+
             </Table>
+            {!transformedEmergencyAccessUser.length &&
+              <Box display="flex" justifyContent="center" pb={12} pt={5}>
+                <NoDataFoundComponent />
+              </Box>}
           </Box>
         </Box>
 
@@ -326,7 +333,10 @@ const EmergencyAccessComponent = (): JSX.Element => {
             />
           </Box>
         )}
-      </Card> : null}
+      </Card>}
+
+
+
 
       <UpdateConfirmationModal title={EMERGENCY_ACCESS} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
         description={rolePayload ? 'Confirm to revoke access' : 'Confirm to update emergency access'} handleDelete={handleEmergencyAccessRevoke}
