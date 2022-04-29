@@ -33,8 +33,10 @@ import {
   COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES, getFormInitialValues,
   FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION,
   FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT, FORM_TEXT,
-  CREATE_TEMPLATE, CREATE_FORM_TEMPLATE,
+  CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD, FORMS_EDIT_BREAD,
 } from '../../../../constants';
+import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 
 //component
 const AddForm = () => {
@@ -379,7 +381,16 @@ const AddForm = () => {
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
           <Box py={2} display='flex' justifyContent='space-between'>
-            <Typography variant='h4'>{FORM_BUILDER}</Typography>
+            <Box display='flex'>
+              <BackButton to={`${FORM_BUILDER_ROUTE}`} />
+
+              <Box ml={2} />
+
+              <PageHeader
+                title={FORM_BUILDER}
+                path={[FORMS_BREAD, formId ? FORMS_EDIT_BREAD : FORMS_ADD_BREAD]}
+              />
+            </Box>
 
             <Box display='flex' justifyContent='flex-start'>
               <Button onClick={clearHandler} variant="outlined" color="default">

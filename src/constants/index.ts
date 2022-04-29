@@ -78,6 +78,8 @@ export const VERIFY_ADDRESS = "Verify address";
 export const DISMISS = "Dismiss";
 export const LABEL = "Label";
 export const FORMS = "Forms";
+export const ADD_FORM = "Add Form";
+export const EDIT_FORM = "Edit Form";
 export const FORM_RESPONSES = "Form Responses";
 export const TIME = "Time";
 export const OPTION_TEXT = "Option";
@@ -226,6 +228,8 @@ export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";
 export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
+export const ADD_PRACTICE = "Add practice";
+export const EDIT_PRACTICE = "Edit practice";
 export const ADD_PATIENT_MODAL = "Add Patient?";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
@@ -471,6 +475,7 @@ export const MEDICAID_GRP_NUMBER = "Medicaid GRP Number";
 export const TAX_ID_STUFF = "Tax ID Stuff / Provider Site ID";
 export const MAMMOGRAPHY_CERT_NUMBER = "Mammography Cert Number";
 export const PRESCRIPTIVE_AUTH_NUMBER = "Prescriptive Auth number";
+export const REGISTER_NEW_FACILITY = "Register New Facility";
 export const SSN = "SSN";
 export const ZIP = "Zip";
 export const DATE = "Date";
@@ -1913,10 +1918,7 @@ export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
 ];
 
 // Breadcrumb links
-export const FACILITIES_BREAD = {
-  text: FACILITIES_LISTING,
-  link: FACILITIES_ROUTE,
-};
+export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE, };
 
 export const FACILITY_SERVICES_BREAD = {
   text: FACILITY_SERVICES_TEXT,
@@ -1940,10 +1942,7 @@ export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: "" };
 export const FACILITY_SERVICE_EDIT_BREAD = { text: EDIT_SERVICE, link: "" };
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE };
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE };
-export const DOCTOR_NEW_BREAD = {
-  text: ADD_DOCTOR,
-  link: `${DOCTORS_ROUTE}/new`,
-};
+export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new`, };
 
 export const APPOINTMENT_NEW_BREAD = {
   text: ADD_APPOINTMENT,
@@ -1951,18 +1950,21 @@ export const APPOINTMENT_NEW_BREAD = {
 };
 
 export const APPOINTMENT_EDIT_BREAD = { text: EDIT_APPOINTMENT, link: "" };
-export const RESULT_NEW_BREAD = {
-  text: ADD_RESULT,
-  link: `${LAB_RESULTS_ROUTE}/new`,
-};
+export const RESULT_NEW_BREAD = { text: ADD_RESULT, link: `${LAB_RESULTS_ROUTE}/new`, };
 
 export const BILL_NEW_BREAD = { text: ADD_BILL, link: CLAIMS_ROUTE };
 export const DOCTOR_EDIT_BREAD = { text: EDIT_DOCTOR, link: "" };
 export const PATIENTS_BREAD = { text: PATIENTS_TEXT, link: PATIENTS_ROUTE };
-export const PATIENT_NEW_BREAD = {
-  text: ADD_PATIENT,
-  link: `${PATIENTS_ROUTE}/new`,
-};
+export const PATIENT_NEW_BREAD = { text: ADD_PATIENT, link: `${PATIENTS_ROUTE}/new`, };
+export const PRACTICE_BREAD = { text: PRACTICE_MANAGEMENT_TEXT, link: PRACTICE_MANAGEMENT_ROUTE };
+export const PRACTICE_NEW_BREAD = { text: ADD_PRACTICE, link: `${PRACTICE_MANAGEMENT_ROUTE}/new`, };
+export const PRACTICE_EDIT_BREAD = { text: EDIT_PRACTICE, link: "" };
+export const ROLES_BREAD = { text: ROLES_TEXT, link: ROLES_ROUTE };
+export const ROLES_EDIT_BREAD = { text: EDIT_ROLE_TEXT, link: "" };
+export const ROLES_ADD_BREAD = { text: ADD_ROLE_TEXT, link: "" };
+export const FORMS_BREAD = { text: FORMS, link: FORM_BUILDER_ROUTE };
+export const FORMS_ADD_BREAD = { text: ADD_FORM, link: "" };
+export const FORMS_EDIT_BREAD = { text: EDIT_FORM, link: "" };
 
 export const PATIENT_CHART_BREAD = { text: PATIENT_CHART, link: "" };
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: "" };
@@ -1971,13 +1973,11 @@ export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: "" };
 export const DASHBOARD_BREAD = { text: DASHBOARD_TEXT, link: DASHBOARD_ROUTE };
 export const USERS_BREAD = { text: USERS_TEXT, link: "" };
 export const APPOINTMENTS_BREAD = { text: APPOINTMENTS_TEXT, link: "" };
+export const SCHEDULE_BREAD = { text: SCHEDULE_TEXT, link: "" };
 export const SETTINGS_BREAD = { text: SETTINGS_TEXT, link: SETTINGS_ROUTE };
 export const BILLING_BREAD = { text: BILLING_TEXT, link: "" };
 export const REPORTS_BREAD = { text: REPORTS_TEXT, link: "" };
-export const LAB_RESULTS_BREAD = {
-  text: LAB_RESULTS_TEXT,
-  link: LAB_RESULTS_ROUTE,
-};
+export const LAB_RESULTS_BREAD = { text: LAB_RESULTS_TEXT, link: LAB_RESULTS_ROUTE, };
 
 export const CLAIM_FEED_BREAD = { text: CLAIM_FEED_TEXT, link: CLAIMS_ROUTE };
 export const INVOICES_BREAD = { text: INVOICES_TEXT, link: INVOICES_ROUTE };
@@ -1986,10 +1986,7 @@ export const VIEW_APPOINTMENTS_BREAD = {
   link: VIEW_APPOINTMENTS_ROUTE,
 };
 
-export const CALENDAR_VIEW_APPOINTMENTS_BREAD = {
-  text: CALENDAR_VIEW_TEXT,
-  link: CALENDAR_ROUTE,
-};
+export const CALENDAR_VIEW_APPOINTMENTS_BREAD = { text: CALENDAR_VIEW_TEXT, link: CALENDAR_ROUTE, };
 
 // profile top tabs
 export const PROFILE_TOP_TABS = [

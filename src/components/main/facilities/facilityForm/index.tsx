@@ -4,8 +4,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { AddCircleOutline, CheckBox as CheckBoxIcon } from '@material-ui/icons';
 import { usStreet } from 'smartystreets-javascript-sdk';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { TabContext, TabList, TabPanel, Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator } from '@material-ui/lab';
-import { Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup, Grid, List, ListItem, Tab, Typography } from "@material-ui/core";
+import {
+  TabContext, TabList, TabPanel, Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator
+} from '@material-ui/lab';
+import {
+  Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup, Grid, List, ListItem, Tab, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
@@ -15,6 +19,9 @@ import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
 import SmartyModal from '../../../common/SmartyModal';
+import DoctorScheduleForm from './schedules';
+import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
+import BackButton from '../../../common/BackButton';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
@@ -28,19 +35,15 @@ import {
   FacilityPayload, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING,
-  CREATE_FACILITY, EMPTY_OPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES,
-  FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY, COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED,
-  NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, ZIP, SERVICE_CODE, CANCEL, FACILITY_NOT_FOUND, FACILITY_CREATED,
-  FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION, MAPPED_COUNTRIES, BILLING_PROFILE,
-  SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO, TAXONOMY_CODE_INFO,
-  NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
-  BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FacilityMenuNav, FACILITY_HOURS_END,
-  FACILITY_HOURS_START, FACILITY_REGISTRATION, BUSINESS_HOURS, FACILITY_SCHEDULE,
-  VERIFY_ADDRESS, VERIFIED, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER
+  ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING, CREATE_FACILITY, EMPTY_OPTION,
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY,
+  COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, ZIP, SERVICE_CODE,
+  CANCEL, FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION,
+  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO,
+  TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
+  BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FacilityMenuNav, FACILITY_HOURS_END, FACILITY_HOURS_START, FACILITY_REGISTRATION,
+  BUSINESS_HOURS, FACILITY_SCHEDULE, VERIFY_ADDRESS, VERIFIED, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER,
 } from "../../../../constants";
-import DoctorScheduleForm from './schedules';
-import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext);
@@ -353,43 +356,62 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   return (
     <TabContext value={tabValue}>
-      <TabList onChange={handleChange} aria-label="Profile top tabs">
-        <Tab key='1' label={FACILITY_REGISTRATION} value="1" />
-        <Tab key='2' label={FACILITY_SCHEDULE} value="2" disabled={!id && true} />
-      </TabList>
-      <TabPanel value="1">
-        <Box display='flex' position='relative'>
-          <Box mr={2} ml={2} pl={1} pr={1} pb={4} display='flex' className={classes.navbar}>
-            <List>
-              {FacilityMenuNav.map((item) => {
-                return (
-                  <a href={`#${item.linkTo}`} className={`#${item.linkTo}` === path ? 'active' : ''}>
-                    <Box display='flex'>
-                      <Timeline>
-                        <TimelineItem>
-                          <TimelineSeparator>
-                            <TimelineDot className={`#${item.linkTo}` === path ? 'facilityActive' : ''} />
-                            {item.title !== BUSINESS_HOURS && <TimelineConnector />}
-                          </TimelineSeparator>
-                          <TimelineContent />
-                        </TimelineItem>
-                      </Timeline>
-                      <ListItem button className={`#${item.linkTo}` === path ? 'active' : ''} style={{ display: 'flex', alignItems: 'baseline' }}>
-                        <Typography variant='h5'>
-                          {item.title}
-                        </Typography>
-                      </ListItem>
-                    </Box>
-                  </a>
-                )
-              })}
-            </List>
-          </Box>
+      <Box display="flex">
+        <BackButton to={`${FACILITIES_ROUTE}`} />
 
-          <Box width='100%'>
-            <FormProvider {...methods}>
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+        <Box ml={2}>
+          <TabList onChange={handleChange} aria-label="Profile top tabs">
+            <Tab key='1' label={FACILITY_REGISTRATION} value="1" />
+            <Tab key='2' label={FACILITY_SCHEDULE} value="2" disabled={!id && true} />
+          </TabList>
+        </Box>
+      </Box>
+      
+      <TabPanel value="1">
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Box mb={2} display="flex" justifyContent="flex-end" alignItems="flex-start">
+              <Button type="submit" variant="contained" color="primary"
+                disabled={createFacilityLoading || updateFacilityLoading}
+              >
+                {isEdit ? UPDATE_FACILITY : CREATE_FACILITY}
+
+                {(createFacilityLoading || updateFacilityLoading) &&
+                  <CircularProgress size={20} color="inherit" />
+                }
+              </Button>
+            </Box>
+
+            <Box display='flex' position='relative'>
+              <Box mr={2} ml={2} pl={1} pr={1} pb={4} display='flex' className={classes.navbar}>
+                <List>
+                  {FacilityMenuNav.map((item) => {
+                    return (
+                      <a href={`#${item.linkTo}`} className={`#${item.linkTo}` === path ? 'active' : ''}>
+                        <Box display='flex'>
+                          <Timeline>
+                            <TimelineItem>
+                              <TimelineSeparator>
+                                <TimelineDot className={`#${item.linkTo}` === path ? 'facilityActive' : ''} />
+                                {item.title !== BUSINESS_HOURS && <TimelineConnector />}
+                              </TimelineSeparator>
+                              <TimelineContent />
+                            </TimelineItem>
+                          </Timeline>
+                          <ListItem button className={`#${item.linkTo}` === path ? 'active' : ''} style={{ display: 'flex', alignItems: 'baseline' }}>
+                            <Typography variant='h5'>
+                              {item.title}
+                            </Typography>
+                          </ListItem>
+                        </Box>
+                      </a>
+                    )
+                  })}
+                </List>
+              </Box>
+
+              <Box width='100%'>
+                <Box maxHeight="calc(100vh - 260px)" className="overflowY-auto">
                   <Grid spacing={3}>
                     <Grid md={12} id={FACILITY_INFO_ROUTE}>
                       <CardComponent cardTitle={FACILITY_INFO} isEdit={true}>
@@ -742,22 +764,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     </Grid>
                   </Grid>
                 </Box>
-
-                <Box display="flex" justifyContent="flex-end" pt={2}>
-                  <Button type="submit" variant="contained" color="primary"
-                    disabled={createFacilityLoading || updateFacilityLoading}
-                  >
-                    {isEdit ? UPDATE_FACILITY : CREATE_FACILITY}
-
-                    {(createFacilityLoading || updateFacilityLoading) &&
-                      <CircularProgress size={20} color="inherit" />
-                    }
-                  </Button>
-                </Box>
-              </form>
-            </FormProvider>
-          </Box>
-        </Box>
+              </Box>
+            </Box>
+          </form>
+        </FormProvider>
       </TabPanel>
 
       <TabPanel value='2'>
@@ -767,7 +777,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <SmartyModal
         isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData}
         verifiedAddressHandler={verifiedAddressHandler} />
-    </TabContext>
+    </TabContext >
   );
 };
 

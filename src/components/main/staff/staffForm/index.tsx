@@ -24,8 +24,10 @@ import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD,
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, ADD_STAFF, USERS_BREAD, STAFF_BREAD, STAFF_EDIT_BREAD, STAFF_NEW_BREAD,
 } from "../../../../constants";
+import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
@@ -129,9 +131,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const fetchList = useCallback(async (id: string, name: string) => {  
+  const fetchList = useCallback(async (id: string, name: string) => {
     setValue('providerIds', EMPTY_OPTION)
-    
+
     id && await fetchAllDoctorList(id);
   }, [fetchAllDoctorList, setValue]);
 
@@ -201,7 +203,28 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box minHeight="calc(100vh - 300px)">
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box display='flex'>
+            <BackButton to={`${STAFF_ROUTE}`} />
+
+            <Box ml={2} />
+
+            <PageHeader
+              title={ADD_STAFF}
+              path={[USERS_BREAD, STAFF_BREAD, isEdit ? STAFF_EDIT_BREAD : STAFF_NEW_BREAD]}
+            />
+          </Box>
+
+          <Button type="submit" variant="contained" color="primary"
+            disabled={updateStaffLoading || CreateStaffLoading}
+          >
+            {isEdit ? UPDATE_STAFF : CREATE_STAFF}
+
+            {(updateStaffLoading || CreateStaffLoading) && <CircularProgress size={20} color="inherit" />}
+          </Button>
+        </Box>
+
+        <Box maxHeight="calc(100vh - 190px)">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
@@ -315,16 +338,6 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               </CardComponent>
             </Grid>
           </Grid>
-        </Box>
-
-        <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary"
-            disabled={updateStaffLoading || CreateStaffLoading}
-          >
-            {isEdit ? UPDATE_STAFF : CREATE_STAFF}
-
-            {(updateStaffLoading || CreateStaffLoading) && <CircularProgress size={20} color="inherit" />}
-          </Button>
         </Box>
       </form>
     </FormProvider>

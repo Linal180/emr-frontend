@@ -1143,3 +1143,7 @@ export interface RolePayloadInterface {
   id: string
   roles?: RolesPayload['roles']
 }
+
+export interface BackButtonProps {
+  to: string;
+}

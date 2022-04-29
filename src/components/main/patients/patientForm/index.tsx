@@ -12,9 +12,13 @@ import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import DatePicker from "../../../common/DatePicker";
 import PhoneField from '../../../common/PhoneInput';
+import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
+import SmartyModal from '../../../common/SmartyModal';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { GREY_SEVEN, WHITE } from '../../../../theme';
@@ -33,22 +37,17 @@ import {
   useUpdatePatientMutation, useCreatePatientMutation
 } from "../../../../generated/graphql";
 import {
-  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL,
-  DEMOGRAPHICS, GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT,
-  GUARDIAN, SUFFIX, MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME,
-  MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, REGISTRATION_DATE, NOTICE_ON_FILE, PHONE,
-  MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE,
-  EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
-  LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS,
-  MAPPED_RELATIONSHIP_TYPE, MAPPED_MARITAL_STATUS, ETHNICITY, EMPTY_OPTION, GENDER_IDENTITY,
-  SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, USUAL_OCCUPATION, USUAL_INDUSTRY,
-  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
-  GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS, VERIFIED, SAME_AS_PATIENT, SSN_FORMAT,
+  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL, DEMOGRAPHICS, GUARANTOR, PRIVACY, REGISTRATION_DATES,
+  EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT, GUARDIAN, SUFFIX, MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME,
+  MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, REGISTRATION_DATE, NOTICE_ON_FILE, PHONE, MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE,
+  MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE, EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
+  LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS, MAPPED_RELATIONSHIP_TYPE, MAPPED_MARITAL_STATUS,
+  ETHNICITY, EMPTY_OPTION, GENDER_IDENTITY, SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, USUAL_OCCUPATION, USUAL_INDUSTRY,
+  ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION, GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY,
+  PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT, PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT,
+  CREATE_PATIENT, MAPPED_STATES, MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS, VERIFIED, SAME_AS_PATIENT,
+  SSN_FORMAT, ADD_PATIENT, PATIENTS_BREAD, PATIENT_NEW_BREAD, USERS_BREAD, PATIENT_EDIT_BREAD,
 } from "../../../../constants";
-import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
-import SmartyModal from '../../../common/SmartyModal'
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -571,12 +570,32 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   useEffect(() => {
     setIsVerified(false)
-  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch])
+    setValue('ssn', SSN_FORMAT)
+  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch, setValue])
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box display="flex">
+            <BackButton to={`${PATIENTS_ROUTE}`} />
+
+            <Box ml={2}>
+              <PageHeader
+                title={ADD_PATIENT}
+                path={[USERS_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
+              />
+            </Box>
+          </Box>
+
+          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
+            {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
+
+            {disableSubmit && <CircularProgress size={20} color="inherit" />}
+          </Button>
+        </Box>
+
+        <Box maxHeight="calc(100vh - 210px)" className="overflowY-auto">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
@@ -1347,15 +1366,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             </Grid>
           </Grid>
         </Box>
-
-        <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
-            {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
-
-            {disableSubmit && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>
-
       </form>
       <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} verifiedAddressHandler={verifiedAddressHandler} />
     </FormProvider>

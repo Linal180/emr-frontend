@@ -10,6 +10,7 @@ import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typograph
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import AddPatientModal from './AddPatientModal';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
@@ -41,7 +42,13 @@ import {
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
   CANCELLED_APPOINTMENT_EDIT_MESSAGE,
   DAYS,
+  EDIT_APPOINTMENT,
+  SCHEDULE_BREAD,
+  VIEW_APPOINTMENTS_BREAD,
+  APPOINTMENT_EDIT_BREAD,
+  APPOINTMENT_NEW_BREAD,
 } from "../../../../constants";
+import PageHeader from '../../../common/PageHeader';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
@@ -355,7 +362,30 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+            <Box display="flex">
+              <BackButton to={`${VIEW_APPOINTMENTS_ROUTE}`} />
+
+              <Box ml={2}>
+                <PageHeader
+                  title={EDIT_APPOINTMENT}
+                  path={[SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD, isEdit ? APPOINTMENT_EDIT_BREAD : APPOINTMENT_NEW_BREAD]}
+                />
+              </Box>
+            </Box>
+
+            <Button type="submit" variant="contained" color="primary"
+              disabled={updateAppointmentLoading || CreateAppointmentLoading}
+            >
+              {isEdit ? UPDATE_APPOINTMENT : CREATE_APPOINTMENT}
+
+              {(updateAppointmentLoading || CreateAppointmentLoading) &&
+                <CircularProgress size={20} color="inherit" />
+              }
+            </Button>
+          </Box>
+
+          <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
               <Grid md={8} item>
                 <CardComponent cardTitle={APPOINTMENT}>
@@ -553,18 +583,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                 </CardComponent>
               </Grid>
             </Grid>
-          </Box>
-
-          <Box display="flex" justifyContent="flex-end" pt={2}>
-            <Button type="submit" variant="contained" color="primary"
-              disabled={updateAppointmentLoading || CreateAppointmentLoading}
-            >
-              {isEdit ? UPDATE_APPOINTMENT : CREATE_APPOINTMENT}
-
-              {(updateAppointmentLoading || CreateAppointmentLoading) &&
-                <CircularProgress size={20} color="inherit" />
-              }
-            </Button>
           </Box>
         </form>
       </FormProvider>
