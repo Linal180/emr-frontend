@@ -6,7 +6,7 @@ import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Control, ValidationRule, FieldValues, Ref, ControllerRenderProps,
+  Control, ValidationRule, FieldValues, Ref, ControllerRenderProps, UseFormSetValue,
 } from "react-hook-form";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -335,9 +335,10 @@ export interface PatientSelectorProps {
   isRequired?: boolean
   isMultiple?: boolean
   value?: SelectorOption
-  options: SelectorOption[]
   isModal?: boolean
   handlePatientModal?: Function
+  isOpen?: boolean
+  setValue: UseFormSetValue<ExtendedAppointmentInputProps>
 }
 
 export interface FacilitySelectorProps {

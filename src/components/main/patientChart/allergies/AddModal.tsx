@@ -205,7 +205,7 @@ const AddModal: FC<AddModalProps> = (
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center" >
+        <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant='h4'>{name}</Typography>
 
           <IconButton onClick={closeAddModal}>

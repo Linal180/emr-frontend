@@ -25,7 +25,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimestamps, renderPatient, getTimeFromTimestamps,
+  getTimestamps, getTimeFromTimestamps,
   setRecord, getStandardTime, renderItem,
 } from "../../../../utils";
 import {
@@ -40,6 +40,7 @@ import {
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
   CANCELLED_APPOINTMENT_EDIT_MESSAGE,
   DAYS,
+  ADD_PATIENT_MODAL,
 } from "../../../../constants";
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 import ServiceSelector from '../../../common/Selector/ServiceSelector';
@@ -52,7 +53,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const [appStartDate, setAppStartDate] = useState<string>(params.get('startDate') || '')
   const [appEndDate] = useState<string>(params.get('endDate') || '')
   const {
-    patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
+    fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const {
@@ -69,6 +70,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     serviceId: { id: selectedService } = {},
     providerId: { id: selectedProvider } = {},
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
+    patientId: selectedPatient
   } = watch();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -346,6 +348,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: true })
   }
 
+  useEffect(() => {
+    const { id } = selectedPatient ?? {}
+    
+    id === ADD_PATIENT_MODAL && handlePatientModal()
+  }, [selectedPatient])
+
   const dateHandler = (currentDate: MaterialUiPickersDate) => {
     setAppStartDate('')
     dispatch({ type: ActionType.SET_DATE, date: currentDate })
@@ -366,7 +374,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                       <Grid item md={6} sm={12} xs={12}>
                         {isEdit ? renderItem(FACILITY, facilityName) :
                           <FacilitySelector
-                            addEmpty
                             isRequired
                             label={FACILITY}
                             name="facilityId"
@@ -408,10 +415,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                               handlePatientModal={handlePatientModal}
                               isModal
                               isRequired
-                              value={EMPTY_OPTION}
                               label={PATIENT}
                               name="patientId"
-                              options={renderPatient(patientList)}
+                              setValue={setValue}
+                              isOpen={openPatientModal}
                             />}
                         </Grid>
                       </Grid>
