@@ -3,6 +3,7 @@ query SearchIcdCodes($searchIcdCodesInput: SearchIcdCodesInput!){
     icdCodes {
       id
       code
+      description
     }
   }
 }

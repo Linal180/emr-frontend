@@ -16,8 +16,9 @@ import {
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload, 
-  AllergySeverity
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
+  AllergySeverity,
+  ProblemSeverity
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
@@ -620,19 +621,21 @@ export const appointmentStatus = (status: string) => {
   }
 };
 
-export const getSeverityColor = (severity: AllergySeverity) => {
+export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) => {
 
   switch (severity) {
     case AllergySeverity.VeryMild:
       return VERY_MILD;
 
     case AllergySeverity.Mild:
+    case ProblemSeverity.Chronic:
       return MILD;
 
     case AllergySeverity.Moderate:
       return MODERATE;
 
     case AllergySeverity.Acute:
+    case ProblemSeverity.Acute:
       return ACUTE;
   }
 

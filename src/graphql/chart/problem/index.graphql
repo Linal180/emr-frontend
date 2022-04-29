@@ -32,7 +32,6 @@ query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
         effectiveTime
         active
         moduleId
-        refsetId
         referencedComponentId
         mapGroup
         mapRule
@@ -41,6 +40,43 @@ query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
     }
   }
 }
+
+query GetPatientProblem($getPatientProblem: GetPatientProblem!){
+  getPatientProblem(getPatientProblem: $getPatientProblem){
+    response {
+      status
+      message
+    }
+    
+    patientProblem {
+      id
+      problemType
+      problemSeverity
+      problemStartDate
+      note
+      
+      ICDCode {
+        id
+        code
+        description
+        version
+      }
+      
+      snowMedCode {
+        id
+        recordId
+        effectiveTime
+        active
+        moduleId
+        referencedComponentId
+        mapGroup
+        mapRule
+        mapPriority
+      }
+    }
+  }
+}
+
 
 mutation AddPatientProblem($createProblemInput: CreateProblemInput!){
   addPatientProblem(createProblemInput: $createProblemInput){

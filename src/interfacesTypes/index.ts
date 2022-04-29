@@ -23,8 +23,9 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
-  CreatePatientAllergyInput, Allergies, IcdCodesPayload
+  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes
 } from "../generated/graphql";
+import { CARD_LAYOUT_MODAL } from "../constants";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -1081,12 +1082,13 @@ export interface UserFormPreviewModalProps {
 }
 
 export interface CardLayoutProps {
+  modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes
   cardId: string;
   hasAdd?: boolean;
   cardTitle: string;
   isMenuOpen: boolean;
   children: ReactNode;
-  filterTabs: string[];
+  filterTabs?: string[];
   searchLoading: boolean;
   disableAddIcon?: boolean;
   openSearch: HTMLElement | null;
@@ -1100,9 +1102,9 @@ export interface CardLayoutProps {
 }
 
 export interface AddModalProps {
-  item?: Allergies;
   isEdit?: boolean;
-  patientAllergyId?: string;
+  recordId?: string;
+  item?: Allergies | IcdCodes;
   dispatcher: Dispatch<ChartAction>;
   fetch: () => void;
 }

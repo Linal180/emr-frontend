@@ -11,7 +11,7 @@ import AllergiesModal1Component from "../../common/FilterSearch";
 import { GREY_SEVEN } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
-import { ALLERGIES_TEXT, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
+import { ALLERGIES_TEXT, CARD_LAYOUT_MODAL, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
 import { formatValue, getAppointmentDate, getSeverityColor } from "../../../../../utils";
 import {
   chartReducer, Action, initialState, State, ActionType
@@ -130,6 +130,7 @@ const AllergyList = (): JSX.Element => {
   return (
     <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
       hasAdd
+      modal={CARD_LAYOUT_MODAL.Allergies}
       dispatcher={dispatch}
       isMenuOpen={isMenuOpen}
       searchData={searchedData}
@@ -164,9 +165,9 @@ const AllergyList = (): JSX.Element => {
                   </Box>
 
                   <Box mt={1} display="flex" alignItems="center">
-                    <Box mr={2} color={getSeverityColor(allergySeverity as AllergySeverity)}>
-                      <Typography>{formatValue(allergySeverity || '')}</Typography>
-                    </Box>
+                      <Box mr={2} color={getSeverityColor(allergySeverity as AllergySeverity)}>
+                        <Typography>{formatValue(allergySeverity || '')}</Typography>
+                      </Box>
 
                     {reactions?.map((reaction, index) => {
                       const { name } = reaction || {}
@@ -199,8 +200,8 @@ const AllergyList = (): JSX.Element => {
         onClose={handleMenuClose}
         className={classes.dropdown}
       >
-        {itemId && selectedItem &&
-          <AllergyModal item={selectedItem} dispatcher={dispatch} isEdit patientAllergyId={itemId} fetch={async () => fetchAllergies()} />
+        {itemId && selectedItem && selectedItem.__typename === 'Allergies' &&
+          <AllergyModal item={selectedItem} dispatcher={dispatch} isEdit recordId={itemId} fetch={async () => fetchAllergies()} />
         }
       </Menu>
     </CardLayout>

@@ -4,33 +4,34 @@ import { useParams } from "react-router";
 import { Box, Menu, Typography } from "@material-ui/core";
 // components block
 import CardLayout from "../../common/CardLayout";
-import AllergiesModal1Component from "../../common/FilterSearch";
+import ProblemModal from "../modals/ProblemModal";
+import FilterSearch from "../../common/FilterSearch";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block
 import { GREY_SEVEN } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
-import { ALLERGIES_TEXT, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
+import { ALLERGIES_TEXT, CARD_LAYOUT_MODAL, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
 import { formatValue, getAppointmentDate, getSeverityColor } from "../../../../../utils";
 import {
   chartReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/chartReducer";
 import {
-  PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery,
-  AllergiesPayload, AllergyType, Allergies, AllergySeverity, PatientProblemPayload, useFindAllPatientProblemsLazyQuery, useSearchIcdCodesLazyQuery, IcdCodesPayload,
+   useFindAllPatientProblemsLazyQuery, useSearchIcdCodesLazyQuery, IcdCodesPayload,
+  PatientProblemsPayload, IcdCodes, ProblemSeverity,
 } from "../../../../../generated/graphql";
 
 const ProblemList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
   const { id } = useParams<ParamsType>()
-  const [patientProblems, setPatientProblems] = useState<PatientProblemPayload['patientProblem']>([])
+  const [patientProblems, setPatientProblems] = useState<PatientProblemsPayload['patientProblems']>([])
   const [{ isSearchOpen, selectedItem, searchedData, itemId, isFormOpen }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const isMenuOpen = Boolean(isSearchOpen);
   const isFormMenuOpen = Boolean(isFormOpen);
   const cardId = "widget-menu";
 
-  const [findAllPatientProblem, { loading }] = useFindAllPatientProblemsLazyQuery({
+  const [findAllPatientProblems, { loading }] = useFindAllPatientProblemsLazyQuery({
     variables: {
       patientProblemInput: { patientId: id, paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT } }
     },
@@ -53,7 +54,7 @@ const ProblemList = (): JSX.Element => {
             const { status } = response
 
             if (patientProblems && status && status === 200) {
-              setPatientProblems(patientProblems as PatientProblemPayload['patientProblem'])
+              setPatientProblems(patientProblems as PatientProblemsPayload['patientProblems'])
             }
           }
         }
@@ -87,9 +88,9 @@ const ProblemList = (): JSX.Element => {
 
   const fetchProblems = useCallback(async () => {
     try {
-      await findAllPatientProblem()
+      await findAllPatientProblems()
     } catch (error) { }
-  }, [findAllPatientProblem]);
+  }, [findAllPatientProblems]);
 
   useEffect(() => {
     id && fetchProblems()
@@ -101,8 +102,8 @@ const ProblemList = (): JSX.Element => {
 
   const handleMenuClose = () => dispatch({ type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: null });
 
-  const handleEdit = ({ currentTarget }: MouseEvent<HTMLElement>, id: string, allergy: Allergies) => {
-    dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: allergy })
+  const handleEdit = ({ currentTarget }: MouseEvent<HTMLElement>, id: string, icdCode: IcdCodes) => {
+    dispatch({ type: ActionType.SET_SELECTED_ITEM, selectedItem: icdCode })
     dispatch({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: currentTarget })
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
   };
@@ -120,57 +121,39 @@ const ProblemList = (): JSX.Element => {
   return (
     <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
       hasAdd
+      modal={CARD_LAYOUT_MODAL.ICDCodes}
       dispatcher={dispatch}
       isMenuOpen={isMenuOpen}
       searchData={searchedData}
+      searchComponent={FilterSearch}
       searchLoading={findAllergiesLoading}
-      filterTabs={Object.keys(AllergyType)}
-      searchComponent={AllergiesModal1Component}
       handleMenuClose={() => handleMenuClose()}
-      fetch={async () => await fetchAllergies()}
-      onSearch={(type, query) => handleSearch(type, query)}
+      fetch={async () => await fetchProblems()}
+      onSearch={(type, query) => handleSearch(query)}
       onClickAddIcon={(event: MouseEvent<HTMLElement>) => handleMenuOpen(event)}
     >
       {loading ?
         <ViewDataLoader columns={12} rows={3} />
         : <Box mb={2}>
-          {!!patientAllergies && patientAllergies.length > 0 ? (
-            patientAllergies.map((item) => {
-              const { id, allergySeverity, allergyStartDate, allergyOnset, allergy, reactions } = item || {}
-              const { name } = allergy || {}
+          {!!patientProblems && patientProblems.length > 0 ? (
+            patientProblems.map((item) => {
+              const { id, problemSeverity, ICDCode, problemStartDate } = item || {}
+              const { code } = ICDCode || {}
 
               return (
                 <Box pb={2} key={id}>
                   <Box display="flex" justifyContent="space-between">
-                    <Box onClick={(event) => id && allergy && handleEdit(event, id, allergy)}>
-                      <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
+                    <Box onClick={(event) => id && ICDCode && handleEdit(event, id, ICDCode)}>
+                      <Typography className={classes.cardContentHeading} key={id}>{code}</Typography>
                     </Box>
 
-                    {allergyStartDate ?
-                      <Typography className={classes.cardContentDate}>{getAppointmentDate(allergyStartDate)}</Typography>
-                      :
-                      <Typography className={classes.cardContentDate}>{formatValue(allergyOnset || '')}</Typography>
+                    {problemStartDate &&
+                      <Typography className={classes.cardContentDate}>{getAppointmentDate(problemStartDate)}</Typography>
                     }
                   </Box>
 
-                  <Box mt={1} display="flex" alignItems="center">
-                    <Box mr={2} color={getSeverityColor(allergySeverity as AllergySeverity)}>
-                      <Typography>{formatValue(allergySeverity || '')}</Typography>
-                    </Box>
-
-                    {reactions?.map((reaction, index) => {
-                      const { name } = reaction || {}
-
-                      return (
-                        <>
-                          {index < 2 && (
-                            <Typography className={classes.cardContentDescription}>
-                              {name}{reactions.length - 1 > index && ','} &nbsp;
-                            </Typography>
-                          )} {reactions.length > 2 && index === 2 && '...'}
-                        </>
-                      )
-                    })}
+                  <Box mr={2} color={getSeverityColor(problemSeverity as ProblemSeverity)}>
+                    <Typography>{formatValue(problemSeverity || '')}</Typography>
                   </Box>
                 </Box>
               )
@@ -189,12 +172,13 @@ const ProblemList = (): JSX.Element => {
         onClose={handleMenuClose}
         className={classes.dropdown}
       >
-        {itemId && selectedItem &&
-          <AllergyModal item={selectedItem} dispatcher={dispatch} isEdit patientAllergyId={itemId} fetch={async () => fetchAllergies()} />
+        aaaaaaaaaaaaaa
+        {itemId && selectedItem && ''
+          // <ProblemModal item={selectedItem} dispatcher={dispatch} isEdit patientAllergyId={itemId} fetch={async () => fetchAllergies()} />
         }
       </Menu>
     </CardLayout>
   );
 }
 
-export default AllergyList;
+export default ProblemList;

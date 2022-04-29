@@ -22,7 +22,7 @@ import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../.
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import {
   AllergyOnset, AllergySeverity, ReactionsPayload, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
-  useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation
+  useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation, Allergies,
 } from '../../../../../generated/graphql';
 import {
   ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
@@ -30,9 +30,9 @@ import {
 } from '../../../../../constants';
 
 const AllergyModal: FC<AddModalProps> = (
-  { item, dispatcher, isEdit, patientAllergyId, fetch }
+  { item, dispatcher, isEdit, recordId, fetch }
 ): JSX.Element => {
-  const { id, name } = item || {}
+  const { id, name } = item as Allergies || {}
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
   const [onset, setOnset] = useState<string>('')
@@ -143,14 +143,14 @@ const AllergyModal: FC<AddModalProps> = (
   }, [allergyStartDate])
 
   const fetchPatientAllergy = useCallback(async () => {
-    patientAllergyId && await getPatientAllergy({
-      variables: { getPatientAllergy: { id: patientAllergyId } }
+    recordId && await getPatientAllergy({
+      variables: { getPatientAllergy: { id: recordId } }
     })
-  }, [getPatientAllergy, patientAllergyId])
+  }, [getPatientAllergy, recordId])
 
   useEffect(() => {
     isEdit && fetchPatientAllergy()
-  }, [fetchPatientAllergy, isEdit, patientAllergyId])
+  }, [fetchPatientAllergy, isEdit, recordId])
 
   const closeAddModal = () => {
     reset()
@@ -163,8 +163,8 @@ const AllergyModal: FC<AddModalProps> = (
   }
 
   const handleDelete = async () => {
-    patientAllergyId && await removePatientAllergy({
-      variables: { removePatientAllergy: { id: patientAllergyId } }
+    recordId && await removePatientAllergy({
+      variables: { removePatientAllergy: { id: recordId } }
     })
   }
 
@@ -188,10 +188,10 @@ const AllergyModal: FC<AddModalProps> = (
       allergyStartDate ? { ...inputs, allergyStartDate: getTimestamps(allergyStartDate || '') } : { ...inputs }
 
     if (isEdit) {
-      patientAllergyId && await updatePatientAllergy({
+      recordId && await updatePatientAllergy({
         variables: {
           updateAllergyInput: {
-            ...commonInputs, updatePatientAllergyInput: { id: patientAllergyId, ...extendedInputs }
+            ...commonInputs, updatePatientAllergyInput: { id: recordId, ...extendedInputs }
           }
         }
       })

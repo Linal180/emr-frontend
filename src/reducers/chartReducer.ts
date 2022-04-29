@@ -1,11 +1,11 @@
-import { Allergies, AllergiesPayload, IcdCodesPayload, ReactionsPayload } from "../generated/graphql"
+import { Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload, ReactionsPayload } from "../generated/graphql"
 import { multiOptionType } from "../interfacesTypes";
 
 export interface State {
   itemId: string;
   selectedReactions: multiOptionType[]
   reactionList: ReactionsPayload['reactions'];
-  selectedItem: Allergies | undefined;
+  selectedItem: Allergies | IcdCodes | undefined;
   reactionPage: number;
   isSearchOpen: HTMLElement | null;
   isFormOpen: HTMLElement | null;
@@ -25,13 +25,13 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_ITEM_ID = 'setItemId',
-  SET_SELECTED_REACTIONS = 'setSelectedReactions',
+  SET_IS_FORM_OPEN = 'setFormOpen',
+  SET_IS_SEARCH_OPEN = 'setSearchOpen',
   SET_SELECTED_ITEM = 'setSelectedItem',
   SET_REACTION_PAGE = 'setReactionPage',
   SET_REACTION_LIST = 'setReactionList',
-  SET_IS_SEARCH_OPEN = 'setSearchOpen',
-  SET_IS_FORM_OPEN = 'setFormOpen',
   SET_SEARCHED_DATA = 'setSearchedData',
+  SET_SELECTED_REACTIONS = 'setSelectedReactions',
 }
 
 export type Action =
@@ -39,7 +39,7 @@ export type Action =
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
   | { type: ActionType.SET_REACTION_PAGE, reactionPage: number }
   | { type: ActionType.SET_ITEM_ID, itemId: string }
-  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | undefined }
+  | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | IcdCodes | undefined }
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_IS_FORM_OPEN, isFormOpen: HTMLElement | null }
   | { type: ActionType.SET_SEARCHED_DATA, searchedData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'] }
