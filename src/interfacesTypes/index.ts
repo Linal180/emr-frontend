@@ -62,7 +62,9 @@ export interface AuthContextProps {
   setCurrentStaff: (staff: Staff | null) => void;
   setUserRoles: (roles: string[]) => void;
   setUserPermissions: (permissions: string[]) => void;
-  setGetCall: (call: boolean) => void
+  setGetCall: (call: boolean) => void;
+  setProfileUrl: (url: string) => void;
+  profileUrl: string;
 }
 
 export interface DoctorScheduleSlotProps {

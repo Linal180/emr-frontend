@@ -3,12 +3,14 @@ import { createContext, FC, useEffect, useState } from "react";
 import { pluck } from "underscore";
 import { useCallback } from "react";
 // graphql, interfaces/types and constants block
-import { TOKEN } from "../constants";
+import { ATTACHMENT_TITLES, TOKEN } from "../constants";
 import { getUserRole, isSuperAdmin } from "../utils";
 import { AuthContextProps } from "../interfacesTypes";
 import {
   User, useGetLoggedInUserLazyQuery, Doctor, Staff, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery,
-  RolesPayload
+  RolesPayload,
+  useGetAttachmentLazyQuery,
+  Attachment
 } from "../generated/graphql";
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -28,7 +30,9 @@ export const AuthContext = createContext<AuthContextProps>({
   setCurrentStaff: (staff: Staff | null) => { },
   setUserRoles: (roles: string[]) => { },
   setUserPermissions: (permissions: string[]) => { },
-  setGetCall: (call: boolean) => { }
+  setGetCall: (call: boolean) => { },
+  setProfileUrl: (url: string) => { },
+  profileUrl: ''
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
@@ -41,7 +45,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const [currentUser, setCurrentUser] = useState<Doctor | Staff | null>(null);
   const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
   const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null);
+  const [profileUrl, setProfileUrl] = useState('')
   const [getCall, setGetCall] = useState<boolean>(true)
+  const [profileAttachment, setProfileAttachment] = useState<null | Attachment>(null)
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
     fetchPolicy: "network-only",
@@ -62,6 +68,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
           if (doctor && status && status === 200) {
             setCurrentUser(doctor as Doctor)
             setCurrentDoctor(doctor as Doctor)
+            const { attachments } = doctor || {}
+            const doctorAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
+            doctorAttachment && setProfileAttachment(doctorAttachment)
           }
         }
       }
@@ -87,6 +96,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
           if (staff && status && status === 200) {
             setCurrentUser(staff as Staff)
             setCurrentStaff(staff as Staff)
+            const { attachments } = staff || {}
+            const staffAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
+            staffAttachment && setProfileAttachment(staffAttachment)
           }
         }
       }
@@ -111,7 +123,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
           const { user: userResponse } = me;
 
           if (userResponse) {
-            const { roles, userId, facility } = userResponse;
+            const { roles, userId, facility, attachments } = userResponse;
             const isAdmin = isSuperAdmin(roles as RolesPayload['roles'])
 
             if (!isAdmin) {
@@ -150,10 +162,31 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
             }
 
             setUser(userResponse as User);
+            const userAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
+            userAttachment && setProfileAttachment(userAttachment)
           }
         }
       }
     }
+  });
+
+  const [getAttachment] = useGetAttachmentLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {
+      return null
+    },
+
+    onCompleted(data) {
+      const { getAttachment } = data || {};
+
+      if (getAttachment) {
+        const { preSignedUrl } = getAttachment
+        preSignedUrl && setProfileUrl(preSignedUrl)
+      }
+    },
   });
 
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);
@@ -167,6 +200,18 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
     hasToken && setIsLoggedIn(true);
     getCall && isLoggedIn && hasToken && getUser();
   }, [getCall, isLoggedIn, hasToken, getUser]);
+
+  const fetchAttachment = useCallback(async () => {
+    try {
+      const { id } = profileAttachment || {}
+      id && await getAttachment({ variables: { getMedia: { id } }, })
+    } catch (error) { }
+  }, [profileAttachment, getAttachment])
+
+  useEffect(() => {
+    profileAttachment && fetchAttachment()
+  }, [profileAttachment, fetchAttachment])
+
 
   return (
     <AuthContext.Provider
@@ -187,7 +232,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
         currentStaff,
         currentDoctor,
         setUserPermissions,
-        setUserRoles
+        setUserRoles,
+        setProfileUrl,
+        profileUrl
       }}
     >
       {children}

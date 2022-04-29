@@ -54,6 +54,17 @@ query GetLoggedInUser {
           name
         }
       }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }
