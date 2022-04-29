@@ -22,9 +22,15 @@ import {
 } from "../../../constants";
 import { AuthContext } from '../../../context';
 import { ProfileEditFormType } from '../../../interfacesTypes';
-import { AttachmentType, useGetAttachmentLazyQuery, useGetCurrentUserLazyQuery, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
+import {
+  AttachmentType, useGetAttachmentLazyQuery, useGetCurrentUserLazyQuery, useGetDoctorUserLazyQuery,
+  useGetStaffUserLazyQuery, useUpdateDoctorMutation, useUpdateStaffMutation
+} from '../../../generated/graphql';
 import Alert from '../../common/Alert';
-import { Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as MediaState } from '../../../reducers/mediaReducer';
+import {
+  Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer,
+  State as MediaState
+} from '../../../reducers/mediaReducer';
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
