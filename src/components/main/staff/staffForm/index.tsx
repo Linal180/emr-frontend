@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext, useCallback } from 'react';
+import { useEffect, FC, useContext, useCallback, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
@@ -31,12 +31,13 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
   const { facilityList, roleList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
+  const [isFacilityAdmin, setIsfacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updateStaffSchema : createStaffSchema)
   });
   const { reset, setValue, handleSubmit, watch } = methods;
-  const { facilityId } = watch();
+  const { facilityId, roleType} = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
@@ -129,9 +130,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const fetchList = useCallback(async (id: string, name: string) => {  
+  const fetchList = useCallback(async (id: string, name: string) => {
     setValue('providerIds', EMPTY_OPTION)
-    
+
     id && await fetchAllDoctorList(id);
   }, [fetchAllDoctorList, setValue]);
 
@@ -197,6 +198,18 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
     }
   };
+
+  useEffect(() => {
+    if (roleType) {
+      const { name} = roleType || {}
+      if ( name === ' Facility-admin ') {
+        setIsfacilityAdmin(true)
+      } else {
+        setIsfacilityAdmin(false)
+      }
+    }
+
+  }, [watch, roleType])
 
   return (
     <FormProvider {...methods}>
@@ -299,13 +312,13 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                       {!isEdit &&
                         <Grid item md={4} sm={12} xs={12}>
-                          <Selector
+                          {isFacilityAdmin === false && <Selector
                             addEmpty
                             value={EMPTY_OPTION}
                             label={PROVIDER}
                             name="providerIds"
                             options={renderDoctors(doctorList)}
-                          />
+                          />}
                         </Grid>
                       }
                     </Grid>
