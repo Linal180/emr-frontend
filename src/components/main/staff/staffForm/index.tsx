@@ -24,7 +24,7 @@ import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD,
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
@@ -201,15 +201,17 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => {
     if (roleType) {
-      const { name} = roleType || {}
-      if ( name === ' Facility-admin ') {
+      const { id} = roleType || {}
+      
+      if (id === SYSTEM_ROLES.FacilityAdmin) {
         setIsfacilityAdmin(true)
+        setValue('providerIds', EMPTY_OPTION)
       } else {
         setIsfacilityAdmin(false)
       }
     }
 
-  }, [watch, roleType])
+  }, [watch, roleType, setValue])
 
   return (
     <FormProvider {...methods}>
@@ -312,13 +314,14 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                       {!isEdit &&
                         <Grid item md={4} sm={12} xs={12}>
-                          {isFacilityAdmin === false && <Selector
+                          <Selector
                             addEmpty
                             value={EMPTY_OPTION}
                             label={PROVIDER}
                             name="providerIds"
+                            disabled={isFacilityAdmin && true}
                             options={renderDoctors(doctorList)}
-                          />}
+                          />
                         </Grid>
                       }
                     </Grid>
