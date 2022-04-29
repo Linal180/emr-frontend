@@ -18,11 +18,11 @@ import { useProfileStyles } from "../../../styles/profileStyles";
 import {
   ADDRESS_NUMBER, ATTACHMENT_TITLES, CANCEL, CITY, CONTACT_NUMBER, COUNTRY, EDIT, EMAIL, EMPTY_OPTION, FIRST_NAME, GENERAL,
   LAST_NAME, MAPPED_COUNTRIES, MAPPED_STATES, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
-  PROFILE_UPDATE, SAVE_TEXT, SECURITY, STATE, UPLOAD_PICTURE, USER_SETTINGS, ZIP_CODE
+  PROFILE_UPDATE, SAVE_TEXT, SECURITY, STATE, SYSTEM_ROLES, UPLOAD_PICTURE, USER_SETTINGS, ZIP_CODE
 } from "../../../constants";
 import { AuthContext } from '../../../context';
 import { ProfileEditFormType } from '../../../interfacesTypes';
-import { AttachmentType, useGetAttachmentLazyQuery, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
+import { AttachmentType, useGetAttachmentLazyQuery, useGetCurrentUserLazyQuery, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
 import Alert from '../../common/Alert';
 import { Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as MediaState } from '../../../reducers/mediaReducer';
 
@@ -179,12 +179,39 @@ const ProfileComponent = (): JSX.Element => {
     }
   });
 
+  const [fetchUser] = useGetCurrentUserLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onCompleted(data) {
+      if (data) {
+        const { me } = data
+
+        if (me) {
+          const { user: userResponse } = me;
+
+          if (userResponse) {
+            const { userType, attachments } = userResponse;
+
+            if (userType === SYSTEM_ROLES.SuperAdmin) {
+              const userAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
+              mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: userAttachment })
+              const { id: userAttachmentId } = userAttachment || {}
+              userAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: userAttachmentId })
+            }
+          }
+        }
+      }
+    }
+  });
+
   const onSubmit: SubmitHandler<ProfileEditFormType> = async (values) => {
     const { firstName, lastName, addressNumber, city, phone, country, state, zipCode } = values || {}
     const { id: stateId } = state;
     const { id: countryId } = country
 
-    if (userType === 'doctor' && userId && contactId) {
+    if (userType === SYSTEM_ROLES.Doctor && userId && contactId) {
       await updateDoctor({
         variables: {
           updateDoctorInput: {
@@ -198,7 +225,7 @@ const ProfileComponent = (): JSX.Element => {
         }
       })
     }
-    else if (userType === 'super-admin') {
+    else if (userType === SYSTEM_ROLES.SuperAdmin) {
 
     }
     else {
@@ -214,7 +241,7 @@ const ProfileComponent = (): JSX.Element => {
 
   const editHandler = () => {
 
-    if (userType === 'doctor') {
+    if (userType === SYSTEM_ROLES.Doctor) {
       setValue('firstName', doctorFirstName || staffFirstName || '')
       setValue('lastName', doctorLastName || staffLastName || '')
       setValue('email', email || '')
@@ -246,7 +273,7 @@ const ProfileComponent = (): JSX.Element => {
 
   const fetchCurrentUser = useCallback(async () => {
     if (!isSuper) {
-      if (userType === 'doctor') {
+      if (userType === SYSTEM_ROLES.Doctor) {
         try {
           userId && await getDoctor({ variables: { getDoctor: { id: userId } } })
         } catch (error) {
@@ -261,7 +288,14 @@ const ProfileComponent = (): JSX.Element => {
         }
       }
     }
-  }, [userId, isSuper, userType, getStaff, getDoctor])
+    else {
+      try {
+        userId && await fetchUser()
+      } catch (error) {
+
+      }
+    }
+  }, [userId, isSuper, userType, getStaff, getDoctor, fetchUser])
 
   useEffect(() => {
     userId && userType && fetchCurrentUser()
@@ -270,7 +304,6 @@ const ProfileComponent = (): JSX.Element => {
   useEffect(() => {
     attachmentId && fetchAttachment();
   }, [attachmentId, fetchAttachment, attachmentData])
-
 
   return (
     <Box mt={5}>
@@ -374,7 +407,7 @@ const ProfileComponent = (): JSX.Element => {
                             {renderItem(CONTACT_NUMBER, userPhone || phone || doctorPhone || 'N/A')}
                           </Grid>
                         </Grid>
-                        {userType === 'doctor' &&
+                        {userType === SYSTEM_ROLES.Doctor &&
                           <Fragment>
                             <Grid container spacing={5}>
                               <Grid item md={12} sm={12} xs={12}>
@@ -439,7 +472,7 @@ const ProfileComponent = (): JSX.Element => {
                             <PhoneField name="phone" label={CONTACT_NUMBER} isRequired={false} />
                           </Grid>
                         </Grid>
-                        {userType === 'doctor' &&
+                        {userType === SYSTEM_ROLES.Doctor &&
                           <Fragment>
                             <Grid container spacing={3}>
                               <Grid item md={12} sm={12} xs={12}>

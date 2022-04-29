@@ -1152,3 +1152,7 @@ export interface MediaDoctorDataType extends Message {
 export interface MediaStaffDataType extends Message {
   staff: Staff;
 }
+
+export interface MediaUserDataType extends Message {
+  user: User;
+}

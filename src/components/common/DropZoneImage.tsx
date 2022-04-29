@@ -10,7 +10,7 @@ import Alert from "./Alert";
 import { AuthContext } from "../../context";
 import { getToken, handleLogout } from "../../utils";
 import { AttachmentType } from "../../generated/graphql";
-import { MediaDoctorDataType, MediaPatientDataType, MediaStaffDataType } from "../../interfacesTypes";
+import { MediaDoctorDataType, MediaPatientDataType, MediaStaffDataType, MediaUserDataType } from "../../interfacesTypes";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
 
@@ -38,6 +38,9 @@ const DropzoneImage: FC<any> = forwardRef(({
       moduleRoute = "staff";
       break;
 
+    case AttachmentType.SuperAdmin:
+      moduleRoute = "users";
+      break;
     default:
       break;
   }
@@ -90,7 +93,7 @@ const DropzoneImage: FC<any> = forwardRef(({
 
           case AttachmentType.Doctor:
             const doctorData = data as unknown as MediaDoctorDataType
-            
+
             if (doctorData) {
               const { doctor: { attachments: doctorAttachments } } = doctorData || {};
               doctorAttachments && setAttachments(doctorAttachments)
@@ -100,12 +103,25 @@ const DropzoneImage: FC<any> = forwardRef(({
             }
 
             break;
-          
-            case AttachmentType.Staff:
+
+          case AttachmentType.Staff:
             const staffData = data as unknown as MediaStaffDataType
 
             if (staffData) {
               const { staff: { attachments: staffAttachments } } = staffData || {};
+              staffAttachments && setAttachments(staffAttachments)
+              setLoading(false);
+              handleModalClose();
+              reload()
+            }
+
+            break;
+
+            case AttachmentType.SuperAdmin:
+            const userData = data as unknown as MediaUserDataType
+
+            if (userData) {
+              const { user: { attachments: staffAttachments } } = userData || {};
               staffAttachments && setAttachments(staffAttachments)
               setLoading(false);
               handleModalClose();

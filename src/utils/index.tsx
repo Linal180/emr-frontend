@@ -821,11 +821,11 @@ export const getHigherRole = (roles: string[]) => {
 
 export const getProfileImageType = (userType: string) => {
   
-  if (userType === 'super-admin') {
+  if (userType === SYSTEM_ROLES.SuperAdmin) {
     return AttachmentType.SuperAdmin
   }
 
-  else if (userType === 'doctor') {
+  else if (userType === SYSTEM_ROLES.Doctor) {
     return AttachmentType.Doctor
   }
 
