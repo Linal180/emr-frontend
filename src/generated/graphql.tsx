@@ -2978,6 +2978,7 @@ export enum Speciality {
 
 export type Staff = {
   __typename?: 'Staff';
+  attachments?: Maybe<Array<Attachment>>;
   createdAt: Scalars['String'];
   dob?: Maybe<Scalars['String']>;
   email: Scalars['String'];
@@ -3740,7 +3741,7 @@ export type GetStaffUserQueryVariables = Exact<{
 }>;
 
 
-export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename?: 'Staff', id: string, email: string, lastName: string, firstName: string, phone?: string | null | undefined } | null | undefined } };
+export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename?: 'Staff', id: string, email: string, lastName: string, firstName: string, phone?: string | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -5179,6 +5180,16 @@ export const GetStaffUserDocument = gql`
       lastName
       firstName
       phone
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }

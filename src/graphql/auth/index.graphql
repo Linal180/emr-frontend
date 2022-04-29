@@ -137,6 +137,17 @@ query GetStaffUser($getStaff: GetStaff!) {
       lastName
       firstName
       phone
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }

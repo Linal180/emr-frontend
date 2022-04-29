@@ -9,10 +9,10 @@ import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
 import PhoneField from '../../common/PhoneInput';
 import Selector from '../../common/Selector';
-import AddImageModal from '../../common/AddMedia';
+import MediaCards from '../../common/AddMedia/MediaCards';
 // constants, history, styling block
 import { WHITE } from '../../../theme';
-import { renderItem, setRecord } from '../../../utils';
+import { getProfileImageType, isSuperAdmin, renderItem, setRecord } from '../../../utils';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import {
@@ -22,23 +22,22 @@ import {
 } from "../../../constants";
 import { AuthContext } from '../../../context';
 import { ProfileEditFormType } from '../../../interfacesTypes';
-import { Attachment, AttachmentType, useGetAttachmentLazyQuery, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
+import { AttachmentType, useGetAttachmentLazyQuery, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery, useUpdateDoctorMutation, useUpdateStaffMutation } from '../../../generated/graphql';
 import Alert from '../../common/Alert';
 import { Action as MediaAction, ActionType as mediaActionType, initialState as mediaInitialState, mediaReducer, State as MediaState } from '../../../reducers/mediaReducer';
-import EditMediaModal from '../../common/AddMedia/EditMediaModal';
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
   const { user, currentDoctor, currentStaff, setGetCall } = useContext(AuthContext);
-  const { email, userType, userId, phone: userPhone } = user || {}
-  const { firstName: doctorFirstName, lastName: doctorLastName, contacts, attachments: doctorAttachments } = currentDoctor || {}
+  const { email, userType, userId, phone: userPhone, roles } = user || {}
+  const isSuper = isSuperAdmin(roles);
+  const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
   const { address, city, state: doctorState, phone: doctorPhone, zipCode, country, id: contactId } = primaryContact || {}
-  const doctorAttachment = doctorAttachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture)
 
   const [mediaState, mediaDispatch] = useReducer<Reducer<MediaState, MediaAction>>(mediaReducer, mediaInitialState)
-  const { isOpen, attachment, isEdit, isEditModalOpen, attachmentUrl, attachmentId } = mediaState
+  const { attachmentUrl, attachmentId, attachmentData } = mediaState
 
   const [edit, setEdit] = useState<boolean>(false)
 
@@ -122,6 +121,64 @@ const ProfileComponent = (): JSX.Element => {
     },
   });
 
+  const [getDoctor, { loading: getDoctorLoading }] = useGetDoctorUserLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() { },
+
+    onCompleted(data) {
+      const { getDoctor } = data || {};
+
+      if (getDoctor) {
+        const { response, doctor } = getDoctor
+
+        if (response) {
+          const { status } = response
+
+          if (doctor && status && status === 200) {
+            const { doctor } = getDoctor || {}
+            const { attachments } = doctor || {}
+            const doctorAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
+            mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: doctorAttachment })
+            const { id: doctorAttachmentId } = doctorAttachment || {}
+            doctorAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: doctorAttachmentId })
+
+          }
+        }
+      }
+    }
+  });
+
+  const [getStaff, { loading: getStaffLoading }] = useGetStaffUserLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() { },
+
+    onCompleted(data) {
+      const { getStaff } = data || {}
+
+      if (getStaff) {
+        const { response, staff } = getStaff;
+
+        if (response) {
+          const { status } = response
+
+          if (staff && status && status === 200) {
+            const { attachments } = staff || {}
+            const staffAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
+            mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: staffAttachment })
+            const { id: staffAttachmentId } = staffAttachment || {}
+            staffAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: staffAttachmentId })
+          }
+        }
+      }
+    }
+  });
+
   const onSubmit: SubmitHandler<ProfileEditFormType> = async (values) => {
     const { firstName, lastName, addressNumber, city, phone, country, state, zipCode } = values || {}
     const { id: stateId } = state;
@@ -177,26 +234,6 @@ const ProfileComponent = (): JSX.Element => {
     setEdit(!edit)
   }
 
-  const uploadImageHandler = () => {
-
-    if (attachmentUrl) {
-      mediaDispatch({
-        type: mediaActionType.SET_IS_EDIT,
-        isEdit: true,
-      })
-      mediaDispatch({
-        type: mediaActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN,
-        isEditModalOpen: true,
-      })
-    }
-    else {
-      mediaDispatch({
-        type: mediaActionType.SET_IS_OPEN,
-        isOpen: true
-      })
-    }
-  }
-
   const fetchAttachment = useCallback(async () => {
     try {
       await getAttachment({
@@ -207,19 +244,32 @@ const ProfileComponent = (): JSX.Element => {
     } catch (error) { }
   }, [attachmentId, getAttachment])
 
-  const dispatchAttachmentHandler = useCallback(() => {
-    mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: doctorAttachment })
-    const { id: doctorAttachmentId } = doctorAttachment || {}
-    doctorAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: doctorAttachmentId })
-  }, [doctorAttachment])
+  const fetchCurrentUser = useCallback(async () => {
+    if (!isSuper) {
+      if (userType === 'doctor') {
+        try {
+          userId && await getDoctor({ variables: { getDoctor: { id: userId } } })
+        } catch (error) {
+
+        }
+      }
+      else {
+        try {
+          userId && await getStaff({ variables: { getStaff: { id: userId } } })
+        } catch (error) {
+
+        }
+      }
+    }
+  }, [userId, isSuper, userType, getStaff, getDoctor])
 
   useEffect(() => {
-    doctorAttachment && dispatchAttachmentHandler()
-  }, [doctorAttachment, dispatchAttachmentHandler])
+    userId && userType && fetchCurrentUser()
+  }, [userType, userId, fetchCurrentUser])
 
   useEffect(() => {
     attachmentId && fetchAttachment();
-  }, [attachmentId, fetchAttachment])
+  }, [attachmentId, fetchAttachment, attachmentData])
 
 
   return (
@@ -271,11 +321,22 @@ const ProfileComponent = (): JSX.Element => {
                   <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
                 </Box>
 
-                <Box pt={2}>
-                  <Button type="submit" variant="outlined" color="primary" onClick={uploadImageHandler} disabled={getAttachmentLoading}>
-                    {UPLOAD_PICTURE}
-                    {getAttachmentLoading && <CircularProgress color='inherit' />}
-                  </Button>
+                <Box>
+                  {(getAttachmentLoading || getStaffLoading || getDoctorLoading) ?
+                    <CircularProgress color='inherit' />
+                    :
+                    <MediaCards
+                      title={ATTACHMENT_TITLES.ProfilePicture}
+                      reload={() => fetchCurrentUser()}
+                      notDescription={true}
+                      moduleType={(userType && getProfileImageType(userType)) || AttachmentType.Staff}
+                      itemId={userId || ''}
+                      imageSide={attachmentUrl}
+                      attachmentData={attachmentData || undefined}
+                      buttonText={UPLOAD_PICTURE}
+                      button={true}
+                    />
+                  }
                 </Box>
               </Grid>
 
@@ -446,68 +507,6 @@ const ProfileComponent = (): JSX.Element => {
           </Box>
         </Grid>
       </Grid>
-      <AddImageModal
-        title={ATTACHMENT_TITLES.ProfilePicture}
-        reload={() => { }}
-        imageModuleType={AttachmentType.Doctor}
-        setOpen={(isOpen: boolean) => {
-          mediaDispatch({
-            type: mediaActionType.SET_IS_OPEN,
-            isOpen: isOpen
-          })
-        }}
-
-        setEdit={(edit: boolean) => {
-          mediaDispatch({
-            type: mediaActionType.SET_IS_EDIT,
-            isEdit: edit,
-          })
-        }}
-
-        isEdit={!!attachment}
-        isOpen={isOpen}
-        itemId={userId || ''}
-        setAttachments={(attachment: Attachment) => {
-          mediaDispatch({
-            type: mediaActionType.SET_ATTACHMENT,
-            attachment: attachment
-          })
-        }}
-
-        attachment={attachment}
-        preSignedUrl={attachmentUrl}
-      />
-      <EditMediaModal
-        reload={() => fetchAttachment()}
-        imageModuleType={AttachmentType.Doctor}
-        setOpen={(isOpen: boolean) => {
-          mediaDispatch({
-            type: mediaActionType.SET_IS_EDIT_MEDIA_MODAL_OPEN,
-            isEditModalOpen: isOpen
-          })
-        }}
-
-        setEdit={(edit: boolean) => {
-          mediaDispatch({
-            type: mediaActionType.SET_IS_EDIT,
-            isEdit: edit,
-          })
-        }}
-
-        isOpen={isEditModalOpen}
-        itemId={userId || ''}
-        setAttachments={(attachment: Attachment) => {
-          mediaDispatch({
-            type: mediaActionType.SET_ATTACHMENT,
-            attachment: attachment
-          })
-        }}
-        isEdit={isEdit}
-        title={ATTACHMENT_TITLES.ProfilePicture}
-        attachment={doctorAttachment}
-
-        preSignedUrl={attachmentUrl}
-      />
     </Box>
   )
 }

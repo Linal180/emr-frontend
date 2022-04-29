@@ -846,6 +846,7 @@ export interface MediaCardComponentType {
   setEdit: Function;
   setAttachment?: Function;
   setAttachments: Function;
+  buttonText?: string;
 }
 
 export interface DocumentModalComponentType {
@@ -1142,4 +1143,12 @@ export interface ProfileEditFormType {
 export interface RolePayloadInterface {
   id: string
   roles?: RolesPayload['roles']
+}
+
+export interface MediaDoctorDataType extends Message {
+  doctor: Doctor;
+}
+
+export interface MediaStaffDataType extends Message {
+  staff: Staff;
 }
