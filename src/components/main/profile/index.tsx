@@ -150,7 +150,6 @@ const ProfileComponent = (): JSX.Element => {
             mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: doctorAttachment })
             const { id: doctorAttachmentId } = doctorAttachment || {}
             doctorAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: doctorAttachmentId })
-
           }
         }
       }
