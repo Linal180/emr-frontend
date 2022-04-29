@@ -356,7 +356,7 @@ const ProfileComponent = (): JSX.Element => {
           <Box className={classes.profileContainer}>
             <Grid container>
               <Grid item md={4} sm={12} xs={12}>
-                <Box key={attachmentId} mt={9} pr={3.75} position="relative">
+                <Box key={attachmentId} mt={9} pl={3.75} position="relative">
                   <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
                 </Box>
 
