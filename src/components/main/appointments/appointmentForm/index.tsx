@@ -8,7 +8,6 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import Selector from '../../../common/Selector';
 import AddPatientModal from './AddPatientModal';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
@@ -26,7 +25,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimestamps, renderDoctors, renderFacilities, renderPatient, renderServices, getTimeFromTimestamps,
+  getTimestamps, renderPatient, getTimeFromTimestamps,
   setRecord, getStandardTime, renderItem,
 } from "../../../../utils";
 import {
@@ -42,6 +41,9 @@ import {
   CANCELLED_APPOINTMENT_EDIT_MESSAGE,
   DAYS,
 } from "../../../../constants";
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
+import ServiceSelector from '../../../common/Selector/ServiceSelector';
+import DoctorSelector from '../../../common/Selector/DoctorSelector';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
@@ -50,7 +52,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const [appStartDate, setAppStartDate] = useState<string>(params.get('startDate') || '')
   const [appEndDate] = useState<string>(params.get('endDate') || '')
   const {
-    serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
+    patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const {
@@ -363,23 +365,22 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         {isEdit ? renderItem(FACILITY, facilityName) :
-                          <Selector
+                          <FacilitySelector
+                            addEmpty
                             isRequired
-                            value={EMPTY_OPTION}
                             label={FACILITY}
                             name="facilityId"
-                            options={renderFacilities(facilityList)}
                           />
                         }
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
+                        <ServiceSelector
                           isRequired
-                          value={EMPTY_OPTION}
                           label={APPOINTMENT_TYPE}
                           name="serviceId"
-                          options={renderServices(serviceList)}
+                          facilityId={selectedFacility}
+                          addEmpty
                         />
                       </Grid>
                     </Grid>
@@ -393,11 +394,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                     <>
                       <Grid container spacing={3}>
                         <Grid item md={6} sm={12} xs={12}>
-                          <Selector
-                            value={EMPTY_OPTION}
+                          <DoctorSelector
                             label={PROVIDER}
                             name="providerId"
-                            options={renderDoctors(doctorList)}
+                            facilityId={selectedFacility}
+                            addEmpty
                           />
                         </Grid>
 

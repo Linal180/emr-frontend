@@ -16,7 +16,7 @@ import history from '../../../../history';
 import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getDate, getTimestamps, getTimestampsForDob, renderFacilities, setRecord } from "../../../../utils";
+import { getDate, getTimestamps, getTimestampsForDob, setRecord } from "../../../../utils";
 import { doctorReducer, State, Action, initialState, ActionType } from '../../../../reducers/doctorReducer';
 import {
   DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, useUpdateDoctorMutation
@@ -35,6 +35,7 @@ import {
   MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
   SYSTEM_PASSWORD,
 } from "../../../../constants";
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -304,13 +305,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
+                        <FacilitySelector
                           addEmpty
                           isRequired
-                          value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
-                          options={renderFacilities(facilityList)}
                         />
                       </Grid>
 

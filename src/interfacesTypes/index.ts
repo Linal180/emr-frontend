@@ -340,6 +340,20 @@ export interface PatientSelectorProps {
   handlePatientModal?: Function
 }
 
+export interface FacilitySelectorProps {
+  name: string
+  label: string
+  error?: string
+  disabled?: boolean
+  addEmpty?: boolean
+  isRequired?: boolean
+  isMultiple?: boolean
+}
+
+export interface DoctorSelectorProps extends FacilitySelectorProps {
+  facilityId?: string
+}
+
 export interface CardSelectorProps {
   name: string;
   error?: string;
