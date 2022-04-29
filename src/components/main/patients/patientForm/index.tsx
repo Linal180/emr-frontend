@@ -45,7 +45,7 @@ import {
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS, VERIFIED, SAME_AS_PATIENT, SSN_FORMAT,
+  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS, VERIFIED, SAME_AS_PATIENT, SSN_FORMAT, DOCTOR,
 } from "../../../../constants";
 import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
 import SmartyModal from '../../../common/SmartyModal'
@@ -55,7 +55,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facilityList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress, facilityName
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress, facilityName, doctorName
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
     privacyNotice: false,
@@ -133,6 +133,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
               usualProviderId &&
                 setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}`))
+              dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
             }
           }
 
@@ -1026,10 +1027,10 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={REGISTRATION_DATES}>
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    {isEdit ? renderItem(FACILITY, facilityName)
-                      : <Grid container spacing={3}>
-                        <Grid item md={6} sm={12} xs={12}>
-                          <Selector
+                    <Grid container spacing={3}>
+                      <Grid item md={6} sm={12} xs={12}>
+                        {isEdit ? renderItem(FACILITY, facilityName)
+                          : <Selector
                             addEmpty
                             isRequired
                             value={EMPTY_OPTION}
@@ -1037,10 +1038,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             name="facilityId"
                             options={renderFacilities(facilityList)}
                           />
-                        </Grid>
+                        }
+                      </Grid>
 
-                        <Grid item md={6} sm={12} xs={12}>
-                          <Selector
+                         <Grid item md={6} sm={12} xs={12}>
+                      {isEdit ? renderItem(DOCTOR, doctorName)
+                         : <Selector
                             addEmpty
                             isRequired
                             value={EMPTY_OPTION}
@@ -1048,8 +1051,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             name="usualProviderId"
                             options={renderDoctors(doctorList)}
                           />
+                      }
                         </Grid>
-                      </Grid>}
+                    </Grid>
 
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>

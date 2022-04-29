@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext, useCallback } from 'react';
+import { useEffect, FC, useContext, useCallback, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
@@ -24,19 +24,20 @@ import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD,
+  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES,
 } from "../../../../constants";
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
   const { facilityList, roleList } = useContext(ListContext)
   const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
+  const [isFacilityAdmin, setIsfacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updateStaffSchema : createStaffSchema)
   });
   const { reset, setValue, handleSubmit, watch } = methods;
-  const { facilityId } = watch();
+  const { facilityId, roleType} = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
@@ -129,9 +130,9 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   });
 
-  const fetchList = useCallback(async (id: string, name: string) => {  
+  const fetchList = useCallback(async (id: string, name: string) => {
     setValue('providerIds', EMPTY_OPTION)
-    
+
     id && await fetchAllDoctorList(id);
   }, [fetchAllDoctorList, setValue]);
 
@@ -197,6 +198,20 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
     }
   };
+
+  useEffect(() => {
+    if (roleType) {
+      const { id} = roleType || {}
+      
+      if (id === SYSTEM_ROLES.FacilityAdmin) {
+        setIsfacilityAdmin(true)
+        setValue('providerIds', EMPTY_OPTION)
+      } else {
+        setIsfacilityAdmin(false)
+      }
+    }
+
+  }, [watch, roleType, setValue])
 
   return (
     <FormProvider {...methods}>
@@ -301,10 +316,10 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         <Grid item md={4} sm={12} xs={12}>
                           <Selector
                             addEmpty
-                            isRequired
                             value={EMPTY_OPTION}
                             label={PROVIDER}
                             name="providerIds"
+                            disabled={isFacilityAdmin && true}
                             options={renderDoctors(doctorList)}
                           />
                         </Grid>
