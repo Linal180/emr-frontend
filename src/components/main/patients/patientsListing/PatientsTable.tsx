@@ -21,7 +21,7 @@ import {
   useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN, 
+  ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN,
   PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, EMPTY_OPTION, PROVIDER, SEARCH
 } from "../../../../constants";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
@@ -29,7 +29,7 @@ import InputController from "../../../../controller";
 import Selector from "../../../common/Selector";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
-import { ExpandMore } from "@material-ui/icons";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -146,16 +146,14 @@ const PatientsTable: FC = (): JSX.Element => {
             <Search search={search} info tooltipData={PatientSearchingTooltipData} />
           </Box>
 
-          <Collapse in={!open} mountOnEnter unmountOnExit>
-            <Box
-              onClick={() => setOpen(!open)} className='pointer-cursor'
-              border={`1px solid ${GREY_FIVE}`} borderRadius={4}
-              color={BLACK_TWO} p={1.25} display='flex'
-            >
-              <Typography variant="body1">{ADVANCED_SEARCH}</Typography>
-              <ExpandMore />
-            </Box>
-          </Collapse>
+          <Box
+            onClick={() => setOpen(!open)} className='pointer-cursor'
+            border={`1px solid ${GREY_FIVE}`} borderRadius={4}
+            color={BLACK_TWO} p={1.25} display='flex'
+          >
+            <Typography variant="body1">{ADVANCED_SEARCH}</Typography>
+            {open ? <ExpandLess /> : <ExpandMore />}
+          </Box>
         </Box>
 
         <Collapse in={open} mountOnEnter unmountOnExit>
