@@ -8,18 +8,22 @@ import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
+import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
+import {
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
+  SelectorOption, TableAlignType, UserFormType
+} from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload, AttachmentType
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload, 
+  AttachmentType, AllergySeverity, ProblemSeverity
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL, SYSTEM_ROLES,
-  USER_FORM_IMAGE_UPLOAD_URL
+  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
+  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL
 } from "../constants";
 
 export const handleLogout = () => {
@@ -358,15 +362,31 @@ export const renderOptionsForSelector = (options: SelectorOption[]) => {
   return data;
 }
 
+// export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
+//   const data: SelectorOption[] = [];
+
+//   if (!!reactions) {
+//     for (let reaction of reactions) {
+//       if (reaction) {
+//         const { id, name } = reaction;
+
+//         name && data.push({ id, name: formatValue(name) })
+//       }
+//     }
+//   }
+
+//   return data;
+// }
+
 export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
-  const data: SelectorOption[] = [];
+  const data: multiOptionType[] = [];
 
   if (!!reactions) {
     for (let reaction of reactions) {
       if (reaction) {
         const { id, name } = reaction;
 
-        name && data.push({ id, name: formatValue(name) })
+        name && data.push({ value: id, label: formatValue(name) })
       }
     }
   }
@@ -588,6 +608,25 @@ export const appointmentStatus = (status: string) => {
   }
 };
 
+export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) => {
+  switch (severity) {
+    case AllergySeverity.VeryMild:
+      return VERY_MILD;
+
+    case AllergySeverity.Mild:
+    case ProblemSeverity.Chronic:
+      return MILD;
+
+    case AllergySeverity.Moderate:
+      return MODERATE;
+
+    case AllergySeverity.Acute:
+    case ProblemSeverity.Acute:
+      return ACUTE;
+  }
+
+};
+
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
   const drivingLicense1 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense1)[0] || undefined
   const drivingLicense2 = attachmentData?.filter(attachment => attachment?.title === ATTACHMENT_TITLES.DrivingLicense2)[0] || undefined
@@ -789,6 +828,20 @@ export const visibleToUser = (userRoles: string[], visible: string[] | undefined
   visible && userRoles.map(role => allow = visible.includes(role))
 
   return allow;
+};
+
+export const getReactionData = (data: ReactionsPayload['reactions']) => {
+  let result: multiOptionType[] = [];
+
+  if (!!data) {
+    data.map(reaction => {
+      const { id, name } = reaction || {}
+
+      return id && name && result.push({ value: id, label: formatValue(name).trim() })
+    })
+  }
+
+  return result;
 };
 
 export const getHigherRole = (roles: string[]) => {

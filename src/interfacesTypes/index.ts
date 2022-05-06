@@ -23,8 +23,9 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
-  CreatePatientAllergyInput, Allergies
+  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput
 } from "../generated/graphql";
+import { CARD_LAYOUT_MODAL } from "../constants";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -927,13 +928,9 @@ export interface AppointmentDatePickerProps {
 }
 
 export type CustomPracticeInputProps = CreatePracticeItemInput &
-  RegisterUserInputs &
-  Pick<
-    CreateContactInput,
-    "city" | "address" | "address2" | "zipCode" | "email"
-  > & { facilityName: string } & { roleType: SelectorOption } & {
-    country: SelectorOption;
-  } & { state: SelectorOption } & { isAdmin: boolean };
+  RegisterUserInputs & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email">
+  & { facilityName: string } & { roleType: SelectorOption } & { country: SelectorOption }
+  & { state: SelectorOption } & { isAdmin: boolean };
 
 export interface PaymentProps {
   clientToken: string;
@@ -1042,6 +1039,7 @@ export interface SmartyUserData {
   street: string;
   address: string;
 }
+
 export interface SmartyModalComponentType {
   setOpen: Function;
   isOpen: boolean;
@@ -1101,18 +1099,19 @@ export interface UserFormPreviewModalProps {
 }
 
 export interface CardLayoutProps {
+  modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes
   cardId: string;
   hasAdd?: boolean;
   cardTitle: string;
   isMenuOpen: boolean;
   children: ReactNode;
-  filterTabs: string[];
+  filterTabs?: string[];
   searchLoading: boolean;
   disableAddIcon?: boolean;
   openSearch: HTMLElement | null;
   dispatcher: Dispatch<ChartAction>;
   searchComponent: ComponentType<any>;
-  searchData: AllergiesPayload['allergies'];
+  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
   fetch: () => void;
   handleMenuClose: () => void;
   onClickAddIcon: (event: any) => void;
@@ -1120,15 +1119,18 @@ export interface CardLayoutProps {
 }
 
 export interface AddModalProps {
-  item?: Allergies;
   isEdit?: boolean;
-  patientAllergyId?: string;
+  recordId?: string;
+  item?: Allergies | IcdCodes;
   dispatcher: Dispatch<ChartAction>;
   fetch: () => void;
 }
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
-  & { reactionIds: SelectorOption } & { severityId: SelectorOption }
+  & { reactionIds: multiOptionType[] } & { severityId: SelectorOption }
+
+export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'> 
+  & { appointmentId: SelectorOption }
 
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;
@@ -1140,6 +1142,7 @@ export interface CreateTemplateTypes extends DialogTypes {
   setFormName: Dispatch<SetStateAction<string>>
   formName: string
 }
+
 export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function
@@ -1164,6 +1167,22 @@ export interface RolePayloadInterface {
   roles?: RolesPayload['roles']
 }
 
+export type multiOptionType = {
+  value: string,
+  label: string
+}
+
+export interface ReactionSelectorInterface {
+  name: string
+  label: string
+  isEdit?: boolean;
+  disable?: boolean
+  isRequired?: boolean
+  selectDisabled?: boolean
+  selectedOptions?: string
+  defaultValues?: multiOptionType[]
+  setFieldValue?: Function
+}
 export interface MediaDoctorDataType extends Message {
   doctor: Doctor;
 }

@@ -157,7 +157,6 @@ export const DROP_YOUR_IMAGE_TEXT = "Drop your image here, or browse";
 export const SUPPORT_DOC_TEXT = "Supports: JPG, PNG, PDF & DOC";
 export const CALENDAR = "Calendar";
 export const PRINT = "Print";
-export const FUNCTIONAL_HEARTBURN = "Functional Heartburn";
 export const PAY_LATER = "Pay Later";
 export const SCHEDULE_APPOINTMENT = "Schedule Appointment";
 export const APARTMENT = "Apartment";
@@ -808,7 +807,6 @@ export const USUAL_PROVIDER_ID = "Usual Provider";
 export const UPLOADS_DOCUMENT = "Upload Document";
 export const FORGOT_PASSWORD = "Forgot Password?";
 export const MEMBERSHIP_REQUEST_TEXT = "Requests";
-export const USER_EMAIL = "boca_admin_user_email";
 export const CALENDAR_VIEW_TEXT = "Calendar View";
 export const POLICY_HOLDER_ID = "Policy holder ID";
 export const UPLOAD_DOCUMENT = "Uploaded Document";
@@ -864,6 +862,8 @@ export const MOTHERS_MAIDEN_NAME = "Mother's Maiden Name";
 export const PASSWORDS_MUST_MATCH = "Passwords must match";
 export const PRICING_PRODUCT_TYPE = "Pricing Product Type";
 export const INSURANCE_PAYER_NAME = "Insurance Payer Name";
+export const SEARCH_FOR_ALLERGIES = "Search for Allergies";
+export const SEARCH_FOR_ICD_CODES = "Search for ICD Codes";
 export const ENABLE_ACCESS_PORTAL = "Enable Access Portal";
 export const VALID_DATE_REQUIRED = "Valid date is required";
 export const CANCEL_APPOINTMENT_TEXT = "Cancel Appointment";
@@ -1146,12 +1146,15 @@ export const ROLE_ALREADY_EXIST = "Role already exists with this name!";
 export const CANT_BOOK_APPOINTMENT = "You can not book this appointment.";
 export const ALREADY_DEACTIVATED_MESSAGE = "User is already deactivated.";
 export const PATIENT_ALLERGY_ADDED = "Patient allergy added successfully!";
+export const PATIENT_PROBLEM_ADDED = "Patient problem added successfully!";
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Admins can access Admin Portal!";
 export const PATIENT_ALLERGY_UPDATED = "Patient allergy update successfully!";
+export const PATIENT_PROBLEM_UPDATED = "Patient problem update successfully!";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
+export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
 export const SCHEDULE_CREATED_SUCCESSFULLY = "Schedule is booked successfully";
 export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
@@ -2274,6 +2277,11 @@ export const DUMMY_APPOINTMENTS = [
     endDate: "2018-07-27T06:30:00.000Z",
   },
 ];
+
+export enum CARD_LAYOUT_MODAL {
+  Allergies = 'Allergies',
+  ICDCodes = 'ICDCodes',
+}
 
 export enum ATTACHMENT_TITLES {
   ProfilePicture = "Profile Picture",
