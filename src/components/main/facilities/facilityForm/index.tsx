@@ -21,7 +21,7 @@ import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
 import { CustomFacilityInputProps, GeneralFormProps, SmartyUserData } from '../../../../interfacesTypes';
-import { getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
+import { getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
 import {
@@ -41,6 +41,7 @@ import {
 } from "../../../../constants";
 import DoctorScheduleForm from './schedules';
 import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
+import PracticeSelector from '../../../common/Selector/PracticeSelector';
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext);
@@ -52,7 +53,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
-  const { practiceList, addFacilityList, updateFacilityList } = useContext(ListContext)
+  const { addFacilityList, updateFacilityList } = useContext(ListContext)
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
     resolver: yupResolver(isSuper ? facilitySchemaWithPractice : facilitySchedulerSchema)
@@ -407,12 +408,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                               {isSuper &&
                                 <Grid item md={6}>
-                                  <Selector
+                                  <PracticeSelector
                                     isRequired
-                                    value={EMPTY_OPTION}
                                     label={PRACTICE}
                                     name="practice"
-                                    options={renderPractices(practiceList)}
                                   />
                                 </Grid>
                               }
