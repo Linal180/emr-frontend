@@ -1,7 +1,6 @@
 // packages block
 import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { usStreet } from 'smartystreets-javascript-sdk';
 import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
@@ -54,7 +53,7 @@ import {
   GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT,
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT,
   MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS,
-  SAME_AS_PATIENT, SSN_FORMAT, DOCTOR, UPDATE_PATIENT, EMAIL, VERIFIED, ADD_PATIENT, PATIENTS_BREAD, 
+  SAME_AS_PATIENT, SSN_FORMAT, DOCTOR, UPDATE_PATIENT, EMAIL, VERIFIED, ADD_PATIENT, PATIENTS_BREAD,
   PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, USERS_BREAD,
 } from "../../../../constants";
 
@@ -63,8 +62,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
   const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId,
-    employerId, sameAddress, facilityName, doctorName
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress,
+    facilityName, doctorName, isChecked, isVerified, addressOpen, data
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
     privacyNotice: false,
@@ -72,10 +71,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     callToConsent: false,
     medicationHistoryAuthority: false,
   })
-  const [isChecked, setIsChecked] = useState(false);
-  const [isVerified, setIsVerified] = useState(false)
-  const [addressOpen, setAddressOpen] = useState(false);
-  const [data, setData] = useState<usStreet.Candidate[]>([])
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const classes = usePublicAppointmentStyles();
   const methods = useForm<PatientInputProps>({
@@ -90,7 +85,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked } } = event
-    setIsChecked(checked);
+    dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: checked })
     setValue('homeBound', checked)
   };
 
@@ -162,7 +157,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
-          homeBound && setIsChecked(homeBound === Homebound.Yes ? true : false)
+          homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
@@ -524,12 +519,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { status, options } = data || {}
 
       if (status) {
-        setData(options)
-        setAddressOpen(true)
+        dispatch({ type: ActionType.SET_DATA, data: options })
+        dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
       }
       else {
-        setData([])
-        setAddressOpen(true)
+        dispatch({ type: ActionType.SET_DATA, data: [] })
+        dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
       }
     }
     else {
@@ -575,13 +570,15 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     deliveryLine1 && setValue('basicAddress', deliveryLine1);
     zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('basicCity', cityName);
-    setTimeout(() => { setIsVerified(true) }, 0);
+    setTimeout(() => {
+      dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: true })
+    }, 0);
   }
 
   useEffect(() => {
-    setIsVerified(false)
+    dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: false })
     setValue('ssn', SSN_FORMAT)
-  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch, setValue])
+  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, setValue, watch])
 
   return (
     <FormProvider {...methods}>
@@ -1376,13 +1373,14 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           </Grid>
         </Box>
       </form>
-
       <SmartyModal
         isOpen={addressOpen}
-        setOpen={setAddressOpen}
-        data={data} userData={userData}
-        verifiedAddressHandler={verifiedAddressHandler}
-      />
+        setOpen={(open: boolean) =>
+          dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: open })
+        }
+        data={data}
+        userData={userData}
+        verifiedAddressHandler={verifiedAddressHandler} />
     </FormProvider>
   );
 };

@@ -59,15 +59,13 @@ const PatientDetailsComponent = (): JSX.Element => {
     <Box>
       <TabContext value={tabValue}>
         <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-          <TabList onChange={handleChange} aria-label="Profile top tabs">
-            <Box display="flex" flexWrap="wrap">
-              {PROFILE_TOP_TABS.map(item => {
-                const { title, value } = item || {}
-
-                return <Tab key={`${title}-${value}`} label={title} value={value} />
-              })}
-            </Box>
-          </TabList>
+          <Box display="flex" flexWrap="wrap">
+            <TabList onChange={handleChange} aria-label="Profile top tabs">
+              {PROFILE_TOP_TABS.map(item => (
+                <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
+              ))}
+            </TabList>
+          </Box>
 
           <Box pr={2}>
             <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>

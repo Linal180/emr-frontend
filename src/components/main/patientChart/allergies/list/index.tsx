@@ -3,22 +3,22 @@ import { Reducer, useReducer, MouseEvent, useState, useEffect, useCallback } fro
 import { useParams } from "react-router";
 import { Box, Menu, Typography } from "@material-ui/core";
 // components block
-import AddModal from "../AddModal";
 import CardLayout from "../../common/CardLayout";
-import AllergiesModal1Component from "../FilterSearch";
+import AllergyModal from "../modals/AllergyModal";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
+import AllergiesModal1Component from "../../common/FilterSearch";
 // interfaces/types block
-import { GREY_SEVEN, RED } from "../../../../../theme";
+import { GREY_SEVEN } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
-import { formatValue, getAppointmentDate } from "../../../../../utils";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
-import { ALLERGIES_TEXT, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
+import { formatValue, getAppointmentDate, getSeverityColor } from "../../../../../utils";
+import { ALLERGIES_TEXT, CARD_LAYOUT_MODAL, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
 import {
   chartReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/chartReducer";
 import {
   PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery,
-  AllergiesPayload, AllergyType, Allergies,
+  AllergiesPayload, AllergyType, Allergies, AllergySeverity,
 } from "../../../../../generated/graphql";
 
 const AllergyList = (): JSX.Element => {
@@ -128,76 +128,83 @@ const AllergyList = (): JSX.Element => {
   }
 
   return (
-      <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
-        hasAdd
-        dispatcher={dispatch}
-        isMenuOpen={isMenuOpen}
-        searchData={searchedData}
-        searchLoading={findAllergiesLoading}
-        filterTabs={Object.keys(AllergyType)}
-        searchComponent={AllergiesModal1Component}
-        handleMenuClose={() => handleMenuClose()}
-        fetch={async () => await fetchAllergies()}
-        onSearch={(type, query) => handleSearch(type, query)}
-        onClickAddIcon={(event: MouseEvent<HTMLElement>) => handleMenuOpen(event)}
-      >
-        {loading ?
-          <ViewDataLoader columns={12} rows={3} />
-          : <Box mb={2}>
-            {!!patientAllergies && patientAllergies.length > 0 ? (
-              patientAllergies.map((item) => {
-                const { id, allergySeverity, allergyStartDate, allergyOnset, allergy, reactions } = item || {}
-                const { name } = allergy || {}
+    <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
+      hasAdd
+      modal={CARD_LAYOUT_MODAL.Allergies}
+      dispatcher={dispatch}
+      isMenuOpen={isMenuOpen}
+      searchData={searchedData}
+      searchLoading={findAllergiesLoading}
+      filterTabs={Object.keys(AllergyType)}
+      searchComponent={AllergiesModal1Component}
+      handleMenuClose={() => handleMenuClose()}
+      fetch={async () => await fetchAllergies()}
+      onSearch={(type, query) => handleSearch(type, query)}
+      onClickAddIcon={(event: MouseEvent<HTMLElement>) => handleMenuOpen(event)}
+    >
+      {loading ?
+        <ViewDataLoader columns={12} rows={3} />
+        : <Box mb={2}>
+          {!!patientAllergies && patientAllergies.length > 0 ? (
+            patientAllergies.map((item) => {
+              const { id, allergySeverity, allergyStartDate, allergyOnset, allergy, reactions } = item || {}
+              const { name } = allergy || {}
 
-                return (
-                  <Box pb={2} key={id}>
-                    <Box display="flex" justifyContent="space-between">
-                      <Box onClick={(event) => id && allergy && handleEdit(event, id, allergy)}>
-                        <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
-                      </Box>
-
-                      {allergyStartDate ?
-                        <Typography className={classes.cardContentDate}>{getAppointmentDate(allergyStartDate)}</Typography>
-                        :
-                        <Typography className={classes.cardContentDate}>{formatValue(allergyOnset || '')}</Typography>
-                      }
+              return (
+                <Box pb={2} key={id}>
+                  <Box display="flex" justifyContent="space-between">
+                    <Box onClick={(event) => id && allergy && handleEdit(event, id, allergy)}>
+                      <Typography className={classes.cardContentHeading} key={id}>{name}</Typography>
                     </Box>
 
-                    <Box mt={1} display="flex" alignItems="center">
-                      <Box mr={2} color={RED}>
-                        <Typography>{allergySeverity}</Typography>
-                      </Box>
-
-                      {reactions?.map(reaction => {
-                        const { name } = reaction || {}
-
-                        return (
-                          <Typography className={classes.cardContentDescription}>{name}</Typography>
-                        )
-                      })}
-                    </Box>
+                    {allergyStartDate ?
+                      <Typography className={classes.cardContentDate}>{getAppointmentDate(allergyStartDate)}</Typography>
+                      :
+                      <Typography className={classes.cardContentDate}>{formatValue(allergyOnset || '')}</Typography>
+                    }
                   </Box>
-                )
-              })
-            ) : (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)}
-          </Box>}
 
-        <Menu
-          getContentAnchorEl={null}
-          anchorEl={isFormOpen}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          id={cardId}
-          keepMounted
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-          open={isFormMenuOpen}
-          onClose={handleMenuClose}
-          className={classes.dropdown}
-        >
-          {itemId && selectedItem &&
-            <AddModal item={selectedItem} dispatcher={dispatch} isEdit patientAllergyId={itemId} fetch={async () => fetchAllergies()} />
-          }
-        </Menu>
-      </CardLayout>
+                  <Box mt={1} display="flex" alignItems="center">
+                      <Box mr={2} color={getSeverityColor(allergySeverity as AllergySeverity)}>
+                        <Typography>{formatValue(allergySeverity || '')}</Typography>
+                      </Box>
+
+                    {reactions?.map((reaction, index) => {
+                      const { name } = reaction || {}
+
+                      return (
+                        <>
+                          {index < 2 && (
+                            <Typography className={classes.cardContentDescription}>
+                              {name}{reactions.length - 1 > index && ','} &nbsp;
+                            </Typography>
+                          )} {reactions.length > 2 && index === 2 && '...'}
+                        </>
+                      )
+                    })}
+                  </Box>
+                </Box>
+              )
+            })
+          ) : (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)}
+        </Box>}
+
+      <Menu
+        getContentAnchorEl={null}
+        anchorEl={isFormOpen}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        id={cardId}
+        keepMounted
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+        open={isFormMenuOpen}
+        onClose={handleMenuClose}
+        className={classes.dropdown}
+      >
+        {itemId && selectedItem && selectedItem.__typename === 'Allergies' &&
+          <AllergyModal item={selectedItem} dispatcher={dispatch} isEdit recordId={itemId} fetch={async () => fetchAllergies()} />
+        }
+      </Menu>
+    </CardLayout>
   );
 }
 

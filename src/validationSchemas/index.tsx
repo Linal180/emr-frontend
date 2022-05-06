@@ -736,8 +736,15 @@ export const createPatientAllergySchema = (onset: string) => yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', 'required', ({ id }) => !!id),
-  reactionIds: yup.object().shape({
-    name: yup.string().required(),
-    id: yup.string().required()
-  }).test('', 'required', ({ id }) => !!id),
+  reactionIds: yup.array().of(
+    yup.object().shape({
+      label: yup.string(),
+      value: yup.string()
+    })
+  )
+})
+
+export const patientProblemSchema = yup.object({
+  problemStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
+    value => new Date(value || '') <= new Date()),
 })

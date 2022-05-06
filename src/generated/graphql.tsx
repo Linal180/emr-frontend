@@ -3750,7 +3750,7 @@ export type FindAllPatientAllergiesQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientAllergiesQuery = { __typename?: 'Query', findAllPatientAllergies: { __typename?: 'PatientAllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientAllergies?: Array<{ __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null | undefined, allergy?: { __typename?: 'Allergies', id: string, name?: string | null | undefined } | null | undefined, reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientAllergiesQuery = { __typename?: 'Query', findAllPatientAllergies: { __typename?: 'PatientAllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientAllergies?: Array<{ __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null | undefined, allergy?: { __typename: 'Allergies', id: string, name?: string | null | undefined } | null | undefined, reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientAllergyQueryVariables = Exact<{
   getPatientAllergy: GetPatientAllergy;
@@ -3792,7 +3792,14 @@ export type FindAllPatientProblemsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, ICDCode?: { __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined, version?: string | null | undefined } | null | undefined, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, recordId?: string | null | undefined, effectiveTime?: string | null | undefined, active?: string | null | undefined, moduleId?: string | null | undefined, refsetId?: string | null | undefined, referencedComponentId?: string | null | undefined, mapGroup?: string | null | undefined, mapRule?: string | null | undefined, mapPriority?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientProblemsQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, ICDCode?: { __typename: 'ICDCodes', id: string, code: string } | null | undefined } | null | undefined> | null | undefined } };
+
+export type GetPatientProblemQueryVariables = Exact<{
+  getPatientProblem: GetPatientProblem;
+}>;
+
+
+export type GetPatientProblemQuery = { __typename?: 'Query', getPatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientProblem?: { __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, appointment?: { __typename?: 'Appointment', id: string, appointmentType?: { __typename?: 'Service', id: string, serviceType: ServiceType } | null | undefined } | null | undefined } | null | undefined } };
 
 export type AddPatientProblemMutationVariables = Exact<{
   createProblemInput: CreateProblemInput;
@@ -4134,6 +4141,13 @@ export type RemovePracticeMutationVariables = Exact<{
 
 
 export type RemovePracticeMutation = { __typename?: 'Mutation', removePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type SearchIcdCodesQueryVariables = Exact<{
+  searchIcdCodesInput: SearchIcdCodesInput;
+}>;
+
+
+export type SearchIcdCodesQuery = { __typename?: 'Query', searchIcdCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined> | null | undefined } };
 
 export type FindAllReactionsQueryVariables = Exact<{
   reactionInput: ReactionInput;
@@ -5252,6 +5266,7 @@ export const FindAllPatientAllergiesDocument = gql`
       allergyOnset
       allergyStartDate
       allergy {
+        __typename
         id
         name
       }
@@ -5511,22 +5526,9 @@ export const FindAllPatientProblemsDocument = gql`
       problemStartDate
       note
       ICDCode {
+        __typename
         id
         code
-        description
-        version
-      }
-      snowMedCode {
-        id
-        recordId
-        effectiveTime
-        active
-        moduleId
-        refsetId
-        referencedComponentId
-        mapGroup
-        mapRule
-        mapPriority
       }
     }
   }
@@ -5560,6 +5562,58 @@ export function useFindAllPatientProblemsLazyQuery(baseOptions?: Apollo.LazyQuer
 export type FindAllPatientProblemsQueryHookResult = ReturnType<typeof useFindAllPatientProblemsQuery>;
 export type FindAllPatientProblemsLazyQueryHookResult = ReturnType<typeof useFindAllPatientProblemsLazyQuery>;
 export type FindAllPatientProblemsQueryResult = Apollo.QueryResult<FindAllPatientProblemsQuery, FindAllPatientProblemsQueryVariables>;
+export const GetPatientProblemDocument = gql`
+    query GetPatientProblem($getPatientProblem: GetPatientProblem!) {
+  getPatientProblem(getPatientProblem: $getPatientProblem) {
+    response {
+      status
+      message
+    }
+    patientProblem {
+      id
+      problemType
+      problemSeverity
+      problemStartDate
+      note
+      appointment {
+        id
+        appointmentType {
+          id
+          serviceType
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientProblemQuery__
+ *
+ * To run a query within a React component, call `useGetPatientProblemQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientProblemQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientProblemQuery({
+ *   variables: {
+ *      getPatientProblem: // value for 'getPatientProblem'
+ *   },
+ * });
+ */
+export function useGetPatientProblemQuery(baseOptions: Apollo.QueryHookOptions<GetPatientProblemQuery, GetPatientProblemQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientProblemQuery, GetPatientProblemQueryVariables>(GetPatientProblemDocument, options);
+      }
+export function useGetPatientProblemLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientProblemQuery, GetPatientProblemQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientProblemQuery, GetPatientProblemQueryVariables>(GetPatientProblemDocument, options);
+        }
+export type GetPatientProblemQueryHookResult = ReturnType<typeof useGetPatientProblemQuery>;
+export type GetPatientProblemLazyQueryHookResult = ReturnType<typeof useGetPatientProblemLazyQuery>;
+export type GetPatientProblemQueryResult = Apollo.QueryResult<GetPatientProblemQuery, GetPatientProblemQueryVariables>;
 export const AddPatientProblemDocument = gql`
     mutation AddPatientProblem($createProblemInput: CreateProblemInput!) {
   addPatientProblem(createProblemInput: $createProblemInput) {
@@ -8085,6 +8139,45 @@ export function useRemovePracticeMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemovePracticeMutationHookResult = ReturnType<typeof useRemovePracticeMutation>;
 export type RemovePracticeMutationResult = Apollo.MutationResult<RemovePracticeMutation>;
 export type RemovePracticeMutationOptions = Apollo.BaseMutationOptions<RemovePracticeMutation, RemovePracticeMutationVariables>;
+export const SearchIcdCodesDocument = gql`
+    query SearchIcdCodes($searchIcdCodesInput: SearchIcdCodesInput!) {
+  searchIcdCodes(searchIcdCodesInput: $searchIcdCodesInput) {
+    icdCodes {
+      id
+      code
+      description
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchIcdCodesQuery__
+ *
+ * To run a query within a React component, call `useSearchIcdCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchIcdCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchIcdCodesQuery({
+ *   variables: {
+ *      searchIcdCodesInput: // value for 'searchIcdCodesInput'
+ *   },
+ * });
+ */
+export function useSearchIcdCodesQuery(baseOptions: Apollo.QueryHookOptions<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>(SearchIcdCodesDocument, options);
+      }
+export function useSearchIcdCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>(SearchIcdCodesDocument, options);
+        }
+export type SearchIcdCodesQueryHookResult = ReturnType<typeof useSearchIcdCodesQuery>;
+export type SearchIcdCodesLazyQueryHookResult = ReturnType<typeof useSearchIcdCodesLazyQuery>;
+export type SearchIcdCodesQueryResult = Apollo.QueryResult<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>;
 export const FindAllReactionsDocument = gql`
     query FindAllReactions($reactionInput: ReactionInput!) {
   findAllReactions(reactionInput: $reactionInput) {

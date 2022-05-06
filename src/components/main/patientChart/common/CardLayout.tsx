@@ -2,12 +2,12 @@ import { FC } from "react";
 import { Box, Card, CardContent, CardHeader, IconButton, Menu } from "@material-ui/core";
 import { AddChartingIcon } from "../../../../assets/svgs";
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
-import FilterSearch from "../allergies/FilterSearch";
+import FilterSearch from "../common/FilterSearch";
 import { CardLayoutProps } from "../../../../interfacesTypes";
 
 const CardLayout: FC<CardLayoutProps> = ({
   hasAdd, disableAddIcon, onClickAddIcon, openSearch, cardId, isMenuOpen, handleMenuClose, cardTitle,
-  children, filterTabs, onSearch, searchData, searchLoading, dispatcher, fetch
+  children, filterTabs, onSearch, searchData, searchLoading, dispatcher, fetch, modal
 }) => {
   const classes = usePatientChartingStyles()
 
@@ -37,6 +37,7 @@ const CardLayout: FC<CardLayoutProps> = ({
                 className={classes.dropdown}
               >
                 <FilterSearch
+                  modal={modal}
                   fetch={fetch}
                   tabs={filterTabs}
                   dispatcher={dispatcher}

@@ -1,36 +1,38 @@
 // packages block
-import { FC, useCallback, useContext, useEffect, useState, } from 'react';
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer, useState, } from 'react';
+import { pluck } from 'underscore';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
 import { Box, Button, CircularProgress, IconButton, Typography } from '@material-ui/core';
 // component block
-import Alert from '../../../common/Alert';
-import Selector from '../../../common/Selector';
-import DatePicker from '../../../common/DatePicker';
-import InputController from '../../../../controller';
+import Alert from '../../../../common/Alert';
+import Selector from '../../../../common/Selector';
+import DatePicker from '../../../../common/DatePicker';
+import InputController from '../../../../../controller';
+import ViewDataLoader from '../../../../common/ViewDataLoader';
+import ReactionSelector from '../../../../common/ReactionSelector';
 // constants block
-import { GRAY_SIX } from '../../../../theme';
-import { ChartContext } from '../../../../context';
-import { ClearIcon } from '../../../../assets/svgs';
-import ViewDataLoader from '../../../common/ViewDataLoader';
-import { ActionType } from '../../../../reducers/chartReducer';
-import { createPatientAllergySchema } from '../../../../validationSchemas';
-import { formatValue, getTimestamps, renderReactions, setRecord } from '../../../../utils';
-import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../interfacesTypes';
+import { GRAY_SIX } from '../../../../../theme';
+import { ChartContext } from '../../../../../context';
+import { ClearIcon } from '../../../../../assets/svgs';
+import { createPatientAllergySchema } from '../../../../../validationSchemas';
+import { formatValue, getReactionData, getTimestamps, setRecord } from '../../../../../utils';
+import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../../interfacesTypes';
+import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import {
-  AllergyOnset, AllergySeverity, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
-  useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation
-} from '../../../../generated/graphql';
+  AllergyOnset, AllergySeverity, ReactionsPayload, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
+  useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation, Allergies,
+} from '../../../../../generated/graphql';
 import {
   ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
   PATIENT_ALLERGY_DELETED, PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, START_DATE, UPDATE
-} from '../../../../constants';
+} from '../../../../../constants';
 
-const AddModal: FC<AddModalProps> = (
-  { item, dispatcher, isEdit, patientAllergyId, fetch }
+const AllergyModal: FC<AddModalProps> = (
+  { item, dispatcher, isEdit, recordId, fetch }
 ): JSX.Element => {
-  const { id, name } = item || {}
+  const { id, name } = item as Allergies || {}
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
   const [onset, setOnset] = useState<string>('')
@@ -41,6 +43,7 @@ const AddModal: FC<AddModalProps> = (
   });
   const { handleSubmit, reset, setValue, watch } = methods;
   const { allergyStartDate } = watch()
+  const [{ selectedReactions }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
   const [getPatientAllergy, { loading: getAllergyLoading }] = useGetPatientAllergyLazyQuery({
     fetchPolicy: "network-only",
@@ -56,12 +59,11 @@ const AddModal: FC<AddModalProps> = (
 
       if (patientAllergy) {
         const { allergyOnset, allergyStartDate, allergySeverity, reactions } = patientAllergy
-        const allergyReaction = reactions && reactions[0]
 
-        if (allergyReaction) {
-          const { id, name } = allergyReaction
-
-          id && name && setValue('reactionIds', setRecord(id, name))
+        if (!!reactions) {
+          const reactionData = getReactionData(reactions as ReactionsPayload['reactions'])
+          dispatch({ type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: reactionData })
+          setValue('reactionIds', reactionData)
         }
 
         id && name && setValue('severityId', setRecord(id, name))
@@ -141,38 +143,37 @@ const AddModal: FC<AddModalProps> = (
   }, [allergyStartDate])
 
   const fetchPatientAllergy = useCallback(async () => {
-    patientAllergyId && await getPatientAllergy({
-      variables: { getPatientAllergy: { id: patientAllergyId } }
+    recordId && await getPatientAllergy({
+      variables: { getPatientAllergy: { id: recordId } }
     })
-  }, [getPatientAllergy, patientAllergyId])
+  }, [getPatientAllergy, recordId])
 
   useEffect(() => {
     isEdit && fetchPatientAllergy()
-  }, [fetchPatientAllergy, isEdit, patientAllergyId])
+  }, [fetchPatientAllergy, isEdit, recordId])
 
   const closeAddModal = () => {
     reset()
     dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null })
+    dispatch({ type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: [] })
   }
 
-  const handleOnset = (onset: string) => {
-    setOnset(onset)
-  }
+  const handleOnset = (onset: string) => setOnset(onset)
 
   const handleDelete = async () => {
-    patientAllergyId && await removePatientAllergy({
-      variables: { removePatientAllergy: { id: patientAllergyId } }
+    recordId && await removePatientAllergy({
+      variables: { removePatientAllergy: { id: recordId } }
     })
   }
 
   const onSubmit: SubmitHandler<CreatePatientAllergyProps> = async ({
     reactionIds, severityId, comments
   }) => {
-    const { id: selectedReaction } = reactionIds || {}
+    const selectedReactions = pluck(reactionIds || [], 'value')
     const { id: selectedSeverity } = severityId || {}
 
     const commonInputs = {
-      patientId, allergyId: id, reactionsIds: [selectedReaction],
+      patientId, allergyId: id, reactionsIds: selectedReactions
     }
 
     const inputs = {
@@ -184,23 +185,29 @@ const AddModal: FC<AddModalProps> = (
       allergyStartDate ? { ...inputs, allergyStartDate: getTimestamps(allergyStartDate || '') } : { ...inputs }
 
     if (isEdit) {
-      patientAllergyId && await updatePatientAllergy({
+      recordId && await updatePatientAllergy({
         variables: {
           updateAllergyInput: {
-            ...commonInputs, updatePatientAllergyInput: { id: patientAllergyId, ...extendedInputs }
+            ...commonInputs, updatePatientAllergyInput: { id: recordId, ...extendedInputs }
           }
         }
       })
     } else {
       await addPatientAllergy({
         variables: {
-          createPatientAllergyInput: { ...commonInputs, ...extendedInputs, }
+          createPatientAllergyInput: { ...commonInputs, ...extendedInputs }
         }
       })
     }
   }
 
   const isDisable = addAllergyLoading || updateAllergyLoading || getAllergyLoading
+
+  useEffect(() => {
+    return () => {
+      dispatch({ type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: [] })
+    }
+  }, [])
 
   return (
     <FormProvider {...methods}>
@@ -217,11 +224,11 @@ const AddModal: FC<AddModalProps> = (
           <ViewDataLoader columns={12} rows={4} />
           :
           <>
-            <Selector
-              value={EMPTY_OPTION}
+            <ReactionSelector
+              isEdit={isEdit}
               label={REACTION}
               name="reactionIds"
-              options={renderReactions(reactionList)}
+              defaultValues={selectedReactions}
             />
 
             <Selector
@@ -235,7 +242,8 @@ const AddModal: FC<AddModalProps> = (
 
             <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
               {onsets.map(onSet =>
-                <Box onClick={() => handleOnset(onSet)} className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
+                <Box onClick={() => handleOnset(onSet)}
+                  className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
                   <Typography variant='h6'>{onSet}</Typography>
                 </Box>
               )}
@@ -248,7 +256,6 @@ const AddModal: FC<AddModalProps> = (
             />
           </>
         }
-
 
         <Box display='flex' justifyContent='flex-end'>
           {isEdit &&
@@ -272,4 +279,4 @@ const AddModal: FC<AddModalProps> = (
   )
 };
 
-export default AddModal;
+export default AllergyModal;
