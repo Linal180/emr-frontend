@@ -23,7 +23,7 @@ import { AuthContext } from '../../../../context';
 import { GREY_EIGHT, WHITE } from '../../../../theme';
 import { ListContext } from '../../../../context/listContext'
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
-import { isSuperAdmin, renderFacilities, setRecord } from '../../../../utils';
+import { isSuperAdmin, setRecord } from '../../../../utils';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
 import {
@@ -35,6 +35,7 @@ import {
   FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT, FORM_TEXT,
   CREATE_TEMPLATE, CREATE_FORM_TEMPLATE,
 } from '../../../../constants';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 
 //component
 const AddForm = () => {
@@ -411,12 +412,11 @@ const AddForm = () => {
               {getFormLoader ? <ViewDataLoader rows={1} columns={3} hasMedia={false} /> :
                 <Grid container spacing={3}>
                   {isSuper && <Grid item md={4} sm={12} xs={12}>
-                    <Selector
+                    <FacilitySelector
                       isRequired
-                      value={EMPTY_OPTION}
                       label={FACILITY}
                       name="facilityId"
-                      options={renderFacilities(facilityList)}
+                      addEmpty
                     />
                   </Grid>}
 

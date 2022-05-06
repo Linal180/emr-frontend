@@ -6,7 +6,6 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import { Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel, Grid } from "@material-ui/core";
 // components block
 import Alert from '../../../../common/Alert';
-import Selector from '../../../../common/Selector';
 import InputController from '../../../../../controller';
 import CardComponent from '../../../../common/CardComponent';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
@@ -14,7 +13,7 @@ import ViewDataLoader from '../../../../common/ViewDataLoader';
 import history from '../../../../../history';
 import { ListContext } from '../../../../../context';
 import { serviceSchema } from '../../../../../validationSchemas';
-import { renderFacilities, setRecord } from '../../../../../utils';
+import { setRecord } from '../../../../../utils';
 import { extendedServiceInput, GeneralFormProps, ParamsType } from '../../../../../interfacesTypes';
 import {
   useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation
@@ -23,8 +22,9 @@ import {
   ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
   PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
-  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT,
+  FACILITIES_ROUTE, FACILITY, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT,
 } from "../../../../../constants";
+import FacilitySelector from '../../../../common/Selector/FacilitySelector';
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
@@ -173,12 +173,11 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
               <CardComponent cardTitle={SERVICE_INFO}>
                 {getServiceLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <Selector
+                    <FacilitySelector
+                      addEmpty
                       isRequired
-                      value={EMPTY_OPTION}
                       label={FACILITY}
                       name="facilityId"
-                      options={renderFacilities(facilityList)}
                       error={facilityIdError?.message}
                     />
 
