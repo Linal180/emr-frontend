@@ -1,7 +1,6 @@
 // packages block
 import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { usStreet } from 'smartystreets-javascript-sdk';
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
   CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel, Typography,
@@ -57,7 +56,8 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facilityList } = useContext(ListContext)
   const { fetchAllDoctorList } = useContext(FacilityContext)
   const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress, facilityName, doctorName
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress, facilityName, doctorName,
+    isChecked, isVerified, addressOpen, data
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
     privacyNotice: false,
@@ -65,11 +65,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     callToConsent: false,
     medicationHistoryAuthority: false,
   })
-
-  const [isChecked, setIsChecked] = useState(false);
-  const [isVerified, setIsVerified] = useState(false)
-  const [addressOpen, setAddressOpen] = useState(false);
-  const [data, setData] = useState<usStreet.Candidate[]>([])
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const classes = usePublicAppointmentStyles();
   const methods = useForm<PatientInputProps>({
@@ -84,7 +79,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked } } = event
-    setIsChecked(checked);
+    dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: checked })
     setValue('homeBound', checked)
   };
 
@@ -156,7 +151,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
-          homeBound && setIsChecked(homeBound === Homebound.Yes ? true : false)
+          homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
@@ -518,12 +513,12 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { status, options } = data || {}
 
       if (status) {
-        setData(options)
-        setAddressOpen(true)
+        dispatch({ type: ActionType.SET_DATA, data: options })
+        dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
       }
       else {
-        setData([])
-        setAddressOpen(true)
+        dispatch({ type: ActionType.SET_DATA, data: [] })
+        dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
       }
     }
     else {
@@ -569,11 +564,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     deliveryLine1 && setValue('basicAddress', deliveryLine1);
     zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('basicCity', cityName);
-    setTimeout(() => { setIsVerified(true) }, 0);
+    setTimeout(() => {
+      dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: true })
+    }, 0);
   }
 
   useEffect(() => {
-    setIsVerified(false)
+    dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: false })
   }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch])
 
   return (
@@ -1033,24 +1030,24 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                       <Grid item md={6} sm={12} xs={12}>
                         {isEdit ? renderItem(FACILITY, facilityName)
                           : <FacilitySelector
-                          isRequired
-                          label={FACILITY}
-                          name="facilityId"
-                        />
+                            isRequired
+                            label={FACILITY}
+                            name="facilityId"
+                          />
                         }
                       </Grid>
 
-                         <Grid item md={6} sm={12} xs={12}>
-                      {isEdit ? renderItem(DOCTOR, doctorName)
-                         :<DoctorSelector
+                      <Grid item md={6} sm={12} xs={12}>
+                        {isEdit ? renderItem(DOCTOR, doctorName)
+                          : <DoctorSelector
                             label={USUAL_PROVIDER_ID}
                             name="providerId"
                             facilityId={selectedFacility}
                             addEmpty
                             isRequired
                           />
-                      }
-                        </Grid>
+                        }
+                      </Grid>
                     </Grid>
 
                     <Grid container spacing={3}>
@@ -1359,7 +1356,14 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         </Box>
 
       </form>
-      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} verifiedAddressHandler={verifiedAddressHandler} />
+      <SmartyModal
+        isOpen={addressOpen}
+        setOpen={(open: boolean) =>
+          dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: open })
+        }
+      data={data}
+      userData={userData}
+      verifiedAddressHandler={verifiedAddressHandler} />
     </FormProvider>
   );
 };
