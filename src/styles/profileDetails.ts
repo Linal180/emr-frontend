@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK, BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
+import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GREY_SEVEN, theme, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
@@ -25,7 +25,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
       padding: 30,
       background: WHITE,
       borderRadius: 12,
-      display: 'flex'
+      display: 'flex',
     },
 
     patientProfileCard: {
@@ -39,8 +39,8 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileImage: {
-      height: 160,
-      width: 160,
+      height: 120,
+      width: 120,
       borderRadius: 12,
       
       "& > img": {
@@ -61,9 +61,9 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileInfoItem: {
-      width: "25%",
+      minWidth: "25%",
       alignItems: 'center',
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
       marginBottom: 8,
 
       "& svg": {
@@ -76,7 +76,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
     profileAdditionalInfo: {
       width: '25%',
       fontSize: 14,
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     },
 
     profileInfoHeading: {
@@ -99,12 +99,10 @@ export const useProfileDetailsStyles = makeStyles(() =>
     addSlot: {
       width: '100%',
       display: 'flex',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       alignItems: 'center',
-      border: `1px dashed ${BLACK}`,
       padding: 20,
       background: 'transparent',
-      borderRadius: 6,
       cursor: 'pointer',
     },
 

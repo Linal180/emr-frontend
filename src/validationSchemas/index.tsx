@@ -11,13 +11,13 @@ import {
   DURATION, PRICE, ROLE, SERVICE_CODE, STATE, ValidMessage, ZIP_CODE, USUAL_PROVIDER_ID, PATIENT,
   NPI_REGEX, NPI_VALIDATION_MESSAGE, CLIA_REGEX, CLIA_VALIDATION_MESSAGE, RELATIONSHIP, DAY,
   TIME_ZONE_TEXT, PREFERRED_NAME, PROVIDER, SSN_REGEX, SSN_VALIDATION_MESSAGE, ADDRESS_REGEX,
-  TAXONOMY_VALIDATION_MESSAGE, TID_VALIDATION_MESSAGE, MAX_DOCTOR_DOB_VALIDATION_MESSAGE, EIN_REGEX,
+  TAXONOMY_VALIDATION_MESSAGE, TID_VALIDATION_MESSAGE, EIN_REGEX, PREVIOUS_FIRST_NAME, SEX_AT_BIRTH,
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX, PHONE, MOBILE, ZIP_REGEX,
-  STRING_REGEX, MIDDLE_NAME, PREVIOUS_FIRST_NAME, MIN_DOCTOR_DOB_VALIDATION_MESSAGE, SEX_AT_BIRTH,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
-  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME,
+  UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
+  SERVICE_NAME_TEXT, DOB, FORM_NAME, PAGER, ALLERGY_DATE_VALIDATION_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -118,19 +118,21 @@ const dobSchema = {
     value => new Date(value || '') <= new Date() && moment().diff(moment(value), 'years') < 100)
 }
 
-const doctorDobSchema = {
-  dob: yup.string()
-    .test('', MIN_DOCTOR_DOB_VALIDATION_MESSAGE,
-      value => moment().diff(moment(value), 'years') >= 20)
-    .test('', MAX_DOCTOR_DOB_VALIDATION_MESSAGE,
-      value => moment().diff(moment(value), 'years') < 100)
-}
+// const doctorDobSchema = (label: string) => {
+//   return yup.string()
+//     .test('', minDobValidMessage(label),
+//       value => moment().diff(moment(value), 'years') >= 20)
+//     .test('', maxDobValidMessage(label),
+//       value => moment().diff(moment(value), 'years') < 100)
+// }
 
 const roleTypeSchema = {
   roleType: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(ROLE))
+  }).test(
+    '', requiredMessage(ROLE), ({ id }) => !!id
+  )
 }
 
 const patientIdSchema = {
@@ -167,7 +169,9 @@ const genderSchema = {
   gender: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
-  }).required(requiredMessage(GENDER))
+  }).test(
+    '', requiredMessage(GENDER), ({ id }) => !!id
+  )
 }
 
 const usualProviderSchema = {
@@ -188,8 +192,8 @@ const practiceIdSchema = {
   )
 }
 
-const providerIdSchema = {
-  providerId: yup.object().shape({
+const providerIdSchema = () => {
+  return yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
   }).test(
@@ -268,6 +272,16 @@ const scheduleTimeSchema = {
   })
 }
 
+const facilityTimeSchema = {
+  startTime: yup.string().test('', invalidMessage(START_TIME), value => !!value),
+
+  endTime: yup.string().test('', invalidMessage(END_TIME), (value, { parent: { startTime } }) => {
+    if (!value) return false
+
+    return timeValidation(value, startTime)
+  })
+}
+
 const patientRegisterDateSchema = {
   registrationDate: yup.string().test('', invalidMessage(REGISTRATION_DATE), value => {
     if (!value) return true
@@ -320,6 +334,8 @@ export const contactSchema = {
   fax: notRequiredPhone(FAX),
   country: countrySchema(false),
   phone: notRequiredPhone(PHONE),
+  pager: notRequiredPhone(PAGER),
+  mobile: notRequiredPhone(MOBILE),
   city: notRequiredStringOnly(CITY),
   address: addressValidation(ADDRESS, false),
   address2: addressValidation(ADDRESS, false),
@@ -335,6 +351,13 @@ export const basicContactSchema = {
   basicAddress2: addressValidation(ADDRESS, false),
   basicEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   basicZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
+  basicPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10)).max(15, MaxLength(PHONE_NUMBER, 15))
+    .required(requiredMessage(PHONE_NUMBER)),
+};
+
+export const basicContactViaAppointmentSchema = {
+  basicMobile: notRequiredPhone(MOBILE_NUMBER),
+  basicEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
   basicPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10)).max(15, MaxLength(PHONE_NUMBER, 15))
     .required(requiredMessage(PHONE_NUMBER)),
 };
@@ -358,17 +381,22 @@ export const extendedContactSchema = yup.object({
 })
 
 const staffBasicSchema = {
-  ...dobSchema,
   ...genderSchema,
-  ...roleTypeSchema,
   ...facilityIdSchema,
   ...firstLastNameSchema,
-  username: yup.string(),
   phone: notRequiredPhone(PHONE),
-  mobile: yup.string().min(10, MinLength(MOBILE_NUMBER, 10)).max(15, MaxLength(MOBILE_NUMBER, 15)),
+  mobile: notRequiredPhone(MOBILE),
+  dob: yup.string().required(requiredMessage(DOB)),
 }
 
-export const staffSchema = yup.object({
+export const createStaffSchema = yup.object({
+  ...emailSchema,
+  ...roleTypeSchema,
+  ...staffBasicSchema,
+  // providerIds: providerIdSchema(),
+})
+
+export const updateStaffSchema = yup.object({
   ...emailSchema,
   ...staffBasicSchema,
 })
@@ -397,7 +425,8 @@ const facilitySchedulerBasicSchema = {
   ...federalTaxIdSchema,
   ...tamxonomyCodeSchema,
   ...billingAddressSchema,
-  name: nameSchema(NAME)
+  ...facilityTimeSchema,
+  name: yup.string().required(requiredMessage(NAME))
 }
 
 export const facilitySchedulerSchema = yup.object({
@@ -422,7 +451,6 @@ export const basicDoctorSchema = {
   ...npiSchema,
   ...upinSchema,
   ...deaDateSchema,
-  ...doctorDobSchema,
   ...specialtySchema,
   ...facilityIdSchema,
   ...licenseDateSchema,
@@ -447,6 +475,7 @@ export const basicDoctorSchema = {
   meammographyCertNumber: yup.string(),
   suffix: notRequiredStringOnly(SUFFIX),
   middleName: notRequiredStringOnly(MIDDLE_NAME),
+  dob: yup.string().required(requiredMessage(DOB)),
   languagesSpoken: notRequiredStringOnly(LANGUAGE_SPOKEN),
 };
 
@@ -458,7 +487,7 @@ export const doctorSchema = yup.object({
 
 export const facilityServicesSchema = {
   ...facilityIdSchema,
-  name: nameSchema(NAME),
+  name: yup.string().required(requiredMessage(SERVICE_NAME_TEXT)),
   price: yup.string().matches(NUMBER_REGEX, ValidMessage(PRICE)).min(2, MinLength(PRICE, 2))
     .max(5, MaxLength(PRICE, 5)).required(requiredMessage(PRICE)),
   duration: yup.string()
@@ -562,6 +591,22 @@ export const extendedPatientSchema = yup.object({
   ...guarantorPatientSchema,
 })
 
+export const extendedEditPatientSchema = yup.object({
+  ...genderSchema,
+  ...PatientSchema,
+  ...kinPatientSchema,
+  ...basicContactSchema,
+  ...employerPatientSchema,
+  ...guardianPatientSchema,
+  ...emergencyPatientSchema,
+  ...guarantorPatientSchema,
+})
+
+export const extendedPatientAppointmentSchema = yup.object({
+  ...PatientSchema,
+  ...basicContactViaAppointmentSchema,
+})
+
 export const settingSchema = yup.object({
   ...facilityIdSchema,
   ...timeZoneSchema
@@ -570,7 +615,7 @@ export const settingSchema = yup.object({
 export const appointmentSchema = yup.object({
   ...patientIdSchema,
   ...serviceIdSchema,
-  ...facilityIdSchema,
+  // ...facilityIdSchema,
   notes: yup.string(),
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
   secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
@@ -589,16 +634,15 @@ export const externalAppointmentSchema = yup.object({
   ...dobSchema,
   ...emailSchema,
   ...serviceIdSchema,
-  ...providerIdSchema,
   ...firstLastNameSchema,
 })
 
 export const externalPatientSchema = yup.object({
   ...ssnSchema,
-  ...providerIdSchema,
   state: stateSchema(true),
   country: countrySchema(true),
   phone: notRequiredPhone(PHONE),
+  providerId: providerIdSchema(),
   emergencyState: stateSchema(false),
   city: requiredStringOnly(CITY, 2, 20),
   emergencyCountry: countrySchema(false),
@@ -625,15 +669,15 @@ const practiceFacilitySchema = {
   ...einSchema,
   ...upinSchema,
   state: stateSchema(false),
-  city: notRequiredStringOnly(CITY),
+  fax: notRequiredPhone(FAX),
   country: countrySchema(false),
+  phone: notRequiredPhone(PHONE),
+  city: notRequiredStringOnly(CITY),
   address2: addressValidation(ADDRESS, false),
   zipCode: notRequiredMatches(ZIP_VALIDATION_MESSAGE, ZIP_REGEX),
 }
 
 export const createPracticeSchema = yup.object({
-  ...emailSchema,
-  ...roleTypeSchema,
   ...registerUserSchema,
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),
@@ -652,11 +696,12 @@ export const updatePasswordSchema = yup.object({
 })
 
 export const roleSchema = yup.object({
-  role: nameSchema(ROLE_NAME)
+  role: yup.string().required(requiredMessage(ROLE_NAME))
 })
 
 export const createFormBuilderSchemaWithFacility = yup.object({
-  name: yup.string().required(),
+  name: yup.string().min(3, MinLength(FORM_NAME, 3))
+    .max(250, MaxLength(FORM_NAME, 250)).required(),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -668,7 +713,8 @@ export const createFormBuilderSchemaWithFacility = yup.object({
 });
 
 export const createFormBuilderSchema = yup.object({
-  name: yup.string().required(),
+  name: yup.string().min(3, MinLength(FORM_NAME, 3))
+    .max(250, MaxLength(FORM_NAME, 250)).required(),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -681,4 +727,24 @@ export const facilityScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(DAY), ({ id }) => !!id),
+})
+
+export const createPatientAllergySchema = (onset: string) => yup.object({
+  allergyStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
+    value => !!onset || new Date(value || '') <= new Date()),
+  severityId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+  reactionIds: yup.array().of(
+    yup.object().shape({
+      label: yup.string(),
+      value: yup.string()
+    })
+  )
+})
+
+export const patientProblemSchema = yup.object({
+  problemStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
+    value => new Date(value || '') <= new Date()),
 })

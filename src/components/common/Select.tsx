@@ -3,12 +3,11 @@ import { FC } from "react";
 import { InfoOutlined } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, InputLabel, MenuItem, TextField } from "@material-ui/core";
-// components block
 // styles, constants, utils and interfaces block
+import { MENU_PROPS } from '../../constants'
 import { DetailTooltip } from "../../styles/tableStyles";
 import { useFormStyles } from "../../styles/formsStyles";
 import { CustomSelectControlProps } from "../../interfacesTypes";
-import { MENU_PROPS } from '../../constants'
 
 const InputController: FC<CustomSelectControlProps> = ({
   isRequired, controllerName, controllerLabel, error, disabled, multiline, info, placeholder, options

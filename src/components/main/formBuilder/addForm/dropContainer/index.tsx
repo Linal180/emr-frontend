@@ -1,37 +1,72 @@
 //packages block
-import { memo } from 'react';
-import { Box, Grid, IconButton, Typography } from '@material-ui/core';
-import { Edit as EditIcon, Close as DeleteIcon, AcUnit as DragIcon } from '@material-ui/icons'
+import { memo, useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Box, Grid, IconButton, TextField, Typography } from '@material-ui/core';
 //component
 import FieldRenderer from '../../../../common/FieldRenderer';
-//contants block
-import { FieldsInputs } from '../../../../../generated/graphql';
-import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
-import { useFormBuilderContainerStyles } from '../../../../../styles/formbuilder/dropContainer';
+//constants block
 import { WHITE } from '../../../../../theme';
 import { parseColumnGrid } from '../../../../../utils';
 import { DROP_ITEM_TEXT } from '../../../../../constants';
+import { FieldsInputs } from '../../../../../generated/graphql';
+import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
+import { useFormBuilderContainerStyles } from '../../../../../styles/formbuilder/dropContainer';
+import { DeleteSmallIcon, EditOutlinedIcon, TrashOutlinedIcon } from '../../../../../assets/svgs';
 //component
-const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandler }: DropContainerPropsTypes) => {
+const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandler, setFormValues }: DropContainerPropsTypes) => {
   //classes
-  const classes = useFormBuilderContainerStyles()
+  const classes = useFormBuilderContainerStyles();
+
+  const [isEdit, setIsEdit] = useState('');
+  const [value, setValue] = useState('')
+
+  const sectionNameEdit = (id: string, name: string) => {
+    setIsEdit(id)
+    setValue(name)
+  }
+
+  const saveHandler = (id: string,) => {
+    const arr = formValues?.map((sec) => sec?.id === id ? { ...sec, name: value } : sec);
+    setFormValues(arr);
+    setIsEdit('')
+  }
   //render
   return (
     <Box className={classes.main}>
-      <Grid container >
+      <Grid container>
         {formValues?.map((list, i) => (
           <Grid item key={list?.id} xs={parseColumnGrid(list?.col) || 12} sm={parseColumnGrid(list?.col) || 12}
             md={parseColumnGrid(list?.col) || 12} lg={parseColumnGrid(list?.col) || 12}
             xl={parseColumnGrid(list?.col) || 12}>
-            {formValues?.length > 1 &&
-              <Box display={'flex'} justifyContent={'flex-end'}>
-                <Box marginX={2}>
+            {formValues?.length > 1 ?
+              <Box display={'flex'} justifyContent={'space-between'} alignItems={'flex-end'} p={1}>
+                <Box pl={1}>
+                  {isEdit === list?.id ? <TextField id={list?.id} value={value}
+                    onChange={(e) => setValue(e.target.value)} variant={'outlined'}
+                    onBlur={() => saveHandler(list?.id)} /> :
+                    <Typography variant='h4' onClick={() => sectionNameEdit(list?.id, list?.name)}>
+                      {list?.name}
+                    </Typography>
+                  }
+                </Box>
+                <Box display={'flex'} justifyContent={'flex-end'} pr={1}>
                   <IconButton onClick={() => delColHandler(i)}>
-                    <DeleteIcon />
+                    <TrashOutlinedIcon />
                   </IconButton>
                 </Box>
-              </Box>}
+              </Box> :
+              <Box p={1} pl={2}>
+                {isEdit === list?.id ?
+                  <TextField id={list?.id} value={value}
+                    onChange={(e) => setValue(e.target.value)} variant={'outlined'}
+                    onBlur={() => saveHandler(list?.id)} /> :
+                  <Typography variant='h4' onClick={() => sectionNameEdit(list?.id, list?.name)}>
+                    {list?.name}
+                  </Typography>
+                }
+              </Box>
+            }
+
             <Droppable droppableId={list.id}>
               {(provided, snapshot) => (
                 <div
@@ -41,7 +76,7 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                   <Grid container spacing={1}>
                     {list?.fields
                       ? list?.fields?.map((item: FieldsInputs, index: number) => (
-                        <Draggable key={item.fieldId} draggableId={item.fieldId} index={index} >
+                        <Draggable key={item.fieldId} draggableId={item.fieldId} index={index}>
                           {(provided, snapshot) => (
                             <Grid item
                               xs={parseColumnGrid(item.column) || 12} sm={parseColumnGrid(item.column) || 12}
@@ -54,40 +89,27 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
                               >
-                                <Box
-                                  sx={{
-                                    bgcolor: WHITE,
-                                  }}
-                                  {...provided.dragHandleProps}
-                                ></Box>
-                                <Box>
-                                  <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}
-                                    marginBottom={1} paddingX={1}>
-                                    <Typography>
-                                      {item.required ? `${item.label} *` : item.label}
-                                    </Typography>
-                                    <Box>
-                                      <IconButton>
-                                        <DragIcon />
-                                      </IconButton>
-                                    </Box>
-                                    <Box display={'flex'}>
-                                      <Box paddingX={1}>
-                                        <IconButton size='small' onClick={() => changeValues(list.id, item)}>
-                                          <EditIcon />
-                                        </IconButton>
-                                      </Box>
-                                      <Box>
-                                        <Box>
-                                          <IconButton size='small' onClick={() => delFieldHandler(index, i)}>
-                                            <DeleteIcon />
-                                          </IconButton>
-                                        </Box>
-                                      </Box>
-                                    </Box>
+                                <Box bgcolor={WHITE}{...provided.dragHandleProps}></Box>
+
+                                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}
+                                  marginBottom={1} paddingX={1}>
+                                  <Typography variant='h6'>
+                                    {item.required ? `${item.label} *` : item.label}
+                                  </Typography>
+
+                                  <Box display='flex' alignItems='center'>
+                                    <IconButton size='small' onClick={() => changeValues(list.id, item)}>
+                                      <EditOutlinedIcon />
+                                    </IconButton>
+
+                                    <Box p={1} />
+
+                                    <IconButton size='small' onClick={() => delFieldHandler(index, i)}>
+                                      <DeleteSmallIcon />
+                                    </IconButton>
                                   </Box>
-                                  <FieldRenderer item={item} isCreating />
                                 </Box>
+                                <FieldRenderer item={item} isCreating />
                               </div>
                             </Grid>
                           )}

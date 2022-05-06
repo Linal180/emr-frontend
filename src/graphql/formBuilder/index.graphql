@@ -22,11 +22,14 @@ query findAllForms($formInput: FormInput!) {
       type
       facilityId
       name
+      createdAt
+      isActive
 
       layout {
         sections {
           id
           col
+          name
 
           fields {
             label
@@ -42,6 +45,7 @@ query findAllForms($formInput: FormInput!) {
             columnName
             fieldId
             textArea
+            isMultiSelect
 
             options {
               name
@@ -51,7 +55,7 @@ query findAllForms($formInput: FormInput!) {
         }
       }
     }
-    
+
     pagination {
       page
       limit
@@ -82,11 +86,13 @@ query getForm($getForm: GetForm!) {
       name
       type
       facilityId
-      
+      isActive
+
       layout {
         sections {
           id
           col
+          name
 
           fields {
             label
@@ -102,6 +108,7 @@ query getForm($getForm: GetForm!) {
             columnName
             fieldId
             textArea
+            isMultiSelect
 
             options {
               name
@@ -139,11 +146,13 @@ query getPublicForm($getForm: GetForm!) {
       type
       facilityId
       name
+      isActive
 
       layout {
         sections {
           id
           col
+          name
 
           fields {
             label
@@ -159,6 +168,7 @@ query getPublicForm($getForm: GetForm!) {
             columnName
             fieldId
             textArea
+            isMultiSelect
 
             options {
               name
@@ -167,6 +177,98 @@ query getPublicForm($getForm: GetForm!) {
           }
         }
       }
+    }
+  }
+}
+
+query findAllUsersForms($userFormInput: UserFormInput!) {
+  findAllUsersForms(userFormInput: $userFormInput) {
+    response {
+      status
+      message
+    }
+
+    form {
+      id
+      name
+
+      formElements {
+        id
+        name
+        label
+        fieldId
+        sectionId
+        isDeleted
+      }
+
+      userForms {
+        id
+        FormId
+        DoctorId
+        PatientId
+        StaffId
+        SubmitterId
+
+        userFormElements {
+          id
+          value
+          UsersFormsId
+          FormsElementsId
+          arrayOfStrings
+
+          arrayOfObjects {
+            name
+            value
+          }
+        }
+      }
+    }
+
+    pagination {
+      page
+      limit
+      totalCount
+      totalPages
+    }
+  }
+}
+
+mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
+  saveUserFormValues(createUserFormInput: $createUserFormInput) {
+    response {
+      status
+      message
+      error
+    }
+
+    userForm {
+      id
+    }
+  }
+}
+
+mutation getFormPublicMediaUrl($getPublicMediaInput: GetPublicMediaInput!) {
+  getFormPublicMediaUrl(getPublicMediaInput: $getPublicMediaInput) {
+    publicUrl
+
+    response {
+      status
+      error
+      message
+    }
+  }
+}
+
+mutation CreateFormTemplate($createFormInput: CreateFormInput!) {
+  createFormTemplate(createFormInput: $createFormInput) {
+    response {
+      status
+      message
+      error
+    }
+
+    form {
+      id
     }
   }
 }

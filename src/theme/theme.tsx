@@ -3,10 +3,9 @@ import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
-  PINK, WHITE, BLACK, GREEN, POPPINS, GRAY_ONE, GRAY_TWO, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE,
-  BLACK_TWO, BLUE_THREE, GRAY_SIX, ORANGE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, BLUE_EIGHT, RED_FOUR,
+  GREEN, BLUE, WHITE, BLACK, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, GRAY_SIX, ORANGE, GRAY_FIVE, BLACK_THREE, GRAY_SEVEN, 
+  ORANGE_ONE, BLACK_SIX, RED_THREE, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY, BLUE_TWO,
 } from ".";
-import { BLACK_NINE, GRAY_EIGHT, GRAY_TEN } from "./colors";
 
 const breakpoints = createBreakpoints({})
 const customTheme = createTheme()
@@ -19,7 +18,7 @@ export const theme = createTheme({
     },
 
     secondary: {
-      main: PINK,
+      main: BLUE,
       contrastText: WHITE,
     },
 
@@ -38,22 +37,31 @@ export const theme = createTheme({
   },
 
   typography: {
-    fontFamily: POPPINS,
+    fontFamily: INTER,
 
-    h3: {
-      fontSize: 30,
+    h1: {
+      fontSize: 36,
+      fontWeight: 700
+    },
+
+    h2: {
+      fontSize: 28,
       fontWeight: 600
     },
 
-    h4: {
+    h3: {
       fontSize: 20,
       fontWeight: 600
     },
 
+    h4: {
+      fontSize: 18,
+      fontWeight: 700
+    },
+
     h5: {
       fontSize: 16,
-      fontWeight: 500,
-      color: BLACK_ONE,
+      fontWeight: 600,
     },
 
     h6: {
@@ -62,12 +70,12 @@ export const theme = createTheme({
     },
 
     body1: {
-      fontSize: 14,
+      fontSize: 16,
     },
 
     body2: {
-      fontSize: 12,
-      color: BLACK_THREE
+      fontSize: 14,
+      color: GREY_THREE,
     },
   },
 
@@ -90,35 +98,35 @@ export const theme = createTheme({
           "& .MuiPagination-ul": {
             "& li": {
               "& button": {
-                height: 36,
-                minWidth: 36,
+                height: 40,
+                minWidth: 40,
                 borderRadius: 0,
-                color: BLACK_NINE,
+                color: BLACK_TWO,
                 fontSize: 14,
                 margin: 0,
               },
 
               "& .Mui-selected": {
-                backgroundColor: BLUE_EIGHT,
+                backgroundColor: BLUE,
                 color: WHITE,
               },
 
               "& .Mui-selected:hover": {
-                backgroundColor: BLUE_EIGHT,
+                backgroundColor: BLUE,
                 color: WHITE,
               }
             },
 
             "& li:first-child": {
               "& button": {
-                color: BLACK_NINE,
+                color: BLACK_TWO,
                 borderRadius: '8px 0 0 8px',
               }
             },
 
             "& li:last-child": {
               "& button": {
-                color: BLACK_NINE,
+                color: BLACK_TWO,
                 borderRadius: "0 8px 8px 0",
               }
             }
@@ -149,11 +157,12 @@ export const theme = createTheme({
 
     MuiDialogTitle: {
       root: {
-        padding: "18px 30px",
+        padding: "22px 32px",
         borderBottom: `1px solid ${GRAY_SIX}`,
 
         "& h2": {
           fontSize: 20,
+          fontWeight: 700,
           color: BLACK_ONE,
         }
       }
@@ -169,6 +178,10 @@ export const theme = createTheme({
     MuiDialogContent: {
       root: {
         padding: 30,
+
+        "&:first-child": {
+          paddingTop: 'auto',
+        },
 
         "& > div": {
           background: ORANGE,
@@ -190,7 +203,6 @@ export const theme = createTheme({
           color: BLACK_TWO,
           lineHeight: '22px',
           fontWeight: 500,
-          maxWidth: '80%'
         }
       }
     },
@@ -208,17 +220,23 @@ export const theme = createTheme({
             height: 20,
             width: 20,
             position: "absolute",
-            background: GRAY_EIGHT,
+            background: WHITE,
             zIndex: 9,
-            borderRadius: 3,
-            border: `2px solid ${GRAY_TEN}`,
+            borderRadius: 4,
+            border: `1px solid ${GREY_ONE}`,
           },
         },
 
+        "& .MuiIconButton-label:hover": {
+          "&:before": {
+            border: `1px solid ${BLUE_ONE}`,
+          }
+        },
+
         "& .MuiSvgIcon-root": {
-          height: 24,
-          width: 24,
-          borderRadius: 3,
+          height: 20,
+          width: 20,
+          borderRadius: 4,
         },
 
         "&[class*=PrivateSwitchBase-checked]": {
@@ -229,7 +247,7 @@ export const theme = createTheme({
           },
 
           "& .MuiSvgIcon-root": {
-            color: BLUE_EIGHT
+            color: BLUE,
           }
         }
       }
@@ -238,101 +256,105 @@ export const theme = createTheme({
     MuiButton: {
       contained: {
         borderRadius: 6,
-        maxHeight: 42,
-        padding: '9px 20px',
+        maxHeight: 40,
+        height: 40,
         boxShadow: 'none',
-        color: BLACK_TWO,
+        color: BLACK,
 
-        "&.blue-button": {
-          backgroundColor: BLUE_ONE,
+        "&.danger": {
+          backgroundColor: RED,
           color: WHITE,
-
-          "&:hover": {
-            backgroundColor: BLUE_THREE,
-          }
         },
 
-        "&.blue-button-new": {
-          backgroundColor: BLUE_EIGHT,
+        "&.muted": {
+          backgroundColor: GREY_TWO,
           color: WHITE,
-        }
+        },
       },
 
       outlined: {
         borderRadius: 6,
-        maxHeight: 42,
-        padding: '9px 20px',
+        maxHeight: 40,
+        height: 40,
         boxShadow: 'none',
+        color: BLACK,
 
-        "&.blue-button": {
-          borderColor: BLUE_ONE,
-          color: BLUE_ONE,
-          borderStyle: 'dashed',
-
-          "&:hover": {
-            borderColor: BLUE_THREE,
-            color: BLUE_THREE,
-          }
+        "&.danger": {
+          backgroundColor: WHITE,
+          borderColor: RED,
+          color: RED,
         },
 
-        "&.blue-button-new": {
+        "&.muted": {
           backgroundColor: WHITE,
-          color: BLUE_EIGHT,
-        }
+          borderColor: GREY_TWO,
+          color: GREY_TWO,
+        },
       },
 
       label: {
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 600,
       },
 
       text: {
         "& .MuiButton-label": {
-          color: GRAY_TWO
+          color: BLACK
         },
 
         "&.danger": {
           paddingLeft: 0,
 
           "& .MuiButton-label": {
-            color: RED_FOUR
+            color: RED
           }
-        }
+        },
+
+        "&.muted": {
+          "& .MuiButton-label": {
+            color: GREY_TWO,
+          }
+        },
       }
     },
 
     MuiOutlinedInput: {
       root: {
+        backgroundColor: GREY,
+        borderRadius: 4,
+
         "& $notchedOutline": {
           borderRadius: 4,
-          border: `1px solid ${GRAY_ONE}`,
-          fontFamily: POPPINS,
+          border: `1px solid ${GREY_FOUR}`,
+          fontFamily: INTER,
         },
 
         "&.Mui-focused $notchedOutline, &:hover $notchedOutline": {
-          border: `1px solid ${BLUE_ONE}`,
+          border: `1px solid ${BLUE_TWO}`,
         },
 
         "&.Mui-disabled .MuiOutlinedInput-notchedOutline": {
-          border: `1px solid ${GRAY_ONE}`,
-        }
+          border: `1px solid ${GRAY_FIVE}`,
+        },
       },
 
       input: {
-        height: 42,
-        padding: '11px 14px',
-        boxSizing: 'border-box'
-      }
+        height: 48,
+        padding: '12px 16px',
+        boxSizing: 'border-box',
+      },
     },
 
     MuiInputLabel: {
       shrink: {
         transform: 'scale(1)',
-        color: GRAY_THREE
+        color: BLACK_TWO,
+        fontWeight: 500,
+        fontSize: 14,
       },
 
       formControl: {
-        top: -20,
+        top: -24,
 
         [breakpoints.between(1280, 1441)]: {
           top: -30,
@@ -343,7 +365,7 @@ export const theme = createTheme({
     MuiFormControl: {
       marginNormal: {
         position: 'relative',
-        paddingBottom: customTheme.spacing(3)
+        paddingBottom: customTheme.spacing(2),
       },
 
       root: {
@@ -353,7 +375,7 @@ export const theme = createTheme({
         },
 
         "& .MuiAutocomplete-inputRoot": {
-          minHeight: 42,
+          minHeight: 48,
         }
       }
     },
@@ -364,13 +386,12 @@ export const theme = createTheme({
         marginLeft: 0,
         marginRight: 0,
         fontSize: 12,
-        opacity: 0.8,
-        color: GRAY_TWO,
         fontWeight: 500,
+        color: BLACK_THREE,
       },
 
       root: {
-        color: RED_THREE
+        color: RED_THREE,
       }
     },
 
@@ -558,8 +579,8 @@ export const theme = createTheme({
         minHeight: 0,
 
         "&.Mui-selected": {
-          borderBottom: `2px solid ${BLUE_EIGHT}`,
-          color: BLUE_EIGHT,
+          borderBottom: `2px solid ${BLUE}`,
+          color: BLUE,
         }
       },
 
@@ -575,6 +596,6 @@ export const theme = createTheme({
           color: GRAY_THREE
         }
       }
-    }
+    },
   },
 });

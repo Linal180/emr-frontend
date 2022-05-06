@@ -1,24 +1,56 @@
 // packages block
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton } from '@material-ui/core';
+import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, Avatar, } from '@material-ui/core';
 // utils and header styles block
-import { WHITE_FOUR } from "../../theme";
-import { handleLogout } from "../../utils";
+import { AuthContext, ListContext } from "../../context";
+import { BLACK_TWO, WHITE_FOUR } from "../../theme";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import StatusSelector from "../main/dashboard/statusSelector";
+import { handleLogout, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
+
 import {
-  GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SECURITY
+  EMAIL, FACILITY, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS,
+  PROFILE_SECURITY_MENU_ITEMS, SECURITY, SUPER_ADMIN,
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
+  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl } = useContext(AuthContext);
+  const { setFacilityList, setRoleList, setPracticeList, } = useContext(ListContext)
+  const { email, roles, facility, } = user || {};
+  const { firstName, lastName } = currentUser || {}
+  const { name: facilityName } = facility || {}
+  const [isSuper, setIsSuper] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+  const FacilityAdmin = isUserAdmin(roles)
+
 
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+
+  const handleIdle = () => {
+    email && localStorage.setItem(EMAIL, email)
+    onIdle();
+    setUser(null)
+    setCurrentUser(null)
+    setIsLoggedIn(false)
+  }
+
+  const logout = () => {
+    setIsLoggedIn(false)
+    setUser(null)
+    setCurrentUser(null)
+    handleLogout();
+    setFacilityList([]);
+    setRoleList([])
+    setPracticeList([])
+  };
+
+  useEffect(() => {
+    setIsSuper(isSuperAdmin(roles))
+  }, [isSuper, roles, user]);
 
   return (
     <>
@@ -26,7 +58,10 @@ const ProfileDropdownMenu = (): JSX.Element => {
         aria-label="dropdown menu" aria-controls="menu-appBar" aria-haspopup="true" color="inherit"
         onClick={(event) => handleClick(event)}
       >
-        <NewAvatarIcon />
+        {profileUrl ?
+          <Avatar alt={`${firstName}-${lastName}`} src={profileUrl}></Avatar> :
+          <NewAvatarIcon />
+        }
       </IconButton>
 
       <Menu
@@ -45,15 +80,36 @@ const ProfileDropdownMenu = (): JSX.Element => {
             alignItems="center" className={classes.dropdownMenuBar}
           >
             <Box display="flex" alignItems="center">
-              <NewAvatarIcon />
+              {profileUrl ?
+                <Avatar alt={`${firstName}-${lastName}`} src={profileUrl}></Avatar> :
+                <NewAvatarIcon />
+              }
 
-              <Box ml={1}>
-                <Typography variant="h6">Richard Alvis</Typography>
+              <Box ml={2}>
+                {isSuper ?
+                  <Typography variant="h6">{SUPER_ADMIN}</Typography>
+                  :
+                  <Typography variant="h6">{firstName} {lastName}</Typography>
+                }
               </Box>
             </Box>
-
-            <StatusSelector />
           </Box>
+
+          {practiceName && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+            <Box pr={1} color={BLACK_TWO}>
+              <Typography variant="body1">{PRACTICE} :</Typography>
+            </Box>
+
+            <Typography variant="body1">{practiceName}</Typography>
+          </Box>}
+
+          {!FacilityAdmin && <Box display='flex' alignItems='center' borderBottom={`1px solid ${colors.grey[300]}`} mb={2} pt={1} pb={2}>
+            <Box pr={1} color={BLACK_TWO}>
+              <Typography variant="body1">{FACILITY} :</Typography>
+            </Box>
+
+            <Typography variant="body1">{facilityName}</Typography>
+          </Box>}
 
           <Grid container spacing={3}>
             <Grid item md={6}>
@@ -96,14 +152,13 @@ const ProfileDropdownMenu = (): JSX.Element => {
           <Box mt={2} py={2} borderTop={`1px solid ${WHITE_FOUR}`}>
             <Grid container spacing={3}>
               <Grid item md={8}>
-                <Button variant="contained" color="inherit" size="small" className="blue-button-new" fullWidth>
+                <Button onClick={() => handleIdle()} variant="contained" color="secondary" size="small" fullWidth>
                   {LOCK_SCREEN}
                 </Button>
               </Grid>
 
               <Grid item md={4}>
-                <Button onClick={() => handleLogout()} variant="outlined" color="secondary" size="small"
-                >
+                <Button onClick={() => logout()} variant="outlined" color="inherit" size="small" className="danger">
                   {LOGOUT_TEXT}
                 </Button>
               </Grid>

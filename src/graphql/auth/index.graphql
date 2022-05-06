@@ -1,7 +1,7 @@
 mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
     access_token
-    
+
     response {
       status
       message
@@ -28,29 +28,42 @@ query GetLoggedInUser {
       id
       email
       token
-      status
       userId
       userType
-      inviteSentAt
-      emailVerified
-      inviteAcceptedAt
-      createdAt
-      updatedAt
+      phone
 
       roles {
         id
         role
-        createdAt
-        updatedAt
+
+        rolePermissions {
+          permission {
+            id
+            name
+          }
+        }
       }
 
       facility {
         id
         name
         practiceId
+
+        practice {
+          id
+          name
+        }
+      }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
         createdAt
         updatedAt
-        
       }
     }
   }
@@ -66,9 +79,9 @@ mutation ForgetPassword($forgotPasswordInput: ForgotPasswordInput!) {
   }
 }
 
-mutation ResetPassword($resetPassword: ResetPasswordInput!){
-  resetPassword(resetPassword:$resetPassword){
-    response{
+mutation ResetPassword($resetPassword: ResetPasswordInput!) {
+  resetPassword(resetPassword: $resetPassword) {
+    response {
       error
       status
       message
@@ -76,12 +89,76 @@ mutation ResetPassword($resetPassword: ResetPasswordInput!){
   }
 }
 
-mutation updatePassword($updatePasswordInput: UpdatePasswordInput!){
-  updatePassword(updatePasswordInput: $updatePasswordInput){
+mutation updatePassword($updatePasswordInput: UpdatePasswordInput!) {
+  updatePassword(updatePasswordInput: $updatePasswordInput) {
     response {
       error
       status
       message
+    }
+  }
+}
+
+query GetDoctorUser($getDoctor: GetDoctor!) {
+  getDoctor(getDoctor: $getDoctor) {
+    doctor {
+      id
+      firstName
+      lastName
+
+      contacts {
+        id
+        email
+        phone
+        address
+        zipCode
+        city
+        state
+        country
+        primaryContact
+      }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
+    }
+
+    response {
+      status
+    }
+  }
+}
+
+query GetStaffUser($getStaff: GetStaff!) {
+  getStaff(getStaff: $getStaff) {
+    response {
+      status
+    }
+
+    staff {
+      id
+      email
+      lastName
+      firstName
+      phone
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }

@@ -14,7 +14,7 @@ import { CameraAlt } from "@material-ui/icons";
 
 const MediaCardComponent: FC<MediaCardComponentType> = ({
   setOpen, isOpen, setEdit, isEdit, setAttachment, setAttachments, attachment, attachments,
-  allAttachments, imageSide, notDescription, button
+  allAttachments, imageSide, notDescription, button, buttonText
 }): JSX.Element => {
   const [isDeleteOpen, setIsDeleteOpen] = useState<boolean>(false)
   const [currentAttachmentId, setCurrentAttachmentId] = useState<string>("")
@@ -102,10 +102,10 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
               );
             })}
 
-          <Grid md={12} xs={12}>
+          <Grid item md={12} xs={12}>
             {notDescription && button && <Button color="primary" variant="contained" onClick={handleAddMedia}
               startIcon={<UploadIcon />}>
-              {UPLOAD}
+              {buttonText || UPLOAD}
             </Button>}
 
             {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>

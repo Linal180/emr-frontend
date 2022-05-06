@@ -1,0 +1,57 @@
+query fetchEmergencyAccessUser($emergencyAccessUsersInput: EmergencyAccessUserInput!) {
+  fetchEmergencyAccessUsers(emergencyAccessUsersInput: $emergencyAccessUsersInput) {
+    response {
+      status
+      error
+      message
+    }
+
+    pagination {
+      page
+      totalPages
+    }
+
+    
+    emergencyAccessUsers {
+      id
+      email
+      facilityId
+      roles{
+        role 
+        rolePermissions {
+          permission {
+            id
+            name
+          }
+        }
+      }
+    }
+}
+}
+
+query GetCurrentUser {
+  me {
+    response {
+      status
+      error
+      message
+    }
+
+    user {
+      id
+      userId
+      userType
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}

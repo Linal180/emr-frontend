@@ -2,7 +2,6 @@
 import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { InsertLink } from "@material-ui/icons";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
@@ -11,43 +10,44 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../../../context";
-import { formatPhone, isSuperAdmin, isUserAdmin, renderTh } from "../../../../utils";
-import { ListContext } from "../../../../context/listContext";
+import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
-import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
+import { EditNewIcon, TrashNewIcon, AddNewIcon, LinkIcon } from "../../../../assets/svgs";
+import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, State as AppointmentState,
-  ActionType as AppointmentActionType
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState,
+  State as AppointmentState, ActionType as AppointmentActionType
 } from "../../../../reducers/appointmentReducer";
 import {
   FacilitiesPayload, FacilityPayload, useFindAllFacilitiesLazyQuery, useRemoveFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, PUBLIC_APPOINTMENT_ROUTE,
-  STATE, CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED, PUBLIC_LINK,
-  FACILITY_SERVICES_ROUTE, SERVICES, PRACTICE,
+  CANT_DELETE_FACILITY, DELETE_FACILITY_DESCRIPTION, FACILITY, LINK_COPIED, SERVICES, PRACTICE,
+  ACTION, EMAIL, FACILITIES_ROUTE, NAME, PAGE_LIMIT, PHONE, ZIP, CITY, STATE, FACILITY_SERVICES_ROUTE,
+  PUBLIC_LINK, FACILITY_PUBLIC_APPOINTMENT_ROUTE,
 } from "../../../../constants";
 
 const FacilityTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const { user } = useContext(AuthContext)
-  const { fetchAllFacilityList } = useContext(ListContext)
+  const { deleteFacilityList } = useContext(ListContext)
   const { facility, roles } = user || {}
-  const isAdmin = isUserAdmin(roles)
   const isSuper = isSuperAdmin(roles);
-  const { practiceId } = facility || {}
+  const isPracAdmin = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
+  const { practiceId, id: facilityId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
   const [{ copied }, appointmentDispatcher] =
     useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() {
       dispatch({ type: ActionType.SET_FACILITIES, facilities: [] })
@@ -59,31 +59,30 @@ const FacilityTable: FC = (): JSX.Element => {
       if (findAllFacility) {
         const { facilities, pagination } = findAllFacility
 
-        if (!searchQuery) {
-          if (pagination) {
-            const { totalPages } = pagination
-            totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
-          }
-
-          facilities && dispatch({
-            type: ActionType.SET_FACILITIES, facilities: facilities as FacilitiesPayload['facilities']
-          })
+        if (pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
+
+        facilities && dispatch({
+          type: ActionType.SET_FACILITIES, facilities: facilities as FacilitiesPayload['facilities']
+        })
       }
     }
   });
 
   const fetchAllFacilities = useCallback(async () => {
     try {
-      await findAllFacility({
-        variables: {
-          facilityInput: {
-            practiceId, paginationOptions: { page, limit: PAGE_LIMIT }
-          }
-        },
+      const inputs = { facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
+      const payload =
+        isSuper ? { ...inputs } : isPracAdmin ? { ...inputs, practiceId } :
+          isFacAdmin ? { ...inputs, singleFacilityId: facilityId } : undefined
+
+      payload && await findAllFacility({
+        variables: { facilityInput: { ...payload } }
       })
     } catch (error) { }
-  }, [findAllFacility, page, practiceId])
+  }, [facilityId, findAllFacility, isFacAdmin, isPracAdmin, isSuper, page, practiceId, searchQuery])
 
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {
@@ -100,7 +99,7 @@ const FacilityTable: FC = (): JSX.Element => {
             const { message } = response
             message && Alert.success(message);
             await fetchAllFacilities();
-            fetchAllFacilityList();
+            deleteFacilityList(deleteFacilityId)
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           } catch (error) { }
         }
@@ -109,7 +108,7 @@ const FacilityTable: FC = (): JSX.Element => {
   });
 
   useEffect(() => {
-    !searchQuery && fetchAllFacilities();
+    fetchAllFacilities();
   }, [fetchAllFacilities, page, searchQuery]);
 
   const handleChange = (_: ChangeEvent<unknown>, page: number) =>
@@ -135,19 +134,25 @@ const FacilityTable: FC = (): JSX.Element => {
   const handleClipboard = (id: string) => {
     if (id) {
       navigator.clipboard.writeText(
-        `${process.env.REACT_APP_URL}${PUBLIC_APPOINTMENT_ROUTE}/${id}`
+        `${process.env.REACT_APP_URL}${FACILITY_PUBLIC_APPOINTMENT_ROUTE}/${id}`
       )
 
       appointmentDispatcher({ type: AppointmentActionType.SET_COPIED, copied: true })
     }
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Search search={search} />
+        <Box py={2} mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
 
         <Box className="table-overflow">
           <Table aria-label="customized table">
@@ -189,30 +194,28 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          {isAdmin &&
-                            <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
-                              <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                                <InsertLink />
-                              </Box>
-                            </DetailTooltip>
-                          }
+                          <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
+                            <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
+                              <LinkIcon />
+                            </Box>
+                          </DetailTooltip>
 
                           <DetailTooltip title={SERVICES}>
                             <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
                               <Box className={classes.iconsBackground}>
-                                <ServiceIcon />
+                                <AddNewIcon />
                               </Box>
                             </Link>
                           </DetailTooltip>
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
-                              <EditIcon />
+                              <EditNewIcon />
                             </Box>
                           </Link>
 
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashIcon />
+                            <TrashNewIcon />
                           </Box>
                         </Box>
                       </TableCell>
@@ -243,10 +246,11 @@ const FacilityTable: FC = (): JSX.Element => {
       </Box>
 
       {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" pt={2.25}>
+        <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
             count={totalPages}
             shape="rounded"
+            variant="outlined"
             page={page}
             onChange={handleChange}
           />

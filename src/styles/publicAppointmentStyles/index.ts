@@ -1,8 +1,18 @@
   import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_FOUR, BLUE_EIGHT, BLUE_ONE, GRAY_ONE, GRAY_SIX, POPPINS, WHITE } from "../../theme";
+import { BLACK_FOUR, GRAY_ONE, GRAY_SIX, GREY_TWO, INTER, theme, WHITE } from "../../theme";
 
 export const usePublicAppointmentStyles = makeStyles(() =>
   createStyles({
+    main: {
+      padding: theme.spacing(3),
+      borderRadius: theme.spacing(1),
+      margin: theme.spacing(0.5),
+      backgroundColor: WHITE,
+      minHeight: 100,
+      position: "sticky",
+      top: 100,
+      zIndex: 1,
+    },
     timeSlots: {
       padding: 0,
       display: 'flex',
@@ -22,7 +32,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         display: 'none',
 
         "& + label": {
-          fontFamily: POPPINS,
+          fontFamily: INTER,
           fontSize: 13,
           color: BLACK_FOUR,
           border: `1px solid ${GRAY_ONE}`,
@@ -36,7 +46,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         },
 
         "&:checked + label": {
-          background: BLUE_EIGHT,
+          background: GREY_TWO,
           color: WHITE
         }
       }
@@ -47,11 +57,11 @@ export const usePublicAppointmentStyles = makeStyles(() =>
         display: 'flex',
         position: 'relative',
         border: `1px solid ${GRAY_SIX}`,
-        fontWeight: 500,
-        fontSize: 14,
+        fontWeight: 600,
+        fontSize: 16,
         width: 145,
         height: 44,
-        padding: 5,
+        padding: 7,
         borderRadius: 6,
 
         "& > div": {
@@ -72,8 +82,8 @@ export const usePublicAppointmentStyles = makeStyles(() =>
 
       "& .MuiToggleButton-root.Mui-selected": {
         color: WHITE,
-        backgroundColor: BLUE_ONE,
-        padding: "9px 30px",
+        backgroundColor: GREY_TWO,
+        padding: "12px 20px",
         borderRadius: 6,
       },
 
@@ -93,11 +103,11 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       borderRadius: '0px 0px 8px 8px',
 
       "& .MuiIconButton-label:before": {
-        border: `2px solid ${BLUE_EIGHT}`
+        border: `2px solid ${GREY_TWO}`
       },
 
       "& .MuiCheckbox-root.Mui-checked .MuiSvgIcon-root": {
-        color: BLUE_EIGHT,
+        color: GREY_TWO,
       },
 
       "& .MuiFormControlLabel-label": {

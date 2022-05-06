@@ -4,7 +4,7 @@ import { Box, Typography } from "@material-ui/core";
 // utils, constants and graphql
 import { getStandardTime } from "../../utils";
 import { TO_TEXT, FROM_TEXT } from "../../constants";
-import { EditIcon, TrashIcon } from "../../assets/svgs";
+import { EditNewIcon, TrashNewIcon } from "../../assets/svgs";
 import { ActionType } from "../../reducers/facilityReducer";
 import { FacilityScheduleProps } from "../../interfacesTypes";
 import { useDoctorScheduleStyles } from "../../styles/doctorSchedule";
@@ -33,11 +33,11 @@ const FacilityScheduleBox: FC<FacilityScheduleProps> = ({ dispatcher, schedule: 
     <Box display="flex" pb={3} flexDirection="column" justifyContent="space-between">
       <Box display="flex" justifyContent="flex-end" mt={2}>
         <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-          <TrashIcon />
+          <TrashNewIcon />
         </Box>
 
         <Box className={classes.iconsBackground} onClick={() => handleEdit(id)}>
-          <EditIcon />
+          <EditNewIcon />
         </Box>
       </Box>
 

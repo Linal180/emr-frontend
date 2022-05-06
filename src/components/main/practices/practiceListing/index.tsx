@@ -3,22 +3,21 @@ import { FC } from 'react';
 // component block
 import PracticeTable from './PracticeTable';
 import PageHeader from '../../../common/PageHeader';
-// constants block
-import { ADD_NEW_PRACTICE_TEXT, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT } from '../../../../constants';
+// context, utils and constants block
+import {
+  ADD_NEW_PRACTICE_TEXT, PRACTICE_BREAD, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_MANAGEMENT_TEXT
+} from '../../../../constants';
 
-const PracticeListingComponent: FC = (): JSX.Element => {
-  return (
-    <>
-      <PageHeader
-        title={PRACTICE_MANAGEMENT_TEXT}
-        hasComponent
-        linkToPage={`${PRACTICE_MANAGEMENT_ROUTE}/new`}
-        buttonText={ADD_NEW_PRACTICE_TEXT}
-      />
+const PracticeListingComponent: FC = (): JSX.Element => <>
+  <PageHeader
+    hasComponent
+    title={PRACTICE_MANAGEMENT_TEXT}
+    path={[PRACTICE_BREAD]}
+    linkToPage={`${PRACTICE_MANAGEMENT_ROUTE}/new`}
+    buttonText={ADD_NEW_PRACTICE_TEXT}
+  />
 
-      <PracticeTable />
-    </>
-  )
-};
+  <PracticeTable />
+</>;
 
 export default PracticeListingComponent;

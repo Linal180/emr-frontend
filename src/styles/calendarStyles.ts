@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_FOUR, BLACK_TWO, BLUE_EIGHT, RED_FOUR, WHITE, WHITE_FOUR } from "../theme";
+import { BLACK_FOUR, BLACK_TWO, BLUE, RED, WHITE, WHITE_FOUR } from "../theme";
 
 export const useCalendarStyles = makeStyles(() =>
   createStyles({
@@ -52,7 +52,7 @@ export const useCalendarStyles = makeStyles(() =>
 
     invoiceText: {
       "& .MuiTypography-body1": {
-        color: BLUE_EIGHT,
+        color: BLUE,
         paddingLeft: 10,
         cursor: 'pointer',
       }
@@ -60,7 +60,7 @@ export const useCalendarStyles = makeStyles(() =>
 
     deleteButton: {
       "& .MuiButton-label": {
-        color: RED_FOUR,
+        color: RED,
       },
     },
 
@@ -102,6 +102,22 @@ export const useCalendarStyles = makeStyles(() =>
 
     notCursor: {
       cursor: 'not-allowed'
+    },
+
+    blur: {
+      filter: 'blur(3px)'
+    },
+
+    loader: {
+      display: 'flex',
+      alignItems: 'center',
+      maxWidth: 1750,
+      width: "100%",
+      minHeight: 700,
+      height: "100%",
+      justifyContent: 'center',
+      bgcolor: 'transparent',
+      position: 'absolute'
     }
   })
 );

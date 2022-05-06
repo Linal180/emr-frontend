@@ -4,6 +4,7 @@ import { Controller, useFormContext } from 'react-hook-form';
 //interfaces , styles
 import { FieldComponentProps } from '../../interfacesTypes';
 import { useFormStyles } from '../../styles/formsStyles';
+import { getUserFormDefaultValue } from '../../utils';
 //component
 import { FieldRenderer } from './FieldRenderer'
 //field renderer component
@@ -12,16 +13,16 @@ export const FieldController = ({ item, isCreating }: FieldComponentProps) => {
   const { control } = useFormContext();
   const classes = useFormStyles();
   //constants
-  const { name, defaultValue, required, label } = item;
+  const { required, label, fieldId, type, isMultiSelect } = item;
   //render
   return (
     <Controller
-      name={name}
+      name={fieldId}
       control={control}
-      defaultValue={defaultValue}
+      defaultValue={getUserFormDefaultValue(type, isMultiSelect)}
       render={({ field }) => (
         <FormControl fullWidth margin="normal">
-          <InputLabel shrink htmlFor={name} className={classes.detailTooltipBox}>
+          <InputLabel shrink htmlFor={fieldId} className={classes.detailTooltipBox}>
             {required ? `${label} *` : label}
           </InputLabel>
           <FieldRenderer item={item} field={field} isCreating={isCreating} />

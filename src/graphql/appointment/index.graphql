@@ -14,19 +14,12 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
     appointments {
       id
       status
-      token
       scheduleEndDateTime
       scheduleStartDateTime
-      createdAt
-      updatedAt
-      
-      appointmentType {
-        id
-        name
-        duration
-        color
-        price
-      }
+      token
+      reason
+      primaryInsurance
+      billingStatus
       
       provider {
         id
@@ -38,19 +31,18 @@ query FindAllAppointments($appointmentInput: AppointmentInput!){
         id
         firstName
         lastName
-
-         contacts {
-           address
-        }
       }
       
       facility {
         id
         name
+      }
 
-        contacts {
-           address
-        }
+      appointmentType {
+        id
+        name
+        price
+        color
       }
     }
   }

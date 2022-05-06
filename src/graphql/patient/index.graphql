@@ -2,7 +2,6 @@ query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
     pagination {
       page
-      totalCount
       totalPages
     }
     
@@ -17,8 +16,7 @@ query FindAllPatient($patientInput: PatientInput!) {
       email
       lastName
       firstName
-      createdAt
-      updatedAt
+      patientRecord
       
       contacts {
         id
@@ -26,10 +24,7 @@ query FindAllPatient($patientInput: PatientInput!) {
         city
         email
         phone
-        country
         primaryContact
-        createdAt
-        updatedAt
       }
     }
   }
@@ -52,6 +47,7 @@ query GetPatient($getPatient: GetPatient!) {
       lastName
       suffix
       inviteAccepted
+      patientRecord
       firstNameUsed
       prefferedName
       previousFirstName

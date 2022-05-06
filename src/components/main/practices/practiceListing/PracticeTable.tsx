@@ -6,13 +6,14 @@ import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
+import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
-import { EditPracticeIcon, DeletePracticeIcon } from '../../../../assets/svgs';
+import { TrashNewIcon, EditNewIcon } from '../../../../assets/svgs';
 import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/practiceReducer";
@@ -20,19 +21,22 @@ import {
   PracticesPayload, useFindAllPracticesLazyQuery, useRemovePracticeMutation
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
-  CANT_DELETE_PRACTICE, DATE_ADDED, 
+  ACTION, PHONE, NAME, PRACTICE_MANAGEMENT_ROUTE, DELETE_PRACTICE_DESCRIPTION, PRACTICE, PAGE_LIMIT,
+  CANT_DELETE_PRACTICE, DATE_ADDED,
 } from "../../../../constants";
 
 const PracticeTable: FC = (): JSX.Element => {
   const classes = useTableStyles();
-  const { fetchAllPracticeList, fetchAllFacilityList } = useContext(ListContext)
+  const {
+    deletePracticeList, setFacilityList, fetchAllFacilityList, setRoleList, setPracticeList
+  } = useContext(ListContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, practices, deletePracticeId } = state
 
   const [findAllPractices, { loading, error }] = useFindAllPracticesLazyQuery({
     variables: {
       practiceInput: {
+        practiceName: searchQuery,
         paginationOptions: {
           page, limit: PAGE_LIMIT
         }
@@ -54,7 +58,7 @@ const PracticeTable: FC = (): JSX.Element => {
           const { pagination, practices } = findAllPractices
           practices && dispatch({ type: ActionType.SET_PRACTICES, practices: practices as PracticesPayload['practices'] })
 
-          if (!searchQuery && pagination) {
+          if (pagination) {
             const { totalPages } = pagination
             totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
           }
@@ -80,23 +84,20 @@ const PracticeTable: FC = (): JSX.Element => {
           if (response) {
             const { message } = response
             message && Alert.success(message);
-            await findAllPractices();
-            fetchAllPracticeList();
-            fetchAllFacilityList();
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+            await findAllPractices();
+            deletePracticeList(deletePracticeId);
+            setFacilityList([])
+            setRoleList([])
+            setPracticeList([])
+            fetchAllFacilityList()
           }
         }
       } catch (error) { }
     }
   });
 
-  useEffect(() => {
-    if (!searchQuery) {
-      findAllPractices()
-    }
-  }, [page, findAllPractices, searchQuery]);
-
-
+  useEffect(() => { findAllPractices() }, [page, findAllPractices]);
   const handleChange = (_: ChangeEvent<unknown>, page: number) => dispatch({ type: ActionType.SET_PAGE, page })
 
   const onDelete = (id: string) => {
@@ -113,88 +114,96 @@ const PracticeTable: FC = (): JSX.Element => {
       })
   };
 
-  const search = (query: string) => { }
+  const search = (query: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+    dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
+    dispatch({ type: ActionType.SET_PAGE, page: 1 })
+  }
 
   return (
-    <Box className={classes.mainTableContainer}>
-      <Search search={search} />
+    <>
+      <Box className={classes.mainTableContainer}>
+        <Box py={2} mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
 
-      <Box className="table-overflow">
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {renderTh(NAME)}
-              {renderTh(EMAIL)}
-              {renderTh(PHONE)}
-              {renderTh(DATE_ADDED)}
-              {renderTh(ACTION, "center")}
-            </TableRow>
-          </TableHead>
+        <Box className="table-overflow">
+          <Table aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                {renderTh(NAME)}
+                {renderTh(PHONE)}
+                {renderTh(DATE_ADDED)}
+                {renderTh(ACTION, "center")}
+              </TableRow>
+            </TableHead>
 
-          <TableBody>
-            {
-              practices?.map(practice => {
-                const { id, name, phone, createdAt, facilities } = practice || {};
-                const primaryFacility = facilities?.filter(facility => facility.isPrimary)[0]
-                const { contacts } = primaryFacility || {};
-                const primaryContact = contacts?.filter(contact => contact.primaryContact)[0]
-                const { email } = primaryContact || {}
+            <TableBody>
+              {loading ? (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <TableLoader numberOfRows={10} numberOfColumns={4} />
+                  </TableCell>
+                </TableRow>) : (
+                practices?.map(practice => {
+                  const { id, name, phone, createdAt } = practice || {};
 
-                return (
-                  <TableRow key={id}>
-                    <TableCell scope="row">{name}</TableCell>
-                    <TableCell scope="row">{email}</TableCell>
-                    <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                    <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
-                    <TableCell scope="row">
-                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>
-                          <Box className={classes.practiceIconsBackground}>
-                            <EditPracticeIcon />
+                  return (
+                    <TableRow key={id}>
+                      <TableCell scope="row">{name}</TableCell>
+                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                      <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <Link to={`${PRACTICE_MANAGEMENT_ROUTE}/${id}`}>
+                            <Box className={classes.iconsBackground}>
+                              <EditNewIcon />
+                            </Box>
+                          </Link>
+
+                          <Box className={classes.iconsBackground} onClick={() => onDelete(id || '')}>
+                            <TrashNewIcon />
                           </Box>
-                        </Link>
-
-                        <Box className={classes.practiceIconsBackground} onClick={() => onDelete(id || '')}>
-                          <DeletePracticeIcon />
                         </Box>
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              }
+                      </TableCell>
+                    </TableRow>
+                  )
+                })
               )}
-          </TableBody>
-        </Table>
+            </TableBody>
+          </Table>
 
-        {((!loading && practices?.length === 0) || error) && (
-          <Box display="flex" justifyContent="center" pb={12} pt={5}>
-            <NoDataFoundComponent />
-          </Box>
-        )}
+          {((!loading && practices?.length === 0) || error) && (
+            <Box display="flex" justifyContent="center" pb={12} pt={5}>
+              <NoDataFoundComponent />
+            </Box>
+          )}
 
-        {totalPages > 1 && (
-          <Box display="flex" justifyContent="flex-end" pt={3}>
-            <Pagination
-              count={totalPages}
-              shape="rounded"
-              page={page}
-              onChange={handleChange}
-            />
-          </Box>
-        )}
-
-        <ConfirmationModal
-          title={PRACTICE}
-          isOpen={openDelete}
-          isLoading={deletePracticeLoading}
-          handleDelete={handleDeletePractice}
-          description={DELETE_PRACTICE_DESCRIPTION}
-          setOpen={(open: boolean) =>
-            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
-          }
-        />
+          <ConfirmationModal
+            title={PRACTICE}
+            isOpen={openDelete}
+            isLoading={deletePracticeLoading}
+            handleDelete={handleDeletePractice}
+            description={DELETE_PRACTICE_DESCRIPTION}
+            setOpen={(open: boolean) =>
+              dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
+            }
+          />
+        </Box>
       </Box>
-    </Box>
+
+      {totalPages > 1 && (
+        <Box display="flex" justifyContent="flex-end" p={3}>
+          <Pagination
+            count={totalPages}
+            shape="rounded"
+            variant="outlined"
+            page={page}
+            onChange={handleChange}
+          />
+        </Box>
+      )}
+    </>
   );
 };
 
