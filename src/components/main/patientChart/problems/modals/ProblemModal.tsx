@@ -29,7 +29,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   const [{ }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const methods = useForm<any>({
     mode: "all",
-    resolver: yupResolver(PatientProblemchema)
+    // resolver: yupResolver(PatientProblemchema)
   });
   const { handleSubmit, reset } = methods;
 
