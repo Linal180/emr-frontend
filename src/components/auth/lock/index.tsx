@@ -22,7 +22,7 @@ import {
 } from "../../../constants";
 
 const LockComponent = (): JSX.Element => {
-  const { setIsLoggedIn } = useContext(AuthContext);
+  const { setIsLoggedIn, setGetCall } = useContext(AuthContext);
   const { fetchAllFacilityList, setFacilityList, setPracticeList, setRoleList } = useContext(ListContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
@@ -57,6 +57,7 @@ const LockComponent = (): JSX.Element => {
             if (!!isAdmin?.length) {
               localStorage.setItem(TOKEN, access_token);
               setIsLoggedIn(true);
+              setGetCall(true)
               fetchAllFacilityList();
               const existingRoute = sessionStorage.getItem(ROUTE)
                 ? sessionStorage.getItem(ROUTE) : DASHBOARD_ROUTE
