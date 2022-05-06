@@ -1175,3 +1175,7 @@ export interface MediaStaffDataType extends Message {
 export interface MediaUserDataType extends Message {
   user: User;
 }
+
+export interface BackButtonProps {
+  to: string;
+}

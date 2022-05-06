@@ -8,7 +8,7 @@ import PageHeader from "../../../common/PageHeader";
 import FormTable from "./FormTable";
 import Templates from '../templates'
 // constants block
-import { ADD_NEW_TEXT, FORM_BUILDER_ROUTE, FORMS, FORM_BUILDER_FIELDS_TABS } from "../../../../constants";
+import { ADD_NEW_TEXT, FORM_BUILDER_ROUTE, FORM_BUILDER_FIELDS_TABS, FORMS_BREAD, FORM_BUILDER } from "../../../../constants";
 const FormListing = () => {
   //states
   const [selectedTab, setSelectedTab] = useState<string>('1')
@@ -18,7 +18,8 @@ const FormListing = () => {
   return (
     <>
       <PageHeader
-        title={FORMS}
+        title={FORM_BUILDER}
+        path={[FORMS_BREAD]}
         hasComponent
         buttonText={ADD_NEW_TEXT}
         noAdd={selectedTab === '1' ? false : true}

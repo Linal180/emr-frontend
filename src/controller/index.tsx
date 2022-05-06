@@ -11,6 +11,7 @@ import { DetailTooltip } from "../styles/tableStyles";
 import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 import { InfoIcon } from "../assets/svgs";
+import { requiredLabel } from "../utils";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
@@ -34,9 +35,9 @@ const InputController: FC<CustomInputControlProps> = ({
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" error={Boolean(invalid)}>
           <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
-            {isRequired ? `${controllerLabel} *` : controllerLabel}
+            {isRequired ? requiredLabel(controllerLabel || '') : controllerLabel}
 
             {info &&
               <Box>
