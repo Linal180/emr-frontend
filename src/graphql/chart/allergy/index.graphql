@@ -13,6 +13,7 @@ query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!){
       allergyStartDate
       
       allergy {
+        __typename
         id
         name
       }

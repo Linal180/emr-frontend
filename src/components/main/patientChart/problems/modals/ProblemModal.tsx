@@ -12,7 +12,7 @@ import {
   ACTIVE, ACUTE, ADD, APPOINTMENT, CHRONIC, DELETE, EMPTY_OPTION, HISTORICAL,
   NOTE, ONSET_DATE, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_DELETED, PATIENT_PROBLEM_UPDATED, STATUS, TYPE, UPDATE,
 } from '../../../../../constants';
-import { IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useRemovePatientProblemMutation, useUpdatePatientProblemMutation } from '../../../../../generated/graphql';
+import { IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useGetPatientProblemLazyQuery, useRemovePatientProblemMutation, useUpdatePatientProblemMutation } from '../../../../../generated/graphql';
 import { useParams } from 'react-router-dom';
 import DatePicker from '../../../../common/DatePicker';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
@@ -46,21 +46,11 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     },
 
     onCompleted(data) {
-      const {} = data;
+      const {getPatientProblem} = data;
 
-      if (patientAllergy) {
-        const { allergyOnset, allergyStartDate, allergySeverity, reactions } = patientAllergy
+      if (getPatientProblem) {
+        const { patientProblem, response } = getPatientProblem
 
-        if (!!reactions) {
-          const reactionData = getReactionData(reactions as ReactionsPayload['reactions'])
-          dispatch({ type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: reactionData })
-          setValue('reactionIds', reactionData)
-        }
-
-        id && name && setValue('severityId', setRecord(id, name))
-        !allergyStartDate && allergyOnset && setOnset(formatValue(allergyOnset).trim())
-        setValue('allergyStartDate', allergyStartDate || '')
-        allergySeverity && setValue('severityId', setRecord(allergySeverity, allergySeverity))
       }
     }
   });

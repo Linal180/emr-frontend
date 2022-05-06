@@ -10,12 +10,12 @@ import Alert from '../../../../common/Alert';
 import Selector from '../../../../common/Selector';
 import DatePicker from '../../../../common/DatePicker';
 import InputController from '../../../../../controller';
+import ViewDataLoader from '../../../../common/ViewDataLoader';
 import ReactionSelector from '../../../../common/ReactionSelector';
 // constants block
 import { GRAY_SIX } from '../../../../../theme';
 import { ChartContext } from '../../../../../context';
 import { ClearIcon } from '../../../../../assets/svgs';
-import ViewDataLoader from '../../../../common/ViewDataLoader';
 import { createPatientAllergySchema } from '../../../../../validationSchemas';
 import { formatValue, getReactionData, getTimestamps, setRecord } from '../../../../../utils';
 import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../../../interfacesTypes';
@@ -158,9 +158,7 @@ const AllergyModal: FC<AddModalProps> = (
     dispatch({ type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: [] })
   }
 
-  const handleOnset = (onset: string) => {
-    setOnset(onset)
-  }
+  const handleOnset = (onset: string) => setOnset(onset)
 
   const handleDelete = async () => {
     recordId && await removePatientAllergy({
@@ -245,7 +243,8 @@ const AllergyModal: FC<AddModalProps> = (
 
             <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
               {onsets.map(onSet =>
-                <Box onClick={() => handleOnset(onSet)} className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
+                <Box onClick={() => handleOnset(onSet)}
+                  className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
                   <Typography variant='h6'>{onSet}</Typography>
                 </Box>
               )}

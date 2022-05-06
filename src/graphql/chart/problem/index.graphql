@@ -20,6 +20,7 @@ query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
       note
       
       ICDCode {
+        __typename
         id
         code
         description

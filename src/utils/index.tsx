@@ -622,7 +622,6 @@ export const appointmentStatus = (status: string) => {
 };
 
 export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) => {
-
   switch (severity) {
     case AllergySeverity.VeryMild:
       return VERY_MILD;
