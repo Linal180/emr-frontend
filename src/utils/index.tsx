@@ -255,9 +255,9 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
         // && name !== SYSTEM_ROLES.FacilityAdmin
         if (
           name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
-          && name !== SYSTEM_ROLES.Doctor
+          && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
         )
-          name && data.push({ id: name, name: formatValue(name) })
+          name && data.push({ id: name.trim(), name: formatValue(name).trim() })
       }
     }
   }
@@ -319,7 +319,7 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
     for (let doctor of doctors) {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
-        data.push({ id, name: `${firstName} ${lastName}` })
+        data.push({ id, name: `${firstName} ${lastName}`.trim() })
       }
     }
   }

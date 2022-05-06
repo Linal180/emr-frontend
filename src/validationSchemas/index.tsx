@@ -393,7 +393,7 @@ export const createStaffSchema = yup.object({
   ...emailSchema,
   ...roleTypeSchema,
   ...staffBasicSchema,
-  providerIds: providerIdSchema(),
+  // providerIds: providerIdSchema(),
 })
 
 export const updateStaffSchema = yup.object({

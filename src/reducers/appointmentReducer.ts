@@ -20,6 +20,7 @@ export interface State {
   isInsurance: boolean;
   providerName: string;
   facilityName: string;
+  facilityId: string;
   appointmentId: string;
   isEmployment: boolean;
   isAutoAccident: boolean;
@@ -76,6 +77,7 @@ export const initialState: State = {
   appointments: [],
   providerName: '',
   facilityName: '',
+  facilityId: '',
   openDelete: false,
   appointmentId: '',
   appointment: null,
@@ -134,6 +136,7 @@ export enum ActionType {
   SET_APPOINTMENTS = 'setAppointments',
   SET_IS_EMPLOYMENT = 'setIsEmployment',
   SET_FACILITY_NAME = 'setFacilityName',
+  SET_FACILITY_ID = 'setFacilityId',
   SET_PROVIDER_NAME = 'setProviderName',
   SET_APPOINTMENT_ID = 'setAppointmentId',
   SET_AVAILABLE_SLOTS = 'setAvailableSlots',
@@ -173,6 +176,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_NAME; patientName: string }
   | { type: ActionType.SET_IS_INSURANCE; isInsurance: boolean }
   | { type: ActionType.SET_FACILITY_NAME; facilityName: string }
+  | { type: ActionType.SET_FACILITY_ID; facilityId: string }
   | { type: ActionType.SET_PROVIDER_NAME; providerName: string }
   | { type: ActionType.SET_IS_EMPLOYMENT, isEmployment: boolean }
   | { type: ActionType.SET_APPOINTMENT_ID; appointmentId: string }
@@ -262,6 +266,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         facilityName: action.facilityName
+      }
+
+    case ActionType.SET_FACILITY_ID:
+      return {
+        ...state,
+        facilityId: action.facilityId
       }
 
     case ActionType.SET_IS_INSURANCE:

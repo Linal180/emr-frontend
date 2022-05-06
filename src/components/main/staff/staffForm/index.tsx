@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext, useCallback } from 'react';
+import { useEffect, FC, useContext, useCallback, useState } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Grid } from "@material-ui/core";
@@ -8,15 +8,20 @@ import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import DatePicker from '../../../common/DatePicker';
 import PhoneField from '../../../common/PhoneInput';
+import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import RoleSelector from '../../../common/Selector/RoleSelector';
+import DoctorSelector from '../../../common/Selector/DoctorSelector';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { createStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
+import { getTimestamps, setRecord } from "../../../../utils";
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
+import { createStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getTimestamps, renderDoctors, renderFacilities, renderStaffRoles, setRecord } from "../../../../utils";
 import {
   Gender, useCreateStaffMutation, useGetStaffLazyQuery, useUpdateStaffMutation
 } from "../../../../generated/graphql";
@@ -24,21 +29,21 @@ import {
   EMAIL, FIRST_NAME, LAST_NAME, MOBILE, PHONE, IDENTIFICATION, ACCOUNT_INFO, STAFF_ROUTE,
   DOB, STAFF_UPDATED, UPDATE_STAFF, GENDER, FACILITY, ROLE, PROVIDER, CANT_CREATE_STAFF,
   NOT_FOUND_EXCEPTION, STAFF_NOT_FOUND, CANT_UPDATE_STAFF, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FORBIDDEN_EXCEPTION, STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, ADD_STAFF, USERS_BREAD, STAFF_BREAD, STAFF_EDIT_BREAD, STAFF_NEW_BREAD,
+  ADD_STAFF, USERS_BREAD, STAFF_BREAD, STAFF_EDIT_BREAD, STAFF_NEW_BREAD, FORBIDDEN_EXCEPTION,
+  STAFF_CREATED, CREATE_STAFF, EMPTY_OPTION, MAPPED_GENDER, SYSTEM_PASSWORD, SYSTEM_ROLES,
 } from "../../../../constants";
-import PageHeader from '../../../common/PageHeader';
-import BackButton from '../../../common/BackButton';
 
 const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const { user } = useContext(AuthContext)
-  const { facilityList, roleList } = useContext(ListContext)
-  const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
+  const { facilityList } = useContext(ListContext)
+  const { fetchAllDoctorList } = useContext(FacilityContext)
+  const [isFacilityAdmin, setIsFacilityAdmin] = useState<boolean>(false)
   const methods = useForm<ExtendedStaffInputProps>({
     mode: "all",
     resolver: yupResolver(isEdit ? updateStaffSchema : createStaffSchema)
   });
   const { reset, setValue, handleSubmit, watch } = methods;
-  const { facilityId } = watch();
+  const { facilityId, roleType } = watch();
   const { id: selectedFacility, name: selectedFacilityName } = facilityId || {}
 
   const [getStaff, { loading: getStaffLoading }] = useGetStaffLazyQuery({
@@ -196,9 +201,22 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           }
         })
       } else Alert.error(CANT_CREATE_STAFF)
-
     }
   };
+
+  useEffect(() => {
+    if (roleType) {
+      const { id } = roleType || {}
+
+      if (id === SYSTEM_ROLES.FacilityAdmin) {
+        setIsFacilityAdmin(true)
+        setValue('providerIds', EMPTY_OPTION)
+      } else {
+        setIsFacilityAdmin(false)
+      }
+    }
+
+  }, [watch, roleType, setValue])
 
   return (
     <FormProvider {...methods}>
@@ -232,25 +250,21 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={isEdit ? 12 : 6}>
-                        <Selector
+                        <FacilitySelector
                           addEmpty
                           isRequired
-                          value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
-                          options={renderFacilities(facilityList)}
                         />
                       </Grid>
 
                       {!isEdit &&
                         <Grid item md={6}>
-                          <Selector
+                          <RoleSelector
                             addEmpty
                             isRequired
                             label={ROLE}
                             name="roleType"
-                            value={EMPTY_OPTION}
-                            options={renderStaffRoles(roleList)}
                           />
                         </Grid>
                       }
@@ -322,13 +336,12 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
                       {!isEdit &&
                         <Grid item md={4} sm={12} xs={12}>
-                          <Selector
+                          <DoctorSelector
                             addEmpty
-                            isRequired
-                            value={EMPTY_OPTION}
+                            facilityId={selectedFacility}
                             label={PROVIDER}
                             name="providerIds"
-                            options={renderDoctors(doctorList)}
+                            disabled={isFacilityAdmin && true}
                           />
                         </Grid>
                       }

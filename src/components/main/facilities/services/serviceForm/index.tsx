@@ -6,7 +6,6 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import { Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel, Grid } from "@material-ui/core";
 // components block
 import Alert from '../../../../common/Alert';
-import Selector from '../../../../common/Selector';
 import PageHeader from '../../../../common/PageHeader';
 import BackButton from '../../../../common/BackButton';
 import InputController from '../../../../../controller';
@@ -14,19 +13,21 @@ import CardComponent from '../../../../common/CardComponent';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 // utils, interfaces and graphql block
 import history from '../../../../../history';
+import { setRecord } from '../../../../../utils';
 import { ListContext } from '../../../../../context';
 import { serviceSchema } from '../../../../../validationSchemas';
-import { renderFacilities, setRecord } from '../../../../../utils';
 import { extendedServiceInput, GeneralFormProps, ParamsType } from '../../../../../interfacesTypes';
 import {
   useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation
 } from "../../../../../generated/graphql";
 import {
-  ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_SERVICES_ROUTE, SERVICE_UPDATED,
-  UPDATE_SERVICE, FORBIDDEN_EXCEPTION, PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
-  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT, FACILITIES_BREAD,
-  FACILITY_SERVICE_EDIT_BREAD, SERVICES_BREAD, FACILITY_SERVICE_NEW_BREAD, FACILITY_SERVICES_TEXT,
+  ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
+  FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
+  PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
+  FACILITIES_ROUTE, FACILITY, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT, FACILITIES_BREAD, 
+  FACILITY_SERVICES_TEXT, FACILITY_SERVICE_EDIT_BREAD, FACILITY_SERVICE_NEW_BREAD, SERVICES_BREAD,
 } from "../../../../../constants";
+import FacilitySelector from '../../../../common/Selector/FacilitySelector';
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   const { facilityId: currentFacility } = useParams<ParamsType>()
@@ -198,12 +199,11 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
               <CardComponent cardTitle={SERVICE_INFO}>
                 {getServiceLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <Selector
+                    <FacilitySelector
+                      addEmpty
                       isRequired
-                      value={EMPTY_OPTION}
                       label={FACILITY}
                       name="facilityId"
-                      options={renderFacilities(facilityList)}
                       error={facilityIdError?.message}
                     />
 
@@ -264,18 +264,6 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
             </Grid>
           </Grid>
         </Box>
-
-        {/* <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary"
-            disabled={disableSubmit}
-          >
-            {isEdit ? UPDATE_SERVICE : CREATE_SERVICE}
-
-            {disableSubmit &&
-              <CircularProgress size={20} color="inherit" />
-            }
-          </Button>
-        </Box> */}
       </form>
     </FormProvider>
   );

@@ -1,5 +1,5 @@
 // packages block
-import { FC, useContext, Reducer, useReducer, useEffect, ChangeEvent } from 'react';
+import { FC, Reducer, useReducer, useEffect, ChangeEvent } from 'react';
 import { useParams } from 'react-router';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Close as CloseIcon } from '@material-ui/icons';
@@ -21,11 +21,10 @@ import MediaCards from "../../../../common/AddMedia/MediaCards";
 //context, graphql and utils block
 import history from '../../../../../history';
 import { EMRLogo } from '../../../../../assets/svgs';
-import { FacilityContext } from "../../../../../context";
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
 import { GREY_SEVEN, WHITE, GREEN, GREY } from "../../../../../theme";
-import { getDocumentByType, renderDoctors, setRecord } from "../../../../../utils";
+import { getDocumentByType, setRecord } from "../../../../../utils";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import {
@@ -52,17 +51,17 @@ import {
   MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, MORE_INFO, PATIENT_NOT_FOUND, DEMOGRAPHICS,
   APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, N_A,
 } from "../../../../../constants";
+import DoctorSelector from '../../../../common/Selector/DoctorSelector';
 
 const PatientFormComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useExternalPatientStyles();
   const dropzoneClasses = useDropzoneStyles()
   const toggleButtonClass = usePublicAppointmentStyles();
-  const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    activeStep, isAppointment, isBilling, isVoice
+    activeStep, isAppointment, isBilling, isVoice, facilityId
   } = state
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -142,7 +141,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
             if (facility) {
               const { id: facilityId } = facility
 
-              facilityId && await fetchAllDoctorList(facilityId)
+              dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId })
             }
 
             mediaDispatch({ type: mediaActionType.SET_INSURANCE_CARD_1, insuranceCard1: insuranceCard1 || undefined })
@@ -247,7 +246,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
         ssn, callToConsent, pharmacy, preferredCommunicationMethod, voiceCallPermission, releaseOfInfoBill,
         phonePermission, emergencyName, emergencyPhone, emergencyState, emergencyCity, emergencyAddress,
         emergencyAddress2, emergencyCountry, emergencyZipCode, emergencyRelationship, address, address2,
-        state, city, country, zipCode
+        state, city, country, zipCode, providerId
       } = inputs;
       const { id: selectedState } = state
       const { id: selectedCountry } = country
@@ -288,7 +287,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
       await updatePatient({
         variables: {
           updatePatientInput: {
-            updatePatientItemInput: { id, ...patientItemInput },
+            updatePatientItemInput: { id, ...patientItemInput, usualProviderId: providerId.id },
             updateContactInput: { ...contactIdInput },
             updateEmployerInput: { ...employerIdInput },
             updateGuardianContactInput: { ...guardianIdInput },
@@ -502,12 +501,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                         <Grid container spacing={3}>
                           <Grid item md={4} sm={12} xs={12}>
-                            <Selector
+                            <DoctorSelector
                               isRequired
-                              value={EMPTY_OPTION}
                               label={SELECT_PROVIDER}
                               name="providerId"
-                              options={renderDoctors(doctorList)}
+                              addEmpty
+                              facilityId={facilityId}
                             />
                           </Grid>
 

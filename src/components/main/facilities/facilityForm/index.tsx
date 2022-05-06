@@ -1,48 +1,53 @@
 // packages block
 import { FC, useEffect, useContext, Reducer, useReducer, ChangeEvent, useState, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { AddCircleOutline, CheckBox as CheckBoxIcon } from '@material-ui/icons';
 import { usStreet } from 'smartystreets-javascript-sdk';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { AddCircleOutline, CheckBox as CheckBoxIcon } from '@material-ui/icons';
 import {
-  TabContext, TabList, TabPanel, Timeline, TimelineConnector, TimelineContent, TimelineDot, TimelineItem, TimelineSeparator
+  TabContext, TabList, TabPanel, Timeline, TimelineConnector, TimelineContent, TimelineDot, 
+  TimelineItem, TimelineSeparator
 } from '@material-ui/lab';
 import {
-  Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup, Grid, List, ListItem, Tab, Typography
+  Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup, 
+  Grid, List, ListItem, Tab, Typography
 } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
+import DoctorScheduleForm from './schedules';
 import Selector from '../../../common/Selector';
 import TimePicker from '../../../common/TimePicker';
 import PhoneField from '../../../common/PhoneInput';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
+import SmartyModal from '../../../common/SmartyModal';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
-import SmartyModal from '../../../common/SmartyModal';
-import DoctorScheduleForm from './schedules';
+import PracticeSelector from '../../../common/Selector/PracticeSelector';
 import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
-import BackButton from '../../../common/BackButton';
 // utils, interfaces and graphql block
 import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
-import { CustomFacilityInputProps, GeneralFormProps, SmartyUserData } from '../../../../interfacesTypes';
-import { getTimeString, isSuperAdmin, renderPractices, setRecord, setTime } from '../../../../utils';
+import { getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
+import { CustomFacilityInputProps, GeneralFormProps, SmartyUserData } from '../../../../interfacesTypes';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
 import {
   FacilityPayload, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING, CREATE_FACILITY, EMPTY_OPTION,
-  EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE, UPDATE_FACILITY, CITY,
-  COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER, ZIP, SERVICE_CODE,
-  CANCEL, FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES, FACILITY_LOCATION,
-  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, PRACTICE, CLIA_ID_NUMBER_INFO,
-  TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
-  BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FacilityMenuNav, FACILITY_HOURS_END, FACILITY_HOURS_START, FACILITY_REGISTRATION,
+  ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING, 
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE, 
+  COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER,
+  CANCEL, FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES,
+  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, 
+  BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FacilityMenuNav, FACILITY_HOURS_END, FACILITY_HOURS_START,
+  ZIP, SERVICE_CODE, UPDATE_FACILITY, CITY, FACILITY_LOCATION, FACILITY_REGISTRATION, PRACTICE, 
+  CLIA_ID_NUMBER_INFO, CREATE_FACILITY, EMPTY_OPTION, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
   BUSINESS_HOURS, FACILITY_SCHEDULE, VERIFY_ADDRESS, VERIFIED, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER,
+  TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, 
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -55,7 +60,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { facility, roles } = user || {};
   const { practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
-  const { practiceList, addFacilityList, updateFacilityList } = useContext(ListContext)
+  const { addFacilityList, updateFacilityList } = useContext(ListContext)
   const methods = useForm<CustomFacilityInputProps>({
     mode: "all",
     resolver: yupResolver(isSuper ? facilitySchemaWithPractice : facilitySchedulerSchema)
@@ -429,12 +434,10 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                               {isSuper &&
                                 <Grid item md={6}>
-                                  <Selector
+                                  <PracticeSelector
                                     isRequired
-                                    value={EMPTY_OPTION}
                                     label={PRACTICE}
                                     name="practice"
-                                    options={renderPractices(practiceList)}
                                   />
                                 </Grid>
                               }
