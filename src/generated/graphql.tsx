@@ -870,6 +870,7 @@ export enum ElementType {
 }
 
 export type EmergencyAccessUserInput = {
+  email?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationInput?: Maybe<PaginationInput>;
   practiceId?: Maybe<Scalars['String']>;
