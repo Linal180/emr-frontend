@@ -6,7 +6,7 @@ import {
 import Search from "../../common/Search";
 import PageHeader from "../../common/PageHeader";
 // constants, history, styling block
-import { isFacilityAdmin, renderTh } from "../../../utils";
+import { handleLogout, isFacilityAdmin, renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
 import {
   ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS,
@@ -15,7 +15,7 @@ import {
 } from "../../../constants";
 import Alert from "../../common/Alert";
 import { UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
-import { AuthContext } from "../../../context";
+import { AuthContext, ListContext } from "../../../context";
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 
 import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
@@ -26,7 +26,8 @@ import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 
 const EmergencyAccessComponent = (): JSX.Element => {
   const classes = useTableStyles();
-  const { user, userRoles, setUserRoles, setUserPermissions } = useContext(AuthContext);
+  const { setFacilityList, setRoleList, setPracticeList } = useContext(ListContext)
+  const { user, userRoles, setUserRoles, setUserPermissions, setUser, setIsLoggedIn, setCurrentUser  } = useContext(AuthContext);
   const [emergencyAccessUsers, setEmergencyAccessUsers] = useState<User[] | null>(null);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [shouldFetchEmergencyUser, setShouldFetchEmergencyUser] = useState(true)
@@ -35,6 +36,16 @@ const EmergencyAccessComponent = (): JSX.Element => {
   const [rolePayload, setRolePayload] = useState<UpdateRoleInput | null>(null)
 
   const isFacAdmin = isFacilityAdmin(user?.roles);
+
+  const logout = () => {
+    setIsLoggedIn(false)
+    setUser(null)
+    setCurrentUser(null)
+    handleLogout();
+    setFacilityList([]);
+    setRoleList([])
+    setPracticeList([])
+  };
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
@@ -78,6 +89,8 @@ const EmergencyAccessComponent = (): JSX.Element => {
             Alert.success(EMERGENCY_ACCESS_UPDATE);
             setShouldFetchEmergencyUser(true)
             setOpenDelete(false)
+
+            logout()
           }
         }
       },
