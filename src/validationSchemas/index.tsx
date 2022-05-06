@@ -742,5 +742,9 @@ export const createPatientAllergySchema = (onset: string) => yup.object({
       value: yup.string()
     })
   )
-  // reactionIds: yup.array().required()
+})
+
+export const patientProblemSchema = yup.object({
+  problemStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
+    value => new Date(value || '') <= new Date()),
 })

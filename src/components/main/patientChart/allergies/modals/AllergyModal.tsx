@@ -169,7 +169,6 @@ const AllergyModal: FC<AddModalProps> = (
   const onSubmit: SubmitHandler<CreatePatientAllergyProps> = async ({
     reactionIds, severityId, comments
   }) => {
-
     const selectedReactions = pluck(reactionIds || [], 'value')
     const { id: selectedSeverity } = severityId || {}
 

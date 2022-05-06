@@ -23,7 +23,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
-  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes
+  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput
 } from "../generated/graphql";
 import { CARD_LAYOUT_MODAL } from "../constants";
 
@@ -908,13 +908,9 @@ export interface AppointmentDatePickerProps {
 }
 
 export type CustomPracticeInputProps = CreatePracticeItemInput &
-  RegisterUserInputs &
-  Pick<
-    CreateContactInput,
-    "city" | "address" | "address2" | "zipCode" | "email"
-  > & { facilityName: string } & { roleType: SelectorOption } & {
-    country: SelectorOption;
-  } & { state: SelectorOption } & { isAdmin: boolean };
+  RegisterUserInputs & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email">
+  & { facilityName: string } & { roleType: SelectorOption } & { country: SelectorOption }
+  & { state: SelectorOption } & { isAdmin: boolean };
 
 export interface PaymentProps {
   clientToken: string;
@@ -1023,6 +1019,7 @@ export interface SmartyUserData {
   street: string;
   address: string;
 }
+
 export interface SmartyModalComponentType {
   setOpen: Function;
   isOpen: boolean;
@@ -1111,6 +1108,9 @@ export interface AddModalProps {
 
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
   & { reactionIds: multiOptionType[] } & { severityId: SelectorOption }
+
+export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'> 
+  & { appointmentId: SelectorOption }
 
 export interface CreateTemplateTypes extends DialogTypes {
   title?: string;

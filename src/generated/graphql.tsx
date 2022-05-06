@@ -207,6 +207,8 @@ export enum AttachmentType {
   Doctor = 'DOCTOR',
   FormBuilder = 'FORM_BUILDER',
   Patient = 'PATIENT',
+  Staff = 'STAFF',
+  SuperAdmin = 'SUPER_ADMIN',
   Lab = 'lab'
 }
 
@@ -751,6 +753,7 @@ export type DisableStaff = {
 export type Doctor = {
   __typename?: 'Doctor';
   anesthesiaLicense?: Maybe<Scalars['String']>;
+  attachments?: Maybe<Array<Attachment>>;
   billingAddress?: Maybe<Array<BillingAddress>>;
   billingFacility?: Maybe<Scalars['String']>;
   blueShildNumber?: Maybe<Scalars['String']>;
@@ -802,6 +805,7 @@ export type Doctor = {
 };
 
 export type DoctorInput = {
+  doctorFirstName?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
@@ -866,6 +870,7 @@ export enum ElementType {
 }
 
 export type EmergencyAccessUserInput = {
+  email?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationInput?: Maybe<PaginationInput>;
   practiceId?: Maybe<Scalars['String']>;
@@ -2652,6 +2657,7 @@ export type Role = {
 export type RoleInput = {
   paginationOptions: PaginationInput;
   role?: Maybe<Scalars['String']>;
+  roleName?: Maybe<Scalars['String']>;
 };
 
 export type RoleItemInput = {
@@ -2975,6 +2981,7 @@ export enum Speciality {
 
 export type Staff = {
   __typename?: 'Staff';
+  attachments?: Maybe<Array<Attachment>>;
   createdAt: Scalars['String'];
   dob?: Maybe<Scalars['String']>;
   email: Scalars['String'];
@@ -3491,6 +3498,7 @@ export type UpdateVitalInput = {
 
 export type User = {
   __typename?: 'User';
+  attachments?: Maybe<Array<Attachment>>;
   createdAt: Scalars['String'];
   email: Scalars['String'];
   emailVerified: Scalars['Boolean'];
@@ -3786,14 +3794,14 @@ export type FindAllPatientProblemsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientProblemsQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, ICDCode?: { __typename: 'ICDCodes', id: string, code: string, description?: string | null | undefined, version?: string | null | undefined } | null | undefined, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, recordId?: string | null | undefined, effectiveTime?: string | null | undefined, active?: string | null | undefined, moduleId?: string | null | undefined, referencedComponentId?: string | null | undefined, mapGroup?: string | null | undefined, mapRule?: string | null | undefined, mapPriority?: string | null | undefined } | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientProblemsQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, ICDCode?: { __typename: 'ICDCodes', id: string, code: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientProblemQueryVariables = Exact<{
   getPatientProblem: GetPatientProblem;
 }>;
 
 
-export type GetPatientProblemQuery = { __typename?: 'Query', getPatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientProblem?: { __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, ICDCode?: { __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined, version?: string | null | undefined } | null | undefined, snowMedCode?: { __typename?: 'SnoMedCodes', id: string, recordId?: string | null | undefined, effectiveTime?: string | null | undefined, active?: string | null | undefined, moduleId?: string | null | undefined, referencedComponentId?: string | null | undefined, mapGroup?: string | null | undefined, mapRule?: string | null | undefined, mapPriority?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetPatientProblemQuery = { __typename?: 'Query', getPatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientProblem?: { __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, appointment?: { __typename?: 'Appointment', id: string, appointmentType?: { __typename?: 'Service', id: string, serviceType: ServiceType } | null | undefined } | null | undefined } | null | undefined } };
 
 export type AddPatientProblemMutationVariables = Exact<{
   createProblemInput: CreateProblemInput;
@@ -5488,19 +5496,6 @@ export const FindAllPatientProblemsDocument = gql`
         __typename
         id
         code
-        description
-        version
-      }
-      snowMedCode {
-        id
-        recordId
-        effectiveTime
-        active
-        moduleId
-        referencedComponentId
-        mapGroup
-        mapRule
-        mapPriority
       }
     }
   }
@@ -5547,22 +5542,12 @@ export const GetPatientProblemDocument = gql`
       problemSeverity
       problemStartDate
       note
-      ICDCode {
+      appointment {
         id
-        code
-        description
-        version
-      }
-      snowMedCode {
-        id
-        recordId
-        effectiveTime
-        active
-        moduleId
-        referencedComponentId
-        mapGroup
-        mapRule
-        mapPriority
+        appointmentType {
+          id
+          serviceType
+        }
       }
     }
   }

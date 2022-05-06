@@ -23,20 +23,6 @@ query FindAllPatientProblems($patientProblemInput: PatientProblemInput!){
         __typename
         id
         code
-        description
-        version
-      }
-      
-      snowMedCode {
-        id
-        recordId
-        effectiveTime
-        active
-        moduleId
-        referencedComponentId
-        mapGroup
-        mapRule
-        mapPriority
       }
     }
   }
@@ -55,29 +41,18 @@ query GetPatientProblem($getPatientProblem: GetPatientProblem!){
       problemSeverity
       problemStartDate
       note
-      
-      ICDCode {
+
+      appointment {
         id
-        code
-        description
-        version
-      }
-      
-      snowMedCode {
-        id
-        recordId
-        effectiveTime
-        active
-        moduleId
-        referencedComponentId
-        mapGroup
-        mapRule
-        mapPriority
+        
+        appointmentType {
+          id
+          serviceType
+        }
       }
     }
   }
 }
-
 
 mutation AddPatientProblem($createProblemInput: CreateProblemInput!){
   addPatientProblem(createProblemInput: $createProblemInput){
