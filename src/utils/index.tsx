@@ -198,7 +198,7 @@ export const deleteRecordTitle = (recordType: string) => {
 }
 
 export const UpdateRecordTitle = (recordType: string) => {
-  return `Update ${recordType} Record`;
+  return `Update ${recordType}`;
 }
 
 export const aboutToDelete = (recordType: string) => {
@@ -206,7 +206,7 @@ export const aboutToDelete = (recordType: string) => {
 }
 
 export const aboutToUpdate = (recordType: string) => {
-  return `You are about to update ${recordType.toLowerCase()} record`;
+  return `You are about to update ${recordType.toLowerCase()}`;
 }
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {

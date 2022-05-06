@@ -34,6 +34,7 @@ const EmergencyAccessComponent = (): JSX.Element => {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [rolePayload, setRolePayload] = useState<UpdateRoleInput | null>(null)
+  const [searchTerm,setSearchTerm]=useState<string>('')
 
   const isFacAdmin = isFacilityAdmin(user?.roles);
 
@@ -128,26 +129,30 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
   useEffect(() => {
     if (shouldFetchEmergencyUser) {
+      
       if (isFacAdmin) {
         fetchEmergencyAccessUsers({
-          variables: {
+          variables:{
             emergencyAccessUsersInput: {
               paginationInput: { page, limit: 10 },
-              facilityId: user?.facilityId
+              facilityId: user?.facilityId,
+              email:searchTerm
             }
           }
         })
         return
       }
+
       fetchEmergencyAccessUsers({
-        variables: {
+        variables:{
           emergencyAccessUsersInput: {
-            paginationInput: { limit: 10, page }
+            paginationInput: { page, limit: 10 },
+            email:searchTerm
           }
         }
       })
     }
-  }, [fetchEmergencyAccessUsers, isFacAdmin, page, shouldFetchEmergencyUser, user?.facilityId]);
+  }, [fetchEmergencyAccessUsers, isFacAdmin, page, searchTerm, shouldFetchEmergencyUser, user?.facilityId]);
 
   const handleEmergencyAccessToggle = async () => {
     const transformedUserRoles = userRoles.filter(
@@ -214,7 +219,10 @@ const EmergencyAccessComponent = (): JSX.Element => {
     return handleEmergencyAccessToggle()
   }
 
-  const search = (query: string) => { }
+  const search = (query: string) => { 
+    setSearchTerm(query)
+    setShouldFetchEmergencyUser(true)
+  }
 
   return (
     <>
@@ -352,8 +360,8 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
 
       <UpdateConfirmationModal title={EMERGENCY_ACCESS} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
-        description={rolePayload ? 'Confirm to revoke access' : 'Confirm to update emergency access'} handleDelete={handleEmergencyAccessRevoke}
-        setOpen={(open: boolean) => setOpenDelete(open)} actionText='Update Record' />
+        description={rolePayload ? 'Confirm to revoke emergency access' : 'Confirm to update emergency access'} handleDelete={handleEmergencyAccessRevoke}
+        setOpen={(open: boolean) => setOpenDelete(open)} actionText='Update' />
     </>
   );
 };
