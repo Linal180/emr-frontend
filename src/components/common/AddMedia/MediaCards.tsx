@@ -11,7 +11,7 @@ import { MediaCardsType } from "../../../interfacesTypes";
 import { Action, ActionType, initialState, mediaReducer, State } from '../../../reducers/mediaReducer'
 
 const MediaCards: FC<MediaCardsType> = ({
-  moduleType, itemId, attachmentData, imageSide, notDescription, reload, title, button
+  moduleType, itemId, attachmentData, imageSide, notDescription, reload, title, button, buttonText
 }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { isOpen, attachments, attachment, isEdit, isEditModalOpen } = state
@@ -31,6 +31,7 @@ const MediaCards: FC<MediaCardsType> = ({
         notDescription={notDescription}
         title={title}
         button={button}
+        buttonText={buttonText}
         imageSide={imageSide}
         setOpen={(isOpen: boolean) => {
           dispatch({
