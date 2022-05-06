@@ -30,9 +30,11 @@ export const AuthContext = createContext<AuthContextProps>({
   setCurrentStaff: (staff: Staff | null) => { },
   setUserRoles: (roles: string[]) => { },
   setUserPermissions: (permissions: string[]) => { },
-  setGetCall: (call: boolean) => { },
   setProfileUrl: (url: string) => { },
-  profileUrl: ''
+  profileUrl: '',
+  fetchUser: () => { },
+  fetchAttachment: () => { },
+  profileAttachment: null
 });
 
 export const AuthContextProvider: FC = ({ children }): JSX.Element => {
@@ -46,7 +48,6 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const [currentStaff, setCurrentStaff] = useState<Staff | null>(null);
   const [currentDoctor, setCurrentDoctor] = useState<Doctor | null>(null);
   const [profileUrl, setProfileUrl] = useState('')
-  const [getCall, setGetCall] = useState<boolean>(true)
   const [profileAttachment, setProfileAttachment] = useState<null | Attachment>(null)
 
   const [getDoctor] = useGetDoctorUserLazyQuery({
@@ -192,14 +193,13 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);
 
   const getUser = useCallback(async () => {
-    setGetCall(false)
     await fetchUser()
   }, [fetchUser])
 
   useEffect(() => {
     hasToken && setIsLoggedIn(true);
-    getCall && isLoggedIn && hasToken && getUser();
-  }, [getCall, isLoggedIn, hasToken, getUser]);
+    isLoggedIn && hasToken && getUser();
+  }, [isLoggedIn, hasToken, getUser]);
 
   const fetchAttachment = useCallback(async () => {
     try {
@@ -228,13 +228,15 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
         setPracticeName,
         setCurrentDoctor,
         setCurrentStaff,
-        setGetCall,
         currentStaff,
         currentDoctor,
         setUserPermissions,
         setUserRoles,
         setProfileUrl,
-        profileUrl
+        profileUrl,
+        fetchUser,
+        fetchAttachment,
+        profileAttachment
       }}
     >
       {children}

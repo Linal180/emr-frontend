@@ -10,9 +10,10 @@ import CardComponent from '../../common/CardComponent';
 import PhoneField from '../../common/PhoneInput';
 import Selector from '../../common/Selector';
 import MediaCards from '../../common/AddMedia/MediaCards';
+import ViewDataLoader from '../../common/ViewDataLoader';
 // constants, history, styling block
 import { WHITE } from '../../../theme';
-import { getProfileImageType, isSuperAdmin, renderItem, setRecord } from '../../../utils';
+import { getProfileImageType, renderItem, setRecord } from '../../../utils';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import {
@@ -23,8 +24,7 @@ import {
 import { AuthContext } from '../../../context';
 import { ProfileEditFormType } from '../../../interfacesTypes';
 import {
-  AttachmentType, useGetAttachmentLazyQuery, useGetCurrentUserLazyQuery, useGetDoctorUserLazyQuery,
-  useGetStaffUserLazyQuery, useUpdateDoctorMutation, useUpdateStaffMutation
+  AttachmentType, useUpdateDoctorMutation, useUpdateStaffMutation
 } from '../../../generated/graphql';
 import Alert from '../../common/Alert';
 import {
@@ -34,9 +34,9 @@ import {
 
 const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
-  const { user, currentDoctor, currentStaff, setGetCall } = useContext(AuthContext);
-  const { email, userType, userId, phone: userPhone, roles } = user || {}
-  const isSuper = isSuperAdmin(roles);
+  const { user, currentDoctor, currentStaff, profileUrl, fetchUser, fetchAttachment, profileAttachment } = useContext(AuthContext);
+  const { email, userType, userId, phone: userPhone } = user || {}
+
   const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
@@ -76,7 +76,7 @@ const ProfileComponent = (): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
-          setGetCall(true)
+          fetchUser()
           Alert.success(PROFILE_UPDATE);
           reset()
           setEdit(!edit)
@@ -99,113 +99,10 @@ const ProfileComponent = (): JSX.Element => {
         const { status } = response
 
         if (status && status === 200) {
-          setGetCall(true)
+          fetchUser()
           Alert.success(PROFILE_UPDATE);
           reset()
           setEdit(!edit)
-        }
-      }
-    }
-  });
-
-  const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() {
-      return null
-    },
-
-    onCompleted(data) {
-      const { getAttachment } = data || {};
-
-      if (getAttachment) {
-        const { preSignedUrl } = getAttachment
-        preSignedUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: preSignedUrl })
-      }
-    },
-  });
-
-  const [getDoctor, { loading: getDoctorLoading }] = useGetDoctorUserLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() { },
-
-    onCompleted(data) {
-      const { getDoctor } = data || {};
-
-      if (getDoctor) {
-        const { response, doctor } = getDoctor
-
-        if (response) {
-          const { status } = response
-
-          if (doctor && status && status === 200) {
-            const { doctor } = getDoctor || {}
-            const { attachments } = doctor || {}
-            const doctorAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
-            mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: doctorAttachment })
-            const { id: doctorAttachmentId } = doctorAttachment || {}
-            doctorAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: doctorAttachmentId })
-          }
-        }
-      }
-    }
-  });
-
-  const [getStaff, { loading: getStaffLoading }] = useGetStaffUserLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onError() { },
-
-    onCompleted(data) {
-      const { getStaff } = data || {}
-
-      if (getStaff) {
-        const { response, staff } = getStaff;
-
-        if (response) {
-          const { status } = response
-
-          if (staff && status && status === 200) {
-            const { attachments } = staff || {}
-            const staffAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
-            mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: staffAttachment })
-            const { id: staffAttachmentId } = staffAttachment || {}
-            staffAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: staffAttachmentId })
-          }
-        }
-      }
-    }
-  });
-
-  const [fetchUser] = useGetCurrentUserLazyQuery({
-    fetchPolicy: "network-only",
-    nextFetchPolicy: 'no-cache',
-    notifyOnNetworkStatusChange: true,
-
-    onCompleted(data) {
-      if (data) {
-        const { me } = data
-
-        if (me) {
-          const { user: userResponse } = me;
-
-          if (userResponse) {
-            const { userType, attachments } = userResponse;
-
-            if (userType === SYSTEM_ROLES.SuperAdmin) {
-              const userAttachment = attachments?.find(({ title }) => title === ATTACHMENT_TITLES.ProfilePicture);
-              mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: userAttachment })
-              const { id: userAttachmentId } = userAttachment || {}
-              userAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: userAttachmentId })
-            }
-          }
         }
       }
     }
@@ -266,49 +163,17 @@ const ProfileComponent = (): JSX.Element => {
     setEdit(!edit)
   }
 
-  const fetchAttachment = useCallback(async () => {
-    try {
-      await getAttachment({
-        variables: {
-          getMedia: { id: attachmentId }
-        },
-      })
-    } catch (error) { }
-  }, [attachmentId, getAttachment])
-
-  const fetchCurrentUser = useCallback(async () => {
-    if (!isSuper) {
-      if (userType === SYSTEM_ROLES.Doctor) {
-        try {
-          userId && await getDoctor({ variables: { getDoctor: { id: userId } } })
-        } catch (error) {
-
-        }
-      }
-      else {
-        try {
-          userId && await getStaff({ variables: { getStaff: { id: userId } } })
-        } catch (error) {
-
-        }
-      }
-    }
-    else {
-      try {
-        userId && await fetchUser()
-      } catch (error) {
-
-      }
-    }
-  }, [userId, isSuper, userType, getStaff, getDoctor, fetchUser])
+  const setAttachment = useCallback(async () => {
+    profileAttachment && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_DATA, attachmentData: profileAttachment })
+    const { id: userAttachmentId } = profileAttachment || {}
+    userAttachmentId && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_ID, attachmentId: userAttachmentId })
+    profileUrl && mediaDispatch({ type: mediaActionType.SET_ATTACHMENT_URL, attachmentUrl: profileUrl })
+  }, [profileAttachment, profileUrl])
 
   useEffect(() => {
-    userId && userType && fetchCurrentUser()
-  }, [userType, userId, fetchCurrentUser])
+    profileUrl && profileAttachment && setAttachment()
+  }, [profileUrl, profileAttachment, setAttachment])
 
-  useEffect(() => {
-    attachmentId && fetchAttachment();
-  }, [attachmentId, fetchAttachment, attachmentData])
 
   return (
     <Box mt={5}>
@@ -360,12 +225,12 @@ const ProfileComponent = (): JSX.Element => {
                 </Box>
 
                 <Box>
-                  {(getAttachmentLoading || getStaffLoading || getDoctorLoading) ?
+                  {!email ?
                     <CircularProgress color='inherit' />
                     :
                     <MediaCards
                       title={ATTACHMENT_TITLES.ProfilePicture}
-                      reload={() => fetchCurrentUser()}
+                      reload={() => profileUrl ? fetchAttachment() : fetchUser()}
                       notDescription={true}
                       moduleType={(userType && getProfileImageType(userType)) || AttachmentType.Staff}
                       itemId={userId || ''}
@@ -379,68 +244,88 @@ const ProfileComponent = (): JSX.Element => {
               </Grid>
 
               <Grid item md={8} sm={12} xs={12}>
-                {userType !== 'super-admin' &&
-                  <Box onClick={editHandler} mb={3} display="flex" justifyContent="flex-end">
-                    {edit ?
-                      <Button variant="contained" color="secondary">{CANCEL}</Button>
-                      :
-                      <Button variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
-                    }
-                  </Box>
-                }
-
                 <FormProvider {...methods}>
                   <form onSubmit={handleSubmit(onSubmit)}>
-                    <Collapse in={!edit} mountOnEnter unmountOnExit>
-                      <Box py={2}>
-                        <Grid container spacing={5}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')}
-                          </Grid>
+                    {userType !== SYSTEM_ROLES.SuperAdmin &&
+                      <Box mb={3} display="flex" justifyContent="flex-end">
+                        <Box display={'flex'}>
+                          {edit ?
+                            <>
+                              <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
 
-                          <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')}
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={5}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(EMAIL, email)}
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            {renderItem(CONTACT_NUMBER, userPhone || phone || doctorPhone || 'N/A')}
-                          </Grid>
-                        </Grid>
-                        {userType === SYSTEM_ROLES.Doctor &&
-                          <Fragment>
-                            <Grid container spacing={5}>
-                              <Grid item md={12} sm={12} xs={12}>
-                                {renderItem(ADDRESS_NUMBER, address || 'N/A')}
-                              </Grid>
-                            </Grid>
-
-                            <Grid container spacing={5}>
-                              <Grid item md={6} sm={12} xs={12}>
-                                {renderItem(CITY, city || 'N/A')}
-                              </Grid>
-
-                              <Grid item md={6} sm={12} xs={12}>
-                                {renderItem(STATE, doctorState || 'N/A')}
-                              </Grid>
-                            </Grid>
-
-                            <Grid container spacing={5}>
-                              <Grid item md={6} sm={12} xs={12}>
-                                {renderItem(ZIP_CODE, zipCode || 'N/A')}
-                              </Grid>
-
-                              <Grid item md={6} sm={12} xs={12}>
-                                {renderItem(COUNTRY, country || '')}
-                              </Grid>
-                            </Grid>
-                          </Fragment>}
+                              <Box display="flex" justifyContent="flex-start" pl={2}>
+                                <Button type="submit" variant="contained" color="primary"
+                                  disabled={updateDoctorLoading || updateStaffLoading}
+                                >
+                                  {SAVE_TEXT}
+                                  {(updateDoctorLoading || updateStaffLoading) &&
+                                    <CircularProgress size={20} color="inherit" />
+                                  }
+                                </Button>
+                              </Box>
+                            </>
+                            :
+                            <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
+                          }
+                        </Box>
                       </Box>
+                    }
+
+                    <Collapse in={!edit} mountOnEnter unmountOnExit>
+                      {!email ?
+                        <Box py={2}>
+                          <ViewDataLoader rows={5} columns={6} hasMedia={false} />
+                        </Box> :
+                        <Box py={2}>
+                          <Grid container spacing={5}>
+                            <Grid item md={6} sm={12} xs={12}>
+                              {renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')}
+                            </Grid>
+
+                            <Grid item md={6} sm={12} xs={12}>
+                              {renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')}
+                            </Grid>
+                          </Grid>
+
+                          <Grid container spacing={5}>
+                            <Grid item md={6} sm={12} xs={12}>
+                              {renderItem(EMAIL, email)}
+                            </Grid>
+
+                            <Grid item md={6} sm={12} xs={12}>
+                              {renderItem(CONTACT_NUMBER, userPhone || phone || doctorPhone || 'N/A')}
+                            </Grid>
+                          </Grid>
+                          {userType === SYSTEM_ROLES.Doctor &&
+                            <Fragment>
+                              <Grid container spacing={5}>
+                                <Grid item md={12} sm={12} xs={12}>
+                                  {renderItem(ADDRESS_NUMBER, address || 'N/A')}
+                                </Grid>
+                              </Grid>
+
+                              <Grid container spacing={5}>
+                                <Grid item md={6} sm={12} xs={12}>
+                                  {renderItem(CITY, city || 'N/A')}
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  {renderItem(STATE, doctorState || 'N/A')}
+                                </Grid>
+                              </Grid>
+
+                              <Grid container spacing={5}>
+                                <Grid item md={6} sm={12} xs={12}>
+                                  {renderItem(ZIP_CODE, zipCode || 'N/A')}
+                                </Grid>
+
+                                <Grid item md={6} sm={12} xs={12}>
+                                  {renderItem(COUNTRY, country || '')}
+                                </Grid>
+                              </Grid>
+                            </Fragment>}
+                        </Box>
+                      }
                     </Collapse>
 
                     <Collapse in={edit} mountOnEnter unmountOnExit>
@@ -477,6 +362,7 @@ const ProfileComponent = (): JSX.Element => {
                             <PhoneField name="phone" label={CONTACT_NUMBER} isRequired={false} />
                           </Grid>
                         </Grid>
+
                         {userType === SYSTEM_ROLES.Doctor &&
                           <Fragment>
                             <Grid container spacing={3}>
@@ -516,6 +402,7 @@ const ProfileComponent = (): JSX.Element => {
                                   options={MAPPED_STATES}
                                 />
                               </Grid>
+
                               <Grid item md={6} sm={12} xs={12}>
                                 <Selector
                                   value={EMPTY_OPTION}
@@ -526,16 +413,6 @@ const ProfileComponent = (): JSX.Element => {
                               </Grid>
                             </Grid>
                           </Fragment>}
-                        <Box display="flex" justifyContent="flex-start" pt={2}>
-                          <Button type="submit" variant="contained" color="primary"
-                            disabled={updateDoctorLoading || updateStaffLoading}
-                          >
-                            {SAVE_TEXT}
-                            {(updateDoctorLoading || updateStaffLoading) &&
-                              <CircularProgress size={20} color="inherit" />
-                            }
-                          </Button>
-                        </Box>
                       </Box>
                     </Collapse>
                   </form>
