@@ -9,10 +9,15 @@ import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typograph
 // components block
 import Alert from "../../../common/Alert";
 import AddPatientModal from './AddPatientModal';
+import BackButton from '../../../common/BackButton';
+import PageHeader from '../../../common/PageHeader';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import DoctorSelector from '../../../common/Selector/DoctorSelector';
 import PatientSelector from '../../../common/Selector/PatientSelector';
+import ServiceSelector from '../../../common/Selector/ServiceSelector';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
 import { GREY_TWO, WHITE } from '../../../../theme';
@@ -34,17 +39,13 @@ import {
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
-  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, SLOT_ALREADY_BOOKED,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
-  PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
+  PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT, 
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
-  CANCELLED_APPOINTMENT_EDIT_MESSAGE,
-  DAYS,
-  ADD_PATIENT_MODAL,
+  CANCELLED_APPOINTMENT_EDIT_MESSAGE, DAYS, EDIT_APPOINTMENT, SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD,  
+  APPOINTMENT_NEW_BREAD, NO_SLOT_AVAILABLE, APPOINTMENT_EDIT_BREAD, ADD_PATIENT_MODAL,
 } from "../../../../constants";
-import FacilitySelector from '../../../common/Selector/FacilitySelector';
-import ServiceSelector from '../../../common/Selector/ServiceSelector';
-import DoctorSelector from '../../../common/Selector/DoctorSelector';
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
@@ -365,7 +366,30 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     <>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+            <Box display="flex">
+              <BackButton to={`${VIEW_APPOINTMENTS_ROUTE}`} />
+
+              <Box ml={2}>
+                <PageHeader
+                  title={EDIT_APPOINTMENT}
+                  path={[SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD, isEdit ? APPOINTMENT_EDIT_BREAD : APPOINTMENT_NEW_BREAD]}
+                />
+              </Box>
+            </Box>
+
+            <Button type="submit" variant="contained" color="primary"
+              disabled={updateAppointmentLoading || CreateAppointmentLoading}
+            >
+              {isEdit ? UPDATE_APPOINTMENT : CREATE_APPOINTMENT}
+
+              {(updateAppointmentLoading || CreateAppointmentLoading) &&
+                <CircularProgress size={20} color="inherit" />
+              }
+            </Button>
+          </Box>
+
+          <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
             <Grid container spacing={3}>
               <Grid md={8} item>
                 <CardComponent cardTitle={APPOINTMENT}>
@@ -562,20 +586,9 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               </Grid>
             </Grid>
           </Box>
-
-          <Box display="flex" justifyContent="flex-end" pt={2}>
-            <Button type="submit" variant="contained" color="primary"
-              disabled={updateAppointmentLoading || CreateAppointmentLoading}
-            >
-              {isEdit ? UPDATE_APPOINTMENT : CREATE_APPOINTMENT}
-
-              {(updateAppointmentLoading || CreateAppointmentLoading) &&
-                <CircularProgress size={20} color="inherit" />
-              }
-            </Button>
-          </Box>
         </form>
       </FormProvider>
+
       <AddPatientModal
         facilityId={selectedFacility}
         isOpen={openPatientModal}

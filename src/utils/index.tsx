@@ -16,7 +16,7 @@ import {
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
   VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL, SYSTEM_ROLES,
   USER_FORM_IMAGE_UPLOAD_URL
@@ -83,24 +83,12 @@ export const requiredLabel = (label: string) => {
   return (
     <Box>
       {label}
-      <Box component="span" color="red">
+      <Box component="span" color="black">
         {' '}
         *
       </Box>
     </Box>
   )
-}
-
-export const isCurrentUserCanMakeAdmin = (currentUserRole: RolesPayload['roles']) => {
-  let isSuperAdmin: boolean = true
-
-  if (currentUserRole) {
-    for (let role of currentUserRole) {
-      isSuperAdmin = !(role?.role === ADMIN)
-    }
-  }
-
-  return isSuperAdmin;
 }
 
 export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
