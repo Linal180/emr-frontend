@@ -805,7 +805,6 @@ export type Doctor = {
 };
 
 export type DoctorInput = {
-  doctorFirstName?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
@@ -2657,7 +2656,6 @@ export type Role = {
 export type RoleInput = {
   paginationOptions: PaginationInput;
   role?: Maybe<Scalars['String']>;
-  roleName?: Maybe<Scalars['String']>;
 };
 
 export type RoleItemInput = {

@@ -1183,6 +1183,7 @@ export interface ReactionSelectorInterface {
   defaultValues?: multiOptionType[]
   setFieldValue?: Function
 }
+
 export interface MediaDoctorDataType extends Message {
   doctor: Doctor;
 }
@@ -1197,4 +1198,11 @@ export interface MediaUserDataType extends Message {
 
 export interface BackButtonProps {
   to: string;
+}
+
+export interface PatientSearchInputProps {
+  dob: string;
+  dos: string;
+  location: SelectOptions;
+  provider: SelectOptions;
 }
