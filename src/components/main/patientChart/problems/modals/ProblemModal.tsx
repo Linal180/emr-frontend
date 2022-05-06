@@ -17,6 +17,7 @@ import { useParams } from 'react-router-dom';
 import DatePicker from '../../../../common/DatePicker';
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import Alert from '../../../../common/Alert';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId }): JSX.Element => {
   const { id, code, description } = item as IcdCodes || {}
@@ -28,6 +29,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   const [{ }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const methods = useForm<any>({
     mode: "all",
+    resolver: yupResolver(PatientProblemchema)
   });
   const { handleSubmit, reset } = methods;
 
