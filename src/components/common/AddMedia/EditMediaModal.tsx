@@ -1,7 +1,6 @@
 // packages block
 import { FC, useState, useEffect, useCallback, Reducer, useReducer, useRef } from "react";
 import { useForm } from "react-hook-form";
-import DeleteIcon from "@material-ui/icons/Delete";
 import {
   Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton
 } from "@material-ui/core";
@@ -10,6 +9,7 @@ import DropzoneImage from "../DropZoneImage";
 // graphql and interfaces/types block
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer";
+import { TrashNewIcon } from "../../../assets/svgs";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
@@ -63,10 +63,10 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
               <Box className="media-overlay">
-                <IconButton aria-label="delete" color="secondary" onClick={() =>
+                <IconButton aria-label="delete"  onClick={() =>
                   dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
                 }>
-                  <DeleteIcon />
+                  <TrashNewIcon />
                 </IconButton>
               </Box>
             </Box> :

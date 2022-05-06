@@ -62,7 +62,11 @@ export interface AuthContextProps {
   setCurrentStaff: (staff: Staff | null) => void;
   setUserRoles: (roles: string[]) => void;
   setUserPermissions: (permissions: string[]) => void;
-  setGetCall: (call: boolean) => void
+  setProfileUrl: (url: string) => void;
+  profileUrl: string;
+  fetchUser: () => void
+  fetchAttachment: () => void,
+  profileAttachment: null | Attachment
 }
 
 export interface DoctorScheduleSlotProps {
@@ -861,6 +865,7 @@ export interface MediaCardComponentType {
   setEdit: Function;
   setAttachment?: Function;
   setAttachments: Function;
+  buttonText?: string;
 }
 
 export interface DocumentModalComponentType {
@@ -1157,6 +1162,18 @@ export interface ProfileEditFormType {
 export interface RolePayloadInterface {
   id: string
   roles?: RolesPayload['roles']
+}
+
+export interface MediaDoctorDataType extends Message {
+  doctor: Doctor;
+}
+
+export interface MediaStaffDataType extends Message {
+  staff: Staff;
+}
+
+export interface MediaUserDataType extends Message {
+  user: User;
 }
 
 export interface BackButtonProps {
