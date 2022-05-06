@@ -777,7 +777,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <SmartyModal
         isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData}
         verifiedAddressHandler={verifiedAddressHandler} />
-    </TabContext >
+    </TabContext>
   );
 };
 
