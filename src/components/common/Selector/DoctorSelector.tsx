@@ -48,7 +48,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequ
       const doctorsInputs = { ...pageInputs }
 
       doctorsInputs && await findAllDoctor({
-        variables: { doctorInput: { ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId } }
+        variables: { doctorInput: { ...doctorsInputs, searchString: searchQuery, facilityId: selectedFacilityId } }
       })
     } catch (error) { }
   }, [page, findAllDoctor, searchQuery, selectedFacilityId])
