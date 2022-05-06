@@ -55,7 +55,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
         isSuper ? { ...pageInputs }
           :
           isPracAdmin ? { practiceId, ...pageInputs } :
-            isFacAdmin ? { facilityId, ...pageInputs } : undefined
+            isFacAdmin ? { singleFacilityId:facilityId, ...pageInputs } : undefined
 
       facilitiesInputs && await findAllFacility({
         variables: { facilityInput: { ...facilitiesInputs, facilityName: searchQuery } }
