@@ -8,9 +8,7 @@ import { getUserRole, isSuperAdmin } from "../utils";
 import { AuthContextProps } from "../interfacesTypes";
 import {
   User, useGetLoggedInUserLazyQuery, Doctor, Staff, useGetDoctorUserLazyQuery, useGetStaffUserLazyQuery,
-  RolesPayload,
-  useGetAttachmentLazyQuery,
-  Attachment
+  RolesPayload, useGetAttachmentLazyQuery, Attachment
 } from "../generated/graphql";
 
 export const AuthContext = createContext<AuthContextProps>({
