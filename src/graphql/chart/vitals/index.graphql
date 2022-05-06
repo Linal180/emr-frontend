@@ -1,0 +1,72 @@
+query getPatientVital($getPatientVital: GetPatientVital!) {
+  getPatientVital(getPatientVital: $getPatientVital) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    patientVital {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      bloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
+  findAllPatientVitals(patientVitalInput: $patientVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    pagination {
+      totalPages
+      page
+    }
+
+    patientVitals {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      bloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      createdAt
+      updatedAt
+    }
+  }
+}
