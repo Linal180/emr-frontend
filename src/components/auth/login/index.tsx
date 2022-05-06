@@ -21,7 +21,7 @@ import {
 } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
-  const { setIsLoggedIn, setGetCall } = useContext(AuthContext);
+  const { setIsLoggedIn } = useContext(AuthContext);
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: "",
@@ -60,7 +60,6 @@ const LoginComponent = (): JSX.Element => {
               Alert.success(LOGIN_SUCCESSFULLY)
               history.push(DASHBOARD_ROUTE);
               setIsLoggedIn(true)
-              setGetCall(true)
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }

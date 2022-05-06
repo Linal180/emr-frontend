@@ -16,12 +16,11 @@ import {
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AllergySeverity,
-  ProblemSeverity
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload, 
+  AttachmentType, AllergySeverity, ProblemSeverity
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
   VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
   SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL
@@ -88,24 +87,12 @@ export const requiredLabel = (label: string) => {
   return (
     <Box>
       {label}
-      <Box component="span">
+      <Box component="span" color="black">
         {' '}
         *
       </Box>
     </Box>
   )
-}
-
-export const isCurrentUserCanMakeAdmin = (currentUserRole: RolesPayload['roles']) => {
-  let isSuperAdmin: boolean = true
-
-  if (currentUserRole) {
-    for (let role of currentUserRole) {
-      isSuperAdmin = !(role?.role === ADMIN)
-    }
-  }
-
-  return isSuperAdmin;
 }
 
 export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
@@ -203,7 +190,7 @@ export const deleteRecordTitle = (recordType: string) => {
 }
 
 export const UpdateRecordTitle = (recordType: string) => {
-  return `Update ${recordType} Record`;
+  return `Update ${recordType}`;
 }
 
 export const aboutToDelete = (recordType: string) => {
@@ -211,7 +198,7 @@ export const aboutToDelete = (recordType: string) => {
 }
 
 export const aboutToUpdate = (recordType: string) => {
-  return `You are about to update ${recordType.toLowerCase()} record`;
+  return `You are about to update ${recordType.toLowerCase()}`;
 }
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {
@@ -272,9 +259,9 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
         // && name !== SYSTEM_ROLES.FacilityAdmin
         if (
           name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
-          && name !== SYSTEM_ROLES.Doctor
+          && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
         )
-          name && data.push({ id: name, name: formatValue(name) })
+          name && data.push({ id: name.trim(), name: formatValue(name).trim() })
       }
     }
   }
@@ -336,7 +323,7 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
     for (let doctor of doctors) {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
-        data.push({ id, name: `${firstName} ${lastName}` })
+        data.push({ id, name: `${firstName} ${lastName}`.trim() })
       }
     }
   }
@@ -871,4 +858,19 @@ export const getHigherRole = (roles: string[]) => {
   if (roles.includes(SYSTEM_ROLES.OfficeManager)) return formatRoleName(SYSTEM_ROLES.OfficeManager)
 
   return roles[0]
+}
+
+export const getProfileImageType = (userType: string) => {
+  
+  if (userType === SYSTEM_ROLES.SuperAdmin) {
+    return AttachmentType.SuperAdmin
+  }
+
+  else if (userType === SYSTEM_ROLES.Doctor) {
+    return AttachmentType.Doctor
+  }
+
+  else {
+    return AttachmentType.Staff
+  }
 }

@@ -54,6 +54,17 @@ query GetLoggedInUser {
           name
         }
       }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }
@@ -106,6 +117,17 @@ query GetDoctorUser($getDoctor: GetDoctor!) {
         country
         primaryContact
       }
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
 
     response {
@@ -126,6 +148,17 @@ query GetStaffUser($getStaff: GetStaff!) {
       lastName
       firstName
       phone
+
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }

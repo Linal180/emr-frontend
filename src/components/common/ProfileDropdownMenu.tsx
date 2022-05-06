@@ -1,7 +1,7 @@
 // packages block
 import { useState, MouseEvent, useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, } from '@material-ui/core';
+import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors, Avatar, } from '@material-ui/core';
 // utils and header styles block
 import { AuthContext, ListContext } from "../../context";
 import { BLACK_TWO, WHITE_FOUR } from "../../theme";
@@ -10,21 +10,22 @@ import { handleLogout, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
 
 import {
-  EMAIL, FACILITY, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS,
-  SECURITY, SUPER_ADMIN
+  EMAIL, FACILITY, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS,
+  PROFILE_SECURITY_MENU_ITEMS, SECURITY, SUPER_ADMIN,
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName } = useContext(AuthContext);
-  const { setFacilityList, setRoleList, setPracticeList } = useContext(ListContext)
-  const { email, roles, facility } = user || {};
+  const { user, currentUser, setUser, setIsLoggedIn, setCurrentUser, practiceName, profileUrl } = useContext(AuthContext);
+  const { setFacilityList, setRoleList, setPracticeList, } = useContext(ListContext)
+  const { email, roles, facility, } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { name: facilityName } = facility || {}
   const [isSuper, setIsSuper] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const FacilityAdmin = isUserAdmin(roles)
+
 
   const handleClick = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
@@ -57,7 +58,10 @@ const ProfileDropdownMenu = (): JSX.Element => {
         aria-label="dropdown menu" aria-controls="menu-appBar" aria-haspopup="true" color="inherit"
         onClick={(event) => handleClick(event)}
       >
-        <NewAvatarIcon />
+        {profileUrl ?
+          <Avatar alt={`${firstName}-${lastName}`} src={profileUrl}></Avatar> :
+          <NewAvatarIcon />
+        }
       </IconButton>
 
       <Menu
@@ -76,7 +80,10 @@ const ProfileDropdownMenu = (): JSX.Element => {
             alignItems="center" className={classes.dropdownMenuBar}
           >
             <Box display="flex" alignItems="center">
-              <NewAvatarIcon />
+              {profileUrl ?
+                <Avatar alt={`${firstName}-${lastName}`} src={profileUrl}></Avatar> :
+                <NewAvatarIcon />
+              }
 
               <Box ml={2}>
                 {isSuper ?

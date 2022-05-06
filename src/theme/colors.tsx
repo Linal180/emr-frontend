@@ -62,10 +62,9 @@ export const GREY_SEVEN = "#B5B5C3";
 export const GREY_EIGHT = "#E7E8ED";
 
 export const WHITE = "#FFFFFF";
-
 export const RED = "#DD1010";
 
-export const VERY_MILD = "#FFC700";
 export const MILD = "#FFA800";
-export const MODERATE = "#FF6B00";
 export const ACUTE = "#DD1010";
+export const MODERATE = "#FF6B00";
+export const VERY_MILD = "#FFC700";

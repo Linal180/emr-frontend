@@ -4,14 +4,12 @@ import { FC } from "react";
 import PageHeader from "../../../common/PageHeader";
 import AppointmentsTable from "../../../common/AppointmentsTable";
 // constants block
-import {
-  ADD_APPOINTMENT, VIEW_APPOINTMENTS_BREAD, APPOINTMENTS_ROUTE, APPOINTMENT_TEXT, APPOINTMENTS_BREAD,
-} from "../../../../constants";
+import { ADD_APPOINTMENT, VIEW_APPOINTMENTS_BREAD, APPOINTMENTS_ROUTE, APPOINTMENT_TEXT, SCHEDULE_BREAD, } from "../../../../constants";
 
 const AppointmentsComponent: FC = (): JSX.Element => <>
   <PageHeader
     title={APPOINTMENT_TEXT}
-    path={[APPOINTMENTS_BREAD, VIEW_APPOINTMENTS_BREAD]}
+    path={[SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD]}
     hasComponent
     buttonText={ADD_APPOINTMENT}
     linkToPage={`${APPOINTMENTS_ROUTE}/new`}

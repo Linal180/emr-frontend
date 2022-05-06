@@ -8,15 +8,18 @@ import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import PhoneField from '../../../common/PhoneInput';
 import DatePicker from "../../../common/DatePicker";
+import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
 import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getDate, getTimestamps, getTimestampsForDob, renderFacilities, setRecord } from "../../../../utils";
+import { getDate, getTimestamps, getTimestampsForDob, setRecord } from "../../../../utils";
 import { doctorReducer, State, Action, initialState, ActionType } from '../../../../reducers/doctorReducer';
 import {
   DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, useUpdateDoctorMutation
@@ -33,7 +36,7 @@ import {
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
-  SYSTEM_PASSWORD,
+  SYSTEM_PASSWORD, ADD_DOCTOR, USERS_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -296,7 +299,30 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box display='flex'>
+            <BackButton to={`${DOCTORS_ROUTE}`} />
+            
+            <Box ml={2}/>
+
+            <PageHeader
+              title={ADD_DOCTOR}
+              path={[USERS_BREAD, DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]}
+            />
+          </Box>
+
+          <Button type="submit" variant="contained" color="primary"
+            disabled={createDoctorLoading || updateDoctorLoading}
+          >
+            {isEdit ? UPDATE_DOCTOR : CREATE_DOCTOR}
+
+            {(createDoctorLoading || updateDoctorLoading) &&
+              <CircularProgress size={20} color="inherit" />
+            }
+          </Button>
+        </Box>
+
+        <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
@@ -304,13 +330,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
+                        <FacilitySelector
                           addEmpty
                           isRequired
-                          value={EMPTY_OPTION}
                           label={FACILITY}
                           name="facilityId"
-                          options={renderFacilities(facilityList)}
                         />
                       </Grid>
 
@@ -777,18 +801,6 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               </CardComponent>
             </Grid>
           </Grid>
-        </Box>
-
-        <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary"
-            disabled={createDoctorLoading || updateDoctorLoading}
-          >
-            {isEdit ? UPDATE_DOCTOR : CREATE_DOCTOR}
-
-            {(createDoctorLoading || updateDoctorLoading) &&
-              <CircularProgress size={20} color="inherit" />
-            }
-          </Button>
         </Box>
       </form>
     </FormProvider>

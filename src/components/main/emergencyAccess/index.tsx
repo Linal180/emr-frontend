@@ -6,7 +6,7 @@ import {
 import Search from "../../common/Search";
 import PageHeader from "../../common/PageHeader";
 // constants, history, styling block
-import { isFacilityAdmin, renderTh } from "../../../utils";
+import { handleLogout, isFacilityAdmin, renderTh } from "../../../utils";
 import { useTableStyles } from "../../../styles/tableStyles";
 import {
   ACCESS_ACTIVATED, ACTION, ACTIVATE_EMERGENCY_ACCESS_MODE, DEACTIVATE_EMERGENCY_ACCESS_MODE, EMERGENCY_ACCESS,
@@ -15,7 +15,7 @@ import {
 } from "../../../constants";
 import Alert from "../../common/Alert";
 import { UpdateRoleInput, useFetchEmergencyAccessUserLazyQuery, User, useUpdateUserRoleMutation } from "../../../generated/graphql";
-import { AuthContext } from "../../../context";
+import { AuthContext, ListContext } from "../../../context";
 import { ChangeEvent, useContext, useEffect, useMemo, useState } from "react";
 
 import UpdateConfirmationModal from "../../common/UpdateConfirmationModal";
@@ -26,15 +26,27 @@ import NoDataFoundComponent from "../../common/NoDataFoundComponent";
 
 const EmergencyAccessComponent = (): JSX.Element => {
   const classes = useTableStyles();
-  const { user, userRoles, setUserRoles, setUserPermissions } = useContext(AuthContext);
+  const { setFacilityList, setRoleList, setPracticeList } = useContext(ListContext)
+  const { user, userRoles, setUserRoles, setUserPermissions, setUser, setIsLoggedIn, setCurrentUser  } = useContext(AuthContext);
   const [emergencyAccessUsers, setEmergencyAccessUsers] = useState<User[] | null>(null);
   const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [shouldFetchEmergencyUser, setShouldFetchEmergencyUser] = useState(true)
   const [totalPages, setTotalPages] = useState<number>(0);
   const [page, setPage] = useState<number>(1);
   const [rolePayload, setRolePayload] = useState<UpdateRoleInput | null>(null)
+  const [searchTerm,setSearchTerm]=useState<string>('')
 
   const isFacAdmin = isFacilityAdmin(user?.roles);
+
+  const logout = () => {
+    setIsLoggedIn(false)
+    setUser(null)
+    setCurrentUser(null)
+    handleLogout();
+    setFacilityList([]);
+    setRoleList([])
+    setPracticeList([])
+  };
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
@@ -78,6 +90,8 @@ const EmergencyAccessComponent = (): JSX.Element => {
             Alert.success(EMERGENCY_ACCESS_UPDATE);
             setShouldFetchEmergencyUser(true)
             setOpenDelete(false)
+
+            logout()
           }
         }
       },
@@ -115,26 +129,30 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
   useEffect(() => {
     if (shouldFetchEmergencyUser) {
+      
       if (isFacAdmin) {
         fetchEmergencyAccessUsers({
-          variables: {
+          variables:{
             emergencyAccessUsersInput: {
               paginationInput: { page, limit: 10 },
-              facilityId: user?.facilityId
+              facilityId: user?.facilityId,
+              email:searchTerm
             }
           }
         })
         return
       }
+
       fetchEmergencyAccessUsers({
-        variables: {
+        variables:{
           emergencyAccessUsersInput: {
-            paginationInput: { limit: 10, page }
+            paginationInput: { page, limit: 10 },
+            email:searchTerm
           }
         }
       })
     }
-  }, [fetchEmergencyAccessUsers, isFacAdmin, page, shouldFetchEmergencyUser, user?.facilityId]);
+  }, [fetchEmergencyAccessUsers, isFacAdmin, page, searchTerm, shouldFetchEmergencyUser, user?.facilityId]);
 
   const handleEmergencyAccessToggle = async () => {
     const transformedUserRoles = userRoles.filter(
@@ -201,7 +219,10 @@ const EmergencyAccessComponent = (): JSX.Element => {
     return handleEmergencyAccessToggle()
   }
 
-  const search = (query: string) => { }
+  const search = (query: string) => { 
+    setSearchTerm(query)
+    setShouldFetchEmergencyUser(true)
+  }
 
   return (
     <>
@@ -339,8 +360,8 @@ const EmergencyAccessComponent = (): JSX.Element => {
 
 
       <UpdateConfirmationModal title={EMERGENCY_ACCESS} isOpen={openDelete} isLoading={UpdateUserRoleLoading}
-        description={rolePayload ? 'Confirm to revoke access' : 'Confirm to update emergency access'} handleDelete={handleEmergencyAccessRevoke}
-        setOpen={(open: boolean) => setOpenDelete(open)} actionText='Update Record' />
+        description={rolePayload ? 'Confirm to revoke emergency access' : 'Confirm to update emergency access'} handleDelete={handleEmergencyAccessRevoke}
+        setOpen={(open: boolean) => setOpenDelete(open)} actionText='Update' />
     </>
   );
 };

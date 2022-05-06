@@ -6,7 +6,7 @@ import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import {
-  Control, ValidationRule, FieldValues, Ref, ControllerRenderProps,
+  Control, ValidationRule, FieldValues, Ref, ControllerRenderProps, UseFormSetValue,
 } from "react-hook-form";
 // graphql block
 import { Action } from "../reducers/mediaReducer";
@@ -63,7 +63,11 @@ export interface AuthContextProps {
   setCurrentStaff: (staff: Staff | null) => void;
   setUserRoles: (roles: string[]) => void;
   setUserPermissions: (permissions: string[]) => void;
-  setGetCall: (call: boolean) => void
+  setProfileUrl: (url: string) => void;
+  profileUrl: string;
+  fetchUser: () => void
+  fetchAttachment: () => void,
+  profileAttachment: null | Attachment
 }
 
 export interface DoctorScheduleSlotProps {
@@ -336,9 +340,24 @@ export interface PatientSelectorProps {
   isRequired?: boolean
   isMultiple?: boolean
   value?: SelectorOption
-  options: SelectorOption[]
   isModal?: boolean
   handlePatientModal?: Function
+  isOpen?: boolean
+  setValue: UseFormSetValue<ExtendedAppointmentInputProps>
+}
+
+export interface FacilitySelectorProps {
+  name: string
+  label: string
+  error?: string
+  disabled?: boolean
+  addEmpty?: boolean
+  isRequired?: boolean
+  isMultiple?: boolean
+}
+
+export interface DoctorSelectorProps extends FacilitySelectorProps {
+  facilityId?: string
 }
 
 export interface CardSelectorProps {
@@ -847,6 +866,7 @@ export interface MediaCardComponentType {
   setEdit: Function;
   setAttachment?: Function;
   setAttachments: Function;
+  buttonText?: string;
 }
 
 export interface DocumentModalComponentType {
@@ -1122,6 +1142,7 @@ export interface CreateTemplateTypes extends DialogTypes {
   setFormName: Dispatch<SetStateAction<string>>
   formName: string
 }
+
 export interface AppointmentCardProps {
   tooltip: AppointmentTooltip.LayoutProps
   setCurrentView: Function
@@ -1161,4 +1182,19 @@ export interface ReactionSelectorInterface {
   selectedOptions?: string
   defaultValues?: multiOptionType[]
   setFieldValue?: Function
+}
+export interface MediaDoctorDataType extends Message {
+  doctor: Doctor;
+}
+
+export interface MediaStaffDataType extends Message {
+  staff: Staff;
+}
+
+export interface MediaUserDataType extends Message {
+  user: User;
+}
+
+export interface BackButtonProps {
+  to: string;
 }

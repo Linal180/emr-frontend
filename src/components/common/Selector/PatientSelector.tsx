@@ -2,21 +2,19 @@
 import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box, Typography } from "@material-ui/core";
+import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, requiredLabel } from "../../../utils";
+import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel } from "../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../reducers/patientReducer";
 import { AuthContext } from "../../../context";
 import { ADD_PATIENT_MODAL, EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { PatientSelectorProps } from "../../../interfacesTypes";
-import { useFormStyles } from "../../../styles/formsStyles";
 import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
 
-const PatientSelector: FC<PatientSelectorProps> = ({ name, label, options, disabled, isRequired, addEmpty, isModal, handlePatientModal }): JSX.Element => {
+const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRequired, isOpen, setValue }): JSX.Element => {
   const { control } = useFormContext()
-  const classes = useFormStyles()
   const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const isSuper = isSuperAdmin(roles);
@@ -24,10 +22,15 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, options, disab
   const isFacAdmin = isFacilityAdmin(roles);
   const { id: facilityId, practiceId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
-  const { page, searchQuery } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options] : [...options]
+  const { page, searchQuery, patients } = state;
+  const DUMMY_OPTION = {
+    id: ADD_PATIENT_MODAL,
+    name: ADD_PATIENT_MODAL
+  }
 
-  const [findAllPatient,] = useFindAllPatientListLazyQuery({
+  const updatedOptions = [EMPTY_OPTION, ...renderPatient(patients), DUMMY_OPTION]
+
+  const [findAllPatient, { loading }] = useFindAllPatientListLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -40,7 +43,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, options, disab
 
       if (findAllPatient) {
         const { pagination, patients } = findAllPatient
-        patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
+        patients && dispatch({ type: ActionType.SET_PATIENTS, patients: [...patients] as PatientsPayload['patients'] })
 
         if (pagination) {
           const { totalPages } = pagination
@@ -64,8 +67,12 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, options, disab
   }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllPatient, searchQuery])
 
   useEffect(() => {
-    fetchAllPatients()
+    searchQuery.length > 2 && fetchAllPatients()
   }, [page, searchQuery, fetchAllPatients]);
+
+  useEffect(() => {
+    !isOpen && setValue('patientId', EMPTY_OPTION)
+  }, [isOpen, setValue])
 
   return (
     <Controller
@@ -76,35 +83,32 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, options, disab
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <Autocomplete
-            options={options.length ? updatedOptions : []}
+            options={updatedOptions ?? []}
             value={field.value}
+            loading={loading}
             disabled={disabled}
-            disableClearable
-            getOptionLabel={(option) => option.name || ""}
-            renderOption={(option) => option.name}
+            getOptionSelected = {(option, value) => option.id === value.id}
+            getOptionLabel={(option) => option.name ?? ""}
+            renderOption={(option) => {
+              if(option.id===ADD_PATIENT_MODAL){
+                return <div style={{width:"100%",backgroundColor:"GrayText", color:"white",justifyContent:"center",display:"flex"}}>{option.name}</div>
+              }
+              return option.name
+            }}
             renderInput={(params) => (
               <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
                 <Box position="relative">
                   <InputLabel id={`${name}-autocomplete`} shrink>
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
-
-                  {isModal &&
-                    <Box onClick={() => handlePatientModal && handlePatientModal()}>
-                      <Typography className={classes.addModal}>
-                        {ADD_PATIENT_MODAL}
-                      </Typography>
-                    </Box>
-                  }
                 </Box>
-
                 <TextField
                   {...params}
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
+                  onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
                 />
-
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
