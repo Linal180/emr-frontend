@@ -17,6 +17,7 @@ export interface State {
   kinContactId: string;
   facilityName: string;
   facilityId: string;
+  doctorName: string;
   paymentMethod: string;
   attachmentUrl: string;
   basicContactId: string;
@@ -51,6 +52,7 @@ export const initialState: State = {
   attachmentId: '',
   facilityName: '',
   facilityId: '',
+  doctorName: '',
   kinContactId: '',
   isEditCard: false,
   paymentMethod: '',
@@ -93,6 +95,7 @@ export enum ActionType {
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_FACILITY_NAME = 'setFacilityName',
   SET_FACILITY_ID = 'setFacilityId',
+  SET_DOCTOR_NAME = 'setDoctorName',
   SET_KIN_CONTACT_ID = 'setKinContactID',
   SET_IS_APPOINTMENT = 'setIsAppointment',
   SET_PAYMENT_METHOD = 'setPaymentMethod',
@@ -124,6 +127,7 @@ export type Action =
   | { type: ActionType.SET_SAME_ADDRESS, sameAddress: boolean }
   | { type: ActionType.SET_FACILITY_NAME; facilityName: string }
   | { type: ActionType.SET_FACILITY_ID; facilityId: string }
+  | { type: ActionType.SET_DOCTOR_NAME; doctorName: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_PAYMENT_METHOD, paymentMethod: string }
@@ -334,5 +338,10 @@ export const patientReducer = (state: State, action: Action): State => {
         ...state,
         facilityId: action.facilityId
       }
+      case ActionType.SET_DOCTOR_NAME:
+        return {
+          ...state,
+          doctorName: action.doctorName
+        }
   }
 };
