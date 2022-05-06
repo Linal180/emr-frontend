@@ -7,6 +7,8 @@ import { Box, Button, Checkbox, CircularProgress, FormControl, FormControlLabel,
 // components block
 import Alert from '../../../../common/Alert';
 import Selector from '../../../../common/Selector';
+import PageHeader from '../../../../common/PageHeader';
+import BackButton from '../../../../common/BackButton';
 import InputController from '../../../../../controller';
 import CardComponent from '../../../../common/CardComponent';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
@@ -20,10 +22,10 @@ import {
   useCreateServiceMutation, useGetServiceLazyQuery, useUpdateServiceMutation
 } from "../../../../../generated/graphql";
 import {
-  ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS,
-  FACILITY_SERVICES_ROUTE, SERVICE_UPDATED, UPDATE_SERVICE, FORBIDDEN_EXCEPTION,
-  PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
-  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT,
+  ACTIVE_TEXT, CREATE_SERVICE, DURATION_TEXT, EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITY_SERVICES_ROUTE, SERVICE_UPDATED,
+  UPDATE_SERVICE, FORBIDDEN_EXCEPTION, PRICE_TEXT, SERVICE_CREATED, SERVICE_NAME_TEXT, SERVICE_NOT_FOUND, SERVICE_INFO,
+  FACILITIES_ROUTE, FACILITY, EMPTY_OPTION, NOT_FOUND_EXCEPTION, SELECT_COLOR_TEXT, FACILITIES_BREAD,
+  FACILITY_SERVICE_EDIT_BREAD, SERVICES_BREAD, FACILITY_SERVICE_NEW_BREAD, FACILITY_SERVICES_TEXT,
 } from "../../../../../constants";
 
 const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
@@ -167,7 +169,30 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 248px)">
+        <Box display='flex' justifyContent='space-between' alignItems='center'>
+          <Box display='flex'>
+            <BackButton to={`${FACILITIES_ROUTE}/${currentFacility}${FACILITY_SERVICES_ROUTE}`} />
+
+            <Box ml={2} />
+
+            <PageHeader
+              title={FACILITY_SERVICES_TEXT}
+              path={[FACILITIES_BREAD, SERVICES_BREAD(currentFacility || ''), isEdit ? FACILITY_SERVICE_EDIT_BREAD : FACILITY_SERVICE_NEW_BREAD]}
+            />
+          </Box>
+
+          <Button type="submit" variant="contained" color="primary"
+            disabled={disableSubmit}
+          >
+            {isEdit ? UPDATE_SERVICE : CREATE_SERVICE}
+
+            {disableSubmit &&
+              <CircularProgress size={20} color="inherit" />
+            }
+          </Button>
+        </Box>
+
+        <Box maxHeight="calc(100vh - 190px)">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={SERVICE_INFO}>
@@ -240,7 +265,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
           </Grid>
         </Box>
 
-        <Box display="flex" justifyContent="flex-end" pt={2}>
+        {/* <Box display="flex" justifyContent="flex-end" pt={2}>
           <Button type="submit" variant="contained" color="primary"
             disabled={disableSubmit}
           >
@@ -250,7 +275,7 @@ const ServiceForm: FC<GeneralFormProps> = ({ isEdit, id }): JSX.Element => {
               <CircularProgress size={20} color="inherit" />
             }
           </Button>
-        </Box>
+        </Box> */}
       </form>
     </FormProvider>
   );

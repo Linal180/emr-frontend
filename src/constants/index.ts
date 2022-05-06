@@ -1918,6 +1918,10 @@ export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
 ];
 
 // Breadcrumb links
+export const SERVICES_BREAD = (facilityId: string) =>  {
+  return { text: SERVICES, link: `${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}` }
+}
+
 export const FACILITIES_BREAD = { text: FACILITIES_LISTING, link: FACILITIES_ROUTE, };
 
 export const FACILITY_SERVICES_BREAD = {
