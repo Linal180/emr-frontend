@@ -51,7 +51,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
 
   const updateValues = (newValues: multiOptionType[]) => {
     setValues(newValues as multiOptionType[])
-    setValue('reactionIds', newValues.map(option => option))
+    !!newValues.length && setValue('reactionIds', newValues.map(option => option))
   }
 
   return (
@@ -59,7 +59,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
       name={name}
       control={control}
       defaultValue={options}
-      render={({ field, fieldState: { invalid } }) => {
+      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <FormControl margin="normal" fullWidth error={Boolean(invalid)}>
             <Box position="relative">
@@ -69,6 +69,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
             </Box>
 
             <Select
+            {...field}
               isMulti
               name={name}
               defaultValue={options}
@@ -85,7 +86,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
               className="selectorClassTwo"
             />
 
-            <FormHelperText></FormHelperText>
+            <FormHelperText>{message}</FormHelperText>
           </FormControl>
         )
       }}
