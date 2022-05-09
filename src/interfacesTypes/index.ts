@@ -417,6 +417,8 @@ export interface CustomInputControlProps extends IControlLabel {
   controllerName: string;
   isSearch?: boolean;
   info?: string;
+  clearable?: boolean
+  handleClearField?: (fieldName: any) => void
 }
 
 export interface TooltipData {
@@ -1203,6 +1205,6 @@ export interface BackButtonProps {
 export interface PatientSearchInputProps {
   dob: string;
   dos: string;
-  location: SelectOptions;
-  provider: SelectOptions;
+  location: SelectorOption;
+  provider: SelectorOption;
 }
