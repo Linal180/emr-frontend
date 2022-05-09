@@ -6,11 +6,11 @@ import { Box, Card, colors, Grid, Typography, Button, } from "@material-ui/core"
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 // interfaces, graphql, constants block
-import { BLACK_TWO } from '../../../../theme';
+import { GREY_THREE } from '../../../../theme';
 import { GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  EMPTY_OPTION, GUARANTOR, NOTES, ORDERING_PROVIDER, PAYMENT, PAYMENT_TYPE, PRIMARY_INSURANCE_FOR_ORDER, PRIMARY_PROVIDER, PRINT, SAVE_TEXT,
-  SECONDARY_INSURANCE_FOR_ORDER, SELF_PAY_RESTRICTION,
+  EMPTY_OPTION, GUARANTOR, NOTES, ORDERING_PROVIDER, PAYMENT, PAYMENT_TYPE, PRIMARY_INSURANCE_FOR_ORDER, PRIMARY_PROVIDER, 
+  PRINT, SAVE_TEXT, SECONDARY_INSURANCE_FOR_ORDER, SELF_PAY_RESTRICTION,
 } from '../../../../constants';
 
 const LabOrdersPaymentForm: FC<GeneralFormProps> = (): JSX.Element => {
@@ -72,7 +72,7 @@ const LabOrdersPaymentForm: FC<GeneralFormProps> = (): JSX.Element => {
               <Grid item md={4} sm={12} xs={12}>
                 <Typography variant='h6'>{GUARANTOR}</Typography>
 
-                <Box py={0.6} mb={2} color={BLACK_TWO}>
+                <Box py={0.6} mb={2} color={GREY_THREE}>
                   <Typography variant='body1'>James Lukewood</Typography>
                 </Box>
               </Grid>
