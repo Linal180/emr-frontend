@@ -1,3 +1,4 @@
+import { usStreet } from "smartystreets-javascript-sdk";
 import { AttachmentPayload, AttachmentsPayload, PatientPayload, PatientsPayload } from "../generated/graphql"
 
 export interface State {
@@ -16,6 +17,8 @@ export interface State {
   isEditCard: boolean;
   kinContactId: string;
   facilityName: string;
+  facilityId: string;
+  doctorName: string;
   paymentMethod: string;
   attachmentUrl: string;
   basicContactId: string;
@@ -32,6 +35,10 @@ export interface State {
   patientData: PatientPayload['patient'];
   attachmentData: AttachmentPayload['attachment'];
   attachmentsData: AttachmentsPayload['attachments'];
+  isChecked: boolean;
+  isVerified: boolean;
+  addressOpen: boolean;
+  data: usStreet.Candidate[];
 }
 
 export const initialState: State = {
@@ -49,6 +56,8 @@ export const initialState: State = {
   isBilling: false,
   attachmentId: '',
   facilityName: '',
+  facilityId: '',
+  doctorName: '',
   kinContactId: '',
   isEditCard: false,
   paymentMethod: '',
@@ -66,6 +75,10 @@ export const initialState: State = {
   emergencyContactId: '',
   guarantorContactId: '',
   patientData: undefined,
+  isChecked: false,
+  isVerified: false,
+  addressOpen: false,
+  data: [],
 }
 
 
@@ -90,6 +103,8 @@ export enum ActionType {
   SET_PATIENT_DATA = 'setPatientData',
   SET_ATTACHMENT_ID = 'setAttachmentId',
   SET_FACILITY_NAME = 'setFacilityName',
+  SET_FACILITY_ID = 'setFacilityId',
+  SET_DOCTOR_NAME = 'setDoctorName',
   SET_KIN_CONTACT_ID = 'setKinContactID',
   SET_IS_APPOINTMENT = 'setIsAppointment',
   SET_PAYMENT_METHOD = 'setPaymentMethod',
@@ -102,6 +117,10 @@ export enum ActionType {
   SET_GUARDIAN_CONTACT_ID = 'setGuardianContactID',
   SET_GUARANTOR_CONTACT_ID = 'setGuarantorContactId',
   SET_EMERGENCY_CONTACT_ID = 'setEmergencyContactID',
+  SET_IS_CHECKED = 'setIschecked',
+  SET_IS_VERIFIED = 'setIsVerified',
+  SET_ADDRESS_OPEN = 'setAddressOpen',
+  SET_DATA = 'setData',
 }
 
 export type Action =
@@ -120,6 +139,8 @@ export type Action =
   | { type: ActionType.SET_SEARCH_QUERY; searchQuery: string }
   | { type: ActionType.SET_SAME_ADDRESS, sameAddress: boolean }
   | { type: ActionType.SET_FACILITY_NAME; facilityName: string }
+  | { type: ActionType.SET_FACILITY_ID; facilityId: string }
+  | { type: ActionType.SET_DOCTOR_NAME; doctorName: string }
   | { type: ActionType.SET_KIN_CONTACT_ID; kinContactId: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_PAYMENT_METHOD, paymentMethod: string }
@@ -138,7 +159,10 @@ export type Action =
   | { type: ActionType.SET_PATIENT_DATA; patientData: PatientPayload['patient'] }
   | { type: ActionType.SET_ATTACHMENT_DATA; attachmentData: AttachmentPayload['attachment'] }
   | { type: ActionType.SET_ATTACHMENTS_DATA; attachmentsData: AttachmentsPayload['attachments'] }
-
+  | { type: ActionType.SET_IS_CHECKED; isChecked: boolean }
+  | { type: ActionType.SET_IS_VERIFIED; isVerified: boolean }
+  | { type: ActionType.SET_ADDRESS_OPEN; addressOpen: boolean }
+  | { type: ActionType.SET_DATA; data: usStreet.Candidate[] }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -323,6 +347,37 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         facilityName: action.facilityName
+      }
+
+    case ActionType.SET_FACILITY_ID:
+      return {
+        ...state,
+        facilityId: action.facilityId
+      }
+    case ActionType.SET_DOCTOR_NAME:
+      return {
+        ...state,
+        doctorName: action.doctorName
+      }
+    case ActionType.SET_IS_CHECKED:
+      return {
+        ...state,
+        isChecked: action.isChecked
+      }
+    case ActionType.SET_IS_VERIFIED:
+      return {
+        ...state,
+        isVerified: action.isVerified
+      }
+    case ActionType.SET_ADDRESS_OPEN:
+      return {
+        ...state,
+        addressOpen: action.addressOpen
+      }
+    case ActionType.SET_DATA:
+      return {
+        ...state,
+        data: action.data
       }
   }
 };

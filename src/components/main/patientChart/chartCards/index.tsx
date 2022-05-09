@@ -5,7 +5,7 @@ import { Box, Grid } from "@material-ui/core";
 import AllergyList from '../allergies/list';
 import PatientCardComponent from "./PatientCardComponent";
 // interfaces, graphql, constants block /styles
-import { PATIENT_CHARTING_DATA, PROBLEMS_TEXT, VITALS_TEXT } from "../../../../constants";
+import { PATIENT_CHARTING_DATA, VITALS_TEXT } from "../../../../constants";
 import ProblemList from '../problems/list';
 
 const ChartCards: FC = (): JSX.Element => {

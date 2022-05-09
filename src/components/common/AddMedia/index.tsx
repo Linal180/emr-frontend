@@ -2,7 +2,6 @@
 import { FC, useEffect, useReducer, Reducer, useRef } from "react";
 import dotenv from 'dotenv';
 import { useForm } from "react-hook-form";
-import DeleteIcon from "@material-ui/icons/Delete";
 import {
   Button, Dialog, DialogActions, DialogTitle, CircularProgress, DialogContent, Box, IconButton
 } from "@material-ui/core";
@@ -14,6 +13,7 @@ import { ADD, ADD_MEDIA } from "../../../constants";
 import { ICreateMediaInput, MediaModalTypes } from "../../../interfacesTypes";
 import { CreateAttachmentInput, useRemoveAttachmentDataMutation } from "../../../generated/graphql";
 import { Action, ActionType, mediaReducer, State, initialState } from "../../../reducers/mediaReducer"
+import { TrashNewIcon } from "../../../assets/svgs";
 
 dotenv.config()
 
@@ -91,7 +91,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
 
               <Box className="media-overlay">
                 <IconButton aria-label="delete" color="secondary" onClick={handleDelete}>
-                  <DeleteIcon />
+                  <TrashNewIcon />
                 </IconButton>
               </Box>
             </Box>

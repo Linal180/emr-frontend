@@ -8,44 +8,46 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, } from '@material-ui/core';
 //components block
-import ViewDataLoader from '../../../common/ViewDataLoader';
-import Selector from '../../../common/Selector';
 import Sidebar from './sidebar';
-import DropContainer from './dropContainer';
 import Alert from '../../../common/Alert';
+import DropContainer from './dropContainer';
+import Selector from '../../../common/Selector';
 import FieldProperties from './fieldProperties';
+import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
-import CreateTemplateModal from '../../../common/CreateTemplateModal'
+import ViewDataLoader from '../../../common/ViewDataLoader';
+import CreateTemplateModal from '../../../common/CreateTemplateModal';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // constants block
-import { FormAddIcon } from '../../../../assets/svgs';
 import history from '../../../../history';
 import { AuthContext } from '../../../../context';
+import { FormAddIcon } from '../../../../assets/svgs';
 import { GREY_EIGHT, WHITE } from '../../../../theme';
-import { ListContext } from '../../../../context/listContext'
+import { isSuperAdmin, setRecord } from '../../../../utils';
+import { ListContext } from '../../../../context/listContext';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
-import { isSuperAdmin, renderFacilities, setRecord } from '../../../../utils';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
 import {
-  FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation, useCreateFormTemplateMutation
+  FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery,
+  useUpdateFormMutation, useCreateFormTemplateMutation
 } from '../../../../generated/graphql';
 import {
-  COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES, getFormInitialValues,
-  FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION,
-  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD, SAVE_DRAFT, FORM_TEXT,
-  CREATE_TEMPLATE, CREATE_FORM_TEMPLATE,
+  COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES,
+  FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE,
+  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH,
+  FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues, CREATE_FORM_BUILDER,
+  NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD,
 } from '../../../../constants';
 
-//component
 const AddForm = () => {
-  //states
   const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
   const [selected, setSelected] = useState<FormInitialType>(FIELD_EDIT_INITIAL_VALUES);
   const [colMenu, setColMenu] = useState<null | HTMLElement>(null)
   const [isActive, setIsActive] = useState<boolean>(false)
   const [openTemplate, setOpenTemplate] = useState<boolean>(false)
   const [formName, setFormName] = useState<string>('')
-  //hooks
   const { id: formId, templateId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
   const { facilityList } = useContext(ListContext)
@@ -53,9 +55,12 @@ const AddForm = () => {
   const { roles, facility } = user || {};
   const { id: facilityId } = facility || {};
   const isSuper = isSuperAdmin(roles);
-  const methods = useForm<FormBuilderFormInitial>({ defaultValues: FORM_BUILDER_INITIAL_VALUES, resolver: yupResolver(isSuper ? createFormBuilderSchemaWithFacility : createFormBuilderSchema) });
+  const methods = useForm<FormBuilderFormInitial>({
+    defaultValues: FORM_BUILDER_INITIAL_VALUES,
+    resolver: yupResolver(isSuper ? createFormBuilderSchemaWithFacility : createFormBuilderSchema)
+  });
   const { handleSubmit, setValue } = methods
-  //mutations & query
+
   const [createForm, { loading }] = useCreateFormMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
@@ -78,6 +83,7 @@ const AddForm = () => {
       }
     }
   })
+
   const [getForm, { loading: getFormLoader }] = useGetFormLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -102,6 +108,7 @@ const AddForm = () => {
         }
       }
     },
+
     onError({ message }) {
       message !== NOT_FOUND_EXCEPTION && Alert.error(message)
       history.push(FORM_BUILDER_ROUTE)
@@ -112,6 +119,7 @@ const AddForm = () => {
     onError({ message }) {
       Alert.error(message)
     },
+
     onCompleted(data) {
       const { updateForm: { response } } = data;
       if (response) {
@@ -128,6 +136,7 @@ const AddForm = () => {
     onError({ message }) {
       Alert.error(message)
     },
+
     onCompleted(data) {
       const { createFormTemplate: { form, response } } = data;
 
@@ -154,19 +163,17 @@ const AddForm = () => {
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
-    if (!destination) {
-      return;
-    }
+    if (!destination || destination.droppableId !== source.droppableId) return;
+
     if (destination.droppableId === source.droppableId) {
       formValues?.map((item) => {
         if (destination.droppableId === item.id) {
           const { fields } = item
           const [removed] = fields?.splice(source.index, 1);
           fields?.splice(destination.index, 0, removed);
-          return item;
-        } else {
-          return item;
         }
+
+        return item;
       });
     } else if (source.droppableId === 'ITEMS') {
       formValues?.map((item) => {
@@ -174,6 +181,7 @@ const AddForm = () => {
           const itemField = ITEMS?.find(
             (item) => item?.fieldId === draggableId
           );
+
           const newField: FieldsInputs = {
             label: itemField?.label ?? '',
             type: itemField?.type as ElementType ?? ElementType.Text,
@@ -189,17 +197,15 @@ const AddForm = () => {
             textArea: itemField?.textArea ?? false,
             isMultiSelect: itemField?.isMultiSelect ?? false
           };
+
           item?.fields?.splice(destination.index, 0, newField);
-          return item;
-        } else {
-          return item;
         }
+
+        return item;
       });
-    } else if (destination.droppableId !== source.droppableId) {
-      return;
     }
   };
-  //add list
+
   const addList = (type: string) => {
     switch (type) {
       case COL_TYPES.COL_1:
@@ -316,34 +322,32 @@ const AddForm = () => {
 
     setFormValues(arr1);
   }
-  //del field handler
+
   const delFieldHandler = (index: number, sectionIndex: number) => {
     const arr = formValues?.map((item, i) => {
       if (i === sectionIndex) {
         const arr = item?.fields?.filter((field, fieldIndex) => index !== fieldIndex);
         return { ...item, fields: arr }
       }
+
       return item
     })
     setFormValues(arr)
   }
-  //clear form values handler
-  const clearHandler = () => {
-    setFormValues(getFormInitialValues())
-  };
-  //menu handlers
+
+  const clearHandler = () => setFormValues(getFormInitialValues())
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setColMenu(event.currentTarget);
   const handleMenuClose = () => setColMenu(null);
-  //section handler
+
   const delColHandler = (index: number) => {
     const arr = formValues?.filter((item, i) => i !== index)
     setFormValues(arr)
   }
 
-  //get facility name
   const getFacilityNameHandler = (facilityId: string) => {
     const facility = facilityList?.find((item) => item?.id === facilityId)
     const { name } = facility || {}
+
     return name;
   }
 
@@ -355,31 +359,37 @@ const AddForm = () => {
             layout: {
               sections: formValues
             },
+
             name: formName,
             isSystemForm: true,
             type: FormType.Template
           }
         }
       })
-    } catch (error) {
-
-    }
+    } catch (error) { }
   }
 
   const templateCreateClick = () => {
     const isFieldFound = formValues?.some((item) => item.fields.length > 0);
     if (isFieldFound) {
       setOpenTemplate(true)
-    }
-    else Alert.error(DROP_FIELD)
+    } else Alert.error(DROP_FIELD)
   }
-  //render
   return (
     <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
           <Box py={2} display='flex' justifyContent='space-between'>
-            <Typography variant='h4'>{FORM_BUILDER}</Typography>
+            <Box display='flex'>
+              <BackButton to={`${FORM_BUILDER_ROUTE}`} />
+
+              <Box ml={2} />
+
+              <PageHeader
+                title={FORM_BUILDER}
+                path={[FORMS_BREAD, formId ? FORMS_EDIT_BREAD : FORMS_ADD_BREAD]}
+              />
+            </Box>
 
             <Box display='flex' justifyContent='flex-start'>
               <Button onClick={clearHandler} variant="outlined" color="default">
@@ -411,12 +421,11 @@ const AddForm = () => {
               {getFormLoader ? <ViewDataLoader rows={1} columns={3} hasMedia={false} /> :
                 <Grid container spacing={3}>
                   {isSuper && <Grid item md={4} sm={12} xs={12}>
-                    <Selector
+                    <FacilitySelector
                       isRequired
-                      value={EMPTY_OPTION}
                       label={FACILITY}
                       name="facilityId"
-                      options={renderFacilities(facilityList)}
+                      addEmpty
                     />
                   </Grid>}
 

@@ -11,8 +11,8 @@ import ViewDataLoader from "../../../../common/ViewDataLoader";
 import { GREY_SEVEN } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
-import { ALLERGIES_TEXT, CARD_LAYOUT_MODAL, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
 import { formatValue, getAppointmentDate, getSeverityColor } from "../../../../../utils";
+import { CARD_LAYOUT_MODAL, LIST_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TEXT } from "../../../../../constants";
 import {
   chartReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/chartReducer";
@@ -119,7 +119,7 @@ const ProblemList = (): JSX.Element => {
   }
 
   return (
-    <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
+    <CardLayout openSearch={isSearchOpen} cardId={PROBLEMS_TEXT} cardTitle={PROBLEMS_TEXT}
       hasAdd
       modal={CARD_LAYOUT_MODAL.ICDCodes}
       dispatcher={dispatch}
@@ -172,9 +172,8 @@ const ProblemList = (): JSX.Element => {
         onClose={handleMenuClose}
         className={classes.dropdown}
       >
-        aaaaaaaaaaaaaa
-        {itemId && selectedItem && ''
-          // <ProblemModal item={selectedItem} dispatcher={dispatch} isEdit patientAllergyId={itemId} fetch={async () => fetchAllergies()} />
+        {itemId && selectedItem && selectedItem.__typename === CARD_LAYOUT_MODAL.ICDCodes &&
+          <ProblemModal item={selectedItem} dispatcher={dispatch} isEdit recordId={itemId} fetch={async () => fetchProblems()} />
         }
       </Menu>
     </CardLayout>

@@ -2,21 +2,26 @@
 import { FC, ChangeEvent, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, IconButton } from "@material-ui/core";
 // components block
+import Alert from "../../../common/Alert";
 import TableLoader from "../../../common/TableLoader";
+import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
+import { TrashNewIcon } from "../../../../assets/svgs";
 import { formatRoleName, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { NAME, DESCRIPTION, N_A, ROLES_ROUTE } from "../../../../constants";
-import { RolesPayload, useFindAllRolesLazyQuery } from "../../../../generated/graphql";
+import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
+import { NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION } from "../../../../constants";
 
 const RolesTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
   const [page, setPage] = useState<number>(1);
   const [pages, setPages] = useState<number>(0);
+  const [openDelete, setOpenDelete] = useState<boolean>(false);
   const [roles, setRoles] = useState<RolesPayload['roles']>([]);
+  const [deleteRoleId, setDeleteRoleId] = useState<string>('');
 
   const [findAllRoles, { loading, error }] = useFindAllRolesLazyQuery({
     variables: {
@@ -60,6 +65,45 @@ const RolesTable: FC = (): JSX.Element => {
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value);
 
+  const [removeRole, { loading: deleteRoleLoading }] = useRemoveRoleMutation({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      Alert.error(CANT_DELETE_ROLE)
+      setOpenDelete(false)
+    },
+
+    async onCompleted(data) {
+      try {
+        if (data) {
+          const { removeRole: { response } } = data
+
+          if (response) {
+            const { message } = response
+            message && Alert.success(message);
+            setOpenDelete(false)
+            await findAllRoles();
+          }
+        }
+      } catch (error) { }
+    }
+  });
+
+  const onDelete = (id: string) => {
+    if (id) {
+      setDeleteRoleId(id)
+      setOpenDelete(true)
+    }
+  };
+
+  const handleDeleteRole = async () => {
+    deleteRoleId &&
+      await removeRole({
+        variables: { removeRole: { id: deleteRoleId } }
+      })
+  };
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -69,6 +113,7 @@ const RolesTable: FC = (): JSX.Element => {
               <TableRow>
                 {renderTh(NAME)}
                 {renderTh(DESCRIPTION)}
+                {renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
 
@@ -81,7 +126,7 @@ const RolesTable: FC = (): JSX.Element => {
                 </TableRow>
               ) : (
                 roles?.map(role => {
-                  const { id, role: roleName, description } = role || {}
+                  const { id, role: roleName, description, customRole } = role || {}
 
                   return (
                     <TableRow>
@@ -92,6 +137,17 @@ const RolesTable: FC = (): JSX.Element => {
                       </TableCell>
 
                       <TableCell scope="row">{description || N_A}</TableCell>
+                      <TableCell scope="row">
+                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                          <IconButton
+                            color="primary"
+                            disabled={!customRole || false}
+                            className={customRole ? classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}
+                            onClick={() => onDelete(id || '')} >
+                            <TrashNewIcon />
+                          </IconButton>
+                        </Box>
+                      </TableCell>
                     </TableRow>
                   )
                 }
@@ -106,6 +162,15 @@ const RolesTable: FC = (): JSX.Element => {
           <NoDataFoundComponent />
         </Box>
       )}
+
+      <ConfirmationModal
+        title={ROLE}
+        isOpen={openDelete}
+        isLoading={deleteRoleLoading}
+        handleDelete={handleDeleteRole}
+        description={DELETE_ROLE_DESCRIPTION}
+        setOpen={(open: boolean) => setOpenDelete(open)}
+      />
 
       {pages > 1 &&
         <Box display="flex" justifyContent="flex-end" p={3}>

@@ -1,37 +1,42 @@
 // packages block
-import { FC, Reducer, useReducer, useState } from 'react';
-import { Box, Button, CircularProgress, Typography } from '@material-ui/core';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
+import { Box, Button, CircularProgress, Typography } from '@material-ui/core';
 // component block
+import Alert from '../../../../common/Alert';
 import Selector from '../../../../common/Selector';
+import DatePicker from '../../../../common/DatePicker';
 import InputController from '../../../../../controller';
 // constants block
-import { AddModalProps, ParamsType } from '../../../../../interfacesTypes';
-import { GRAY_SIX, WHITE, GREY_TWO, } from '../../../../../theme';
+import { GRAY_SIX } from '../../../../../theme';
+import { formatValue, setRecord } from '../../../../../utils';
+import { ActionType } from '../../../../../reducers/chartReducer';
+import { patientProblemSchema } from '../../../../../validationSchemas';
+import { AddModalProps, ParamsType, PatientProblemInputs } from '../../../../../interfacesTypes';
 import {
-  ACTIVE, ACUTE, ADD, APPOINTMENT, CHRONIC, DELETE, EMPTY_OPTION, HISTORICAL,
-  NOTE, ONSET_DATE, PATIENT_PROBLEM_ADDED, PATIENT_PROBLEM_DELETED, PATIENT_PROBLEM_UPDATED, STATUS, TYPE, UPDATE,
+  ADD, APPOINTMENT, DELETE, EMPTY_OPTION, NOTE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE,
+   PATIENT_PROBLEM_DELETED, PATIENT_PROBLEM_UPDATED, STATUS,
 } from '../../../../../constants';
-import { IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation, useGetPatientProblemLazyQuery, useRemovePatientProblemMutation, useUpdatePatientProblemMutation } from '../../../../../generated/graphql';
-import { useParams } from 'react-router-dom';
-import DatePicker from '../../../../common/DatePicker';
-import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
-import Alert from '../../../../common/Alert';
-import { yupResolver } from '@hookform/resolvers/yup';
+import {
+  IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
+  useGetPatientProblemLazyQuery, useRemovePatientProblemMutation, useUpdatePatientProblemMutation
+} from '../../../../../generated/graphql';
 
 const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId }): JSX.Element => {
-  const { id, code, description } = item as IcdCodes || {}
+  const { id: icdCodeId, code, description } = item as IcdCodes || {}
   const { id: patientId } = useParams<ParamsType>()
   const statuses = Object.keys(ProblemType)
   const [typeStatus, setTypeStatus] = useState<string>(statuses[0])
   const severities = Object.keys(ProblemSeverity)
   const [severity, setSeverity] = useState<string>(severities[0])
-  const [{ }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
-  const methods = useForm<any>({
+
+  const methods = useForm<PatientProblemInputs>({
     mode: "all",
     // resolver: yupResolver(PatientProblemchema)
   });
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, setValue } = methods;
 
   const closeAddModal = () => {
     reset()
@@ -48,11 +53,30 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     },
 
     onCompleted(data) {
-      const {getPatientProblem} = data;
+      const { getPatientProblem } = data || {};
 
       if (getPatientProblem) {
         const { patientProblem, response } = getPatientProblem
+        const {status} = response || {}
+        
+        if(patientProblem && status && status === 200){
+          const { problemSeverity, problemType, problemStartDate, note, appointment } = patientProblem
+        
+          if(appointment){
+            const {appointmentType} = appointment;
 
+            if(appointmentType){
+              const {id, serviceType} = appointmentType;
+              
+              id && serviceType && setValue('appointmentId', setRecord(id, serviceType))
+            }
+          }
+
+          note && setValue('note', note)
+          problemStartDate && setValue('problemStartDate', problemStartDate)
+          problemSeverity && setSeverity(formatValue(problemSeverity).trim())
+          problemType && setTypeStatus(formatValue(problemType).trim())
+        }
       }
     }
   });
@@ -117,6 +141,18 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
     }
   });
 
+  const fetchPatientProblem = useCallback(async () => {
+    try {
+      recordId && await getPatientProblem({ 
+        variables: { getPatientProblem: {  id: recordId }}
+      })
+    } catch (error) {}
+  }, [getPatientProblem, recordId])
+
+  useEffect(() => {
+    isEdit && fetchPatientProblem();
+  }, [fetchPatientProblem, isEdit])
+
   const handleStatus = (status: string) => setTypeStatus(status)
   const handleSeverity = (severity: string) => setSeverity(severity)
 
@@ -125,8 +161,32 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
       variables: { removeProblem: { id: recordId } }
     })
   }
-  
-  const onSubmit: SubmitHandler<any> = () => { }
+
+  const onSubmit: SubmitHandler<PatientProblemInputs> = async ({ note, appointmentId, problemStartDate }) => {
+    const { id: selectedAppointment } = appointmentId || {};
+
+    const commonInput = {
+      note, problemSeverity: severity.toUpperCase() as ProblemSeverity, problemStartDate,
+      problemType: typeStatus.toUpperCase() as ProblemType
+    }
+
+    const extendedInput = selectedAppointment ?
+      { appointmentId: selectedAppointment, ...commonInput } : { ...commonInput }
+
+    if (isEdit) {
+      recordId && await updatePatientProblem({
+        variables: {
+          updateProblemInput: { id: recordId, ...extendedInput }
+        }
+      })
+    } else {
+      await addPatientProblem({
+        variables: {
+          createProblemInput: { patientId, icdCodeId, ...extendedInput }
+        }
+      })
+    }
+  }
 
   const isDisable = addProblemLoading || updateProblemLoading || getProblemLoading
 
@@ -138,19 +198,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
         <Box p={1} />
 
-        {/* <Box display='flex'>
-          <Typography variant='h5'>ICD-10 Code:</Typography>
-          <Box p={0.3} />
-          <Typography variant='body2'>R12</Typography>
-        </Box>
-
-        <Box display='flex' mb={3}>
-          <Typography variant='h5'>SnoMED Code:</Typography>
-          <Box p={0.3} />
-          <Typography variant='body2'>722876002</Typography>
-        </Box> */}
-
-        <DatePicker label={ONSET_DATE} name='onsetDate' />
+        <DatePicker label={ONSET_DATE} name='problemStartDate' isRequired />
         <Typography variant='body1'>{STATUS}</Typography>
 
         <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
@@ -176,7 +224,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
         <Selector
           value={EMPTY_OPTION}
           label={APPOINTMENT}
-          name="appointment"
+          name="appointmentId"
           options={[]}
         />
 
@@ -185,7 +233,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
           controllerName="note"
           controllerLabel={NOTE}
         />
-        n
+
         <Box display='flex' justifyContent='flex-end'>
           {isEdit &&
             <Button disabled={removeProblemLoading} onClick={handleDelete} variant='contained'

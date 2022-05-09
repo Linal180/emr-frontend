@@ -26,7 +26,7 @@ import {
 } from "../../../../reducers/mediaReducer";
 import {
   ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, VIEW_CHART_TEXT,
-  MAPPED_WIDGETS, CHART_ROUTE, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS, 
+  MAPPED_WIDGETS, CHART_ROUTE, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS,
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
@@ -36,8 +36,8 @@ const PatientDetailsComponent = (): JSX.Element => {
   const [{ anchorEl, openDelete, tabValue, patientData }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
-  const [{ attachmentsData }, mediaDispatcher] = 
-  useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
+  const [{ attachmentsData }, mediaDispatcher] =
+    useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
   const { handleSubmit } = methods;
@@ -59,13 +59,13 @@ const PatientDetailsComponent = (): JSX.Element => {
     <Box>
       <TabContext value={tabValue}>
         <Box display="flex" justifyContent="space-between" flexWrap="wrap">
-          <TabList onChange={handleChange} aria-label="Profile top tabs">
-            <Box display="flex" flexWrap="wrap">
+          <Box display="flex" flexWrap="wrap">
+            <TabList onChange={handleChange} aria-label="Profile top tabs">
               {PROFILE_TOP_TABS.map(item => (
                 <Tab key={`${item.title}-${item.value}`} label={item.title} value={item.value} />
               ))}
-            </Box>
-          </TabList>
+            </TabList>
+          </Box>
 
           <Box pr={2}>
             <Link to={`${PATIENTS_ROUTE}/${id}${CHART_ROUTE}`}>
@@ -155,7 +155,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
 
           <TabPanel value="8">
-              <DocumentsTable dispatcher={mediaDispatcher} attachments={attachmentsData} />
+            <DocumentsTable dispatcher={mediaDispatcher} attachments={attachmentsData} />
           </TabPanel>
 
           <TabPanel value="9">

@@ -131,4 +131,33 @@ export const useTableStyles = makeStyles(() => ({
   tooltipContainer: {
     cursor: 'pointer'
   },
+
+  rolesIconsBackground: {
+    background: WHITE_THREE,
+    height: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginLeft: 6,
+    cursor: 'pointer',
+
+    "& svg": {
+      maxWidth: 16
+    }
+  },
+
+  rolesIconsBackgroundDisabled: {
+    height: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginLeft: 6,
+    opacity: 0.5,
+
+    "& svg": {
+      maxWidth: 16,
+    }
+  },
 }))

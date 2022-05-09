@@ -24,7 +24,7 @@ import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../.
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
-import { getStandardTime, getTimestamps, getTimestampsForDob, renderServices } from "../../../../../utils";
+import { getStandardTime, getTimestamps, getTimestampsForDob } from "../../../../../utils";
 import {
   ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation, useGetSlotsLazyQuery,
   useGetFacilityLazyQuery, FacilityPayload, BillingStatus
@@ -35,11 +35,12 @@ import {
   AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
   NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, DAYS,
 } from "../../../../../constants";
+import ServiceSelector from "../../../../common/Selector/ServiceSelector";
 
 const FacilityPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
   const { id: facilityId } = useParams<ParamsType>();
-  const { serviceList, fetchAllServicesList } = useContext(FacilityContext)
+  const { fetchAllServicesList } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { facility, availableSlots, currentDate, offset, agreed } = state;
   const [date, setDate] = useState(new Date() as MaterialUiPickersDate);
@@ -208,12 +209,12 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
                 <Grid lg={9} md={8} sm={6} xs={12} item>
                   <CardComponent cardTitle={SELECT_SERVICES}>
                     <Grid item md={6} sm={12} xs={12}>
-                      <Selector
+                      <ServiceSelector
                         isRequired
-                        value={EMPTY_OPTION}
                         label={APPOINTMENT_TYPE}
                         name="serviceId"
-                        options={renderServices(serviceList)}
+                        facilityId={facilityId}
+                        addEmpty
                       />
                     </Grid>
                   </CardComponent>
