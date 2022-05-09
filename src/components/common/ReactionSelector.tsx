@@ -11,6 +11,7 @@ import { ReactionsPayload, useFindAllReactionsLazyQuery } from '../../generated/
 const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, isRequired, defaultValues }) => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[]>([])
+  const [values, setValues] = useState<multiOptionType[]>([])
 
   const [findAllReactions] = useFindAllReactionsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -41,18 +42,24 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
   useEffect(() => {
     if (isEdit) {
       if (defaultValues) {
-        setOptions(defaultValues)
         setValue('reactionIds', defaultValues.map(option => option))
+        setOptions(defaultValues)
+        setValues(defaultValues)
       }
     }
   }, [defaultValues, isEdit, setValue])
+
+  const updateValues = (newValues: multiOptionType[]) => {
+    setValues(newValues as multiOptionType[])
+    !!newValues.length && setValue('reactionIds', newValues.map(option => option))
+  }
 
   return (
     <Controller
       name={name}
       control={control}
-      defaultValue={[]}
-      render={({ field, fieldState: { invalid } }) => {
+      defaultValue={options}
+      render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         return (
           <FormControl margin="normal" fullWidth error={Boolean(invalid)}>
             <Box position="relative">
@@ -62,19 +69,24 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
             </Box>
 
             <Select
+            {...field}
               isMulti
               name={name}
-              defaultValue={defaultValues?.map(option => option)}
+              defaultValue={options}
               id="selectedId"
               options={options}
-              onChange={field.onChange}
+              value={values}
+              onChange={(newValue) => {
+                field.onChange();
+                updateValues(newValue as multiOptionType[])
+              }}
               onInputChange={(query: string) => {
                 query.length > 2 && fetchReactions(query)
               }}
               className="selectorClassTwo"
             />
 
-            <FormHelperText></FormHelperText>
+            <FormHelperText>{message}</FormHelperText>
           </FormControl>
         )
       }}

@@ -1033,37 +1033,28 @@ export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
 // HELPER TEXT MESSAGES
 export const MIN_LENGTH_MESSAGE = `Text too short`;
+export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
 export const PASSWORD_NOT_MATCHED = "Password doesn't match";
 export const DOB_VALIDATION_MESSAGE = "Date of birth is invalid";
-export const ALLERGY_DATE_VALIDATION_MESSAGE = "Allergy start date is invalid";
 export const DELETE_REQUEST_INFO = "This will delete the request.";
-export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const BANK_ACCOUNT_VALIDATION_MESSAGE = "Invalid bank account.";
 export const SSN_VALIDATION_MESSAGE = "SSN valid format is NNN-NN-NNNN";
 export const CLIA_VALIDATION_MESSAGE = "CLIA should be 10-alphanumeric";
 export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
-export const EIN_VALIDATION_MESSAGE =
-  "EIN should be NN-NNNNNNN, dash is optional";
-export const PLEASE_ADD_DOCUMENT =
-  "Please upload or drag and drop the documents here";
-export const PLEASE_CLICK_TO_UPDATE_DOCUMENT =
-  "Please click here to update the documents";
-export const UPIN_VALIDATION_MESSAGE =
-  "UPIN should be six-place alpha numeric identifiers";
-export const minDobValidMessage = (label: string) =>
-  `${label}'s age should be more that 20-years`;
-export const maxDobValidMessage = (label: string) =>
-  `${label}'s age should be less that 100-years`;
-export const REVENUE_CODE_VALIDATION_MESSAGE =
-  "Revenue code should be a 4-digit combination";
-export const DELETE_USER_INFO =
-  "This will delete all the information associated with the user.";
-export const FACILITY_CODE_VALIDATION_MESSAGE =
-  "Facility code can only be capital alphabets 2-5 in length";
-export const MAMMOGRAPHY_VALIDATION_MESSAGE =
-  "Valid mammography certification Number format is like REF-EW-111111";
+export const ALLERGY_DATE_VALIDATION_MESSAGE = "Allergy start date is invalid";
+export const REACTIONS_VALIDATION_MESSAGE = "At least one reaction is required";
+export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optional";
+export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
+export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
+export const UPIN_VALIDATION_MESSAGE = "UPIN should be six-place alpha numeric identifiers";
+export const REVENUE_CODE_VALIDATION_MESSAGE = "Revenue code should be a 4-digit combination";
+export const DELETE_USER_INFO = "This will delete all the information associated with the user.";
+export const minDobValidMessage = (label: string) => `${label}'s age should be more that 20-years`;
+export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
+export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
+export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;
 export const MaxLength = (fieldName: string, length: number) =>
@@ -1402,10 +1393,10 @@ export const MAPPED_WIDGETS: SelectorOption[] = [
 ];
 
 export const MAPPED_ALLERGY_SEVERITY: SelectorOption[] = [
-  { id: AllergySeverity.Acute, name: formatValue(AllergySeverity.Acute) },
+  { id: AllergySeverity.VeryMild, name: formatValue(AllergySeverity.VeryMild) },
   { id: AllergySeverity.Mild, name: formatValue(AllergySeverity.Mild) },
   { id: AllergySeverity.Moderate, name: formatValue(AllergySeverity.Moderate) },
-  { id: AllergySeverity.VeryMild, name: formatValue(AllergySeverity.VeryMild) }
+  { id: AllergySeverity.Acute, name: formatValue(AllergySeverity.Acute) },
 ];
 
 export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
