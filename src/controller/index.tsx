@@ -6,19 +6,18 @@ import { Box, FormControl, IconButton, InputLabel, TextField } from "@material-u
 // components block
 import ShowPassword from "../components/common/ShowPassword";
 // styles, constants, utils and interfaces block
+import { requiredLabel } from "../utils";
 import { PASSWORD, TEXT } from "../constants";
-import { DetailTooltip, useTableStyles } from "../styles/tableStyles";
+import { ClearIcon, InfoIcon } from "../assets/svgs";
+import { DetailTooltip } from "../styles/tableStyles";
 import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
-import { ClearIcon, InfoIcon } from "../assets/svgs";
-import { requiredLabel } from "../utils";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
   disabled, multiline, info, placeholder, className, isSearch, clearable, handleClearField
 }): JSX.Element => {
   const classes = useFormStyles();
-  const tabClasses = useTableStyles()
   const { control } = useFormContext();
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
 
@@ -50,36 +49,35 @@ const InputController: FC<CustomInputControlProps> = ({
               </Box>
             }
           </InputLabel>
-          <Box className={tabClasses.searchBox}>
-          <TextField
-            fullWidth
-            error={invalid}
-            variant="outlined"
-            multiline={multiline}
-            className={className}
-            disabled={disabled}
-            id={controllerName}
-            placeholder={placeholder ? placeholder : ""}
-            type={fieldType === "password" ? passwordType : fieldType}
-            helperText={error ? error : message}
-            {...field}
-            InputProps={isPassword ? {
-              endAdornment: <ShowPassword
-                isPassword={isPassword}
-                passwordType={passwordType}
-                handleShowPassword={handleClickShowPassword}
-              />,
-            } : fieldType === 'number' ? {
-              inputProps: { step: '5' }
-            } : isSearch ? {
-              endAdornment: <Search />
-            } : undefined}
-          />
 
-          {clearable  && <IconButton aria-label="clear" onClick={handleClearField ? ()=>handleClearField(controllerName):()=>{}}>
-            <ClearIcon />
-          </IconButton>}
-          </Box>
+            <TextField
+              fullWidth
+              error={invalid}
+              variant="outlined"
+              multiline={multiline}
+              className={className}
+              disabled={disabled}
+              id={controllerName}
+              placeholder={placeholder ? placeholder : ""}
+              type={fieldType === "password" ? passwordType : fieldType}
+              helperText={error ? error : message}
+              {...field}
+              InputProps={isPassword ? {
+                endAdornment: <ShowPassword
+                  isPassword={isPassword}
+                  passwordType={passwordType}
+                  handleShowPassword={handleClickShowPassword}
+                />,
+              } : clearable ? {
+                endAdornment: <IconButton aria-label="clear" onClick={handleClearField ? () => handleClearField(controllerName) : () => { }}>
+                  <ClearIcon />
+                </IconButton>
+              } : fieldType === 'number' ? {
+                inputProps: { step: '5' }
+              } : isSearch ? {
+                endAdornment: <Search />
+              } : undefined}
+            />
         </FormControl>
       )}
     />
