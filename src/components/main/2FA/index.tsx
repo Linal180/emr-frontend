@@ -4,10 +4,10 @@ import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-for
 // component block
 import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
-import { Box, Button, CircularProgress, FormControl, Grid, MenuItem, Typography, } from '@material-ui/core';
+import { Box, Button, CircularProgress, FormControl, Grid, IconButton, MenuItem, Typography, } from '@material-ui/core';
 // constants, history, styling block
-import { GRAY_ONE, WHITE } from '../../../theme';
-import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
+import { GRAY_ONE, RED, WHITE } from '../../../theme';
+import { InfoSearchIcon, SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   GENERAL, PROFILE_GENERAL_MENU_ITEMS, SECURITY, USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, TWO_FA_AUTHENTICATION, STATUS,
@@ -24,7 +24,7 @@ import { AntSwitch } from '../../../styles/publicAppointmentStyles/externalPatie
 
 const TwoFAComponent = (): JSX.Element => {
   const { user, fetchUser } = useContext(AuthContext)
-  const { id, isTwoFactorEnabled: userTwoFactor } = user || {}
+  const { id, isTwoFactorEnabled: userTwoFactor, phone } = user || {}
   const classes = useHeaderStyles();
   const [isChecked, setIsChecked] = useState(userTwoFactor || false);
   const methods = useForm<TwoFactorInputProps>({
@@ -42,7 +42,7 @@ const TwoFAComponent = (): JSX.Element => {
         Alert.error(message)
     },
 
-    onCompleted(data) {
+    async onCompleted(data) {
       if (data) {
         const { update2FactorAuth: { response } } = data
 
@@ -51,7 +51,7 @@ const TwoFAComponent = (): JSX.Element => {
 
           if (status === 200) {
             Alert.success(TWO_FA_ENABLED_SUCCESSFULLY)
-            fetchUser()
+            await fetchUser()
           }
         }
       }
@@ -124,30 +124,45 @@ const TwoFAComponent = (): JSX.Element => {
         <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={TWO_FA_AUTHENTICATION}>
             <Box p={2} mb={2}>
+              {!phone &&
+                <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between' px={2} py={1} borderRadius={5}>
+                  <Box display="flex" alignItems='center'>
+                    <IconButton size="small" color='inherit'>
+                      <InfoSearchIcon />
+                    </IconButton>
+                    <Typography>
+                      Please add phone number
+                    </Typography>
+                  </Box>
+
+                  <Button color="primary" variant="contained" component={Link} to={"/profile"}>
+                    {"Edit Phone Number"}
+                  </Button>
+                </Box>
+              }
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Box mb={4} display="flex" alignItems="center">
                     <Box p={1} />
                     <Typography variant='h4'>{STATUS}</Typography>
                     <Box pl={2}>
-                      <Controller
-                        name='isTwoFactorEnabled'
-                        control={control}
-                        render={() => (
-                          <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-                            <label className="toggle-main">
-                              {loading
-                                ? <CircularProgress size={5} color="inherit" /> :
-                                (
-                                  <>
-                                    <Box color={isChecked ? WHITE : GRAY_ONE} pr={1}>{ENABLED}</Box>
-                                    <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='isTwoFactorEnabled' />
-                                    <Box color={isChecked ? GRAY_ONE : WHITE}>{DISABLED}</Box>
-                                  </>)}
-                            </label>
-                          </FormControl>
-                        )}
-                      />
+                      {loading ?
+                        <CircularProgress size={20} />
+                        :
+                        <Controller
+                          name='isTwoFactorEnabled'
+                          control={control}
+                          render={() => (
+                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                              <label className="toggle-main">
+                                <Box color={isChecked ? WHITE : GRAY_ONE} pr={1}>{ENABLED}</Box>
+                                <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='isTwoFactorEnabled' />
+                                <Box color={isChecked ? GRAY_ONE : WHITE}>{DISABLED}</Box>
+                              </label>
+                            </FormControl>
+                          )}
+                        />
+                      }
                     </Box>
                   </Box>
 
