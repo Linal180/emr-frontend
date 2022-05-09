@@ -45,7 +45,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequ
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       await findAllRole({
-        variables: { roleInput: { ...pageInputs, role: searchQuery } }
+        variables: { roleInput: { ...pageInputs, roleName: searchQuery } }
       })
     } catch (error) { }
   }, [page, findAllRole, searchQuery])

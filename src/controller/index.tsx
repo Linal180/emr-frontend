@@ -2,22 +2,23 @@
 import { FC, useState } from "react";
 import { Search } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
-import { Box, FormControl, InputLabel, TextField } from "@material-ui/core";
+import { Box, FormControl, IconButton, InputLabel, TextField } from "@material-ui/core";
 // components block
 import ShowPassword from "../components/common/ShowPassword";
 // styles, constants, utils and interfaces block
 import { PASSWORD, TEXT } from "../constants";
-import { DetailTooltip } from "../styles/tableStyles";
+import { DetailTooltip, useTableStyles } from "../styles/tableStyles";
 import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
-import { InfoIcon } from "../assets/svgs";
+import { ClearIcon, InfoIcon } from "../assets/svgs";
 import { requiredLabel } from "../utils";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
-  disabled, multiline, info, placeholder, className, isSearch
+  disabled, multiline, info, placeholder, className, isSearch, clearable, handleClearField
 }): JSX.Element => {
   const classes = useFormStyles();
+  const tabClasses = useTableStyles()
   const { control } = useFormContext();
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
 
@@ -49,7 +50,7 @@ const InputController: FC<CustomInputControlProps> = ({
               </Box>
             }
           </InputLabel>
-
+          <Box className={tabClasses.searchBox}>
           <TextField
             fullWidth
             error={invalid}
@@ -74,6 +75,11 @@ const InputController: FC<CustomInputControlProps> = ({
               endAdornment: <Search />
             } : undefined}
           />
+
+          {clearable  && <IconButton aria-label="clear" onClick={handleClearField ? ()=>handleClearField(controllerName):()=>{}}>
+            <ClearIcon />
+          </IconButton>}
+          </Box>
         </FormControl>
       )}
     />
