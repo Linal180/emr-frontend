@@ -6,16 +6,17 @@ import { Box, Card, colors, Grid, Typography, Button, Collapse, } from "@materia
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
 // interfaces, graphql, constants block
-import { BLACK_TWO, WHITE } from '../../../../theme';
+import { GREY_THREE, WHITE } from '../../../../theme';
 import { AddCircleOutline } from '@material-ui/icons';
 import { GeneralFormProps } from "../../../../interfacesTypes";
 import {
-  ADD_ANOTHER_SPECIMEN, APPOINTMENT_TEXT, COLLECTION_DATE, COLLECTION_TIME, DELETE, DESCRIPTION, EDIT_LAB_ORDER, EMPTY_OPTION, SAVE_TEXT,
-  SEARCH, SPECIMEN_NOTES, SPECIMEN_TYPE, STATUS, TEST_DATE, TEST_LOINC_CODE, TEST_NOTES, TEST_TIME
+  ADD_ANOTHER_SPECIMEN, ADD_ANOTHER_TEST, APPOINTMENT_TEXT, COLLECTION_DATE, COLLECTION_TIME, DELETE, DIAGNOSES, 
+  EDIT_LAB_ORDER, EMPTY_OPTION, SAVE_TEXT, SPECIMEN_NOTES, SPECIMEN_TYPE, STATUS, TEST, TEST_DATE, TEST_NOTES, TEST_TIME
 } from '../../../../constants';
 
 const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
-  const [open, setOpen] = useState<boolean>(false);
+  const [openSpecimen, setOpenSpecimen] = useState<boolean>(false);
+  const [openTest, setOpenTest] = useState<boolean>(false);
   const methods = useForm<any>({
     mode: "all",
   });
@@ -43,7 +44,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
               <Grid item md={4} sm={12} xs={12}>
                 <Selector
-                  isRequired
                   name="status"
                   label={STATUS}
                   value={EMPTY_OPTION}
@@ -52,19 +52,18 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
               </Grid>
 
               <Grid item md={4} sm={12} xs={12}>
-                <Selector
-                  isRequired
-                  name="search"
-                  label={SEARCH}
-                  value={EMPTY_OPTION}
-                  options={[]}
+                <InputController
+                  isSearch
+                  fieldType="text"
+                  controllerName="search"
+                  controllerLabel={DIAGNOSES}
                 />
               </Grid>
             </Grid>
 
             <Grid container spacing={3} justifyContent="flex-end">
               <Grid item md={4} sm={12} xs={12}>
-                <Box mb={2} mt={0} color={BLACK_TWO} bgcolor={WHITE}>
+                <Box mb={4} mt={0} color={GREY_THREE} bgcolor={WHITE}>
                   <ul>
                     <li>QT.1: High Fever</li>
                     <li>HT.22: Back Pain</li>
@@ -75,18 +74,16 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
             <Grid container spacing={3}>
               <Grid item md={4} sm={12} xs={12}>
-                <Selector
-                  isRequired
-                  name="code"
-                  label={TEST_LOINC_CODE}
-                  value={EMPTY_OPTION}
-                  options={[]}
+                <InputController
+                  isSearch
+                  fieldType="text"
+                  controllerName="search"
+                  controllerLabel={TEST}
                 />
               </Grid>
 
               <Grid item md={2} sm={12} xs={12}>
                 <Selector
-                  isRequired
                   name="testDate"
                   label={TEST_DATE}
                   value={EMPTY_OPTION}
@@ -96,7 +93,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
               <Grid item md={2} sm={12} xs={12}>
                 <Selector
-                  isRequired
                   name="testTime"
                   label={TEST_TIME}
                   value={EMPTY_OPTION}
@@ -113,16 +109,69 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
               </Grid>
 
               <Grid item md={12} sm={12} xs={12}>
-                <Typography variant='h6'>{DESCRIPTION}</Typography>
+                <Grid container spacing={3} justifyContent="flex-end">
+                  <Grid item md={4} sm={12} xs={12}>
+                    <Collapse in={!openTest} mountOnEnter unmountOnExit>
+                      <Box pb={3}
+                        onClick={() => setOpenTest(!openTest)}
+                        className="billing-box" display="flex" alignItems="center"
+                      >
+                        <AddCircleOutline color='inherit' />
 
-                <Box py={0.6} mb={2} color={BLACK_TWO}>
-                  <Typography variant='body1'>N/A</Typography>
-                </Box>
+                        <Typography>{ADD_ANOTHER_TEST}</Typography>
+                      </Box>
+                    </Collapse>
+                  </Grid>
+                </Grid>
+
+                <Grid container spacing={3} justifyContent="flex-end">
+                  <Grid item md={12} sm={12} xs={12}>
+                    <Collapse in={openTest} mountOnEnter unmountOnExit>
+                      <Box>
+                        <Grid container spacing={3}>
+                          <Grid item md={4} sm={12} xs={12}>
+                            <InputController
+                              isSearch
+                              fieldType="text"
+                              controllerName="search"
+                              controllerLabel={TEST}
+                            />
+                          </Grid>
+
+                          <Grid item md={2} sm={12} xs={12}>
+                            <Selector
+                              name="testDate"
+                              label={TEST_DATE}
+                              value={EMPTY_OPTION}
+                              options={[]}
+                            />
+                          </Grid>
+
+                          <Grid item md={2} sm={12} xs={12}>
+                            <Selector
+                              name="testTime"
+                              label={TEST_TIME}
+                              value={EMPTY_OPTION}
+                              options={[]}
+                            />
+                          </Grid>
+
+                          <Grid item md={4} sm={12} xs={12}>
+                            <InputController
+                              fieldType="text"
+                              controllerName="testNotes"
+                              controllerLabel={TEST_NOTES}
+                            />
+                          </Grid>
+                        </Grid>
+                      </Box>
+                    </Collapse>
+                  </Grid>
+                </Grid>
               </Grid>
 
               <Grid item md={4} sm={12} xs={12}>
                 <Selector
-                  isRequired
                   name="specimenType"
                   label={SPECIMEN_TYPE}
                   value={EMPTY_OPTION}
@@ -132,7 +181,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
               <Grid item md={2} sm={12} xs={12}>
                 <Selector
-                  isRequired
                   name="collectionDate"
                   label={COLLECTION_DATE}
                   value={EMPTY_OPTION}
@@ -142,7 +190,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
               <Grid item md={2} sm={12} xs={12}>
                 <Selector
-                  isRequired
                   name="collectionTime"
                   label={COLLECTION_TIME}
                   value={EMPTY_OPTION}
@@ -161,9 +208,9 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
               <Grid item md={12} sm={12} xs={12}>
                 <Grid container spacing={3} justifyContent="flex-end">
                   <Grid item md={4} sm={12} xs={12}>
-                    <Collapse in={!open} mountOnEnter unmountOnExit>
+                    <Collapse in={!openSpecimen} mountOnEnter unmountOnExit>
                       <Box pb={3}
-                        onClick={() => setOpen(!open)}
+                        onClick={() => setOpenSpecimen(!openSpecimen)}
                         className="billing-box" display="flex" alignItems="center"
                       >
                         <AddCircleOutline color='inherit' />
@@ -176,12 +223,11 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
                 <Grid container spacing={3} justifyContent="flex-end">
                   <Grid item md={12} sm={12} xs={12}>
-                    <Collapse in={open} mountOnEnter unmountOnExit>
+                    <Collapse in={openSpecimen} mountOnEnter unmountOnExit>
                       <Box>
                         <Grid container spacing={3}>
                           <Grid item md={4} sm={12} xs={12}>
                             <Selector
-                              isRequired
                               name="specimenType"
                               label={SPECIMEN_TYPE}
                               value={EMPTY_OPTION}
@@ -191,7 +237,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
                           <Grid item md={2} sm={12} xs={12}>
                             <Selector
-                              isRequired
                               name="collectionDate"
                               label={COLLECTION_DATE}
                               value={EMPTY_OPTION}
@@ -201,7 +246,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
 
                           <Grid item md={2} sm={12} xs={12}>
                             <Selector
-                              isRequired
                               name="collectionTime"
                               label={COLLECTION_TIME}
                               value={EMPTY_OPTION}
@@ -225,7 +269,7 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
             </Grid>
 
             <Box mb={3} display="flex">
-              <Button type="submit" variant="outlined" color="secondary">{DELETE}</Button>
+              <Button type="submit" variant="outlined" color="inherit" className='danger'>{DELETE}</Button>
 
               <Box p={1} />
 
