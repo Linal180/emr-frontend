@@ -1067,7 +1067,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         {isEdit ? renderItem(DOCTOR, doctorName)
                           : <DoctorSelector
                             label={USUAL_PROVIDER_ID}
-                            name="providerId"
+                            name="usualProviderId"
                             facilityId={selectedFacility}
                             addEmpty
                             isRequired
