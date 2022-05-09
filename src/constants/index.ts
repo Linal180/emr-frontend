@@ -2283,6 +2283,7 @@ export enum ATTACHMENT_TITLES {
   InsuranceCard1 = "Insurance Card 1",
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
+  Signature = "Signature",
 }
 
 export enum MODULE_TYPES {

@@ -41,6 +41,7 @@ const DropzoneImage: FC<any> = forwardRef(({
     case AttachmentType.SuperAdmin:
       moduleRoute = "users";
       break;
+
     default:
       break;
   }
