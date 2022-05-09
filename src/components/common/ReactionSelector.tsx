@@ -11,6 +11,7 @@ import { ReactionsPayload, useFindAllReactionsLazyQuery } from '../../generated/
 const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, isRequired, defaultValues }) => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[]>([])
+  const [values, setValues] = useState<multiOptionType[]>([])
 
   const [findAllReactions] = useFindAllReactionsLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -41,17 +42,23 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
   useEffect(() => {
     if (isEdit) {
       if (defaultValues) {
-        setOptions(defaultValues)
         setValue('reactionIds', defaultValues.map(option => option))
+        setOptions(defaultValues)
+        setValues(defaultValues)
       }
     }
   }, [defaultValues, isEdit, setValue])
+
+  const updateValues = (newValues: multiOptionType[]) => {
+    setValues(newValues as multiOptionType[])
+    setValue('reactionIds', newValues.map(option => option))
+  }
 
   return (
     <Controller
       name={name}
       control={control}
-      defaultValue={[]}
+      defaultValue={options}
       render={({ field, fieldState: { invalid } }) => {
         return (
           <FormControl margin="normal" fullWidth error={Boolean(invalid)}>
@@ -64,10 +71,14 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
             <Select
               isMulti
               name={name}
-              defaultValue={defaultValues?.map(option => option)}
+              defaultValue={options}
               id="selectedId"
               options={options}
-              onChange={field.onChange}
+              value={values}
+              onChange={(newValue) => {
+                field.onChange();
+                updateValues(newValue as multiOptionType[])
+              }}
               onInputChange={(query: string) => {
                 query.length > 2 && fetchReactions(query)
               }}

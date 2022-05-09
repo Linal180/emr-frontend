@@ -63,7 +63,6 @@ const AllergyModal: FC<AddModalProps> = (
         if (!!reactions) {
           const reactionData = getReactionData(reactions as ReactionsPayload['reactions'])
           dispatch({ type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: reactionData })
-          setValue('reactionIds', reactionData)
         }
 
         id && name && setValue('severityId', setRecord(id, name))
@@ -155,7 +154,9 @@ const AllergyModal: FC<AddModalProps> = (
   const closeAddModal = () => {
     reset()
     dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null })
+    dispatcher({ type: ActionType.SET_ITEM_ID, itemId: '' });
     dispatch({ type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: [] })
+    dispatcher({ type: ActionType.SET_SELECTED_ITEM, selectedItem: undefined });
   }
 
   const handleOnset = (onset: string) => setOnset(onset)
@@ -202,12 +203,7 @@ const AllergyModal: FC<AddModalProps> = (
   }
 
   const isDisable = addAllergyLoading || updateAllergyLoading || getAllergyLoading
-
-  useEffect(() => {
-    return () => {
-      dispatch({ type: ActionType.SET_SELECTED_REACTIONS, selectedReactions: [] })
-    }
-  }, [])
+  useEffect(() => {}, [selectedReactions, getAllergyLoading]);
 
   return (
     <FormProvider {...methods}>
