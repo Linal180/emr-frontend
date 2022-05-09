@@ -70,3 +70,18 @@ query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
     }
   }
 }
+
+mutation addPatientVital($createVitalInput: CreateVitalInput!) {
+  addPatientVital(createVitalInput: $createVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    patientVital {
+      id
+    }
+  }
+}

@@ -15,7 +15,7 @@ import { requiredLabel } from "../utils";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
-  disabled, multiline, info, placeholder, className, isSearch
+  disabled, multiline, info, placeholder, className, isSearch, margin
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -35,7 +35,7 @@ const InputController: FC<CustomInputControlProps> = ({
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal" error={Boolean(invalid)}>
+        <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
           <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
             {isRequired ? requiredLabel(controllerLabel || '') : controllerLabel}
 

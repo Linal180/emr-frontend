@@ -16,7 +16,7 @@ import {
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload, 
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
   AttachmentType, AllergySeverity, ProblemSeverity
 } from "../generated/graphql"
 import {
@@ -75,10 +75,13 @@ export const renderItem = (
   </>
 );
 
-export const renderTh = (text: string, align?: TableAlignType) => (
-  <TableCell component="th" align={align}>
+export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string) => (
+  <TableCell component="th" align={align} className={classes}>
     <Typography component="h5" variant="h5">
-      {text}
+      {isDangerous ?
+        <Box dangerouslySetInnerHTML={{ __html: text }}>
+        </Box> : text
+      }
     </Typography>
   </TableCell>
 );
@@ -181,7 +184,9 @@ export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefine
 
 export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 
-export const getCurrentDate = (date: string) => moment(date).format("YYYY-MM-DD");
+export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
+
+export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`);
 
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
@@ -863,7 +868,7 @@ export const getHigherRole = (roles: string[]) => {
 }
 
 export const getProfileImageType = (userType: string) => {
-  
+
   if (userType === SYSTEM_ROLES.SuperAdmin) {
     return AttachmentType.SuperAdmin
   }
@@ -876,3 +881,26 @@ export const getProfileImageType = (userType: string) => {
     return AttachmentType.Staff
   }
 }
+
+
+export const fahrenheitToCelsius = (f: number) => ((5 / 9) * (f - 32))
+
+export const celsiusToFahrenheit = (c: number) => ((c * (9 / 5)) + 32)
+
+export const inchesToCentimeter = (i: number) => (i * 2.54)
+
+export const centimeterToInches = (c: number) => (c / 2.54)
+
+export const kilogramToPounds = (kg: number) => (kg * 2.2046)
+
+export const kilogramToOunce = (kg: number) => (kg * 35.274)
+
+export const poundsToKilogram = (po: number) => (po / 2.2046)
+
+export const poundsToOunce = (po: number) => (po * 16)
+
+export const ounceToKilogram = (o: number) => (o / 35.274)
+
+export const ounceToPounds = (o: number) => (o / 16)
+
+export const getBMI = (weight: number, height: number) => (weight / (height * height))  

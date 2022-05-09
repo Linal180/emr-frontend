@@ -1,7 +1,7 @@
 // packages block
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
-import { GridSize } from "@material-ui/core";
+import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
@@ -23,7 +23,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
-  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput
+  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, PatientVitalsPayload
 } from "../generated/graphql";
 import { CARD_LAYOUT_MODAL } from "../constants";
 
@@ -329,6 +329,7 @@ export interface SelectorProps {
   isMultiple?: boolean
   value?: SelectorOption
   options: SelectorOption[]
+  margin?: MuiPropsTypes.Margin
 }
 
 export interface PatientSelectorProps {
@@ -393,6 +394,7 @@ interface IControlLabel {
   placeholder?: string;
   controllerLabel?: string;
   className?: string;
+  margin?: MuiPropsTypes.Margin
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -1129,7 +1131,7 @@ export interface AddModalProps {
 export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
   & { reactionIds: multiOptionType[] } & { severityId: SelectorOption }
 
-export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'> 
+export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'>
   & { appointmentId: SelectorOption }
 
 export interface CreateTemplateTypes extends DialogTypes {
@@ -1205,4 +1207,22 @@ export interface PatientSearchInputProps {
   dos: string;
   location: SelectOptions;
   provider: SelectOptions;
+}
+
+export interface VitalListingTableProps {
+  patientVitals: PatientVitalsPayload['patientVitals']
+}
+
+export interface VitalFormInput {
+  smokingStatus: SelectorOption
+  respiratoryRate: string
+  bloodPressure: string
+  oxygenSaturation: string
+  PatientHeight: string
+  PatientWeight: string
+  PatientBMI: string
+  PainRange: string
+  pulseRate: string
+  patientHeadCircumference: string
+  patientTemperature: string
 }

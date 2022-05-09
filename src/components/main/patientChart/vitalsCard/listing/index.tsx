@@ -1,27 +1,23 @@
 // packages block
 import { useParams } from 'react-router';
 import { Fragment, useState, useEffect, useCallback } from 'react';
-import { Table, TableBody, TableCell, TableRow, TableHead, Box, Typography } from '@material-ui/core'
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { Box, Grid } from '@material-ui/core'
 //component block
-import InputController from '../../../../../controller';
+import { AddVitals } from '../add';
+import { VitalsLabels } from './labels'
+import { VitalListingTable } from './lists'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { getCurrentDate, getDate, renderTh } from '../../../../../utils';
-import { dummyVitalsChartingList, LIST_PAGE_LIMIT, NAME, NO_RECORDS } from '../../../../../constants';
+import { LIST_PAGE_LIMIT } from '../../../../../constants';
 import { PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from '../../../../../generated/graphql';
 import { ParamsType } from '../../../../../interfacesTypes';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
-import { GREY_SEVEN } from '../../../../../theme';
-
+import { usePatientVitalListingStyles } from '../../../../../styles/patientVitalsStyles';
 
 const PatientVitalsListing = () => {
   const [patientVitals, setPatientVitals] = useState<PatientVitalsPayload['patientVitals']>([]);
-  const { id } = useParams<ParamsType>()
 
-  const methods = useForm<any>({
-    mode: "all",
-  });
-  const { handleSubmit } = methods;
+  const classes = usePatientVitalListingStyles()
+  const { id } = useParams<ParamsType>()
 
   const [getPatientVitals, { loading }] = useFindAllPatientVitalsLazyQuery({
     variables: {
@@ -45,7 +41,13 @@ const PatientVitalsListing = () => {
             const { status } = response
 
             if (patientVitals && status && status === 200) {
-              patientVitals && setPatientVitals(patientVitals as PatientVitalsPayload['patientVitals'])
+              const sortedVitals = patientVitals?.sort((a, b) => {
+                if (a?.createdAt && b?.createdAt) {
+                  return (a?.createdAt < b?.createdAt) ? 1 : ((b?.createdAt < a?.createdAt) ? -1 : 0)
+                }
+                return 0
+              })
+              sortedVitals?.length > 0 && setPatientVitals(sortedVitals as PatientVitalsPayload['patientVitals'])
             }
           }
         }
@@ -63,60 +65,25 @@ const PatientVitalsListing = () => {
     id && fetchPatientAllVitals()
   }, [id, fetchPatientAllVitals])
 
-
-  const onSubmit: SubmitHandler<any> = () => { }
-
   return (
     <Fragment>
       {loading ?
         <ViewDataLoader columns={12} rows={3} />
         : <Box mb={2}>
-          <Table aria-label="customized table">
-            <TableHead>
-              <TableRow>
-                {renderTh(NAME)}
-                {renderTh(getCurrentDate(`${new Date()}`))}
-                {patientVitals?.map((vital) => {
-                  const { createdAt } = vital || {}
-                  return (renderTh(getDate(createdAt || '')))
-                }
-                )}
-              </TableRow>
-            </TableHead>
-            {!!patientVitals && patientVitals.length > 0 ? (
-
-
-              <TableBody>
-                {dummyVitalsChartingList?.map((item) => {
-                  const { id, firstName, lastName, email, phone, specialty, code } = item || {};
-
-                  return (
-                    <TableRow key={id}><TableCell scope="row">{`${firstName} ${lastName}`}</TableCell>
-                      <TableCell scope="row">
-                        <FormProvider {...methods}>
-                          <form onSubmit={handleSubmit(onSubmit)}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="reason"
-                              controllerLabel={''}
-                            />
-                          </form>
-                        </FormProvider>
-                      </TableCell>
-                      <TableCell scope="row">{email}</TableCell>
-                      <TableCell scope="row">{phone}</TableCell>
-                      <TableCell scope="row">{specialty}</TableCell>
-                      <TableCell scope="row">{code}</TableCell>
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            ) : (
-              <Box color={GREY_SEVEN}>
-                <Typography variant="h6" >{NO_RECORDS}</Typography>
+          <Grid container>
+            <Grid item xs={2}>
+              <VitalsLabels />
+            </Grid>
+            <Grid item xs={2}>
+              <AddVitals />
+            </Grid>
+            <Grid item xs={8}>
+              <Box className={classes.listingTable}>
+                <VitalListingTable patientVitals={patientVitals} />
               </Box>
-            )}
-          </Table>
+            </Grid>
+          </Grid>
+
         </Box>
       }
     </Fragment>

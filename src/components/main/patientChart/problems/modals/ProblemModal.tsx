@@ -34,7 +34,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
   const methods = useForm<PatientProblemInputs>({
     mode: "all",
-    // resolver: yupResolver(PatientProblemchema)
+    resolver: yupResolver(patientProblemSchema)
   });
   const { handleSubmit, reset, setValue } = methods;
 

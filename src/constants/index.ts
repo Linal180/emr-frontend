@@ -18,7 +18,7 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
-  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity,
+  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
 } from "../generated/graphql";
 
 // regex
@@ -121,6 +121,18 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const PULSE_TEXT = "Pulse"
+export const VITAL_ERROR_MSG = "Patient Vital is not added."
+export const RESPIRATORY_RATE_TEXT = "Respiratory Rate"
+export const BLOOD_PRESSURE_TEXT = "Blood Pressure"
+export const OXYGEN_SATURATION_TEXT = "Oxygen Saturation"
+export const HEIGHT_TEXT = "Height"
+export const WEIGHT_TEXT = "Weight"
+export const BMI_TEXT = "BMI"
+export const PAIN_TEXT = "Pain"
+export const SMOKING_STATUS_TEXT = "Smoking Status"
+export const HEAD_CIRCUMFERENCE = "Head Circumference"
+export const FEVER_TEXT = "Fever"
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
@@ -1925,7 +1937,7 @@ export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
 ];
 
 // Breadcrumb links
-export const SERVICES_BREAD = (facilityId: string) =>  {
+export const SERVICES_BREAD = (facilityId: string) => {
   return { text: SERVICES, link: `${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}` }
 }
 
@@ -3114,4 +3126,13 @@ export const AppointmentSearchingTooltipData = [
     name: `${SSN}:`,
     format: SSN_FORMAT,
   }
+];
+
+export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
+  { id: SmokingStatus.SmokerCurrentStatusUnknown, name: formatValue(SmokingStatus.SmokerCurrentStatusUnknown) },
+  { id: SmokingStatus.CurrentEverydaySmoker, name: formatValue(SmokingStatus.CurrentEverydaySmoker) },
+  { id: SmokingStatus.CurrentSomedaySmoker, name: formatValue(SmokingStatus.CurrentSomedaySmoker) },
+  { id: SmokingStatus.FormerSmoker, name: formatValue(SmokingStatus.FormerSmoker) },
+  { id: SmokingStatus.NeverSmocked, name: formatValue(SmokingStatus.NeverSmocked) },
+  { id: SmokingStatus.UnknownIfEverSmoked, name: formatValue(SmokingStatus.UnknownIfEverSmoked) },
 ];
