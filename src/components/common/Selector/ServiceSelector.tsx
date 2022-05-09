@@ -51,7 +51,7 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
   }, [page, findAllService, searchQuery, facilityId])
 
   useEffect(() => {
-    if (searchQuery.length > 2) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllServices()
     }
   }, [page, searchQuery, fetchAllServices]);

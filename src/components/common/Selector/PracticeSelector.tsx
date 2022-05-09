@@ -58,7 +58,7 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
   }, [page, isSuper, findAllPractice, searchQuery])
 
   useEffect(() => {
-    if (searchQuery.length > 2) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllPractices()
     }
   }, [page, searchQuery, fetchAllPractices]);

@@ -51,7 +51,7 @@ const RoleSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequ
   }, [page, findAllRole, searchQuery])
 
   useEffect(() => {
-    if (searchQuery.length > 2) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllRoles()
     }
   }, [page, searchQuery, fetchAllRoles]);

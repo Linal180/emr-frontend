@@ -171,7 +171,7 @@ const PatientsTable: FC = (): JSX.Element => {
       variables: {
         patientInput: {
           ...patientsInputs,
-          dob,
+          dob:getFormatDateString(dob,'MM-DD-YYYY'),
           doctorId:selectedProvider,
           appointmentDate:getFormatDateString(dos),
          ...( !isFacAdmin ? {facilityId: selectedLocation}:{}),
