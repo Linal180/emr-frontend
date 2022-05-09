@@ -1,22 +1,29 @@
 // packages block
 import { ReactNode, memo } from "react";
+import axios from "axios";
 import moment from "moment";
+import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { DaySchedule, LoaderProps, SelectorOption, TableAlignType } from "../interfacesTypes";
+import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
+import {
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
+  SelectorOption, TableAlignType, UserFormType
+} from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload, 
+  AttachmentType, AllergySeverity, ProblemSeverity
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
   VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
+  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL
 } from "../constants";
 
 export const handleLogout = () => {
@@ -80,7 +87,7 @@ export const requiredLabel = (label: string) => {
   return (
     <Box>
       {label}
-      <Box component="span" color="red">
+      <Box component="span" color="black">
         {' '}
         *
       </Box>
@@ -88,40 +95,30 @@ export const requiredLabel = (label: string) => {
   )
 }
 
-export const isCurrentUserCanMakeAdmin = (currentUserRole: RolesPayload['roles']) => {
-  let isSuperAdmin: boolean = true
+export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
-  if (currentUserRole) {
-    for (let role of currentUserRole) {
-      isSuperAdmin = !(role?.role === ADMIN)
-    }
-  }
-
-  return isSuperAdmin;
+  return userRoles.includes(SYSTEM_ROLES.SuperAdmin) || userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
 }
 
-export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
-  let isAdmin: boolean = false
+export const isPracticeAdmin = (currentUserRole: RolesPayload['roles']) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
 
-  if (currentUserRole) {
-    for (let role of currentUserRole) {
-      isAdmin = role?.role === ADMIN || role?.role === SUPER_ADMIN
-    }
-  }
+  return userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
+}
 
-  return isAdmin;
+export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
+  const userRoles = currentUserRole ? pluck(currentUserRole, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.Doctor)
+    || userRoles.includes(SYSTEM_ROLES.Staff) || userRoles.includes(SYSTEM_ROLES.Nurse)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
 }
 
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
-  let isSupeAdmin: boolean = false
+  const userRoles = roles ? pluck(roles, 'role') : ['']
 
-  if (roles) {
-    for (let role of roles) {
-      isSupeAdmin = role?.role === SUPER_ADMIN
-    }
-  }
-
-  return isSupeAdmin;
+  return userRoles.includes(SYSTEM_ROLES.SuperAdmin)
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
@@ -166,6 +163,10 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
 };
 
+export const getTimestampsForDob = (date: string): string => {
+  return date ? moment(date).format("MM-DD-YYYY").toString() : moment().format("MM-DD-YYYY").toString()
+};
+
 export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
   return date ? moment(date).format("h:mm a") : moment().format("h:mm a")
 };
@@ -174,9 +175,11 @@ export const getAppointmentDate = (date: SchedulerDateTime | undefined): string 
   return date ? moment(date).format("MMMM Do YYYY") : moment().format("MMMM Do YYYY")
 };
 
-export const getDate = (date: string) => {
-  return moment(date, "x").format("YYYY-MM-DD")
+export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefined): string => {
+  return date ? (moment(new Date(date))).format().toString() : moment().format().toString()
 };
+
+export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
@@ -186,8 +189,16 @@ export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
 
+export const UpdateRecordTitle = (recordType: string) => {
+  return `Update ${recordType}`;
+}
+
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const aboutToUpdate = (recordType: string) => {
+  return `You are about to update ${recordType.toLowerCase()}`;
 }
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {
@@ -229,8 +240,8 @@ export const renderOfficeRoles = (roles: RolesPayload['roles']) => {
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' )
-        name && data.push({ id: name, name: formatValue(name) })
+        if (name !== 'patient' && name !== 'super-admin' && name !== 'admin')
+          name && data.push({ id: name, name: formatValue(name) })
       }
     }
   }
@@ -245,8 +256,12 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
     for (let role of roles) {
       if (role) {
         const { role: name } = role;
-        if(name !== 'patient' && name !== 'super-admin' && name !== 'admin' && name !== 'doctor' )
-        name && data.push({ id: name, name: formatValue(name) })
+        // && name !== SYSTEM_ROLES.FacilityAdmin
+        if (
+          name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
+          && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
+        )
+          name && data.push({ id: name.trim(), name: formatValue(name).trim() })
       }
     }
   }
@@ -308,7 +323,7 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
     for (let doctor of doctors) {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
-        data.push({ id, name: `${firstName} ${lastName}` })
+        data.push({ id, name: `${firstName} ${lastName}`.trim() })
       }
     }
   }
@@ -324,6 +339,54 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
       if (patient) {
         const { id, firstName, lastName } = patient;
         data.push({ id, name: `${firstName} ${lastName}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderOptionsForSelector = (options: SelectorOption[]) => {
+  const data: AsyncSelectorOption[] = [];
+
+  if (!!options) {
+    for (let option of options) {
+      if (option) {
+        const { id, name } = option;
+
+        name && data.push({ value: id, label: formatValue(name) })
+      }
+    }
+  }
+
+  return data;
+}
+
+// export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
+//   const data: SelectorOption[] = [];
+
+//   if (!!reactions) {
+//     for (let reaction of reactions) {
+//       if (reaction) {
+//         const { id, name } = reaction;
+
+//         name && data.push({ id, name: formatValue(name) })
+//       }
+//     }
+//   }
+
+//   return data;
+// }
+
+export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
+  const data: multiOptionType[] = [];
+
+  if (!!reactions) {
+    for (let reaction of reactions) {
+      if (reaction) {
+        const { id, name } = reaction;
+
+        name && data.push({ value: id, label: formatValue(name) })
       }
     }
   }
@@ -442,7 +505,7 @@ export const setTimeDay = (time: string, day: string): string => {
   } else if (currentDay > selectedDay) {
     x = currentDay - selectedDay
 
-    result = moment(date.setDate(date.getDate() - (x % 7))).format().toString()
+    result = moment(date.setDate(date.getDate() + (7 - x))).format().toString()
   }
 
   return result
@@ -502,7 +565,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
   data?.map(appointment => {
     const {
       scheduleEndDateTime, scheduleStartDateTime, patient, id: appointmentId, appointmentType, facility, provider,
-      reason, primaryInsurance, status, token
+      reason, primaryInsurance, status, token, billingStatus
     } = appointment || {};
 
     const { firstName, lastName, contacts: pContact, id: patientId } = patient || {}
@@ -512,7 +575,6 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
     const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
     const appointmentStatus = status && formatValue(status)
     const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
-
     return {
       token,
       reason,
@@ -527,6 +589,7 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
       appointmentType,
       primaryInsurance,
       color, price,
+      billingStatus,
       appointmentName,
       appointmentStatus,
       title: `${firstName} ${lastName}`,
@@ -543,6 +606,25 @@ export const appointmentStatus = (status: string) => {
     bgColor: cancelled ? BLUE_FIVE : RED_ONE,
     textColor: cancelled ? RED : GREEN
   }
+};
+
+export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) => {
+  switch (severity) {
+    case AllergySeverity.VeryMild:
+      return VERY_MILD;
+
+    case AllergySeverity.Mild:
+    case ProblemSeverity.Chronic:
+      return MILD;
+
+    case AllergySeverity.Moderate:
+      return MODERATE;
+
+    case AllergySeverity.Acute:
+    case ProblemSeverity.Acute:
+      return ACUTE;
+  }
+
 };
 
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
@@ -615,4 +697,180 @@ export const onIdle = () => {
   sessionStorage.setItem(ROUTE, route);
   localStorage.removeItem(TOKEN);
   history.push(LOCK_ROUTE);
+}
+
+export const getFormatDate = (date: Maybe<string> | undefined) => {
+  if (!date) return '';
+  return moment(date, "x").format("DD/MM/YY")
+};
+
+export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
+  const formData = new FormData();
+  attachmentId && formData.append("id", attachmentId);
+  id && formData.append("typeId", id);
+  title && formData.append("title", title);
+  file && formData.append("file", file);
+  try {
+    const res = await axios.post(
+      `${process.env.REACT_APP_API_BASE_URL}${USER_FORM_IMAGE_UPLOAD_URL}`,
+      formData
+    )
+    const { data } = res || {};
+    const { attachment, response } = data as FormAttachmentPayload || {}
+    const { status } = response || {}
+    if (status === 200 && attachment) {
+      return attachment
+    }
+    else {
+      return null;
+    }
+
+  } catch (error) {
+    return null;
+  }
+
+}
+
+
+export const getUserFormFormattedValues = async (values: any, id: string) => {
+  const arr = [];
+  for (const property in values) {
+    if (Array.isArray(values[property])) {
+      const isStringArray = values[property]?.every((i: any) => typeof i === 'string')
+      if (isStringArray) {
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: values[property], arrayOfObjects: [] })
+      }
+      else {
+        const options = values[property]?.map((val: any) => {
+          const key = Object.keys(val);
+          const name = key[0];
+          const data = Object.values(val);
+          const value = data[0]
+          return { name, value: value ?? false }
+        })
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: options })
+      }
+    }
+    else if ((values[property] instanceof FileList) && typeof values[property] === 'object') {
+      if (values[property][0] instanceof File) {
+        const file = values[property][0];
+        const title = values[property][0]?.name;
+        const key = await userFormUploadImage(file, property, title, id);
+        if (key) {
+          arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [], arrayOfObjects: [] })
+        }
+        else {
+          arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: [] })
+        }
+      }
+    }
+    else {
+      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [], arrayOfObjects: [] })
+    }
+  }
+  return arr;
+}
+
+export const getUserFormFiles = (values: any): UserFormType[] => {
+  const arr = [];
+  for (const property in values) {
+    if ((values[property] instanceof FileList) && typeof values[property] === 'object') {
+      if (values[property][0] instanceof File) {
+        arr.push({ attachmentId: property, title: values[property][0].name, file: values[property][0] })
+      }
+
+    }
+  }
+  return arr;
+}
+
+
+export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null) => {
+  switch (type) {
+    case ElementType.Text:
+      return ''
+    case ElementType.Select:
+      return isMultiSelect ? [] : ''
+    case ElementType.Radio:
+      return ''
+    case ElementType.Checkbox:
+      return []
+    default:
+      return ''
+  }
+}
+
+export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: FormElement[]): FormElement[] => {
+  if (userForm?.length > 0 && elementLabels?.length > 0) {
+    const firstElement = userForm[0];
+    const { userFormElements } = firstElement
+    if (userFormElements && userFormElements?.length > 0) {
+      const arr: FormElement[] = []
+      userFormElements?.map((val) => {
+        const { FormsElementsId } = val;
+        const obj = elementLabels?.find((value) => value?.fieldId === FormsElementsId);
+        if (obj) {
+          arr.push(obj)
+        }
+        return obj
+      })
+      return arr ?? [];
+    }
+    return []
+  }
+  return []
+}
+
+export const visibleToUser = (userRoles: string[], visible: string[] | undefined) => {
+  let allow = visible === undefined ? true : false;
+
+  if (visible?.includes('All')) return true
+  visible && userRoles.map(role => allow = visible.includes(role))
+
+  return allow;
+};
+
+export const getReactionData = (data: ReactionsPayload['reactions']) => {
+  let result: multiOptionType[] = [];
+
+  if (!!data) {
+    data.map(reaction => {
+      const { id, name } = reaction || {}
+
+      return id && name && result.push({ value: id, label: formatValue(name).trim() })
+    })
+  }
+
+  return result;
+};
+
+export const getHigherRole = (roles: string[]) => {
+  if (roles.includes(SYSTEM_ROLES.SuperAdmin)) return formatRoleName(SYSTEM_ROLES.SuperAdmin)
+  if (roles.includes(SYSTEM_ROLES.PracticeAdmin)) return formatRoleName(SYSTEM_ROLES.PracticeAdmin)
+  if (roles.includes(SYSTEM_ROLES.FacilityAdmin)) return formatRoleName(SYSTEM_ROLES.FacilityAdmin)
+  if (roles.includes(SYSTEM_ROLES.EmergencyAccess)) return formatRoleName(SYSTEM_ROLES.EmergencyAccess)
+  if (roles.includes(SYSTEM_ROLES.Doctor)) return formatRoleName(SYSTEM_ROLES.Doctor)
+  if (roles.includes(SYSTEM_ROLES.NursePractitioner)) return formatRoleName(SYSTEM_ROLES.NursePractitioner)
+  if (roles.includes(SYSTEM_ROLES.DoctorAssistant)) return formatRoleName(SYSTEM_ROLES.DoctorAssistant)
+  if (roles.includes(SYSTEM_ROLES.Staff)) return formatRoleName(SYSTEM_ROLES.Staff)
+  if (roles.includes(SYSTEM_ROLES.Nurse)) return formatRoleName(SYSTEM_ROLES.Nurse)
+  if (roles.includes(SYSTEM_ROLES.FrontDesk)) return formatRoleName(SYSTEM_ROLES.FrontDesk)
+  if (roles.includes(SYSTEM_ROLES.OfficeManager)) return formatRoleName(SYSTEM_ROLES.OfficeManager)
+
+  return roles[0]
+}
+
+export const getProfileImageType = (userType: string) => {
+  
+  if (userType === SYSTEM_ROLES.SuperAdmin) {
+    return AttachmentType.SuperAdmin
+  }
+
+  else if (userType === SYSTEM_ROLES.Doctor) {
+    return AttachmentType.Doctor
+  }
+
+  else {
+    return AttachmentType.Staff
+  }
 }

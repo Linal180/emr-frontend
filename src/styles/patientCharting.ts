@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_ONE, GRAY_TWO } from "../theme";
+import { BLACK_ONE, GREY_SEVEN } from "../theme";
 
 export const usePatientChartingStyles = makeStyles(() =>
   createStyles({
@@ -13,13 +13,13 @@ export const usePatientChartingStyles = makeStyles(() =>
     cardContentDate: {
       fontWeight: 400,
       fontSize: 12,
-      color: GRAY_TWO
+      color: GREY_SEVEN
     },
 
     cardContentDescription: {
       fontWeight: 500,
       fontSize: 14,
-      color: GRAY_TWO
+      color: GREY_SEVEN
     },
 
     dropdown: {

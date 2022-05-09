@@ -1,5 +1,5 @@
 //package block
-import { useState, MouseEvent, useContext, useEffect } from 'react';
+import { useState, MouseEvent, useContext, useEffect, useCallback } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useParams } from 'react-router';
 import { SubmitHandler } from 'react-hook-form';
@@ -8,49 +8,59 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import { Grid, Box, Button, Typography, Menu, MenuItem, CircularProgress, } from '@material-ui/core';
 //components block
-import ViewDataLoader from '../../../common/ViewDataLoader';
 import Sidebar from './sidebar';
 import Alert from '../../../common/Alert';
-import history from '../../../../history';
 import DropContainer from './dropContainer';
 import Selector from '../../../common/Selector';
 import FieldProperties from './fieldProperties';
-import { AuthContext } from '../../../../context';
+import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
+import ViewDataLoader from '../../../common/ViewDataLoader';
+import CreateTemplateModal from '../../../common/CreateTemplateModal';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
+// constants block
+import history from '../../../../history';
+import { AuthContext } from '../../../../context';
 import { FormAddIcon } from '../../../../assets/svgs';
-import { WHITE, WHITE_EIGHT, } from '../../../../theme';
-import { ListContext } from '../../../../context/listContext'
+import { GREY_EIGHT, WHITE } from '../../../../theme';
+import { isSuperAdmin, setRecord } from '../../../../utils';
+import { ListContext } from '../../../../context/listContext';
 import { useProfileDetailsStyles } from '../../../../styles/profileDetails';
-import { isSuperAdmin, renderFacilities, setRecord } from '../../../../utils';
 import { FormInitialType, FormBuilderFormInitial, ParamsType } from '../../../../interfacesTypes';
 import { createFormBuilderSchema, createFormBuilderSchemaWithFacility } from '../../../../validationSchemas';
 import {
-  FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery, useUpdateFormMutation
+  FormType, useCreateFormMutation, SectionsInputs, FieldsInputs, ElementType, useGetFormLazyQuery,
+  useUpdateFormMutation, useCreateFormTemplateMutation
 } from '../../../../generated/graphql';
-// constants block
 import {
-  COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES, getFormInitialValues,
-  FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, CREATE_FORM_BUILDER, NOT_FOUND_EXCEPTION,
-  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH, DROP_FIELD
+  COL_TYPES, ITEMS, COL_TYPES_ARRAY, MAPPED_FORM_TYPES, EMPTY_OPTION, FORM_BUILDER_INITIAL_VALUES,
+  FIELD_EDIT_INITIAL_VALUES, FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE,
+  FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT, FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH,
+  FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues, CREATE_FORM_BUILDER,
+  NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD,
 } from '../../../../constants';
 
-//component
 const AddForm = () => {
-  //states
   const [formValues, setFormValues] = useState<SectionsInputs[]>(getFormInitialValues());
   const [selected, setSelected] = useState<FormInitialType>(FIELD_EDIT_INITIAL_VALUES);
   const [colMenu, setColMenu] = useState<null | HTMLElement>(null)
-  //hooks
-  const { id: formId } = useParams<ParamsType>()
+  const [isActive, setIsActive] = useState<boolean>(false)
+  const [openTemplate, setOpenTemplate] = useState<boolean>(false)
+  const [formName, setFormName] = useState<string>('')
+  const { id: formId, templateId } = useParams<ParamsType>()
   const classes = useProfileDetailsStyles();
   const { facilityList } = useContext(ListContext)
   const { user } = useContext(AuthContext);
   const { roles, facility } = user || {};
   const { id: facilityId } = facility || {};
   const isSuper = isSuperAdmin(roles);
-  const methods = useForm<FormBuilderFormInitial>({ defaultValues: FORM_BUILDER_INITIAL_VALUES, resolver: yupResolver(isSuper ? createFormBuilderSchemaWithFacility : createFormBuilderSchema) });
+  const methods = useForm<FormBuilderFormInitial>({
+    defaultValues: FORM_BUILDER_INITIAL_VALUES,
+    resolver: yupResolver(isSuper ? createFormBuilderSchemaWithFacility : createFormBuilderSchema)
+  });
   const { handleSubmit, setValue } = methods
-  //mutations & query
+
   const [createForm, { loading }] = useCreateFormMutation({
     onError({ message }) {
       if (message === FORBIDDEN_EXCEPTION) {
@@ -73,6 +83,7 @@ const AddForm = () => {
       }
     }
   })
+
   const [getForm, { loading: getFormLoader }] = useGetFormLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
@@ -91,12 +102,13 @@ const AddForm = () => {
             facilityId && setValue('facilityId', setRecord(facilityId, facilityId))
             const { sections } = layout
             sections?.length > 0 && setFormValues(sections)
-            const facilityName = getFacilityNameHandler(facilityId)
+            const facilityName = facilityId && getFacilityNameHandler(facilityId)
             if (facilityId && facilityName) setValue('facilityId', setRecord(facilityId, facilityName))
           }
         }
       }
     },
+
     onError({ message }) {
       message !== NOT_FOUND_EXCEPTION && Alert.error(message)
       history.push(FORM_BUILDER_ROUTE)
@@ -107,6 +119,7 @@ const AddForm = () => {
     onError({ message }) {
       Alert.error(message)
     },
+
     onCompleted(data) {
       const { updateForm: { response } } = data;
       if (response) {
@@ -119,25 +132,48 @@ const AddForm = () => {
     }
   })
 
-  useEffect(() => {
+  const [createTemplate, { loading: createTemplateLoading }] = useCreateFormTemplateMutation({
+    onError({ message }) {
+      Alert.error(message)
+    },
+
+    onCompleted(data) {
+      const { createFormTemplate: { form, response } } = data;
+
+      if (response && form) {
+        const { status } = response
+        const { id } = form
+
+        if (status && status === 200 && id) {
+          setOpenTemplate(false)
+          Alert.success(CREATE_FORM_TEMPLATE);
+        }
+      }
+    }
+  })
+
+  const getFormHandler = useCallback(() => {
     formId && getForm({ variables: { getForm: { id: formId } } })
-  }, [getForm, formId])
+    templateId && getForm({ variables: { getForm: { id: templateId } } })
+  }, [getForm, formId, templateId])
+
+  useEffect(() => {
+    (formId || templateId) && getFormHandler()
+  }, [getFormHandler, formId, templateId])
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
-    if (!destination) {
-      return;
-    }
+    if (!destination || destination.droppableId !== source.droppableId) return;
+
     if (destination.droppableId === source.droppableId) {
       formValues?.map((item) => {
         if (destination.droppableId === item.id) {
           const { fields } = item
           const [removed] = fields?.splice(source.index, 1);
           fields?.splice(destination.index, 0, removed);
-          return item;
-        } else {
-          return item;
         }
+
+        return item;
       });
     } else if (source.droppableId === 'ITEMS') {
       formValues?.map((item) => {
@@ -145,6 +181,7 @@ const AddForm = () => {
           const itemField = ITEMS?.find(
             (item) => item?.fieldId === draggableId
           );
+
           const newField: FieldsInputs = {
             label: itemField?.label ?? '',
             type: itemField?.type as ElementType ?? ElementType.Text,
@@ -157,19 +194,18 @@ const AddForm = () => {
             errorMsg: itemField?.defaultValue ?? '',
             defaultValue: itemField?.defaultValue ?? '',
             options: itemField?.options ?? [],
-            textArea: itemField?.textArea ?? false
+            textArea: itemField?.textArea ?? false,
+            isMultiSelect: itemField?.isMultiSelect ?? false
           };
+
           item?.fields?.splice(destination.index, 0, newField);
-          return item;
-        } else {
-          return item;
         }
+
+        return item;
       });
-    } else if (destination.droppableId !== source.droppableId) {
-      return;
     }
   };
-  //add list
+
   const addList = (type: string) => {
     switch (type) {
       case COL_TYPES.COL_1:
@@ -178,6 +214,7 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 12,
+            name: 'Section_1',
             fields: [],
           },
         ]);
@@ -189,11 +226,13 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 6,
+            name: 'Section_1',
             fields: [],
           },
           {
             id: uuid(),
             col: 6,
+            name: 'Section_2',
             fields: [],
           },
         ]);
@@ -205,16 +244,19 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 4,
+            name: 'Section_1',
             fields: [],
           },
           {
             id: uuid(),
             col: 4,
+            name: 'Section_2',
             fields: [],
           },
           {
             id: uuid(),
             col: 4,
+            name: 'Section_3',
             fields: [],
           },
         ]);
@@ -226,6 +268,7 @@ const AddForm = () => {
           {
             id: uuid(),
             col: 12,
+            name: 'Section_1',
             fields: [],
           },
         ]);
@@ -241,7 +284,7 @@ const AddForm = () => {
       const { id: typeId } = type;
       const { id: facility } = selectedFacility;
       const selectedFacilityId = isSuper ? facility : facilityId ? facilityId : '';
-      const data = { name, type: typeId as FormType, facilityId: selectedFacilityId, layout: { sections: formValues } }
+      const data = { name, type: typeId as FormType, facilityId: selectedFacilityId, layout: { sections: formValues }, isActive }
       formId ? updateForm({ variables: { updateFormInput: { ...data, id: formId } } }) : createForm({ variables: { createFormInput: data } })
     }
     else Alert.error(DROP_FIELD)
@@ -253,8 +296,6 @@ const AddForm = () => {
     setSelected({ fieldId, label, type: type as ElementType, name, css, column, placeholder, required, errorMsg, defaultValue, list: id, options, textArea });
     // modalOpenHandler();
   };
-
-
   //edit field form submit handler
   const setFieldValuesHandler: SubmitHandler<FormInitialType> = (values) => {
     const arr1 = formValues?.map((item) => {
@@ -281,42 +322,74 @@ const AddForm = () => {
 
     setFormValues(arr1);
   }
-  //del field handler
+
   const delFieldHandler = (index: number, sectionIndex: number) => {
     const arr = formValues?.map((item, i) => {
       if (i === sectionIndex) {
         const arr = item?.fields?.filter((field, fieldIndex) => index !== fieldIndex);
         return { ...item, fields: arr }
       }
+
       return item
     })
     setFormValues(arr)
   }
-  //clear form values handler
-  const clearHandler = () => {
-    setFormValues(getFormInitialValues())
-  };
-  //menu handlers
+
+  const clearHandler = () => setFormValues(getFormInitialValues())
   const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setColMenu(event.currentTarget);
   const handleMenuClose = () => setColMenu(null);
-  //section handler
+
   const delColHandler = (index: number) => {
     const arr = formValues?.filter((item, i) => i !== index)
     setFormValues(arr)
   }
-  //get facility name
+
   const getFacilityNameHandler = (facilityId: string) => {
     const facility = facilityList?.find((item) => item?.id === facilityId)
     const { name } = facility || {}
+
     return name;
   }
-  //render
+
+  const handleCreateTemplate = async () => {
+    try {
+      await createTemplate({
+        variables: {
+          createFormInput: {
+            layout: {
+              sections: formValues
+            },
+
+            name: formName,
+            isSystemForm: true,
+            type: FormType.Template
+          }
+        }
+      })
+    } catch (error) { }
+  }
+
+  const templateCreateClick = () => {
+    const isFieldFound = formValues?.some((item) => item.fields.length > 0);
+    if (isFieldFound) {
+      setOpenTemplate(true)
+    } else Alert.error(DROP_FIELD)
+  }
   return (
     <DragDropContext onDragEnd={onDragEnd} enableDefaultSensors>
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(saveHandler)}>
           <Box py={2} display='flex' justifyContent='space-between'>
-            <Typography variant='h4'>{FORM_BUILDER}</Typography>
+            <Box display='flex'>
+              <BackButton to={`${FORM_BUILDER_ROUTE}`} />
+
+              <Box ml={2} />
+
+              <PageHeader
+                title={FORM_BUILDER}
+                path={[FORMS_BREAD, formId ? FORMS_EDIT_BREAD : FORMS_ADD_BREAD]}
+              />
+            </Box>
 
             <Box display='flex' justifyContent='flex-start'>
               <Button onClick={clearHandler} variant="outlined" color="default">
@@ -325,7 +398,19 @@ const AddForm = () => {
 
               <Box mx={1} />
 
-              <Button type='submit' variant='contained' color='primary' disabled={loading || updateLoading}>
+              <Button type='submit' onClick={() => setIsActive(false)} variant='contained' className='blue-button-new' color='inherit' disabled={loading || updateLoading}>
+                {loading || updateLoading ? <CircularProgress size={20} color="inherit" /> : SAVE_DRAFT}
+              </Button>
+
+              <Box mx={1} />
+
+              <Button type='button' onClick={templateCreateClick} variant={'contained'} color="primary">
+                {CREATE_TEMPLATE}
+              </Button>
+
+              <Box mx={1} />
+
+              <Button type='submit' variant='contained' onClick={() => setIsActive(true)} color='primary' disabled={loading || updateLoading}>
                 {loading || updateLoading ? <CircularProgress size={20} color="inherit" /> : PUBLISH}
               </Button>
             </Box>
@@ -336,12 +421,11 @@ const AddForm = () => {
               {getFormLoader ? <ViewDataLoader rows={1} columns={3} hasMedia={false} /> :
                 <Grid container spacing={3}>
                   {isSuper && <Grid item md={4} sm={12} xs={12}>
-                    <Selector
+                    <FacilitySelector
                       isRequired
-                      value={EMPTY_OPTION}
                       label={FACILITY}
                       name="facilityId"
-                      options={renderFacilities(facilityList)}
+                      addEmpty
                     />
                   </Grid>}
 
@@ -376,10 +460,11 @@ const AddForm = () => {
                 <Grid item md={7} sm={4} xs={12}>
                   <Box p={3} bgcolor={WHITE} borderRadius={6}>
                     {getFormLoader ? <ViewDataLoader rows={3} columns={3} hasMedia={false} /> :
-                      <DropContainer formValues={formValues} changeValues={changeValues} delFieldHandler={delFieldHandler} delColHandler={delColHandler} />
+                      <DropContainer formValues={formValues} changeValues={changeValues}
+                        delFieldHandler={delFieldHandler} delColHandler={delColHandler} setFormValues={setFormValues} />
                     }
-                    <Grid container justifyContent='center'>
-                      <Grid item md={4} sm={12} xs={12}>
+                    <Grid container justifyContent='center' alignItems='center'>
+                      <Grid item>
                         <Box
                           aria-haspopup="true"
                           aria-controls={'add-column-layout'}
@@ -387,7 +472,7 @@ const AddForm = () => {
                           aria-label="widget's patient"
                           onClick={handleMenuOpen}
                         >
-                          <Box bgcolor={WHITE_EIGHT} borderRadius={6} p={1} mr={1}>
+                          <Box bgcolor={GREY_EIGHT} borderRadius={6} p={1} mr={1}>
                             <FormAddIcon />
                           </Box>
 
@@ -412,6 +497,7 @@ const AddForm = () => {
                           ))}
                         </Menu>
                       </Grid>
+
                     </Grid>
                   </Box>
                 </Grid>
@@ -424,6 +510,11 @@ const AddForm = () => {
           </Box>
         </form>
       </FormProvider>
+      <CreateTemplateModal title={FORM_TEXT} isOpen={openTemplate} isLoading={!!createTemplateLoading}
+        description={'Form Name'} handleDelete={handleCreateTemplate}
+        setFormName={setFormName}
+        formName={formName}
+        setOpen={(open: boolean) => setOpenTemplate(open)} />
     </DragDropContext>
   );
 };

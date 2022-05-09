@@ -9,7 +9,7 @@ import { SnackbarUtilsConfigrator, CloseButton } from "./components/common/Alert
 import client from './apollo'
 import { theme } from "./theme/theme";
 import {
-  AuthContextProvider, AppContextProvider, ListContextProvider, FacilityContextProvider, PermissionContextProvider
+  AuthContextProvider, AppContextProvider, ListContextProvider, FacilityContextProvider, PermissionContextProvider, ChartContextProvider
 } from './context'
 import 'rc-time-picker/assets/index.css';
 import './styles/styles.css'
@@ -27,7 +27,9 @@ const App = () => {
               <PermissionContextProvider>
                 <ListContextProvider>
                   <FacilityContextProvider>
-                    <AppContainer />
+                    <ChartContextProvider>
+                      <AppContainer />
+                    </ChartContextProvider>
                   </FacilityContextProvider>
                 </ListContextProvider>
               </PermissionContextProvider>

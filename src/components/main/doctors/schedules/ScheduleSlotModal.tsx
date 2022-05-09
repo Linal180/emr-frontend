@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { FC, useCallback, useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Button, Dialog, DialogActions, Box, Grid, CircularProgress } from "@material-ui/core";
+import { Button, Dialog, Box, Grid, CircularProgress } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
@@ -140,7 +140,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
     const { id: dayName } = day || {}
 
     const scheduleInput = {
-      doctorId, servicesIds: [selectedService] || [],
+      doctorId, servicesIds: [selectedService] || [], day: dayName,
       startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
     if (doctorId) {
@@ -154,7 +154,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
       } else {
         await createSchedule({
           variables: {
-            createScheduleInput: { ...scheduleInput }
+            createScheduleInput: [{ ...scheduleInput }]
           }
         })
       }
@@ -171,7 +171,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardComponent cardTitle={DOCTOR_SCHEDULE}>
-            <Box ml={3} mr={3} pt={3}>
+            <Box px={1}>
               <Grid container spacing={3}>
                 <Grid item md={12} sm={12} xs={12}>
                   {getScheduleLoading ?
@@ -213,12 +213,12 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
                       </>
                     )}
 
-                  <DialogActions>
-                    <Box pr={1}>
-                      <Button onClick={handleClose} color="default">
-                        {CANCEL}
-                      </Button>
-                    </Box>
+                  <Box pb={2} display='flex' justifyContent='flex-end' alignItems='center'>
+                    <Button onClick={handleClose} color="default">
+                      {CANCEL}
+                    </Button>
+
+                    <Box p={1} />
 
                     <Button type="submit" variant="contained" color="primary"
                       disabled={disableSubmit}
@@ -227,7 +227,7 @@ const DoctorScheduleModal: FC<DoctorScheduleModalProps> = ({
 
                       {disableSubmit && <CircularProgress size={20} color="inherit" />}
                     </Button>
-                  </DialogActions>
+                  </Box>
                 </Grid>
               </Grid>
             </Box>

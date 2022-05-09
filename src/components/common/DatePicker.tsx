@@ -7,6 +7,7 @@ import DateFnsUtils from '@date-io/date-fns';
 // interfaces constants and utils block
 import { requiredLabel } from '../../utils';
 import { PickerProps } from "../../interfacesTypes";
+import { CalendarIcon } from '../../assets/svgs';
 
 const DatePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
@@ -43,6 +44,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element =
               disableFuture
               clearable
               maxDate="2100-01-31"
+              keyboardIcon={<CalendarIcon />}
             />
           </MuiPickersUtilsProvider>
         </FormControl>

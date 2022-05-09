@@ -20,10 +20,12 @@ export interface State {
   isInsurance: boolean;
   providerName: string;
   facilityName: string;
+  facilityId: string;
   appointmentId: string;
   isEmployment: boolean;
   isAutoAccident: boolean;
   isOtherAccident: boolean;
+  openPatientModal: boolean;
   deleteAppointmentId: string;
   date: MaterialUiPickersDate;
   doctor: DoctorPayload['doctor'];
@@ -51,6 +53,7 @@ export interface State {
   appDetail: boolean;
   isInvoiceNumber: boolean;
   cancelAppStatus: boolean;
+  appBillingStatus: string;
 }
 
 export const initialState: State = {
@@ -74,6 +77,7 @@ export const initialState: State = {
   appointments: [],
   providerName: '',
   facilityName: '',
+  facilityId: '',
   openDelete: false,
   appointmentId: '',
   appointment: null,
@@ -88,6 +92,7 @@ export const initialState: State = {
   cancelAppStatus: false,
   isInvoiceNumber: false,
   isOtherAccident: false,
+  openPatientModal: false,
   deleteAppointmentId: '',
   appointmentPaymentToken: "",
   offset: moment.tz().utcOffset(),
@@ -100,6 +105,7 @@ export const initialState: State = {
     patientId: "",
     providerId: '',
   },
+  appBillingStatus: '',
 }
 
 export enum ActionType {
@@ -130,6 +136,7 @@ export enum ActionType {
   SET_APPOINTMENTS = 'setAppointments',
   SET_IS_EMPLOYMENT = 'setIsEmployment',
   SET_FACILITY_NAME = 'setFacilityName',
+  SET_FACILITY_ID = 'setFacilityId',
   SET_PROVIDER_NAME = 'setProviderName',
   SET_APPOINTMENT_ID = 'setAppointmentId',
   SET_AVAILABLE_SLOTS = 'setAvailableSlots',
@@ -139,9 +146,11 @@ export enum ActionType {
   SET_IS_OTHER_ACCIDENT = 'setIsOtherAccident',
   SET_IS_INVOICE_NUMBER = 'setIsInvoiceNumber',
   SET_APP_INVOICE_NUMBER = 'setAppInvoiceNumber',
+  SET_OPEN_PATIENT_MODAL = 'setOpenPatientModal',
   SET_EXTERNAL_APPOINTMENT = 'setExternalAppointment',
   SET_DELETE_APPOINTMENT_ID = 'setDeleteAppointmentId',
   SET_APPOINTMENT_PAYMENT_TOKEN = 'setAppointmentPaymentToken',
+  SET_APP_BILLING_STATUS = 'setAppBillingStatus',
 }
 
 export type Action =
@@ -167,6 +176,7 @@ export type Action =
   | { type: ActionType.SET_PATIENT_NAME; patientName: string }
   | { type: ActionType.SET_IS_INSURANCE; isInsurance: boolean }
   | { type: ActionType.SET_FACILITY_NAME; facilityName: string }
+  | { type: ActionType.SET_FACILITY_ID; facilityId: string }
   | { type: ActionType.SET_PROVIDER_NAME; providerName: string }
   | { type: ActionType.SET_IS_EMPLOYMENT, isEmployment: boolean }
   | { type: ActionType.SET_APPOINTMENT_ID; appointmentId: string }
@@ -177,6 +187,7 @@ export type Action =
   | { type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: boolean }
   | { type: ActionType.SET_IS_INVOICE_NUMBER; isInvoiceNumber: boolean }
   | { type: ActionType.SET_APP_INVOICE_NUMBER; appInvoiceNumber: string }
+  | { type: ActionType.SET_OPEN_PATIENT_MODAL; openPatientModal: boolean }
   | { type: ActionType.SET_FACILITY; facility: FacilityPayload['facility'] }
   | { type: ActionType.SET_DELETE_APPOINTMENT_ID; deleteAppointmentId: string }
   | { type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: SlotsPayload['slots'] }
@@ -192,6 +203,7 @@ export type Action =
       providerId: string,
     }
   }
+  | { type: ActionType.SET_APP_BILLING_STATUS; appBillingStatus: string }
 
 
 export const appointmentReducer = (state: State, action: Action): State => {
@@ -254,6 +266,12 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         facilityName: action.facilityName
+      }
+
+    case ActionType.SET_FACILITY_ID:
+      return {
+        ...state,
+        facilityId: action.facilityId
       }
 
     case ActionType.SET_IS_INSURANCE:
@@ -414,6 +432,16 @@ export const appointmentReducer = (state: State, action: Action): State => {
       return {
         ...state,
         cancelAppStatus: action.cancelAppStatus
+      }
+    case ActionType.SET_APP_BILLING_STATUS:
+      return {
+        ...state,
+        appBillingStatus: action.appBillingStatus
+      }
+    case ActionType.SET_OPEN_PATIENT_MODAL:
+      return {
+        ...state,
+        openPatientModal: action.openPatientModal
       }
   }
 };

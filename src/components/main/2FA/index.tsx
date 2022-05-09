@@ -1,86 +1,25 @@
 // packages block
 import { Link } from 'react-router-dom';
-import { Controller, FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 // component block
 import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
-import { Box, Button, CircularProgress, FormControl, Grid, MenuItem, Typography, } from '@material-ui/core';
+import { Box, Button, Grid, MenuItem, Typography, } from '@material-ui/core';
 // constants, history, styling block
-import { GRAY_TWO, WHITE } from '../../../theme';
+import { WHITE } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   GENERAL, PROFILE_GENERAL_MENU_ITEMS, SECURITY, USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, TWO_FA_AUTHENTICATION, STATUS,
-  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD, TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED, NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE,
+  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENABLE, ENTER_PASSWORD,
 } from '../../../constants';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../../context';
-import { useUpdate2FactorAuthMutation } from '../../../generated/graphql';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { twoFAValidationSchema } from '../../../validationSchemas';
-import { TwoFactorInputProps } from '../../../interfacesTypes';
-import Alert from '../../common/Alert';
-import { AntSwitch } from '../../../styles/publicAppointmentStyles/externalPatientStyles';
 
 const TwoFAComponent = (): JSX.Element => {
-  const { user } = useContext(AuthContext)
-  const { id, isTwoFactorEnabled: userTwoFactor } = user || {}
   const classes = useHeaderStyles();
-  const [isChecked, setIsChecked] = useState(false);
-  const methods = useForm<TwoFactorInputProps>({
-    mode: "all", defaultValues: {
-      password: ""
-    }, resolver: yupResolver(twoFAValidationSchema)
-  });
-  const { handleSubmit, control, setValue } = methods;
+  const methods = useForm<any>({ mode: "all" });
+  const { handleSubmit } = methods;
 
-  const [fAEnabled, { loading }] = useUpdate2FactorAuthMutation({
-    onError({ message }) {
-      message === NOT_FOUND_EXCEPTION ?
-        Alert.error(VALID_PASSWORD_MESSAGE)
-        :
-        Alert.error(message)
-    },
-
-    onCompleted(data) {
-      if (data) {
-        const { update2FactorAuth: { response } } = data
-
-        if (response) {
-          const { status } = response
-          if (status === 200) {
-            Alert.success(TWO_FA_ENABLED_SUCCESSFULLY)
-          }
-        }
-      }
-    }
-  });
-
-  const onSubmit: SubmitHandler<TwoFactorInputProps> = async (inputs) => {
-    const { password, isTwoFactorEnabled } = inputs;
-    id && await fAEnabled({
-      variables: {
-        twoFactorInput: {
-          isTwoFactorEnabled, userId: id, password,
-        }
-
-      }
-    })
-
-  }
-
-  const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const { target: { checked } } = event
-    setIsChecked(checked);
-    setValue('isTwoFactorEnabled', checked)
-  };
-
-  useEffect(() => {
-    if (userTwoFactor) {
-      setIsChecked(userTwoFactor);
-      setValue('isTwoFactorEnabled', userTwoFactor)
-    }
-  }, [userTwoFactor, setValue])
+  const onSubmit: SubmitHandler<any> = () => { }
 
   return (
     <Box mt={5}>
@@ -127,23 +66,9 @@ const TwoFAComponent = (): JSX.Element => {
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Box mb={4} display="flex" alignItems="center">
-                    <Box p={1} />
                     <Typography variant='h4'>{STATUS}</Typography>
-                    <Box pl={2}>
-                      <Controller
-                        name='isTwoFactorEnabled'
-                        control={control}
-                        render={() => (
-                          <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-                            <label className="toggle-main">
-                              <Box color={isChecked ? WHITE : GRAY_TWO} pr={1}>{ENABLED}</Box>
-                              <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='isTwoFactorEnabled' />
-                              <Box color={isChecked ? GRAY_TWO : WHITE}>{DISABLED}</Box>
-                            </label>
-                          </FormControl>
-                        )}
-                      />
-                    </Box>
+                    <Box p={1} />
+                    <Button variant='contained' color='default'>{DISABLED}</Button>
                   </Box>
 
                   <Typography variant='body1'>{TWO_FA_AUTHENTICATION_DESCRIPTION}</Typography>
@@ -153,9 +78,8 @@ const TwoFAComponent = (): JSX.Element => {
                   <Grid container spacing={3}>
                     <Grid item md={5} sm={12} xs={12}>
                       <InputController
-                        fieldType="password"
+                        fieldType="text"
                         controllerName="password"
-                        isPassword={true}
                         controllerLabel={ENTER_PASSWORD}
                       />
                     </Grid>
@@ -163,10 +87,7 @@ const TwoFAComponent = (): JSX.Element => {
 
                   <Box p={1} />
 
-                  <Button type="submit" variant="contained" color='primary'>
-                    {SAVE_TEXT}
-                    {loading && <CircularProgress size={20} color="inherit" />}
-                  </Button>
+                  <Button type="submit" variant="contained" color='primary'>{ENABLE}</Button>
 
                 </form>
               </FormProvider>

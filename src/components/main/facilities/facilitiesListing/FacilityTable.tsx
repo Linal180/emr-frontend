@@ -1,7 +1,6 @@
 // packages block
 import { ChangeEvent, FC, useEffect, useContext, Reducer, useReducer, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { InsertLink } from "@material-ui/icons";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@material-ui/core";
 // components block
@@ -11,16 +10,15 @@ import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { AuthContext } from "../../../../context";
-import { ListContext } from "../../../../context/listContext";
-import { formatPhone, isSuperAdmin, renderTh } from "../../../../utils";
-import { EditIcon, TrashIcon, ServiceIcon } from "../../../../assets/svgs";
+import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
+import { EditNewIcon, TrashNewIcon, AddNewIcon, LinkIcon } from "../../../../assets/svgs";
+import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
 import {
-  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState, 
+  appointmentReducer, Action as AppointmentAction, initialState as AppointmentInitialState,
   State as AppointmentState, ActionType as AppointmentActionType
 } from "../../../../reducers/appointmentReducer";
 import {
@@ -38,15 +36,18 @@ const FacilityTable: FC = (): JSX.Element => {
   const { deleteFacilityList } = useContext(ListContext)
   const { facility, roles } = user || {}
   const isSuper = isSuperAdmin(roles);
-  const { practiceId } = facility || {}
+  const isPracAdmin = isPracticeAdmin(roles);
+  const isFacAdmin = isFacilityAdmin(roles);
+  const { practiceId, id: facilityId } = facility || {}
   const [state, dispatch] = useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const { searchQuery, page, totalPages, openDelete, deleteFacilityId, facilities } = state
   const [{ copied }, appointmentDispatcher] =
     useReducer<Reducer<AppointmentState, AppointmentAction>>(appointmentReducer, AppointmentInitialState)
 
   const [findAllFacility, { loading, error }] = useFindAllFacilitiesLazyQuery({
-    notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
 
     onError() {
       dispatch({ type: ActionType.SET_FACILITIES, facilities: [] })
@@ -58,7 +59,7 @@ const FacilityTable: FC = (): JSX.Element => {
       if (findAllFacility) {
         const { facilities, pagination } = findAllFacility
 
-        if (!searchQuery && pagination) {
+        if (pagination) {
           const { totalPages } = pagination
           totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
@@ -72,15 +73,16 @@ const FacilityTable: FC = (): JSX.Element => {
 
   const fetchAllFacilities = useCallback(async () => {
     try {
-      await findAllFacility({
-        variables: {
-          facilityInput: {
-            practiceId, facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT }
-          }
-        },
+      const inputs = { facilityName: searchQuery, paginationOptions: { page, limit: PAGE_LIMIT } }
+      const payload =
+        isSuper ? { ...inputs } : isPracAdmin ? { ...inputs, practiceId } :
+          isFacAdmin ? { ...inputs, singleFacilityId: facilityId } : undefined
+
+      payload && await findAllFacility({
+        variables: { facilityInput: { ...payload } }
       })
     } catch (error) { }
-  }, [findAllFacility, page, practiceId, searchQuery])
+  }, [facilityId, findAllFacility, isFacAdmin, isPracAdmin, isSuper, page, practiceId, searchQuery])
 
   const [removeFacility, { loading: deleteFacilityLoading }] = useRemoveFacilityMutation({
     onError() {
@@ -148,7 +150,9 @@ const FacilityTable: FC = (): JSX.Element => {
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Search search={search} />
+        <Box py={2} mb={2} maxWidth={450}>
+          <Search search={search} />
+        </Box>
 
         <Box className="table-overflow">
           <Table aria-label="customized table">
@@ -192,26 +196,26 @@ const FacilityTable: FC = (): JSX.Element => {
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <DetailTooltip title={copied ? LINK_COPIED : PUBLIC_LINK}>
                             <Box className={classes.iconsBackground} onClick={() => handleClipboard(id || '')}>
-                              <InsertLink />
+                              <LinkIcon />
                             </Box>
                           </DetailTooltip>
 
                           <DetailTooltip title={SERVICES}>
                             <Link to={`${FACILITIES_ROUTE}/${id}${FACILITY_SERVICES_ROUTE}`}>
                               <Box className={classes.iconsBackground}>
-                                <ServiceIcon />
+                                <AddNewIcon />
                               </Box>
                             </Link>
                           </DetailTooltip>
 
                           <Link to={`${FACILITIES_ROUTE}/${id}`}>
                             <Box className={classes.iconsBackground}>
-                              <EditIcon />
+                              <EditNewIcon />
                             </Box>
                           </Link>
 
                           <Box className={classes.iconsBackground} onClick={() => onDeleteClick(id || '')}>
-                            <TrashIcon />
+                            <TrashNewIcon />
                           </Box>
                         </Box>
                       </TableCell>
@@ -242,10 +246,11 @@ const FacilityTable: FC = (): JSX.Element => {
       </Box>
 
       {totalPages > 1 && (
-        <Box display="flex" justifyContent="flex-end" pt={2.25}>
+        <Box display="flex" justifyContent="flex-end" p={3}>
           <Pagination
             count={totalPages}
             shape="rounded"
+            variant="outlined"
             page={page}
             onChange={handleChange}
           />

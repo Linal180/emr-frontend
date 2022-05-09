@@ -8,9 +8,9 @@ import ProfileDropdownMenu from "./ProfileDropdownMenu";
 // utils and header styles block
 import history from "../../history";
 import { AuthContext } from "../../context";
-import { activeClass, checkPermission, isSuperAdmin } from "../../utils";
 import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
+import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
 import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
@@ -19,12 +19,13 @@ import {
 
 const HeaderNew: FC = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const { user, currentUser, userPermissions } = useContext(AuthContext);
+  const { user, currentUser, userPermissions, userRoles } = useContext(AuthContext);
   const { firstName, lastName } = currentUser || {}
   const { location: { pathname } } = history;
   const { roles } = user || {};
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
+  const roleName = getHigherRole(userRoles) || ''
 
   useEffect(() => {
     setIsSuper(isSuperAdmin(roles))
@@ -80,7 +81,8 @@ const HeaderNew: FC = (): JSX.Element => {
             current={currentRoute === 'inBilling'}
           />
 
-          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility) &&
+          {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
+            &&
             <Typography
               component={Link}
               to={FACILITIES_ROUTE}
@@ -112,14 +114,20 @@ const HeaderNew: FC = (): JSX.Element => {
             <Box display="flex"
               flexDirection="column"
               justifyContent="center"
-              alignItems="right"
+              alignItems="flex-end"
               className={classes.profileItemName}
             >
               {isSuper ?
                 <Typography variant="h6">{SUPER_ADMIN}</Typography>
-                :
-                <Typography variant="h6">{firstName} {lastName}</Typography>
-              }
+                : (
+                  <>
+                    <Typography variant="h6">{firstName} {lastName}</Typography>
+
+                    <Box className={classes.roleName}>
+                      <Typography variant="body1">{roleName}</Typography>
+                    </Box>
+                  </>
+                )}
             </Box>
 
             <ProfileDropdownMenu />

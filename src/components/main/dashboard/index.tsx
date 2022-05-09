@@ -20,7 +20,7 @@ const DashboardComponent: FC = (): JSX.Element => (
     <Box className="subHeading">{LOREM_TEXT_15}</Box>
 
     <Link to={`${CALENDAR_ROUTE}`}>
-      <Button color="primary" variant="contained" className="blue-button">{CALENDAR}</Button>
+      <Button variant="contained" color="secondary">{CALENDAR}</Button>
     </Link>
 
     <Box display="flex" justifyContent="flex-end">

@@ -1,9 +1,7 @@
 // packages block
 import { FC } from "react";
 import dotenv from 'dotenv';
-import {
-  Button, Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, IconButton
-} from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogTitle, DialogContent, Box, Typography, CardContent } from "@material-ui/core";
 // constants and interfaces block
 import { DocumentUploadIcon } from "../../assets/svgs";
 import { DocumentModalComponentType } from "../../interfacesTypes";
@@ -18,28 +16,25 @@ const ConfirmDocumentModal: FC<DocumentModalComponentType> = ({ isOpen, setOpen 
   const handleClose = () => setOpen && setOpen(!isOpen);
 
   return (
-    <Dialog
-      fullWidth
-      maxWidth="sm"
-      open={isOpen}
-      onClose={handleClose}
-      aria-labelledby="image-dialog-title"
-      aria-describedby="image-dialog-description"
-    >
+    <Dialog fullWidth maxWidth="sm" open={isOpen} onClose={handleClose} aria-labelledby="image-dialog-title" aria-describedby="image-dialog-description">
       <DialogTitle id="alert-dialog-title">{UPLOADS_DOCUMENT}</DialogTitle>
 
       <DialogContent className={classes.modalContent}>
-        <IconButton>
-          <DocumentUploadIcon />
-        </IconButton>
+        <Box display="flex" alignItems="center">
+          <Box pt={0.75}>
+            <DocumentUploadIcon />
+          </Box>
 
-        <Typography>{UPLOADS_DOCUMENT_LEARN_MORE_TEXT}</Typography>
+          <CardContent>
+            <Typography variant="body1">
+              {UPLOADS_DOCUMENT_LEARN_MORE_TEXT}
+            </Typography>
+          </CardContent>
+        </Box>
       </DialogContent>
 
-      <DialogActions className={classes.modalActions}>
-        <Box pr={1}>
-          <Button onClick={handleClose} variant="outlined" color="default">{CANCEL}</Button>
-        </Box>
+      <DialogActions>
+        <Button onClick={handleClose} color="default" variant="text">{CANCEL}</Button>
 
         <Button color="primary" variant="contained">{UPLOAD}</Button>
       </DialogActions>

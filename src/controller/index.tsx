@@ -1,6 +1,6 @@
 // packages block
 import { FC, useState } from "react";
-import { InfoOutlined } from "@material-ui/icons";
+import { Search } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, InputLabel, TextField } from "@material-ui/core";
 // components block
@@ -10,10 +10,12 @@ import { PASSWORD, TEXT } from "../constants";
 import { DetailTooltip } from "../styles/tableStyles";
 import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
+import { InfoIcon } from "../assets/svgs";
+import { requiredLabel } from "../utils";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
-  disabled, multiline, info, placeholder, className
+  disabled, multiline, info, placeholder, className, isSearch
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -33,14 +35,16 @@ const InputController: FC<CustomInputControlProps> = ({
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal">
+        <FormControl fullWidth margin="normal" error={Boolean(invalid)}>
           <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
-            {isRequired ? `${controllerLabel} *` : controllerLabel}
+            {isRequired ? requiredLabel(controllerLabel || '') : controllerLabel}
 
             {info &&
               <Box>
                 <DetailTooltip placement="top-end" arrow title={info}>
-                  <InfoOutlined color="inherit" fontSize="inherit" />
+                  <Box width={15} height={15}>
+                    <InfoIcon />
+                  </Box>
                 </DetailTooltip>
               </Box>
             }
@@ -66,6 +70,8 @@ const InputController: FC<CustomInputControlProps> = ({
               />,
             } : fieldType === 'number' ? {
               inputProps: { step: '5' }
+            } : isSearch ? {
+              endAdornment: <Search />
             } : undefined}
           />
         </FormControl>

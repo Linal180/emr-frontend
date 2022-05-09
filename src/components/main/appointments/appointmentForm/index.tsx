@@ -1,5 +1,5 @@
 // packages block
-import { useEffect, FC, useContext, Reducer, useReducer, useCallback, ChangeEvent } from 'react';
+import { useEffect, FC, useContext, Reducer, useReducer, useCallback, ChangeEvent, useState } from 'react';
 import DateFnsUtils from '@date-io/date-fns';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date';
@@ -8,13 +8,19 @@ import { Controller, FormProvider, SubmitHandler, useForm } from "react-hook-for
 import { Box, Button, CircularProgress, FormControl, Grid, InputLabel, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
-import Selector from '../../../common/Selector';
+import AddPatientModal from './AddPatientModal';
+import BackButton from '../../../common/BackButton';
+import PageHeader from '../../../common/PageHeader';
 import InputController from '../../../../controller';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import DoctorSelector from '../../../common/Selector/DoctorSelector';
+import PatientSelector from '../../../common/Selector/PatientSelector';
+import ServiceSelector from '../../../common/Selector/ServiceSelector';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { GRAY_TWO, WHITE } from '../../../../theme';
+import { GREY_TWO, WHITE } from '../../../../theme';
 import { appointmentSchema } from '../../../../validationSchemas';
 import { FacilityContext, ListContext } from '../../../../context';
 import { usePublicAppointmentStyles } from "../../../../styles/publicAppointmentStyles";
@@ -24,7 +30,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimestamps, renderDoctors, renderFacilities, renderPatient, renderServices, getTimeFromTimestamps,
+  getTimestamps, getTimeFromTimestamps,
   setRecord, getStandardTime, renderItem,
 } from "../../../../utils";
 import {
@@ -33,24 +39,29 @@ import {
 } from "../../../../generated/graphql";
 import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
-  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, SLOT_ALREADY_BOOKED, NO_SLOT_AVAILABLE,
+  APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, SLOT_ALREADY_BOOKED,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
-  PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
+  PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT, 
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
-  CANCELLED_APPOINTMENT_EDIT_MESSAGE,
+  CANCELLED_APPOINTMENT_EDIT_MESSAGE, DAYS, EDIT_APPOINTMENT, SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD,  
+  APPOINTMENT_NEW_BREAD, NO_SLOT_AVAILABLE, APPOINTMENT_EDIT_BREAD, ADD_PATIENT_MODAL,
 } from "../../../../constants";
 
 const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const classes = usePublicAppointmentStyles();
   const { facilityList } = useContext(ListContext)
+  const params = new URLSearchParams(window.location.search);
+  const [appStartDate, setAppStartDate] = useState<string>(params.get('startDate') || '')
+  const [appEndDate] = useState<string>(params.get('endDate') || '')
   const {
-    serviceList, doctorList, patientList, fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
+    fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const {
     date, availableSlots, serviceId, offset, currentDate, isEmployment, isAutoAccident, isOtherAccident,
-    serviceName, facilityName, providerName, patientName, cancelAppStatus
+    facilityName, cancelAppStatus, patientName, openPatientModal
   } = state
+
   const methods = useForm<ExtendedAppointmentInputProps>({
     mode: "all",
     resolver: yupResolver(appointmentSchema)
@@ -60,6 +71,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     serviceId: { id: selectedService } = {},
     providerId: { id: selectedProvider } = {},
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
+    patientId: selectedPatient
   } = watch();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -172,11 +184,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       if (getSlots) {
         const { slots } = getSlots;
 
-        slots ?
+        if (slots) {
           dispatch({
             type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: slots as SlotsPayload['slots']
           })
-          : dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] });
+        } else { dispatch({ type: ActionType.SET_AVAILABLE_SLOTS, availableSlots: [] }); }
       }
     }
   });
@@ -244,7 +256,10 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => {
     if (selectedService && date) {
-      const slotsInput = { offset, currentDate: date.toString(), serviceId: selectedService };
+      const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
+      const currentDay = new Date(date).getDay()
+
+      const slotsInput = { offset, currentDate: appStartDate ? appStartDate : date.toString(), serviceId: selectedService, day: days[currentDay] };
 
       getSlots({
         variables: {
@@ -252,7 +267,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
         }
       })
     }
-  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots])
+  }, [currentDate, offset, selectedFacility, date, selectedProvider, selectedService, serviceId, watch, getSlots, appStartDate, setValue, appEndDate])
 
   const fetchList = useCallback((id: string, name: string) => {
     reset({
@@ -330,227 +345,256 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
   };
 
+  const handlePatientModal = () => {
+    dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: true })
+  }
+
+  useEffect(() => {
+    const { id } = selectedPatient ?? {}
+    
+    id === ADD_PATIENT_MODAL && handlePatientModal()
+  }, [selectedPatient])
+
+  const dateHandler = (currentDate: MaterialUiPickersDate) => {
+    setAppStartDate('')
+    dispatch({ type: ActionType.SET_DATE, date: currentDate })
+  }
+
+  useEffect(() => { }, [date, appStartDate])
+
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
-          <Grid container spacing={3}>
-            <Grid md={6} item>
-              <CardComponent cardTitle={APPOINTMENT}>
-                {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <Grid container spacing={3}>
-                    <Grid item md={6} sm={12} xs={12}>
-                      {isEdit ? renderItem(FACILITY, facilityName) :
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={FACILITY}
-                          name="facilityId"
-                          options={renderFacilities(facilityList)}
-                        />
-                      }
-                    </Grid>
+    <>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+            <Box display="flex">
+              <BackButton to={`${VIEW_APPOINTMENTS_ROUTE}`} />
 
-                    <Grid item md={6} sm={12} xs={12}>
-                      {isEdit ? renderItem(APPOINTMENT_TYPE, serviceName) :
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={APPOINTMENT_TYPE}
-                          name="serviceId"
-                          options={renderServices(serviceList)}
-                        />
-                      }
-                    </Grid>
-                  </Grid>
-                )}
-              </CardComponent>
+              <Box ml={2}>
+                <PageHeader
+                  title={EDIT_APPOINTMENT}
+                  path={[SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD, isEdit ? APPOINTMENT_EDIT_BREAD : APPOINTMENT_NEW_BREAD]}
+                />
+              </Box>
+            </Box>
 
-              <Box pb={3} />
+            <Button type="submit" variant="contained" color="primary"
+              disabled={updateAppointmentLoading || CreateAppointmentLoading}
+            >
+              {isEdit ? UPDATE_APPOINTMENT : CREATE_APPOINTMENT}
 
-              <CardComponent cardTitle={INFORMATION}>
-                {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
+              {(updateAppointmentLoading || CreateAppointmentLoading) &&
+                <CircularProgress size={20} color="inherit" />
+              }
+            </Button>
+          </Box>
+
+          <Box maxHeight="calc(100vh - 190px)" className="overflowY-auto">
+            <Grid container spacing={3}>
+              <Grid md={8} item>
+                <CardComponent cardTitle={APPOINTMENT}>
+                  {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(PROVIDER, providerName) :
-                          <Selector
-                            value={EMPTY_OPTION}
-                            label={PROVIDER}
-                            name="providerId"
-                            options={renderDoctors(doctorList)}
+                        {isEdit ? renderItem(FACILITY, facilityName) :
+                          <FacilitySelector
+                            isRequired
+                            label={FACILITY}
+                            name="facilityId"
                           />
                         }
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        {isEdit ? renderItem(PATIENT, patientName) :
-                          <Selector
-                            isRequired
-                            value={EMPTY_OPTION}
-                            label={PATIENT}
-                            name="patientId"
-                            options={renderPatient(patientList)}
-                          />
-                        }
+                        <ServiceSelector
+                          isRequired
+                          label={APPOINTMENT_TYPE}
+                          name="serviceId"
+                          facilityId={selectedFacility}
+                          addEmpty
+                        />
                       </Grid>
                     </Grid>
+                  )}
+                </CardComponent>
 
-                    <InputController
-                      fieldType="text"
-                      controllerName="reason"
-                      controllerLabel={REASON}
-                    />
+                <Box pb={3} />
 
-                    <InputController
-                      fieldType="text"
-                      controllerName="notes"
-                      controllerLabel={NOTES}
-                    />
+                <CardComponent cardTitle={INFORMATION}>
+                  {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
+                    <>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <DoctorSelector
+                            label={PROVIDER}
+                            name="providerId"
+                            facilityId={selectedFacility}
+                            addEmpty
+                          />
+                        </Grid>
 
-                    <InputController
-                      fieldType="text"
-                      controllerName="primaryInsurance"
-                      controllerLabel={PRIMARY_INSURANCE}
-                    />
+                        <Grid item md={6} sm={12} xs={12}>
+                          {isEdit ? renderItem(PATIENT, patientName) :
+                            <PatientSelector
+                              handlePatientModal={handlePatientModal}
+                              isModal
+                              isRequired
+                              label={PATIENT}
+                              name="patientId"
+                              setValue={setValue}
+                              isOpen={openPatientModal}
+                            />}
+                        </Grid>
+                      </Grid>
 
-                    <InputController
-                      fieldType="text"
-                      controllerName="secondaryInsurance"
-                      controllerLabel={SECONDARY_INSURANCE}
-                    />
-                  </>
-                )}
-              </CardComponent>
-            </Grid>
-
-            <Grid md={6} item>
-              <Grid item md={12} sm={12} className="custom-calendar">
-                <CardComponent cardTitle="Available Slots">
-                  <Box display="flex" justifyContent="center">
-                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <DatePicker
-                        variant="static"
-                        openTo="date"
-                        value={date}
-                        autoOk
-                        disablePast
-                        fullWidth
-                        disableToolbar
-                        onChange={currentDate => currentDate &&
-                          dispatch({ type: ActionType.SET_DATE, date: currentDate })
-                        }
+                      <InputController
+                        fieldType="text"
+                        controllerName="reason"
+                        controllerLabel={REASON}
                       />
 
-                    </MuiPickersUtilsProvider>
-                  </Box>
+                      <InputController
+                        fieldType="text"
+                        controllerName="notes"
+                        controllerLabel={NOTES}
+                      />
 
-                  {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
-                    <ul className={classes.timeSlots}>
-                      {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
-                        const { startTime, endTime } = slot || {}
+                      <InputController
+                        fieldType="text"
+                        controllerName="primaryInsurance"
+                        controllerLabel={PRIMARY_INSURANCE}
+                      />
 
-                        return (
-                          <li onClick={() => handleSlot(slot)} key={index}>
-                            <div>
-                              <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
-                              <label htmlFor={`timeSlot-${index}`}>
-                                {getStandardTime(new Date(startTime || '').getTime().toString())} -
-                                {getStandardTime(new Date(endTime || '').getTime().toString())}
-                              </label>
-                            </div>
-                          </li>
-                        )
-                      }) : (
-                        <Typography>{NO_SLOT_AVAILABLE}</Typography>
-                      )}
-                    </ul>
+                      <InputController
+                        fieldType="text"
+                        controllerName="secondaryInsurance"
+                        controllerLabel={SECONDARY_INSURANCE}
+                      />
+                    </>
                   )}
                 </CardComponent>
               </Grid>
 
-              <Box pb={3} />
-
-              <CardComponent cardTitle={PATIENT_CONDITION}>
-                {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
-                  <>
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Controller
-                          name='employment'
-                          control={control}
-                          render={() => (
-                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-                              <InputLabel shrink>{EMPLOYMENT}</InputLabel>
-
-                              <label className="toggle-main">
-                                <Box color={isEmployment ? WHITE : GRAY_TWO}>Yes</Box>
-                                <AntSwitch checked={isEmployment} onChange={(event) => { handleChange(event) }} name='employment' />
-                                <Box color={isEmployment ? GRAY_TWO : WHITE}>No</Box>
-                              </label>
-                            </FormControl>
-                          )}
+              <Grid md={4} item>
+                <Grid item md={12} sm={12} className="custom-calendar">
+                  <CardComponent cardTitle="Available Slots">
+                    <Box display="flex" justifyContent="center">
+                      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <DatePicker
+                          variant="static"
+                          openTo="date"
+                          value={appStartDate ? appStartDate : date}
+                          autoOk
+                          disablePast
+                          fullWidth
+                          disableToolbar
+                          onChange={(currentDate) => { dateHandler(currentDate) }}
                         />
+
+                      </MuiPickersUtilsProvider>
+                    </Box>
+
+                    {getSlotsLoading ? <ViewDataLoader rows={3} columns={6} hasMedia={false} /> : (
+                      <ul className={classes.timeSlots}>
+                        {!!availableSlots?.length ? availableSlots.map((slot: Slots, index: number) => {
+                          const { startTime, endTime } = slot || {}
+
+                          return (
+                            <li onClick={() => handleSlot(slot)} key={index}>
+                              <div>
+                                <input type="radio" name="timeSlots" id={`timeSlot-${index}`} />
+                                <label htmlFor={`timeSlot-${index}`}>
+                                  {getStandardTime(new Date(startTime || '').getTime().toString())} -
+                                  {getStandardTime(new Date(endTime || '').getTime().toString())}
+                                </label>
+                              </div>
+                            </li>
+                          )
+                        }) : (
+                          <Typography>{NO_SLOT_AVAILABLE}</Typography>
+                        )}
+                      </ul>
+                    )}
+                  </CardComponent>
+                </Grid>
+
+                <Box pb={3} />
+
+                <CardComponent cardTitle={PATIENT_CONDITION}>
+                  {getAppointmentLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
+                    <>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <Controller
+                            name='employment'
+                            control={control}
+                            render={() => (
+                              <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                                <InputLabel shrink>{EMPLOYMENT}</InputLabel>
+
+                                <label className="toggle-main">
+                                  <Box color={isEmployment ? WHITE : GREY_TWO}>Yes</Box>
+                                  <AntSwitch checked={isEmployment} onChange={(event) => { handleChange(event) }} name='employment' />
+                                  <Box color={isEmployment ? GREY_TWO : WHITE}>No</Box>
+                                </label>
+                              </FormControl>
+                            )}
+                          />
+                        </Grid>
+
+                        <Grid item md={6} sm={12} xs={12}>
+                          <Controller
+                            name='autoAccident'
+                            control={control}
+                            render={() => (
+                              <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                                <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
+
+                                <label className="toggle-main">
+                                  <Box color={isAutoAccident ? WHITE : GREY_TWO}>Yes</Box>
+                                  <AntSwitch checked={isAutoAccident} onChange={(event) => { handleChange(event) }} name='autoAccident' />
+                                  <Box color={isAutoAccident ? GREY_TWO : WHITE}>No</Box>
+                                </label>
+                              </FormControl>
+                            )}
+                          />
+                        </Grid>
                       </Grid>
 
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Controller
-                          name='autoAccident'
-                          control={control}
-                          render={() => (
-                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-                              <InputLabel shrink>{AUTO_ACCIDENT}</InputLabel>
+                      <Grid container spacing={3}>
+                        <Grid item md={6} sm={12} xs={12}>
+                          <Controller
+                            name='otherAccident'
+                            control={control}
+                            render={() => (
+                              <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                                <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
 
-                              <label className="toggle-main">
-                                <Box color={isAutoAccident ? WHITE : GRAY_TWO}>Yes</Box>
-                                <AntSwitch checked={isAutoAccident} onChange={(event) => { handleChange(event) }} name='autoAccident' />
-                                <Box color={isAutoAccident ? GRAY_TWO : WHITE}>No</Box>
-                              </label>
-                            </FormControl>
-                          )}
-                        />
+                                <label className="toggle-main">
+                                  <Box color={isOtherAccident ? WHITE : GREY_TWO}>Yes</Box>
+                                  <AntSwitch checked={isOtherAccident} onChange={(event) => { handleChange(event) }} name='otherAccident' />
+                                  <Box color={isOtherAccident ? GREY_TWO : WHITE}>No</Box>
+                                </label>
+                              </FormControl>
+                            )}
+                          />
+                        </Grid>
                       </Grid>
-                    </Grid>
-
-                    <Grid container spacing={3}>
-                      <Grid item md={6} sm={12} xs={12}>
-                        <Controller
-                          name='otherAccident'
-                          control={control}
-                          render={() => (
-                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
-                              <InputLabel shrink>{OTHER_ACCIDENT}</InputLabel>
-
-                              <label className="toggle-main">
-                                <Box color={isOtherAccident ? WHITE : GRAY_TWO}>Yes</Box>
-                                <AntSwitch checked={isOtherAccident} onChange={(event) => { handleChange(event) }} name='otherAccident' />
-                                <Box color={isOtherAccident ? GRAY_TWO : WHITE}>No</Box>
-                              </label>
-                            </FormControl>
-                          )}
-                        />
-                      </Grid>
-                    </Grid>
-                  </>
-                )}
-              </CardComponent>
+                    </>
+                  )}
+                </CardComponent>
+              </Grid>
             </Grid>
-          </Grid>
-        </Box>
+          </Box>
+        </form>
+      </FormProvider>
 
-        <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary"
-            disabled={updateAppointmentLoading || CreateAppointmentLoading}
-          >
-            {isEdit ? UPDATE_APPOINTMENT : CREATE_APPOINTMENT}
-
-            {(updateAppointmentLoading || CreateAppointmentLoading) &&
-              <CircularProgress size={20} color="inherit" />
-            }
-          </Button>
-        </Box>
-      </form>
-    </FormProvider>
+      <AddPatientModal
+        facilityId={selectedFacility}
+        isOpen={openPatientModal}
+        setIsOpen={(open: boolean) => dispatch({ type: ActionType.SET_OPEN_PATIENT_MODAL, openPatientModal: open })}
+      />
+    </>
   );
 };
 

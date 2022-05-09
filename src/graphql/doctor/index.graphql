@@ -135,6 +135,17 @@ query GetDoctor($getDoctor: GetDoctor!) {
         updatedAt
       }
 
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
+      
       facility {
         id
         name

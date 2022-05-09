@@ -1,61 +1,69 @@
 // packages block
 import { FC, useState, useContext, ChangeEvent, useEffect, Reducer, useReducer, useCallback } from 'react';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { usStreet } from 'smartystreets-javascript-sdk';
+import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 import { FormProvider, useForm, SubmitHandler, Controller } from "react-hook-form";
 import {
-  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup, Checkbox, InputLabel, Typography,
+  CircularProgress, Box, Button, FormControl, Grid, FormControlLabel, FormLabel, FormGroup,
+  Checkbox, InputLabel, Typography,
 } from "@material-ui/core";
-import { CheckBox as CheckBoxIcon } from '@material-ui/icons'
 // components block
 import Alert from "../../../common/Alert";
 import Selector from '../../../common/Selector';
 import DatePicker from "../../../common/DatePicker";
 import PhoneField from '../../../common/PhoneInput';
+import PageHeader from '../../../common/PageHeader';
+import BackButton from '../../../common/BackButton';
 import InputController from '../../../../controller';
+import SmartyModal from '../../../common/SmartyModal';
 import CardComponent from "../../../common/CardComponent";
 import ViewDataLoader from '../../../common/ViewDataLoader';
+import DoctorSelector from '../../../common/Selector/DoctorSelector';
+import FacilitySelector from '../../../common/Selector/FacilitySelector';
+import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
 // interfaces, graphql, constants block /styles
 import history from '../../../../history';
-import { GRAY_TWO, WHITE } from '../../../../theme';
-import { extendedPatientSchema } from '../../../../validationSchemas';
+import { GREY_SEVEN, WHITE } from '../../../../theme';
 import { AuthContext, ListContext, FacilityContext } from '../../../../context';
-import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
 import { usePublicAppointmentStyles } from '../../../../styles/publicAppointmentStyles';
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
+import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
+import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
+import { getDate, getTimestamps, getTimestampsForDob, renderItem, setRecord } from '../../../../utils';
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
-import { getDate, getTimestamps, renderDoctors, renderFacilities, setRecord } from '../../../../utils';
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus,
   Pronouns, Race, RelationshipType, Sexualorientation, useGetPatientLazyQuery,
   useUpdatePatientMutation, useCreatePatientMutation
 } from "../../../../generated/graphql";
 import {
-  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB, EMAIL,
-  DEMOGRAPHICS, GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN, EMPLOYMENT,
-  GUARDIAN, SUFFIX, MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME, PREVIOUS_LAST_NAME,
-  MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, REGISTRATION_DATE, NOTICE_ON_FILE, PHONE,
-  MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER, DECREASED_DATE,
+  FIRST_NAME, LAST_NAME, CITY, STATE, COUNTRY, CONTACT_INFORMATION, IDENTIFICATION, DOB,
+  DEMOGRAPHICS, GUARANTOR, PRIVACY, REGISTRATION_DATES, EMERGENCY_CONTACT, NEXT_OF_KIN,
+  GUARDIAN, SUFFIX, MIDDLE_NAME, FIRST_NAME_USED, PREFERRED_NAME, PREVIOUS_FIRST_NAME,
+  PREVIOUS_LAST_NAME, MAPPED_STATES, DECREASED_DATE, USUAL_INDUSTRY, PHONE, EMPLOYMENT,
+  MOTHERS_MAIDEN_NAME, SSN, ZIP_CODE, ADDRESS, ADDRESS_2, REGISTRATION_DATE, NOTICE_ON_FILE,
+  MEDICATION_HISTORY_AUTHORITY, NAME, HOME_PHONE, MOBILE_PHONE, EMPLOYER_NAME, EMPLOYER,
   EMPLOYER_PHONE, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENTS_ROUTE,
   LANGUAGE_SPOKEN, MAPPED_RACE, MAPPED_ETHNICITY, MAPPED_SEXUAL_ORIENTATION, MAPPED_PRONOUNS,
   MAPPED_RELATIONSHIP_TYPE, MAPPED_MARITAL_STATUS, ETHNICITY, EMPTY_OPTION, GENDER_IDENTITY,
-  SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, USUAL_OCCUPATION, USUAL_INDUSTRY,
+  SEXUAL_ORIENTATION, PRONOUNS, HOMEBOUND, RELATIONSHIP, USUAL_PROVIDER_ID, USUAL_OCCUPATION,
   ISSUE_DATE, EXPIRATION_DATE, RACE, MARITAL_STATUS, LEGAL_SEX, SEX_AT_BIRTH, NOT_FOUND_EXCEPTION,
-  GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT, UPDATE_PATIENT,
-  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT, MAPPED_STATES,
-  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS, VERIFIED,
+  GUARANTOR_RELATION, GUARANTOR_NOTE, FACILITY, PATIENT_UPDATED, FAILED_TO_UPDATE_PATIENT,
+  PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT,
+  MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS,
+  SAME_AS_PATIENT, SSN_FORMAT, DOCTOR, UPDATE_PATIENT, EMAIL, VERIFIED, ADD_PATIENT, PATIENTS_BREAD,
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, USERS_BREAD,
 } from "../../../../constants";
-import { getAddressByZipcode, verifyAddress } from '../../../common/smartyAddress';
-import SmartyModal from '../../../common/SmartyModal'
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
-  const { doctorList, fetchAllDoctorList } = useContext(FacilityContext)
+  const { fetchAllDoctorList } = useContext(FacilityContext)
   const [{
-    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId
+    basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId, sameAddress,
+    facilityName, doctorName, isChecked, isVerified, addressOpen, data
   }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const [state, setState] = useState({
     privacyNotice: false,
@@ -63,26 +71,21 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     callToConsent: false,
     medicationHistoryAuthority: false,
   })
-
-  const [isChecked, setIsChecked] = useState(false);
-  const [isVerified, setIsVerified] = useState(false)
-  const [addressOpen, setAddressOpen] = useState(false);
-  const [data, setData] = useState<usStreet.Candidate[]>([])
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const classes = usePublicAppointmentStyles();
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(extendedPatientSchema)
+    resolver: yupResolver(isEdit ? extendedEditPatientSchema : extendedPatientSchema)
   });
   const { handleSubmit, setValue, watch, control } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2, basicCountry, basicEmail,
   } = watch();
 
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { target: { checked } } = event
-    setIsChecked(checked);
+    dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: checked })
     setValue('homeBound', checked)
   };
 
@@ -118,6 +121,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             if (facilityId) {
               fetchAllDoctorList(facilityId)
               name && setValue("facilityId", setRecord(facilityId, name))
+              dispatch({ type: ActionType.SET_FACILITY_NAME, facilityName: name })
             }
           }
 
@@ -132,6 +136,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               const { id: usualProviderId, firstName, lastName } = currentDoctor || {};
               usualProviderId &&
                 setValue("usualProviderId", setRecord(usualProviderId, `${firstName} ${lastName}`))
+              dispatch({ type: ActionType.SET_DOCTOR_NAME, doctorName: `${firstName} ${lastName}` })
             }
           }
 
@@ -152,7 +157,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
-          homeBound && setIsChecked(homeBound === Homebound.Yes ? true : false)
+          homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
@@ -366,9 +371,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
-        previouslastName, motherMaidenName, ssn, statementNote, language, patientNote, email: basicEmail,
-        facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, practiceId,
-        medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
+        previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
+        email: basicEmail, facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill,
+        practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
         gender: selectedGender as Genderidentity || Genderidentity.None,
@@ -376,7 +381,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         genderIdentity: selectedGenderIdentity as Genderidentity || Genderidentity.None,
         maritialStatus: selectedMaritalStatus as Maritialstatus || Maritialstatus.Single,
         sexualOrientation: selectedSexualOrientation as Sexualorientation || Sexualorientation.None,
-        statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestamps(dob) : '',
+        statementDelivereOnline: statementDelivereOnline || false, dob: dob ? getTimestampsForDob(dob) : '',
         deceasedDate: deceasedDate ? getTimestamps(deceasedDate) : '',
         registrationDate: registrationDate ? getTimestamps(registrationDate) : '',
         statementNoteDateTo: statementNoteDateTo ? getTimestamps(statementNoteDateTo) : '',
@@ -403,7 +408,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         employerName: guarantorEmployerName, address2: guarantorAddress2,
         zipCode: guarantorZipCode, city: guarantorCity, state: selectedGuarantorState,
         phone: guarantorPhone, suffix: guarantorSuffix, country: selectedGuarantorCountry,
-        userId: userId, ssn: guarantorSsn, primaryContact: false, address: guarantorAddress,
+        userId: userId, ssn: guarantorSsn || SSN_FORMAT, primaryContact: false, address: guarantorAddress,
       };
 
       const guardianContactInput = {
@@ -500,11 +505,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         setValue('basicCity', defaultCity)
         setValue('basicState', { id: state, name: `${state} - ${stateAbbreviation}` })
       }
-      else {
-        // Alert.error(message)
-      }
-    }
-    else {
+    } else {
       Alert.error(ZIP_CODE_ENTER)
     }
   }, [basicZipCode, setValue])
@@ -513,16 +514,17 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     if (basicZipCode && basicCity) {
       const { id } = basicState
       const data = await verifyAddress(basicZipCode, basicCity, id, basicAddress, basicAddress2);
-      setUserData((prev) => ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
+      setUserData((prev) =>
+        ({ ...prev, address: `${basicCity}, ${id} ${basicZipCode}`, street: `${basicAddress} ${basicAddress2}` }))
       const { status, options } = data || {}
 
       if (status) {
-        setData(options)
-        setAddressOpen(true)
+        dispatch({ type: ActionType.SET_DATA, data: options })
+        dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
       }
       else {
-        setData([])
-        setAddressOpen(true)
+        dispatch({ type: ActionType.SET_DATA, data: [] })
+        dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: true })
       }
     }
     else {
@@ -530,25 +532,77 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
   }
 
+  const copyAddress = () => {
+    basicAddress && setValue("guarantorAddress", basicAddress)
+    basicAddress2 && setValue("guarantorAddress2", basicAddress2)
+    basicZipCode && setValue("guarantorZipCode", basicZipCode)
+    basicCity && setValue("guarantorCity", basicCity)
+    basicState && setValue("guarantorState", basicState)
+    basicCountry && setValue("guarantorCountry", basicCountry)
+    basicEmail && setValue("guarantorEmail", basicEmail)
+  };
+
+  const resetAddress = () => {
+    setValue("guarantorAddress", '')
+    setValue("guarantorAddress2", '')
+    setValue("guarantorZipCode", '')
+    setValue("guarantorCity", '')
+    setValue("guarantorState", setRecord('', ''))
+    setValue("guarantorCountry", setRecord('', ''))
+    setValue("guarantorEmail", '')
+  };
+
+  const setAddressValues = (checked: boolean) => checked ? copyAddress() : resetAddress()
+
+  const handleSameAddress = (checked: boolean) => {
+    dispatch({ type: ActionType.SET_SAME_ADDRESS, sameAddress: checked })
+
+    setAddressValues(checked);
+  }
+
   useEffect(() => {
     basicZipCode?.length === 5 && getAddressHandler()
   }, [basicZipCode, getAddressHandler]);
 
-  const verifiedAddressHandler = (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => {
+  const verifiedAddressHandler = (
+    deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string
+  ) => {
     deliveryLine1 && setValue('basicAddress', deliveryLine1);
     zipCode && plus4Code && setValue('basicZipCode', `${zipCode}-${plus4Code}`);
     cityName && setValue('basicCity', cityName);
-    setTimeout(() => { setIsVerified(true) }, 0);
+    setTimeout(() => {
+      dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: true })
+    }, 0);
   }
 
   useEffect(() => {
-    setIsVerified(false)
-  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, watch])
+    dispatch({ type: ActionType.SET_IS_VERIFIED, isVerified: false })
+    setValue('ssn', SSN_FORMAT)
+  }, [basicZipCode, basicCity, basicState, basicAddress, basicAddress2, setValue, watch])
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box maxHeight="calc(100vh - 248px)" className="overflowY-auto">
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box display="flex">
+            <BackButton to={`${PATIENTS_ROUTE}`} />
+
+            <Box ml={2}>
+              <PageHeader
+                title={ADD_PATIENT}
+                path={[USERS_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
+              />
+            </Box>
+          </Box>
+
+          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
+            {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
+
+            {disableSubmit && <CircularProgress size={20} color="inherit" />}
+          </Button>
+        </Box>
+
+        <Box maxHeight="calc(100vh - 210px)" className="overflowY-auto">
           <Grid container spacing={3}>
             <Grid md={6} item>
               <CardComponent cardTitle={IDENTIFICATION}>
@@ -639,6 +693,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
+                          isRequired
                           fieldType="text"
                           controllerName="ssn"
                           controllerLabel={SSN}
@@ -980,9 +1035,9 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                             <InputLabel shrink>{HOMEBOUND}</InputLabel>
 
                             <label className="toggle-main">
-                              <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
+                              <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
                               <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='homeBound' />
-                              <Box color={isChecked ? GRAY_TWO : WHITE}>No</Box>
+                              <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
                             </label>
                           </FormControl>
                         )}
@@ -999,23 +1054,25 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                   <>
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={FACILITY}
-                          name="facilityId"
-                          options={renderFacilities(facilityList)}
-                        />
+                        {isEdit ? renderItem(FACILITY, facilityName)
+                          : <FacilitySelector
+                            isRequired
+                            label={FACILITY}
+                            name="facilityId"
+                          />
+                        }
                       </Grid>
 
                       <Grid item md={6} sm={12} xs={12}>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={USUAL_PROVIDER_ID}
-                          name="usualProviderId"
-                          options={renderDoctors(doctorList)}
-                        />
+                        {isEdit ? renderItem(DOCTOR, doctorName)
+                          : <DoctorSelector
+                            label={USUAL_PROVIDER_ID}
+                            name="providerId"
+                            facilityId={selectedFacility}
+                            addEmpty
+                            isRequired
+                          />
+                        }
                       </Grid>
                     </Grid>
 
@@ -1155,6 +1212,21 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={GUARANTOR}>
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
+                    <FormControl component="fieldset">
+                      <FormGroup>
+                        <Box mr={3} mb={2} mt={2}>
+                          <FormControlLabel
+                            label={SAME_AS_PATIENT}
+                            control={
+                              <Checkbox color="primary" checked={sameAddress}
+                                onChange={({ target: { checked } }) => handleSameAddress(checked)}
+                              />
+                            }
+                          />
+                        </Box>
+                      </FormGroup>
+                    </FormControl>
+
                     <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         isRequired
@@ -1266,6 +1338,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                     <Grid container spacing={3}>
                       <Grid item md={6} sm={12} xs={12}>
                         <InputController
+                          isRequired
                           fieldType="text"
                           controllerName="guarantorSsn"
                           controllerLabel={SSN}
@@ -1299,17 +1372,15 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             </Grid>
           </Grid>
         </Box>
-
-        <Box display="flex" justifyContent="flex-end" pt={2}>
-          <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
-            {isEdit ? UPDATE_PATIENT : CREATE_PATIENT}
-
-            {disableSubmit && <CircularProgress size={20} color="inherit" />}
-          </Button>
-        </Box>
-
       </form>
-      <SmartyModal isOpen={addressOpen} setOpen={setAddressOpen} data={data} userData={userData} verifiedAddressHandler={verifiedAddressHandler} />
+      <SmartyModal
+        isOpen={addressOpen}
+        setOpen={(open: boolean) =>
+          dispatch({ type: ActionType.SET_ADDRESS_OPEN, addressOpen: open })
+        }
+        data={data}
+        userData={userData}
+        verifiedAddressHandler={verifiedAddressHandler} />
     </FormProvider>
   );
 };
