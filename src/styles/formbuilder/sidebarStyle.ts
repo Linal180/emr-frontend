@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { GRAY_ONE, GRAY_THIRTEEN, WHITE } from "../../theme";
+import { GRAY_ONE, GREY_NINE, WHITE } from "../../theme";
 
 export const useFormBuilderSidebarStyles = makeStyles((theme) => ({
   main: {
@@ -21,7 +21,7 @@ export const useFormBuilderSidebarStyles = makeStyles((theme) => ({
     lineHeight: 1.5,
     border: `1px solid ${GRAY_ONE}`,
     borderRadius: 3,
-    backgroundColor: GRAY_THIRTEEN,
+    backgroundColor: GREY_NINE,
     textAlign: "start",
   },
   isDragging: {

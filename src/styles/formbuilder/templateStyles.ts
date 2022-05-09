@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { GRAY_ONE, GRAY_THIRTEEN } from "../../theme";
+import { GRAY_ONE, GREY_NINE } from "../../theme";
 
 export const useFormTemplateStyles = makeStyles((theme) => ({
   dragContainer: {
@@ -11,7 +11,7 @@ export const useFormTemplateStyles = makeStyles((theme) => ({
     lineHeight: 1.5,
     border: `1px solid ${GRAY_ONE}`,
     borderRadius: 3,
-    backgroundColor: GRAY_THIRTEEN,
+    backgroundColor: GREY_NINE,
     textAlign: "start",
     cursor: "pointer"
   },
