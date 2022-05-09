@@ -11,6 +11,8 @@ import clsx from 'clsx';
 import { Check } from '@material-ui/icons';
 import { LAB_ORDER, LAB_ORDER_STEPS } from '../../../../constants';
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
+import EditLabOrdersComponent from '../editOrder';
+import ResultsLabOrdersComponent from '../results';
 
 const CheckInStepIcon = (props: StepIconProps) => {
   const classes = useCheckInStepIconStyles();
@@ -81,6 +83,14 @@ const ViewLabOrdersComponent: FC = () => {
         <Box>
           <Typography>{getStepContent(activeStep)}</Typography>
         </Box>
+
+        <Box p={2} />
+
+        <EditLabOrdersComponent />
+
+        <Box p={2} />
+
+        <ResultsLabOrdersComponent />
       </Box>
     </>
   )
