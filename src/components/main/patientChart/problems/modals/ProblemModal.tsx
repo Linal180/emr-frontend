@@ -6,7 +6,7 @@ import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
 import { Box, Button, CircularProgress, IconButton, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../../common/Alert';
-import Selector from '../../../../common/Selector';
+// import Selector from '../../../../common/Selector';
 import DatePicker from '../../../../common/DatePicker';
 import InputController from '../../../../../controller';
 // constants block
@@ -17,8 +17,8 @@ import { ActionType } from '../../../../../reducers/chartReducer';
 import { patientProblemSchema } from '../../../../../validationSchemas';
 import { AddModalProps, ParamsType, PatientProblemInputs } from '../../../../../interfacesTypes';
 import {
-  ADD, APPOINTMENT, DELETE, EMPTY_OPTION, NOTE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE,
-  PATIENT_PROBLEM_DELETED, PATIENT_PROBLEM_UPDATED, STATUS,
+  ADD, DELETE, NOTE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
+  PATIENT_PROBLEM_UPDATED, STATUS,
 } from '../../../../../constants';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
@@ -229,12 +229,12 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
           )}
         </Box>
 
-        <Selector
+        {/* <Selector
           value={EMPTY_OPTION}
           label={APPOINTMENT}
           name="appointmentId"
           options={[]}
-        />
+        /> */}
 
         <InputController
           fieldType="text"
