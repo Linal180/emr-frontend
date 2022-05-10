@@ -27,7 +27,6 @@ import {
   CONFLICT_EXCEPTION, PRACTICE_OR_FACILITY_ALREADY_EXISTS, SYSTEM_PASSWORD, SYSTEM_ROLES, PRACTICE_MANAGEMENT_TEXT, PRACTICE_BREAD, PRACTICE_NEW_BREAD,
   PRACTICE_EDIT_BREAD,
 } from "../../../../constants";
-import { addUSCountryCode, removePlusSign } from '../../../../utils';
 
 const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { user } = useContext(AuthContext)
@@ -68,7 +67,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             ein && setValue('ein', ein)
             upin && setValue('upin', upin)
             name && setValue('name', name)
-            phone && setValue('phone', removePlusSign(phone))
+            phone && setValue('phone', phone)
             champus && setValue('champus', champus)
             medicare && setValue('medicare', medicare)
             medicaid && setValue('medicaid', medicaid)
@@ -144,7 +143,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     } = inputs;
 
     const practiceInput = {
-      name, champus, ein, fax, medicaid, medicare, phone: addUSCountryCode(phone), upin
+      name, champus, ein, fax, medicaid, medicare, phone, upin
     }
 
     if (isEdit) {
@@ -170,7 +169,7 @@ const PracticeForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             registerUserInput: {
               isAdmin: true, email: userEmail, password: SYSTEM_PASSWORD, firstName: userFirstName || '',
-              lastName: userLastName, phone: addUSCountryCode(userPhone) || '', adminId: adminId || '',
+              lastName: userLastName, phone: userPhone || '', adminId: adminId || '',
               roleType: SYSTEM_ROLES.PracticeAdmin,
             },
 

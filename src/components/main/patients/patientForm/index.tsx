@@ -29,7 +29,7 @@ import { usePublicAppointmentStyles } from '../../../../styles/publicAppointment
 import { AntSwitch } from '../../../../styles/publicAppointmentStyles/externalPatientStyles';
 import { extendedEditPatientSchema, extendedPatientSchema } from '../../../../validationSchemas';
 import { GeneralFormProps, PatientInputProps, SmartyUserData } from '../../../../interfacesTypes';
-import { addUSCountryCode, getDate, getTimestamps, getTimestampsForDob, removePlusSignOnlyString, renderItem, setRecord } from '../../../../utils';
+import { getDate, getTimestamps, getTimestampsForDob, renderItem, setRecord } from '../../../../utils';
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
@@ -185,7 +185,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               dispatch({ type: ActionType.SET_EMERGENCY_CONTACT_ID, emergencyContactId })
               name && setValue("emergencyName", name)
-              phone && setValue("emergencyPhone", removePlusSignOnlyString(phone))
+              phone && setValue("emergencyPhone", phone)
               mobile && setValue("emergencyMobile", mobile)
               relationship && setValue("emergencyRelationship", setRecord(relationship, relationship))
             }
@@ -199,7 +199,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               dispatch({ type: ActionType.SET_BASIC_CONTACT_ID, basicContactId })
               city && setValue("basicCity", city)
-              phone && setValue("basicPhone", removePlusSignOnlyString(phone))
+              phone && setValue("basicPhone", phone)
               mobile && setValue("basicMobile", mobile)
               address && setValue("basicAddress", address)
               zipCode && setValue("basicZipCode", zipCode)
@@ -216,7 +216,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
               dispatch({ type: ActionType.SET_KIN_CONTACT_ID, kinContactId })
               name && setValue("kinName", name)
-              phone && setValue("kinPhone", removePlusSignOnlyString(phone))
+              phone && setValue("kinPhone", phone)
               mobile && setValue("kinMobile", mobile)
               relationship && setValue("kinRelationship", setRecord(relationship, relationship))
             }
@@ -231,7 +231,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               dispatch({ type: ActionType.SET_GUARANTOR_CONTACT_ID, guarantorContactId })
               ssn && setValue("guarantorSsn", ssn)
               city && setValue("guarantorCity", city)
-              phone && setValue("guarantorPhone", removePlusSignOnlyString(phone))
+              phone && setValue("guarantorPhone", phone)
               email && setValue("guarantorEmail", email)
               suffix && setValue("guarantorSuffix", suffix)
               zipCode && setValue("guarantorZipCode", zipCode)
@@ -264,7 +264,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             dispatch({ type: ActionType.SET_EMPLOYER_ID, employerId })
             name && setValue('employerName', name)
             email && setValue('employerEmail', email)
-            phone && setValue('employerPhone', removePlusSignOnlyString(phone))
+            phone && setValue('employerPhone', phone)
             industry && setValue('employerIndustry', industry)
             usualOccupation && setValue('employerUsualOccupation', usualOccupation)
           }
@@ -391,13 +391,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const contactInput = {
         contactType: ContactType.Self, country: selectedCountry, primaryContact: true,
         email: basicEmail, city: basicCity, zipCode: basicZipCode,
-        state: selectedBasicState, facilityId: selectedFacility, phone: addUSCountryCode(basicPhone),
+        state: selectedBasicState, facilityId: selectedFacility, phone: basicPhone,
         mobile: basicMobile, address2: basicAddress2, address: basicAddress,
       };
 
       const emergencyContactInput = {
         contactType: ContactType.Emergency, name: emergencyName,
-        phone: addUSCountryCode(emergencyPhone), mobile: emergencyMobile, primaryContact: false,
+        phone: emergencyPhone, mobile: emergencyMobile, primaryContact: false,
         relationship: selectedEmergencyRelationship as RelationshipType || RelationshipType.Other,
       };
 
@@ -407,7 +407,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         relationship: selectedGuarantorRelationship as RelationshipType || RelationshipType.Other,
         employerName: guarantorEmployerName, address2: guarantorAddress2,
         zipCode: guarantorZipCode, city: guarantorCity, state: selectedGuarantorState,
-        phone: addUSCountryCode(guarantorPhone), suffix: guarantorSuffix, country: selectedGuarantorCountry,
+        phone: guarantorPhone, suffix: guarantorSuffix, country: selectedGuarantorCountry,
         userId: userId, ssn: guarantorSsn || SSN_FORMAT, primaryContact: false, address: guarantorAddress,
       };
 
@@ -417,13 +417,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       };
 
       const nextOfKinContactInput = {
-        contactType: ContactType.NextOfKin, name: kinName, phone: addUSCountryCode(kinPhone),
+        contactType: ContactType.NextOfKin, name: kinName, phone: kinPhone,
         relationship: selectedKinRelationship as RelationshipType || RelationshipType.Other,
         mobile: kinMobile, primaryContact: false,
       };
 
       const employerInput = {
-        name: employerName, email: employerEmail, phone: addUSCountryCode(employerPhone),
+        name: employerName, email: employerEmail, phone: employerPhone,
         usualOccupation: employerUsualOccupation, industry: employerIndustry,
       };
 

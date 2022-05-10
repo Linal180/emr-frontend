@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
-import { formatPhone, getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, removePlusSign, renderTh } from "../../../../utils";
+import { formatPhone, getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
@@ -292,7 +292,7 @@ const PatientsTable: FC = (): JSX.Element => {
                       </TableCell>
                       <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
-                      <TableCell scope="row">{formatPhone(removePlusSign(phone) || '')}</TableCell>
+                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
                       <TableCell scope="row">{city}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

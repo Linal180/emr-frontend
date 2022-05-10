@@ -921,16 +921,3 @@ export const dataURLtoFile = (url: any, filename: string) => {
   
   return new File([u8arr], `${filename}.${mime.split('/').pop()}`, {type:mime});
 }
-
-export const removePlusSign = (phone: string | undefined | null) => {
-  return phone?.replace("+1", '')
-};
-
-export const removePlusSignOnlyString = (phone: string) => {
-  return phone?.replace("+1", '')
-};
-
-export const addUSCountryCode = (phone: string | undefined | null) => {
-  let phoneNum = `+1${phone}`
-  return phoneNum
-};

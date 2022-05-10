@@ -2,7 +2,7 @@
 import { FC } from "react";
 import { Grid, Typography } from "@material-ui/core";
 // utils, constants & graphql block
-import { removePlusSign, renderItem } from "../../../../utils";
+import { renderItem } from "../../../../utils";
 import { PracticePayload } from "../../../../generated/graphql";
 import {
   PRACTICE_NAME, PHONE, FAX, PRACTICE_IDENTIFIER, EIN, UPIN, MEDICARE, MEDICAID, CHAMPUS
@@ -24,7 +24,7 @@ const PracticeData: FC<PracticeDataProps> = ({ practiceData }) => {
 
       <Grid container spacing={3}>
         <Grid item md={6} sm={12}>
-          {renderItem(PHONE, removePlusSign(phone))}
+          {renderItem(PHONE, phone)}
         </Grid>
 
         <Grid item md={6} sm={12}>
