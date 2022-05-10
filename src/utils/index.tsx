@@ -733,9 +733,7 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   } catch (error) {
     return null;
   }
-
 }
-
 
 export const getUserFormFormattedValues = async (values: any, id: string) => {
   const arr = [];
@@ -814,15 +812,17 @@ export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: 
       userFormElements?.map((val) => {
         const { FormsElementsId } = val;
         const obj = elementLabels?.find((value) => value?.fieldId === FormsElementsId);
-        if (obj) {
-          arr.push(obj)
-        }
+        if (obj) arr.push(obj)
+
         return obj
       })
+
       return arr ?? [];
     }
+
     return []
   }
+
   return []
 }
 
@@ -878,4 +878,18 @@ export const getProfileImageType = (userType: string) => {
   else {
     return AttachmentType.Staff
   }
+}
+
+export const dataURLtoFile = (url: any, filename: string) => {
+  var arr = url.split(','),
+      mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), 
+      n = bstr.length, 
+      u8arr = new Uint8Array(n);
+      
+  while(n--){
+      u8arr[n] = bstr.charCodeAt(n);
+  }
+  
+  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, {type:mime});
 }

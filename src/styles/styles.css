@@ -350,7 +350,7 @@ body .MuiTabPanel-root {
 }
 
 /* Signature-pad-Styling */
-.sigCanvas {
+.signCanvas {
   width: 100%;
   height: 150px;
 }
@@ -457,10 +457,26 @@ body .MuiTabPanel-root {
   color: #202020 !important;
 }
 
-.selectorClassTwo div {
+.selectorClassTwo {
   border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;
+  border-radius: 4px !important;
+}
+
+.selectorClassTwoError {
+  border: 1px solid red !important;
+  background-color: #F3F4F6 !important;
+  border-radius: 4px !important;
   max-width: 330px !important;
+}
+
+.selectorClassTwo div {
+  background-color: #F3F4F6 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  max-width: 330px !important;
+  max-height: 100px !important;
+  overflow-y: auto !important;
 }
 
 .selectorClassTwo svg, .selectorClassTwo span {

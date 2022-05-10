@@ -1108,6 +1108,10 @@ export interface UserFormPreviewModalProps {
   imagePreviewHandler: (id: string) => void;
 }
 
+export interface RolesTableProps {
+  customRole?: boolean
+}
+
 export interface CardLayoutProps {
   modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes
   cardId: string;
@@ -1235,4 +1239,14 @@ export interface OTPInputProps {
   focusStyle?: string | React.CSSProperties | undefined;
   disabledStyle?: string | React.CSSProperties | undefined;
   errorStyle?: string | React.CSSProperties | undefined;
+}
+
+export interface FilterSearchProps {
+  tabs?: string[];
+  loading: boolean;
+  dispatcher: Dispatch<ChartAction>;
+  modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes;
+  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
+  fetch: () => void;
+  searchItem: (tab: string, query: string) => void;
 }

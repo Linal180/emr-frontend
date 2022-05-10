@@ -27,7 +27,6 @@ const DropzoneImage: FC<any> = forwardRef(({
   let moduleRoute = "";
 
   switch (imageModuleType) {
-
     case AttachmentType.Patient:
       moduleRoute = "patients";
       break;
@@ -41,6 +40,7 @@ const DropzoneImage: FC<any> = forwardRef(({
     case AttachmentType.SuperAdmin:
       moduleRoute = "users";
       break;
+
     default:
       break;
   }

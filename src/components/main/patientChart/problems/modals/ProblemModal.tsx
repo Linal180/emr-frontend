@@ -3,21 +3,22 @@ import { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, useForm, SubmitHandler, } from "react-hook-form";
-import { Box, Button, CircularProgress, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, IconButton, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../../../common/Alert';
-import Selector from '../../../../common/Selector';
+// import Selector from '../../../../common/Selector';
 import DatePicker from '../../../../common/DatePicker';
 import InputController from '../../../../../controller';
 // constants block
 import { GRAY_SIX } from '../../../../../theme';
+import { ClearIcon } from '../../../../../assets/svgs';
 import { formatValue, setRecord } from '../../../../../utils';
 import { ActionType } from '../../../../../reducers/chartReducer';
 import { patientProblemSchema } from '../../../../../validationSchemas';
 import { AddModalProps, ParamsType, PatientProblemInputs } from '../../../../../interfacesTypes';
 import {
-  ADD, APPOINTMENT, DELETE, EMPTY_OPTION, NOTE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE,
-   PATIENT_PROBLEM_DELETED, PATIENT_PROBLEM_UPDATED, STATUS,
+  ADD, DELETE, NOTE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
+  PATIENT_PROBLEM_UPDATED, STATUS,
 } from '../../../../../constants';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
@@ -57,17 +58,17 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
       if (getPatientProblem) {
         const { patientProblem, response } = getPatientProblem
-        const {status} = response || {}
-        
-        if(patientProblem && status && status === 200){
-          const { problemSeverity, problemType, problemStartDate, note, appointment } = patientProblem
-        
-          if(appointment){
-            const {appointmentType} = appointment;
+        const { status } = response || {}
 
-            if(appointmentType){
-              const {id, serviceType} = appointmentType;
-              
+        if (patientProblem && status && status === 200) {
+          const { problemSeverity, problemType, problemStartDate, note, appointment } = patientProblem
+
+          if (appointment) {
+            const { appointmentType } = appointment;
+
+            if (appointmentType) {
+              const { id, serviceType } = appointmentType;
+
               id && serviceType && setValue('appointmentId', setRecord(id, serviceType))
             }
           }
@@ -143,10 +144,10 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
 
   const fetchPatientProblem = useCallback(async () => {
     try {
-      recordId && await getPatientProblem({ 
-        variables: { getPatientProblem: {  id: recordId }}
+      recordId && await getPatientProblem({
+        variables: { getPatientProblem: { id: recordId } }
       })
-    } catch (error) {}
+    } catch (error) { }
   }, [getPatientProblem, recordId])
 
   useEffect(() => {
@@ -193,10 +194,17 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Typography variant='h4'>{code}</Typography>
+        <Box display="flex" justifyContent="space-between" alignItems="center">
+          <Typography variant='h4'>{code}</Typography>
+
+          <IconButton onClick={closeAddModal}>
+            <ClearIcon />
+          </IconButton>
+        </Box>
+
         <Typography variant='h6'>{description}</Typography>
 
-        <Box p={1} />
+        <Box p={2} />
 
         <DatePicker label={ONSET_DATE} name='problemStartDate' isRequired />
         <Typography variant='body1'>{STATUS}</Typography>
@@ -221,12 +229,12 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
           )}
         </Box>
 
-        <Selector
+        {/* <Selector
           value={EMPTY_OPTION}
           label={APPOINTMENT}
           name="appointmentId"
           options={[]}
-        />
+        /> */}
 
         <InputController
           fieldType="text"
