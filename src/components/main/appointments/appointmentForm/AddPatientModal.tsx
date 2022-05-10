@@ -12,7 +12,7 @@ import CardComponent from "../../../common/CardComponent";
 import { AuthContext, ListContext } from '../../../../context';
 import { extendedPatientAppointmentSchema } from "../../../../validationSchemas";
 import { AddPatientModalProps, PatientInputProps } from "../../../../interfacesTypes";
-import { checkPermission, getTimestampsForDob } from "../../../../utils";
+import { addUSCountryCode, checkPermission, getTimestampsForDob } from "../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation
 } from "../../../../generated/graphql";
@@ -95,7 +95,7 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facility
       };
 
       const contactInput = {
-        email: basicEmail, city: '', zipCode: '', state: '', facilityId, phone: basicPhone, mobile: basicMobile, address2: '', address: '',
+        email: basicEmail, city: '', zipCode: '', state: '', facilityId, phone: addUSCountryCode(basicPhone), mobile: basicMobile, address2: '', address: '',
         contactType: ContactType.Self, country: '', primaryContact: true,
       };
 

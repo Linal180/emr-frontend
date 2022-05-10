@@ -13,7 +13,7 @@ import MediaCards from '../../common/AddMedia/MediaCards';
 import ViewDataLoader from '../../common/ViewDataLoader';
 // constants, history, styling block
 import { WHITE } from '../../../theme';
-import { getProfileImageType, renderItem, setRecord } from '../../../utils';
+import { addUSCountryCode, getProfileImageType, removePlusSign, renderItem, setRecord } from '../../../utils';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import {
@@ -120,7 +120,7 @@ const ProfileComponent = (): JSX.Element => {
             updateDoctorItemInput: { id: userId, firstName, lastName },
             updateContactInput: {
               id: contactId, primaryContact: true, address: addressNumber, city: city, state: stateId || '',
-              zipCode, country: countryId, phone: `+${phone}`
+              zipCode, country: countryId, phone: addUSCountryCode(phone)
             },
             updateBillingAddressInput: {}
           }
@@ -134,7 +134,7 @@ const ProfileComponent = (): JSX.Element => {
 
       if (userId) {
         await updateStaff({
-          variables: { updateStaffInput: { updateStaffItemInput: { id: userId, firstName, lastName, phone: `+${phone}` } } }
+          variables: { updateStaffInput: { updateStaffItemInput: { id: userId, firstName, lastName, phone: addUSCountryCode(phone) } } }
         })
       }
     }
@@ -147,7 +147,7 @@ const ProfileComponent = (): JSX.Element => {
       setValue('firstName', doctorFirstName || staffFirstName || '')
       setValue('lastName', doctorLastName || staffLastName || '')
       setValue('email', email || '')
-      setValue('phone', phone || doctorPhone || '')
+      setValue('phone', removePlusSign(phone) || removePlusSign(doctorPhone) || '')
       setValue('addressNumber', address || '')
       setValue('city', city || '')
       doctorState && setValue('state', setRecord(doctorState, doctorState))
@@ -158,7 +158,7 @@ const ProfileComponent = (): JSX.Element => {
       setValue('firstName', doctorFirstName || staffFirstName || '')
       setValue('lastName', doctorLastName || staffLastName || '')
       setValue('email', email || '')
-      setValue('phone', phone || userPhone || '')
+      setValue('phone', removePlusSign(phone) || removePlusSign(userPhone) || '')
     }
     setEdit(!edit)
   }
@@ -293,7 +293,7 @@ const ProfileComponent = (): JSX.Element => {
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(CONTACT_NUMBER, userPhone || phone || doctorPhone || 'N/A')}
+                              {renderItem(CONTACT_NUMBER, removePlusSign(userPhone) || removePlusSign(phone) || removePlusSign(doctorPhone) || 'N/A')}
                             </Grid>
                           </Grid>
                           {userType === SYSTEM_ROLES.Doctor &&

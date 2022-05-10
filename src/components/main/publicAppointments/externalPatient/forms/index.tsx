@@ -24,7 +24,7 @@ import { EMRLogo } from '../../../../../assets/svgs';
 import { externalPatientSchema } from '../../../../../validationSchemas';
 import { useDropzoneStyles } from '../../../../../styles/dropzoneStyles';
 import { GREY_SEVEN, WHITE, GREEN, GREY } from "../../../../../theme";
-import { getDocumentByType, setRecord } from "../../../../../utils";
+import { addUSCountryCode, getDocumentByType, removePlusSignOnlyString, setRecord } from "../../../../../utils";
 import { ParamsType, ExternalPatientInputProps } from "../../../../../interfacesTypes";
 import { usePublicAppointmentStyles } from '../../../../../styles/publicAppointmentStyles';
 import {
@@ -189,7 +189,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                 dispatch({ type: ActionType.SET_EMERGENCY_CONTACT_ID, emergencyContactId })
                 name && setValue("emergencyName", name)
                 city && setValue("emergencyCity", city)
-                phone && setValue("emergencyPhone", phone)
+                phone && setValue("emergencyPhone", removePlusSignOnlyString(phone))
                 zipCode && setValue("emergencyZipCode", zipCode)
                 address && setValue("emergencyAddress", address)
                 address2 && setValue("emergencyAddress2", address2)
@@ -266,7 +266,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
       };
 
       const emergencyContactInput = {
-        contactType: ContactType.Emergency, name: emergencyName, phone: emergencyPhone, zipCode: emergencyZipCode,
+        contactType: ContactType.Emergency, name: emergencyName, phone: addUSCountryCode(emergencyPhone), zipCode: emergencyZipCode,
         primaryContact: false, relationship: selectedRelation as RelationshipType || RelationshipType.Ward,
         city: emergencyCity, state: selectedEmergencyState, country: selectedEmergencyCountry,
         address: emergencyAddress, address2: emergencyAddress2,

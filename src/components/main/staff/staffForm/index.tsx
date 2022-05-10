@@ -18,7 +18,7 @@ import DoctorSelector from '../../../common/Selector/DoctorSelector';
 import FacilitySelector from '../../../common/Selector/FacilitySelector';
 // interfaces, graphql, constants block
 import history from "../../../../history";
-import { getTimestamps, setRecord } from "../../../../utils";
+import { addUSCountryCode, getTimestamps, removePlusSign, setRecord } from "../../../../utils";
 import { AuthContext, FacilityContext, ListContext } from '../../../../context';
 import { createStaffSchema, updateStaffSchema } from '../../../../validationSchemas';
 import { ExtendedStaffInputProps, GeneralFormProps } from "../../../../interfacesTypes";
@@ -79,7 +79,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
             dob && setValue('dob', dob)
             email && setValue('email', email)
-            phone && setValue('phone', phone)
+            phone && setValue('phone', removePlusSign(phone))
             mobile && setValue('mobile', mobile)
             lastName && setValue('lastName', lastName)
             username && setValue('username', username)
@@ -170,7 +170,7 @@ const StaffForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     }
 
     const staffInputs = {
-      firstName, lastName, email, phone, mobile, practiceId, dob: getTimestamps(dob || ''),
+      firstName, lastName, email, phone: addUSCountryCode(phone), mobile, practiceId, dob: getTimestamps(dob || ''),
       gender: staffGender as Gender, facilityId: selectedFacility, username: '',
     };
 

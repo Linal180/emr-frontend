@@ -14,7 +14,7 @@ import { AuthContext } from "../../../../context";
 import { EditNewIcon, LinkIcon, TrashNewIcon } from "../../../../assets/svgs";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import {
-  formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+  formatPhone, formatValue, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, removePlusSign, renderTh
 } from "../../../../utils";
 import {
   doctorReducer, Action, initialState, State, ActionType
@@ -191,7 +191,7 @@ const DoctorsTable: FC = (): JSX.Element => {
                       </TableCell>
 
                       <TableCell scope="row">{email}</TableCell>
-                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                      <TableCell scope="row">{formatPhone(removePlusSign(phone) || '')}</TableCell>
                       <TableCell scope="row">{formatValue(speciality as string)}</TableCell>
                       <TableCell scope="row">{name}</TableCell>
                       <TableCell scope="row">

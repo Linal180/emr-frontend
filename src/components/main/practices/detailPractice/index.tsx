@@ -23,6 +23,7 @@ import {
   CANCEL, CHAMPUS, EDIT, EIN, FAX, MEDICAID, MEDICARE, NOT_FOUND_EXCEPTION, PHONE, UPIN,
   PRACTICE_IDENTIFIER, PRACTICE_NAME, SAVE_TEXT, SETTINGS_ROUTE, UPLOAD_LOGO, NO_ASSOCIATED_PRACTICE,
 } from '../../../../constants';
+import { addUSCountryCode, removePlusSign } from '../../../../utils';
 
 const DetailPracticeComponent: FC = (): JSX.Element => {
   const { user, setPracticeName } = useContext(AuthContext);
@@ -64,7 +65,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
             ein && setValue('ein', ein)
             upin && setValue('upin', upin)
             name && setValue('name', name)
-            phone && setValue('phone', phone)
+            phone && setValue('phone', removePlusSign(phone))
             champus && setValue('champus', champus)
             medicare && setValue('medicare', medicare)
             medicaid && setValue('medicaid', medicaid)
@@ -116,7 +117,7 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<CustomPracticeInputProps> = async (inputs) => {
     const { name, phone, fax, upin, ein, medicaid, medicare, champus } = inputs;
-    const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone, upin }
+    const practiceInput = { name, champus, ein, fax, medicaid, medicare, phone:addUSCountryCode(phone), upin }
 
     practiceId && await updatePractice({
       variables: { updatePracticeInput: { id: practiceId, ...practiceInput } }

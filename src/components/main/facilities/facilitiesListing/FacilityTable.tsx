@@ -13,7 +13,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext, ListContext } from "../../../../context";
 import { DetailTooltip, useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon, AddNewIcon, LinkIcon } from "../../../../assets/svgs";
-import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, removePlusSign, renderTh } from "../../../../utils";
 import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/facilityReducer";
@@ -190,7 +190,7 @@ const FacilityTable: FC = (): JSX.Element => {
                       <TableCell scope="row">{city}</TableCell>
                       <TableCell scope="row">{state}</TableCell>
                       <TableCell scope="row">{zipCode}</TableCell>
-                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                      <TableCell scope="row">{formatPhone(removePlusSign(phone) || '')}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

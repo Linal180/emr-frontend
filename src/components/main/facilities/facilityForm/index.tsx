@@ -30,7 +30,7 @@ import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
-import { getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
+import { addUSCountryCode, getTimeString, isSuperAdmin, removePlusSign, removePlusSignOnlyString, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps, SmartyUserData } from '../../../../interfacesTypes';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
@@ -119,7 +119,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               fax && setValue('fax', fax)
               city && setValue('city', city)
               email && setValue('email', email)
-              phone && setValue('phone', phone)
+              phone && setValue('phone', removePlusSign(phone))
               mobile && setValue('mobile', mobile)
               zipCode && setValue('zipCode', zipCode)
               address && setValue('address', address)
@@ -135,7 +135,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
               email && setValue('billingEmail', email)
-              phone && setValue('billingPhone', phone)
+              phone && setValue('billingPhone', removePlusSignOnlyString(phone))
               address && setValue('billingAddress', address)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
@@ -226,12 +226,12 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     }
 
     const contactInput = {
-      phone, email, fax, city, state: selectedState, country: selectedCountry, zipCode, address,
+      phone:addUSCountryCode(phone), email, fax, city, state: selectedState, country: selectedCountry, zipCode, address,
       address2, primaryContact: true
     }
 
     const billingAddressInput = {
-      phone: billingPhone || '', email: billingEmail || '', fax: billingFax || '', state: selectedBillingState || '',
+      phone: addUSCountryCode(billingPhone) || '', email: billingEmail || '', fax: billingFax || '', state: selectedBillingState || '',
       city: billingCity || '', address: billingAddress || '', address2: billingAddress2 || '',
       country: selectedBillingCountry || '', zipCode: billingZipCode || '',
     }
@@ -265,7 +265,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const copyAddress = () => {
     fax && setValue("billingFax", fax)
     city && setValue("billingCity", city)
-    phone && setValue("billingPhone", phone)
+    phone && setValue("billingPhone", removePlusSignOnlyString(phone))
     email && setValue("billingEmail", email)
     state && setValue("billingState", state)
     zipCode && setValue("billingZipCode", zipCode)

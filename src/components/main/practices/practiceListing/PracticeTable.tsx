@@ -12,7 +12,7 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { ListContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { formatPhone, getFormattedDate, renderTh } from "../../../../utils";
+import { formatPhone, getFormattedDate, removePlusSign, renderTh } from "../../../../utils";
 import { TrashNewIcon, EditNewIcon } from '../../../../assets/svgs';
 import {
   practiceReducer, Action, initialState, State, ActionType
@@ -151,7 +151,7 @@ const PracticeTable: FC = (): JSX.Element => {
                   return (
                     <TableRow key={id}>
                       <TableCell scope="row">{name}</TableCell>
-                      <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
+                      <TableCell scope="row">{formatPhone(removePlusSign(phone) || '')}</TableCell>
                       <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

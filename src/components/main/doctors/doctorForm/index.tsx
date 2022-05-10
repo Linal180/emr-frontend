@@ -19,7 +19,7 @@ import history from '../../../../history';
 import { doctorSchema } from '../../../../validationSchemas';
 import { AuthContext, ListContext } from '../../../../context';
 import { DoctorInputProps, GeneralFormProps } from "../../../../interfacesTypes";
-import { getDate, getTimestamps, getTimestampsForDob, setRecord } from "../../../../utils";
+import { addUSCountryCode, getDate, getTimestamps, getTimestampsForDob, removePlusSign, removePlusSignOnlyString, setRecord } from "../../../../utils";
 import { doctorReducer, State, Action, initialState, ActionType } from '../../../../reducers/doctorReducer';
 import {
   DoctorPayload, Speciality, useCreateDoctorMutation, useGetDoctorLazyQuery, useUpdateDoctorMutation
@@ -124,7 +124,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                 fax && setValue('fax', fax)
                 city && setValue('city', city)
                 email && setValue('email', email)
-                phone && setValue('phone', phone)
+                phone && setValue('phone', removePlusSign(phone))
                 pager && setValue('pager', pager)
                 mobile && setValue('mobile', mobile)
                 zipCode && setValue('zipCode', zipCode)
@@ -142,7 +142,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               fax && setValue('billingFax', fax)
               city && setValue('billingCity', city)
               email && setValue('billingEmail', email)
-              phone && setValue('billingPhone', phone)
+              phone && setValue('billingPhone', removePlusSignOnlyString(phone))
               address && setValue('billingAddress', address)
               zipCode && setValue('billingZipCode', zipCode)
               address2 && setValue('billingAddress2', address2)
@@ -252,14 +252,14 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       };
 
       const contactInput = {
-        email: email || "", pager: pager || "", phone: phone || "",
+        email: email || "", pager: pager || "", phone: addUSCountryCode(phone) || "",
         mobile: mobile || "", fax: fax || "", address: address || "", address2: address2 || "",
         zipCode: zipCode || "", city: city || "", state: selectedState || "", country: selectedCountry || "",
         facilityId: selectedFacility || ""
       };
 
       const billingAddressInput = {
-        email: billingEmail || "", phone: billingPhone || "",
+        email: billingEmail || "", phone: addUSCountryCode(billingPhone) || "",
         fax: billingFax || "", address: billingAddress1 || "", address2: billingAddress2 || "",
         zipCode: billingZipCode || "", city: billingCity || "", state: selectedBillingState || "",
         country: selectedBillingCountry || "", userId: billingUserId || "", facilityId: selectedFacility || ""
