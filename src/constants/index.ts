@@ -680,6 +680,7 @@ export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
+export const US_DATE_FORMAT = "MM/dd/yyyy";
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
