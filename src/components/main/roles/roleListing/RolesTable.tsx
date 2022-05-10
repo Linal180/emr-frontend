@@ -1,5 +1,5 @@
 // packages block
-import { FC, ChangeEvent, useState, useEffect, useCallback } from "react";
+import { ChangeEvent, useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, IconButton } from "@material-ui/core";
@@ -14,8 +14,9 @@ import { formatRoleName, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { RolesPayload, useFindAllRolesLazyQuery, useRemoveRoleMutation } from "../../../../generated/graphql";
 import { NAME, DESCRIPTION, N_A, ROLES_ROUTE, ACTION, CANT_DELETE_ROLE, ROLE, DELETE_ROLE_DESCRIPTION } from "../../../../constants";
+import { RolesTableProps } from "../../../../interfacesTypes";
 
-const RolesTable: FC = (): JSX.Element => {
+const RolesTable = ({customRole=false}:RolesTableProps) => {
   const classes = useTableStyles()
   const [page, setPage] = useState<number>(1);
   const [pages, setPages] = useState<number>(0);
@@ -25,7 +26,7 @@ const RolesTable: FC = (): JSX.Element => {
 
   const [findAllRoles, { loading, error }] = useFindAllRolesLazyQuery({
     variables: {
-      roleInput: { paginationOptions: { page, limit: 10 } }
+      roleInput: { paginationOptions: { page, limit: 10 }, customRole }
     },
 
     notifyOnNetworkStatusChange: true,
@@ -113,7 +114,7 @@ const RolesTable: FC = (): JSX.Element => {
               <TableRow>
                 {renderTh(NAME)}
                 {renderTh(DESCRIPTION)}
-                {renderTh(ACTION, "center")}
+               {customRole && renderTh(ACTION, "center")} 
               </TableRow>
             </TableHead>
 
@@ -137,17 +138,19 @@ const RolesTable: FC = (): JSX.Element => {
                       </TableCell>
 
                       <TableCell scope="row">{description || N_A}</TableCell>
-                      <TableCell scope="row">
-                        <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                          <IconButton
-                            color="primary"
-                            disabled={!customRole || false}
-                            className={customRole ? classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}
-                            onClick={() => onDelete(id || '')} >
-                            <TrashNewIcon />
-                          </IconButton>
-                        </Box>
-                      </TableCell>
+                      {customRole && 
+                        <TableCell scope="row">
+                          <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                            <IconButton
+                              color="primary"
+                              disabled={!customRole || false}
+                              className={customRole ? classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}
+                              onClick={() => onDelete(id || '')} >
+                              <TrashNewIcon />
+                            </IconButton>
+                          </Box>
+                        </TableCell>
+                      }
                     </TableRow>
                   )
                 }

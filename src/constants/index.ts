@@ -3069,6 +3069,17 @@ export const FORM_BUILDER_FIELDS_TABS = [
   },
 ]
 
+export const ROLES_TABS = [
+  {
+    title: "System Roles",
+    value: "1",
+  },
+  {
+    title: "Custom Roles",
+    value: "2",
+  },
+]
+
 export const PatientSearchingTooltipData = [
   {
     name: `${NAME}:`,
