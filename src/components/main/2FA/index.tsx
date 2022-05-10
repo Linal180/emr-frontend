@@ -131,10 +131,10 @@ const TwoFAComponent = (): JSX.Element => {
               {!phone &&
                 <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between' px={2} py={1} mb={1} borderRadius={5}>
                   <Box display="flex" alignItems='center'>
-                    <IconButton size="small" color='inherit'>
+                    <IconButton size="small" color='inherit' style={{paddingRight: 10}}>
                       <InfoSearchIcon />
                     </IconButton>
-                    <Typography>
+                    <Typography variant='h4'>
                       {ADD_PHONE_NUM_DESCRIPTION}
                     </Typography>
                   </Box>
@@ -187,7 +187,7 @@ const TwoFAComponent = (): JSX.Element => {
 
                   <Box p={1} />
 
-                  <Button type="submit" variant="contained" color='primary'>
+                  <Button type="submit" variant="contained" color='primary' disabled={!phone}>
                     {SAVE_TEXT}
                     {loading && <CircularProgress size={20} color="inherit" />}
                   </Button>
