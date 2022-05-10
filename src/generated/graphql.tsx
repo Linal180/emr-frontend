@@ -4392,6 +4392,13 @@ export type FindAllPatientQueryVariables = Exact<{
 
 export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
 
+export type FetchAllPatientQueryVariables = Exact<{
+  patientInput: PatientInput;
+}>;
+
+
+export type FetchAllPatientQuery = { __typename?: 'Query', fetchAllPatients: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+
 export type GetPatientQueryVariables = Exact<{
   getPatient: GetPatient;
 }>;
@@ -7662,6 +7669,64 @@ export function useFindAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FindAllPatientQueryHookResult = ReturnType<typeof useFindAllPatientQuery>;
 export type FindAllPatientLazyQueryHookResult = ReturnType<typeof useFindAllPatientLazyQuery>;
 export type FindAllPatientQueryResult = Apollo.QueryResult<FindAllPatientQuery, FindAllPatientQueryVariables>;
+export const FetchAllPatientDocument = gql`
+    query FetchAllPatient($patientInput: PatientInput!) {
+  fetchAllPatients(patientInput: $patientInput) {
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+    patients {
+      id
+      email
+      lastName
+      firstName
+      patientRecord
+      contacts {
+        id
+        name
+        city
+        email
+        phone
+        primaryContact
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllPatientQuery__
+ *
+ * To run a query within a React component, call `useFetchAllPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllPatientQuery({
+ *   variables: {
+ *      patientInput: // value for 'patientInput'
+ *   },
+ * });
+ */
+export function useFetchAllPatientQuery(baseOptions: Apollo.QueryHookOptions<FetchAllPatientQuery, FetchAllPatientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllPatientQuery, FetchAllPatientQueryVariables>(FetchAllPatientDocument, options);
+      }
+export function useFetchAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllPatientQuery, FetchAllPatientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllPatientQuery, FetchAllPatientQueryVariables>(FetchAllPatientDocument, options);
+        }
+export type FetchAllPatientQueryHookResult = ReturnType<typeof useFetchAllPatientQuery>;
+export type FetchAllPatientLazyQueryHookResult = ReturnType<typeof useFetchAllPatientLazyQuery>;
+export type FetchAllPatientQueryResult = Apollo.QueryResult<FetchAllPatientQuery, FetchAllPatientQueryVariables>;
 export const GetPatientDocument = gql`
     query GetPatient($getPatient: GetPatient!) {
   getPatient(getPatient: $getPatient) {

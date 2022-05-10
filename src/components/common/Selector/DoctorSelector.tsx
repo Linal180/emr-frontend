@@ -48,13 +48,13 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequ
       const doctorsInputs = { ...pageInputs }
 
       doctorsInputs && await findAllDoctor({
-        variables: { doctorInput: { ...doctorsInputs, searchString: searchQuery, facilityId: selectedFacilityId } }
+        variables: { doctorInput: { ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId } }
       })
     } catch (error) { }
   }, [page, findAllDoctor, searchQuery, selectedFacilityId])
 
   useEffect(() => {
-    if (searchQuery.length > 2) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllDoctors()
     }
   }, [page, searchQuery, fetchAllDoctors]);

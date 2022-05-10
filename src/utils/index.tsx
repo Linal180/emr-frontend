@@ -704,6 +704,11 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
   return moment(date, "x").format("DD/MM/YY")
 };
 
+export const getFormatDateString = (date: Maybe<string> | undefined,format="YYYY-MM-DD") => {
+  if (!date) return '';
+  return moment(date).format(format).toString()
+};
+
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
   const formData = new FormData();
   attachmentId && formData.append("id", attachmentId);

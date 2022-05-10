@@ -67,7 +67,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRe
   }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllPatient, searchQuery])
 
   useEffect(() => {
-    searchQuery.length > 2 && fetchAllPatients()
+    (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()
   }, [page, searchQuery, fetchAllPatients]);
 
   useEffect(() => {
