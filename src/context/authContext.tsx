@@ -185,7 +185,7 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
         const { preSignedUrl } = getAttachment
         preSignedUrl && setProfileUrl(preSignedUrl)
       }
-    },
+    }
   });
 
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);

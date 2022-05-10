@@ -419,6 +419,8 @@ export interface CustomInputControlProps extends IControlLabel {
   controllerName: string;
   isSearch?: boolean;
   info?: string;
+  clearable?: boolean
+  handleClearField?: (fieldName: any) => void
 }
 
 export interface TooltipData {
@@ -1100,6 +1102,10 @@ export interface UserFormPreviewModalProps {
   imagePreviewHandler: (id: string) => void;
 }
 
+export interface RolesTableProps {
+  customRole?: boolean
+}
+
 export interface CardLayoutProps {
   modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes
   cardId: string;
@@ -1205,8 +1211,18 @@ export interface BackButtonProps {
 export interface PatientSearchInputProps {
   dob: string;
   dos: string;
-  location: SelectOptions;
-  provider: SelectOptions;
+  location: SelectorOption;
+  provider: SelectorOption;
+}
+
+export interface FilterSearchProps {
+  tabs?: string[];
+  loading: boolean;
+  dispatcher: Dispatch<ChartAction>;
+  modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes;
+  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
+  fetch: () => void;
+  searchItem: (tab: string, query: string) => void;
 }
 
 export interface VitalListingTableProps {

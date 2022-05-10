@@ -18,7 +18,7 @@ import {
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
   SERVICE_NAME_TEXT, DOB, FORM_NAME, PAGER, ALLERGY_DATE_VALIDATION_MESSAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT,
-  OXYGEN_SATURATION_TEXT, HEIGHT_TEXT, WEIGHT_TEXT, PAIN_TEXT, HEAD_CIRCUMFERENCE, FEVER_TEXT, BLOOD_PRESSURE_TEXT,
+  OXYGEN_SATURATION_TEXT, HEIGHT_TEXT, WEIGHT_TEXT, PAIN_TEXT, HEAD_CIRCUMFERENCE, FEVER_TEXT, BLOOD_PRESSURE_TEXT, REACTIONS_VALIDATION_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -616,7 +616,6 @@ export const settingSchema = yup.object({
 export const appointmentSchema = yup.object({
   ...patientIdSchema,
   ...serviceIdSchema,
-  // ...facilityIdSchema,
   notes: yup.string(),
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
   secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
@@ -742,7 +741,7 @@ export const createPatientAllergySchema = (onset: string) => yup.object({
       label: yup.string(),
       value: yup.string()
     })
-  )
+  ).test('', REACTIONS_VALIDATION_MESSAGE, (value: any) => value && value.length > 0)
 })
 
 export const patientProblemSchema = yup.object({

@@ -102,6 +102,7 @@ mutation updatePassword($updatePasswordInput: UpdatePasswordInput!) {
 query GetDoctorUser($getDoctor: GetDoctor!) {
   getDoctor(getDoctor: $getDoctor) {
     doctor {
+      __typename
       id
       firstName
       lastName
@@ -143,6 +144,7 @@ query GetStaffUser($getStaff: GetStaff!) {
     }
 
     staff {
+      __typename
       id
       email
       lastName

@@ -711,6 +711,11 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
   return moment(date, "x").format("DD/MM/YY")
 };
 
+export const getFormatDateString = (date: Maybe<string> | undefined,format="YYYY-MM-DD") => {
+  if (!date) return '';
+  return moment(date).format(format).toString()
+};
+
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
   const formData = new FormData();
   attachmentId && formData.append("id", attachmentId);
@@ -735,9 +740,7 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   } catch (error) {
     return null;
   }
-
 }
-
 
 export const getUserFormFormattedValues = async (values: any, id: string) => {
   const arr = [];
@@ -816,15 +819,17 @@ export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: 
       userFormElements?.map((val) => {
         const { FormsElementsId } = val;
         const obj = elementLabels?.find((value) => value?.fieldId === FormsElementsId);
-        if (obj) {
-          arr.push(obj)
-        }
+        if (obj) arr.push(obj)
+
         return obj
       })
+
       return arr ?? [];
     }
+
     return []
   }
+
   return []
 }
 
@@ -882,7 +887,6 @@ export const getProfileImageType = (userType: string) => {
   }
 }
 
-
 export const fahrenheitToCelsius = (f: number) => ((5 / 9) * (f - 32))
 
 export const celsiusToFahrenheit = (c: number) => ((c * (9 / 5)) + 32)
@@ -904,3 +908,16 @@ export const ounceToKilogram = (o: number) => (o / 35.274)
 export const ounceToPounds = (o: number) => (o / 16)
 
 export const getBMI = (weight: number, height: number) => (weight / (height * height))  
+export const dataURLtoFile = (url: any, filename: string) => {
+  var arr = url.split(','),
+      mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
+      bstr = atob(arr[1]), 
+      n = bstr.length, 
+      u8arr = new Uint8Array(n);
+      
+  while(n--){
+      u8arr[n] = bstr.charCodeAt(n);
+  }
+  
+  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, {type:mime});
+}

@@ -8,7 +8,7 @@ import { renderStaffRoles, requiredLabel } from "../../../utils";
 import {
   roleReducer, Action, initialState, State, ActionType
 } from "../../../reducers/roleReducer";
-import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { RolesPayload, useFindAllRoleListLazyQuery } from "../../../generated/graphql";
 
@@ -43,15 +43,15 @@ const RoleSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, isRequ
 
   const fetchAllRoles = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       await findAllRole({
-        variables: { roleInput: { ...pageInputs, role: searchQuery } }
+        variables: { roleInput: { ...pageInputs, roleName: searchQuery } }
       })
     } catch (error) { }
   }, [page, findAllRole, searchQuery])
 
   useEffect(() => {
-    if (searchQuery.length > 2) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllRoles()
     }
   }, [page, searchQuery, fetchAllRoles]);

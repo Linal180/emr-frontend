@@ -13,23 +13,24 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
-import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import { formatPhone, getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
 import {
-  useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation
+  useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation, useFetchAllPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN,
-  PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, EMPTY_OPTION, PROVIDER, SEARCH
+  PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER, SEARCH
 } from "../../../../constants";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import InputController from "../../../../controller";
-import Selector from "../../../common/Selector";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -43,7 +44,8 @@ const PatientsTable: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
-  const { handleSubmit } = methods;
+  const { handleSubmit, watch, setValue} = methods;
+  const {location : {id : selectedLocationId} = {}, dob, dos} =watch()
 
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -68,6 +70,29 @@ const PatientsTable: FC = (): JSX.Element => {
     }
   });
 
+  const [fetchAllPatientsQuery] = useFetchAllPatientLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
+    },
+
+    onCompleted(data) {
+      const { fetchAllPatients } = data || {};
+
+      if (fetchAllPatients) {
+        const { pagination, patients } = fetchAllPatients
+        patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
+
+        if (pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+        }
+      }
+    }
+  });
+
   const fetchAllPatients = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
@@ -76,7 +101,7 @@ const PatientsTable: FC = (): JSX.Element => {
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
       patientsInputs && await findAllPatient({
-        variables: { patientInput: { ...patientsInputs, searchString: searchQuery } }
+        variables: { patientInput: { ...patientsInputs, searchString: searchQuery} }
       })
     } catch (error) { }
   }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllPatient, searchQuery])
@@ -135,7 +160,27 @@ const PatientsTable: FC = (): JSX.Element => {
     const { id: selectedLocation } = location || {};
     const { id: selectedProvider } = provider || {};
 
-    console.log(dob, dos, selectedLocation, selectedProvider)
+    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const patientsInputs = isSuper ? { ...pageInputs } :
+        isPracAdmin ? { practiceId, ...pageInputs } :
+          isFacAdmin ? { facilityId, ...pageInputs } : undefined
+
+    fetchAllPatientsQuery({
+      variables: {
+        patientInput: {
+          ...patientsInputs,
+          dob:getFormatDateString(dob,'MM-DD-YYYY'),
+          doctorId:selectedProvider,
+          appointmentDate:getFormatDateString(dos),
+         ...( !isFacAdmin ? {facilityId: selectedLocation}:{}),
+          ...pageInputs
+        }
+      }
+    })
+  }
+
+  const handleClearField= (fieldName:any) =>{
+    setValue(fieldName,'')
   }
 
   return (
@@ -161,42 +206,49 @@ const PatientsTable: FC = (): JSX.Element => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <Box p={3} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
                 <Grid container spacing={3}>
-                  <Grid item md={2} sm={6} xs={12}>
+                  <Grid item md={(isSuper || isPracAdmin) ? 2 : 4} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       controllerName="dob"
                       controllerLabel={DOB}
+                      clearable={!!dob}
+                      handleClearField={handleClearField}
                     />
                   </Grid>
 
-                  <Grid item md={2} sm={6} xs={12}>
+                  <Grid item md={(isSuper || isPracAdmin) ? 2 : 4} sm={6} xs={12}>
                     <InputController
                       fieldType="text"
                       controllerName="dos"
                       controllerLabel={DATE_OF_SERVICE}
+                      clearable={!!dos}
+                      handleClearField={handleClearField}
                     />
                   </Grid>
 
-                  <Grid item md={5} sm={12} xs={12}>
-                    <Selector
-                      name="location"
-                      label={LOCATION}
-                      value={EMPTY_OPTION}
-                      options={[]}
-                    />
-                  </Grid>
+                  {(isSuper || isPracAdmin) &&  
+                    <Grid item md={5} sm={12} xs={12}>
+                      <FacilitySelector
+                          label={LOCATION}
+                          name="location"
+                          addEmpty
+                      />  
+                    </Grid> 
+                  } 
 
-                  <Grid item md={3} sm={12} xs={12}>
-                    <Selector
-                      name="provider"
+                  <Grid item md={(isSuper || isPracAdmin) ? 3 : 4} sm={12} xs={12}>
+                    <DoctorSelector
                       label={PROVIDER}
-                      value={EMPTY_OPTION}
-                      options={[]}
+                      name="provider"
+                      facilityId={selectedLocationId}
+                      addEmpty
                     />
                   </Grid>
+                  {!(isSuper || isPracAdmin) && <Grid item md={5} sm={12} xs={12} /> }
 
+                  <Grid item md={(isSuper || isPracAdmin) ? 11 : 6}/>
                   <Box px={1}>
-                    <Button variant="contained" color="secondary">{SEARCH}</Button>
+                    <Button variant="contained" color="secondary" type="submit">{SEARCH}</Button>
                   </Box>
                 </Grid>
               </Box>
@@ -218,7 +270,7 @@ const PatientsTable: FC = (): JSX.Element => {
             </TableHead>
 
             <TableBody>
-              {loading ? (
+              {(loading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
                     <TableLoader numberOfRows={10} numberOfColumns={5} />
@@ -262,7 +314,7 @@ const PatientsTable: FC = (): JSX.Element => {
             </TableBody>
           </Table>
 
-          {((!loading && !patients?.length) || error) && (
+          {((!(loading) && !patients?.length) || (error)) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>

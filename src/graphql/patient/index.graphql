@@ -30,6 +30,38 @@ query FindAllPatient($patientInput: PatientInput!) {
   }
 }
 
+query FetchAllPatient($patientInput: PatientInput!) {
+  fetchAllPatients(patientInput: $patientInput) {
+    pagination {
+      page
+      totalPages
+    }
+    
+    response {
+      error
+      status
+      message
+    }
+
+    patients {
+      id
+      email
+      lastName
+      firstName
+      patientRecord
+      
+      contacts {
+        id
+        name
+        city
+        email
+        phone
+        primaryContact
+      }
+    }
+  }
+}
+
 query GetPatient($getPatient: GetPatient!) {
   getPatient(getPatient: $getPatient) {
     response {
