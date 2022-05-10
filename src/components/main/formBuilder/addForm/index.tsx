@@ -163,7 +163,7 @@ const AddForm = () => {
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination, draggableId } = result;
-    if (!destination || destination.droppableId !== source.droppableId) return;
+    if (!destination) return;
 
     if (destination.droppableId === source.droppableId) {
       formValues?.map((item) => {
@@ -203,6 +203,10 @@ const AddForm = () => {
 
         return item;
       });
+
+    }
+    else if (destination.droppableId !== source.droppableId) {
+      return
     }
   };
 
