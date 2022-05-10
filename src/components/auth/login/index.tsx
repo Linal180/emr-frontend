@@ -74,13 +74,10 @@ const LoginComponent = (): JSX.Element => {
           } else {
             Alert.error(SOMETHING_WENT_WRONG)
           }
-
         }
       }
     }
   });
-
-
 
   const onSubmit: SubmitHandler<LoginUserInput> = async (data) => {
     setIsLoggedIn(false);
@@ -89,8 +86,6 @@ const LoginComponent = (): JSX.Element => {
       variables: { loginUser: data }
     });
   };
-
-
 
   useEffect(() => {
     localStorage.getItem(TOKEN) && history.push(DASHBOARD_ROUTE)
