@@ -120,7 +120,7 @@ const ProfileComponent = (): JSX.Element => {
             updateDoctorItemInput: { id: userId, firstName, lastName },
             updateContactInput: {
               id: contactId, primaryContact: true, address: addressNumber, city: city, state: stateId || '',
-              zipCode, country: countryId, phone: phone
+              zipCode, country: countryId, phone: `+${phone}`
             },
             updateBillingAddressInput: {}
           }
@@ -134,7 +134,7 @@ const ProfileComponent = (): JSX.Element => {
 
       if (userId) {
         await updateStaff({
-          variables: { updateStaffInput: { updateStaffItemInput: { id: userId, firstName, lastName, phone } } }
+          variables: { updateStaffInput: { updateStaffItemInput: { id: userId, firstName, lastName, phone: `+${phone}` } } }
         })
       }
     }
