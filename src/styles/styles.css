@@ -461,6 +461,7 @@ body .MuiTabPanel-root {
   border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;
   border-radius: 4px !important;
+  max-width: 330px !important;
 }
 
 .selectorClassTwoError {
@@ -470,13 +471,11 @@ body .MuiTabPanel-root {
   max-width: 330px !important;
 }
 
-.selectorClassTwo div {
+.selectorClassTwo > div:first-of-type {
+  border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;
-  border: none !important;
   border-radius: 4px !important;
-  max-width: 330px !important;
-  max-height: 100px !important;
-  overflow-y: auto !important;
+  min-height: 48px !important;
 }
 
 .selectorClassTwo svg, .selectorClassTwo span {
