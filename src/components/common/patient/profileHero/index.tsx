@@ -12,7 +12,7 @@ import {
 import { Box, Avatar, CircularProgress, Button } from "@material-ui/core";
 import moment from "moment";
 import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A } from "../../../../constants";
+import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, APPOINTMENTS_ROUTE } from "../../../../constants";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import MediaCards from "../../AddMedia/MediaCards";
 import ViewDataLoader from "../../ViewDataLoader";
@@ -124,7 +124,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   const { firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt } = patientData || {}
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
-
+  const patientName = `${firstName} ${lastName}`;
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
@@ -231,7 +231,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
             <Box display="flex">
               <Box flex={1} flexWrap="wrap">
                 <Box display="flex" alignItems="center" className={classes.userName}>
-                  {`${firstName} ${lastName}`}
+                  {patientName}
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
@@ -259,7 +259,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                 </Button>
               </Box>}
 
-              <Button color="secondary" variant="contained">
+              <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
                 {SCHEDULE_APPOINTMENTS_TEXT}
               </Button>
             </Box>
