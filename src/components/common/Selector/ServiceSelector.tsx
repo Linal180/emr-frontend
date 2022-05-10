@@ -1,19 +1,26 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
+import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { renderServices, requiredLabel } from "../../../utils";
+import { isPracticeAdmin, isSuperAdmin, renderServices, requiredLabel } from "../../../utils";
 import {
   serviceReducer, serviceAction, initialState, State, ActionType
 } from "../../../reducers/serviceReducer";
-import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { DoctorSelectorProps } from "../../../interfacesTypes";
 import { ServicesPayload, useFindAllServiceListLazyQuery } from "../../../generated/graphql";
+import { AuthContext } from "../../../context";
 
 const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId }): JSX.Element => {
   const { control } = useFormContext()
+  const { user } = useContext(AuthContext);
+  const {facility, roles} = user || {}
+  const {id: userFacilityId} = facility || {}
+  const isSuper = isSuperAdmin(roles);
+  const isPracAdmin = isPracticeAdmin(roles);
+  const isSuperAndPracAdmin = isSuper || isPracAdmin
   const [state, dispatch] = useReducer<Reducer<State, serviceAction>>(serviceReducer, initialState)
   const { page, searchQuery, services } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderServices(services ?? [])] : [...renderServices(services ?? [])]
@@ -43,15 +50,17 @@ const ServiceSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isReq
 
   const fetchAllServices = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      await findAllService({
-        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId } }
+      const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
+      isSuperAndPracAdmin ? facilityId && await findAllService({
+        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId:facilityId ?? userFacilityId } }
+      }): await findAllService({
+        variables: { serviceInput: { ...pageInputs, serviceName: searchQuery, facilityId:facilityId ?? userFacilityId } }
       })
     } catch (error) { }
-  }, [page, findAllService, searchQuery, facilityId])
+  }, [page, isSuperAndPracAdmin, findAllService, searchQuery, facilityId, userFacilityId])
 
   useEffect(() => {
-    if (searchQuery.length > 2) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllServices()
     }
   }, [page, searchQuery, fetchAllServices]);

@@ -9,7 +9,7 @@ import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../reducers/patientReducer";
 import { AuthContext } from "../../../context";
-import { ADD_PATIENT_MODAL, EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
+import { ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { PatientSelectorProps } from "../../../interfacesTypes";
 import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
 
@@ -55,7 +55,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRe
 
   const fetchAllPatients = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
         isPracAdmin ? { practiceId, ...pageInputs } :
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
@@ -67,7 +67,7 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRe
   }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllPatient, searchQuery])
 
   useEffect(() => {
-    searchQuery.length > 2 && fetchAllPatients()
+    (!searchQuery.length || searchQuery.length > 2) && fetchAllPatients()
   }, [page, searchQuery, fetchAllPatients]);
 
   useEffect(() => {

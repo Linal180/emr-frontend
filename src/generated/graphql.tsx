@@ -32,6 +32,29 @@ export enum Appointmentstatus {
   Rescheduled = 'RESCHEDULED'
 }
 
+/** The test result's abnormal flag status assigned */
+export enum AbnormalFlag {
+  AbnormalAppliedToNonNumericResults = 'ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS',
+  AboveAbsoluteHighOffScale = 'ABOVE_ABSOLUTE_HIGH_OFF_SCALE',
+  AboveHighNormal = 'ABOVE_HIGH_NORMAL',
+  BelowAbsoluteLowOffScale = 'BELOW_ABSOLUTE_LOW_OFF_SCALE',
+  BelowLowerPanicLimit = 'BELOW_LOWER_PANIC_LIMIT',
+  BelowLowNormal = 'BELOW_LOW_NORMAL',
+  BelowUpperPanicLimit = 'BELOW_UPPER_PANIC_LIMIT',
+  BetterUseWhenDirectionNotRelevant = 'BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT',
+  Intermediate = 'INTERMEDIATE',
+  Moderately = 'MODERATELY',
+  None = 'NONE',
+  Normal = 'NORMAL',
+  Resistant = 'RESISTANT',
+  SignificantChangeDown = 'SIGNIFICANT_CHANGE_DOWN',
+  SignificantChangeUp = 'SIGNIFICANT_CHANGE_UP',
+  Susceptible = 'SUSCEPTIBLE',
+  VeryAbnormalAppliedToNonNumeric = 'VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC',
+  VerySusceptible = 'VERY_SUSCEPTIBLE',
+  WorstUseWhenDirectionNotRelevant = 'WORST_USE_WHEN_DIRECTION_NOT_RELEVANT'
+}
+
 export type AccessUserPayload = {
   __typename?: 'AccessUserPayload';
   access_token?: Maybe<Scalars['String']>;
@@ -118,6 +141,7 @@ export type Appointment = {
   invoice?: Maybe<Invoice>;
   invoiceId?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
+  labTests?: Maybe<Array<LabTests>>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -563,6 +587,37 @@ export type CreateInvoiceInputs = {
   status: Status;
 };
 
+export type CreateLabTestInput = {
+  createLabTestItemInput?: Maybe<CreateLabTestItemInput>;
+  createSpecimenItemInput?: Maybe<Array<CreateSpecimenItemInput>>;
+  diagnoses?: Maybe<Array<Scalars['String']>>;
+  test?: Maybe<Scalars['String']>;
+};
+
+export type CreateLabTestItemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  patientId: Scalars['String'];
+  status?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+};
+
+export type CreateLabTestObservationInput = {
+  createLabTestObservationItemInput?: Maybe<Array<CreateLabTestObservationItemInput>>;
+  labTestId: Scalars['String'];
+};
+
+export type CreateLabTestObservationItemInput = {
+  abnormalFlag: Scalars['String'];
+  description: Scalars['String'];
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  normalRange: Scalars['String'];
+  normalRangeUnit: Scalars['String'];
+  resultUnit: Scalars['String'];
+  resultValue: Scalars['String'];
+};
+
 export type CreatePatientAllergyInput = {
   allergyId?: Maybe<Scalars['String']>;
   allergyOnset?: Maybe<AllergyOnset>;
@@ -689,6 +744,13 @@ export type CreateServiceInput = {
   serviceType?: Maybe<ServiceType>;
 };
 
+export type CreateSpecimenItemInput = {
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  specimenNotes?: Maybe<Scalars['String']>;
+  testSpecimen: Scalars['String'];
+};
+
 export type CreateStaffInput = {
   providers?: Maybe<Array<Scalars['String']>>;
   staffInput: CreateStaffItemInput;
@@ -733,6 +795,7 @@ export type CreateVitalInput = {
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
   staffId?: Maybe<Scalars['String']>;
@@ -1133,6 +1196,10 @@ export type GetForm = {
   id: Scalars['String'];
 };
 
+export type GetLabTest = {
+  id?: Maybe<Scalars['String']>;
+};
+
 export type GetMedia = {
   id?: Maybe<Scalars['String']>;
 };
@@ -1230,6 +1297,7 @@ export type IcdCodes = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  labTests?: Maybe<LabTests>;
   updatedAt?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
 };
@@ -1282,6 +1350,59 @@ export type InvoicesPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type LabTestInput = {
+  labTestStatus?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type LabTestObservationPayload = {
+  __typename?: 'LabTestObservationPayload';
+  labTestObservation?: Maybe<Observations>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type LabTestPayload = {
+  __typename?: 'LabTestPayload';
+  labTest?: Maybe<LabTests>;
+  response?: Maybe<ResponsePayload>;
+};
+
+/** The lab's test status assigned */
+export enum LabTestStatus {
+  Discontinued = 'DISCONTINUED',
+  InProgress = 'IN_PROGRESS',
+  OrderEntered = 'ORDER_ENTERED',
+  ResultReceived = 'RESULT_RECEIVED',
+  ResultReviewedWithPatient = 'RESULT_REVIEWED_WITH_PATIENT'
+}
+
+export type LabTests = {
+  __typename?: 'LabTests';
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  diagnoses?: Maybe<Array<Maybe<IcdCodes>>>;
+  id: Scalars['String'];
+  labTestStatus: LabTestStatus;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  test?: Maybe<LoincCodes>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testObservations?: Maybe<Array<Observations>>;
+  testSpecimens?: Maybe<Array<TestSpecimens>>;
+  testTime?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type LabTestsPayload = {
+  __typename?: 'LabTestsPayload';
+  labTests?: Maybe<Array<Maybe<LabTests>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type LayoutJsonInputType = {
   sections: Array<SectionsInputs>;
 };
@@ -1294,6 +1415,71 @@ export type LayoutJsonType = {
 export type LoginUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type LoincCodeInput = {
+  component?: Maybe<Scalars['String']>;
+  loincNum?: Maybe<Scalars['String']>;
+};
+
+export type LoincCodePayload = {
+  __typename?: 'LoincCodePayload';
+  loincCode?: Maybe<LoincCodes>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type LoincCodes = {
+  __typename?: 'LoincCodes';
+  askAtOrderEntry?: Maybe<Scalars['String']>;
+  associationObservations?: Maybe<Scalars['String']>;
+  cdiscCommonTests?: Maybe<Scalars['String']>;
+  changeReasonPublic?: Maybe<Scalars['String']>;
+  chngType?: Maybe<Scalars['String']>;
+  class?: Maybe<Scalars['String']>;
+  classType?: Maybe<Scalars['String']>;
+  commonOrderRank?: Maybe<Scalars['String']>;
+  commonSiTestRank?: Maybe<Scalars['String']>;
+  commonTestRank?: Maybe<Scalars['String']>;
+  component?: Maybe<Scalars['String']>;
+  consumerName?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  definitionDescription?: Maybe<Scalars['String']>;
+  displayName?: Maybe<Scalars['String']>;
+  exampleSiUcumUnits?: Maybe<Scalars['String']>;
+  exampleUcumUnits?: Maybe<Scalars['String']>;
+  exampleUnits?: Maybe<Scalars['String']>;
+  exmplAnswers?: Maybe<Scalars['String']>;
+  externalCopyRightLink?: Maybe<Scalars['String']>;
+  externalCopyRightNotice?: Maybe<Scalars['String']>;
+  formula?: Maybe<Scalars['String']>;
+  hl7AttachmentStructure?: Maybe<Scalars['String']>;
+  hl7FieldSubFieldId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  labTests?: Maybe<Array<LabTests>>;
+  loincNum?: Maybe<Scalars['String']>;
+  longCommonName?: Maybe<Scalars['String']>;
+  methodTyp?: Maybe<Scalars['String']>;
+  observations?: Maybe<Array<Observations>>;
+  orderObs?: Maybe<Scalars['String']>;
+  panelType?: Maybe<Scalars['String']>;
+  property?: Maybe<Scalars['String']>;
+  relatedNames2?: Maybe<Scalars['String']>;
+  scaleTyp?: Maybe<Scalars['String']>;
+  shortName?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  statusReason?: Maybe<Scalars['String']>;
+  statusText?: Maybe<Scalars['String']>;
+  submittedUnits?: Maybe<Scalars['String']>;
+  surveyQuestSRC?: Maybe<Scalars['String']>;
+  surveyQuestTest?: Maybe<Scalars['String']>;
+  system?: Maybe<Scalars['String']>;
+  timeAspect?: Maybe<Scalars['String']>;
+  unitsAndRange?: Maybe<Scalars['String']>;
+  unitsRequired?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  validHl7AttachmentRequest?: Maybe<Scalars['String']>;
+  versionFirstRelease?: Maybe<Scalars['String']>;
+  versionLastChanged?: Maybe<Scalars['String']>;
 };
 
 /** The patient's maritial status type assigned */
@@ -1326,6 +1512,9 @@ export type Mutation = {
   createForm: FormPayload;
   createFormTemplate: FormPayload;
   createInvoice: InvoicePayload;
+  createLabTest: LabTestPayload;
+  createLabTestObservation: LabTestObservationPayload;
+  createLoincCode: LoincCodePayload;
   createPatient: PatientPayload;
   createPermission: PermissionPayload;
   createPractice: PracticePayload;
@@ -1348,6 +1537,8 @@ export type Mutation = {
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removeForm: FormPayload;
+  removeLabTest: LabTestPayload;
+  removeLabTestObservation: LabTestObservationPayload;
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
   removePatientProblem: PatientProblemPayload;
@@ -1375,6 +1566,9 @@ export type Mutation = {
   updateFacilityTimeZone: FacilityPayload;
   updateForm: FormPayload;
   updateInvoiceStatus: InvoicePayload;
+  updateLabTest: LabTestPayload;
+  updateLabTestObservation: LabTestObservationPayload;
+  updateLoincCode: LoincCodePayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientAllergy: PatientAllergyPayload;
@@ -1490,6 +1684,21 @@ export type MutationCreateInvoiceArgs = {
 };
 
 
+export type MutationCreateLabTestArgs = {
+  createLabTestInput: CreateLabTestInput;
+};
+
+
+export type MutationCreateLabTestObservationArgs = {
+  createLabTestObservationInput: CreateLabTestObservationInput;
+};
+
+
+export type MutationCreateLoincCodeArgs = {
+  loincCodeInput: LoincCodeInput;
+};
+
+
 export type MutationCreatePatientArgs = {
   createPatientInput: CreatePatientInput;
 };
@@ -1597,6 +1806,16 @@ export type MutationRemoveFacilityArgs = {
 
 export type MutationRemoveFormArgs = {
   removeForm: RemoveForm;
+};
+
+
+export type MutationRemoveLabTestArgs = {
+  removeLabTest: RemoveLabTest;
+};
+
+
+export type MutationRemoveLabTestObservationArgs = {
+  removeLabTestObservation: RemoveLabTestObservation;
 };
 
 
@@ -1735,6 +1954,21 @@ export type MutationUpdateInvoiceStatusArgs = {
 };
 
 
+export type MutationUpdateLabTestArgs = {
+  updateLabTestInput: UpdateLabTestInput;
+};
+
+
+export type MutationUpdateLabTestObservationArgs = {
+  updateLabTestObservationInput: UpdateLabTestObservationInput;
+};
+
+
+export type MutationUpdateLoincCodeArgs = {
+  updateLoincCodeInput: UpdateLoincCodeInput;
+};
+
+
 export type MutationUpdatePasswordArgs = {
   updatePasswordInput: UpdatePasswordInput;
 };
@@ -1819,6 +2053,23 @@ export type MutationVerifyOtpArgs = {
   verifyCodeInput: VerifyCodeInput;
 };
 
+export type Observations = {
+  __typename?: 'Observations';
+  abnormalFlag: AbnormalFlag;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  id: Scalars['String'];
+  labTest?: Maybe<LabTests>;
+  labTestId?: Maybe<Scalars['String']>;
+  loincCodes?: Maybe<LoincCodes>;
+  normalRange?: Maybe<Scalars['String']>;
+  normalRangeUnit?: Maybe<Scalars['String']>;
+  resultUnit?: Maybe<Scalars['String']>;
+  resultValue?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 /** The patient's pronouns type assigned */
 export enum Pronouns {
   He = 'HE',
@@ -1862,6 +2113,7 @@ export type Patient = {
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
   inviteAccepted?: Maybe<Scalars['Boolean']>;
+  labTests?: Maybe<Array<LabTests>>;
   language?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   maritialStatus?: Maybe<Maritialstatus>;
@@ -1960,6 +2212,9 @@ export type PatientInfoItemInput = {
 };
 
 export type PatientInput = {
+  appointmentDate?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientRecord?: Maybe<Scalars['String']>;
@@ -2044,6 +2299,7 @@ export type PatientVitals = {
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
   temperatureUnitType: TempUnitType;
@@ -2184,6 +2440,7 @@ export enum ProblemType {
 export type Query = {
   __typename?: 'Query';
   GetPermission: PermissionPayload;
+  fetchAllPatients: PatientsPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
   fetchEmergencyAccessUsers: EmergencyAccessUserPayload;
@@ -2194,6 +2451,7 @@ export type Query = {
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllForms: FormsPayload;
+  findAllLabTest: LabTestsPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientProblem: PatientProblemsPayload;
@@ -2217,6 +2475,7 @@ export type Query = {
   getFacility: FacilityPayload;
   getFacilitySchedule: SchedulesPayload;
   getForm: FormPayload;
+  getLabTest: LabTestPayload;
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
@@ -2240,6 +2499,11 @@ export type Query = {
 
 export type QueryGetPermissionArgs = {
   getPermission: GetPermission;
+};
+
+
+export type QueryFetchAllPatientsArgs = {
+  patientInput: PatientInput;
 };
 
 
@@ -2280,6 +2544,11 @@ export type QueryFindAllFacilityArgs = {
 
 export type QueryFindAllFormsArgs = {
   formInput: FormInput;
+};
+
+
+export type QueryFindAllLabTestArgs = {
+  labTestInput: LabTestInput;
 };
 
 
@@ -2395,6 +2664,11 @@ export type QueryGetFacilityScheduleArgs = {
 
 export type QueryGetFormArgs = {
   getForm: GetForm;
+};
+
+
+export type QueryGetLabTestArgs = {
+  getLabTest: GetLabTest;
 };
 
 
@@ -2577,6 +2851,14 @@ export type RemoveForm = {
   id: Scalars['String'];
 };
 
+export type RemoveLabTest = {
+  id?: Maybe<Scalars['String']>;
+};
+
+export type RemoveLabTestObservation = {
+  id: Scalars['String'];
+};
+
 export type RemovePatient = {
   id: Scalars['String'];
 };
@@ -2655,6 +2937,7 @@ export type Role = {
 };
 
 export type RoleInput = {
+  customRole?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   role?: Maybe<Scalars['String']>;
   roleName?: Maybe<Scalars['String']>;
@@ -2979,6 +3262,15 @@ export enum Speciality {
   Psychiatry = 'PSYCHIATRY'
 }
 
+export type SpecimenTypes = {
+  __typename?: 'SpecimenTypes';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  testSpecimens?: Maybe<Array<TestSpecimens>>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type Staff = {
   __typename?: 'Staff';
   attachments?: Maybe<Array<Attachment>>;
@@ -3027,6 +3319,19 @@ export enum TempUnitType {
   DegC = 'DEG_C',
   DegF = 'DEG_F'
 }
+
+export type TestSpecimens = {
+  __typename?: 'TestSpecimens';
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  labTest?: Maybe<LabTests>;
+  labTestId?: Maybe<Scalars['String']>;
+  specimenNotes?: Maybe<Scalars['String']>;
+  specimenTypes?: Maybe<SpecimenTypes>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
 
 export type TransactionPayload = {
   __typename?: 'TransactionPayload';
@@ -3286,6 +3591,45 @@ export type UpdateFormInput = {
   type?: Maybe<FormType>;
 };
 
+export type UpdateLabTestInput = {
+  diagnoses?: Maybe<Array<Scalars['String']>>;
+  test?: Maybe<Scalars['String']>;
+  updateLabTestItemInput?: Maybe<UpdateLabTestItemInput>;
+  updateSpecimenItemInput?: Maybe<Array<UpdateSpecimenItemInput>>;
+};
+
+export type UpdateLabTestItemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  patientId?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+};
+
+export type UpdateLabTestObservationInput = {
+  labTestId: Scalars['String'];
+  updateLabTestObservationItemInput?: Maybe<Array<UpdateLabTestObservationItemInput>>;
+};
+
+export type UpdateLabTestObservationItemInput = {
+  abnormalFlag?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  id: Scalars['String'];
+  normalRange?: Maybe<Scalars['String']>;
+  normalRangeUnit?: Maybe<Scalars['String']>;
+  resultUnit?: Maybe<Scalars['String']>;
+  resultValue?: Maybe<Scalars['String']>;
+};
+
+export type UpdateLoincCodeInput = {
+  component?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  loincNum?: Maybe<Scalars['String']>;
+};
+
 export type UpdatePasswordInput = {
   id: Scalars['String'];
   newPassword: Scalars['String'];
@@ -3438,6 +3782,14 @@ export type UpdateServiceInput = {
   price?: Maybe<Scalars['String']>;
   /** Service type */
   serviceType?: Maybe<ServiceType>;
+};
+
+export type UpdateSpecimenItemInput = {
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  specimenNotes?: Maybe<Scalars['String']>;
+  testSpecimen?: Maybe<Scalars['String']>;
 };
 
 export type UpdateStaffInput = {
@@ -3738,14 +4090,14 @@ export type GetDoctorUserQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorUserQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, address?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined } };
+export type GetDoctorUserQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, address?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined } };
 
 export type GetStaffUserQueryVariables = Exact<{
   getStaff: GetStaff;
 }>;
 
 
-export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename?: 'Staff', id: string, email: string, lastName: string, firstName: string, phone?: string | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
+export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename: 'Staff', id: string, email: string, lastName: string, firstName: string, phone?: string | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -3823,6 +4175,27 @@ export type RemovePatientProblemMutationVariables = Exact<{
 
 
 export type RemovePatientProblemMutation = { __typename?: 'Mutation', removePatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type GetPatientVitalQueryVariables = Exact<{
+  getPatientVital: GetPatientVital;
+}>;
+
+
+export type GetPatientVitalQuery = { __typename?: 'Query', getPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, bloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } };
+
+export type FindAllPatientVitalsQueryVariables = Exact<{
+  patientVitalInput: PatientVitalInput;
+}>;
+
+
+export type FindAllPatientVitalsQuery = { __typename?: 'Query', findAllPatientVitals: { __typename?: 'PatientVitalsPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, bloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, pulseRate?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined> | null | undefined } };
+
+export type AddPatientVitalMutationVariables = Exact<{
+  createVitalInput: CreateVitalInput;
+}>;
+
+
+export type AddPatientVitalMutation = { __typename?: 'Mutation', addPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, bloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, pulseRate?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } };
 
 export type FindAllRoleListQueryVariables = Exact<{
   roleInput: RoleInput;
@@ -4040,6 +4413,13 @@ export type FindAllPatientQueryVariables = Exact<{
 
 
 export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+
+export type FetchAllPatientQueryVariables = Exact<{
+  patientInput: PatientInput;
+}>;
+
+
+export type FetchAllPatientQuery = { __typename?: 'Query', fetchAllPatients: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientQueryVariables = Exact<{
   getPatient: GetPatient;
@@ -5142,6 +5522,7 @@ export const GetDoctorUserDocument = gql`
     query GetDoctorUser($getDoctor: GetDoctor!) {
   getDoctor(getDoctor: $getDoctor) {
     doctor {
+      __typename
       id
       firstName
       lastName
@@ -5208,6 +5589,7 @@ export const GetStaffUserDocument = gql`
       status
     }
     staff {
+      __typename
       id
       email
       lastName
@@ -5724,6 +6106,196 @@ export function useRemovePatientProblemMutation(baseOptions?: Apollo.MutationHoo
 export type RemovePatientProblemMutationHookResult = ReturnType<typeof useRemovePatientProblemMutation>;
 export type RemovePatientProblemMutationResult = Apollo.MutationResult<RemovePatientProblemMutation>;
 export type RemovePatientProblemMutationOptions = Apollo.BaseMutationOptions<RemovePatientProblemMutation, RemovePatientProblemMutationVariables>;
+export const GetPatientVitalDocument = gql`
+    query getPatientVital($getPatientVital: GetPatientVital!) {
+  getPatientVital(getPatientVital: $getPatientVital) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patientVital {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      bloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientVitalQuery__
+ *
+ * To run a query within a React component, call `useGetPatientVitalQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientVitalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientVitalQuery({
+ *   variables: {
+ *      getPatientVital: // value for 'getPatientVital'
+ *   },
+ * });
+ */
+export function useGetPatientVitalQuery(baseOptions: Apollo.QueryHookOptions<GetPatientVitalQuery, GetPatientVitalQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientVitalQuery, GetPatientVitalQueryVariables>(GetPatientVitalDocument, options);
+      }
+export function useGetPatientVitalLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientVitalQuery, GetPatientVitalQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientVitalQuery, GetPatientVitalQueryVariables>(GetPatientVitalDocument, options);
+        }
+export type GetPatientVitalQueryHookResult = ReturnType<typeof useGetPatientVitalQuery>;
+export type GetPatientVitalLazyQueryHookResult = ReturnType<typeof useGetPatientVitalLazyQuery>;
+export type GetPatientVitalQueryResult = Apollo.QueryResult<GetPatientVitalQuery, GetPatientVitalQueryVariables>;
+export const FindAllPatientVitalsDocument = gql`
+    query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
+  findAllPatientVitals(patientVitalInput: $patientVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    patientVitals {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      bloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      pulseRate
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPatientVitalsQuery__
+ *
+ * To run a query within a React component, call `useFindAllPatientVitalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPatientVitalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPatientVitalsQuery({
+ *   variables: {
+ *      patientVitalInput: // value for 'patientVitalInput'
+ *   },
+ * });
+ */
+export function useFindAllPatientVitalsQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>(FindAllPatientVitalsDocument, options);
+      }
+export function useFindAllPatientVitalsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>(FindAllPatientVitalsDocument, options);
+        }
+export type FindAllPatientVitalsQueryHookResult = ReturnType<typeof useFindAllPatientVitalsQuery>;
+export type FindAllPatientVitalsLazyQueryHookResult = ReturnType<typeof useFindAllPatientVitalsLazyQuery>;
+export type FindAllPatientVitalsQueryResult = Apollo.QueryResult<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>;
+export const AddPatientVitalDocument = gql`
+    mutation addPatientVital($createVitalInput: CreateVitalInput!) {
+  addPatientVital(createVitalInput: $createVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patientVital {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      bloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      pulseRate
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type AddPatientVitalMutationFn = Apollo.MutationFunction<AddPatientVitalMutation, AddPatientVitalMutationVariables>;
+
+/**
+ * __useAddPatientVitalMutation__
+ *
+ * To run a mutation, you first call `useAddPatientVitalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPatientVitalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPatientVitalMutation, { data, loading, error }] = useAddPatientVitalMutation({
+ *   variables: {
+ *      createVitalInput: // value for 'createVitalInput'
+ *   },
+ * });
+ */
+export function useAddPatientVitalMutation(baseOptions?: Apollo.MutationHookOptions<AddPatientVitalMutation, AddPatientVitalMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPatientVitalMutation, AddPatientVitalMutationVariables>(AddPatientVitalDocument, options);
+      }
+export type AddPatientVitalMutationHookResult = ReturnType<typeof useAddPatientVitalMutation>;
+export type AddPatientVitalMutationResult = Apollo.MutationResult<AddPatientVitalMutation>;
+export type AddPatientVitalMutationOptions = Apollo.BaseMutationOptions<AddPatientVitalMutation, AddPatientVitalMutationVariables>;
 export const FindAllRoleListDocument = gql`
     query FindAllRoleList($roleInput: RoleInput!) {
   getAllRoles(roleInput: $roleInput) {
@@ -7309,6 +7881,64 @@ export function useFindAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FindAllPatientQueryHookResult = ReturnType<typeof useFindAllPatientQuery>;
 export type FindAllPatientLazyQueryHookResult = ReturnType<typeof useFindAllPatientLazyQuery>;
 export type FindAllPatientQueryResult = Apollo.QueryResult<FindAllPatientQuery, FindAllPatientQueryVariables>;
+export const FetchAllPatientDocument = gql`
+    query FetchAllPatient($patientInput: PatientInput!) {
+  fetchAllPatients(patientInput: $patientInput) {
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+    patients {
+      id
+      email
+      lastName
+      firstName
+      patientRecord
+      contacts {
+        id
+        name
+        city
+        email
+        phone
+        primaryContact
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllPatientQuery__
+ *
+ * To run a query within a React component, call `useFetchAllPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllPatientQuery({
+ *   variables: {
+ *      patientInput: // value for 'patientInput'
+ *   },
+ * });
+ */
+export function useFetchAllPatientQuery(baseOptions: Apollo.QueryHookOptions<FetchAllPatientQuery, FetchAllPatientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllPatientQuery, FetchAllPatientQueryVariables>(FetchAllPatientDocument, options);
+      }
+export function useFetchAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllPatientQuery, FetchAllPatientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllPatientQuery, FetchAllPatientQueryVariables>(FetchAllPatientDocument, options);
+        }
+export type FetchAllPatientQueryHookResult = ReturnType<typeof useFetchAllPatientQuery>;
+export type FetchAllPatientLazyQueryHookResult = ReturnType<typeof useFetchAllPatientLazyQuery>;
+export type FetchAllPatientQueryResult = Apollo.QueryResult<FetchAllPatientQuery, FetchAllPatientQueryVariables>;
 export const GetPatientDocument = gql`
     query GetPatient($getPatient: GetPatient!) {
   getPatient(getPatient: $getPatient) {

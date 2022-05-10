@@ -36,7 +36,6 @@ const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
   const { user, currentDoctor, currentStaff, profileUrl, fetchUser, fetchAttachment, profileAttachment } = useContext(AuthContext);
   const { email, userType, userId, phone: userPhone } = user || {}
-
   const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
@@ -142,7 +141,6 @@ const ProfileComponent = (): JSX.Element => {
   }
 
   const editHandler = () => {
-
     if (userType === SYSTEM_ROLES.Doctor) {
       setValue('firstName', doctorFirstName || staffFirstName || '')
       setValue('lastName', doctorLastName || staffLastName || '')

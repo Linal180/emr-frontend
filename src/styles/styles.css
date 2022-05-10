@@ -350,7 +350,7 @@ body .MuiTabPanel-root {
 }
 
 /* Signature-pad-Styling */
-.sigCanvas {
+.signCanvas {
   width: 100%;
   height: 150px;
 }
@@ -457,10 +457,25 @@ body .MuiTabPanel-root {
   color: #202020 !important;
 }
 
-.selectorClassTwo div {
+.selectorClassTwo {
   border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;
+  border-radius: 4px !important;
   max-width: 330px !important;
+}
+
+.selectorClassTwoError {
+  border: 1px solid red !important;
+  background-color: #F3F4F6 !important;
+  border-radius: 4px !important;
+  max-width: 330px !important;
+}
+
+.selectorClassTwo > div:first-of-type {
+  border: 1px solid #F3F4F6 !important;
+  background-color: #F3F4F6 !important;
+  border-radius: 4px !important;
+  min-height: 48px !important;
 }
 
 .selectorClassTwo svg, .selectorClassTwo span {
@@ -479,4 +494,15 @@ body .MuiTabPanel-root {
 
 .hoverClass:hover {
   background-color: rgba(0, 0, 0, 0.04);
+}
+
+.advancedSearch {
+  max-width: 200px !important;
+  padding: 0 10px !important;
+  border: 1px solid #D1D5DB !important;
+  box-shadow: none !important;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #202020;
+  margin-bottom: 10px !important;
 }

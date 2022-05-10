@@ -80,7 +80,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const { handleSubmit, setValue, watch, control } = methods;
   const {
     facilityId: { id: selectedFacility, name: selectedFacilityName } = {},
-    basicZipCode, basicCity, basicState, basicAddress, basicAddress2, basicCountry, basicEmail,
+    basicZipCode, basicCity, basicState, basicAddress, basicAddress2, basicCountry, basicEmail
   } = watch();
 
   const toggleHandleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -1067,7 +1067,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         {isEdit ? renderItem(DOCTOR, doctorName)
                           : <DoctorSelector
                             label={USUAL_PROVIDER_ID}
-                            name="providerId"
+                            name="usualProviderId"
                             facilityId={selectedFacility}
                             addEmpty
                             isRequired

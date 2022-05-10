@@ -1,8 +1,8 @@
 // packages block
-import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer } from "react";
+import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Collapse, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -13,17 +13,24 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
-import { formatPhone, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import { formatPhone, getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
 import {
-  useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation
+  useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation, useFetchAllPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION,
-  PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN, PatientSearchingTooltipData
+  ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN,
+  PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER, SEARCH
 } from "../../../../constants";
+import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { PatientSearchInputProps } from "../../../../interfacesTypes";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
+import DatePicker from "../../../common/DatePicker";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -33,8 +40,12 @@ const PatientsTable: FC = (): JSX.Element => {
   const isPracAdmin = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const { id: facilityId, practiceId } = facility || {}
+  const [open, setOpen] = useState<boolean>(false)
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
+  const methods = useForm<PatientSearchInputProps>({ mode: "all" });
+  const { handleSubmit, watch } = methods;
+  const { location: { id: selectedLocationId } = {} } = watch()
 
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -49,6 +60,29 @@ const PatientsTable: FC = (): JSX.Element => {
 
       if (findAllPatient) {
         const { pagination, patients } = findAllPatient
+        patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
+
+        if (pagination) {
+          const { totalPages } = pagination
+          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+        }
+      }
+    }
+  });
+
+  const [fetchAllPatientsQuery] = useFetchAllPatientLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError() {
+      dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
+    },
+
+    onCompleted(data) {
+      const { fetchAllPatients } = data || {};
+
+      if (fetchAllPatients) {
+        const { pagination, patients } = fetchAllPatients
         patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
 
         if (pagination) {
@@ -122,14 +156,92 @@ const PatientsTable: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
+  const onSubmit: SubmitHandler<PatientSearchInputProps> = async ({ dob, dos, provider, location }) => {
+    const { id: selectedLocation } = location || {};
+    const { id: selectedProvider } = provider || {};
+
+    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+    const patientsInputs = isSuper ? { ...pageInputs } :
+      isPracAdmin ? { practiceId, ...pageInputs } :
+        isFacAdmin ? { facilityId, ...pageInputs } : undefined
+
+    fetchAllPatientsQuery({
+      variables: {
+        patientInput: {
+          ...patientsInputs,
+          dob: getFormatDateString(dob, 'MM-DD-YYYY'),
+          doctorId: selectedProvider,
+          appointmentDate: getFormatDateString(dos),
+          ...(!isFacAdmin ? { facilityId: selectedLocation } : {}),
+          ...pageInputs
+        }
+      }
+    })
+  }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2} mb={2} maxWidth={450}>
-          <Search search={search} info tooltipData={PatientSearchingTooltipData} />
-        </Box>
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
+            <Search search={search} info tooltipData={PatientSearchingTooltipData} />
+          </Grid>
+          <Grid item md={2} sm={12} xs={12}>
+            <Box
+              onClick={() => setOpen(!open)} className='pointer-cursor'
+              border={`1px solid ${GREY_FIVE}`} borderRadius={4}
+              color={BLACK_TWO} p={1.35} display='flex' width={186}
+            >
+              <Typography variant="body1">{ADVANCED_SEARCH}</Typography>
+              {open ? <ExpandLess /> : <ExpandMore />}
+            </Box>
+          </Grid>
+        </Grid>
 
-        <Box className="table-overflow">
+        <Collapse in={open} mountOnEnter unmountOnExit>
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Box p={3} mt={2} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
+                <Grid container spacing={3}>
+                  <Grid item md={3} sm={6} xs={12}>
+                    <DatePicker isRequired name="dob" label={DOB} />
+                  </Grid>
+
+                  <Grid item md={3} sm={6} xs={12}>
+                    <DatePicker isRequired name="dos" label={DATE_OF_SERVICE} />
+                  </Grid>
+
+                  {(isSuper || isPracAdmin) &&
+                    <Grid item md={3} sm={12} xs={12}>
+                      <FacilitySelector
+                        label={LOCATION}
+                        name="location"
+                        addEmpty
+                      />
+                    </Grid>
+                  }
+
+                  <Grid item md={3} sm={12} xs={12}>
+                    <DoctorSelector
+                      label={PROVIDER}
+                      name="provider"
+                      facilityId={selectedLocationId}
+                      addEmpty
+                    />
+                  </Grid>
+                  {!(isSuper || isPracAdmin) && <Grid item md={5} sm={12} xs={12} />}
+
+                  <Grid item md={(isSuper || isPracAdmin) ? 11 : 6} />
+                  <Box px={1}>
+                    <Button variant="contained" color="secondary" type="submit">{SEARCH}</Button>
+                  </Box>
+                </Grid>
+              </Box>
+            </form>
+          </FormProvider>
+        </Collapse>
+
+        <Box className="table-overflow" mt={4}>
           <Table aria-label="customized table">
             <TableHead>
               <TableRow>
@@ -143,7 +255,7 @@ const PatientsTable: FC = (): JSX.Element => {
             </TableHead>
 
             <TableBody>
-              {loading ? (
+              {(loading) ? (
                 <TableRow>
                   <TableCell colSpan={10}>
                     <TableLoader numberOfRows={10} numberOfColumns={5} />
@@ -187,7 +299,7 @@ const PatientsTable: FC = (): JSX.Element => {
             </TableBody>
           </Table>
 
-          {((!loading && !patients?.length) || error) && (
+          {((!(loading) && !patients?.length) || (error)) && (
             <Box display="flex" justifyContent="center" pb={12} pt={5}>
               <NoDataFoundComponent />
             </Box>

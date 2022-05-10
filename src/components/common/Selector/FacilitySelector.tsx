@@ -9,7 +9,7 @@ import {
   facilityReducer, Action, initialState, State, ActionType
 } from "../../../reducers/facilityReducer";
 import { AuthContext } from "../../../context";
-import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { FacilitiesPayload, useFindAllFacilityListLazyQuery } from "../../../generated/graphql";
 
@@ -50,7 +50,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
 
   const fetchAllFacilities = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const facilitiesInputs =
         isSuper ? { ...pageInputs }
           :
@@ -64,7 +64,7 @@ const FacilitySelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
   }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllFacility, searchQuery])
 
   useEffect(() => {
-    if (searchQuery.length > 2) {
+    if (!searchQuery.length || searchQuery.length > 2) {
       fetchAllFacilities()
     }
   }, [page, searchQuery, fetchAllFacilities]);

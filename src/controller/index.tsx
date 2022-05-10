@@ -2,20 +2,20 @@
 import { FC, useState } from "react";
 import { Search } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
-import { Box, FormControl, InputLabel, TextField } from "@material-ui/core";
+import { Box, FormControl, IconButton, InputLabel, TextField } from "@material-ui/core";
 // components block
 import ShowPassword from "../components/common/ShowPassword";
 // styles, constants, utils and interfaces block
+import { requiredLabel } from "../utils";
 import { PASSWORD, TEXT } from "../constants";
+import { ClearIcon, InfoIcon } from "../assets/svgs";
 import { DetailTooltip } from "../styles/tableStyles";
 import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
-import { InfoIcon } from "../assets/svgs";
-import { requiredLabel } from "../utils";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
-  disabled, multiline, info, placeholder, className, isSearch
+  disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -35,7 +35,7 @@ const InputController: FC<CustomInputControlProps> = ({
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal" error={Boolean(invalid)}>
+        <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
           <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
             {isRequired ? requiredLabel(controllerLabel || '') : controllerLabel}
 
@@ -68,6 +68,10 @@ const InputController: FC<CustomInputControlProps> = ({
                 passwordType={passwordType}
                 handleShowPassword={handleClickShowPassword}
               />,
+            } : clearable ? {
+              endAdornment: <IconButton aria-label="clear" onClick={handleClearField ? () => handleClearField(controllerName) : () => { }}>
+                <ClearIcon />
+              </IconButton>
             } : fieldType === 'number' ? {
               inputProps: { step: '5' }
             } : isSearch ? {
