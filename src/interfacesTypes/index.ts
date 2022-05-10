@@ -1239,3 +1239,10 @@ export interface PatientVitalsListingProps {
 export interface VitalsLabelsProps {
   patientStates: PatientState
 }
+
+
+export interface VitalListComponentProps {
+  title: string;
+  date: string;
+  description: string;
+}
