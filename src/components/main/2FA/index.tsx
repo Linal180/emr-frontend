@@ -11,7 +11,7 @@ import { InfoSearchIcon, SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   GENERAL, PROFILE_GENERAL_MENU_ITEMS, SECURITY, USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, TWO_FA_AUTHENTICATION, STATUS,
-  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD, TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED, NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE,
+  DISABLED, TWO_FA_AUTHENTICATION_DESCRIPTION, ENTER_PASSWORD, TWO_FA_ENABLED_SUCCESSFULLY, SAVE_TEXT, ENABLED, NOT_FOUND_EXCEPTION, VALID_PASSWORD_MESSAGE, TWO_FA_DISABLED_SUCCESSFULLY, ADD_NUM, ADD_PHONE_NUM_DESCRIPTION,
 } from '../../../constants';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../../context';
@@ -50,7 +50,11 @@ const TwoFAComponent = (): JSX.Element => {
           const { status } = response
 
           if (status === 200) {
-            Alert.success(TWO_FA_ENABLED_SUCCESSFULLY)
+            if (isChecked) {
+              Alert.success(TWO_FA_ENABLED_SUCCESSFULLY)
+            }
+            else
+              Alert.success(TWO_FA_DISABLED_SUCCESSFULLY)
             await fetchUser()
           }
         }
@@ -131,12 +135,12 @@ const TwoFAComponent = (): JSX.Element => {
                       <InfoSearchIcon />
                     </IconButton>
                     <Typography>
-                      Please add phone number
+                      {ADD_PHONE_NUM_DESCRIPTION}
                     </Typography>
                   </Box>
 
                   <Button color="primary" variant="contained" component={Link} to={"/profile"}>
-                    {"Edit Phone Number"}
+                    {ADD_NUM}
                   </Button>
                 </Box>
               }
@@ -153,7 +157,7 @@ const TwoFAComponent = (): JSX.Element => {
                           name='isTwoFactorEnabled'
                           control={control}
                           render={() => (
-                            <FormControl fullWidth margin="normal" className={classes.toggleContainer}>
+                            <FormControl fullWidth className={classes.toggleContainer}>
                               <label className="toggle-main">
                                 <Box color={isChecked ? WHITE : GRAY_ONE} pr={1}>{ENABLED}</Box>
                                 <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='isTwoFactorEnabled' />
