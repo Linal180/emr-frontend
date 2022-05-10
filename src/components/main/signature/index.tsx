@@ -16,7 +16,7 @@ import { dataURLtoFile, getToken, isUserAdmin } from '../../../utils';
 import { useGetAttachmentLazyQuery } from '../../../generated/graphql';
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  SIGNATURE_TEXT, UPDATE_SIGNATURE, USER_SETTINGS, ATTACHMENT_TITLES,
+  SIGNATURE_TEXT, UPDATE_SIGNATURE, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE,
 } from '../../../constants';
 
 const SignatureComponent = (): JSX.Element => {
@@ -165,13 +165,15 @@ const SignatureComponent = (): JSX.Element => {
         <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={SIGNATURE_TEXT}>
             <Collapse in={!open} mountOnEnter unmountOnExit>
-              <Box mb={3} p={2} maxWidth={300} border={`1px solid ${WHITE_FOUR}`}>
-                <img src={signatureUrl} alt="" />
-              </Box>
+              {signatureUrl &&
+                <Box mb={3} p={2} maxWidth={300} border={`1px solid ${WHITE_FOUR}`}>
+                  <img src={signatureUrl} alt="" />
+                </Box>
+              }
 
               <Box mb={4} onClick={() => setOpen(!open)}>
                 <Button type="submit" variant="outlined" color='secondary'>
-                  {UPDATE_SIGNATURE}
+                  {signatureUrl ? UPDATE_SIGNATURE : ADD_SIGNATURE}
                 </Button>
               </Box>
             </Collapse>

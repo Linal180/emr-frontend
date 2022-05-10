@@ -32,6 +32,29 @@ export enum Appointmentstatus {
   Rescheduled = 'RESCHEDULED'
 }
 
+/** The test result's abnormal flag status assigned */
+export enum AbnormalFlag {
+  AbnormalAppliedToNonNumericResults = 'ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS',
+  AboveAbsoluteHighOffScale = 'ABOVE_ABSOLUTE_HIGH_OFF_SCALE',
+  AboveHighNormal = 'ABOVE_HIGH_NORMAL',
+  BelowAbsoluteLowOffScale = 'BELOW_ABSOLUTE_LOW_OFF_SCALE',
+  BelowLowerPanicLimit = 'BELOW_LOWER_PANIC_LIMIT',
+  BelowLowNormal = 'BELOW_LOW_NORMAL',
+  BelowUpperPanicLimit = 'BELOW_UPPER_PANIC_LIMIT',
+  BetterUseWhenDirectionNotRelevant = 'BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT',
+  Intermediate = 'INTERMEDIATE',
+  Moderately = 'MODERATELY',
+  None = 'NONE',
+  Normal = 'NORMAL',
+  Resistant = 'RESISTANT',
+  SignificantChangeDown = 'SIGNIFICANT_CHANGE_DOWN',
+  SignificantChangeUp = 'SIGNIFICANT_CHANGE_UP',
+  Susceptible = 'SUSCEPTIBLE',
+  VeryAbnormalAppliedToNonNumeric = 'VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC',
+  VerySusceptible = 'VERY_SUSCEPTIBLE',
+  WorstUseWhenDirectionNotRelevant = 'WORST_USE_WHEN_DIRECTION_NOT_RELEVANT'
+}
+
 export type AccessUserPayload = {
   __typename?: 'AccessUserPayload';
   access_token?: Maybe<Scalars['String']>;
@@ -118,6 +141,7 @@ export type Appointment = {
   invoice?: Maybe<Invoice>;
   invoiceId?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
+  labTests?: Maybe<Array<LabTests>>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -563,6 +587,37 @@ export type CreateInvoiceInputs = {
   status: Status;
 };
 
+export type CreateLabTestInput = {
+  createLabTestItemInput?: Maybe<CreateLabTestItemInput>;
+  createSpecimenItemInput?: Maybe<Array<CreateSpecimenItemInput>>;
+  diagnoses?: Maybe<Array<Scalars['String']>>;
+  test?: Maybe<Scalars['String']>;
+};
+
+export type CreateLabTestItemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  patientId: Scalars['String'];
+  status?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+};
+
+export type CreateLabTestObservationInput = {
+  createLabTestObservationItemInput?: Maybe<Array<CreateLabTestObservationItemInput>>;
+  labTestId: Scalars['String'];
+};
+
+export type CreateLabTestObservationItemInput = {
+  abnormalFlag: Scalars['String'];
+  description: Scalars['String'];
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  normalRange: Scalars['String'];
+  normalRangeUnit: Scalars['String'];
+  resultUnit: Scalars['String'];
+  resultValue: Scalars['String'];
+};
+
 export type CreatePatientAllergyInput = {
   allergyId?: Maybe<Scalars['String']>;
   allergyOnset?: Maybe<AllergyOnset>;
@@ -689,6 +744,13 @@ export type CreateServiceInput = {
   serviceType?: Maybe<ServiceType>;
 };
 
+export type CreateSpecimenItemInput = {
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  specimenNotes?: Maybe<Scalars['String']>;
+  testSpecimen: Scalars['String'];
+};
+
 export type CreateStaffInput = {
   providers?: Maybe<Array<Scalars['String']>>;
   staffInput: CreateStaffItemInput;
@@ -733,6 +795,7 @@ export type CreateVitalInput = {
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
   staffId?: Maybe<Scalars['String']>;
@@ -1133,6 +1196,10 @@ export type GetForm = {
   id: Scalars['String'];
 };
 
+export type GetLabTest = {
+  id?: Maybe<Scalars['String']>;
+};
+
 export type GetMedia = {
   id?: Maybe<Scalars['String']>;
 };
@@ -1230,6 +1297,7 @@ export type IcdCodes = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  labTests?: Maybe<LabTests>;
   updatedAt?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
 };
@@ -1282,6 +1350,50 @@ export type InvoicesPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type LabTestInput = {
+  labTestStatus?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type LabTestObservationPayload = {
+  __typename?: 'LabTestObservationPayload';
+  labTestObservation?: Maybe<Observations>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type LabTestPayload = {
+  __typename?: 'LabTestPayload';
+  labTest?: Maybe<LabTests>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type LabTests = {
+  __typename?: 'LabTests';
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  diagnoses?: Maybe<Array<Maybe<IcdCodes>>>;
+  id: Scalars['String'];
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  status: Status;
+  test?: Maybe<LoincCodes>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testObservations?: Maybe<Array<Observations>>;
+  testSpecimens?: Maybe<Array<TestSpecimens>>;
+  testTime?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type LabTestsPayload = {
+  __typename?: 'LabTestsPayload';
+  labTests?: Maybe<Array<Maybe<LabTests>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type LayoutJsonInputType = {
   sections: Array<SectionsInputs>;
 };
@@ -1294,6 +1406,71 @@ export type LayoutJsonType = {
 export type LoginUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type LoincCodeInput = {
+  component?: Maybe<Scalars['String']>;
+  loincNum?: Maybe<Scalars['String']>;
+};
+
+export type LoincCodePayload = {
+  __typename?: 'LoincCodePayload';
+  loincCode?: Maybe<LoincCodes>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type LoincCodes = {
+  __typename?: 'LoincCodes';
+  askAtOrderEntry?: Maybe<Scalars['String']>;
+  associationObservations?: Maybe<Scalars['String']>;
+  cdiscCommonTests?: Maybe<Scalars['String']>;
+  changeReasonPublic?: Maybe<Scalars['String']>;
+  chngType?: Maybe<Scalars['String']>;
+  class?: Maybe<Scalars['String']>;
+  classType?: Maybe<Scalars['String']>;
+  commonOrderRank?: Maybe<Scalars['String']>;
+  commonSiTestRank?: Maybe<Scalars['String']>;
+  commonTestRank?: Maybe<Scalars['String']>;
+  component?: Maybe<Scalars['String']>;
+  consumerName?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  definitionDescription?: Maybe<Scalars['String']>;
+  displayName?: Maybe<Scalars['String']>;
+  exampleSiUcumUnits?: Maybe<Scalars['String']>;
+  exampleUcumUnits?: Maybe<Scalars['String']>;
+  exampleUnits?: Maybe<Scalars['String']>;
+  exmplAnswers?: Maybe<Scalars['String']>;
+  externalCopyRightLink?: Maybe<Scalars['String']>;
+  externalCopyRightNotice?: Maybe<Scalars['String']>;
+  formula?: Maybe<Scalars['String']>;
+  hl7AttachmentStructure?: Maybe<Scalars['String']>;
+  hl7FieldSubFieldId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  labTests?: Maybe<Array<LabTests>>;
+  loincNum?: Maybe<Scalars['String']>;
+  longCommonName?: Maybe<Scalars['String']>;
+  methodTyp?: Maybe<Scalars['String']>;
+  observations?: Maybe<Array<Observations>>;
+  orderObs?: Maybe<Scalars['String']>;
+  panelType?: Maybe<Scalars['String']>;
+  property?: Maybe<Scalars['String']>;
+  relatedNames2?: Maybe<Scalars['String']>;
+  scaleTyp?: Maybe<Scalars['String']>;
+  shortName?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  statusReason?: Maybe<Scalars['String']>;
+  statusText?: Maybe<Scalars['String']>;
+  submittedUnits?: Maybe<Scalars['String']>;
+  surveyQuestSRC?: Maybe<Scalars['String']>;
+  surveyQuestTest?: Maybe<Scalars['String']>;
+  system?: Maybe<Scalars['String']>;
+  timeAspect?: Maybe<Scalars['String']>;
+  unitsAndRange?: Maybe<Scalars['String']>;
+  unitsRequired?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  validHl7AttachmentRequest?: Maybe<Scalars['String']>;
+  versionFirstRelease?: Maybe<Scalars['String']>;
+  versionLastChanged?: Maybe<Scalars['String']>;
 };
 
 /** The patient's maritial status type assigned */
@@ -1326,6 +1503,9 @@ export type Mutation = {
   createForm: FormPayload;
   createFormTemplate: FormPayload;
   createInvoice: InvoicePayload;
+  createLabTest: LabTestPayload;
+  createLabTestObservation: LabTestObservationPayload;
+  createLoincCode: LoincCodePayload;
   createPatient: PatientPayload;
   createPermission: PermissionPayload;
   createPractice: PracticePayload;
@@ -1348,6 +1528,8 @@ export type Mutation = {
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removeForm: FormPayload;
+  removeLabTest: LabTestPayload;
+  removeLabTestObservation: LabTestObservationPayload;
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
   removePatientProblem: PatientProblemPayload;
@@ -1375,6 +1557,9 @@ export type Mutation = {
   updateFacilityTimeZone: FacilityPayload;
   updateForm: FormPayload;
   updateInvoiceStatus: InvoicePayload;
+  updateLabTest: LabTestPayload;
+  updateLabTestObservation: LabTestObservationPayload;
+  updateLoincCode: LoincCodePayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientAllergy: PatientAllergyPayload;
@@ -1490,6 +1675,21 @@ export type MutationCreateInvoiceArgs = {
 };
 
 
+export type MutationCreateLabTestArgs = {
+  createLabTestInput: CreateLabTestInput;
+};
+
+
+export type MutationCreateLabTestObservationArgs = {
+  createLabTestObservationInput: CreateLabTestObservationInput;
+};
+
+
+export type MutationCreateLoincCodeArgs = {
+  loincCodeInput: LoincCodeInput;
+};
+
+
 export type MutationCreatePatientArgs = {
   createPatientInput: CreatePatientInput;
 };
@@ -1597,6 +1797,16 @@ export type MutationRemoveFacilityArgs = {
 
 export type MutationRemoveFormArgs = {
   removeForm: RemoveForm;
+};
+
+
+export type MutationRemoveLabTestArgs = {
+  removeLabTest: RemoveLabTest;
+};
+
+
+export type MutationRemoveLabTestObservationArgs = {
+  removeLabTestObservation: RemoveLabTestObservation;
 };
 
 
@@ -1735,6 +1945,21 @@ export type MutationUpdateInvoiceStatusArgs = {
 };
 
 
+export type MutationUpdateLabTestArgs = {
+  updateLabTestInput: UpdateLabTestInput;
+};
+
+
+export type MutationUpdateLabTestObservationArgs = {
+  updateLabTestObservationInput: UpdateLabTestObservationInput;
+};
+
+
+export type MutationUpdateLoincCodeArgs = {
+  updateLoincCodeInput: UpdateLoincCodeInput;
+};
+
+
 export type MutationUpdatePasswordArgs = {
   updatePasswordInput: UpdatePasswordInput;
 };
@@ -1819,6 +2044,23 @@ export type MutationVerifyOtpArgs = {
   verifyCodeInput: VerifyCodeInput;
 };
 
+export type Observations = {
+  __typename?: 'Observations';
+  abnormalFlag: AbnormalFlag;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  id: Scalars['String'];
+  labTest?: Maybe<LabTests>;
+  labTestId?: Maybe<Scalars['String']>;
+  loincCodes?: Maybe<LoincCodes>;
+  normalRange?: Maybe<Scalars['String']>;
+  normalRangeUnit?: Maybe<Scalars['String']>;
+  resultUnit?: Maybe<Scalars['String']>;
+  resultValue?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 /** The patient's pronouns type assigned */
 export enum Pronouns {
   He = 'HE',
@@ -1862,6 +2104,7 @@ export type Patient = {
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
   inviteAccepted?: Maybe<Scalars['Boolean']>;
+  labTests?: Maybe<Array<LabTests>>;
   language?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   maritialStatus?: Maybe<Maritialstatus>;
@@ -1960,6 +2203,9 @@ export type PatientInfoItemInput = {
 };
 
 export type PatientInput = {
+  appointmentDate?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientRecord?: Maybe<Scalars['String']>;
@@ -2044,6 +2290,7 @@ export type PatientVitals = {
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
   temperatureUnitType: TempUnitType;
@@ -2184,6 +2431,7 @@ export enum ProblemType {
 export type Query = {
   __typename?: 'Query';
   GetPermission: PermissionPayload;
+  fetchAllPatients: PatientsPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
   fetchEmergencyAccessUsers: EmergencyAccessUserPayload;
@@ -2194,6 +2442,7 @@ export type Query = {
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllForms: FormsPayload;
+  findAllLabTest: LabTestsPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientProblem: PatientProblemsPayload;
@@ -2217,6 +2466,7 @@ export type Query = {
   getFacility: FacilityPayload;
   getFacilitySchedule: SchedulesPayload;
   getForm: FormPayload;
+  getLabTest: LabTestPayload;
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
@@ -2240,6 +2490,11 @@ export type Query = {
 
 export type QueryGetPermissionArgs = {
   getPermission: GetPermission;
+};
+
+
+export type QueryFetchAllPatientsArgs = {
+  patientInput: PatientInput;
 };
 
 
@@ -2280,6 +2535,11 @@ export type QueryFindAllFacilityArgs = {
 
 export type QueryFindAllFormsArgs = {
   formInput: FormInput;
+};
+
+
+export type QueryFindAllLabTestArgs = {
+  labTestInput: LabTestInput;
 };
 
 
@@ -2395,6 +2655,11 @@ export type QueryGetFacilityScheduleArgs = {
 
 export type QueryGetFormArgs = {
   getForm: GetForm;
+};
+
+
+export type QueryGetLabTestArgs = {
+  getLabTest: GetLabTest;
 };
 
 
@@ -2574,6 +2839,14 @@ export type RemoveFacility = {
 };
 
 export type RemoveForm = {
+  id: Scalars['String'];
+};
+
+export type RemoveLabTest = {
+  id?: Maybe<Scalars['String']>;
+};
+
+export type RemoveLabTestObservation = {
   id: Scalars['String'];
 };
 
@@ -2979,6 +3252,15 @@ export enum Speciality {
   Psychiatry = 'PSYCHIATRY'
 }
 
+export type SpecimenTypes = {
+  __typename?: 'SpecimenTypes';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  testSpecimens?: Maybe<Array<TestSpecimens>>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type Staff = {
   __typename?: 'Staff';
   attachments?: Maybe<Array<Attachment>>;
@@ -3015,6 +3297,15 @@ export type StaffPayload = {
   staff?: Maybe<Staff>;
 };
 
+/** The lab's test status assigned */
+export enum Status {
+  Discontinued = 'DISCONTINUED',
+  InProgress = 'IN_PROGRESS',
+  OrderEntered = 'ORDER_ENTERED',
+  ResultReceived = 'RESULT_RECEIVED',
+  ResultReviewedWithPatient = 'RESULT_REVIEWED_WITH_PATIENT'
+}
+
 /** The transaction payment status type assigned */
 export enum Transactionstatus {
   Due = 'DUE',
@@ -3027,6 +3318,19 @@ export enum TempUnitType {
   DegC = 'DEG_C',
   DegF = 'DEG_F'
 }
+
+export type TestSpecimens = {
+  __typename?: 'TestSpecimens';
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  labTest?: Maybe<LabTests>;
+  labTestId?: Maybe<Scalars['String']>;
+  specimenNotes?: Maybe<Scalars['String']>;
+  specimenTypes?: Maybe<SpecimenTypes>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
 
 export type TransactionPayload = {
   __typename?: 'TransactionPayload';
@@ -3286,6 +3590,45 @@ export type UpdateFormInput = {
   type?: Maybe<FormType>;
 };
 
+export type UpdateLabTestInput = {
+  diagnoses?: Maybe<Array<Scalars['String']>>;
+  test?: Maybe<Scalars['String']>;
+  updateLabTestItemInput?: Maybe<UpdateLabTestItemInput>;
+  updateSpecimenItemInput?: Maybe<Array<UpdateSpecimenItemInput>>;
+};
+
+export type UpdateLabTestItemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  patientId?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+};
+
+export type UpdateLabTestObservationInput = {
+  labTestId: Scalars['String'];
+  updateLabTestObservationItemInput?: Maybe<Array<UpdateLabTestObservationItemInput>>;
+};
+
+export type UpdateLabTestObservationItemInput = {
+  abnormalFlag?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  id: Scalars['String'];
+  normalRange?: Maybe<Scalars['String']>;
+  normalRangeUnit?: Maybe<Scalars['String']>;
+  resultUnit?: Maybe<Scalars['String']>;
+  resultValue?: Maybe<Scalars['String']>;
+};
+
+export type UpdateLoincCodeInput = {
+  component?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  loincNum?: Maybe<Scalars['String']>;
+};
+
 export type UpdatePasswordInput = {
   id: Scalars['String'];
   newPassword: Scalars['String'];
@@ -3438,6 +3781,14 @@ export type UpdateServiceInput = {
   price?: Maybe<Scalars['String']>;
   /** Service type */
   serviceType?: Maybe<ServiceType>;
+};
+
+export type UpdateSpecimenItemInput = {
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  specimenNotes?: Maybe<Scalars['String']>;
+  testSpecimen?: Maybe<Scalars['String']>;
 };
 
 export type UpdateStaffInput = {
