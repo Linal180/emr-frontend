@@ -1100,6 +1100,10 @@ export interface UserFormPreviewModalProps {
   imagePreviewHandler: (id: string) => void;
 }
 
+export interface RolesTableProps {
+  customRole?: boolean
+}
+
 export interface CardLayoutProps {
   modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes
   cardId: string;
