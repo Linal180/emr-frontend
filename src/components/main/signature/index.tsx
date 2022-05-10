@@ -34,7 +34,6 @@ const SignatureComponent = (): JSX.Element => {
   let signCanvas = useRef<any>({});
   const [open, setOpen] = useState<boolean>(false)
   const [signatureUrl, setSignatureUrl] = useState<string>('')
-  const [loading, setLoading] = useState<boolean>(false)
   const token = getToken();
   let moduleRoute = "";
 
@@ -79,7 +78,6 @@ const SignatureComponent = (): JSX.Element => {
     formData.append("title", ATTACHMENT_TITLES.Signature);
     file && formData.append("file", file);
 
-    setLoading(true);
     await axios.post(
       signatureId ?
         `${process.env.REACT_APP_API_BASE_URL}/users/image/update`
@@ -92,7 +90,7 @@ const SignatureComponent = (): JSX.Element => {
     ).then(response => {
       const { status } = response;
 
-      if (status === 201) setLoading(false);
+      if (status === 201) return;
       else Alert.error("Something went wrong!");
     }).then(data => { })
       .catch(error => {

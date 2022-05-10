@@ -1,5 +1,5 @@
 // packages block
-import { FC, useEffect, useState } from 'react'
+import { FC, useCallback, useEffect, useState } from 'react'
 import Select from 'react-select';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, FormHelperText, Box } from '@material-ui/core'
@@ -31,13 +31,13 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
     }
   })
 
-  const fetchReactions = async (query: string) => {
+  const fetchReactions = useCallback(async (query: string) => {
     try {
       await findAllReactions({
-        variables: { reactionInput: { reactionName: query, paginationOptions: { limit: 5, page: 1 } } }
+        variables: { reactionInput: { reactionName: query, paginationOptions: { limit: !query ? 5 : 10, page: 1 } } }
       })
     } catch (error) { }
-  }
+  },[findAllReactions])
 
   useEffect(() => {
     if (isEdit) {
@@ -48,6 +48,10 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
       }
     }
   }, [defaultValues, isEdit, setValue])
+
+  useEffect(() => {
+    fetchReactions('')
+  },[fetchReactions])
 
   const updateValues = (newValues: multiOptionType[]) => {
     setValues(newValues as multiOptionType[])
@@ -81,7 +85,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
                 updateValues(newValue as multiOptionType[])
               }}
               onInputChange={(query: string) => {
-                query.length > 2 && fetchReactions(query)
+                (query.length > 2 || query.length === 0) && fetchReactions(query)
               }}
               className={message ? 'selectorClassTwoError' : 'selectorClassTwo'}
             />
