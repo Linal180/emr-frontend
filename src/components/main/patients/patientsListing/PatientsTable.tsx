@@ -165,8 +165,6 @@ const PatientsTable: FC = (): JSX.Element => {
         isPracAdmin ? { practiceId, ...pageInputs } :
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
-          console.log("isFacAdmin",isFacAdmin)
-
     fetchAllPatientsQuery({
       variables: {
         patientInput: {
