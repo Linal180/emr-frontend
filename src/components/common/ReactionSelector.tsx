@@ -83,7 +83,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
               onInputChange={(query: string) => {
                 query.length > 2 && fetchReactions(query)
               }}
-              className="selectorClassTwo"
+              className={message ? 'selectorClassTwoError' : 'selectorClassTwo'}
             />
 
             <FormHelperText>{message}</FormHelperText>

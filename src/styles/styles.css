@@ -463,17 +463,21 @@ body .MuiTabPanel-root {
   border-radius: 4px !important;
 }
 
+.selectorClassTwoError {
+  border: 1px solid red !important;
+  background-color: #F3F4F6 !important;
+  border-radius: 4px !important;
+  max-width: 330px !important;
+}
+
 .selectorClassTwo div {
   background-color: #F3F4F6 !important;
   border: none !important;
   border-radius: 4px !important;
-}
-
-/* .selectorClassTwo div {
-  border: 1px solid #F3F4F6 !important;
-  background-color: #F3F4F6 !important;
   max-width: 330px !important;
-} */
+  max-height: 100px !important;
+  overflow-y: auto !important;
+}
 
 .selectorClassTwo svg, .selectorClassTwo span {
   color: #202020 !important;

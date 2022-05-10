@@ -5,19 +5,21 @@ import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
 import { requiredLabel, renderDoctors } from "../../../utils";
-import {
-  doctorReducer, Action, initialState, State, ActionType
-} from "../../../reducers/doctorReducer";
-// import { AuthContext } from "../../../context";
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { DoctorSelectorProps } from "../../../interfacesTypes";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
+import {
+  doctorReducer, Action, initialState, State, ActionType
+} from "../../../reducers/doctorReducer";
 
-const DoctorSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId: selectedFacilityId }): JSX.Element => {
+const DoctorSelector: FC<DoctorSelectorProps> = ({
+  name, label, disabled, isRequired, addEmpty, facilityId: selectedFacilityId
+}): JSX.Element => {
   const { control } = useFormContext()
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, searchQuery, doctors } = state;
-  const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
+  const updatedOptions = addEmpty ?
+    [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
 
   const [findAllDoctor,] = useFindAllDoctorListLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -48,7 +50,11 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequ
       const doctorsInputs = { ...pageInputs }
 
       doctorsInputs && await findAllDoctor({
-        variables: { doctorInput: { ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId } }
+        variables: {
+          doctorInput: {
+            ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId
+          }
+        }
       })
     } catch (error) { }
   }, [page, findAllDoctor, searchQuery, selectedFacilityId])
@@ -85,6 +91,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequ
                     {isRequired ? requiredLabel(label) : label}
                   </InputLabel>
                 </Box>
+
                 <TextField
                   {...params}
                   variant="outlined"
@@ -92,9 +99,11 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequ
                   className="selectorClass"
                   onChange={(event) => dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: event.target.value })}
                 />
+
                 <FormHelperText>{message}</FormHelperText>
               </FormControl>
             )}
+
             onChange={(_, data) => field.onChange(data)}
           />
         );
