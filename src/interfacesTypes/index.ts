@@ -1,7 +1,7 @@
 // packages block
 import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
 import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
-import { GridSize } from "@material-ui/core";
+import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
@@ -13,7 +13,7 @@ import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as PatientAction } from "../reducers/patientReducer";
+import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
@@ -22,8 +22,8 @@ import {
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
-  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,CreatePatientAllergyInput,
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload
 } from "../generated/graphql";
 import { CARD_LAYOUT_MODAL } from "../constants";
 
@@ -337,6 +337,7 @@ export interface SelectorProps {
   isMultiple?: boolean
   value?: SelectorOption
   options: SelectorOption[]
+  margin?: MuiPropsTypes.Margin
 }
 
 export interface PatientSelectorProps {
@@ -401,6 +402,7 @@ interface IControlLabel {
   placeholder?: string;
   controllerLabel?: string;
   className?: string;
+  margin?: MuiPropsTypes.Margin
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -1249,4 +1251,43 @@ export interface FilterSearchProps {
   searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
   fetch: () => void;
   searchItem: (tab: string, query: string) => void;
+}
+
+export interface VitalListingTableProps {
+  patientVitals: PatientVitalsPayload['patientVitals'];
+  patientStates: PatientState
+}
+
+export interface VitalFormInput {
+  smokingStatus: SelectorOption
+  respiratoryRate: string
+  bloodPressure: string
+  oxygenSaturation: string
+  PatientHeight: string
+  PatientWeight: string
+  PatientBMI: string
+  PainRange: string
+  pulseRate: string
+  patientHeadCircumference: string
+  patientTemperature: string
+}
+
+export interface AddPatientVitalsProps {
+  fetchPatientAllVitals: Function
+}
+
+export interface PatientVitalsListingProps {
+  patientStates: PatientState
+}
+
+export interface VitalsLabelsProps {
+  patientStates: PatientState
+}
+
+
+export interface VitalListComponentProps {
+  title: string;
+  date: string;
+  description: string;
+  isError?: boolean
 }

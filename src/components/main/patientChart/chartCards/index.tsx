@@ -1,20 +1,19 @@
 // packages block
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { Box, Grid } from "@material-ui/core";
 // components block
 import AllergyList from '../allergies/list';
 import PatientCardComponent from "./PatientCardComponent";
 // interfaces, graphql, constants block /styles
-import { PATIENT_CHARTING_DATA, VITALS_TEXT } from "../../../../constants";
+import { VITALS_TEXT } from "../../../../constants";
 import ProblemList from '../problems/list';
 
 const ChartCards: FC = (): JSX.Element => {
-  const [isVitals] = useState<boolean>(true)
 
   return (
     <Grid container spacing={3}>
       <Grid md={8} item>
-        <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} vitalsCard={isVitals} />
+        <PatientCardComponent cardTitle={VITALS_TEXT} hasAdd cardChartingData={[]} vitalsCard={true} />
 
         <Box pb={3} />
 
@@ -22,7 +21,7 @@ const ChartCards: FC = (): JSX.Element => {
           <Grid md={6} item>
             {/* <PatientCardComponent cardTitle={ALLERGIES_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
 
-            <AllergyList  />
+            <AllergyList />
 
             <Box pb={3} />
 
@@ -36,7 +35,7 @@ const ChartCards: FC = (): JSX.Element => {
           <Grid md={6} item>
             {/* <PatientCardComponent cardTitle={PROBLEMS_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
             <ProblemList />
-            
+
             <Box pb={3} />
 
             {/* <PatientCardComponent cardTitle={VACCINE_TEXT} hasAdd cardChartingData={PATIENT_CHARTING_DATA} /> */}
