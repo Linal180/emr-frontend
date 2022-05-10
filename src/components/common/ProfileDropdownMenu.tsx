@@ -11,7 +11,7 @@ import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/sv
 
 import {
   EMAIL, FACILITY, GENERAL, LOCK_SCREEN, LOGOUT_TEXT, PRACTICE, PROFILE_GENERAL_MENU_ITEMS,
-  PROFILE_SECURITY_MENU_ITEMS, SECURITY, SUPER_ADMIN,
+  PROFILE_SECURITY_MENU_ITEMS, SECURITY, SIGNATURE_TEXT, SUPER_ADMIN,
 } from "../../constants";
 
 const ProfileDropdownMenu = (): JSX.Element => {
@@ -122,7 +122,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
               </Box>
 
               <Box mt={1}>
-                {PROFILE_GENERAL_MENU_ITEMS.map(({ link, name }) =>
+                {PROFILE_GENERAL_MENU_ITEMS.map(({ link, name }) => !(isSuper && name === SIGNATURE_TEXT) &&
                   <Link key={`${link}-${name}`} to={link}>
                     <MenuItem onClick={handleClose}>{name}</MenuItem>
                   </Link>

@@ -1222,3 +1222,9 @@ export interface FilterSearchProps {
   fetch: () => void;
   searchItem: (tab: string, query: string) => void;
 }
+
+export interface PatientProfileHeroProps {
+  isChart?: boolean;
+  setPatient: Function;
+  setAttachmentsData: Function;
+}

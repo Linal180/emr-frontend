@@ -471,12 +471,13 @@ body .MuiTabPanel-root {
 }
 
 .selectorClassTwo div {
-  background-color: #F3F4F6 !important;
-  border: none !important;
-  border-radius: 4px !important;
   max-width: 330px !important;
-  max-height: 100px !important;
-  overflow-y: auto !important;
+}
+
+.selectorClassTwo > div:first-of-type {
+  border: 1px solid #F3F4F6 !important;
+  background-color: #F3F4F6 !important;
+  border-radius: 4px !important;
 }
 
 .selectorClassTwo svg, .selectorClassTwo span {
