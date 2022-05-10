@@ -8,6 +8,7 @@ import DateFnsUtils from '@date-io/date-fns';
 import { requiredLabel } from '../../utils';
 import { PickerProps } from "../../interfacesTypes";
 import { CalendarIcon } from '../../assets/svgs';
+import { US_DATE_FORMAT } from '../../constants';
 
 const DatePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
@@ -33,6 +34,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, isRequired }): JSX.Element =
               inputVariant="outlined"
               KeyboardButtonProps={{ 'aria-label': 'change date', }}
               open={openPicker}
+              placeholder={US_DATE_FORMAT}
               value={field.value}
               onClick={() => setOpenPicker(!openPicker)}
               onClose={() => setOpenPicker(!openPicker)}

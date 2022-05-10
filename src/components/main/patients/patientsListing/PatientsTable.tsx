@@ -25,12 +25,12 @@ import {
   PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER, SEARCH
 } from "../../../../constants";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
-import InputController from "../../../../controller";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import DoctorSelector from "../../../common/Selector/DoctorSelector";
+import DatePicker from "../../../common/DatePicker";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -44,8 +44,8 @@ const PatientsTable: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
-  const { handleSubmit, watch, setValue} = methods;
-  const {location : {id : selectedLocationId} = {}, dob, dos} =watch()
+  const { handleSubmit, watch } = methods;
+  const { location: { id: selectedLocationId } = {} } = watch()
 
   const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
@@ -101,7 +101,7 @@ const PatientsTable: FC = (): JSX.Element => {
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
       patientsInputs && await findAllPatient({
-        variables: { patientInput: { ...patientsInputs, searchString: searchQuery} }
+        variables: { patientInput: { ...patientsInputs, searchString: searchQuery } }
       })
     } catch (error) { }
   }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllPatient, searchQuery])
@@ -161,82 +161,67 @@ const PatientsTable: FC = (): JSX.Element => {
     const { id: selectedProvider } = provider || {};
 
     const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const patientsInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } :
-          isFacAdmin ? { facilityId, ...pageInputs } : undefined
+    const patientsInputs = isSuper ? { ...pageInputs } :
+      isPracAdmin ? { practiceId, ...pageInputs } :
+        isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
     fetchAllPatientsQuery({
       variables: {
         patientInput: {
           ...patientsInputs,
-          dob:getFormatDateString(dob,'MM-DD-YYYY'),
-          doctorId:selectedProvider,
-          appointmentDate:getFormatDateString(dos),
-         ...( !isFacAdmin ? {facilityId: selectedLocation}:{}),
+          dob: getFormatDateString(dob, 'MM-DD-YYYY'),
+          doctorId: selectedProvider,
+          appointmentDate: getFormatDateString(dos),
+          ...(!isFacAdmin ? { facilityId: selectedLocation } : {}),
           ...pageInputs
         }
       }
     })
   }
 
-  const handleClearField= (fieldName:any) =>{
-    setValue(fieldName,'')
-  }
-
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box display='flex' alignItems='center' mb={2} py={2}>
-          <Box mr={2} maxWidth={450}>
+        <Grid container spacing={3}>
+          <Grid item md={4} sm={12} xs={12}>
             <Search search={search} info tooltipData={PatientSearchingTooltipData} />
-          </Box>
-
-          <Box
-            onClick={() => setOpen(!open)} className='pointer-cursor'
-            border={`1px solid ${GREY_FIVE}`} borderRadius={4}
-            color={BLACK_TWO} p={1.25} display='flex'
-          >
-            <Typography variant="body1">{ADVANCED_SEARCH}</Typography>
-            {open ? <ExpandLess /> : <ExpandMore />}
-          </Box>
-        </Box>
+          </Grid>
+          <Grid item md={2} sm={12} xs={12}>
+            <Box
+              onClick={() => setOpen(!open)} className='pointer-cursor'
+              border={`1px solid ${GREY_FIVE}`} borderRadius={4}
+              color={BLACK_TWO} p={1.35} display='flex' width={186}
+            >
+              <Typography variant="body1">{ADVANCED_SEARCH}</Typography>
+              {open ? <ExpandLess /> : <ExpandMore />}
+            </Box>
+          </Grid>
+        </Grid>
 
         <Collapse in={open} mountOnEnter unmountOnExit>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Box p={3} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
+              <Box p={3} mt={2} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
                 <Grid container spacing={3}>
-                  <Grid item md={(isSuper || isPracAdmin) ? 2 : 4} sm={6} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="dob"
-                      controllerLabel={DOB}
-                      clearable={!!dob}
-                      handleClearField={handleClearField}
-                    />
+                  <Grid item md={3} sm={6} xs={12}>
+                    <DatePicker isRequired name="dob" label={DOB} />
                   </Grid>
 
-                  <Grid item md={(isSuper || isPracAdmin) ? 2 : 4} sm={6} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="dos"
-                      controllerLabel={DATE_OF_SERVICE}
-                      clearable={!!dos}
-                      handleClearField={handleClearField}
-                    />
+                  <Grid item md={3} sm={6} xs={12}>
+                    <DatePicker isRequired name="dos" label={DATE_OF_SERVICE} />
                   </Grid>
 
-                  {(isSuper || isPracAdmin) &&  
-                    <Grid item md={5} sm={12} xs={12}>
+                  {(isSuper || isPracAdmin) &&
+                    <Grid item md={3} sm={12} xs={12}>
                       <FacilitySelector
-                          label={LOCATION}
-                          name="location"
-                          addEmpty
-                      />  
-                    </Grid> 
-                  } 
+                        label={LOCATION}
+                        name="location"
+                        addEmpty
+                      />
+                    </Grid>
+                  }
 
-                  <Grid item md={(isSuper || isPracAdmin) ? 3 : 4} sm={12} xs={12}>
+                  <Grid item md={3} sm={12} xs={12}>
                     <DoctorSelector
                       label={PROVIDER}
                       name="provider"
@@ -244,9 +229,9 @@ const PatientsTable: FC = (): JSX.Element => {
                       addEmpty
                     />
                   </Grid>
-                  {!(isSuper || isPracAdmin) && <Grid item md={5} sm={12} xs={12} /> }
+                  {!(isSuper || isPracAdmin) && <Grid item md={5} sm={12} xs={12} />}
 
-                  <Grid item md={(isSuper || isPracAdmin) ? 11 : 6}/>
+                  <Grid item md={(isSuper || isPracAdmin) ? 11 : 6} />
                   <Box px={1}>
                     <Button variant="contained" color="secondary" type="submit">{SEARCH}</Button>
                   </Box>
