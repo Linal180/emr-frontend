@@ -1368,6 +1368,15 @@ export type LabTestPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The lab's test status assigned */
+export enum LabTestStatus {
+  Discontinued = 'DISCONTINUED',
+  InProgress = 'IN_PROGRESS',
+  OrderEntered = 'ORDER_ENTERED',
+  ResultReceived = 'RESULT_RECEIVED',
+  ResultReviewedWithPatient = 'RESULT_REVIEWED_WITH_PATIENT'
+}
+
 export type LabTests = {
   __typename?: 'LabTests';
   appointment?: Maybe<Appointment>;
@@ -1375,9 +1384,9 @@ export type LabTests = {
   createdAt?: Maybe<Scalars['String']>;
   diagnoses?: Maybe<Array<Maybe<IcdCodes>>>;
   id: Scalars['String'];
+  labTestStatus: LabTestStatus;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
-  status: Status;
   test?: Maybe<LoincCodes>;
   testDate?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
@@ -3297,15 +3306,6 @@ export type StaffPayload = {
   response?: Maybe<ResponsePayload>;
   staff?: Maybe<Staff>;
 };
-
-/** The lab's test status assigned */
-export enum Status {
-  Discontinued = 'DISCONTINUED',
-  InProgress = 'IN_PROGRESS',
-  OrderEntered = 'ORDER_ENTERED',
-  ResultReceived = 'RESULT_RECEIVED',
-  ResultReviewedWithPatient = 'RESULT_REVIEWED_WITH_PATIENT'
-}
 
 /** The transaction payment status type assigned */
 export enum Transactionstatus {
