@@ -9,7 +9,7 @@ import {
   practiceReducer, Action, initialState, State, ActionType
 } from "../../../reducers/practiceReducer";
 import { AuthContext } from "../../../context";
-import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
+import { DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
 import { FacilitySelectorProps } from "../../../interfacesTypes";
 import { PracticesPayload, useFindAllPracticeListLazyQuery } from "../../../generated/graphql";
 
@@ -47,7 +47,7 @@ const PracticeSelector: FC<FacilitySelectorProps> = ({ name, label, disabled, is
 
   const fetchAllPractices = useCallback(async () => {
     try {
-      const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
+      const pageInputs = { paginationOptions: { page, limit: DROPDOWN_PAGE_LIMIT } }
       const practicesInputs =
         isSuper ? { ...pageInputs } : undefined
 
