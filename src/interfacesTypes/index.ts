@@ -1225,6 +1225,12 @@ export interface FilterSearchProps {
   searchItem: (tab: string, query: string) => void;
 }
 
+export interface PatientProfileHeroProps {
+  isChart?: boolean;
+  setPatient: Function;
+  setAttachmentsData: Function;
+}
+
 export interface VitalListingTableProps {
   patientVitals: PatientVitalsPayload['patientVitals'];
   patientStates: PatientState
