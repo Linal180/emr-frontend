@@ -1212,3 +1212,13 @@ export interface PatientSearchInputProps {
   location: SelectorOption;
   provider: SelectorOption;
 }
+
+export interface FilterSearchProps {
+  tabs?: string[];
+  loading: boolean;
+  dispatcher: Dispatch<ChartAction>;
+  modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes;
+  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
+  fetch: () => void;
+  searchItem: (tab: string, query: string) => void;
+}

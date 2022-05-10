@@ -766,6 +766,7 @@ export const COPAY_AMOUNTS = "Copay Amounts";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
+export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
@@ -2287,6 +2288,7 @@ export enum ATTACHMENT_TITLES {
   InsuranceCard1 = "Insurance Card 1",
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
+  Signature = "Signature",
 }
 
 export enum MODULE_TYPES {

@@ -1,9 +1,12 @@
+// packages block
 import { FC } from "react";
 import { Box, Card, CardContent, CardHeader, IconButton, Menu } from "@material-ui/core";
-import { AddChartingIcon } from "../../../../assets/svgs";
-import { usePatientChartingStyles } from "../../../../styles/patientCharting";
+// components block
 import FilterSearch from "../common/FilterSearch";
+// Interfaces, and styles block
+import { AddChartingIcon } from "../../../../assets/svgs";
 import { CardLayoutProps } from "../../../../interfacesTypes";
+import { usePatientChartingStyles } from "../../../../styles/patientCharting";
 
 const CardLayout: FC<CardLayoutProps> = ({
   hasAdd, disableAddIcon, onClickAddIcon, openSearch, cardId, isMenuOpen, handleMenuClose, cardTitle,
