@@ -1,5 +1,5 @@
 // packages block
-import { Table, TableBody, TableCell, TableRow, TableHead, Typography } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableRow, TableHead, Typography, TableContainer } from '@material-ui/core';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { HeadCircumferenceType, UnitType, WeightType, TempUnitType } from '../../../../../generated/graphql';
 import { VitalListingTableProps } from '../../../../../interfacesTypes';
@@ -84,98 +84,100 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
   }
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          {patientVitals?.map((vital) => {
-            const { createdAt } = vital || {}
-            return (renderTh(getFormattedDateTime(createdAt || ''), 'left', false, '', true))
-          })}
-        </TableRow>
-      </TableHead>
-      {!!patientVitals && patientVitals.length > 0 && (
-        <TableBody>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, pulseRate } = item || {};
-              return (<TableCell key={`${id}-pulseRate-${i}-${pulseRate}`} scope="row">
-                <Typography>
-                  {pulseRate || '----'}
-                </Typography>
-              </TableCell>)
+    <TableContainer>
+      <Table>
+        <TableHead>
+          <TableRow>
+            {patientVitals?.map((vital) => {
+              const { createdAt } = vital || {}
+              return (renderTh(getFormattedDateTime(createdAt || ''), 'left', false, '', true))
             })}
           </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, respiratoryRate } = item || {};
-              return (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row">{respiratoryRate || '----'}</TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, bloodPressure } = item || {};
-              return (<TableCell key={`${id}-bloodPressure-${i}-${bloodPressure}`} scope="row">{bloodPressure || '----'}</TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, oxygenSaturation } = item || {};
-              return (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row">{oxygenSaturation || '----'}</TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, PatientHeight } = item || {};
-              return (<TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row">
-                {getHeightValue(PatientHeight || '')}
-              </TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, PatientWeight } = item || {};
-              return (<TableCell key={`${id}-PatientWeight-${i}-${PatientWeight}`} scope="row">
-                {getWeightValue(PatientWeight || '')}
-              </TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, PatientBMI } = item || {};
-              return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">{PatientBMI || '----'}</TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, PainRange } = item || {};
-              return (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row">{PainRange || '----'}</TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, smokingStatus } = item || {};
-              return (<TableCell key={`${id}-smokingStatus-${i}-${smokingStatus}`} scope="row">
-                {formatValue(smokingStatus || "") || '----'}</TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, patientHeadCircumference } = item || {};
-              return (<TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row">
-                <Typography>
-                  {getHeadValue(patientHeadCircumference || '')}
-                </Typography>
-              </TableCell>)
-            })}
-          </TableRow>
-          <TableRow >
-            {patientVitals?.map((item, i) => {
-              const { id, patientTemperature } = item || {};
-              return (<TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row">{getFeverValue(patientTemperature || '')}</TableCell>)
-            })}
-          </TableRow>
-        </TableBody>
-      )}
-    </Table>
+        </TableHead>
+        {!!patientVitals && patientVitals.length > 0 && (
+          <TableBody>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, pulseRate } = item || {};
+                return (<TableCell key={`${id}-pulseRate-${i}-${pulseRate}`} scope="row">
+                  <Typography>
+                    {pulseRate || '----'}
+                  </Typography>
+                </TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, respiratoryRate } = item || {};
+                return (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row">{respiratoryRate || '----'}</TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, bloodPressure } = item || {};
+                return (<TableCell key={`${id}-bloodPressure-${i}-${bloodPressure}`} scope="row">{bloodPressure || '----'}</TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, oxygenSaturation } = item || {};
+                return (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row">{oxygenSaturation || '----'}</TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, PatientHeight } = item || {};
+                return (<TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row">
+                  {getHeightValue(PatientHeight || '')}
+                </TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, PatientWeight } = item || {};
+                return (<TableCell key={`${id}-PatientWeight-${i}-${PatientWeight}`} scope="row">
+                  {getWeightValue(PatientWeight || '')}
+                </TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, PatientBMI } = item || {};
+                return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">{PatientBMI || '----'}</TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, PainRange } = item || {};
+                return (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row">{PainRange || '----'}</TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, smokingStatus } = item || {};
+                return (<TableCell key={`${id}-smokingStatus-${i}-${smokingStatus}`} scope="row">
+                  {formatValue(smokingStatus || "") || '----'}</TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, patientHeadCircumference } = item || {};
+                return (<TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row">
+                  <Typography>
+                    {getHeadValue(patientHeadCircumference || '')}
+                  </Typography>
+                </TableCell>)
+              })}
+            </TableRow>
+            <TableRow >
+              {patientVitals?.map((item, i) => {
+                const { id, patientTemperature } = item || {};
+                return (<TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row">{getFeverValue(patientTemperature || '')}</TableCell>)
+              })}
+            </TableRow>
+          </TableBody>
+        )}
+      </Table>
+    </TableContainer>
   )
 }

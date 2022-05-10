@@ -122,6 +122,7 @@ export enum DAYS {
   Sunday = "Sunday",
 }
 export const KG_TEXT = "KG"
+export const LBS_TEXT = "LBS"
 export const LB_TEXT = "LB"
 export const OZ_TEXT = "OZ"
 export const CM_TEXT = "CM"
@@ -137,7 +138,7 @@ export const BMI_TEXT = "BMI"
 export const PAIN_TEXT = "Pain"
 export const SMOKING_STATUS_TEXT = "Smoking Status"
 export const HEAD_CIRCUMFERENCE = "Head Circumference"
-export const FEVER_TEXT = "Fever"
+export const FEVER_TEXT = "Temperature"
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";

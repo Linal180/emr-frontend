@@ -14,7 +14,7 @@ import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
 import { PatientVitalPayload, useFindAllPatientVitalsLazyQuery } from "../../../../generated/graphql";
-import { BLOOD_PRESSURE_TEXT, BMI_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, IN_TEXT, LIST_PAGE_LIMIT, NO_RECORDS, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PULSE_TEXT, RESPIRATORY_RATE_TEXT, SMOKING_STATUS_TEXT, WEIGHT_TEXT } from "../../../../constants";
+import { BLOOD_PRESSURE_TEXT, BMI_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, IN_TEXT, LBS_TEXT, LIST_PAGE_LIMIT, NO_RECORDS, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PULSE_TEXT, RESPIRATORY_RATE_TEXT, SMOKING_STATUS_TEXT, WEIGHT_TEXT } from "../../../../constants";
 import { VitalListComponent } from "../common/VitalList";
 import { formatValue, getDate } from "../../../../utils";
 import ViewDataLoader from "../../../common/ViewDataLoader";
@@ -127,72 +127,80 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${PULSE_TEXT} (bpm)`}
-                      description={pulseRate || '----'}
+                      description={pulseRate || '---'}
+                      isError={!!pulseRate ? (parseInt(pulseRate) < 60 || parseInt(pulseRate) > 100) : false}
                       date={vitalDate} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${BMI_TEXT} (kg/m2)`}
-                      description={PatientBMI || '----'}
+                      description={PatientBMI || '---'}
+                      isError={!!PatientBMI ? (parseFloat(PatientBMI) < 18.5 || parseFloat(PatientBMI) > 25) : false}
                       date={vitalDate} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${RESPIRATORY_RATE_TEXT} (rpm)`}
-                      description={respiratoryRate || '----'}
+                      description={respiratoryRate || '---'}
+                      isError={!!respiratoryRate ? (parseInt(respiratoryRate) < 12 || parseInt(respiratoryRate) > 16) : false}
                       date={vitalDate} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${PAIN_TEXT} (1-10)`}
-                      description={PainRange || '----'}
+                      description={PainRange || '---'}
+                      isError={!!PainRange ? (parseInt(PainRange) > 3) : false}
                       date={vitalDate} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${BLOOD_PRESSURE_TEXT} (mmHg)`}
-                      description={bloodPressure || '----'}
+                      description={bloodPressure || '---'}
+                      isError={!!PainRange ? (parseInt(PainRange) > 3) : false}
                       date={vitalDate} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={SMOKING_STATUS_TEXT}
-                      description={(smokingStatus && formatValue(smokingStatus)) || '----'}
+                      description={(smokingStatus && formatValue(smokingStatus)) || '---'}
                       date={vitalDate} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${OXYGEN_SATURATION_TEXT} (%)`}
-                      description={oxygenSaturation || '----'}
+                      description={oxygenSaturation || '---'}
+                      isError={!!oxygenSaturation ? (parseInt(oxygenSaturation) < 95) : false}
                       date={vitalDate} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${HEAD_CIRCUMFERENCE} (${IN_TEXT})`}
-                      description={patientHeadCircumference || '----'}
+                      description={patientHeadCircumference || '---'}
+                      isError={!!patientHeadCircumference ? (parseFloat(patientHeadCircumference) < 23.62 || parseFloat(patientHeadCircumference) > 24.8) : false}
                       date={vitalDate} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${HEIGHT_TEXT} (${IN_TEXT})`}
-                      description={PatientHeight || '----'}
+                      description={PatientHeight || '---'}
                       date={vitalDate} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${FEVER_TEXT} (${(temperatureUnitType && formatValue(temperatureUnitType))})`}
-                      description={patientTemperature || '----'}
+                      description={patientTemperature || '---'}
+                      isError={!!patientTemperature ? (parseFloat(patientTemperature) < 97 || parseFloat(patientTemperature) > 99) : false}
                       date={vitalDate} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
-                      title={`${WEIGHT_TEXT} (lbs)`}
-                      description={PatientWeight || '----'}
+                      title={`${WEIGHT_TEXT} (${LBS_TEXT})`}
+                      description={PatientWeight || '---'}
                       date={vitalDate} />
                   </Grid>
                 </Grid>}

@@ -1261,4 +1261,5 @@ export interface VitalListComponentProps {
   title: string;
   date: string;
   description: string;
+  isError?: boolean
 }

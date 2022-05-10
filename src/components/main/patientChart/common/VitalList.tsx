@@ -3,7 +3,7 @@ import { VitalListComponentProps } from "../../../../interfacesTypes"
 import { usePatientChartingStyles } from "../../../../styles/patientCharting"
 
 
-export const VitalListComponent = ({ title, date, description }: VitalListComponentProps) => {
+export const VitalListComponent = ({ title, date, description, isError }: VitalListComponentProps) => {
   const classes = usePatientChartingStyles()
   return (
     <Box pb={2}>
@@ -13,7 +13,9 @@ export const VitalListComponent = ({ title, date, description }: VitalListCompon
       </Box>
 
       <Box>
-        <Typography className={classes.cardContentDescription}>{description}</Typography>
+        <Typography className={isError ? classes.cardContentDescriptionError : classes.cardContentDescription}>
+          {description}
+        </Typography>
       </Box>
     </Box>
   )

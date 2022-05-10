@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_ONE, GREY_SEVEN } from "../theme";
+import { BLACK_ONE, GREY_SEVEN, RED } from "../theme";
 
 export const usePatientChartingStyles = makeStyles(() =>
   createStyles({
@@ -22,12 +22,18 @@ export const usePatientChartingStyles = makeStyles(() =>
       color: GREY_SEVEN
     },
 
+    cardContentDescriptionError: {
+      fontWeight: 500,
+      fontSize: 14,
+      color: RED
+    },
+
     dropdown: {
       "& .MuiMenu-paper": {
         padding: 20,
 
         "& .MuiCardContent-root": {
-            padding:0,
+          padding: 0,
         }
 
       },
