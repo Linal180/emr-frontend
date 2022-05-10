@@ -493,6 +493,7 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 8;
+export const DROPDOWN_PAGE_LIMIT = 10;
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ROLES = "Roles";

@@ -1,20 +1,27 @@
 // packages block
-import { FC, useReducer, Reducer, useCallback, useEffect } from "react";
+import { FC, useReducer, Reducer, useCallback, useEffect, useContext } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
-import { requiredLabel, renderDoctors } from "../../../utils";
+import { requiredLabel, renderDoctors, isSuperAdmin, isPracticeAdmin } from "../../../utils";
 import {
   doctorReducer, Action, initialState, State, ActionType
 } from "../../../reducers/doctorReducer";
-// import { AuthContext } from "../../../context";
+import { AuthContext } from "../../../context";
 import { EMPTY_OPTION, PAGE_LIMIT } from "../../../constants";
 import { DoctorSelectorProps } from "../../../interfacesTypes";
 import { AllDoctorPayload, useFindAllDoctorListLazyQuery } from "../../../generated/graphql";
 
 const DoctorSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequired, addEmpty, facilityId: selectedFacilityId }): JSX.Element => {
   const { control } = useFormContext()
+  const { user } = useContext(AuthContext);
+  const { facility, roles } = user || {}
+  const {id: facilityId} = facility || {}
+  const isSuper = isSuperAdmin(roles);
+  const isPracAdmin = isPracticeAdmin(roles);
+  const isSuperAndPracAdmin = isSuper || isPracAdmin
+
   const [state, dispatch,] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const { page, searchQuery, doctors } = state;
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...renderDoctors([...(doctors ?? [])])] : [...renderDoctors([...(doctors ?? [])])]
@@ -47,11 +54,13 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({ name, label, disabled, isRequ
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const doctorsInputs = { ...pageInputs }
 
-      doctorsInputs && await findAllDoctor({
-        variables: { doctorInput: { ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId } }
+      doctorsInputs && isSuperAndPracAdmin ? selectedFacilityId && await findAllDoctor({
+        variables: { doctorInput: { ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId ?? facilityId } }
+      }):await findAllDoctor({
+        variables: { doctorInput: { ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId ?? facilityId } }
       })
     } catch (error) { }
-  }, [page, findAllDoctor, searchQuery, selectedFacilityId])
+  }, [page, isSuperAndPracAdmin, selectedFacilityId, findAllDoctor, searchQuery, facilityId])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {
