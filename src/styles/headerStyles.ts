@@ -158,5 +158,9 @@ export const useHeaderStyles = makeStyles((theme) => ({
       borderRadius: 5,
       padding: 20
     }
+  },
+
+  iconPadding: {
+    paddingRight: 10
   }
 }));

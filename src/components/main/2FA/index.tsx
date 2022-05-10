@@ -131,7 +131,7 @@ const TwoFAComponent = (): JSX.Element => {
               {!phone &&
                 <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between' px={2} py={1} mb={1} borderRadius={5}>
                   <Box display="flex" alignItems='center'>
-                    <IconButton size="small" color='inherit' style={{paddingRight: 10}}>
+                    <IconButton size="small" color='inherit' className={classes.iconPadding}>
                       <InfoSearchIcon />
                     </IconButton>
                     <Typography variant='h4'>
