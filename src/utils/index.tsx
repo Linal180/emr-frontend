@@ -75,9 +75,9 @@ export const renderItem = (
   </>
 );
 
-export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string) => (
+export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string, noWrap?: boolean) => (
   <TableCell component="th" align={align} className={classes}>
-    <Typography component="h5" variant="h5">
+    <Typography component="h5" variant="h5" noWrap={noWrap}>
       {isDangerous ?
         <Box dangerouslySetInnerHTML={{ __html: text }}>
         </Box> : text

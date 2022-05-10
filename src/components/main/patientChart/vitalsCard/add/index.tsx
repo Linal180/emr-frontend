@@ -1,5 +1,5 @@
 // packages block
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -12,18 +12,20 @@ import { EMPTY_OPTION, MAPPED_SMOKING_STATUS, SAVE_TEXT, VITAL_ERROR_MSG } from 
 import {
   HeadCircumferenceType, SmokingStatus, TempUnitType, UnitType, useAddPatientVitalMutation, WeightType
 } from '../../../../../generated/graphql';
-import { ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
+import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
 import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
-import { getCurrentDate, renderTh } from '../../../../../utils'
+import { getBMI, getCurrentDate, renderTh } from '../../../../../utils'
 import { patientVitalSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
 
-export const AddVitals = () => {
+export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
 
   const classes = usePatientVitalFormStyles()
   const { id: patientId } = useParams<ParamsType>()
   const methods = useForm<VitalFormInput>({ mode: "all", resolver: yupResolver(patientVitalSchema) });
-  const { handleSubmit, reset } = methods;
+  const { handleSubmit, reset, watch, setValue } = methods;
+  const { PatientHeight, PatientWeight } = watch()
+
   const [loading, setLoading] = useState<boolean>(false)
 
   const [addPatientVital] = useAddPatientVitalMutation({
@@ -35,6 +37,7 @@ export const AddVitals = () => {
         if (status === 200 && id) {
           message && Alert.success(message)
           reset()
+          fetchPatientAllVitals()
         }
       }
     },
@@ -57,8 +60,8 @@ export const AddVitals = () => {
           createVitalInput: {
             patientId, weightUnit: WeightType.Kg, unitType: UnitType.Inch, temperatureUnitType: TempUnitType.DegF,
             headCircumference: HeadCircumferenceType.Inch, respiratoryRate, bloodPressure, oxygenSaturation,
-            PatientHeight, PatientWeight, PatientBMI, PainRange, smokingStatus: smokingStatusLabel as SmokingStatus, pulseRate, patientHeadCircumference,
-            patientTemperature, vitalCreationDate: new Date().toUTCString()
+            PatientHeight, PatientWeight, PatientBMI, PainRange, smokingStatus: smokingStatusLabel as SmokingStatus,
+            pulseRate, patientHeadCircumference, patientTemperature, vitalCreationDate: new Date().toUTCString()
           }
         }
       })
@@ -68,6 +71,15 @@ export const AddVitals = () => {
     }
 
   }
+
+  const setPatientBMI = useCallback(() => {
+    const bmi = getBMI(parseFloat(PatientWeight), parseFloat(PatientHeight))
+    bmi && setValue('PatientBMI', bmi?.toString())
+  }, [PatientWeight, PatientHeight, setValue])
+
+  useMemo(() => {
+    PatientWeight && PatientHeight && setPatientBMI()
+  }, [PatientWeight, PatientHeight, setPatientBMI])
 
   return (
     <FormProvider {...methods}>
@@ -107,6 +119,7 @@ export const AddVitals = () => {
                   fieldType="text"
                   controllerName="bloodPressure"
                   controllerLabel={''}
+                  placeholder={'e.g 80/120'}
                   margin={'none'}
                 />
               </TableCell>

@@ -9,11 +9,11 @@ import { VitalListingTable } from './lists'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { LIST_PAGE_LIMIT } from '../../../../../constants';
 import { PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from '../../../../../generated/graphql';
-import { ParamsType } from '../../../../../interfacesTypes';
+import { ParamsType, PatientVitalsListingProps } from '../../../../../interfacesTypes';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 import { usePatientVitalListingStyles } from '../../../../../styles/patientVitalsStyles';
 
-const PatientVitalsListing = () => {
+const PatientVitalsListing = ({ patientStates }: PatientVitalsListingProps) => {
   const [patientVitals, setPatientVitals] = useState<PatientVitalsPayload['patientVitals']>([]);
 
   const classes = usePatientVitalListingStyles()
@@ -72,14 +72,14 @@ const PatientVitalsListing = () => {
         : <Box mb={2}>
           <Grid container>
             <Grid item xs={2}>
-              <VitalsLabels />
+              <VitalsLabels patientStates={patientStates} />
             </Grid>
             <Grid item xs={2}>
-              <AddVitals />
+              <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} />
             </Grid>
             <Grid item xs={8}>
               <Box className={classes.listingTable}>
-                <VitalListingTable patientVitals={patientVitals} />
+                <VitalListingTable patientVitals={patientVitals} patientStates={patientStates} />
               </Box>
             </Grid>
           </Grid>

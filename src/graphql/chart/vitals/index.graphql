@@ -65,6 +65,7 @@ query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
       vitalCreationDate
       patientId
       appointmentId
+      pulseRate
       createdAt
       updatedAt
     }

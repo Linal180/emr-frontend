@@ -13,7 +13,7 @@ import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as PatientAction } from "../reducers/patientReducer";
+import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
@@ -1210,7 +1210,8 @@ export interface PatientSearchInputProps {
 }
 
 export interface VitalListingTableProps {
-  patientVitals: PatientVitalsPayload['patientVitals']
+  patientVitals: PatientVitalsPayload['patientVitals'];
+  patientStates: PatientState
 }
 
 export interface VitalFormInput {
@@ -1225,4 +1226,16 @@ export interface VitalFormInput {
   pulseRate: string
   patientHeadCircumference: string
   patientTemperature: string
+}
+
+export interface AddPatientVitalsProps {
+  fetchPatientAllVitals: Function
+}
+
+export interface PatientVitalsListingProps {
+  patientStates: PatientState
+}
+
+export interface VitalsLabelsProps {
+  patientStates: PatientState
 }

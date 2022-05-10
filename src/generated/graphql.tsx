@@ -4178,7 +4178,7 @@ export type FindAllPatientVitalsQueryVariables = Exact<{
 }>;
 
 
-export type FindAllPatientVitalsQuery = { __typename?: 'Query', findAllPatientVitals: { __typename?: 'PatientVitalsPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, bloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientVitalsQuery = { __typename?: 'Query', findAllPatientVitals: { __typename?: 'PatientVitalsPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, bloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, pulseRate?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined> | null | undefined } };
 
 export type AddPatientVitalMutationVariables = Exact<{
   createVitalInput: CreateVitalInput;
@@ -6181,6 +6181,7 @@ export const FindAllPatientVitalsDocument = gql`
       vitalCreationDate
       patientId
       appointmentId
+      pulseRate
       createdAt
       updatedAt
     }

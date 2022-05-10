@@ -786,7 +786,7 @@ export const patientVitalSchema = yup.object({
     if (!value) return true
     else {
       if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length > 0 && value.length < 4) return true
+      if (value && value.length > 0 && value.length < 6) return true
       return false
     }
   }),

@@ -18,7 +18,7 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
-  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
+  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus, UnitType, WeightType, HeadCircumferenceType, TempUnitType,
 } from "../generated/graphql";
 
 // regex
@@ -121,6 +121,11 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const KG_TEXT = "KG"
+export const LB_TEXT = "LB"
+export const OZ_TEXT = "OZ"
+export const CM_TEXT = "CM"
+export const IN_TEXT = "IN"
 export const PULSE_TEXT = "Pulse"
 export const VITAL_ERROR_MSG = "Patient Vital is not added."
 export const RESPIRATORY_RATE_TEXT = "Respiratory Rate"
@@ -3136,3 +3141,24 @@ export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
   { id: SmokingStatus.NeverSmocked, name: formatValue(SmokingStatus.NeverSmocked) },
   { id: SmokingStatus.UnknownIfEverSmoked, name: formatValue(SmokingStatus.UnknownIfEverSmoked) },
 ];
+
+export const PATIENT_HEIGHT_UNITS = [
+  { id: UnitType.Inch, name: IN_TEXT },
+  { id: UnitType.Centimeter, name: CM_TEXT },
+]
+
+export const PATIENT_WEIGHT_UNITS = [
+  { id: WeightType.Kg, name: KG_TEXT },
+  { id: WeightType.Pound, name: LB_TEXT },
+  { id: WeightType.PoundOunce, name: OZ_TEXT },
+]
+
+export const HEAD_CIRCUMFERENCE_UNITS = [
+  { id: HeadCircumferenceType.Inch, name: IN_TEXT },
+  { id: HeadCircumferenceType.Centimeter, name: CM_TEXT },
+]
+
+export const FEVER_UNITS = [
+  { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
+  { id: TempUnitType.DegC, name: formatValue(TempUnitType.DegC) },
+]
