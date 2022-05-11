@@ -1,8 +1,8 @@
 // packages block
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Button, Grid, MenuItem, Typography } from '@material-ui/core';
+import { Box, Button, Grid, IconButton, MenuItem, Typography } from '@material-ui/core';
 // component block
 import Selector from '../../common/Selector';
 import CardComponent from '../../common/CardComponent';
@@ -12,14 +12,16 @@ import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   AUTO_LOGOUT, AUTO_LOGOUT_DESCRIPTION, EMPTY_OPTION, GENERAL, PROFILE_GENERAL_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, MAPPED_AUTO_LOGOUT,
+  USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, MAPPED_AUTO_LOGOUT, AUTO_LOGOUT_ERROR,
 } from '../../../constants';
 import { User, useUpdateAutoLogoutTimeMutation } from '../../../generated/graphql'
 import { AuthContext } from '../../../context';
 import Alert from '../../common/Alert';
 import { AutoLogoutInputTypes } from '../../../interfacesTypes';
+import { Edit } from '@material-ui/icons';
 
 const AutoLogoutComponent = (): JSX.Element => {
+  const [isEdit, setIsEdit] = useState<boolean>(false)
   const classes = useHeaderStyles();
   const methods = useForm<AutoLogoutInputTypes>({ mode: "all" });
   const { user: authUser, setUser } = useContext(AuthContext);
@@ -31,15 +33,17 @@ const AutoLogoutComponent = (): JSX.Element => {
       const { response, user } = updateAutoLogoutTime || {}
 
       if (response) {
-        const { status } = response || {}
+        const { status, message } = response || {}
         const { id: userId, autoLogoutTime } = user || {}
         if (status && status === 200 && userId) {
+          message && Alert.success(message)
+          setIsEdit(!isEdit)
           autoLogoutTime && setUser({ ...authUser as User, autoLogoutTime })
         }
       }
     },
     onError: () => {
-      Alert.error('Auto logout time is not updated')
+      Alert.error(AUTO_LOGOUT_ERROR)
     }
   })
 
@@ -48,9 +52,7 @@ const AutoLogoutComponent = (): JSX.Element => {
     const { id: autoId } = autoLogoutTime || {}
     try {
       id && await updateLogoutTime({ variables: { userInfoInput: { autoLogoutTime: autoId, id } } })
-    } catch (error) {
-
-    }
+    } catch (error) { }
   }
 
   const setAutoLogoutTime = useCallback(() => {
@@ -113,15 +115,35 @@ const AutoLogoutComponent = (): JSX.Element => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <Grid container spacing={3}>
                     <Grid item md={10} sm={12} xs={12}>
-                      <Selector
-                        isRequired
-                        name="autoLogoutTime"
-                        label={AUTO_LOGOUT_DESCRIPTION}
-                        value={EMPTY_OPTION}
-                        options={MAPPED_AUTO_LOGOUT}
-                      />
+                      {isEdit ?
+                        <Box>
+                          <Selector
+                            isRequired
+                            name="autoLogoutTime"
+                            label={AUTO_LOGOUT_DESCRIPTION}
+                            value={EMPTY_OPTION}
+                            options={MAPPED_AUTO_LOGOUT}
+                          />
 
-                      <Button type="submit" variant="contained" color='primary'>{SAVE_TEXT}</Button>
+                          <Button type="submit" variant="contained" color='primary'>{SAVE_TEXT}</Button>
+                        </Box>
+                        : <Box>
+                          <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                            <Typography variant='inherit'>{AUTO_LOGOUT_DESCRIPTION}</Typography>
+                            <Box>
+                              <IconButton onClick={() => setIsEdit(!isEdit)}>
+                                <Edit />
+                              </IconButton>
+                            </Box>
+                          </Box>
+                          <Selector
+                            disabled
+                            name="autoLogoutTime"
+                            label={''}
+                            value={EMPTY_OPTION}
+                            options={MAPPED_AUTO_LOGOUT}
+                          />
+                        </Box>}
                     </Grid>
                   </Grid>
                 </form>
