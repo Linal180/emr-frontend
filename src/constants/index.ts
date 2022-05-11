@@ -3152,14 +3152,6 @@ export const AppointmentSearchingTooltipData = [
     name: `${EMAIL}:`,
     format: EMAIL_FORMAT,
   },
-  {
-    name: `${DOB}:`,
-    format: DOB_FORMAT,
-  },
-  {
-    name: `${SSN}:`,
-    format: SSN_FORMAT,
-  }
 ];
 
 export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
