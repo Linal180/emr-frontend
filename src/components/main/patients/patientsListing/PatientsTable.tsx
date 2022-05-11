@@ -172,55 +172,55 @@ const PatientsTable: FC = (): JSX.Element => {
 
         <Collapse in={open} mountOnEnter unmountOnExit>
           <FormProvider {...methods}>
-              <Box p={3} mt={2} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
-                <Grid container spacing={3}>
-                  <Grid item md={3} sm={6} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="dob"
-                      controllerLabel={DOB}
-                      clearable={!!dob}
-                      handleClearField={handleClearField}
-                      placeholder={US_DATE_FORMAT}
-                    />
-                  </Grid>
+            <Box p={3} mt={2} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
+              <Grid container spacing={3}>
+                <Grid item md={3} sm={6} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="dob"
+                    controllerLabel={DOB}
+                    clearable={!!dob}
+                    handleClearField={handleClearField}
+                    placeholder={US_DATE_FORMAT}
+                  />
+                </Grid>
 
-                  <Grid item md={3} sm={6} xs={12}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="dos"
-                      controllerLabel={DATE_OF_SERVICE}
-                      clearable={!!dos}
-                      handleClearField={handleClearField}
-                      placeholder={US_DATE_FORMAT}
-                    />
-                  </Grid>
+                <Grid item md={3} sm={6} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName="dos"
+                    controllerLabel={DATE_OF_SERVICE}
+                    clearable={!!dos}
+                    handleClearField={handleClearField}
+                    placeholder={US_DATE_FORMAT}
+                  />
+                </Grid>
 
-                  {(isSuper || isPracAdmin) &&
-                    <Grid item md={3} sm={12} xs={12}>
-                      <FacilitySelector
-                        label={LOCATION}
-                        name="location"
-                        addEmpty
-                      />
-                    </Grid>
-                  }
-
+                {(isSuper || isPracAdmin) &&
                   <Grid item md={3} sm={12} xs={12}>
-                    <DoctorSelector
-                      label={PROVIDER}
-                      name="provider"
-                      shouldOmitFacilityId
+                    <FacilitySelector
+                      label={LOCATION}
+                      name="location"
                       addEmpty
                     />
                   </Grid>
-                  {!(isSuper || isPracAdmin) && <Grid item md={5} sm={12} xs={12} />}
-                  <Grid item md={(isSuper || isPracAdmin) ? 11 : 6} />
-                  <Box px={1}>
-                    <Button variant="contained" color="secondary" onClick={handleReset}>{RESET}</Button>
-                  </Box>
+                }
+
+                <Grid item md={3} sm={12} xs={12}>
+                  <DoctorSelector
+                    label={PROVIDER}
+                    name="provider"
+                    shouldOmitFacilityId
+                    addEmpty
+                  />
                 </Grid>
-              </Box>
+                <Grid item md={(isSuper || isPracAdmin)?12:3} sm={12} xs={12}>
+                <Box display='flex' justifyContent='flex-end' alignItems='center' style={{ marginTop:(isSuper || isPracAdmin)?0:20 }}>
+                  <Button variant="outlined" color="default" onClick={handleReset}>{RESET}</Button>
+                </Box>
+                </Grid>
+              </Grid>
+            </Box>
           </FormProvider>
         </Collapse>
 
