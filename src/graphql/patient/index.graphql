@@ -46,6 +46,7 @@ query FetchAllPatient($patientInput: PatientInput!) {
     patients {
       id
       email
+      dob
       lastName
       firstName
       patientRecord

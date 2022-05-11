@@ -2,18 +2,29 @@
 import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Collapse, Grid, Typography, Button } from "@material-ui/core";
+import { FormProvider, useForm } from "react-hook-form";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import {
+  Box, Table, TableBody, TableHead, TableRow, TableCell, Collapse, Grid, Typography, Button
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
+import InputController from "../../../../controller";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
-import { formatPhone, getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh } from "../../../../utils";
+import { PatientSearchInputProps } from "../../../../interfacesTypes";
+import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
+import {
+  formatPhone, getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
+} from "../../../../utils";
 import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
@@ -21,16 +32,10 @@ import {
   PatientsPayload, PatientPayload, useRemovePatientMutation, useFetchAllPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
-  ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN,
-  PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER, US_DATE_FORMAT, RESET
+  ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME,
+  PATIENT, PRN, PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER,
+  US_DATE_FORMAT, RESET
 } from "../../../../constants";
-import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
-import { FormProvider, useForm } from "react-hook-form";
-import { PatientSearchInputProps } from "../../../../interfacesTypes";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
-import DoctorSelector from "../../../common/Selector/DoctorSelector";
-import InputController from "../../../../controller";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -45,9 +50,9 @@ const PatientsTable: FC = (): JSX.Element => {
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
   const { watch, setValue } = methods;
-  const {location : {id : selectedLocationId} = {}, dob, dos, provider: {id:selectedProviderId} = {} } =watch()
+  const { location: { id: selectedLocationId } = {}, dob, dos, provider: { id: selectedProviderId } = {} } = watch()
 
-  const [fetchAllPatientsQuery,{loading,error}] = useFetchAllPatientLazyQuery({
+  const [fetchAllPatientsQuery, { loading, error }] = useFetchAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -61,10 +66,10 @@ const PatientsTable: FC = (): JSX.Element => {
       if (fetchAllPatients) {
         const { pagination, patients } = fetchAllPatients
         patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
-        
+
         if (pagination) {
           const { totalPages } = pagination
-          typeof totalPages==='number'  &&  dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+          typeof totalPages === 'number' && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
       }
     }
@@ -78,11 +83,14 @@ const PatientsTable: FC = (): JSX.Element => {
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
       patientsInputs && await fetchAllPatientsQuery({
-        variables: { patientInput: { 
-          ...patientsInputs, searchString: searchQuery, dob:getFormatDateString(dob,'MM-DD-YYYY'),
-          doctorId:selectedProviderId,
-          appointmentDate:getFormatDateString(dos),
-        ...( !isFacAdmin ? {facilityId: selectedLocationId}:{}),} }
+        variables: {
+          patientInput: {
+            ...patientsInputs, searchString: searchQuery, dob: getFormatDateString(dob, 'MM-DD-YYYY'),
+            doctorId: selectedProviderId,
+            appointmentDate: getFormatDateString(dos),
+            ...(!isFacAdmin ? { facilityId: selectedLocationId } : {}),
+          }
+        }
       })
     } catch (error) { }
   }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, fetchAllPatientsQuery, searchQuery, dob, selectedProviderId, dos, selectedLocationId])
@@ -119,7 +127,7 @@ const PatientsTable: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_PAGE, page });
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' });
   }
-   
+
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -140,15 +148,15 @@ const PatientsTable: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
-  const handleClearField= (fieldName:any) =>{
-    setValue(fieldName,'')
+  const handleClearField = (fieldName: any) => {
+    setValue(fieldName, '')
   }
 
-  const handleReset=()=>{
-    setValue("dob",'')
-    setValue('dos','')
-    setValue("location", { id:'',name:"" })
-    setValue('provider', { id:'',name:"" })
+  const handleReset = () => {
+    setValue("dob", '')
+    setValue('dos', '')
+    setValue("location", { id: '', name: "" })
+    setValue('provider', { id: '', name: "" })
   }
 
   return (
@@ -214,10 +222,12 @@ const PatientsTable: FC = (): JSX.Element => {
                     addEmpty
                   />
                 </Grid>
-                <Grid item md={(isSuper || isPracAdmin)?12:3} sm={12} xs={12}>
-                <Box display='flex' justifyContent='flex-end' alignItems='center' style={{ marginTop:(isSuper || isPracAdmin)?0:20 }}>
-                  <Button variant="outlined" color="default" onClick={handleReset}>{RESET}</Button>
-                </Box>
+                <Grid item md={(isSuper || isPracAdmin) ? 12 : 3} sm={12} xs={12}>
+                  <Box display='flex' justifyContent='flex-end' alignItems='center'
+                    style={{ marginTop: (isSuper || isPracAdmin) ? 0 : 20 }}
+                  >
+                    <Button variant="outlined" color="default" onClick={handleReset}>{RESET}</Button>
+                  </Box>
                 </Grid>
               </Grid>
             </Box>
@@ -232,7 +242,7 @@ const PatientsTable: FC = (): JSX.Element => {
                 {renderTh(NAME)}
                 {renderTh(EMAIL)}
                 {renderTh(PHONE)}
-                {renderTh(CITY)}
+                {renderTh(DOB)}
                 {renderTh(ACTION, "center")}
               </TableRow>
             </TableHead>
@@ -246,10 +256,10 @@ const PatientsTable: FC = (): JSX.Element => {
                 </TableRow>
               ) : (
                 patients?.map((record: PatientPayload['patient']) => {
-                  const { id, patientRecord, firstName, lastName, email, contacts } = record || {};
+                  const { id, patientRecord, firstName, lastName, email, dob, contacts } = record || {};
 
                   const patientContact = contacts && contacts.filter(contact => contact.primaryContact)[0];
-                  const { phone, city } = patientContact || {};
+                  const { phone } = patientContact || {};
 
                   return (
                     <TableRow key={id}>
@@ -261,7 +271,7 @@ const PatientsTable: FC = (): JSX.Element => {
                       <TableCell scope="row"> {`${firstName} ${lastName}`}</TableCell>
                       <TableCell scope="row">{email}</TableCell>
                       <TableCell scope="row">{formatPhone(phone || '')}</TableCell>
-                      <TableCell scope="row">{city}</TableCell>
+                      <TableCell scope="row">{dob}</TableCell>
                       <TableCell scope="row">
                         <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
                           <Link to={`${PATIENTS_ROUTE}/${id}`}>
