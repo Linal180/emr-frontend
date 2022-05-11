@@ -75,7 +75,7 @@ const PatientVitalsListing = ({ patientStates }: PatientVitalsListingProps) => {
               <VitalsLabels patientStates={patientStates} />
             </Grid>
             <Grid item xs={2}>
-              <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} />
+              <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} patientStates={patientStates} />
             </Grid>
             <Grid item xs={8}>
               <Box className={classes.listingTable}>
