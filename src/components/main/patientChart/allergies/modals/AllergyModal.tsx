@@ -138,9 +138,8 @@ const AllergyModal: FC<AddModalProps> = (
   }, [fetchAllReactionList, reactionList?.length])
 
   useEffect(() => {
-    !isEdit  && reset()
     setOnset('')
-  }, [allergyStartDate, isEdit, reset])
+  }, [allergyStartDate])
 
   const fetchPatientAllergy = useCallback(async () => {
     recordId && await getPatientAllergy({
@@ -211,7 +210,6 @@ const AllergyModal: FC<AddModalProps> = (
 
   return (
     <FormProvider {...methods}>
-      {/* {JSON.stringify(allergyOnset)} */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant='h4'>{name}</Typography>

@@ -22,6 +22,7 @@ import {
   PatientAllergiesPayload, useFindAllAllergiesLazyQuery, useFindAllPatientAllergiesLazyQuery,
   AllergiesPayload, AllergyType, Allergies, AllergySeverity,
 } from "../../../../../generated/graphql";
+import { NoDataIcon } from "../../../../../assets/svgs";
 
 const AllergyList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
@@ -192,7 +193,11 @@ const AllergyList = (): JSX.Element => {
                 </Box>
               )
             })
-          ) : (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)}
+          ) : (<Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            <NoDataIcon />
+
+            <Typography variant="h6">{NO_RECORDS}</Typography>
+          </Box>)}
         </Box>}
 
       <Menu
