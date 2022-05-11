@@ -11,17 +11,19 @@ import LoginController from "./LoginController";
 // history, context, constants, graphql, and utils
 import history from "../../../history";
 import { requiredLabel } from "../../../utils";
-import { AuthContext } from "../../../context";
+import { AuthContext, ListContext } from "../../../context";
 import { loginValidationSchema } from "../../../validationSchemas";
 import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
-  SOMETHING_WENT_WRONG, SYSTEM_ROLES,
+  SOMETHING_WENT_WRONG, TWO_FA_AUTHENTICATION_ROUTE, SYSTEM_ROLES,
 } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext);
+  const { fetchAllFacilityList } = useContext(ListContext);
+
   const { control, handleSubmit, formState: { errors } } = useForm<LoginUserInput>({
     defaultValues: {
       email: "",
@@ -42,7 +44,7 @@ const LoginComponent = (): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { login: { response, access_token, roles } } = data
+        const { login: { response, access_token, roles, isTwoFactorEnabled, userId } } = data
 
         if (response) {
           const { status } = response
@@ -56,10 +58,16 @@ const LoginComponent = (): JSX.Element => {
             const isAdmin = userRoles.filter(role => role !== SYSTEM_ROLES.Patient)
             
             if (!!isAdmin?.length) {
-              localStorage.setItem(TOKEN, access_token);
-              Alert.success(LOGIN_SUCCESSFULLY)
-              history.push(DASHBOARD_ROUTE);
-              setIsLoggedIn(true)
+              if (!isTwoFactorEnabled) {
+                localStorage.setItem(TOKEN, access_token);
+                setIsLoggedIn(true);
+                fetchAllFacilityList();
+                Alert.success(LOGIN_SUCCESSFULLY)
+                history.push(DASHBOARD_ROUTE);
+              } else {
+                history.push(`${TWO_FA_AUTHENTICATION_ROUTE}/${userId}?token=${access_token}`);
+
+              }
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }

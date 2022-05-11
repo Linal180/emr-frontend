@@ -1,30 +1,26 @@
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
-
+import moment from "moment";
+import { useParams } from "react-router-dom";
+// components block
+import ViewDataLoader from "../../ViewDataLoader";
+import MediaCards from "../../AddMedia/MediaCards";
+// interfaces, reducers, constants and styles block
+import history from "../../../../history";
+import { Box, Avatar, CircularProgress, Button } from "@material-ui/core";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
+import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
+import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
+import {
+  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
+} from "../../../../generated/graphql";
+import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
+import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, APPOINTMENTS_ROUTE } from "../../../../constants";
+
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
-import {
-  AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
-} from "../../../../generated/graphql";
-import { Box, Avatar, CircularProgress, Button } from "@material-ui/core";
-import moment from "moment";
-import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
-import { ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, APPOINTMENTS_ROUTE } from "../../../../constants";
-import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
-import MediaCards from "../../AddMedia/MediaCards";
-import ViewDataLoader from "../../ViewDataLoader";
-import history from "../../../../history";
-import { ParamsType } from "../../../../interfacesTypes";
-import { useParams } from "react-router-dom";
-
-interface PatientProfileHeroProps {
-  isChart?: boolean;
-  setPatient: Function;
-  setAttachmentsData: Function;
-}
 
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
   const classes = useProfileDetailsStyles();
@@ -39,9 +35,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    variables: {
-      getMedia: { id }
-    },
+    variables: { getMedia: { id } },
 
     onError() {
       return null
@@ -122,7 +116,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     attachmentId && fetchAttachment();
   }, [attachmentId, fetchAttachment, attachmentData])
 
-  const { firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt } = patientData || {}
+  const {
+    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt
+  } = patientData || {}
+
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
   const patientName = `${firstName} ${lastName}`;
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');

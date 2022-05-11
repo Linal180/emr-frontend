@@ -17,7 +17,8 @@ import {
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
-  SERVICE_NAME_TEXT, DOB, FORM_NAME, PAGER, ALLERGY_DATE_VALIDATION_MESSAGE, REACTIONS_VALIDATION_MESSAGE,
+  SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP, ALLERGY_DATE_VALIDATION_MESSAGE, REACTIONS_VALIDATION_MESSAGE,
+  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PULSE_TEXT, RESPIRATORY_RATE_TEXT, WEIGHT_TEXT
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -85,6 +86,14 @@ const notRequiredPhone = (label: string) => {
       })
 }
 
+const notRequiredOTP = (label: string, isRequired: boolean) => {
+  return yup.string()
+    .test('', requiredMessage(label), value => isRequired ? !!value : true)
+    .matches(NUMBER_REGEX, ValidOTP())
+    .min(6, MinLength(label, 6)).max(6, MaxLength(label, 6))
+    .required(requiredMessage(label))
+}
+
 const stateSchema = (isRequired: boolean) => {
   return yup.object().shape({
     name: yup.string(),
@@ -140,8 +149,8 @@ const patientIdSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).test(
-    '', requiredMessage(PATIENT), ({ id }) => !!id
-  )
+    '', requiredMessage(PATIENT), (patient) => !!patient?.id
+  ).nullable()
 }
 
 const serviceCodeSchema = {
@@ -317,6 +326,10 @@ const firstLastNameSchema = {
 
 export const loginValidationSchema = yup.object({
   ...emailSchema,
+  ...passwordSchema
+});
+
+export const twoFAValidationSchema = yup.object({
   ...passwordSchema
 });
 
@@ -728,6 +741,14 @@ export const facilityScheduleSchema = yup.object({
   }).test('', requiredMessage(DAY), ({ id }) => !!id),
 })
 
+const otpBasicSchema = {
+  otpCode: notRequiredOTP(OTP_CODE, true),
+}
+
+export const otpSchema = yup.object({
+  ...otpBasicSchema,
+})
+
 export const createPatientAllergySchema = (onset: string) => yup.object({
   allergyStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
     value => !!onset || new Date(value || '') <= new Date()),
@@ -746,4 +767,78 @@ export const createPatientAllergySchema = (onset: string) => yup.object({
 export const patientProblemSchema = yup.object({
   problemStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
     value => new Date(value || '') <= new Date()),
+})
+
+export const patientVitalSchema = yup.object({
+  pulseRate: yup.string().test('', invalidMessage(PULSE_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 5) return true
+      return false
+    }
+  }),
+  bloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && value.match(/^\d[0-9]{1,1}\/\d[0-9]{1,2}$/)) return true
+      return false
+    }
+  }),
+  respiratoryRate: yup.string().test('', invalidMessage(RESPIRATORY_RATE_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 4) return true
+      return false
+    }
+  }),
+  oxygenSaturation: yup.string().test('', invalidMessage(OXYGEN_SATURATION_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 4) return true
+      return false
+    }
+  }),
+  PatientHeight: yup.string().test('', invalidMessage(HEIGHT_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 6) return true
+      return false
+    }
+  }),
+  PatientWeight: yup.string().test('', invalidMessage(WEIGHT_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 5) return true
+      return false
+    }
+  }),
+  PainRange: yup.string().test('', invalidMessage(PAIN_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 3) return true
+      return false
+    }
+  }),
+  patientHeadCircumference: yup.string().test('', invalidMessage(HEAD_CIRCUMFERENCE), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 5) return true
+      return false
+    }
+  }),
+  patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 4) return true
+      return false
+    }
+  }),
 })

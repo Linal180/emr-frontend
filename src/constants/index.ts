@@ -18,7 +18,7 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
-  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity,
+  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus, UnitType, WeightType, HeadCircumferenceType, TempUnitType,
 } from "../generated/graphql";
 
 // regex
@@ -58,6 +58,7 @@ export enum SYSTEM_ROLES {
 }
 export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
+export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
 export const CURRENT_DATE = new Date();
 export const NOTE = "Note";
@@ -111,6 +112,7 @@ export const FORM_UPDATED = "Form updated successfully!";
 export const PUBLIC_FORM_LINK = "Public form preview Link";
 export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
 export const EMPTY_OPTION = { id: "", name: "--" };
+export const NO_RECORDS_OPTION = { id: "", name: "No Record Found" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
   Monday = "Monday",
@@ -121,6 +123,24 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const KG_TEXT = "KG"
+export const LBS_TEXT = "LBS"
+export const LB_TEXT = "LB"
+export const OZ_TEXT = "OZ"
+export const CM_TEXT = "CM"
+export const IN_TEXT = "IN"
+export const PULSE_TEXT = "Pulse"
+export const VITAL_ERROR_MSG = "Patient Vital is not added."
+export const RESPIRATORY_RATE_TEXT = "Respiratory Rate"
+export const BLOOD_PRESSURE_TEXT = "Blood Pressure"
+export const OXYGEN_SATURATION_TEXT = "Oxygen Saturation"
+export const HEIGHT_TEXT = "Height"
+export const WEIGHT_TEXT = "Weight"
+export const BMI_TEXT = "BMI"
+export const PAIN_TEXT = "Pain"
+export const SMOKING_STATUS_TEXT = "Smoking Status"
+export const HEAD_CIRCUMFERENCE = "Head Circumference"
+export const FEVER_TEXT = "Temperature"
 export const CREATED_ON = "Created On";
 export const CDC = "CDC";
 export const ADD = "Add";
@@ -416,6 +436,7 @@ export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
 export const EMAIL = "Email";
 export const DISABLED = "Disabled";
+export const ENABLED = "Enabled";
 export const ENABLED_BY = "Enabled by";
 export const ACTIVATED_ON = "Activated On";
 export const PRACTICE_IDENTIFIER = "Practice Identifier";
@@ -600,8 +621,11 @@ export const PRACTICE_NPI = "Practice NPI";
 export const PATIENT_INFO = "Patient Info";
 export const FACILITY_NAME = "Facility Name";
 export const PRACTICE_NAME = "Practice Name";
+export const RESEND_OTP = "Resend OTP ?";
 export const BILLING_STATUS = "Billing Status";
 export const DOCTOR_SCHEDULE = "Doctor Schedule";
+export const OTP_CODE = "OTP Code";
+export const ENTER_OTP_CODE = "Please enter your OTP Code";
 export const LOCATION = "Location";
 export const DURATION = "Duration";
 export const RECURRING = "Recurring";
@@ -680,10 +704,12 @@ export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
+export const US_DATE_FORMAT = "MM/dd/yyyy";
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
 export const RACE = "Race";
+export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
 export const PRICE = "Price";
@@ -710,6 +736,7 @@ export const INDUSTRY = "Industry";
 export const RELOAD = "Go To Home";
 export const LANGUAGE = "Language";
 export const PRONOUNS = "Pronouns";
+export const ADD_NUM = "Add Number";
 export const UNLOCK_TEXT = "Unlock";
 export const LEGAL_SEX = "Legal Sex";
 export const MORE_INFO = "More Info";
@@ -766,6 +793,7 @@ export const COPAY_AMOUNTS = "Copay Amounts";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
 export const USER_SETTINGS = "User Settings";
+export const ADD_SIGNATURE = "Add Signature";
 export const PATIENT_NOTES = "Patient Notes";
 export const EMPLOYER_NAME = "Employer Name";
 export const POLICY_HOLDER = "Policy Holder";
@@ -814,6 +842,7 @@ export const UPLOADS_DOCUMENT = "Upload Document";
 export const FORGOT_PASSWORD = "Forgot Password?";
 export const MEMBERSHIP_REQUEST_TEXT = "Requests";
 export const CALENDAR_VIEW_TEXT = "Calendar View";
+export const TWO_FACTOR_LOGIN = "Two-Factor Login";
 export const POLICY_HOLDER_ID = "Policy holder ID";
 export const UPLOAD_DOCUMENT = "Uploaded Document";
 export const APP_NAME_FORMAT = 'First Middle Last';
@@ -902,6 +931,7 @@ export const REGISTRATION_DATES = "Provider/ Registration Dates";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
+export const ADD_PHONE_NUM_DESCRIPTION = "Please add phone number";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const ADD_ANOTHER_COPAY_AMOUNT = "ADD ANOTHER COPAY AMOUNT";
@@ -941,6 +971,7 @@ export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this me
 export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
 export const DELETE_FACILITY_SCHEDULE_DESCRIPTION = "Confirm to delete facility schedule";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
+export const TWO_FACTOR_LOGIN_DESCRIPTION = "Enter security code from your mobile phone.";
 export const PATIENT_RELATIONSHIP_TO_POLICY_HOLDER = "Patient relationship to policy holder";
 export const POLICY_HOLDER_ID_CERTIFICATION_NUMBER = "Policy holder ID/certification number";
 export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
@@ -990,6 +1021,7 @@ export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
+export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
@@ -1059,6 +1091,7 @@ export const minDobValidMessage = (label: string) => `${label}'s age should be m
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
+export const ValidOTP = () => `Please enter only numbers`;
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;
 export const MaxLength = (fieldName: string, length: number) =>
@@ -1083,6 +1116,7 @@ export const ROLE_NOT_FOUND = "Role not found!";
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
 export const SCHEDULE_START = "Schedule Start Time";
 export const INVALID_EMAIL = "Invalid email address";
+export const INVALID_OTP_CODE = "Invalid otp code";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
@@ -1098,6 +1132,8 @@ export const ROLE_CREATED = "Role is created successfully";
 export const ROLE_UPDATED = "Role is updated successfully";
 export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
+export const TWO_FA_ENABLED_SUCCESSFULLY = "2FA enabled successfully";
+export const TWO_FA_DISABLED_SUCCESSFULLY = "2FA disabled successfully";
 export const TRY_AGAIN = "Something went wrong. Try again!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
@@ -1125,6 +1161,9 @@ export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
+export const OTP_NOT_FOUND_EXCEPTION_MESSAGE = "Precondition Failed Exception";
+export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
+export const VALID_PASSWORD_MESSAGE = "Please enter valid password.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
 export const PERMISSIONS_SET = "Role Permissions set successfully";
@@ -1920,7 +1959,7 @@ export const PATIENT_REGISTRATION_STEPS: StepLabelType[] = [
 ];
 
 // Breadcrumb links
-export const SERVICES_BREAD = (facilityId: string) =>  {
+export const SERVICES_BREAD = (facilityId: string) => {
   return { text: SERVICES, link: `${FACILITIES_ROUTE}/${facilityId}${FACILITY_SERVICES_ROUTE}` }
 }
 
@@ -2287,6 +2326,7 @@ export enum ATTACHMENT_TITLES {
   InsuranceCard1 = "Insurance Card 1",
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
+  Signature = "Signature",
 }
 
 export enum MODULE_TYPES {
@@ -3069,6 +3109,17 @@ export const FORM_BUILDER_FIELDS_TABS = [
   },
 ]
 
+export const ROLES_TABS = [
+  {
+    title: "System Roles",
+    value: "1",
+  },
+  {
+    title: "Custom Roles",
+    value: "2",
+  },
+]
+
 export const PatientSearchingTooltipData = [
   {
     name: `${NAME}:`,
@@ -3110,3 +3161,44 @@ export const AppointmentSearchingTooltipData = [
     format: SSN_FORMAT,
   }
 ];
+
+export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
+  { id: SmokingStatus.SmokerCurrentStatusUnknown, name: formatValue(SmokingStatus.SmokerCurrentStatusUnknown) },
+  { id: SmokingStatus.CurrentEverydaySmoker, name: formatValue(SmokingStatus.CurrentEverydaySmoker) },
+  { id: SmokingStatus.CurrentSomedaySmoker, name: formatValue(SmokingStatus.CurrentSomedaySmoker) },
+  { id: SmokingStatus.FormerSmoker, name: formatValue(SmokingStatus.FormerSmoker) },
+  { id: SmokingStatus.NeverSmocked, name: formatValue(SmokingStatus.NeverSmocked) },
+  { id: SmokingStatus.UnknownIfEverSmoked, name: formatValue(SmokingStatus.UnknownIfEverSmoked) },
+];
+
+export const PATIENT_HEIGHT_UNITS = [
+  { id: UnitType.Inch, name: IN_TEXT },
+  { id: UnitType.Centimeter, name: CM_TEXT },
+]
+
+export const PATIENT_WEIGHT_UNITS = [
+  { id: WeightType.Kg, name: KG_TEXT },
+  { id: WeightType.Pound, name: LB_TEXT },
+  { id: WeightType.PoundOunce, name: OZ_TEXT },
+]
+
+export const HEAD_CIRCUMFERENCE_UNITS = [
+  { id: HeadCircumferenceType.Inch, name: IN_TEXT },
+  { id: HeadCircumferenceType.Centimeter, name: CM_TEXT },
+]
+
+export const FEVER_UNITS = [
+  { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
+  { id: TempUnitType.DegC, name: formatValue(TempUnitType.DegC) },
+]
+
+export const MAPPED_AUTO_LOGOUT = [
+  { id: "0", name: '30 Minutes' },
+  { id: "1", name: '1 Hour' },
+  { id: "2", name: '90 Minutes' },
+  { id: "3", name: '6 Hours' },
+  { id: "4", name: '12 Hours' },
+  { id: "5", name: '24 Hours' },
+  { id: "6", name: '2 Days' },
+  { id: "7", name: '7 Days' },
+]

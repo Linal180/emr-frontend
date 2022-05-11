@@ -15,7 +15,7 @@ import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
-  disabled, multiline, info, placeholder, className, isSearch, clearable, handleClearField
+  disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -35,7 +35,7 @@ const InputController: FC<CustomInputControlProps> = ({
       control={control}
       defaultValue=""
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => (
-        <FormControl fullWidth margin="normal" error={Boolean(invalid)}>
+        <FormControl fullWidth margin={margin || "normal"} error={Boolean(invalid)}>
           <InputLabel shrink htmlFor={controllerName} className={classes.detailTooltipBox}>
             {isRequired ? requiredLabel(controllerLabel || '') : controllerLabel}
 
@@ -50,34 +50,34 @@ const InputController: FC<CustomInputControlProps> = ({
             }
           </InputLabel>
 
-            <TextField
-              fullWidth
-              error={invalid}
-              variant="outlined"
-              multiline={multiline}
-              className={className}
-              disabled={disabled}
-              id={controllerName}
-              placeholder={placeholder ? placeholder : ""}
-              type={fieldType === "password" ? passwordType : fieldType}
-              helperText={error ? error : message}
-              {...field}
-              InputProps={isPassword ? {
-                endAdornment: <ShowPassword
-                  isPassword={isPassword}
-                  passwordType={passwordType}
-                  handleShowPassword={handleClickShowPassword}
-                />,
-              } : clearable ? {
-                endAdornment: <IconButton aria-label="clear" onClick={handleClearField ? () => handleClearField(controllerName) : () => { }}>
-                  <ClearIcon />
-                </IconButton>
-              } : fieldType === 'number' ? {
-                inputProps: { step: '5' }
-              } : isSearch ? {
-                endAdornment: <Search />
-              } : undefined}
-            />
+          <TextField
+            fullWidth
+            error={invalid}
+            variant="outlined"
+            multiline={multiline}
+            className={className}
+            disabled={disabled}
+            id={controllerName}
+            placeholder={placeholder ? placeholder : ""}
+            type={fieldType === "password" ? passwordType : fieldType}
+            helperText={error ? error : message}
+            {...field}
+            InputProps={isPassword ? {
+              endAdornment: <ShowPassword
+                isPassword={isPassword}
+                passwordType={passwordType}
+                handleShowPassword={handleClickShowPassword}
+              />,
+            } : clearable ? {
+              endAdornment: <IconButton aria-label="clear" onClick={handleClearField ? () => handleClearField(controllerName) : () => { }}>
+                <ClearIcon />
+              </IconButton>
+            } : fieldType === 'number' ? {
+              inputProps: { step: '5' }
+            } : isSearch ? {
+              endAdornment: <Search />
+            } : undefined}
+          />
         </FormControl>
       )}
     />

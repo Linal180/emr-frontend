@@ -18,6 +18,7 @@ export const AppointmentContent = ({ children, style, ...restProps }: any) => {
         marginLeft: showMoreButton && 'auto',
         color: showMoreButton && BLUE,
         textDecoration: showMoreButton && 'underline',
+        paddingTop: 0
       }}
     >
       {children}

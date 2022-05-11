@@ -8,7 +8,7 @@ import { requiredLabel } from "../../utils";
 import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
 
-const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, addEmpty }): JSX.Element => {
+const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, addEmpty, margin }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options] : [...options]
 
@@ -28,7 +28,7 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
+              <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
                 <Box position="relative">
                   <InputLabel id={`${name}-autocomplete`} shrink>
                     {isRequired ? requiredLabel(label) : label}

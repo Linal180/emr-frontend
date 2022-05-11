@@ -13,7 +13,7 @@ import MediaCards from '../../common/AddMedia/MediaCards';
 import ViewDataLoader from '../../common/ViewDataLoader';
 // constants, history, styling block
 import { WHITE } from '../../../theme';
-import { getProfileImageType, renderItem, setRecord } from '../../../utils';
+import { formatPhone, getProfileImageType, renderItem, setRecord } from '../../../utils';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useProfileStyles } from "../../../styles/profileStyles";
 import {
@@ -36,7 +36,6 @@ const ProfileComponent = (): JSX.Element => {
   const classes = useProfileStyles()
   const { user, currentDoctor, currentStaff, profileUrl, fetchUser, fetchAttachment, profileAttachment } = useContext(AuthContext);
   const { email, userType, userId, phone: userPhone } = user || {}
-
   const { firstName: doctorFirstName, lastName: doctorLastName, contacts } = currentDoctor || {}
   const { firstName: staffFirstName, lastName: staffLastName, phone } = currentStaff || {}
   const primaryContact = contacts?.find(({ primaryContact }) => primaryContact);
@@ -120,7 +119,7 @@ const ProfileComponent = (): JSX.Element => {
             updateDoctorItemInput: { id: userId, firstName, lastName },
             updateContactInput: {
               id: contactId, primaryContact: true, address: addressNumber, city: city, state: stateId || '',
-              zipCode, country: countryId, phone: phone
+              zipCode, country: countryId, phone
             },
             updateBillingAddressInput: {}
           }
@@ -142,7 +141,6 @@ const ProfileComponent = (): JSX.Element => {
   }
 
   const editHandler = () => {
-
     if (userType === SYSTEM_ROLES.Doctor) {
       setValue('firstName', doctorFirstName || staffFirstName || '')
       setValue('lastName', doctorLastName || staffLastName || '')
@@ -293,7 +291,7 @@ const ProfileComponent = (): JSX.Element => {
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(CONTACT_NUMBER, userPhone || phone || doctorPhone || 'N/A')}
+                              {renderItem(CONTACT_NUMBER, (userPhone && formatPhone(userPhone)) || (phone && formatPhone(phone)) || (doctorPhone && formatPhone(doctorPhone)) || 'N/A')}
                             </Grid>
                           </Grid>
                           {userType === SYSTEM_ROLES.Doctor &&

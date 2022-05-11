@@ -34,8 +34,18 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.El
         placeholder="Search here..."
         className={classes.searchInput}
         value={query}
-        onChange={({ target: { value } }) => setQuery(value)}
-        onKeyPress={({ key }) => key === "Enter" && search(query)}
+        onChange={({ target: { value } }) => {
+          if(value.length>2){
+            search(value)
+            setQuery(value)
+          }
+
+          if(!value.length){
+            search('')
+          }
+
+          setQuery(value)
+        } }
       />
 
       {query &&

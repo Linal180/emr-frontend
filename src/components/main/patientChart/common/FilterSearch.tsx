@@ -1,26 +1,19 @@
 // packages block
-import { FC, Reducer, useReducer, MouseEvent, useState, Dispatch } from 'react';
+import { FC, Reducer, useReducer, MouseEvent, useState } from 'react';
 import { Box, CircularProgress, IconButton, InputBase, Menu, Typography } from '@material-ui/core';
 // component block
+import ProblemModal from '../problems/modals/ProblemModal';
 import AllergyModal from '../allergies/modals/AllergyModal';
 // constants block
-import { CARD_LAYOUT_MODAL, NO_RECORDS, SEARCH_FOR_ALLERGIES, SEARCH_FOR_ICD_CODES, TYPE } from '../../../../constants';
-import { ClearIcon, SmallSearchIcon } from '../../../../assets/svgs';
+import { FilterSearchProps } from '../../../../interfacesTypes';
+import { Allergies, IcdCodes } from '../../../../generated/graphql';
 import { GRAY_FIVE, GRAY_SIX, GREY_SEVEN } from '../../../../theme';
+import { ClearIcon, NoDataIcon, SmallSearchIcon } from '../../../../assets/svgs';
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
-import { Allergies, AllergiesPayload, IcdCodes, IcdCodesPayload } from '../../../../generated/graphql';
 import { chartReducer, Action, initialState, State, ActionType } from "../../../../reducers/chartReducer";
-import ProblemModal from '../problems/modals/ProblemModal';
-
-interface FilterSearchProps {
-  modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes
-  tabs?: string[];
-  loading: boolean;
-  dispatcher: Dispatch<Action>;
-  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
-  fetch: () => void;
-  searchItem: (tab: string, query: string) => void;
-}
+import {
+  CARD_LAYOUT_MODAL, NO_RECORDS, SEARCH_FOR_ALLERGIES, SEARCH_FOR_ICD_CODES, TYPE
+} from '../../../../constants';
 
 const FilterSearch: FC<FilterSearchProps> = (
   { tabs, searchItem, loading, searchData, dispatcher, fetch, modal }
@@ -46,7 +39,12 @@ const FilterSearch: FC<FilterSearchProps> = (
 
   const handleMenuClose = () => dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null });
 
-  const handleSearch = () => searchItem(tab, searchQuery)
+  const handleSearch = (query: string) => {
+    if (query.length > 2) {
+      setSearchQuery(query)
+      searchItem(tab, query)
+    } else setSearchQuery(query)
+  }
 
   const handleTabChange = (name: string) => {
     setTab(name)
@@ -68,12 +66,11 @@ const FilterSearch: FC<FilterSearchProps> = (
   );
 
   const renderSearchData = () =>
-    <Box maxHeight={300} className="overflowY-auto" display="flex"
-      flexDirection="column" justifyContent="center" alignItems="flex-start"
+    <Box maxHeight={200} minHeight={200} maxWidth={300} minWidth={300} className="overflowY-auto" display="flex"
+      flexDirection="column" alignItems="flex-start"
     >
       {!!loading ?
         <Box alignSelf="center">
-
           <CircularProgress size={25} color="inherit" disableShrink />
         </Box>
         :
@@ -101,7 +98,11 @@ const FilterSearch: FC<FilterSearchProps> = (
               )
             } else return null
           }) :
-          <Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)
+          <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            <NoDataIcon />
+            
+            <Typography variant="h6">{NO_RECORDS}</Typography>
+          </Box>)
       }
     </Box>
 
@@ -123,12 +124,11 @@ const FilterSearch: FC<FilterSearchProps> = (
         <Box p={0.2} />
 
         <InputBase
-          placeholder={modal === CARD_LAYOUT_MODAL.Allergies ?
-            SEARCH_FOR_ALLERGIES : modal === CARD_LAYOUT_MODAL.ICDCodes ? SEARCH_FOR_ICD_CODES : 'aaa'}
           value={searchQuery}
-          onChange={({ target: { value } }) => setSearchQuery(value)}
           inputProps={{ 'aria-label': 'search' }}
-          onKeyPress={({ key }) => key === "Enter" && handleSearch()}
+          placeholder={modal === CARD_LAYOUT_MODAL.Allergies ?
+            SEARCH_FOR_ALLERGIES : modal === CARD_LAYOUT_MODAL.ICDCodes ? SEARCH_FOR_ICD_CODES : ''}
+          onChange={({ target: { value } }) => handleSearch(value)}
         />
       </Box>
 
