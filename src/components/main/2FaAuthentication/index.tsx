@@ -14,7 +14,7 @@ import { AuthContext, ListContext } from "../../../context";
 import { useHeaderStyles } from "../../../styles/headerStyles";
 import { ParamsType, VerifyCodeInputProps } from "../../../interfacesTypes";
 import { useResentOtpMutation, useVerifyOtpMutation } from "../../../generated/graphql";
-import { ERROR, RESEND_OTP, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, SIGN_IN, ENTER_OTP_CODE, OTP_NOT_FOUND_EXCEPTION_MESSAGE, OTP_WRONG_MESSAGE, TOKEN, LOGIN_ROUTE } from "../../../constants";
+import { ERROR, RESEND_OTP, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, SIGN_IN, ENTER_OTP_CODE, OTP_NOT_FOUND_EXCEPTION_MESSAGE, TOKEN, LOGIN_ROUTE } from "../../../constants";
 import { useParams } from "react-router";
 
 const TwoFaAuthenticationComponent = (): JSX.Element => {
@@ -33,10 +33,7 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
 
   const [verifyOtp, { loading: verifyOtpLoading }] = useVerifyOtpMutation({
     onError({ message }) {
-      message === OTP_NOT_FOUND_EXCEPTION_MESSAGE ?
-        Alert.error(OTP_WRONG_MESSAGE)
-        :
-        Alert.error(message)
+      message !== OTP_NOT_FOUND_EXCEPTION_MESSAGE  && Alert.error(message)
     },
 
     async onCompleted(data) {
