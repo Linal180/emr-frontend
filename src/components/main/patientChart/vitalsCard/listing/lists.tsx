@@ -96,7 +96,7 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
         </TableHead>
         {!!patientVitals && patientVitals.length > 0 && (
           <TableBody>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, pulseRate } = item || {};
                 return (<TableCell key={`${id}-pulseRate-${i}-${pulseRate}`} scope="row">
@@ -106,13 +106,13 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
                 </TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, respiratoryRate } = item || {};
                 return (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row">{respiratoryRate || '----'}</TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, systolicBloodPressure, diastolicBloodPressure } = item || {};
                 return (<TableCell key={`${id}-bloodPressure-${i}-${diastolicBloodPressure}`} scope="row">
@@ -120,13 +120,13 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
                 </TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, oxygenSaturation } = item || {};
                 return (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row">{oxygenSaturation || '----'}</TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, PatientHeight } = item || {};
                 return (<TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row">
@@ -134,7 +134,7 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
                 </TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, PatientWeight } = item || {};
                 return (<TableCell key={`${id}-PatientWeight-${i}-${PatientWeight}`} scope="row">
@@ -142,26 +142,26 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
                 </TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, PatientBMI } = item || {};
                 return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">{PatientBMI || '----'}</TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, PainRange } = item || {};
                 return (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row">{PainRange || '----'}</TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, smokingStatus } = item || {};
                 return (<TableCell key={`${id}-smokingStatus-${i}-${smokingStatus}`} scope="row">
                   {formatValue(smokingStatus || "") || '----'}</TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, patientHeadCircumference } = item || {};
                 return (<TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row">
@@ -171,7 +171,7 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
                 </TableCell>)
               })}
             </TableRow>
-            <TableRow >
+            <TableRow>
               {patientVitals?.map((item, i) => {
                 const { id, patientTemperature } = item || {};
                 return (<TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row">{getFeverValue(patientTemperature || '')}</TableCell>)

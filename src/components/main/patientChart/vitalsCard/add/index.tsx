@@ -121,7 +121,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Table >
+        <Table>
           <TableHead>
             <TableRow>
               {renderTh(getCurrentDate(`${new Date()}`))}
