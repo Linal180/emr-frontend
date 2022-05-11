@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useReducer, MouseEvent, useState } from 'react';
+import { FC, Reducer, useReducer, MouseEvent, useState, useCallback } from 'react';
 import { Box, CircularProgress, IconButton, InputBase, Menu, Typography } from '@material-ui/core';
 // component block
 import ProblemModal from '../problems/modals/ProblemModal';
@@ -39,17 +39,18 @@ const FilterSearch: FC<FilterSearchProps> = (
 
   const handleMenuClose = () => dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null });
 
-  const handleSearch = (query: string) => {
-    if (query.length > 2) {
+  const handleSearch = useCallback(async (query: string, tabName?: string) => {
+    if (query.length > 2 || query.length === 0) {
       setSearchQuery(query)
-      searchItem(tab, query)
+      searchItem(tabName ? tabName : tab, query)
     } else setSearchQuery(query)
-  }
+  }, [searchItem, tab])
 
   const handleTabChange = (name: string) => {
     setTab(name)
-    setSearchQuery('')
     dispatcher({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
+    setSearchQuery('')
+    handleSearch('', name);
   };
 
   const renderTabs = () => (

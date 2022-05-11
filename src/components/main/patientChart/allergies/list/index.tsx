@@ -12,7 +12,9 @@ import { GREY_SEVEN } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
 import { formatValue, getAppointmentDate, getSeverityColor } from "../../../../../utils";
-import { ALLERGIES_TEXT, CARD_LAYOUT_MODAL, LIST_PAGE_LIMIT, NO_RECORDS } from "../../../../../constants";
+import {
+  ALLERGIES_TEXT, CARD_LAYOUT_MODAL, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS
+} from "../../../../../constants";
 import {
   chartReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/chartReducer";
@@ -114,18 +116,22 @@ const AllergyList = (): JSX.Element => {
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
   };
 
-  const handleSearch = async (type: string, query: string) => {
+  const handleSearch = useCallback(async (type: string, query: string) => {
     try {
-      query && await findAllAllergies({
+      await findAllAllergies({
         variables: {
           allergyInput: {
             allergyName: query, allergyType: type.toLowerCase(),
-            paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT }
+            paginationOptions: { page: 1, limit: query ? LIST_PAGE_LIMIT : INITIAL_PAGE_LIMIT }
           }
         }
       })
     } catch (error) { }
-  }
+  }, [findAllAllergies])
+
+  useEffect(() => {
+    handleSearch(Object.keys(AllergyType)[0], '')
+  }, [handleSearch])
 
   return (
     <CardLayout openSearch={isSearchOpen} cardId={ALLERGIES_TEXT} cardTitle={ALLERGIES_TEXT}
@@ -165,9 +171,9 @@ const AllergyList = (): JSX.Element => {
                   </Box>
 
                   <Box mt={1} display="flex" alignItems="center">
-                      <Box mr={2} color={getSeverityColor(allergySeverity as AllergySeverity)}>
-                        <Typography>{formatValue(allergySeverity || '')}</Typography>
-                      </Box>
+                    <Box mr={2} color={getSeverityColor(allergySeverity as AllergySeverity)}>
+                      <Typography>{formatValue(allergySeverity || '')}</Typography>
+                    </Box>
 
                     {reactions?.map((reaction, index) => {
                       const { name } = reaction || {}

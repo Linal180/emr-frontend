@@ -110,7 +110,7 @@ const ProblemList = (): JSX.Element => {
 
   const handleSearch = async (query: string) => {
     try {
-      query && await searchIcdCodes({
+      await searchIcdCodes({
         variables: {
           searchIcdCodesInput: { searchTerm: query }
         }
