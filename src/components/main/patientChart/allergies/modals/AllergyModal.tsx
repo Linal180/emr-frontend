@@ -138,8 +138,9 @@ const AllergyModal: FC<AddModalProps> = (
   }, [fetchAllReactionList, reactionList?.length])
 
   useEffect(() => {
+    !isEdit  && reset()
     setOnset('')
-  }, [allergyStartDate])
+  }, [allergyStartDate, isEdit, reset])
 
   const fetchPatientAllergy = useCallback(async () => {
     recordId && await getPatientAllergy({
@@ -159,7 +160,10 @@ const AllergyModal: FC<AddModalProps> = (
     dispatcher({ type: ActionType.SET_SELECTED_ITEM, selectedItem: undefined });
   }
 
-  const handleOnset = (onset: string) => setOnset(onset)
+  const handleOnset = (onset: string) => {
+    reset({ allergyStartDate: ''})
+    setOnset(onset)
+  }
 
   const handleDelete = async () => {
     recordId && await removePatientAllergy({
@@ -207,6 +211,7 @@ const AllergyModal: FC<AddModalProps> = (
 
   return (
     <FormProvider {...methods}>
+      {/* {JSON.stringify(allergyOnset)} */}
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box mb={2} display="flex" justifyContent="space-between" alignItems="center">
           <Typography variant='h4'>{name}</Typography>
