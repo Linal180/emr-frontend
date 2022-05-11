@@ -157,7 +157,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
                     fieldType="number"
                     controllerName="diastolicBloodPressure"
                     controllerLabel={''}
-                    placeholder={'80'}
+                    placeholder={'e.g 80'}
                     margin={'none'}
                   />
                   <Box mx={1} height={'100%'}>
@@ -167,7 +167,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
                     fieldType="number"
                     controllerName="systolicBloodPressure"
                     controllerLabel={''}
-                    placeholder={'120'}
+                    placeholder={'e.g 120'}
                     margin={'none'}
                   />
                 </Box>
