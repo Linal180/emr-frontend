@@ -4072,12 +4072,12 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, isTwoFactorEnabled?: boolean | null | undefined, userId?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
 
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, userId: string, userType: string, phone?: string | null | undefined, autoLogoutTime?: string | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
+export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, phone?: string | null | undefined, isTwoFactorEnabled: boolean, token?: string | null | undefined, userId: string, userType: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
 
 export type ForgetPasswordMutationVariables = Exact<{
   forgotPasswordInput: ForgotPasswordInput;
@@ -4114,12 +4114,26 @@ export type GetStaffUserQueryVariables = Exact<{
 
 export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename: 'Staff', id: string, email: string, lastName: string, firstName: string, phone?: string | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
 
-export type UpdateAutoLogoutTimeMutationVariables = Exact<{
-  userInfoInput: UserInfoInput;
+export type Update2FactorAuthMutationVariables = Exact<{
+  twoFactorInput: TwoFactorInput;
 }>;
 
 
-export type UpdateAutoLogoutTimeMutation = { __typename?: 'Mutation', updateAutoLogoutTime: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, autoLogoutTime?: string | null | undefined } | null | undefined } };
+export type Update2FactorAuthMutation = { __typename?: 'Mutation', update2FactorAuth: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type ResentOtpMutationVariables = Exact<{
+  seneOTPAgainInput: SeneOtpAgainInput;
+}>;
+
+
+export type ResentOtpMutation = { __typename?: 'Mutation', resentOTP: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type VerifyOtpMutationVariables = Exact<{
+  verifyCodeInput: VerifyCodeInput;
+}>;
+
+
+export type VerifyOtpMutation = { __typename?: 'Mutation', verifyOTP: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type FindAllPatientAllergiesQueryVariables = Exact<{
   patientAllergyInput: PatientAllergyInput;
@@ -5315,6 +5329,8 @@ export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
     access_token
+    isTwoFactorEnabled
+    userId
     response {
       status
       message
@@ -5365,6 +5381,8 @@ export const GetLoggedInUserDocument = gql`
     user {
       id
       email
+      phone
+      isTwoFactorEnabled
       token
       userId
       userType
@@ -5660,47 +5678,117 @@ export function useGetStaffUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetStaffUserQueryHookResult = ReturnType<typeof useGetStaffUserQuery>;
 export type GetStaffUserLazyQueryHookResult = ReturnType<typeof useGetStaffUserLazyQuery>;
 export type GetStaffUserQueryResult = Apollo.QueryResult<GetStaffUserQuery, GetStaffUserQueryVariables>;
-export const UpdateAutoLogoutTimeDocument = gql`
-    mutation updateAutoLogoutTime($userInfoInput: UserInfoInput!) {
-  updateAutoLogoutTime(userInfoInput: $userInfoInput) {
+export const Update2FactorAuthDocument = gql`
+    mutation update2FactorAuth($twoFactorInput: TwoFactorInput!) {
+  update2FactorAuth(twoFactorInput: $twoFactorInput) {
     response {
-      status
       error
+      status
       message
-    }
-    user {
-      id
-      autoLogoutTime
     }
   }
 }
     `;
-export type UpdateAutoLogoutTimeMutationFn = Apollo.MutationFunction<UpdateAutoLogoutTimeMutation, UpdateAutoLogoutTimeMutationVariables>;
+export type Update2FactorAuthMutationFn = Apollo.MutationFunction<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>;
 
 /**
- * __useUpdateAutoLogoutTimeMutation__
+ * __useUpdate2FactorAuthMutation__
  *
- * To run a mutation, you first call `useUpdateAutoLogoutTimeMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAutoLogoutTimeMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdate2FactorAuthMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdate2FactorAuthMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updateAutoLogoutTimeMutation, { data, loading, error }] = useUpdateAutoLogoutTimeMutation({
+ * const [update2FactorAuthMutation, { data, loading, error }] = useUpdate2FactorAuthMutation({
  *   variables: {
- *      userInfoInput: // value for 'userInfoInput'
+ *      twoFactorInput: // value for 'twoFactorInput'
  *   },
  * });
  */
-export function useUpdateAutoLogoutTimeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAutoLogoutTimeMutation, UpdateAutoLogoutTimeMutationVariables>) {
+export function useUpdate2FactorAuthMutation(baseOptions?: Apollo.MutationHookOptions<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAutoLogoutTimeMutation, UpdateAutoLogoutTimeMutationVariables>(UpdateAutoLogoutTimeDocument, options);
+        return Apollo.useMutation<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>(Update2FactorAuthDocument, options);
       }
-export type UpdateAutoLogoutTimeMutationHookResult = ReturnType<typeof useUpdateAutoLogoutTimeMutation>;
-export type UpdateAutoLogoutTimeMutationResult = Apollo.MutationResult<UpdateAutoLogoutTimeMutation>;
-export type UpdateAutoLogoutTimeMutationOptions = Apollo.BaseMutationOptions<UpdateAutoLogoutTimeMutation, UpdateAutoLogoutTimeMutationVariables>;
+export type Update2FactorAuthMutationHookResult = ReturnType<typeof useUpdate2FactorAuthMutation>;
+export type Update2FactorAuthMutationResult = Apollo.MutationResult<Update2FactorAuthMutation>;
+export type Update2FactorAuthMutationOptions = Apollo.BaseMutationOptions<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>;
+export const ResentOtpDocument = gql`
+    mutation resentOTP($seneOTPAgainInput: SeneOTPAgainInput!) {
+  resentOTP(seneOTPAgainInput: $seneOTPAgainInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type ResentOtpMutationFn = Apollo.MutationFunction<ResentOtpMutation, ResentOtpMutationVariables>;
+
+/**
+ * __useResentOtpMutation__
+ *
+ * To run a mutation, you first call `useResentOtpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResentOtpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resentOtpMutation, { data, loading, error }] = useResentOtpMutation({
+ *   variables: {
+ *      seneOTPAgainInput: // value for 'seneOTPAgainInput'
+ *   },
+ * });
+ */
+export function useResentOtpMutation(baseOptions?: Apollo.MutationHookOptions<ResentOtpMutation, ResentOtpMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResentOtpMutation, ResentOtpMutationVariables>(ResentOtpDocument, options);
+      }
+export type ResentOtpMutationHookResult = ReturnType<typeof useResentOtpMutation>;
+export type ResentOtpMutationResult = Apollo.MutationResult<ResentOtpMutation>;
+export type ResentOtpMutationOptions = Apollo.BaseMutationOptions<ResentOtpMutation, ResentOtpMutationVariables>;
+export const VerifyOtpDocument = gql`
+    mutation verifyOTP($verifyCodeInput: VerifyCodeInput!) {
+  verifyOTP(verifyCodeInput: $verifyCodeInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type VerifyOtpMutationFn = Apollo.MutationFunction<VerifyOtpMutation, VerifyOtpMutationVariables>;
+
+/**
+ * __useVerifyOtpMutation__
+ *
+ * To run a mutation, you first call `useVerifyOtpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVerifyOtpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [verifyOtpMutation, { data, loading, error }] = useVerifyOtpMutation({
+ *   variables: {
+ *      verifyCodeInput: // value for 'verifyCodeInput'
+ *   },
+ * });
+ */
+export function useVerifyOtpMutation(baseOptions?: Apollo.MutationHookOptions<VerifyOtpMutation, VerifyOtpMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VerifyOtpMutation, VerifyOtpMutationVariables>(VerifyOtpDocument, options);
+      }
+export type VerifyOtpMutationHookResult = ReturnType<typeof useVerifyOtpMutation>;
+export type VerifyOtpMutationResult = Apollo.MutationResult<VerifyOtpMutation>;
+export type VerifyOtpMutationOptions = Apollo.BaseMutationOptions<VerifyOtpMutation, VerifyOtpMutationVariables>;
 export const FindAllPatientAllergiesDocument = gql`
     query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
   findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {
