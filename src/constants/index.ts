@@ -227,6 +227,7 @@ export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const ADD_STAFF = "Add Staff";
 export const FRONT_SIDE = "Front Side";
 export const BACK_SIDE = "Back Side";
+export const BACK_TEXT = "Back!";
 export const DRIVING_LICENSE = "Driving License";
 export const INSURANCE_CARD = "Insurance Card";
 export const DOCUMENT_VERIFICATION = "Document Verification";
