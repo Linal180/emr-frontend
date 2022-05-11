@@ -1,25 +1,71 @@
 // packages block
+import { useCallback, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
+import { Box, Button, Grid, MenuItem, Typography } from '@material-ui/core';
 // component block
 import Selector from '../../common/Selector';
 import CardComponent from '../../common/CardComponent';
-import { Box, Button, Grid, MenuItem, Typography, } from '@material-ui/core';
 // constants, history, styling block
 import { WHITE } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
   AUTO_LOGOUT, AUTO_LOGOUT_DESCRIPTION, EMPTY_OPTION, GENERAL, PROFILE_GENERAL_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS,
+  USER_SETTINGS, PROFILE_SECURITY_MENU_ITEMS, MAPPED_AUTO_LOGOUT,
 } from '../../../constants';
+import { User, useUpdateAutoLogoutTimeMutation } from '../../../generated/graphql'
+import { AuthContext } from '../../../context';
+import Alert from '../../common/Alert';
+import { AutoLogoutInputTypes } from '../../../interfacesTypes';
 
 const AutoLogoutComponent = (): JSX.Element => {
   const classes = useHeaderStyles();
-  const methods = useForm<any>({ mode: "all" });
-  const { handleSubmit } = methods;
+  const methods = useForm<AutoLogoutInputTypes>({ mode: "all" });
+  const { user: authUser, setUser } = useContext(AuthContext);
+  const { autoLogoutTime, id } = authUser || {}
+  const { handleSubmit, setValue } = methods;
 
-  const onSubmit: SubmitHandler<any> = () => { }
+  const [updateLogoutTime] = useUpdateAutoLogoutTimeMutation({
+    onCompleted: ({ updateAutoLogoutTime }) => {
+      const { response, user } = updateAutoLogoutTime || {}
+
+      if (response) {
+        const { status } = response || {}
+        const { id: userId, autoLogoutTime } = user || {}
+        if (status && status === 200 && userId) {
+          autoLogoutTime && setUser({ ...authUser as User, autoLogoutTime })
+        }
+      }
+    },
+    onError: () => {
+      Alert.error('Auto logout time is not updated')
+    }
+  })
+
+  const onSubmit: SubmitHandler<AutoLogoutInputTypes> = async (data) => {
+    const { autoLogoutTime } = data || {}
+    const { id: autoId } = autoLogoutTime || {}
+    try {
+      id && await updateLogoutTime({ variables: { userInfoInput: { autoLogoutTime: autoId, id } } })
+    } catch (error) {
+
+    }
+  }
+
+  const setAutoLogoutTime = useCallback(() => {
+    if (autoLogoutTime) {
+      const logoutTime = MAPPED_AUTO_LOGOUT?.find(({ id }) => id === autoLogoutTime);
+      const { id, name } = logoutTime || {}
+      name && id && setValue('autoLogoutTime', { id, name })
+    }
+
+  }, [autoLogoutTime, setValue])
+
+  useEffect(() => {
+    autoLogoutTime && setAutoLogoutTime()
+  }, [autoLogoutTime, setAutoLogoutTime])
+
 
   return (
     <Box mt={5}>
@@ -69,10 +115,10 @@ const AutoLogoutComponent = (): JSX.Element => {
                     <Grid item md={10} sm={12} xs={12}>
                       <Selector
                         isRequired
-                        name="notice"
+                        name="autoLogoutTime"
                         label={AUTO_LOGOUT_DESCRIPTION}
                         value={EMPTY_OPTION}
-                        options={[]}
+                        options={MAPPED_AUTO_LOGOUT}
                       />
 
                       <Button type="submit" variant="contained" color='primary'>{SAVE_TEXT}</Button>

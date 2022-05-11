@@ -3171,3 +3171,14 @@ export const FEVER_UNITS = [
   { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
   { id: TempUnitType.DegC, name: formatValue(TempUnitType.DegC) },
 ]
+
+export const MAPPED_AUTO_LOGOUT = [
+  { id: "0", name: '30 Minutes' },
+  { id: "1", name: '1 Hour' },
+  { id: "2", name: '90 Minutes' },
+  { id: "3", name: '6 Hours' },
+  { id: "4", name: '12 Hours' },
+  { id: "5", name: '24 Hours' },
+  { id: "6", name: '2 Days' },
+  { id: "7", name: '7 Days' },
+]

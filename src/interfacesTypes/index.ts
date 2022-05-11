@@ -1256,10 +1256,18 @@ export interface VitalsLabelsProps {
   patientStates: PatientState
 }
 
-
 export interface VitalListComponentProps {
   title: string;
   date: string;
   description: string;
   isError?: boolean
+}
+
+export interface SelectStringOptions {
+  id: string;
+  name: string;
+}
+
+export interface AutoLogoutInputTypes {
+  autoLogoutTime: SelectStringOptions
 }
