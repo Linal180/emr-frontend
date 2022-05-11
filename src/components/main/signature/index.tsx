@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import SignatureCanvas from 'react-signature-canvas';
-import { Box, Button, Collapse, Grid, MenuItem, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, Collapse, Grid, MenuItem, Typography } from '@material-ui/core';
 // component block
 import Alert from '../../common/Alert';
 import CardComponent from '../../common/CardComponent';
@@ -12,32 +12,35 @@ import { AuthContext } from '../../../context';
 import { WHITE, WHITE_FOUR } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
-import { dataURLtoFile, getToken, isUserAdmin } from '../../../utils';
-import { useGetAttachmentLazyQuery } from '../../../generated/graphql';
+import { dataURLtoFile, getToken, isSuperAdmin } from '../../../utils';
+import {
+  AttachmentPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery
+} from '../../../generated/graphql';
 import {
   CLEAR_TEXT, GENERAL, PROFILE_GENERAL_MENU_ITEMS, PROFILE_SECURITY_MENU_ITEMS, SAVE_TEXT, SECURITY,
-  SIGNATURE_TEXT, UPDATE_SIGNATURE, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE,
+  SIGNATURE_TEXT, UPDATE_SIGNATURE, USER_SETTINGS, ATTACHMENT_TITLES, ADD_SIGNATURE, DASHBOARD_ROUTE,
 } from '../../../constants';
+import history from '../../../history';
 
 const SignatureComponent = (): JSX.Element => {
-  const { user, currentUser } = useContext(AuthContext);
-  const { id, roles, attachments } = user || {}
-  const { id: currentUserId, attachments: currentUserAttachments } = currentUser || {}
-  const isAdmin = isUserAdmin(roles)
-  const itemId = isAdmin ? id : currentUserId
-  const userAttachments = isAdmin ? attachments : currentUserAttachments
-  const signatureAttachment = userAttachments?.filter(attachment =>
-    attachment.title === ATTACHMENT_TITLES.Signature)[0]
-  const { id: signatureId } = signatureAttachment || {}
+  const { currentUser, user } = useContext(AuthContext);
+  const { id, attachments } = currentUser || {}
+  const { roles } = user || {}
+  const userType = currentUser?.__typename
+  const [signAttachment, setSignAttachment] = useState<AttachmentPayload['attachment']>(
+    attachments?.filter(attachment =>
+      attachment.title === ATTACHMENT_TITLES.Signature)[0]
+  )
   const classes = useHeaderStyles();
   let data = ''
   let signCanvas = useRef<any>({});
   const [open, setOpen] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false)
   const [signatureUrl, setSignatureUrl] = useState<string>('')
   const token = getToken();
   let moduleRoute = "";
 
-  switch (currentUser?.__typename) {
+  switch (userType) {
     case 'Doctor':
       moduleRoute = "doctor";
       break;
@@ -45,13 +48,9 @@ const SignatureComponent = (): JSX.Element => {
     case 'Staff':
       moduleRoute = "staff";
       break;
-
-    default:
-      moduleRoute = "users";
-      break;
   }
 
-  const [getAttachment] = useGetAttachmentLazyQuery({
+  const [getAttachment, { loading: attachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -71,31 +70,65 @@ const SignatureComponent = (): JSX.Element => {
     }
   });
 
+  const [getAttachments, { loading: attachmentsLoading }] = useGetAttachmentsLazyQuery({
+    fetchPolicy: "network-only",
+    nextFetchPolicy: 'no-cache',
+    notifyOnNetworkStatusChange: true,
+
+    onError() {
+      return null
+    },
+
+    onCompleted(data) {
+      const { getAttachments } = data || {};
+
+      if (getAttachments) {
+        const { attachments } = getAttachments
+
+        if (attachments) {
+          setSignAttachment(attachments.filter(attachment =>
+            attachment && attachment.title === ATTACHMENT_TITLES.Signature)[0]
+          )
+
+          signAttachment?.id && getAttachment({
+            variables: { getMedia: { id: signAttachment?.id } }
+          })
+        }
+      }
+    }
+  });
+
   const handleFileChange = async (file: File) => {
+    setLoading(true)
+    const { id: attachmentId } = signAttachment || {}
     const formData = new FormData();
-    signatureId && formData.append("id", signatureId);
-    itemId && formData.append("typeId", itemId);
+    attachmentId && formData.append("id", attachmentId);
+    id && formData.append("typeId", id);
     formData.append("title", ATTACHMENT_TITLES.Signature);
     file && formData.append("file", file);
 
     await axios.post(
-      signatureId ?
-        `${process.env.REACT_APP_API_BASE_URL}/users/image/update`
+      id ?
+        `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
         :
-        `${process.env.REACT_APP_API_BASE_URL}/users/upload`,
+        `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
       formData,
       {
         headers: { Authorization: `Bearer ${token}` }
       }
     ).then(response => {
-      const { status } = response;
+      const { status } = response
 
-      if (status === 201) return;
-      else Alert.error("Something went wrong!");
-    }).then(data => { })
+      if (status !== 201) Alert.error("Something went wrong!");
+      fetchAttachments()
+      setLoading(false)
+      setOpen(false)
+    }).then(() => { })
       .catch(error => {
         const { response: { data: { error: errorMessage } } } = error || {}
         Alert.error(errorMessage);
+        setLoading(false)
+        setOpen(false)
       });
   }
 
@@ -103,7 +136,7 @@ const SignatureComponent = (): JSX.Element => {
     if (signCanvas && signCanvas.current) {
       const { toDataURL } = signCanvas.current;
       data = toDataURL();
-      const file = dataURLtoFile(data, `${moduleRoute}-${itemId}-signature`)
+      const file = dataURLtoFile(data, `${moduleRoute}-${id}-signature`)
 
       handleFileChange(file);
     }
@@ -113,11 +146,23 @@ const SignatureComponent = (): JSX.Element => {
     signCanvas && signCanvas.current && signCanvas.current.clear && signCanvas.current.clear();
   }
 
-  useEffect(() => {
-    signatureId && getAttachment({
-      variables: { getMedia: { id: signatureId } }
+  const fetchAttachments = async () => {
+    id && await getAttachments({
+      variables: { getAttachment: { typeId: id } }
     })
-  }, [getAttachment, signatureId])
+  }
+
+  useEffect(() => {
+    if (isSuperAdmin(roles)) {
+      history.push(DASHBOARD_ROUTE)
+    } else {
+      signAttachment?.id && getAttachment({
+        variables: { getMedia: { id: signAttachment?.id } }
+      })
+    }
+  }, [getAttachment, roles, signAttachment?.id])
+
+  const isLoading = attachmentLoading || attachmentsLoading || loading
 
   return (
     <Box mt={5}>
@@ -163,15 +208,19 @@ const SignatureComponent = (): JSX.Element => {
         <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={SIGNATURE_TEXT}>
             <Collapse in={!open} mountOnEnter unmountOnExit>
-              {signatureUrl &&
+              {isLoading ?
+                <CircularProgress /> :
+                signatureUrl &&
                 <Box mb={3} p={2} maxWidth={300} border={`1px solid ${WHITE_FOUR}`}>
                   <img src={signatureUrl} alt="" />
                 </Box>
               }
 
               <Box mb={4} onClick={() => setOpen(!open)}>
-                <Button type="submit" variant="outlined" color='secondary'>
+                <Button type="submit" disabled={isLoading} variant="outlined" color='secondary'>
                   {signatureUrl ? UPDATE_SIGNATURE : ADD_SIGNATURE}
+
+                  {isLoading && <CircularProgress size={20} color="inherit" />}
                 </Button>
               </Box>
             </Collapse>
@@ -186,9 +235,15 @@ const SignatureComponent = (): JSX.Element => {
               </Box>
 
               <Box py={1} mb={4} display="flex" justifyContent="space-between" alignItems="center">
-                <Button variant='contained' onClick={save} color='primary' size='small'>{SAVE_TEXT}</Button>
+                <Button variant='contained' disabled={isLoading} onClick={save} color='primary' size='small'>
+                  {SAVE_TEXT}
 
-                <Button variant='outlined' onClick={clear} color='default' size='small'>{CLEAR_TEXT}</Button>
+                  {isLoading && <CircularProgress size={20} color="inherit" />}
+                </Button>
+
+                <Button variant='outlined' disabled={isLoading} onClick={clear} color='default' size='small'>
+                  {CLEAR_TEXT}
+                </Button>
               </Box>
             </Collapse>
           </CardComponent>
