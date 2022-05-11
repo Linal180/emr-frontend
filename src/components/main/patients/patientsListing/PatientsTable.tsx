@@ -2,7 +2,7 @@
 import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Collapse, Grid, Typography } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Collapse, Grid, Typography, Button } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -22,7 +22,7 @@ import {
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN,
-  PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER
+  PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER, US_DATE_FORMAT, RESET
 } from "../../../../constants";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import { FormProvider, useForm } from "react-hook-form";
@@ -30,7 +30,7 @@ import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
 import DoctorSelector from "../../../common/Selector/DoctorSelector";
-import DatePicker from "../../../common/DatePicker";
+import InputController from "../../../../controller";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -44,7 +44,7 @@ const PatientsTable: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
-  const { watch } = methods;
+  const { watch, setValue } = methods;
   const {location : {id : selectedLocationId} = {}, dob, dos, provider: {id:selectedProviderId} = {} } =watch()
 
   const [fetchAllPatientsQuery,{loading,error}] = useFetchAllPatientLazyQuery({
@@ -140,6 +140,17 @@ const PatientsTable: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
   }
 
+  const handleClearField= (fieldName:any) =>{
+    setValue(fieldName,'')
+  }
+
+  const handleReset=()=>{
+    setValue("dob",'')
+    setValue('dos','')
+    setValue("location", { id:'',name:"" })
+    setValue('provider', { id:'',name:"" })
+  }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -162,14 +173,27 @@ const PatientsTable: FC = (): JSX.Element => {
         <Collapse in={open} mountOnEnter unmountOnExit>
           <FormProvider {...methods}>
               <Box p={3} mt={2} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
-            {/* <form onSubmit={handleSubmit(onSubmit)}> */}
                 <Grid container spacing={3}>
                   <Grid item md={3} sm={6} xs={12}>
-                    <DatePicker name="dob" label={DOB} clearable={!!dob}/>
+                    <InputController
+                      fieldType="text"
+                      controllerName="dob"
+                      controllerLabel={DOB}
+                      clearable={!!dob}
+                      handleClearField={handleClearField}
+                      placeholder={US_DATE_FORMAT}
+                    />
                   </Grid>
 
                   <Grid item md={3} sm={6} xs={12}>
-                    <DatePicker name="dos" label={DATE_OF_SERVICE} clearable={!!dos}/>
+                    <InputController
+                      fieldType="text"
+                      controllerName="dos"
+                      controllerLabel={DATE_OF_SERVICE}
+                      clearable={!!dos}
+                      handleClearField={handleClearField}
+                      placeholder={US_DATE_FORMAT}
+                    />
                   </Grid>
 
                   {(isSuper || isPracAdmin) &&
@@ -191,6 +215,10 @@ const PatientsTable: FC = (): JSX.Element => {
                     />
                   </Grid>
                   {!(isSuper || isPracAdmin) && <Grid item md={5} sm={12} xs={12} />}
+                  <Grid item md={(isSuper || isPracAdmin) ? 11 : 6} />
+                  <Box px={1}>
+                    <Button variant="contained" color="secondary" onClick={handleReset}>{RESET}</Button>
+                  </Box>
                 </Grid>
               </Box>
           </FormProvider>
