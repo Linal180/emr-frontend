@@ -30,7 +30,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrnetTimestamps
+  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrentTimestamps
 } from "../../../../utils";
 import {
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
@@ -312,8 +312,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: getCurrnetTimestamps(date), practiceId,
-        scheduleEndDateTime: getCurrnetTimestamps(date), autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime,date), practiceId,
+        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, date), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
         employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due

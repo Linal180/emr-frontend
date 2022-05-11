@@ -24,7 +24,7 @@ import { ExtendedExternalAppointmentInputProps, ParamsType } from "../../../../.
 import {
   appointmentReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/appointmentReducer";
-import { getStandardTime, getTimestamps, getTimestampsForDob } from "../../../../../utils";
+import { getCurrentTimestamps, getStandardTime, getTimestampsForDob } from "../../../../../utils";
 import {
   ContactType, Genderidentity, PaymentType, Slots, useCreateExternalAppointmentMutation, useGetSlotsLazyQuery,
   useGetFacilityLazyQuery, FacilityPayload, BillingStatus
@@ -165,8 +165,8 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
               createGuardianContactInput: { contactType: ContactType.Guardian },
               createExternalAppointmentItemInput: {
                 serviceId: selectedService, facilityId, paymentType: PaymentType.Self,
-                scheduleStartDateTime: getTimestamps(scheduleStartDateTime), billingStatus: BillingStatus.Due,
-                scheduleEndDateTime: getTimestamps(scheduleEndDateTime), practiceId: practiceId || ''
+                scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime, date), billingStatus: BillingStatus.Due,
+                scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, date), practiceId: practiceId || ''
               },
 
               createPatientItemInput: {

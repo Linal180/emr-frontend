@@ -167,9 +167,12 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
 };
 
-export const getCurrnetTimestamps = (date: MaterialUiPickersDate) => {
-  const cDate = moment(date).format("MM-DD-YYYY").toString()
-  return cDate ? moment(cDate).format().toString() : moment().format().toString()
+export const getCurrentTimestamps = (existingDate: string, newDate: MaterialUiPickersDate) => {
+  const currentDate = moment(newDate).format(`MM-DD-YYYY`)
+  const existingTime = moment(existingDate).format(`hh:mm A`)
+  const date = moment(currentDate + ' ' + existingTime)
+  const updateDate = moment(date).format().toString()
+  return updateDate ? moment(updateDate).format().toString() : moment().format().toString()
 };
 
 export const getTimestampsForDob = (date: string): string => {
