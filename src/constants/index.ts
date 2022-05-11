@@ -3147,10 +3147,6 @@ export const PatientSearchingTooltipData = [
     format: PRN_FORMAT,
   },
   {
-    name: `${DOB}:`,
-    format: DOB_FORMAT,
-  },
-  {
     name: `${SSN}:`,
     format: SSN_FORMAT,
   }

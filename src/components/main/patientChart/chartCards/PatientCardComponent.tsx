@@ -128,7 +128,7 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
           <CardContent>
             {loading ?
               <ViewDataLoader columns={6} rows={5} /> :
-              patientVitals === null ? (<Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+              patientVitals === null ? (<Box color={GREY_SEVEN} margin='auto' textAlign='center' mb={2}>
                 <NoDataIcon />
 
                 <Typography variant="h6">{NO_RECORDS}</Typography>

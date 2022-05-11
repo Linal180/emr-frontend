@@ -55,6 +55,7 @@ const InputController: FC<CustomInputControlProps> = ({
             error={invalid}
             variant="outlined"
             multiline={multiline}
+            minRows={3}
             className={className}
             disabled={disabled}
             id={controllerName}

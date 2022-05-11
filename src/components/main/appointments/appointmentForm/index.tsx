@@ -30,8 +30,7 @@ import {
   appointmentReducer, Action, initialState, State, ActionType
 } from '../../../../reducers/appointmentReducer';
 import {
-  getTimestamps, getTimeFromTimestamps,
-  setRecord, getStandardTime, renderItem,
+  getTimeFromTimestamps, setRecord, getStandardTime, renderItem, getCurrentTimestamps
 } from "../../../../utils";
 import {
   PaymentType, Slots, useCreateAppointmentMutation, useGetAppointmentLazyQuery, useUpdateAppointmentMutation,
@@ -41,9 +40,9 @@ import {
   FACILITY, PROVIDER, EMPTY_OPTION, UPDATE_APPOINTMENT, CREATE_APPOINTMENT, CANT_BOOK_APPOINTMENT,
   APPOINTMENT_BOOKED_SUCCESSFULLY, APPOINTMENT_UPDATED_SUCCESSFULLY, SLOT_ALREADY_BOOKED,
   APPOINTMENT_NOT_FOUND, CANT_UPDATE_APPOINTMENT, APPOINTMENT, APPOINTMENT_TYPE, INFORMATION,
-  PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT, 
+  PATIENT, REASON, NOTES, PRIMARY_INSURANCE, SECONDARY_INSURANCE, PATIENT_CONDITION, EMPLOYMENT,
   AUTO_ACCIDENT, OTHER_ACCIDENT, VIEW_APPOINTMENTS_ROUTE, APPOINTMENT_SLOT_ERROR_MESSAGE, CONFLICT_EXCEPTION,
-  CANCELLED_APPOINTMENT_EDIT_MESSAGE, DAYS, EDIT_APPOINTMENT, SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD,  
+  CANCELLED_APPOINTMENT_EDIT_MESSAGE, DAYS, EDIT_APPOINTMENT, SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD,
   APPOINTMENT_NEW_BREAD, NO_SLOT_AVAILABLE, APPOINTMENT_EDIT_BREAD, ADD_PATIENT_MODAL,
 } from "../../../../constants";
 
@@ -53,6 +52,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const params = new URLSearchParams(window.location.search);
   const [appStartDate, setAppStartDate] = useState<string>(params.get('startDate') || '')
   const [appEndDate] = useState<string>(params.get('endDate') || '')
+  const [pId] = useState<string>(params.get('patientId') || '')
+  const [pName] = useState<string>(params.get('patientName') || '')
   const {
     fetchAllDoctorList, fetchAllServicesList, fetchAllPatientList
   } = useContext(FacilityContext)
@@ -311,8 +312,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: getTimestamps(scheduleStartDateTime), practiceId,
-        scheduleEndDateTime: getTimestamps(scheduleEndDateTime), autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime,date), practiceId,
+        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, date), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
         employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
@@ -351,7 +352,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => {
     const { id } = selectedPatient ?? {}
-    
+
     id === ADD_PATIENT_MODAL && handlePatientModal()
   }, [selectedPatient])
 
@@ -360,7 +361,12 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
     dispatch({ type: ActionType.SET_DATE, date: currentDate })
   }
 
+  useEffect(() => {
+    setValue('patientId', setRecord(pId, pName))
+  }, [pId, pName, setValue])
+
   useEffect(() => { }, [date, appStartDate])
+
 
   return (
     <>
