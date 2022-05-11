@@ -66,7 +66,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
             headCircumference: HeadCircumferenceType.Inch, respiratoryRate, diastolicBloodPressure, PainRange,
             systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI, pulseRate,
             patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature
-            ,vitalCreationDate: new Date().toUTCString()
+            , vitalCreationDate: new Date().toUTCString()
           }
         }
       })
@@ -154,20 +154,20 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
               <TableCell className={classes.input}>
                 <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                   <InputController
-                    fieldType="text"
-                    controllerName="bloodPressure"
+                    fieldType="number"
+                    controllerName="diastolicBloodPressure"
                     controllerLabel={''}
-                    placeholder={'e.g 80/120'}
+                    placeholder={'80'}
                     margin={'none'}
                   />
                   <Box mx={1} height={'100%'}>
                     <SlashIcon />
                   </Box>
                   <InputController
-                    fieldType="text"
+                    fieldType="number"
                     controllerName="systolicBloodPressure"
                     controllerLabel={''}
-                    placeholder={'e.g 80/120'}
+                    placeholder={'120'}
                     margin={'none'}
                   />
                 </Box>

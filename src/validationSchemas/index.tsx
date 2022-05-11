@@ -779,7 +779,14 @@ export const patientVitalSchema = yup.object({
       return false
     }
   }),
-  bloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), value => {
+  diastolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && value.match(/^\d[0-9]{1,1}\/\d[0-9]{1,2}$/)) return true
+      return false
+    }
+  }),
+  systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), value => {
     if (!value) return true
     else {
       if (value && value.match(/^\d[0-9]{1,1}\/\d[0-9]{1,2}$/)) return true
