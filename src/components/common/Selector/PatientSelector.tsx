@@ -1,6 +1,6 @@
 // packages block
 import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete, createFilterOptions } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
@@ -9,9 +9,10 @@ import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../reducers/patientReducer";
 import { AuthContext } from "../../../context";
-import { ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION } from "../../../constants";
+import { ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION } from "../../../constants";
 import { PatientSelectorProps } from "../../../interfacesTypes";
 import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
+import { AddNewIcon } from "../../../assets/svgs";
 
 const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRequired, isOpen, setValue }): JSX.Element => {
   const { control } = useFormContext()
@@ -74,6 +75,8 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRe
     !isOpen && setValue('patientId', EMPTY_OPTION)
   }, [isOpen, setValue])
 
+  const defaultFilterOptions = createFilterOptions();
+
   return (
     <Controller
       rules={{ required: true }}
@@ -89,10 +92,20 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRe
             disabled={disabled}
             getOptionSelected = {(option, value) => option.id === value.id}
             getOptionLabel={(option) => option.name ?? ""}
+            filterOptions={(options, state) => {
+              const results = defaultFilterOptions(options, state);
+      
+              if (results.length === 0) {
+                return [ NO_RECORDS_OPTION, DUMMY_OPTION ];
+              }
+      
+              return results;
+            }}
             renderOption={(option) => {
               if(option.id===ADD_PATIENT_MODAL){
-                return <div style={{width:"100%",backgroundColor:"GrayText", color:"white",justifyContent:"center",display:"flex"}}>{option.name}</div>
+                return <Box><AddNewIcon/> {option.name}</Box>
               }
+              
               return option.name
             }}
             renderInput={(params) => (
