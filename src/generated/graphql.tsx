@@ -790,7 +790,7 @@ export type CreateVitalInput = {
   PatientHeight?: Maybe<Scalars['String']>;
   PatientWeight?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
-  bloodPressure?: Maybe<Scalars['String']>;
+  diastolicBloodPressure?: Maybe<Scalars['String']>;
   headCircumference: HeadCircumferenceType;
   oxygenSaturation?: Maybe<Scalars['String']>;
   patientHeadCircumference?: Maybe<Scalars['String']>;
@@ -800,6 +800,7 @@ export type CreateVitalInput = {
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
   staffId?: Maybe<Scalars['String']>;
+  systolicBloodPressure?: Maybe<Scalars['String']>;
   temperatureUnitType: TempUnitType;
   unitType: UnitType;
   vitalCreationDate?: Maybe<Scalars['String']>;
@@ -2063,6 +2064,7 @@ export type MutationVerifyOtpArgs = {
 export type Observations = {
   __typename?: 'Observations';
   abnormalFlag: AbnormalFlag;
+  attachments?: Maybe<Array<Attachment>>;
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   doctorsSignOff?: Maybe<Scalars['Boolean']>;
@@ -2297,8 +2299,8 @@ export type PatientVitals = {
   addedBy?: Maybe<Staff>;
   appointment?: Maybe<Appointment>;
   appointmentId?: Maybe<Scalars['String']>;
-  bloodPressure?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  diastolicBloodPressure?: Maybe<Scalars['String']>;
   headCircumference: HeadCircumferenceType;
   id: Scalars['String'];
   oxygenSaturation?: Maybe<Scalars['String']>;
@@ -2309,6 +2311,7 @@ export type PatientVitals = {
   pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
+  systolicBloodPressure?: Maybe<Scalars['String']>;
   temperatureUnitType: TempUnitType;
   unitType: UnitType;
   updatedAt?: Maybe<Scalars['String']>;
@@ -4226,14 +4229,14 @@ export type GetPatientVitalQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientVitalQuery = { __typename?: 'Query', getPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, bloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } };
+export type GetPatientVitalQuery = { __typename?: 'Query', getPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, diastolicBloodPressure?: string | null | undefined, systolicBloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } };
 
 export type FindAllPatientVitalsQueryVariables = Exact<{
   patientVitalInput: PatientVitalInput;
 }>;
 
 
-export type FindAllPatientVitalsQuery = { __typename?: 'Query', findAllPatientVitals: { __typename?: 'PatientVitalsPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, bloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, pulseRate?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllPatientVitalsQuery = { __typename?: 'Query', findAllPatientVitals: { __typename?: 'PatientVitalsPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, diastolicBloodPressure?: string | null | undefined, systolicBloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, pulseRate?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined> | null | undefined } };
 
 export type AddPatientVitalMutationVariables = Exact<{
   createVitalInput: CreateVitalInput;
@@ -6325,7 +6328,8 @@ export const GetPatientVitalDocument = gql`
       temperatureUnitType
       smokingStatus
       patientTemperature
-      bloodPressure
+      diastolicBloodPressure
+      systolicBloodPressure
       respiratoryRate
       oxygenSaturation
       PatientHeight
@@ -6391,7 +6395,8 @@ export const FindAllPatientVitalsDocument = gql`
       temperatureUnitType
       smokingStatus
       patientTemperature
-      bloodPressure
+      diastolicBloodPressure
+      systolicBloodPressure
       respiratoryRate
       oxygenSaturation
       PatientHeight

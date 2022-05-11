@@ -3,13 +3,12 @@ import { VitalListComponentProps } from "../../../../interfacesTypes"
 import { usePatientChartingStyles } from "../../../../styles/patientCharting"
 
 
-export const VitalListComponent = ({ title, date, description, isError }: VitalListComponentProps) => {
+export const VitalListComponent = ({ title, description, isError }: VitalListComponentProps) => {
   const classes = usePatientChartingStyles()
   return (
     <Box pb={2}>
-      <Box display="flex" justifyContent="space-between">
-        <Typography className={classes.cardContentHeading}>{title}</Typography>
-        <Typography className={classes.cardContentDate}>{date}</Typography>
+      <Box display="flex">
+        <Typography className={classes.cardContentHeading}><li>{title}</li></Typography>
       </Box>
 
       <Box>

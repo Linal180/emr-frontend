@@ -114,8 +114,10 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
             </TableRow>
             <TableRow >
               {patientVitals?.map((item, i) => {
-                const { id, bloodPressure } = item || {};
-                return (<TableCell key={`${id}-bloodPressure-${i}-${bloodPressure}`} scope="row">{bloodPressure || '----'}</TableCell>)
+                const { id, systolicBloodPressure, diastolicBloodPressure } = item || {};
+                return (<TableCell key={`${id}-bloodPressure-${i}-${diastolicBloodPressure}`} scope="row">
+                  {(diastolicBloodPressure && `${diastolicBloodPressure}/${systolicBloodPressure}`) || '----'}
+                </TableCell>)
               })}
             </TableRow>
             <TableRow >

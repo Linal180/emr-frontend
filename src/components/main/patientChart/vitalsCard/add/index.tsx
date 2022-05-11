@@ -1,9 +1,9 @@
 // packages block
-import { useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress } from '@material-ui/core';
+import { Button, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Box } from '@material-ui/core';
 //component block
 import Selector from '../../../../common/Selector';
 import InputController from '../../../../../controller';
@@ -14,17 +14,21 @@ import {
 } from '../../../../../generated/graphql';
 import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
 import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
-import { getBMI, getCurrentDate, renderTh } from '../../../../../utils'
+import {
+  centimeterToMeter, getBMI, getCurrentDate, inchesToMeter, ounceToKilogram, poundsToKilogram, renderTh,
+} from '../../../../../utils'
 import { patientVitalSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
+import { SlashIcon } from '../../../../../assets/svgs'
 
-export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
+export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPatientVitalsProps) => {
 
   const classes = usePatientVitalFormStyles()
   const { id: patientId } = useParams<ParamsType>()
   const methods = useForm<VitalFormInput>({ mode: "all", resolver: yupResolver(patientVitalSchema) });
   const { handleSubmit, reset, watch, setValue } = methods;
   const { PatientHeight, PatientWeight } = watch()
+  const { weightUnit, heightUnit } = patientStates || {}
 
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -49,7 +53,7 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
   const onSubmit: SubmitHandler<VitalFormInput> = async (data) => {
 
     const {
-      smokingStatus, respiratoryRate, bloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI,
+      smokingStatus, respiratoryRate, diastolicBloodPressure, systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI,
       PainRange, pulseRate, patientHeadCircumference, patientTemperature } = data || {}
     const { id: smokingStatusLabel } = smokingStatus || {}
 
@@ -59,9 +63,10 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
         variables: {
           createVitalInput: {
             patientId, weightUnit: WeightType.Kg, unitType: UnitType.Inch, temperatureUnitType: TempUnitType.DegF,
-            headCircumference: HeadCircumferenceType.Inch, respiratoryRate, bloodPressure, oxygenSaturation,
-            PatientHeight, PatientWeight, PatientBMI, PainRange, smokingStatus: smokingStatusLabel as SmokingStatus,
-            pulseRate, patientHeadCircumference, patientTemperature, vitalCreationDate: new Date().toUTCString()
+            headCircumference: HeadCircumferenceType.Inch, respiratoryRate, diastolicBloodPressure, PainRange,
+            systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI, pulseRate,
+            patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature
+            , vitalCreationDate: new Date().toUTCString()
           }
         }
       })
@@ -69,13 +74,45 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
     } catch (error) {
       Alert.error(VITAL_ERROR_MSG)
     }
-
   }
 
   const setPatientBMI = useCallback(() => {
-    const bmi = getBMI(parseFloat(PatientWeight), parseFloat(PatientHeight))
+    let weight = 0;
+    let height = 0;
+    const { id: weightUnitId } = weightUnit || {}
+    const { id: heightUnitId } = heightUnit || {}
+    const patientWeight = parseFloat(PatientWeight);
+
+    switch (weightUnitId) {
+      case WeightType.Kg:
+        weight = patientWeight;
+        break;
+      case WeightType.Pound:
+        weight = poundsToKilogram(patientWeight);
+        break;
+      case WeightType.PoundOunce:
+        weight = ounceToKilogram(patientWeight);
+        break;
+      default:
+        weight = patientWeight;
+        break;
+    }
+
+    const patientHeight = parseFloat(PatientHeight);
+    switch (heightUnitId) {
+      case UnitType.Centimeter:
+        height = centimeterToMeter(patientHeight)
+        break;
+      case UnitType.Inch:
+        height = inchesToMeter(patientHeight)
+        break;
+      default:
+        height = inchesToMeter(patientHeight)
+        break;
+    }
+    const bmi = getBMI(weight, height)
     bmi && setValue('PatientBMI', bmi?.toString())
-  }, [PatientWeight, PatientHeight, setValue])
+  }, [PatientWeight, PatientHeight, setValue, heightUnit, weightUnit])
 
   useMemo(() => {
     PatientWeight && PatientHeight && setPatientBMI()
@@ -115,13 +152,26 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
             </TableRow>
             <TableRow>
               <TableCell className={classes.input}>
-                <InputController
-                  fieldType="text"
-                  controllerName="bloodPressure"
-                  controllerLabel={''}
-                  placeholder={'e.g 80/120'}
-                  margin={'none'}
-                />
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                  <InputController
+                    fieldType="number"
+                    controllerName="diastolicBloodPressure"
+                    controllerLabel={''}
+                    placeholder={'e.g 80'}
+                    margin={'none'}
+                  />
+                  <Box mx={1} height={'100%'}>
+                    <SlashIcon />
+                  </Box>
+                  <InputController
+                    fieldType="number"
+                    controllerName="systolicBloodPressure"
+                    controllerLabel={''}
+                    placeholder={'e.g 120'}
+                    margin={'none'}
+                  />
+                </Box>
+
               </TableCell>
             </TableRow>
             <TableRow>
@@ -219,4 +269,4 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
       </form>
     </FormProvider>
   )
-}
+})

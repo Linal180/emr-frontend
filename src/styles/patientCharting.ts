@@ -16,16 +16,24 @@ export const usePatientChartingStyles = makeStyles(() =>
       color: GREY_SEVEN
     },
 
+    cardContentDateText: {
+      fontWeight: 500,
+      fontSize: 16,
+      color: BLACK_ONE
+    },
+
     cardContentDescription: {
       fontWeight: 500,
       fontSize: 14,
-      color: GREY_SEVEN
+      color: GREY_SEVEN,
+      marginLeft: 22
     },
 
     cardContentDescriptionError: {
       fontWeight: 500,
       fontSize: 14,
-      color: RED
+      color: RED,
+      marginLeft: 22
     },
 
     dropdown: {
