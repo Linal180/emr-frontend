@@ -2,7 +2,7 @@
 import { FC, useReducer, Reducer, useCallback, useContext, useEffect } from "react";
 import { Autocomplete, createFilterOptions } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
+import { TextField, FormControl, FormHelperText, InputLabel, Box, Typography } from "@material-ui/core";
 // utils and interfaces/types block
 import { isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderPatient, requiredLabel } from "../../../utils";
 import {
@@ -12,7 +12,8 @@ import { AuthContext } from "../../../context";
 import { ADD_PATIENT_MODAL, DROPDOWN_PAGE_LIMIT, EMPTY_OPTION, NO_RECORDS_OPTION } from "../../../constants";
 import { PatientSelectorProps } from "../../../interfacesTypes";
 import { PatientsPayload, useFindAllPatientListLazyQuery } from "../../../generated/graphql";
-import { AddNewIcon } from "../../../assets/svgs";
+import { AddPatientIcon } from "../../../assets/svgs";
+import { GREY } from "../../../theme";
 
 const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRequired, isOpen, setValue }): JSX.Element => {
   const { control } = useFormContext()
@@ -103,7 +104,13 @@ const PatientSelector: FC<PatientSelectorProps> = ({ name, label, disabled, isRe
             }}
             renderOption={(option) => {
               if(option.id===ADD_PATIENT_MODAL){
-                return <Box><AddNewIcon/> {option.name}</Box>
+                return (
+                  <Box display='flex' alignItems='center' bgcolor={GREY} borderRadius={5} width='100%' p={1.5}>
+                    <AddPatientIcon/>
+                    <Box p={0.5} />
+                    <Typography variant="h6">{option.name}</Typography>
+                  </Box>
+                )
               }
               
               return option.name
