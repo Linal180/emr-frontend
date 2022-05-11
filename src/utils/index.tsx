@@ -716,6 +716,11 @@ export const getFormatDateString = (date: Maybe<string> | undefined,format="YYYY
   return moment(date).format(format).toString()
 };
 
+export const convertDateFromUnix = (date: Maybe<string> | undefined,format="MM-DD-YYYY") => {
+  if (!date) return '';
+  return moment(date,'x').format(format).toString()
+};
+
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
   const formData = new FormData();
   attachmentId && formData.append("id", attachmentId);

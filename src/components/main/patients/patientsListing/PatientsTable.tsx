@@ -2,7 +2,7 @@
 import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Collapse, Grid, Typography } from "@material-ui/core";
+import { Box, Table, TableBody, TableHead, TableRow, TableCell, Collapse, Grid, Typography } from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
@@ -18,14 +18,14 @@ import {
   patientReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/patientReducer";
 import {
-  useFindAllPatientLazyQuery, PatientsPayload, PatientPayload, useRemovePatientMutation, useFetchAllPatientLazyQuery
+  PatientsPayload, PatientPayload, useRemovePatientMutation, useFetchAllPatientLazyQuery
 } from "../../../../generated/graphql";
 import {
   ACTION, EMAIL, PHONE, PAGE_LIMIT, CANT_DELETE_PATIENT, DELETE_PATIENT_DESCRIPTION, PATIENTS_ROUTE, NAME, CITY, PATIENT, PRN,
-  PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER, SEARCH
+  PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER
 } from "../../../../constants";
 import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { PatientSearchInputProps } from "../../../../interfacesTypes";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
 import FacilitySelector from "../../../common/Selector/FacilitySelector";
@@ -44,33 +44,10 @@ const PatientsTable: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deletePatientId, patients } = state;
   const methods = useForm<PatientSearchInputProps>({ mode: "all" });
-  const { handleSubmit, watch } = methods;
-  const { location: { id: selectedLocationId } = {} } = watch()
+  const { watch } = methods;
+  const {location : {id : selectedLocationId} = {}, dob, dos, provider: {id:selectedProviderId} = {} } =watch()
 
-  const [findAllPatient, { loading, error }] = useFindAllPatientLazyQuery({
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: "network-only",
-
-    onError() {
-      dispatch({ type: ActionType.SET_PATIENTS, patients: [] })
-    },
-
-    onCompleted(data) {
-      const { findAllPatient } = data || {};
-
-      if (findAllPatient) {
-        const { pagination, patients } = findAllPatient
-        patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
-
-        if (pagination) {
-          const { totalPages } = pagination
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
-        }
-      }
-    }
-  });
-
-  const [fetchAllPatientsQuery] = useFetchAllPatientLazyQuery({
+  const [fetchAllPatientsQuery,{loading,error}] = useFetchAllPatientLazyQuery({
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
 
@@ -100,11 +77,15 @@ const PatientsTable: FC = (): JSX.Element => {
         isPracAdmin ? { practiceId, ...pageInputs } :
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
-      patientsInputs && await findAllPatient({
-        variables: { patientInput: { ...patientsInputs, searchString: searchQuery } }
+      patientsInputs && await fetchAllPatientsQuery({
+        variables: { patientInput: { 
+          ...patientsInputs, searchString: searchQuery, dob:getFormatDateString(dob,'MM-DD-YYYY'),
+          doctorId:selectedProviderId,
+          appointmentDate:getFormatDateString(dos),
+        ...( !isFacAdmin ? {facilityId: selectedLocationId}:{}),} }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllPatient, searchQuery])
+  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, fetchAllPatientsQuery, searchQuery, dob, selectedProviderId, dos, selectedLocationId])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     notifyOnNetworkStatusChange: true,
@@ -134,8 +115,11 @@ const PatientsTable: FC = (): JSX.Element => {
     fetchAllPatients()
   }, [page, searchQuery, fetchAllPatients]);
 
-  const handleChange = (_: ChangeEvent<unknown>, page: number) =>
+  const handleChange = (_: ChangeEvent<unknown>, page: number) => {
     dispatch({ type: ActionType.SET_PAGE, page });
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' });
+  }
+   
 
   const onDeleteClick = (id: string) => {
     if (id) {
@@ -154,29 +138,6 @@ const PatientsTable: FC = (): JSX.Element => {
     dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
     dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     dispatch({ type: ActionType.SET_PAGE, page: 1 })
-  }
-
-  const onSubmit: SubmitHandler<PatientSearchInputProps> = async ({ dob, dos, provider, location }) => {
-    const { id: selectedLocation } = location || {};
-    const { id: selectedProvider } = provider || {};
-
-    const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-    const patientsInputs = isSuper ? { ...pageInputs } :
-      isPracAdmin ? { practiceId, ...pageInputs } :
-        isFacAdmin ? { facilityId, ...pageInputs } : undefined
-
-    fetchAllPatientsQuery({
-      variables: {
-        patientInput: {
-          ...patientsInputs,
-          dob: getFormatDateString(dob, 'MM-DD-YYYY'),
-          doctorId: selectedProvider,
-          appointmentDate: getFormatDateString(dos),
-          ...(!isFacAdmin ? { facilityId: selectedLocation } : {}),
-          ...pageInputs
-        }
-      }
-    })
   }
 
   return (
@@ -200,15 +161,15 @@ const PatientsTable: FC = (): JSX.Element => {
 
         <Collapse in={open} mountOnEnter unmountOnExit>
           <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(onSubmit)}>
               <Box p={3} mt={2} bgcolor={GREY_NINE} border={`1px solid ${GREY_TEN}`} borderRadius={4}>
+            {/* <form onSubmit={handleSubmit(onSubmit)}> */}
                 <Grid container spacing={3}>
                   <Grid item md={3} sm={6} xs={12}>
-                    <DatePicker isRequired name="dob" label={DOB} />
+                    <DatePicker name="dob" label={DOB} clearable={!!dob}/>
                   </Grid>
 
                   <Grid item md={3} sm={6} xs={12}>
-                    <DatePicker isRequired name="dos" label={DATE_OF_SERVICE} />
+                    <DatePicker name="dos" label={DATE_OF_SERVICE} clearable={!!dos}/>
                   </Grid>
 
                   {(isSuper || isPracAdmin) &&
@@ -225,19 +186,13 @@ const PatientsTable: FC = (): JSX.Element => {
                     <DoctorSelector
                       label={PROVIDER}
                       name="provider"
-                      facilityId={selectedLocationId}
+                      shouldOmitFacilityId
                       addEmpty
                     />
                   </Grid>
                   {!(isSuper || isPracAdmin) && <Grid item md={5} sm={12} xs={12} />}
-
-                  <Grid item md={(isSuper || isPracAdmin) ? 11 : 6} />
-                  <Box px={1}>
-                    <Button variant="contained" color="secondary" type="submit">{SEARCH}</Button>
-                  </Box>
                 </Grid>
               </Box>
-            </form>
           </FormProvider>
         </Collapse>
 
