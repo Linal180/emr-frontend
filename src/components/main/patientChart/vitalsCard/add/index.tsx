@@ -1,5 +1,5 @@
 // packages block
-import { memo, useCallback, useMemo, useState } from 'react'
+import { Fragment, memo, useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -8,27 +8,24 @@ import { Button, Table, TableBody, TableCell, TableHead, TableRow, CircularProgr
 import Selector from '../../../../common/Selector';
 import InputController from '../../../../../controller';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { EMPTY_OPTION, MAPPED_SMOKING_STATUS, SAVE_TEXT, VITAL_ERROR_MSG } from '../../../../../constants';
+import { EMPTY_OPTION, IN_TEXT, KG_TEXT, MAPPED_SMOKING_STATUS, SAVE_TEXT, VITAL_ERROR_MSG } from '../../../../../constants';
 import {
   HeadCircumferenceType, SmokingStatus, TempUnitType, UnitType, useAddPatientVitalMutation, WeightType
 } from '../../../../../generated/graphql';
 import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
 import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
-import {
-  centimeterToMeter, getBMI, getCurrentDate, inchesToMeter, ounceToKilogram, poundsToKilogram, renderTh,
-} from '../../../../../utils'
+import { getBMI, getCurrentDate, inchesToMeter, renderTh, } from '../../../../../utils'
 import { patientVitalSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
 import { SlashIcon } from '../../../../../assets/svgs'
 
-export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPatientVitalsProps) => {
+export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
 
   const classes = usePatientVitalFormStyles()
   const { id: patientId } = useParams<ParamsType>()
   const methods = useForm<VitalFormInput>({ mode: "all", resolver: yupResolver(patientVitalSchema) });
   const { handleSubmit, reset, watch, setValue } = methods;
   const { PatientHeight, PatientWeight } = watch()
-  const { weightUnit, heightUnit } = patientStates || {}
 
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -77,42 +74,15 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
   }
 
   const setPatientBMI = useCallback(() => {
-    let weight = 0;
-    let height = 0;
-    const { id: weightUnitId } = weightUnit || {}
-    const { id: heightUnitId } = heightUnit || {}
-    const patientWeight = parseFloat(PatientWeight);
-
-    switch (weightUnitId) {
-      case WeightType.Kg:
-        weight = patientWeight;
-        break;
-      case WeightType.Pound:
-        weight = poundsToKilogram(patientWeight);
-        break;
-      case WeightType.PoundOunce:
-        weight = ounceToKilogram(patientWeight);
-        break;
-      default:
-        weight = patientWeight;
-        break;
-    }
 
     const patientHeight = parseFloat(PatientHeight);
-    switch (heightUnitId) {
-      case UnitType.Centimeter:
-        height = centimeterToMeter(patientHeight)
-        break;
-      case UnitType.Inch:
-        height = inchesToMeter(patientHeight)
-        break;
-      default:
-        height = inchesToMeter(patientHeight)
-        break;
-    }
-    const bmi = getBMI(weight, height)
+    const patientWeight = parseFloat(PatientWeight);
+
+    const height = inchesToMeter(patientHeight)
+    const bmi = getBMI(patientWeight, height)
+
     bmi && setValue('PatientBMI', bmi?.toString())
-  }, [PatientWeight, PatientHeight, setValue, heightUnit, weightUnit])
+  }, [PatientWeight, PatientHeight, setValue])
 
   useMemo(() => {
     PatientWeight && PatientHeight && setPatientBMI()
@@ -155,9 +125,9 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
                 <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                   <InputController
                     fieldType="number"
-                    controllerName="diastolicBloodPressure"
+                    controllerName="systolicBloodPressure"
                     controllerLabel={''}
-                    placeholder={'e.g 80'}
+                    placeholder={'e.g 120'}
                     margin={'none'}
                   />
                   <Box mx={1} height={'100%'}>
@@ -165,9 +135,9 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
                   </Box>
                   <InputController
                     fieldType="number"
-                    controllerName="systolicBloodPressure"
+                    controllerName="diastolicBloodPressure"
                     controllerLabel={''}
-                    placeholder={'e.g 120'}
+                    placeholder={'e.g 80'}
                     margin={'none'}
                   />
                 </Box>
@@ -190,6 +160,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
                   fieldType="number"
                   controllerName="PatientHeight"
                   controllerLabel={''}
+                  endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
                 />
               </TableCell>
@@ -199,6 +170,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
                 <InputController
                   fieldType="number"
                   controllerName="PatientWeight"
+                  endAdornment={<Fragment>{KG_TEXT}</Fragment>}
                   controllerLabel={''}
                   margin={'none'}
                 />
@@ -242,6 +214,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
                   fieldType="number"
                   controllerName="patientHeadCircumference"
                   controllerLabel={''}
+                  endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
                 />
               </TableCell>
@@ -252,6 +225,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates }: AddPati
                   fieldType="number"
                   controllerName="patientTemperature"
                   controllerLabel={''}
+                  endAdornment={<Box dangerouslySetInnerHTML={{ __html: `<sup>o</sup>F` }} ></Box>}
                   margin={'none'}
                 />
               </TableCell>

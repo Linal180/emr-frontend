@@ -62,8 +62,9 @@ export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
+export const DASHES = '--'
 export const CURRENT_DATE = new Date();
-export const LATEST_RECORDED_DATE = "Latest Recorded Date"
+export const LATEST_RECORDED_DATE = "Recorded Date"
 export const NOTE = "Note";
 export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
@@ -125,6 +126,12 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const BPM_TEXT = 'bpm'
+export const RPM_TEXT = 'rpm'
+export const MMHG_TEXT = 'mmHg'
+export const KG_PER_METER_SQUARE_TEXT = 'kg/m2'
+export const ONE_TO_TEN_TEXT = '1-10'
+export const PERCENTAGE = '%'
 export const KG_TEXT = "KG"
 export const LBS_TEXT = "LBS"
 export const LB_TEXT = "LB"

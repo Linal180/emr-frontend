@@ -1,5 +1,6 @@
 // packages block
 import { Table, TableBody, TableCell, TableRow, TableHead, Typography, TableContainer } from '@material-ui/core';
+import { DASHES } from '../../../../../constants';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { HeadCircumferenceType, UnitType, WeightType, TempUnitType } from '../../../../../generated/graphql';
 import { VitalListingTableProps } from '../../../../../interfacesTypes';
@@ -28,7 +29,7 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
       }
     }
     else {
-      return '----';
+      return DASHES;
     }
   }
 
@@ -45,7 +46,7 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
       }
     }
     else {
-      return '----'
+      return DASHES
     }
   }
 
@@ -62,7 +63,7 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
       }
     }
     else {
-      return '----'
+      return DASHES
     }
   }
 
@@ -79,7 +80,7 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
       }
     }
     else {
-      return '----'
+      return DASHES
     }
   }
 
@@ -101,7 +102,7 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
                 const { id, pulseRate } = item || {};
                 return (<TableCell key={`${id}-pulseRate-${i}-${pulseRate}`} scope="row">
                   <Typography>
-                    {pulseRate || '----'}
+                    {pulseRate || DASHES}
                   </Typography>
                 </TableCell>)
               })}
@@ -109,21 +110,21 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
             <TableRow >
               {patientVitals?.map((item, i) => {
                 const { id, respiratoryRate } = item || {};
-                return (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row">{respiratoryRate || '----'}</TableCell>)
+                return (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row">{respiratoryRate || DASHES}</TableCell>)
               })}
             </TableRow>
             <TableRow >
               {patientVitals?.map((item, i) => {
                 const { id, systolicBloodPressure, diastolicBloodPressure } = item || {};
                 return (<TableCell key={`${id}-bloodPressure-${i}-${diastolicBloodPressure}`} scope="row">
-                  {(diastolicBloodPressure && `${diastolicBloodPressure}/${systolicBloodPressure}`) || '----'}
+                  {(systolicBloodPressure && `${systolicBloodPressure}/${diastolicBloodPressure}`) || DASHES}
                 </TableCell>)
               })}
             </TableRow>
             <TableRow >
               {patientVitals?.map((item, i) => {
                 const { id, oxygenSaturation } = item || {};
-                return (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row">{oxygenSaturation || '----'}</TableCell>)
+                return (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row">{oxygenSaturation || DASHES}</TableCell>)
               })}
             </TableRow>
             <TableRow >
@@ -145,20 +146,20 @@ export const VitalListingTable = ({ patientVitals, patientStates }: VitalListing
             <TableRow >
               {patientVitals?.map((item, i) => {
                 const { id, PatientBMI } = item || {};
-                return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">{PatientBMI || '----'}</TableCell>)
+                return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">{PatientBMI || DASHES}</TableCell>)
               })}
             </TableRow>
             <TableRow >
               {patientVitals?.map((item, i) => {
                 const { id, PainRange } = item || {};
-                return (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row">{PainRange || '----'}</TableCell>)
+                return (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row">{PainRange || DASHES}</TableCell>)
               })}
             </TableRow>
             <TableRow >
               {patientVitals?.map((item, i) => {
                 const { id, smokingStatus } = item || {};
                 return (<TableCell key={`${id}-smokingStatus-${i}-${smokingStatus}`} scope="row">
-                  {formatValue(smokingStatus || "") || '----'}</TableCell>)
+                  {formatValue(smokingStatus || "") || DASHES}</TableCell>)
               })}
             </TableRow>
             <TableRow >
