@@ -159,7 +159,10 @@ const AllergyModal: FC<AddModalProps> = (
     dispatcher({ type: ActionType.SET_SELECTED_ITEM, selectedItem: undefined });
   }
 
-  const handleOnset = (onset: string) => setOnset(onset)
+  const handleOnset = (onset: string) => {
+    reset({ allergyStartDate: ''})
+    setOnset(onset)
+  }
 
   const handleDelete = async () => {
     recordId && await removePatientAllergy({
