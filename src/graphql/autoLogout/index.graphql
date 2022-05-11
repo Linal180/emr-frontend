@@ -1,0 +1,14 @@
+mutation updateAutoLogoutTime($userInfoInput: UserInfoInput!) {
+  updateAutoLogoutTime(userInfoInput: $userInfoInput) {
+    response {
+      status
+      error
+      message
+    }
+    
+    user {
+      id
+      autoLogoutTime
+    }
+  }
+}
