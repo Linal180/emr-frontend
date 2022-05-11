@@ -61,10 +61,10 @@ const PatientsTable: FC = (): JSX.Element => {
       if (fetchAllPatients) {
         const { pagination, patients } = fetchAllPatients
         patients && dispatch({ type: ActionType.SET_PATIENTS, patients: patients as PatientsPayload['patients'] })
-
+        
         if (pagination) {
           const { totalPages } = pagination
-          totalPages && dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
+          typeof totalPages==='number'  &&  dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages })
         }
       }
     }
