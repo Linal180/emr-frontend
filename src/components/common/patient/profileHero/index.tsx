@@ -10,14 +10,14 @@ import { Box, Avatar, CircularProgress, Button, Typography } from "@material-ui/
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
-import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A,
+  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, APPOINTMENTS_ROUTE
 } from "../../../../constants";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
+import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
@@ -122,7 +122,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
-
+  const patientName = `${firstName} ${lastName}`;
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
@@ -258,7 +258,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                 </Button>
               </Box>}
 
-              <Button color="secondary" variant="contained">
+              <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
                 {SCHEDULE_APPOINTMENTS_TEXT}
               </Button>
             </Box>
