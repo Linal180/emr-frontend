@@ -17,8 +17,8 @@ import {
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
   APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
-  SERVICE_NAME_TEXT, DOB, FORM_NAME, PAGER, ALLERGY_DATE_VALIDATION_MESSAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT,
-  OXYGEN_SATURATION_TEXT, HEIGHT_TEXT, WEIGHT_TEXT, PAIN_TEXT, HEAD_CIRCUMFERENCE, FEVER_TEXT, BLOOD_PRESSURE_TEXT, REACTIONS_VALIDATION_MESSAGE,
+  SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP, ALLERGY_DATE_VALIDATION_MESSAGE, REACTIONS_VALIDATION_MESSAGE,
+  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PULSE_TEXT, RESPIRATORY_RATE_TEXT, WEIGHT_TEXT
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -84,6 +84,14 @@ const notRequiredPhone = (label: string) => {
 
         return !!value && value.length >= 10
       })
+}
+
+const notRequiredOTP = (label: string, isRequired: boolean) => {
+  return yup.string()
+    .test('', requiredMessage(label), value => isRequired ? !!value : true)
+    .matches(NUMBER_REGEX, ValidOTP())
+    .min(6, MinLength(label, 6)).max(6, MaxLength(label, 6))
+    .required(requiredMessage(label))
 }
 
 const stateSchema = (isRequired: boolean) => {
@@ -318,6 +326,10 @@ const firstLastNameSchema = {
 
 export const loginValidationSchema = yup.object({
   ...emailSchema,
+  ...passwordSchema
+});
+
+export const twoFAValidationSchema = yup.object({
   ...passwordSchema
 });
 
@@ -727,6 +739,14 @@ export const facilityScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(DAY), ({ id }) => !!id),
+})
+
+const otpBasicSchema = {
+  otpCode: notRequiredOTP(OTP_CODE, true),
+}
+
+export const otpSchema = yup.object({
+  ...otpBasicSchema,
 })
 
 export const createPatientAllergySchema = (onset: string) => yup.object({
