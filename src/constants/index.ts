@@ -127,6 +127,7 @@ export enum DAYS {
   Sunday = "Sunday",
 }
 export const BPM_TEXT = 'bpm'
+export const PATIENT_VITAL_TEXT = 'Patient Vitals'
 export const RPM_TEXT = 'rpm'
 export const MMHG_TEXT = 'mmHg'
 export const KG_PER_METER_SQUARE_TEXT = 'kg/m2'
@@ -2023,6 +2024,7 @@ export const FORMS_ADD_BREAD = { text: ADD_FORM, link: "" };
 export const FORMS_EDIT_BREAD = { text: EDIT_FORM, link: "" };
 
 export const PATIENT_CHART_BREAD = { text: PATIENT_CHART, link: "" };
+export const PATIENT_VITAL_BREAD = { text: PATIENT_VITAL_TEXT, link: "" };
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: "" };
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` };
 export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: "" };
