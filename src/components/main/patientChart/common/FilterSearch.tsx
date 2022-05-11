@@ -8,7 +8,7 @@ import AllergyModal from '../allergies/modals/AllergyModal';
 import { FilterSearchProps } from '../../../../interfacesTypes';
 import { Allergies, IcdCodes } from '../../../../generated/graphql';
 import { GRAY_FIVE, GRAY_SIX, GREY_SEVEN } from '../../../../theme';
-import { ClearIcon, SmallSearchIcon } from '../../../../assets/svgs';
+import { ClearIcon, NoDataIcon, SmallSearchIcon } from '../../../../assets/svgs';
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
 import { chartReducer, Action, initialState, State, ActionType } from "../../../../reducers/chartReducer";
 import {
@@ -67,12 +67,11 @@ const FilterSearch: FC<FilterSearchProps> = (
   );
 
   const renderSearchData = () =>
-    <Box maxHeight={300} className="overflowY-auto" display="flex"
+    <Box maxHeight={200} minHeight={200} maxWidth={300} minWidth={300} className="overflowY-auto" display="flex"
       flexDirection="column" alignItems="flex-start"
     >
       {!!loading ?
         <Box alignSelf="center">
-
           <CircularProgress size={25} color="inherit" disableShrink />
         </Box>
         :
@@ -100,7 +99,11 @@ const FilterSearch: FC<FilterSearchProps> = (
               )
             } else return null
           }) :
-          <Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)
+          <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            <NoDataIcon />
+            
+            <Typography variant="h6">{NO_RECORDS}</Typography>
+          </Box>)
       }
     </Box>
 

@@ -22,8 +22,8 @@ import {
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
-  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,
-  CreatePatientAllergyInput, Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, PatientVitalsPayload
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,CreatePatientAllergyInput,
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload
 } from "../generated/graphql";
 import { CARD_LAYOUT_MODAL } from "../constants";
 
@@ -178,6 +178,14 @@ export interface ConfirmationDaysTypes extends DialogTypes {
   title?: string;
   id?: string;
   isEdit?: boolean;
+}
+
+export interface ConfirmationAuthenticationTypes extends DialogTypes {
+  title?: string;
+  isLoading?: boolean;
+  actionText?: string;
+  success?: boolean;
+  description?: string;
 }
 
 export interface GraphModalProps extends DialogTypes {
@@ -359,6 +367,7 @@ export interface FacilitySelectorProps {
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
   facilityId?: string
+  shouldOmitFacilityId?: boolean
 }
 
 export interface CardSelectorProps {
@@ -462,6 +471,7 @@ export interface PickerProps {
   label: string;
   error?: string;
   isRequired?: boolean;
+  clearable?: boolean
 }
 
 export interface TimePickerProps {
@@ -1215,6 +1225,26 @@ export interface PatientSearchInputProps {
   provider: SelectorOption;
 }
 
+export type TwoFactorInputProps = Omit<TwoFactorInput, "userId">;
+
+export type VerifyCodeInputProps = Omit<VerifyCodeInput, "id">;
+
+export interface OTPInputProps {
+  value: number | string;
+  onChange: any;
+  numInputs: number;
+  separator?: JSX.Element | undefined;
+  isDisabled?: boolean | undefined;
+  shouldAutoFocus?: boolean | undefined;
+  hasErrored?: boolean | undefined;
+  isInputNum?: boolean | undefined;
+  containerStyle?: string | React.CSSProperties | undefined;
+  inputStyle?: string | React.CSSProperties | undefined;
+  focusStyle?: string | React.CSSProperties | undefined;
+  disabledStyle?: string | React.CSSProperties | undefined;
+  errorStyle?: string | React.CSSProperties | undefined;
+}
+
 export interface FilterSearchProps {
   tabs?: string[];
   loading: boolean;
@@ -1262,10 +1292,18 @@ export interface VitalsLabelsProps {
   patientStates: PatientState
 }
 
-
 export interface VitalListComponentProps {
   title: string;
   date: string;
   description: string;
   isError?: boolean
+}
+
+export interface SelectStringOptions {
+  id: string;
+  name: string;
+}
+
+export interface AutoLogoutInputTypes {
+  autoLogoutTime: SelectStringOptions
 }

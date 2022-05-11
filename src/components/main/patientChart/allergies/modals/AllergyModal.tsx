@@ -25,8 +25,8 @@ import {
   useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation, Allergies,
 } from '../../../../../generated/graphql';
 import {
-  ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
-  PATIENT_ALLERGY_DELETED, PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, START_DATE, UPDATE
+  ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED,
+  PATIENT_ALLERGY_DELETED, PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, UPDATE
 } from '../../../../../constants';
 
 const AllergyModal: FC<AddModalProps> = (
@@ -234,7 +234,7 @@ const AllergyModal: FC<AddModalProps> = (
               options={MAPPED_ALLERGY_SEVERITY}
             />
 
-            <DatePicker name="allergyStartDate" label={START_DATE} />
+            <DatePicker name="allergyStartDate" label={ONSET_DATE} />
 
             <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
               {onsets.map(onSet =>

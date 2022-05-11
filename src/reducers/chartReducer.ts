@@ -25,13 +25,13 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_ITEM_ID = 'setItemId',
-  SET_IS_FORM_OPEN = 'setFormOpen',
-  SET_IS_SEARCH_OPEN = 'setSearchOpen',
   SET_SELECTED_ITEM = 'setSelectedItem',
   SET_REACTION_PAGE = 'setReactionPage',
   SET_REACTION_LIST = 'setReactionList',
+  SET_IS_SEARCH_OPEN = 'setSearchOpen',
+  SET_IS_FORM_OPEN = 'setFormOpen',
+  SET_SELECTED_REACTIONS = "SET_SELECTED_REACTIONS",
   SET_SEARCHED_DATA = 'setSearchedData',
-  SET_SELECTED_REACTIONS = 'setSelectedReactions',
 }
 
 export type Action =
