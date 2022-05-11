@@ -5,18 +5,21 @@ import { useContext, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Button, CircularProgress, Typography } from "@material-ui/core";
-// common block
+// component block
 import Alert from "../../common/Alert";
-import history from "../../../history";
 import AuthLayout from '../../auth/AuthLayout';
 // interfaces/types block/theme/svgs/constants
+import history from "../../../history";
 import InputController from "../../../controller";
 import { otpSchema } from "../../../validationSchemas";
 import { AuthContext, ListContext } from "../../../context";
 import { useHeaderStyles } from "../../../styles/headerStyles";
 import { ParamsType, VerifyCodeInputProps } from "../../../interfacesTypes";
 import { useResentOtpMutation, useVerifyOtpMutation } from "../../../generated/graphql";
-import { ERROR, RESEND_OTP, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, SIGN_IN, ENTER_OTP_CODE, OTP_NOT_FOUND_EXCEPTION_MESSAGE, TOKEN, LOGIN_ROUTE, BACK_TEXT } from "../../../constants";
+import {
+  ERROR, RESEND_OTP, DASHBOARD_ROUTE, LOGIN_SUCCESSFULLY, SIGN_IN, ENTER_OTP_CODE,
+  OTP_NOT_FOUND_EXCEPTION_MESSAGE, TOKEN, LOGIN_ROUTE, BACK_TEXT
+} from "../../../constants";
 
 const TwoFaAuthenticationComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext)
@@ -34,7 +37,7 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
 
   const [verifyOtp, { loading: verifyOtpLoading }] = useVerifyOtpMutation({
     onError({ message }) {
-      message !== OTP_NOT_FOUND_EXCEPTION_MESSAGE  && Alert.error(message)
+      message !== OTP_NOT_FOUND_EXCEPTION_MESSAGE && Alert.error(message)
     },
 
     async onCompleted(data) {
@@ -107,11 +110,13 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
             controllerLabel={ENTER_OTP_CODE}
           />
           <Box display='flex' justifyContent='space-between'>
-          <Typography
-            component={Link}
-            to={LOGIN_ROUTE} >
+            <Typography
+              component={Link}
+              to={LOGIN_ROUTE}
+            >
               {BACK_TEXT}
             </Typography>
+
             <Typography onClick={handleResendOtp} className={classes.resendBtn}>
               {resentOtpLoading && <CircularProgress size={20} color='inherit' />}
               {RESEND_OTP}
