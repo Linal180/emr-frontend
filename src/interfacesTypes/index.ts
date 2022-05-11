@@ -367,6 +367,7 @@ export interface FacilitySelectorProps {
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
   facilityId?: string
+  shouldOmitFacilityId?: boolean
 }
 
 export interface CardSelectorProps {
@@ -470,6 +471,7 @@ export interface PickerProps {
   label: string;
   error?: string;
   isRequired?: boolean;
+  clearable?: boolean
 }
 
 export interface TimePickerProps {
