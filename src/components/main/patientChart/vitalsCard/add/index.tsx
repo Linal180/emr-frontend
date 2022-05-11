@@ -1,5 +1,5 @@
 // packages block
-import { Fragment, memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -8,7 +8,7 @@ import { Button, Table, TableBody, TableCell, TableHead, TableRow, CircularProgr
 import Selector from '../../../../common/Selector';
 import InputController from '../../../../../controller';
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { EMPTY_OPTION, IN_TEXT, KG_TEXT, MAPPED_SMOKING_STATUS, SAVE_TEXT, VITAL_ERROR_MSG } from '../../../../../constants';
+import { EMPTY_OPTION, MAPPED_SMOKING_STATUS, SAVE_TEXT, VITAL_ERROR_MSG } from '../../../../../constants';
 import {
   HeadCircumferenceType, SmokingStatus, TempUnitType, UnitType, useAddPatientVitalMutation, WeightType
 } from '../../../../../generated/graphql';
@@ -160,7 +160,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   fieldType="number"
                   controllerName="PatientHeight"
                   controllerLabel={''}
-                  endAdornment={<Fragment>{IN_TEXT}</Fragment>}
+                  // endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
                 />
               </TableCell>
@@ -170,7 +170,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                 <InputController
                   fieldType="number"
                   controllerName="PatientWeight"
-                  endAdornment={<Fragment>{KG_TEXT}</Fragment>}
+                  // endAdornment={<Fragment>{KG_TEXT}</Fragment>}
                   controllerLabel={''}
                   margin={'none'}
                 />
@@ -214,7 +214,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   fieldType="number"
                   controllerName="patientHeadCircumference"
                   controllerLabel={''}
-                  endAdornment={<Fragment>{IN_TEXT}</Fragment>}
+                  // endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
                 />
               </TableCell>
@@ -225,7 +225,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   fieldType="number"
                   controllerName="patientTemperature"
                   controllerLabel={''}
-                  endAdornment={<Box dangerouslySetInnerHTML={{ __html: `<sup>o</sup>F` }} ></Box>}
+                  // endAdornment={<Box dangerouslySetInnerHTML={{ __html: `<sup>o</sup>F` }} ></Box>}
                   margin={'none'}
                 />
               </TableCell>
