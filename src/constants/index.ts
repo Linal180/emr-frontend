@@ -1,7 +1,7 @@
 //packages block
 import states from "states-us";
-import moment from "moment-timezone";
 import { v4 as uuid } from "uuid";
+import moment from "moment-timezone";
 // graphql and interfaces block
 import {
   formatServiceCode, formatValue, getFormattedDate, getStandardTime,
@@ -18,7 +18,8 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
-  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus, UnitType, WeightType, HeadCircumferenceType, TempUnitType,
+  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
+   UnitType, WeightType, HeadCircumferenceType, TempUnitType,
 } from "../generated/graphql";
 
 // regex
@@ -56,8 +57,10 @@ export enum SYSTEM_ROLES {
   FrontDesk = "front-desk",
   Patient = "patient",
 }
+
 export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
+export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
 export const CURRENT_DATE = new Date();
 export const LATEST_RECORDED_DATE = "Latest Recorded Date"
@@ -71,8 +74,7 @@ export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
 export const CHECK_ADDRESS = "Check Address";
-export const SMARTY_0_MATCH =
-  "There are 0 matches for that address. Please edit and re-check.";
+export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
 export const VERIFY_ADDRESS = "Verify address";
@@ -112,6 +114,7 @@ export const FORM_UPDATED = "Form updated successfully!";
 export const PUBLIC_FORM_LINK = "Public form preview Link";
 export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
 export const EMPTY_OPTION = { id: "", name: "--" };
+export const NO_RECORDS_OPTION = { id: "", name: "No Record Found" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
   Monday = "Monday",
@@ -252,7 +255,7 @@ export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
 export const ADD_PRACTICE = "Add practice";
 export const EDIT_PRACTICE = "Edit practice";
-export const ADD_PATIENT_MODAL = "Add Patient?";
+export const ADD_PATIENT_MODAL = "Add New Patient";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
@@ -513,7 +516,6 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 8;
-export const DROPDOWN_PAGE_LIMIT = 10;
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ROLES = "Roles";
@@ -526,20 +528,22 @@ export const SERIAL_NO = "S.No";
 export const DRAWER_WIDTH = 300;
 export const REPORTS = "Reports";
 export const GENERAL = "General";
+export const UNKNOWN = "Unknown";
 export const TIME_TO = "TIME:TO";
 export const SET = "Set Password";
 export const SECURITY = "Security";
 export const USERNAME = "Username";
 export const ADD_BILL = "Add Bill";
 export const LOGOUT_TEXT = "Logout";
+export const INITIAL_PAGE_LIMIT = 5;
 export const TIME_FROM = "TIME:FROM";
 export const INSURANCE = "Insurance";
 export const ROLE_NAME = "Role name";
 export const HISTORICAL = "Historical";
 export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
-export const UNKNOWN = "Unknown";
 export const TEST_TAKEN = "Test Taken";
+export const DROPDOWN_PAGE_LIMIT = 10;
 export const APPOINTMENT = "Appointment";
 export const BILLING_TYPE = "Billing Type";
 export const PRESCRIBED_BY = "Prescribed By";
@@ -3190,4 +3194,15 @@ export const HEAD_CIRCUMFERENCE_UNITS = [
 export const FEVER_UNITS = [
   { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
   { id: TempUnitType.DegC, name: formatValue(TempUnitType.DegC) },
+]
+
+export const MAPPED_AUTO_LOGOUT = [
+  { id: "0", name: '30 Minutes' },
+  { id: "1", name: '1 Hour' },
+  { id: "2", name: '90 Minutes' },
+  { id: "3", name: '6 Hours' },
+  { id: "4", name: '12 Hours' },
+  { id: "5", name: '24 Hours' },
+  { id: "6", name: '2 Days' },
+  { id: "7", name: '7 Days' },
 ]

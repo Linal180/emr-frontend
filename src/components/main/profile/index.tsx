@@ -137,7 +137,6 @@ const ProfileComponent = (): JSX.Element => {
         })
       }
     }
-
   }
 
   const editHandler = () => {

@@ -367,6 +367,7 @@ export interface FacilitySelectorProps {
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
   facilityId?: string
+  shouldOmitFacilityId?: boolean
 }
 
 export interface CardSelectorProps {
@@ -470,6 +471,7 @@ export interface PickerProps {
   label: string;
   error?: string;
   isRequired?: boolean;
+  clearable?: boolean
 }
 
 export interface TimePickerProps {
@@ -1292,9 +1294,17 @@ export interface VitalsLabelsProps {
   patientStates: PatientState
 }
 
-
 export interface VitalListComponentProps {
   title: string;
   description: string;
   isError?: boolean
+}
+
+export interface SelectStringOptions {
+  id: string;
+  name: string;
+}
+
+export interface AutoLogoutInputTypes {
+  autoLogoutTime: SelectStringOptions
 }

@@ -36,6 +36,7 @@ query GetLoggedInUser {
       userId
       userType
       phone
+      autoLogoutTime
 
       roles {
         id

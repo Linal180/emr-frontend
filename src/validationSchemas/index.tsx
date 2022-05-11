@@ -149,8 +149,8 @@ const patientIdSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).test(
-    '', requiredMessage(PATIENT), ({ id }) => !!id
-  )
+    '', requiredMessage(PATIENT), (patient) => !!patient?.id
+  ).nullable()
 }
 
 const serviceCodeSchema = {
@@ -751,7 +751,8 @@ export const otpSchema = yup.object({
 
 export const createPatientAllergySchema = (onset: string) => yup.object({
   allergyStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
-    value => !!onset || new Date(value || '') <= new Date()),
+    value => !!onset || new Date(value || '') <= new Date()
+  ),
   severityId: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, IconButton, Box, Typography, Menu, Grid 
 import PatientCardForm from "./PatientCardForm";
 // interfaces/types block
 import history from "../../../../history";
-import { AddChartingIcon } from "../../../../assets/svgs";
+import { AddChartingIcon, NoDataIcon } from "../../../../assets/svgs";
 import { ChartingCardComponentType, ParamsType } from "../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
 import {
@@ -127,7 +127,11 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
           <CardContent>
             {loading ?
               <ViewDataLoader columns={6} rows={5} /> :
-              patientVitals === null ? (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>) :
+              patientVitals === null ? (<Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+                <NoDataIcon />
+
+                <Typography variant="h6">{NO_RECORDS}</Typography>
+              </Box>) :
                 <Grid container spacing={2}>
                   <Grid item xs={12} >
                     <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>

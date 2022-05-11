@@ -26,7 +26,7 @@ const TwoFAComponent = (): JSX.Element => {
   const { user, fetchUser } = useContext(AuthContext)
   const { id, isTwoFactorEnabled: userTwoFactor, phone } = user || {}
   const classes = useHeaderStyles();
-  const [isChecked, setIsChecked] = useState(userTwoFactor || false);
+  const [isChecked, setIsChecked] = useState<boolean>(userTwoFactor as boolean);
   const methods = useForm<TwoFactorInputProps>({
     mode: "all", defaultValues: {
       password: ""
@@ -67,7 +67,7 @@ const TwoFAComponent = (): JSX.Element => {
     id && await faEnabled({
       variables: {
         twoFactorInput: {
-          isTwoFactorEnabled, userId: id, password
+          isTwoFactorEnabled: isTwoFactorEnabled || false , userId: id, password
         }
       }
     })
