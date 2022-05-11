@@ -13,7 +13,7 @@ import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes
 import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A
+  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, PRN
 } from "../../../../constants";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
@@ -137,8 +137,8 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   const ProfileDetails = [
     {
-      icon: ProfileUserIcon(),
-      description: patientRecord
+      icon: '',
+      description: `${PRN}: ${patientRecord}`
     },
     {
       icon: ProfileUserIcon(),
