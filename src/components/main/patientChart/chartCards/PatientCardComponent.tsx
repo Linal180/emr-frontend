@@ -15,8 +15,9 @@ import {
 } from "../../../../reducers/patientReducer";
 import { PatientVitalPayload, useFindAllPatientVitalsLazyQuery } from "../../../../generated/graphql";
 import {
-  BLOOD_PRESSURE_TEXT, BMI_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, IN_TEXT, LATEST_RECORDED_DATE,
-  LBS_TEXT, NO_RECORDS, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PULSE_TEXT, RESPIRATORY_RATE_TEXT,
+  BLOOD_PRESSURE_TEXT, BMI_TEXT, BPM_TEXT, DASHES, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, IN_TEXT, KG_PER_METER_SQUARE_TEXT, LATEST_RECORDED_DATE,
+  LBS_TEXT, MMHG_TEXT, NO_RECORDS, ONE_TO_TEN_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PERCENTAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT,
+  RPM_TEXT,
   SMOKING_STATUS_TEXT, VITAL_LIST_PAGE_LIMIT, WEIGHT_TEXT
 } from "../../../../constants";
 import { VitalListComponent } from "../common/VitalList";
@@ -127,7 +128,7 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
           <CardContent>
             {loading ?
               <ViewDataLoader columns={6} rows={5} /> :
-              patientVitals === null ? (<Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+              patientVitals === null ? (<Box color={GREY_SEVEN} margin='auto' textAlign='center' mb={2}>
                 <NoDataIcon />
 
                 <Typography variant="h6">{NO_RECORDS}</Typography>
@@ -143,71 +144,71 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
-                      title={`${PULSE_TEXT} (bpm)`}
-                      description={pulseRate || '---'}
+                      title={`${PULSE_TEXT} (${BPM_TEXT})`}
+                      description={pulseRate || DASHES}
                       isError={!!pulseRate ? (parseInt(pulseRate) < 60 || parseInt(pulseRate) > 100) : false} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
-                      title={`${BMI_TEXT} (kg/m2)`}
-                      description={PatientBMI || '---'}
+                      title={`${BMI_TEXT} (${KG_PER_METER_SQUARE_TEXT})`}
+                      description={PatientBMI || DASHES}
                       isError={!!PatientBMI ? (parseFloat(PatientBMI) < 18.5 || parseFloat(PatientBMI) > 25) : false} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
-                      title={`${RESPIRATORY_RATE_TEXT} (rpm)`}
-                      description={respiratoryRate || '---'}
+                      title={`${RESPIRATORY_RATE_TEXT} (${RPM_TEXT})`}
+                      description={respiratoryRate || DASHES}
                       isError={!!respiratoryRate ? (parseInt(respiratoryRate) < 12 || parseInt(respiratoryRate) > 16) : false} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
-                      title={`${PAIN_TEXT} (1-10)`}
-                      description={PainRange || '---'}
+                      title={`${PAIN_TEXT} (${ONE_TO_TEN_TEXT})`}
+                      description={PainRange || DASHES}
                       isError={!!PainRange ? (parseInt(PainRange) > 3) : false} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
-                      title={`${BLOOD_PRESSURE_TEXT} (mmHg)`}
-                      description={`${diastolicBloodPressure}/${systolicBloodPressure}` || '---'}
+                      title={`${BLOOD_PRESSURE_TEXT} (${MMHG_TEXT})`}
+                      description={`${diastolicBloodPressure}/${systolicBloodPressure}` || DASHES}
                       isError={!!PainRange ? (parseInt(PainRange) > 3) : false} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={SMOKING_STATUS_TEXT}
-                      description={(smokingStatus && formatValue(smokingStatus)) || '---'} />
+                      description={(smokingStatus && formatValue(smokingStatus)) || DASHES} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
-                      title={`${OXYGEN_SATURATION_TEXT} (%)`}
-                      description={oxygenSaturation || '---'}
+                      title={`${OXYGEN_SATURATION_TEXT} (${PERCENTAGE})`}
+                      description={oxygenSaturation || DASHES}
                       isError={!!oxygenSaturation ? (parseInt(oxygenSaturation) < 95) : false} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${HEAD_CIRCUMFERENCE} (${IN_TEXT})`}
-                      description={patientHeadCircumference || '---'}
+                      description={patientHeadCircumference || DASHES}
                       isError={!!patientHeadCircumference ? (parseFloat(patientHeadCircumference) < 23.62 || parseFloat(patientHeadCircumference) > 24.8) : false} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${HEIGHT_TEXT} (${IN_TEXT})`}
-                      description={PatientHeight || '---'} />
+                      description={PatientHeight || DASHES} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${FEVER_TEXT} (${(temperatureUnitType && formatValue(temperatureUnitType))})`}
-                      description={patientTemperature || '---'}
+                      description={patientTemperature || DASHES}
                       isError={!!patientTemperature ? (parseFloat(patientTemperature) < 97 || parseFloat(patientTemperature) > 99) : false} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${WEIGHT_TEXT} (${LBS_TEXT})`}
-                      description={PatientWeight || '---'} />
+                      description={PatientWeight || DASHES} />
                   </Grid>
                 </Grid>}
           </CardContent>

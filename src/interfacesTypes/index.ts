@@ -430,6 +430,7 @@ export interface CustomInputControlProps extends IControlLabel {
   info?: string;
   clearable?: boolean
   handleClearField?: (fieldName: any) => void
+  endAdornment?: ReactNode
 }
 
 export interface TooltipData {

@@ -2,17 +2,26 @@
 import { FC, ChangeEvent, useEffect, useContext, useCallback, Reducer, useReducer, useState } from "react";
 import { Link } from "react-router-dom";
 import Pagination from "@material-ui/lab/Pagination";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Collapse, Grid, Typography, Button } from "@material-ui/core";
+import { FormProvider, useForm } from "react-hook-form";
+import { ExpandLess, ExpandMore } from "@material-ui/icons";
+import {
+  Box, Table, TableBody, TableHead, TableRow, TableCell, Collapse, Grid, Typography, Button
+} from "@material-ui/core";
 // components block
 import Alert from "../../../common/Alert";
 import Search from "../../../common/Search";
+import InputController from "../../../../controller";
 import TableLoader from "../../../common/TableLoader";
 import ConfirmationModal from "../../../common/ConfirmationModal";
+import DoctorSelector from "../../../common/Selector/DoctorSelector";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
 import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { EditNewIcon, TrashNewIcon } from '../../../../assets/svgs';
+import { PatientSearchInputProps } from "../../../../interfacesTypes";
+import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
 import {
   formatPhone, getFormatDateString, isFacilityAdmin, isPracticeAdmin, isSuperAdmin, renderTh
 } from "../../../../utils";
@@ -27,13 +36,6 @@ import {
   PATIENT, PRN, PatientSearchingTooltipData, ADVANCED_SEARCH, DOB, DATE_OF_SERVICE, LOCATION, PROVIDER,
   US_DATE_FORMAT, RESET
 } from "../../../../constants";
-import { BLACK_TWO, GREY_FIVE, GREY_NINE, GREY_TEN } from "../../../../theme";
-import { FormProvider, useForm } from "react-hook-form";
-import { PatientSearchInputProps } from "../../../../interfacesTypes";
-import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import FacilitySelector from "../../../common/Selector/FacilitySelector";
-import DoctorSelector from "../../../common/Selector/DoctorSelector";
-import InputController from "../../../../controller";
 
 const PatientsTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
@@ -220,11 +222,13 @@ const PatientsTable: FC = (): JSX.Element => {
                     addEmpty
                   />
                 </Grid>
-                {!(isSuper || isPracAdmin) && <Grid item md={5} sm={12} xs={12} />}
-                <Grid item md={(isSuper || isPracAdmin) ? 11 : 6} />
-                <Box px={1}>
-                  <Button variant="contained" color="secondary" onClick={handleReset}>{RESET}</Button>
-                </Box>
+                <Grid item md={(isSuper || isPracAdmin) ? 12 : 3} sm={12} xs={12}>
+                  <Box display='flex' justifyContent='flex-end' alignItems='center'
+                    style={{ marginTop: (isSuper || isPracAdmin) ? 0 : 20 }}
+                  >
+                    <Button variant="outlined" color="default" onClick={handleReset}>{RESET}</Button>
+                  </Box>
+                </Grid>
               </Grid>
             </Box>
           </FormProvider>

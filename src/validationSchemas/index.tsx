@@ -780,16 +780,20 @@ export const patientVitalSchema = yup.object({
       return false
     }
   }),
-  diastolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), value => {
-    if (!value) return true
+  diastolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (value) {
+    if (!value && !!this.parent.systolicBloodPressure) return false
+    else if (!value) return true
     else {
+      if (value && (value.includes('-') || value === '0')) return false
       if (value && value.length < 3) return true
       return false
     }
   }),
-  systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), value => {
-    if (!value) return true
+  systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (value) {
+    if (!value && !!this.parent.diastolicBloodPressure) return false
+    else if (!value) return true
     else {
+      if (value && (value.includes('-') || value === '0')) return false
       if (value && value.length < 4) return true
       return false
     }

@@ -4,6 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
@@ -164,6 +165,14 @@ export const getPracticeType = (type: PracticeType): string => {
 
 export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
+};
+
+export const getCurrentTimestamps = (existingDate: string, newDate: MaterialUiPickersDate) => {
+  const currentDate = moment(newDate).format(`MM-DD-YYYY`)
+  const existingTime = moment(existingDate).format(`hh:mm A`)
+  const date = moment(currentDate + ' ' + existingTime)
+  const updateDate = moment(date).format().toString()
+  return updateDate ? moment(updateDate).format().toString() : moment().format().toString()
 };
 
 export const getTimestampsForDob = (date: string): string => {
