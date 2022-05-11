@@ -1,5 +1,5 @@
 // packages block
-import { FC, useState } from "react";
+import { FC, useState, Fragment } from "react";
 import { Search } from "@material-ui/icons";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, IconButton, InputLabel, TextField } from "@material-ui/core";
@@ -14,8 +14,8 @@ import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, controllerLabel, fieldType, error, isPassword,
-  disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment,
+  disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField,
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -73,11 +73,13 @@ const InputController: FC<CustomInputControlProps> = ({
               endAdornment: <IconButton aria-label="clear" onClick={handleClearField ? () => handleClearField(controllerName) : () => { }}>
                 <ClearIcon />
               </IconButton>
-            } : fieldType === 'number' ? {
-              inputProps: { step: '5' }
-            } : isSearch ? {
-              endAdornment: <Search />
-            } : undefined}
+            } : fieldType === 'number' ?
+              {
+                inputProps: { step: '5' },
+                endAdornment: endAdornment ? endAdornment : <></>
+              } : isSearch ? {
+                endAdornment: <Search />
+              } : endAdornment ? { endAdornment } : undefined}
           />
         </FormControl>
       )}
