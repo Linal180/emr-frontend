@@ -10,5 +10,5 @@ mutation updateAutoLogoutTime($userInfoInput: UserInfoInput!) {
       id
       autoLogoutTime
     }
-}
+  }
 }
