@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, FormHelperText, Box } from '@material-ui/core'
 // constants and type/interfaces block
+import { INITIAL_PAGE_LIMIT } from '../../constants';
 import { renderReactions, requiredLabel } from "../../utils";
 import { multiOptionType, ReactionSelectorInterface } from '../../interfacesTypes';
 import { ReactionsPayload, useFindAllReactionsLazyQuery } from '../../generated/graphql';
@@ -34,15 +35,20 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
   const fetchReactions = useCallback(async (query: string) => {
     try {
       await findAllReactions({
-        variables: { reactionInput: { reactionName: query, paginationOptions: { limit: !query ? 5 : 10, page: 1 } } }
+        variables: {
+          reactionInput: {
+            reactionName: query,
+            paginationOptions: { limit: !query ? INITIAL_PAGE_LIMIT : 10, page: 1 }
+          }
+        }
       })
     } catch (error) { }
-  },[findAllReactions])
+  }, [findAllReactions])
 
   useEffect(() => {
     if (isEdit) {
       if (defaultValues) {
-        setValue('reactionIds', defaultValues.map(option => option))
+        setValue('reactionIds', defaultValues)
         setOptions(defaultValues)
         setValues(defaultValues)
       }
@@ -51,11 +57,11 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
 
   useEffect(() => {
     fetchReactions('')
-  },[fetchReactions])
+  }, [fetchReactions])
 
   const updateValues = (newValues: multiOptionType[]) => {
+    setValue('reactionIds', newValues)
     setValues(newValues as multiOptionType[])
-    !!newValues.length && setValue('reactionIds', newValues.map(option => option))
   }
 
   return (
@@ -73,7 +79,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
             </Box>
 
             <Select
-            {...field}
+              {...field}
               isMulti
               name={name}
               defaultValue={options}
@@ -81,7 +87,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
               options={options}
               value={values}
               onChange={(newValue) => {
-                field.onChange();
+                field.onChange(newValue)                
                 updateValues(newValue as multiOptionType[])
               }}
               onInputChange={(query: string) => {
@@ -90,7 +96,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
               className={message ? 'selectorClassTwoError' : 'selectorClassTwo'}
             />
 
-            <FormHelperText>{message}</FormHelperText>
+            <FormHelperText>{invalid && message}</FormHelperText>
           </FormControl>
         )
       }}

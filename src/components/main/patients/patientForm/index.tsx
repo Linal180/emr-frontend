@@ -589,7 +589,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <Box ml={2}>
               <PageHeader
-                title={ADD_PATIENT}
+                title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
                 path={[USERS_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
               />
             </Box>
