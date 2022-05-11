@@ -149,8 +149,8 @@ const patientIdSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).test(
-    '', requiredMessage(PATIENT), ({ id }) => !!id
-  )
+    '', requiredMessage(PATIENT), (patient) => !!patient?.id
+  ).nullable()
 }
 
 const serviceCodeSchema = {
