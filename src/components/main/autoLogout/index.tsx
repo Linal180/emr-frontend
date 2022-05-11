@@ -61,7 +61,6 @@ const AutoLogoutComponent = (): JSX.Element => {
       const { id, name } = logoutTime || {}
       name && id && setValue('autoLogoutTime', { id, name })
     }
-
   }, [autoLogoutTime, setValue])
 
   useEffect(() => {
