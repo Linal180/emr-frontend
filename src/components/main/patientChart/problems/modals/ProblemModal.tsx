@@ -17,8 +17,8 @@ import { ActionType } from '../../../../../reducers/chartReducer';
 import { patientProblemSchema } from '../../../../../validationSchemas';
 import { AddModalProps, ParamsType, PatientProblemInputs } from '../../../../../interfacesTypes';
 import {
-  ADD, DELETE, NOTE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
-  PATIENT_PROBLEM_UPDATED, STATUS,
+  ADD, DELETE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
+  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS,
 } from '../../../../../constants';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
@@ -237,9 +237,10 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
         /> */}
 
         <InputController
+          multiline
           fieldType="text"
           controllerName="note"
-          controllerLabel={NOTE}
+          controllerLabel={COMMENTS}
         />
 
         <Box display='flex' justifyContent='flex-end'>
