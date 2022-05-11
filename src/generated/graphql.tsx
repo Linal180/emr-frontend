@@ -3046,11 +3046,13 @@ export type SchedulesPayload = {
 };
 
 export type SearchIcdCodesInput = {
+  paginationOptions: PaginationInput;
   searchTerm: Scalars['String'];
 };
 
 export type SearchSnoMedCodesInput = {
-  IcdCodes: Scalars['String'];
+  paginationOptions: PaginationInput;
+  searchTerm: Scalars['String'];
 };
 
 export type SectionsInputs = {

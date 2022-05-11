@@ -10,7 +10,7 @@ import { PickerProps } from "../../interfacesTypes";
 import { CalendarIcon, ClearIcon } from '../../assets/svgs';
 import { US_DATE_FORMAT } from '../../constants';
 
-const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable=false }): JSX.Element => {
+const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = false }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control, setValue } = useFormContext()
 
@@ -47,7 +47,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable=false 
               maxDate="2100-01-31"
               keyboardIcon={<CalendarIcon />}
               InputProps={ clearable ? {
-                startAdornment: <IconButton aria-label="clear" onClick={()=>setValue(name,null)}>
+                startAdornment: <IconButton aria-label="clear" onClick={()=> setValue(name, null)}>
                   <ClearIcon />
                 </IconButton>
               }: undefined

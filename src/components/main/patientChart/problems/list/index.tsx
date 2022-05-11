@@ -12,14 +12,17 @@ import { GREY_SEVEN } from "../../../../../theme";
 import { ParamsType } from "../../../../../interfacesTypes";
 import { usePatientChartingStyles } from "../../../../../styles/patientCharting";
 import { formatValue, getAppointmentDate, getSeverityColor } from "../../../../../utils";
-import { CARD_LAYOUT_MODAL, LIST_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TEXT } from "../../../../../constants";
+import {
+  CARD_LAYOUT_MODAL, INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT, NO_RECORDS, PROBLEMS_TEXT
+} from "../../../../../constants";
 import {
   chartReducer, Action, initialState, State, ActionType
 } from "../../../../../reducers/chartReducer";
 import {
-   useFindAllPatientProblemsLazyQuery, useSearchIcdCodesLazyQuery, IcdCodesPayload,
+  useFindAllPatientProblemsLazyQuery, useSearchIcdCodesLazyQuery, IcdCodesPayload,
   PatientProblemsPayload, IcdCodes, ProblemSeverity,
 } from "../../../../../generated/graphql";
+import { NoDataIcon } from "../../../../../assets/svgs";
 
 const ProblemList = (): JSX.Element => {
   const classes = usePatientChartingStyles()
@@ -108,15 +111,22 @@ const ProblemList = (): JSX.Element => {
     dispatch({ type: ActionType.SET_ITEM_ID, itemId: id })
   };
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = useCallback(async (query: string) => {
     try {
-      query && await searchIcdCodes({
+      await searchIcdCodes({
         variables: {
-          searchIcdCodesInput: { searchTerm: query }
+          searchIcdCodesInput: {
+            searchTerm: query,
+            paginationOptions: { page: 1, limit: query ? LIST_PAGE_LIMIT : INITIAL_PAGE_LIMIT }
+          }
         }
       })
     } catch (error) { }
-  }
+  }, [searchIcdCodes])
+
+  useEffect(() => {
+    handleSearch('')
+  }, [handleSearch])
 
   return (
     <CardLayout openSearch={isSearchOpen} cardId={PROBLEMS_TEXT} cardTitle={PROBLEMS_TEXT}
@@ -158,7 +168,11 @@ const ProblemList = (): JSX.Element => {
                 </Box>
               )
             })
-          ) : (<Box color={GREY_SEVEN}><Typography variant="h6">{NO_RECORDS}</Typography></Box>)}
+          ) : (<Box color={GREY_SEVEN} margin='auto' textAlign='center'>
+            <NoDataIcon />
+
+            <Typography variant="h6">{NO_RECORDS}</Typography>
+          </Box>)}
         </Box>}
 
       <Menu
