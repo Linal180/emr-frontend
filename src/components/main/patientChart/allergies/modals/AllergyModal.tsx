@@ -203,7 +203,7 @@ const AllergyModal: FC<AddModalProps> = (
   }
 
   const isDisable = addAllergyLoading || updateAllergyLoading || getAllergyLoading
-  useEffect(() => {}, [selectedReactions, getAllergyLoading]);
+  useEffect(() => { }, [selectedReactions, getAllergyLoading]);
 
   return (
     <FormProvider {...methods}>
@@ -234,9 +234,7 @@ const AllergyModal: FC<AddModalProps> = (
               options={MAPPED_ALLERGY_SEVERITY}
             />
 
-            <DatePicker name="allergyStartDate" label={ONSET_DATE} />
-
-            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+            <Box p={1} mb={4} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
               {onsets.map(onSet =>
                 <Box onClick={() => handleOnset(onSet)}
                   className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
@@ -245,11 +243,16 @@ const AllergyModal: FC<AddModalProps> = (
               )}
             </Box>
 
-            <InputController
-              fieldType="text"
-              controllerName="comments"
-              controllerLabel={NOTE}
-            />
+            <DatePicker name="allergyStartDate" label={ONSET_DATE} />
+
+            <Box>
+              <InputController
+                multiline
+                fieldType="text"
+                controllerName="comments"
+                controllerLabel={NOTE}
+              />
+            </Box>
           </>
         }
 
