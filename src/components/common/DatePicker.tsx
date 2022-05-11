@@ -1,19 +1,19 @@
 import { FC, useState } from 'react';
 import 'date-fns';
-import { FormControl, IconButton, InputLabel } from '@material-ui/core';
-import { Controller, useFormContext } from "react-hook-form";
-import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
+import { Controller, useFormContext } from "react-hook-form";
+import { FormControl, IconButton, InputLabel } from '@material-ui/core';
+import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers';
 // interfaces constants and utils block
 import { requiredLabel } from '../../utils';
+import { US_DATE_FORMAT } from '../../constants';
 import { PickerProps } from "../../interfacesTypes";
 import { CalendarIcon, ClearIcon } from '../../assets/svgs';
-import { US_DATE_FORMAT } from '../../constants';
 
 const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = false }): JSX.Element => {
   const [openPicker, setOpenPicker] = useState<boolean>(false)
   const { control, setValue } = useFormContext()
-
+  
   return (
     <Controller
       name={name}
