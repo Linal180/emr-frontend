@@ -17,7 +17,6 @@ const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment,
   disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField,
 }): JSX.Element => {
-  debugger
   const classes = useFormStyles();
   const { control } = useFormContext();
   const [passwordType, setPasswordType] = useState<PasswordType>(PASSWORD);
