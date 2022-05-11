@@ -22,7 +22,7 @@ import {
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
-  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload,CreatePatientAllergyInput,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
   Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload
 } from "../generated/graphql";
 import { CARD_LAYOUT_MODAL } from "../constants";
@@ -1267,7 +1267,8 @@ export interface VitalListingTableProps {
 export interface VitalFormInput {
   smokingStatus: SelectorOption
   respiratoryRate: string
-  bloodPressure: string
+  systolicBloodPressure: string
+  diastolicBloodPressure: string
   oxygenSaturation: string
   PatientHeight: string
   PatientWeight: string
@@ -1279,7 +1280,8 @@ export interface VitalFormInput {
 }
 
 export interface AddPatientVitalsProps {
-  fetchPatientAllVitals: Function
+  fetchPatientAllVitals: Function;
+  patientStates: PatientState
 }
 
 export interface PatientVitalsListingProps {
@@ -1293,7 +1295,6 @@ export interface VitalsLabelsProps {
 
 export interface VitalListComponentProps {
   title: string;
-  date: string;
   description: string;
   isError?: boolean
 }

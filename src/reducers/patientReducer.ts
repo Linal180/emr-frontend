@@ -46,9 +46,13 @@ export interface State {
   data: usStreet.Candidate[];
   openUnits: HTMLElement | null;
   heightUnit: { id: UnitType, name: string };
+  prevHeightUnit: UnitType;
   weightUnit: { id: WeightType, name: string };
+  prevWeightUnit: WeightType;
   headCircumferenceUnit: { id: HeadCircumferenceType, name: string };
+  prevHeadUnit: HeadCircumferenceType;
   feverUnit: { id: TempUnitType, name: string };
+  prevFeverUnit: TempUnitType;
 }
 
 export const initialState: State = {
@@ -91,11 +95,14 @@ export const initialState: State = {
   data: [],
   openUnits: null,
   heightUnit: { id: UnitType.Inch, name: IN_TEXT },
+  prevHeightUnit: UnitType.Inch,
   weightUnit: { id: WeightType.Kg, name: KG_TEXT },
+  prevWeightUnit: WeightType.Kg,
   headCircumferenceUnit: { id: HeadCircumferenceType.Inch, name: IN_TEXT },
-  feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) }
+  prevHeadUnit: HeadCircumferenceType.Inch,
+  feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
+  prevFeverUnit: TempUnitType.DegF
 }
-
 
 export enum ActionType {
   SET_PAGE = 'setPage',
@@ -410,24 +417,33 @@ export const patientReducer = (state: State, action: Action): State => {
         openUnits: action.openUnits
       }
     case ActionType.SET_HEIGHT_UNIT:
+      const { heightUnit: { id: prevHeightUnit } } = state;
       return {
         ...state,
+        prevHeightUnit,
         heightUnit: action.heightUnit
       }
     case ActionType.SET_WEIGHT_UNIT:
+      const { weightUnit: { id: prevWeightUnit } } = state
       return {
         ...state,
+        prevWeightUnit,
         weightUnit: action.weightUnit
       }
     case ActionType.SET_HEAD_CIRCUMFERENCE_UNIT:
+      const { headCircumferenceUnit: { id: prevHeadUnit } } = state
       return {
         ...state,
+        prevHeadUnit,
         headCircumferenceUnit: action.headCircumferenceUnit
       }
     case ActionType.SET_FEVER_UNIT:
+      const { feverUnit: { id: prevFeverUnit } } = state
       return {
         ...state,
+        prevFeverUnit,
         feverUnit: action.feverUnit
       }
+
   }
 };

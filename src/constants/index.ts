@@ -60,6 +60,7 @@ export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 // constants
 export const CURRENT_DATE = new Date();
+export const LATEST_RECORDED_DATE = "Latest Recorded Date"
 export const NOTE = "Note";
 export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
@@ -567,6 +568,7 @@ export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
+export const VITAL_LIST_PAGE_LIMIT = 5;
 export const USERS_TEXT = "Users";
 export const STAFF_TEXT = "Staff";
 export const LATITUDE = "Latitude";

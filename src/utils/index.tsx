@@ -711,7 +711,7 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
   return moment(date, "x").format("DD/MM/YY")
 };
 
-export const getFormatDateString = (date: Maybe<string> | undefined,format="YYYY-MM-DD") => {
+export const getFormatDateString = (date: Maybe<string> | undefined, format = "YYYY-MM-DD") => {
   if (!date) return '';
   return moment(date).format(format).toString()
 };
@@ -893,6 +893,10 @@ export const celsiusToFahrenheit = (c: number) => ((c * (9 / 5)) + 32)
 
 export const inchesToCentimeter = (i: number) => (i * 2.54)
 
+export const inchesToMeter = (i: number) => (i / 39.37)
+
+export const centimeterToMeter = (c: number) => (c / 100)
+
 export const centimeterToInches = (c: number) => (c / 2.54)
 
 export const kilogramToPounds = (kg: number) => (kg * 2.2046)
@@ -907,17 +911,17 @@ export const ounceToKilogram = (o: number) => (o / 35.274)
 
 export const ounceToPounds = (o: number) => (o / 16)
 
-export const getBMI = (weight: number, height: number) => (weight / (height * height))  
+export const getBMI = (weight: number, height: number) => (weight / (height * height))
 export const dataURLtoFile = (url: any, filename: string) => {
   var arr = url.split(','),
-      mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]), 
-      n = bstr.length, 
-      u8arr = new Uint8Array(n);
-      
-  while(n--){
-      u8arr[n] = bstr.charCodeAt(n);
+    mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
   }
-  
-  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, {type:mime});
+
+  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
 }
