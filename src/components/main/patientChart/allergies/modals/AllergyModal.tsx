@@ -41,7 +41,7 @@ const AllergyModal: FC<AddModalProps> = (
     mode: "all",
     resolver: yupResolver(createPatientAllergySchema(onset))
   });
-  const { handleSubmit, reset, setValue, watch } = methods;
+  const { handleSubmit, setValue, watch, reset } = methods;
   const { allergyStartDate } = watch()
   const [{ selectedReactions }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
@@ -160,7 +160,7 @@ const AllergyModal: FC<AddModalProps> = (
   }
 
   const handleOnset = (onset: string) => {
-    reset({ allergyStartDate: ''})
+    setValue("allergyStartDate", '')
     setOnset(onset)
   }
 
