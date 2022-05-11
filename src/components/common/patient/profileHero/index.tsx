@@ -6,14 +6,14 @@ import ViewDataLoader from "../../ViewDataLoader";
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import history from "../../../../history";
-import { Box, Avatar, CircularProgress, Button } from "@material-ui/core";
+import { Box, Avatar, CircularProgress, Button, Typography } from "@material-ui/core";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, PRN
+  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A,
 } from "../../../../constants";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
@@ -137,10 +137,6 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
   const ProfileDetails = [
     {
-      icon: '',
-      description: `${PRN}: ${patientRecord}`
-    },
-    {
       icon: ProfileUserIcon(),
       description: `${PATIENT_AGE} Yrs Old`
     },
@@ -202,50 +198,55 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
       {isLoading ? (<ViewDataLoader rows={3} columns={6} />) : (
         <Box className={classes.profileCard}>
           <Box key={attachmentId} display="flex" alignItems="center">
-            <Box pl={1}>
-              <Box pr={3.75} position="relative">
-                {getAttachmentLoading ?
-                  <Avatar variant="square" className={classes.profileImage}>
-                    <CircularProgress size={20} color="inherit" />
-                  </Avatar>
-                  :
-                  <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
-                }
+            <Box pl={1} pr={3.75} position="relative">
+              {getAttachmentLoading ?
+                <Avatar variant="square" className={classes.profileImage}>
+                  <CircularProgress size={20} color="inherit" />
+                </Avatar>
+                :
+                <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
+              }
 
-                <MediaCards
-                  title={ATTACHMENT_TITLES.ProfilePicture}
-                  reload={() => fetchPatient()}
-                  notDescription={true}
-                  moduleType={AttachmentType.Patient}
-                  itemId={id}
-                  imageSide={attachmentUrl}
-                  attachmentData={attachmentData || undefined}
-                />
-              </Box>
+              <MediaCards
+                title={ATTACHMENT_TITLES.ProfilePicture}
+                reload={() => fetchPatient()}
+                notDescription={true}
+                moduleType={AttachmentType.Patient}
+                itemId={id}
+                imageSide={attachmentUrl}
+                attachmentData={attachmentData || undefined}
+              />
             </Box>
           </Box>
 
           <Box flex={1}>
             <Box display="flex">
               <Box flex={1} flexWrap="wrap">
-                <Box display="flex" alignItems="center" className={classes.userName}>
-                  {`${firstName} ${lastName}`}
+                <Box display="flex" alignItems="center">
+                  <Box className={classes.userName} mr={1}>
+                    {`${firstName} ${lastName}`}
+                  </Box>
+
+                  <Typography variant="body2">({patientRecord})</Typography>
                 </Box>
 
                 <Box display="flex" width="100%" pt={1} flexWrap="wrap">
                   {ProfileDetails.map((item, index) => (
                     <Box display="flex" flexWrap="wrap" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
                       <Box>{item.icon}</Box>
-                      <Box>{item.description}</Box>
+                      <Typography variant="body1">{item.description}</Typography>
                     </Box>
                   ))}
                 </Box>
 
-                <Box display="flex" pt={3}>
+                <Box display="flex" pt={1}>
                   {ProfileAdditionalDetails.map((item, index) => (
                     <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
                       <Box className={classes.profileInfoHeading}>{item.title}</Box>
-                      <Box>{item.description}</Box>
+
+                      <Box className={classes.profileInfoItem}>
+                        <Typography variant="body1">{item.description}</Typography>
+                      </Box>
                     </Box>
                   ))}
                 </Box>
