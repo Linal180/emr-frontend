@@ -13,7 +13,7 @@ import { ParamsType, PatientVitalsListingProps } from '../../../../../interfaces
 import ViewDataLoader from '../../../../common/ViewDataLoader';
 import { usePatientVitalListingStyles } from '../../../../../styles/patientVitalsStyles';
 
-const PatientVitalsListing = ({ patientStates }: PatientVitalsListingProps) => {
+const PatientVitalsListing = ({ patientStates, dispatcher }: PatientVitalsListingProps) => {
   const [patientVitals, setPatientVitals] = useState<PatientVitalsPayload['patientVitals']>([]);
 
   const classes = usePatientVitalListingStyles()
@@ -75,7 +75,7 @@ const PatientVitalsListing = ({ patientStates }: PatientVitalsListingProps) => {
               <VitalsLabels patientStates={patientStates} />
             </Grid>
             <Grid item xs={2}>
-              <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} patientStates={patientStates} />
+              <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} patientStates={patientStates} dispatcher={dispatcher} />
             </Grid>
             <Grid item xs={8}>
               <Box className={classes.listingTable}>

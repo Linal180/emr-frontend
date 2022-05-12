@@ -1284,11 +1284,13 @@ export interface VitalFormInput {
 
 export interface AddPatientVitalsProps {
   fetchPatientAllVitals: Function;
-  patientStates: PatientState
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface PatientVitalsListingProps {
-  patientStates: PatientState
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface VitalsLabelsProps {

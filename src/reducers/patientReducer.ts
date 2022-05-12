@@ -47,12 +47,16 @@ export interface State {
   openUnits: HTMLElement | null;
   heightUnit: { id: UnitType, name: string };
   prevHeightUnit: UnitType;
+  isHeightEdit: boolean;
   weightUnit: { id: WeightType, name: string };
   prevWeightUnit: WeightType;
+  isWeightEdit: boolean;
   headCircumferenceUnit: { id: HeadCircumferenceType, name: string };
   prevHeadUnit: HeadCircumferenceType;
+  isHeadEdit: boolean;
   feverUnit: { id: TempUnitType, name: string };
   prevFeverUnit: TempUnitType;
+  isTempEdit: boolean;
 }
 
 export const initialState: State = {
@@ -96,12 +100,16 @@ export const initialState: State = {
   openUnits: null,
   heightUnit: { id: UnitType.Inch, name: IN_TEXT },
   prevHeightUnit: UnitType.Inch,
+  isHeightEdit: false,
   weightUnit: { id: WeightType.Kg, name: KG_TEXT },
   prevWeightUnit: WeightType.Kg,
+  isWeightEdit: false,
   headCircumferenceUnit: { id: HeadCircumferenceType.Inch, name: IN_TEXT },
   prevHeadUnit: HeadCircumferenceType.Inch,
+  isHeadEdit: false,
   feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
-  prevFeverUnit: TempUnitType.DegF
+  prevFeverUnit: TempUnitType.DegF,
+  isTempEdit: false
 }
 
 export enum ActionType {
@@ -148,6 +156,10 @@ export enum ActionType {
   SET_WEIGHT_UNIT = 'setWeightUnit',
   SET_HEAD_CIRCUMFERENCE_UNIT = 'setHeadCircumferenceUnit',
   SET_FEVER_UNIT = 'setFeverUnit',
+  SET_EDIT_TEMP = 'setEditTemp',
+  SET_EDIT_WEIGHT = 'setEditWeight',
+  SET_EDIT_HEIGHT = 'setEditHeight',
+  SET_EDIT_HEAD = 'setEditHead',
 }
 
 export type Action =
@@ -195,6 +207,10 @@ export type Action =
   | { type: ActionType.SET_WEIGHT_UNIT; weightUnit: { id: WeightType, name: string } }
   | { type: ActionType.SET_HEAD_CIRCUMFERENCE_UNIT; headCircumferenceUnit: { id: HeadCircumferenceType, name: string } }
   | { type: ActionType.SET_FEVER_UNIT; feverUnit: { id: TempUnitType, name: string } }
+  | { type: ActionType.SET_EDIT_TEMP; isTempEdit: boolean }
+  | { type: ActionType.SET_EDIT_HEIGHT; isHeightEdit: boolean }
+  | { type: ActionType.SET_EDIT_WEIGHT; isWeightEdit: boolean }
+  | { type: ActionType.SET_EDIT_HEAD; isHeadEdit: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -421,6 +437,7 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         prevHeightUnit,
+        isHeightEdit: true,
         heightUnit: action.heightUnit
       }
     case ActionType.SET_WEIGHT_UNIT:
@@ -428,6 +445,7 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         prevWeightUnit,
+        isWeightEdit: true,
         weightUnit: action.weightUnit
       }
     case ActionType.SET_HEAD_CIRCUMFERENCE_UNIT:
@@ -435,6 +453,7 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         prevHeadUnit,
+        isHeadEdit: true,
         headCircumferenceUnit: action.headCircumferenceUnit
       }
     case ActionType.SET_FEVER_UNIT:
@@ -442,8 +461,28 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         prevFeverUnit,
+        isTempEdit: true,
         feverUnit: action.feverUnit
       }
-
+    case ActionType.SET_EDIT_HEAD:
+      return {
+        ...state,
+        isHeadEdit: action.isHeadEdit
+      }
+    case ActionType.SET_EDIT_HEIGHT:
+      return {
+        ...state,
+        isHeightEdit: action.isHeightEdit
+      }
+    case ActionType.SET_EDIT_WEIGHT:
+      return {
+        ...state,
+        isWeightEdit: action.isWeightEdit
+      }
+    case ActionType.SET_EDIT_TEMP:
+      return {
+        ...state,
+        isTempEdit: action.isTempEdit
+      }
   }
 };
