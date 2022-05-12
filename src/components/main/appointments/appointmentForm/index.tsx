@@ -258,13 +258,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   useEffect(() => {
     if (selectedService && date) {
       const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
-      const currentDay = new Date(date).getDay()
-
-      const slotsInput = { offset, currentDate: appStartDate ? appStartDate : date.toString(), serviceId: selectedService, day: days[currentDay] };
+      const currentDay = appStartDate ? new Date(appStartDate).getDay() : new Date(date).getDay()
+      const slotsInput = {
+        offset, currentDate: appStartDate ? new Date(appStartDate).toString() : date.toString(),
+        serviceId: selectedService, day: days[currentDay]
+      };
 
       getSlots({
         variables: {
-          getSlots: selectedProvider ? { providerId: selectedProvider, ...slotsInput } : { facilityId: selectedFacility, ...slotsInput }
+          getSlots: selectedProvider ? { providerId: selectedProvider, ...slotsInput, currentDate: '' } : { facilityId: selectedFacility, ...slotsInput }
         }
       })
     }
@@ -312,8 +314,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime,date), practiceId,
-        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, date), autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime, appStartDate ? new Date(appStartDate).toString() : date?.toString()), practiceId,
+        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
         employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
@@ -366,7 +368,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   }, [pId, pName, setValue])
 
   useEffect(() => { }, [date, appStartDate])
-
 
   return (
     <>
