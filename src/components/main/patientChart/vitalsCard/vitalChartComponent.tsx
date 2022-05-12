@@ -13,7 +13,7 @@ import {
   patientReducer, State, initialState, Action, ActionType
 } from "../../../../reducers/patientReducer";
 import {
-  FEVER_TEXT, FEVER_UNITS, GROWTH_CHART, HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT,
+  FEVER_TEXT, FEVER_UNITS, HEAD_CIRCUMFERENCE, HEAD_CIRCUMFERENCE_UNITS, HEIGHT_TEXT,
   PATIENT_HEIGHT_UNITS, PATIENT_WEIGHT_UNITS, PDF_TEXT, UNITS, WEIGHT_TEXT
 } from "../../../../constants";
 import {
@@ -136,11 +136,11 @@ const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar }): JSX.Element => 
             </Box>
           </Menu>
         </Box>
-        <Box pr={1}>
+        {/* <Box pr={1}>
           <Button color="secondary" variant="contained" onClick={() => dispatch({ type: ActionType.SET_OPEN_GRAPH, openGraph: true })}>
             {GROWTH_CHART}
           </Button>
-        </Box>
+        </Box> */}
 
         <Box>
           <Button color="secondary" variant="contained">

@@ -15,7 +15,8 @@ query getPatientVital($getPatientVital: GetPatientVital!) {
       temperatureUnitType
       smokingStatus
       patientTemperature
-      bloodPressure
+      diastolicBloodPressure
+      systolicBloodPressure
       respiratoryRate
       oxygenSaturation
       PatientHeight
@@ -54,7 +55,8 @@ query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
       temperatureUnitType
       smokingStatus
       patientTemperature
-      bloodPressure
+      diastolicBloodPressure
+      systolicBloodPressure
       respiratoryRate
       oxygenSaturation
       PatientHeight

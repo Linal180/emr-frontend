@@ -1,9 +1,9 @@
 // packages block
-import { useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Button, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress } from '@material-ui/core';
+import { Button, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress, Box } from '@material-ui/core';
 //component block
 import Selector from '../../../../common/Selector';
 import InputController from '../../../../../controller';
@@ -14,11 +14,12 @@ import {
 } from '../../../../../generated/graphql';
 import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
 import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
-import { getBMI, getCurrentDate, renderTh } from '../../../../../utils'
+import { getBMI, getCurrentDate, inchesToMeter, renderTh, } from '../../../../../utils'
 import { patientVitalSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
+import { SlashIcon } from '../../../../../assets/svgs'
 
-export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
+export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
 
   const classes = usePatientVitalFormStyles()
   const { id: patientId } = useParams<ParamsType>()
@@ -49,7 +50,7 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
   const onSubmit: SubmitHandler<VitalFormInput> = async (data) => {
 
     const {
-      smokingStatus, respiratoryRate, bloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI,
+      smokingStatus, respiratoryRate, diastolicBloodPressure, systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI,
       PainRange, pulseRate, patientHeadCircumference, patientTemperature } = data || {}
     const { id: smokingStatusLabel } = smokingStatus || {}
 
@@ -59,9 +60,10 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
         variables: {
           createVitalInput: {
             patientId, weightUnit: WeightType.Kg, unitType: UnitType.Inch, temperatureUnitType: TempUnitType.DegF,
-            headCircumference: HeadCircumferenceType.Inch, respiratoryRate, bloodPressure, oxygenSaturation,
-            PatientHeight, PatientWeight, PatientBMI, PainRange, smokingStatus: smokingStatusLabel as SmokingStatus,
-            pulseRate, patientHeadCircumference, patientTemperature, vitalCreationDate: new Date().toUTCString()
+            headCircumference: HeadCircumferenceType.Inch, respiratoryRate, diastolicBloodPressure, PainRange,
+            systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI, pulseRate,
+            patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature
+            , vitalCreationDate: new Date().toUTCString()
           }
         }
       })
@@ -69,11 +71,16 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
     } catch (error) {
       Alert.error(VITAL_ERROR_MSG)
     }
-
   }
 
   const setPatientBMI = useCallback(() => {
-    const bmi = getBMI(parseFloat(PatientWeight), parseFloat(PatientHeight))
+
+    const patientHeight = parseFloat(PatientHeight);
+    const patientWeight = parseFloat(PatientWeight);
+
+    const height = inchesToMeter(patientHeight)
+    const bmi = getBMI(patientWeight, height)
+
     bmi && setValue('PatientBMI', bmi?.toString())
   }, [PatientWeight, PatientHeight, setValue])
 
@@ -84,7 +91,7 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Table >
+        <Table>
           <TableHead>
             <TableRow>
               {renderTh(getCurrentDate(`${new Date()}`))}
@@ -115,13 +122,26 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
             </TableRow>
             <TableRow>
               <TableCell className={classes.input}>
-                <InputController
-                  fieldType="text"
-                  controllerName="bloodPressure"
-                  controllerLabel={''}
-                  placeholder={'e.g 80/120'}
-                  margin={'none'}
-                />
+                <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+                  <InputController
+                    fieldType="number"
+                    controllerName="systolicBloodPressure"
+                    controllerLabel={''}
+                    placeholder={'e.g 120'}
+                    margin={'none'}
+                  />
+                  <Box mx={1} height={'100%'}>
+                    <SlashIcon />
+                  </Box>
+                  <InputController
+                    fieldType="number"
+                    controllerName="diastolicBloodPressure"
+                    controllerLabel={''}
+                    placeholder={'e.g 80'}
+                    margin={'none'}
+                  />
+                </Box>
+
               </TableCell>
             </TableRow>
             <TableRow>
@@ -140,6 +160,7 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
                   fieldType="number"
                   controllerName="PatientHeight"
                   controllerLabel={''}
+                  // endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
                 />
               </TableCell>
@@ -149,6 +170,7 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
                 <InputController
                   fieldType="number"
                   controllerName="PatientWeight"
+                  // endAdornment={<Fragment>{KG_TEXT}</Fragment>}
                   controllerLabel={''}
                   margin={'none'}
                 />
@@ -192,6 +214,7 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
                   fieldType="number"
                   controllerName="patientHeadCircumference"
                   controllerLabel={''}
+                  // endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
                 />
               </TableCell>
@@ -202,6 +225,7 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
                   fieldType="number"
                   controllerName="patientTemperature"
                   controllerLabel={''}
+                  // endAdornment={<Box dangerouslySetInnerHTML={{ __html: `<sup>o</sup>F` }} ></Box>}
                   margin={'none'}
                 />
               </TableCell>
@@ -219,4 +243,4 @@ export const AddVitals = ({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
       </form>
     </FormProvider>
   )
-}
+})

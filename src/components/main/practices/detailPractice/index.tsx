@@ -145,15 +145,30 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                 </Grid>
 
                 <Grid item md={8} sm={12}>
-                  <Box onClick={() => setEdit(!edit)} mb={3} display="flex" justifyContent="flex-end">
-                    {edit ?
-                      <Button variant="contained" color="secondary">{CANCEL}</Button>
-                      :
-                      <Button variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
-                    }
-                  </Box>
                   {loading ? <ViewDataLoader columns={6} rows={4} /> :
                     <FormProvider {...methods}>
+                      <Box onClick={() => setEdit(!edit)} mb={3} display="flex" justifyContent="flex-end">
+                        <Box display='flex'>
+                          {edit ?
+                            <>
+                              <Button color="secondary">{CANCEL}</Button>
+
+                              <Box display="flex" justifyContent="flex-start" pl={2}>
+                                <Button type="submit" variant="contained" color="primary"
+                                  disabled={disableSubmit}
+                                >
+                                  {SAVE_TEXT}
+
+                                  {disableSubmit && <CircularProgress size={20} color="inherit" />}
+                                </Button>
+                              </Box>
+                            </>
+                            :
+                            <Button variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
+                          }
+                        </Box>
+                      </Box>
+
                       <Collapse in={!edit} mountOnEnter unmountOnExit>
                         <PracticeData practiceData={practiceData} />
                       </Collapse>
@@ -241,14 +256,6 @@ const DetailPracticeComponent: FC = (): JSX.Element => {
                                   />
                                 </Grid>
                               </Grid>
-                            </Grid>
-
-                            <Grid item md={12} sm={12}>
-                              <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
-                                {SAVE_TEXT}
-
-                                {disableSubmit && <CircularProgress size={20} color="inherit" />}
-                              </Button>
                             </Grid>
                           </Grid>
                         </form>

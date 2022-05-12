@@ -1,6 +1,9 @@
 mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
     access_token
+    isTwoFactorEnabled
+    userId
+    
 
     response {
       status
@@ -27,10 +30,13 @@ query GetLoggedInUser {
     user {
       id
       email
+      phone
+      isTwoFactorEnabled
       token
       userId
       userType
       phone
+      autoLogoutTime
 
       roles {
         id
@@ -161,6 +167,36 @@ query GetStaffUser($getStaff: GetStaff!) {
         createdAt
         updatedAt
       }
+    }
+  }
+}
+
+mutation update2FactorAuth($twoFactorInput: TwoFactorInput!){
+  update2FactorAuth(twoFactorInput: $twoFactorInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation resentOTP($seneOTPAgainInput: SeneOTPAgainInput!){
+  resentOTP(seneOTPAgainInput: $seneOTPAgainInput){
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+
+mutation verifyOTP($verifyCodeInput: VerifyCodeInput!){
+  verifyOTP(verifyCodeInput: $verifyCodeInput){
+    response {
+      error
+      status
+      message
     }
   }
 }

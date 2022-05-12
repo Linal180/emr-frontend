@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GREY_SEVEN, theme, WHITE, WHITE_SIX } from "../theme";
+import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GREY_SEVEN, GREY_THREE, theme, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
@@ -53,7 +53,8 @@ export const useProfileDetailsStyles = makeStyles(() =>
     userName: {
       fontSize: 19,
       fontWeight: 700,
-      paddingBottom: 5,
+      color: BLACK_ONE,
+      textTransform: 'capitalize',
 
       "& > svg": {
         marginLeft: 10,
@@ -61,10 +62,11 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileInfoItem: {
-      minWidth: "25%",
+      minWidth: "20%",
       alignItems: 'center',
-      color: GREY_SEVEN,
+      color: GREY_THREE,
       marginBottom: 8,
+      marginRight: 5,
 
       "& svg": {
         display: 'block',
@@ -81,7 +83,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
 
     profileInfoHeading: {
       fontSize: 15,
-      fontWeight: 600,
+      fontWeight: 700,
       color: BLACK_ONE
     },
 

@@ -31,7 +31,6 @@ import PageHeader from "../../common/PageHeader";
 import { CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, SCHEDULE_BREAD } from "../../../constants";
 import { useIndicatorStyles } from "../../../styles/indicatorStyles";
 
-
 const CalendarComponent = (): JSX.Element => {
   const classes = useCalendarStyles()
   const [currentDate, setCurrentDate] = useState(new Date())

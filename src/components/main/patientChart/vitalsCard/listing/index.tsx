@@ -7,7 +7,7 @@ import { AddVitals } from '../add';
 import { VitalsLabels } from './labels'
 import { VitalListingTable } from './lists'
 // graphql, constants, context, interfaces/types, reducer, svgs and utils block
-import { LIST_PAGE_LIMIT } from '../../../../../constants';
+import { VITAL_LIST_PAGE_LIMIT } from '../../../../../constants';
 import { PatientVitalsPayload, useFindAllPatientVitalsLazyQuery } from '../../../../../generated/graphql';
 import { ParamsType, PatientVitalsListingProps } from '../../../../../interfacesTypes';
 import ViewDataLoader from '../../../../common/ViewDataLoader';
@@ -21,7 +21,7 @@ const PatientVitalsListing = ({ patientStates }: PatientVitalsListingProps) => {
 
   const [getPatientVitals, { loading }] = useFindAllPatientVitalsLazyQuery({
     variables: {
-      patientVitalInput: { patientId: id, paginationOptions: { page: 1, limit: LIST_PAGE_LIMIT } }
+      patientVitalInput: { patientId: id, paginationOptions: { page: 1, limit: VITAL_LIST_PAGE_LIMIT } }
     },
     notifyOnNetworkStatusChange: true,
     fetchPolicy: "network-only",
@@ -75,7 +75,7 @@ const PatientVitalsListing = ({ patientStates }: PatientVitalsListingProps) => {
               <VitalsLabels patientStates={patientStates} />
             </Grid>
             <Grid item xs={2}>
-              <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} />
+              <AddVitals fetchPatientAllVitals={fetchPatientAllVitals} patientStates={patientStates} />
             </Grid>
             <Grid item xs={8}>
               <Box className={classes.listingTable}>

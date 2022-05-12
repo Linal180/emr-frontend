@@ -1,7 +1,7 @@
 //packages block
 import states from "states-us";
-import moment from "moment-timezone";
 import { v4 as uuid } from "uuid";
+import moment from "moment-timezone";
 // graphql and interfaces block
 import {
   formatServiceCode, formatValue, getFormattedDate, getStandardTime,
@@ -18,7 +18,8 @@ import {
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
-  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus, UnitType, WeightType, HeadCircumferenceType, TempUnitType,
+  FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
+   UnitType, WeightType, HeadCircumferenceType, TempUnitType,
 } from "../generated/graphql";
 
 // regex
@@ -56,10 +57,14 @@ export enum SYSTEM_ROLES {
   FrontDesk = "front-desk",
   Patient = "patient",
 }
+
 export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
+export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
+export const DASHES = '--'
 export const CURRENT_DATE = new Date();
+export const LATEST_RECORDED_DATE = "Recorded Date"
 export const NOTE = "Note";
 export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
@@ -70,8 +75,7 @@ export const ZIP_CODE_AND_CITY = "Please enter zip code & city";
 export const ZIP_CODE_ENTER = "Please enter zip code";
 export const POSSIBLE_MATCH = "possible address match";
 export const CHECK_ADDRESS = "Check Address";
-export const SMARTY_0_MATCH =
-  "There are 0 matches for that address. Please edit and re-check.";
+export const SMARTY_0_MATCH = "There are 0 matches for that address. Please edit and re-check.";
 export const YOU_ENTER = "You have entered:";
 export const SELECT_ADDRESS = "Please select a address";
 export const VERIFY_ADDRESS = "Verify address";
@@ -111,6 +115,7 @@ export const FORM_UPDATED = "Form updated successfully!";
 export const PUBLIC_FORM_LINK = "Public form preview Link";
 export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
 export const EMPTY_OPTION = { id: "", name: "--" };
+export const NO_RECORDS_OPTION = { id: "", name: "No Record Found" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
   Monday = "Monday",
@@ -121,6 +126,13 @@ export enum DAYS {
   Saturday = "Saturday",
   Sunday = "Sunday",
 }
+export const BPM_TEXT = 'bpm'
+export const PATIENT_VITAL_TEXT = 'Patient Vitals'
+export const RPM_TEXT = 'rpm'
+export const MMHG_TEXT = 'mmHg'
+export const KG_PER_METER_SQUARE_TEXT = 'kg/m2'
+export const ONE_TO_TEN_TEXT = '1-10'
+export const PERCENTAGE = '%'
 export const KG_TEXT = "KG"
 export const LBS_TEXT = "LBS"
 export const LB_TEXT = "LB"
@@ -215,6 +227,7 @@ export const FAILED_TO_UPDATED_DOCTOR = "Failed to update doctor!";
 export const ADD_STAFF = "Add Staff";
 export const FRONT_SIDE = "Front Side";
 export const BACK_SIDE = "Back Side";
+export const BACK_TEXT = "Back";
 export const DRIVING_LICENSE = "Driving License";
 export const INSURANCE_CARD = "Insurance Card";
 export const DOCUMENT_VERIFICATION = "Document Verification";
@@ -251,7 +264,7 @@ export const EDIT_DOCTOR = "Edit Doctor";
 export const ADD_PATIENT = "Add Patient";
 export const ADD_PRACTICE = "Add practice";
 export const EDIT_PRACTICE = "Edit practice";
-export const ADD_PATIENT_MODAL = "Add Patient?";
+export const ADD_PATIENT_MODAL = "Add New Patient";
 export const TIME_ZONE_TEXT = "Time Zone";
 export const EDIT_PATIENT = "Edit Patient";
 export const UPDATE_STAFF = "Update Staff";
@@ -338,7 +351,7 @@ export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
-  "Edit your facility information and settings";
+  "Edit your practice information and settings";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
   "Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION =
@@ -434,6 +447,7 @@ export const LANGUAGE_SPOKEN = "Language Spoken";
 export const GENDER = "Gender";
 export const EMAIL = "Email";
 export const DISABLED = "Disabled";
+export const ENABLED = "Enabled";
 export const ENABLED_BY = "Enabled by";
 export const ACTIVATED_ON = "Activated On";
 export const PRACTICE_IDENTIFIER = "Practice Identifier";
@@ -511,7 +525,6 @@ export const NONE = "None";
 export const NAME = "Name";
 export const ROLE = "Role";
 export const PAGE_LIMIT = 8;
-export const DROPDOWN_PAGE_LIMIT = 10;
 export const VALUE = "Value";
 export const VISIT = "Visit";
 export const ROLES = "Roles";
@@ -524,20 +537,22 @@ export const SERIAL_NO = "S.No";
 export const DRAWER_WIDTH = 300;
 export const REPORTS = "Reports";
 export const GENERAL = "General";
+export const UNKNOWN = "Unknown";
 export const TIME_TO = "TIME:TO";
 export const SET = "Set Password";
 export const SECURITY = "Security";
 export const USERNAME = "Username";
 export const ADD_BILL = "Add Bill";
 export const LOGOUT_TEXT = "Logout";
+export const INITIAL_PAGE_LIMIT = 5;
 export const TIME_FROM = "TIME:FROM";
 export const INSURANCE = "Insurance";
 export const ROLE_NAME = "Role name";
 export const HISTORICAL = "Historical";
 export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
-export const UNKNOWN = "Unknown";
 export const TEST_TAKEN = "Test Taken";
+export const DROPDOWN_PAGE_LIMIT = 10;
 export const APPOINTMENT = "Appointment";
 export const BILLING_TYPE = "Billing Type";
 export const PRESCRIBED_BY = "Prescribed By";
@@ -566,6 +581,7 @@ export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
+export const VITAL_LIST_PAGE_LIMIT = 5;
 export const USERS_TEXT = "Users";
 export const STAFF_TEXT = "Staff";
 export const LATITUDE = "Latitude";
@@ -618,8 +634,11 @@ export const PRACTICE_NPI = "Practice NPI";
 export const PATIENT_INFO = "Patient Info";
 export const FACILITY_NAME = "Facility Name";
 export const PRACTICE_NAME = "Practice Name";
+export const RESEND_OTP = "Resend OTP ?";
 export const BILLING_STATUS = "Billing Status";
 export const DOCTOR_SCHEDULE = "Doctor Schedule";
+export const OTP_CODE = "OTP Code";
+export const ENTER_OTP_CODE = "Please enter your OTP Code";
 export const LOCATION = "Location";
 export const DURATION = "Duration";
 export const RECURRING = "Recurring";
@@ -698,11 +717,12 @@ export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
-export const US_DATE_FORMAT = "MM/dd/yyyy";
+export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
 export const RACE = "Race";
+export const LOGIN = "Login";
 export const ROUTE = "Route";
 export const TITLE = "Title";
 export const PRICE = "Price";
@@ -729,6 +749,7 @@ export const INDUSTRY = "Industry";
 export const RELOAD = "Go To Home";
 export const LANGUAGE = "Language";
 export const PRONOUNS = "Pronouns";
+export const ADD_NUM = "Add Number";
 export const UNLOCK_TEXT = "Unlock";
 export const LEGAL_SEX = "Legal Sex";
 export const MORE_INFO = "More Info";
@@ -834,6 +855,7 @@ export const UPLOADS_DOCUMENT = "Upload Document";
 export const FORGOT_PASSWORD = "Forgot Password?";
 export const MEMBERSHIP_REQUEST_TEXT = "Requests";
 export const CALENDAR_VIEW_TEXT = "Calendar View";
+export const TWO_FACTOR_LOGIN = "Two-Factor Login";
 export const POLICY_HOLDER_ID = "Policy holder ID";
 export const UPLOAD_DOCUMENT = "Uploaded Document";
 export const APP_NAME_FORMAT = 'First Middle Last';
@@ -922,6 +944,7 @@ export const REGISTRATION_DATES = "Provider/ Registration Dates";
 export const DELETE_STAFF_DESCRIPTION = "Confirm to delete staff";
 export const PAY_DEBIT_CARD_TEXT = "Pay via Debit or Credit Card";
 export const PASSWORD_CHANGE_HEADING_TEXT = "Password is changed";
+export const ADD_PHONE_NUM_DESCRIPTION = "Please add phone number";
 export const AGREEMENT_TEXT = "I agree to all terms and agreement";
 export const BOCA_ADMIN_NOTIFICATIONS = "boca_admin_notifications";
 export const ADD_ANOTHER_COPAY_AMOUNT = "ADD ANOTHER COPAY AMOUNT";
@@ -961,6 +984,7 @@ export const DELETE_MEDIA_DESCRIPTION = "Are you sure you want to delete this me
 export const PUBLIC_FORM_SUCCESS_TITLE = 'Your record has been submitted successfully.';
 export const DELETE_FACILITY_SCHEDULE_DESCRIPTION = "Confirm to delete facility schedule";
 export const DELETE_REQUEST_DESCRIPTION = "Are you sure you want to delete this request?";
+export const TWO_FACTOR_LOGIN_DESCRIPTION = "Enter security code from your mobile phone.";
 export const PATIENT_RELATIONSHIP_TO_POLICY_HOLDER = "Patient relationship to policy holder";
 export const POLICY_HOLDER_ID_CERTIFICATION_NUMBER = "Policy holder ID/certification number";
 export const PUBLIC_FORM_SUCCESS_DESCRIPTION_1 = 'Your Details has been record successfully.';
@@ -1010,6 +1034,7 @@ export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
 export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
+export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
 export const MAINTENANCE_ROUTE = "/maintenance";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
@@ -1079,6 +1104,7 @@ export const minDobValidMessage = (label: string) => `${label}'s age should be m
 export const maxDobValidMessage = (label: string) => `${label}'s age should be less that 100-years`;
 export const FACILITY_CODE_VALIDATION_MESSAGE = "Facility code can only be capital alphabets 2-5 in length";
 export const MAMMOGRAPHY_VALIDATION_MESSAGE = "Valid mammography certification Number format is like REF-EW-111111";
+export const ValidOTP = () => `Please enter only numbers`;
 export const ValidMessage = (fieldName: string, Example?: string) =>
   `Please enter valid ${fieldName.toLowerCase()}`;
 export const MaxLength = (fieldName: string, length: number) =>
@@ -1103,6 +1129,7 @@ export const ROLE_NOT_FOUND = "Role not found!";
 export const LOGIN_SUCCESSFULLY = "Welcome to EMR";
 export const SCHEDULE_START = "Schedule Start Time";
 export const INVALID_EMAIL = "Invalid email address";
+export const INVALID_OTP_CODE = "Invalid otp code";
 export const PATIENT_NOT_FOUND = "Patient not found!";
 export const SERVICE_NOT_FOUND = "Service not found!";
 export const APPOINTMENT_CANCEL = "Appointment Cancel";
@@ -1118,6 +1145,8 @@ export const ROLE_CREATED = "Role is created successfully";
 export const ROLE_UPDATED = "Role is updated successfully";
 export const STAFF_CREATED = "Staff created successfully!";
 export const STAFF_UPDATED = "Staff updated successfully!";
+export const TWO_FA_ENABLED_SUCCESSFULLY = "2FA enabled successfully";
+export const TWO_FA_DISABLED_SUCCESSFULLY = "2FA disabled successfully";
 export const TRY_AGAIN = "Something went wrong. Try again!";
 export const SOMETHING_WENT_WRONG = "Something went wrong!";
 export const CANT_DELETE_DOCTOR = "Doctor can't be deleted.";
@@ -1145,6 +1174,9 @@ export const CANT_DELETE_FACILITY = "Facility can't be deleted.";
 export const CANT_DELETE_LOCATION = "Location can't be deleted.";
 export const FACILITY_CREATED = "Facility created successfully!";
 export const USER_NOT_FOUND_EXCEPTION_MESSAGE = "User not found.";
+export const OTP_NOT_FOUND_EXCEPTION_MESSAGE = "Precondition Failed Exception";
+export const OTP_WRONG_MESSAGE = "OTP code is wrong.";
+export const VALID_PASSWORD_MESSAGE = "Please enter valid password.";
 export const USER_CREATED = "User has been created successfully.";
 export const NO_USER_WITH_EMAIL = "No user found with this email.";
 export const PERMISSIONS_SET = "Role Permissions set successfully";
@@ -1993,6 +2025,7 @@ export const FORMS_ADD_BREAD = { text: ADD_FORM, link: "" };
 export const FORMS_EDIT_BREAD = { text: EDIT_FORM, link: "" };
 
 export const PATIENT_CHART_BREAD = { text: PATIENT_CHART, link: "" };
+export const PATIENT_VITAL_BREAD = { text: PATIENT_VITAL_TEXT, link: "" };
 export const PATIENT_EDIT_BREAD = { text: EDIT_PATIENT, link: "" };
 export const STAFF_NEW_BREAD = { text: ADD_STAFF, link: `${STAFF_ROUTE}/new` };
 export const STAFF_EDIT_BREAD = { text: EDIT_STAFF, link: "" };
@@ -3115,10 +3148,6 @@ export const PatientSearchingTooltipData = [
     format: PRN_FORMAT,
   },
   {
-    name: `${DOB}:`,
-    format: DOB_FORMAT,
-  },
-  {
     name: `${SSN}:`,
     format: SSN_FORMAT,
   }
@@ -3133,14 +3162,6 @@ export const AppointmentSearchingTooltipData = [
     name: `${EMAIL}:`,
     format: EMAIL_FORMAT,
   },
-  {
-    name: `${DOB}:`,
-    format: DOB_FORMAT,
-  },
-  {
-    name: `${SSN}:`,
-    format: SSN_FORMAT,
-  }
 ];
 
 export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
@@ -3171,4 +3192,15 @@ export const HEAD_CIRCUMFERENCE_UNITS = [
 export const FEVER_UNITS = [
   { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
   { id: TempUnitType.DegC, name: formatValue(TempUnitType.DegC) },
+]
+
+export const MAPPED_AUTO_LOGOUT = [
+  { id: "0", name: '30 Minutes' },
+  { id: "1", name: '1 Hour' },
+  { id: "2", name: '90 Minutes' },
+  { id: "3", name: '6 Hours' },
+  { id: "4", name: '12 Hours' },
+  { id: "5", name: '24 Hours' },
+  { id: "6", name: '2 Days' },
+  { id: "7", name: '7 Days' },
 ]

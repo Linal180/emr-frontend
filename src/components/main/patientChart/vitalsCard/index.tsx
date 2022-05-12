@@ -6,7 +6,7 @@ import VitalsChartingTable from './vitalChartComponent';
 import ChartingPageHeader from '../ChartingPageHeader';
 // constants block
 import { ParamsType } from '../../../../interfacesTypes';
-import { EDIT_PATIENT, PATIENTS_BREAD, PATIENT_EDIT_BREAD, USERS_BREAD } from '../../../../constants';
+import { PATIENT_VITAL_TEXT, PATIENTS_BREAD, PATIENT_VITAL_BREAD, USERS_BREAD } from '../../../../constants';
 
 const VitalChartComponent: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -14,8 +14,8 @@ const VitalChartComponent: FC = (): JSX.Element => {
   return (
     <>
       <ChartingPageHeader
-        title={EDIT_PATIENT}
-        path={[USERS_BREAD, PATIENTS_BREAD, PATIENT_EDIT_BREAD]}
+        title={PATIENT_VITAL_TEXT}
+        path={[USERS_BREAD, PATIENTS_BREAD, PATIENT_VITAL_BREAD]}
         id={id}
       />
 

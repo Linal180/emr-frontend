@@ -4,6 +4,7 @@ import axios from "axios";
 import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
@@ -164,6 +165,14 @@ export const getPracticeType = (type: PracticeType): string => {
 
 export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
+};
+
+export const getCurrentTimestamps = (existingDate: string, newDate:string | undefined | MaterialUiPickersDate) => {
+  const currentDate = moment(newDate).format(`MM-DD-YYYY`)
+  const existingTime = moment(existingDate).format(`hh:mm A`)
+  const date = moment(currentDate + ' ' + existingTime)
+  const updateDate = moment(date).format().toString()
+  return updateDate ? moment(updateDate).format().toString() : moment().format().toString()
 };
 
 export const getTimestampsForDob = (date: string): string => {
@@ -711,9 +720,14 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
   return moment(date, "x").format("DD/MM/YY")
 };
 
-export const getFormatDateString = (date: Maybe<string> | undefined,format="YYYY-MM-DD") => {
+export const getFormatDateString = (date: Maybe<string> | undefined, format = "YYYY-MM-DD") => {
   if (!date) return '';
   return moment(date).format(format).toString()
+};
+
+export const convertDateFromUnix = (date: Maybe<string> | undefined,format="MM-DD-YYYY") => {
+  if (!date) return '';
+  return moment(date,'x').format(format).toString()
 };
 
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
@@ -893,6 +907,10 @@ export const celsiusToFahrenheit = (c: number) => ((c * (9 / 5)) + 32)
 
 export const inchesToCentimeter = (i: number) => (i * 2.54)
 
+export const inchesToMeter = (i: number) => (i / 39.37)
+
+export const centimeterToMeter = (c: number) => (c / 100)
+
 export const centimeterToInches = (c: number) => (c / 2.54)
 
 export const kilogramToPounds = (kg: number) => (kg * 2.2046)
@@ -907,17 +925,17 @@ export const ounceToKilogram = (o: number) => (o / 35.274)
 
 export const ounceToPounds = (o: number) => (o / 16)
 
-export const getBMI = (weight: number, height: number) => (weight / (height * height))  
+export const getBMI = (weight: number, height: number) => (weight / (height * height))
 export const dataURLtoFile = (url: any, filename: string) => {
   var arr = url.split(','),
-      mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
-      bstr = atob(arr[1]), 
-      n = bstr.length, 
-      u8arr = new Uint8Array(n);
-      
-  while(n--){
-      u8arr[n] = bstr.charCodeAt(n);
+    mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
   }
-  
-  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, {type:mime});
+
+  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
 }

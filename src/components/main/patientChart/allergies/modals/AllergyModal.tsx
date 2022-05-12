@@ -25,8 +25,8 @@ import {
   useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation, Allergies,
 } from '../../../../../generated/graphql';
 import {
-  ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, PATIENT_ALLERGY_ADDED,
-  PATIENT_ALLERGY_DELETED, PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, START_DATE, UPDATE
+  ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED,
+  PATIENT_ALLERGY_DELETED, PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, UPDATE
 } from '../../../../../constants';
 
 const AllergyModal: FC<AddModalProps> = (
@@ -41,7 +41,7 @@ const AllergyModal: FC<AddModalProps> = (
     mode: "all",
     resolver: yupResolver(createPatientAllergySchema(onset))
   });
-  const { handleSubmit, reset, setValue, watch } = methods;
+  const { handleSubmit, setValue, watch, reset } = methods;
   const { allergyStartDate } = watch()
   const [{ selectedReactions }, dispatch] = useReducer<Reducer<State, Action>>(chartReducer, initialState)
 
@@ -159,7 +159,10 @@ const AllergyModal: FC<AddModalProps> = (
     dispatcher({ type: ActionType.SET_SELECTED_ITEM, selectedItem: undefined });
   }
 
-  const handleOnset = (onset: string) => setOnset(onset)
+  const handleOnset = (onset: string) => {
+    setValue("allergyStartDate", '')
+    setOnset(onset)
+  }
 
   const handleDelete = async () => {
     recordId && await removePatientAllergy({
@@ -203,7 +206,7 @@ const AllergyModal: FC<AddModalProps> = (
   }
 
   const isDisable = addAllergyLoading || updateAllergyLoading || getAllergyLoading
-  useEffect(() => {}, [selectedReactions, getAllergyLoading]);
+  useEffect(() => { }, [selectedReactions, getAllergyLoading]);
 
   return (
     <FormProvider {...methods}>
@@ -234,9 +237,7 @@ const AllergyModal: FC<AddModalProps> = (
               options={MAPPED_ALLERGY_SEVERITY}
             />
 
-            <DatePicker name="allergyStartDate" label={START_DATE} />
-
-            <Box p={1} mb={3} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
+            <Box p={1} mb={4} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
               {onsets.map(onSet =>
                 <Box onClick={() => handleOnset(onSet)}
                   className={onset === onSet ? 'selectedBox selectBox' : 'selectBox'}>
@@ -245,11 +246,16 @@ const AllergyModal: FC<AddModalProps> = (
               )}
             </Box>
 
-            <InputController
-              fieldType="text"
-              controllerName="comments"
-              controllerLabel={NOTE}
-            />
+            <DatePicker name="allergyStartDate" label={ONSET_DATE} />
+
+            <Box>
+              <InputController
+                multiline
+                fieldType="text"
+                controllerName="comments"
+                controllerLabel={NOTE}
+              />
+            </Box>
           </>
         }
 
