@@ -266,7 +266,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
       getSlots({
         variables: {
-          getSlots: selectedProvider ? { providerId: selectedProvider, ...slotsInput, currentDate: '' } : { facilityId: selectedFacility, ...slotsInput }
+          getSlots: selectedProvider ? { providerId: selectedProvider, ...slotsInput } : { facilityId: selectedFacility, ...slotsInput }
         }
       })
     }
