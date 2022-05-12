@@ -10,27 +10,32 @@ import CardComponent from "../../../common/CardComponent";
 // import ViewDataLoader from "../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
 import { AuthContext, ListContext } from '../../../../context';
-import { extendedPatientAppointmentSchema } from "../../../../validationSchemas";
+import { extendedPatientAppointmentSchema, extendedPatientAppointmentWithNonAdminSchema } from "../../../../validationSchemas";
 import { AddPatientModalProps, PatientInputProps } from "../../../../interfacesTypes";
-import { checkPermission, getTimestampsForDob } from "../../../../utils";
+import { checkPermission, getTimestampsForDob, isPracticeAdmin, isSuperAdmin } from "../../../../utils";
 import {
   ContactType, Ethnicity, Genderidentity, Holdstatement, Homebound, Maritialstatus, Pronouns, Race, RelationshipType, Sexualorientation, useCreatePatientMutation
 } from "../../../../generated/graphql";
 import {
   EMPTY_OPTION, PERMISSION_DENIED, USER_PERMISSIONS, CREATE_PATIENT, FIRST_NAME, LAST_NAME, EMAIL, SEX, MAPPED_GENDER_IDENTITY,
-  DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE,
+  DOB_TEXT, ADD_PATIENT, FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_CREATED, HOME_PHONE, MOBILE_PHONE, CANCEL, SSN_FORMAT, APPOINTMENTS_ROUTE, FACILITY,
 } from "../../../../constants";
 import InputController from "../../../../controller";
 import DatePicker from "../../../common/DatePicker";
 import PhoneField from "../../../common/PhoneInput";
 import history from "../../../../history";
+import FacilitySelector from "../../../common/Selector/FacilitySelector";
 
-const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facilityId }): JSX.Element => {
+const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen }): JSX.Element => {
   const { userPermissions, user } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
+  const { roles, facility } = user || {};
+  const isSuper = isSuperAdmin(roles);
+  const isPracAdmin = isPracticeAdmin(roles);
   const methods = useForm<PatientInputProps>({
     mode: "all",
-    resolver: yupResolver(extendedPatientAppointmentSchema)
+    resolver: yupResolver((isSuper || isPracAdmin) ?
+      extendedPatientAppointmentWithNonAdminSchema : extendedPatientAppointmentSchema)
   });
   const { reset, handleSubmit } = methods;
 
@@ -70,18 +75,23 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facility
   });
 
   const onSubmit: SubmitHandler<PatientInputProps> = async (inputs) => {
-    const { firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth } = inputs;
+    const { firstName, lastName, dob, basicEmail, basicPhone, basicMobile, sexAtBirth, facilityId: userFacilityId } = inputs;
 
     if (user) {
       const { id: userId } = user;
       const { id: selectedSexAtBirth } = sexAtBirth;
 
       let practiceId = '';
-      if (facilityId) {
-        const facility = facilityList?.filter(f => f?.id === facilityId)[0];
-        const { practiceId: pId } = facility || {};
+      let facilityId = '';
 
+      if (isSuper || isPracAdmin) {
+        const { practiceId: pId } = facilityList?.find(f => f?.id === userFacilityId.id) || {};
         practiceId = pId || ''
+        facilityId = userFacilityId.id || ''
+      } else {
+        const { id, practiceId: pId } = facility || {}
+        practiceId = pId || ''
+        facilityId = id || ''
       }
 
       const patientItemInput = {
@@ -142,6 +152,25 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facility
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardComponent cardTitle={ADD_PATIENT}>
             <Grid container spacing={3}>
+              {(isSuper || isPracAdmin) && <Grid item md={6} sm={12} xs={12}>
+                <FacilitySelector
+                  isRequired
+                  label={FACILITY}
+                  name="facilityId"
+                />
+              </Grid>}
+
+              <Grid item md={(isSuper || isPracAdmin) ? 6 : 12} sm={12} xs={12}>
+                <InputController
+                  isRequired
+                  fieldType="text"
+                  controllerName="basicEmail"
+                  controllerLabel={EMAIL}
+                />
+              </Grid>
+            </Grid>
+
+            <Grid container spacing={3}>
               <Grid item md={6} sm={12} xs={12}>
                 <InputController
                   isRequired
@@ -188,15 +217,6 @@ const AddPatientModal: FC<AddPatientModalProps> = ({ isOpen, setIsOpen, facility
               <Grid item md={6} sm={12} xs={12}>
                 <PhoneField name="basicMobile" label={MOBILE_PHONE} />
               </Grid>
-            </Grid>
-
-            <Grid md={12} sm={12} xs={12} spacing={3}>
-              <InputController
-                isRequired
-                fieldType="text"
-                controllerName="basicEmail"
-                controllerLabel={EMAIL}
-              />
             </Grid>
           </CardComponent>
 

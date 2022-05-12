@@ -19,7 +19,7 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const { control } = useFormContext()
   const { user } = useContext(AuthContext);
   const { facility, roles } = user || {}
-  const { id: facilityId } = facility || {}
+  const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
   const isPracAdmin = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
@@ -56,14 +56,27 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
   const fetchAllDoctors = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const doctorsInputs = { ...pageInputs }
+      const doctorsInputs = isSuper ? { ...pageInputs } :
+      isPracAdmin ? { practiceId, ...pageInputs } : 
+      isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
       if(shouldOmitFacilityId){
+        if(isPracAdmin && isFacAdmin){
+          doctorsInputs && await findAllDoctor({
+            variables: {
+              doctorInput: {
+                ...doctorsInputs, doctorFirstName: searchQuery, 
+              }
+            }
+          })
+          return 
+        }
+
         if(isPracAdmin || isFacAdmin){
           doctorsInputs && await findAllDoctor({
             variables: {
               doctorInput: {
-                ...doctorsInputs, doctorFirstName: searchQuery, facilityId: facilityId
+                ...doctorsInputs, doctorFirstName: searchQuery, facilityId: facilityId,
               }
             }
           })
@@ -90,12 +103,12 @@ const DoctorSelector: FC<DoctorSelectorProps> = ({
       }) : await findAllDoctor({
         variables: {
           doctorInput: {
-            ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId ?? facilityId
+            ...doctorsInputs, doctorFirstName: searchQuery, facilityId: selectedFacilityId ?? facilityId, ...pageInputs
           }
         }
       })
     } catch (error) { }
-  }, [page, shouldOmitFacilityId, isSuperAndPracAdmin, selectedFacilityId, findAllDoctor, searchQuery, facilityId, isPracAdmin, isFacAdmin])
+  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, shouldOmitFacilityId, isSuperAndPracAdmin, selectedFacilityId, findAllDoctor, searchQuery])
 
   useEffect(() => {
     if (!searchQuery.length || searchQuery.length > 2) {
