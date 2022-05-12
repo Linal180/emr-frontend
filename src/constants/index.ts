@@ -605,6 +605,7 @@ export const USER_ID = "User ID";
 export const PATIENT = "Patient";
 export const DOCUMENT = "Document";
 export const PRACTICE = "Practice";
+export const PRACTICES = "Practices";
 export const NO_RECORDS = "No Records";
 export const IN_PROGRESS = "In Progress";
 export const LAST_NAME = "Last Name";
@@ -1032,6 +1033,7 @@ export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
+export const SUPER_ADMIN_DASHBOARD_ROUTE = "/dashboard1";
 export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
@@ -3203,4 +3205,37 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "5", name: '24 Hours' },
   { id: "6", name: '2 Days' },
   { id: "7", name: '7 Days' },
+]
+
+export const PRACTICES_TABLE_DATA = [
+  {
+    practiceName: "Our Lady's Hospital Navan",
+    adminName: 'Jenny Wilson',
+    email: 'danghoang87hl@gmail.com',
+    phone: '2085550112',
+  },
+  {
+    practiceName: 'University Hospital Kerry',
+    adminName: 'Courtney Henry',
+    email: 'nvt.isst.nute@gmail.com',
+    phone: '3075550133',
+  },
+  {
+    practiceName: 'Mercy University Hospital',
+    adminName: 'Kathryn Murphy',
+    email: 'ckctm12@gmail.com',
+    phone: '6715550110',
+  },
+  {
+    practiceName: 'Cavan General Hospital',
+    adminName: 'Albert Flores',
+    email: 'binhan628@gmail.com',
+    phone: '6845550102',
+  },
+  {
+    practiceName: 'Roscommon County Hospital',
+    adminName: 'Jerome Bell',
+    email: 'vuhaithuongnute@gmail.com',
+    phone: '3035550105',
+  },
 ]

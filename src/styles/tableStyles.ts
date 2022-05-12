@@ -160,4 +160,14 @@ export const useTableStyles = makeStyles(() => ({
       maxWidth: 16,
     }
   },
+
+  dashboardTableContainer: {
+    background: WHITE,
+    borderRadius: 12,
+    overflow: "auto",
+    padding: theme.spacing(2),
+    maxHeight: 500,
+    overflowY: 'hidden',
+    border:'1px solid red',
+  },
 }))
