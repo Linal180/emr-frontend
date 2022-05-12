@@ -30,7 +30,7 @@ const DatePicker: FC<PickerProps> = ({ name, label, isRequired, clearable = fals
               {...field}
               id={`${name}-dialog`}
               variant="inline"
-              format="MM/dd/yyyy"
+              format="mm/dd/yyyy"
               inputVariant="outlined"
               KeyboardButtonProps={{ 'aria-label': 'change date', }}
               open={openPicker}

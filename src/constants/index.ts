@@ -108,7 +108,7 @@ export const CANCEL_TEXT = "Cancel";
 export const REQUIRED_TEXT = "Required?";
 export const CREATE_FORM_BUILDER = "Form is created successfully.";
 export const CREATE_FORM_TEMPLATE = "Form Template is created successfully.";
-export const DELETE_FORM_DESCRIPTION = "Confirm to delete form.";
+export const DELETE_FORM_DESCRIPTION = "Confirm to delete form";
 export const CANT_DELETE_FORM = "Form can't be deleted.";
 export const FORM_NOT_FOUND = "Form not found!";
 export const FORM_UPDATED = "Form updated successfully!";
@@ -351,7 +351,7 @@ export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
-  "Edit your facility information and settings";
+  "Edit your practice information and settings";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
   "Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION =
@@ -717,7 +717,7 @@ export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
-export const US_DATE_FORMAT = "MM/dd/yyyy";
+export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
@@ -1252,7 +1252,7 @@ export const SLOT_ALREADY_BOOKED =
 export const APPOINTMENT_SLOT_ERROR_MESSAGE =
   "Appointment Time is required. Please select available slot!";
 export const PRACTICE_OR_FACILITY_ALREADY_EXISTS =
-  "Practice/Facility already exits against provided data!";
+  "Practice/Facility already exists against provided data!";
 export const FORGOT_PASSWORD_TEXT_MESSAGE =
   "Enter your registered email address to get reset-password link";
 export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE =
@@ -1262,7 +1262,7 @@ export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE =
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
   "Sorry! Your verification token is expired or invalid";
 export const CANCEL_TIME_EXPIRED_MESSAGE =
-  "Appointment is to be scheduled in less than 1 hour, It can't ne cancelled now";
+  "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
 export const appointmentChargesDescription = (amount: string) =>

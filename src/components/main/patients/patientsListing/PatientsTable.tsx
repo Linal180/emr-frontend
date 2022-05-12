@@ -79,7 +79,7 @@ const PatientsTable: FC = (): JSX.Element => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
-        isPracticeUser ? { practiceId, ...pageInputs } :
+        isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs } :
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
       patientsInputs && await fetchAllPatientsQuery({
