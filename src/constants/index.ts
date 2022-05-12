@@ -351,7 +351,7 @@ export const EMERGENCY_ACCESS_ENABLED = "Emergency Access Enabled";
 export const ROLES_PERMISSIONS = "Roles & Permissions";
 export const NOTICE_REQUIRED_TEXT = "Minimum Notice Required (In Hours)";
 export const PRACTICE_DETAILS_DESCRIPTION =
-  "Edit your facility information and settings";
+  "Edit your practice information and settings";
 export const FACILITY_MANAGEMENT_DESCRIPTION =
   "Add and edit your facility information and settings";
 export const PROVIDER_MANAGEMENT_DESCRIPTION =
@@ -717,7 +717,7 @@ export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
-export const US_DATE_FORMAT = "MM/dd/yyyy";
+export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const USD = "USD";
 export const SEX = "Sex";
 export const SIZE = "Size";
