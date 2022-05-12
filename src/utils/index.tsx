@@ -926,6 +926,7 @@ export const ounceToKilogram = (o: number) => (o / 35.274)
 export const ounceToPounds = (o: number) => (o / 16)
 
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
+
 export const dataURLtoFile = (url: any, filename: string) => {
   var arr = url.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],

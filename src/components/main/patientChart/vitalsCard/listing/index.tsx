@@ -79,7 +79,7 @@ const PatientVitalsListing = ({ patientStates, dispatcher }: PatientVitalsListin
             </Grid>
             <Grid item xs={8}>
               <Box className={classes.listingTable}>
-                <VitalListingTable patientVitals={patientVitals} patientStates={patientStates} />
+                <VitalListingTable patientVitals={patientVitals} patientStates={patientStates} setPatientVitals={setPatientVitals} />
               </Box>
             </Grid>
           </Grid>

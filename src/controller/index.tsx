@@ -14,7 +14,7 @@ import { useFormStyles } from "../styles/formsStyles";
 import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 
 const InputController: FC<CustomInputControlProps> = ({
-  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment,
+  isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment, onBlur,
   disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField,
 }): JSX.Element => {
   const classes = useFormStyles();
@@ -63,6 +63,7 @@ const InputController: FC<CustomInputControlProps> = ({
             type={fieldType === "password" ? passwordType : fieldType}
             helperText={error ? error : message}
             {...field}
+            onBlur={() => onBlur && onBlur()}
             InputProps={isPassword ? {
               endAdornment: <ShowPassword
                 isPassword={isPassword}

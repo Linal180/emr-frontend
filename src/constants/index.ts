@@ -3211,3 +3211,18 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "6", name: '2 Days' },
   { id: "7", name: '7 Days' },
 ]
+
+export enum VITAL_LABELS {
+  createdAt = "",
+  pulseRate = 'Pulse (bpm)',
+  respiratoryRate = 'Respiratory Rate (rpm)',
+  bloodPressure = 'Blood Pressure (mmHg)',
+  oxygenSaturation = 'Oxygen Saturation (%)',
+  PatientHeight = 'Height',
+  PatientWeight = 'Weight',
+  PatientBMI = 'BMI (kg/m2)',
+  PainRange = 'Pain (1-10)',
+  smokingStatus = 'Smoking Status',
+  patientHeadCircumference = 'Head Circumference',
+  patientTemperature = 'Temperature',
+}

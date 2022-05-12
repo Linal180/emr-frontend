@@ -295,7 +295,6 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   fieldType="number"
                   controllerName="PatientHeight"
                   controllerLabel={''}
-                  // endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
                 />
               </TableCell>
@@ -305,7 +304,6 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                 <InputController
                   fieldType="number"
                   controllerName="PatientWeight"
-                  // endAdornment={<Fragment>{KG_TEXT}</Fragment>}
                   controllerLabel={''}
                   margin={'none'}
                 />
@@ -349,7 +347,6 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   fieldType="number"
                   controllerName="patientHeadCircumference"
                   controllerLabel={''}
-                  // endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
                 />
               </TableCell>
@@ -360,7 +357,6 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   fieldType="number"
                   controllerName="patientTemperature"
                   controllerLabel={''}
-                  // endAdornment={<Box dangerouslySetInnerHTML={{ __html: `<sup>o</sup>F` }} ></Box>}
                   margin={'none'}
                 />
               </TableCell>
@@ -376,6 +372,6 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
           </TableBody>
         </Table>
       </form>
-    </FormProvider>
+    </FormProvider >
   )
 })
