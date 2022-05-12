@@ -59,6 +59,8 @@ export enum SYSTEM_ROLES {
 }
 
 export const SUPER_ADMIN = "super-admin";
+export const PRACTICE_ADMIN = "practice-admin";
+export const FACILITY_ADMIN = "facility-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants

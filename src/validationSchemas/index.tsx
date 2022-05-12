@@ -618,6 +618,12 @@ export const extendedEditPatientSchema = yup.object({
 
 export const extendedPatientAppointmentSchema = yup.object({
   ...PatientSchema,
+  ...basicContactViaAppointmentSchema
+})
+
+export const extendedPatientAppointmentWithNonAdminSchema = yup.object({
+  ...PatientSchema,
+  ...facilityIdSchema,
   ...basicContactViaAppointmentSchema,
 })
 
