@@ -1262,7 +1262,7 @@ export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE =
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
   "Sorry! Your verification token is expired or invalid";
 export const CANCEL_TIME_EXPIRED_MESSAGE =
-  "Appointment is to be scheduled in less than 1 hour, It can't be deleted";
+  "Appointment is to be scheduled in less than 1 hour, It can't be cancelled now!";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
 export const appointmentChargesDescription = (amount: string) =>
