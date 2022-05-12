@@ -1252,7 +1252,7 @@ export const SLOT_ALREADY_BOOKED =
 export const APPOINTMENT_SLOT_ERROR_MESSAGE =
   "Appointment Time is required. Please select available slot!";
 export const PRACTICE_OR_FACILITY_ALREADY_EXISTS =
-  "Practice/Facility already exist against provided data!";
+  "Practice/Facility already exists against provided data!";
 export const FORGOT_PASSWORD_TEXT_MESSAGE =
   "Enter your registered email address to get reset-password link";
 export const CANT_VERIFY_EMAIL_WHILE_LOGGED_IN_MESSAGE =
@@ -1262,7 +1262,7 @@ export const EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE =
 export const INVALID_OR_EXPIRED_VERIFICATION_TOKEN_MESSAGE =
   "Sorry! Your verification token is expired or invalid";
 export const CANCEL_TIME_EXPIRED_MESSAGE =
-  "Appointment is to be scheduled in less than 1 hour, It can't me cancelled now";
+  "Appointment is to be scheduled in less than 1 hour, It can't be deleted";
 export const EXPIRE_TOKEN_MESSAGE =
   "Your token has been expired. Please click on the button below to get an email again.";
 export const appointmentChargesDescription = (amount: string) =>
