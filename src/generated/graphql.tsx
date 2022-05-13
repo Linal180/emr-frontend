@@ -106,7 +106,7 @@ export type AllergyInput = {
 export enum AllergyOnset {
   Adulthood = 'ADULTHOOD',
   Childhood = 'CHILDHOOD',
-  Unnkown = 'UNNKOWN'
+  Unknown = 'UNKNOWN'
 }
 
 /** The patient's allergy severity type assigned */
@@ -207,6 +207,7 @@ export type Attachment = {
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   providerName?: Maybe<Scalars['String']>;
+  signedByProvider?: Maybe<Scalars['Boolean']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
   typeId: Scalars['String'];
@@ -371,6 +372,7 @@ export type CreateAppointmentInput = {
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
   insuranceCompany?: Maybe<Scalars['String']>;
+  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -391,6 +393,7 @@ export type CreateAttachmentInput = {
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   providerName?: Maybe<Scalars['String']>;
+  signedByProvider?: Maybe<Scalars['Boolean']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -2201,6 +2204,20 @@ export type PatientAllergyPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type PatientAttachmentsInput = {
+  AttachmentModuleType?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+  typeId?: Maybe<Scalars['String']>;
+};
+
+export type PatientAttachmentsPayload = {
+  __typename?: 'PatientAttachmentsPayload';
+  attachments?: Maybe<Array<Maybe<Attachment>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PatientInfoInput = {
   createContactInput: CreateContactInput;
   createEmergencyContactInput: CreateContactInput;
@@ -2473,6 +2490,7 @@ export type Query = {
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
   findAllUsersForms: UserFormsPayload;
+  findPatientAttachments: PatientAttachmentsPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
@@ -2614,6 +2632,11 @@ export type QueryFindAllStaffArgs = {
 
 export type QueryFindAllUsersFormsArgs = {
   userFormInput: UserFormInput;
+};
+
+
+export type QueryFindPatientAttachmentsArgs = {
+  patientAttachmentsInput: PatientAttachmentsInput;
 };
 
 
@@ -3217,7 +3240,7 @@ export enum SmokingStatus {
   CurrentEverydaySmoker = 'CURRENT_EVERYDAY_SMOKER',
   CurrentSomedaySmoker = 'CURRENT_SOMEDAY_SMOKER',
   FormerSmoker = 'FORMER_SMOKER',
-  NeverSmocked = 'NEVER_SMOCKED',
+  NeverSmoked = 'NEVER_SMOKED',
   SmokerCurrentStatusUnknown = 'SMOKER_CURRENT_STATUS_UNKNOWN',
   UnknownIfEverSmoked = 'UNKNOWN_IF_EVER_SMOKED'
 }
@@ -3412,6 +3435,7 @@ export type UpdateAppointmentInput = {
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
+  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -3439,6 +3463,7 @@ export type UpdateAttachmentInput = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   providerName?: Maybe<Scalars['String']>;
+  signedByProvider?: Maybe<Scalars['Boolean']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -3846,18 +3871,20 @@ export type UpdateVitalInput = {
   PatientBMI?: Maybe<Scalars['String']>;
   PatientHeight?: Maybe<Scalars['String']>;
   PatientWeight?: Maybe<Scalars['String']>;
-  bloodPressure?: Maybe<Scalars['String']>;
-  headCircumference: HeadCircumferenceType;
+  diastolicBloodPressure?: Maybe<Scalars['String']>;
+  headCircumference?: Maybe<HeadCircumferenceType>;
   id: Scalars['String'];
   oxygenSaturation?: Maybe<Scalars['String']>;
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
-  smokingStatus: SmokingStatus;
-  temperatureUnitType: TempUnitType;
-  unitType: UnitType;
+  smokingStatus?: Maybe<SmokingStatus>;
+  systolicBloodPressure?: Maybe<Scalars['String']>;
+  temperatureUnitType?: Maybe<TempUnitType>;
+  unitType?: Maybe<UnitType>;
   vitalCreationDate?: Maybe<Scalars['String']>;
-  weightUnit: WeightType;
+  weightUnit?: Maybe<WeightType>;
 };
 
 export type User = {
