@@ -207,6 +207,7 @@ export type Attachment = {
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   providerName?: Maybe<Scalars['String']>;
+  signedByProvider?: Maybe<Scalars['Boolean']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
   typeId: Scalars['String'];
@@ -392,6 +393,7 @@ export type CreateAttachmentInput = {
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   providerName?: Maybe<Scalars['String']>;
+  signedByProvider?: Maybe<Scalars['Boolean']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -3441,6 +3443,7 @@ export type UpdateAttachmentInput = {
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
   providerName?: Maybe<Scalars['String']>;
+  signedByProvider?: Maybe<Scalars['Boolean']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -4062,19 +4065,40 @@ export type UpdateAppointmentStatusMutationVariables = Exact<{
 
 export type UpdateAppointmentStatusMutation = { __typename?: 'Mutation', updateAppointmentStatus: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: Appointmentstatus } | null | undefined } };
 
-export type RemoveAttachmentDataMutationVariables = Exact<{
-  removeAttachment: RemoveAttachment;
-}>;
-
-
-export type RemoveAttachmentDataMutation = { __typename?: 'Mutation', removeAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined } };
-
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
 }>;
 
 
-export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string } | null | undefined> | null | undefined } };
+export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, attachmentName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined> | null | undefined } };
+
+export type UpdateAttachmentDataMutationVariables = Exact<{
+  updateAttachmentInput: UpdateAttachmentInput;
+}>;
+
+
+export type UpdateAttachmentDataMutation = { __typename?: 'Mutation', updateAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachment?: { __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, attachmentName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined } };
+
+export type CreateAttachmentDataMutationVariables = Exact<{
+  createAttachmentInput: CreateAttachmentInput;
+}>;
+
+
+export type CreateAttachmentDataMutation = { __typename?: 'Mutation', createAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined, attachment?: { __typename?: 'Attachment', id: string, url?: string | null | undefined, key?: string | null | undefined, type: AttachmentType, typeId: string, providerName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined } };
+
+export type RemoveAttachmentDataMutationVariables = Exact<{
+  removeAttachment: RemoveAttachment;
+}>;
+
+
+export type RemoveAttachmentDataMutation = { __typename?: 'Mutation', removeAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type GetAttachmentQueryVariables = Exact<{
+  getMedia: GetMedia;
+}>;
+
+
+export type GetAttachmentQuery = { __typename?: 'Query', getAttachment: { __typename?: 'AttachmentMediaPayload', preSignedUrl?: string | null | undefined, response?: { __typename?: 'ResponsePayload', message?: string | null | undefined } | null | undefined } };
 
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
@@ -4444,27 +4468,6 @@ export type CreateInvoiceMutationVariables = Exact<{
 
 
 export type CreateInvoiceMutation = { __typename?: 'Mutation', createInvoice: { __typename?: 'InvoicePayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null | undefined } };
-
-export type CreateAttachmentDataMutationVariables = Exact<{
-  createAttachmentInput: CreateAttachmentInput;
-}>;
-
-
-export type CreateAttachmentDataMutation = { __typename?: 'Mutation', createAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined, attachment?: { __typename?: 'Attachment', id: string, type: AttachmentType, typeId: string, key?: string | null | undefined, url?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined } };
-
-export type UpdateAttachmentDataMutationVariables = Exact<{
-  updateAttachmentInput: UpdateAttachmentInput;
-}>;
-
-
-export type UpdateAttachmentDataMutation = { __typename?: 'Mutation', updateAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, name?: string | null | undefined, message?: string | null | undefined } | null | undefined, attachment?: { __typename?: 'Attachment', id: string, type: AttachmentType, typeId: string, key?: string | null | undefined, url?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined } };
-
-export type GetAttachmentQueryVariables = Exact<{
-  getMedia: GetMedia;
-}>;
-
-
-export type GetAttachmentQuery = { __typename?: 'Query', getAttachment: { __typename?: 'AttachmentMediaPayload', preSignedUrl?: string | null | undefined, response?: { __typename?: 'ResponsePayload', message?: string | null | undefined } | null | undefined } };
 
 export type FindAllPatientQueryVariables = Exact<{
   patientInput: PatientInput;
@@ -5261,44 +5264,6 @@ export function useUpdateAppointmentStatusMutation(baseOptions?: Apollo.Mutation
 export type UpdateAppointmentStatusMutationHookResult = ReturnType<typeof useUpdateAppointmentStatusMutation>;
 export type UpdateAppointmentStatusMutationResult = Apollo.MutationResult<UpdateAppointmentStatusMutation>;
 export type UpdateAppointmentStatusMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentStatusMutation, UpdateAppointmentStatusMutationVariables>;
-export const RemoveAttachmentDataDocument = gql`
-    mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
-  removeAttachmentData(removeAttachment: $removeAttachment) {
-    response {
-      name
-      status
-      message
-      error
-    }
-  }
-}
-    `;
-export type RemoveAttachmentDataMutationFn = Apollo.MutationFunction<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>;
-
-/**
- * __useRemoveAttachmentDataMutation__
- *
- * To run a mutation, you first call `useRemoveAttachmentDataMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveAttachmentDataMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeAttachmentDataMutation, { data, loading, error }] = useRemoveAttachmentDataMutation({
- *   variables: {
- *      removeAttachment: // value for 'removeAttachment'
- *   },
- * });
- */
-export function useRemoveAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>(RemoveAttachmentDataDocument, options);
-      }
-export type RemoveAttachmentDataMutationHookResult = ReturnType<typeof useRemoveAttachmentDataMutation>;
-export type RemoveAttachmentDataMutationResult = Apollo.MutationResult<RemoveAttachmentDataMutation>;
-export type RemoveAttachmentDataMutationOptions = Apollo.BaseMutationOptions<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
@@ -5314,6 +5279,7 @@ export const GetAttachmentsDocument = gql`
       type
       title
       typeId
+      attachmentName
       createdAt
       updatedAt
     }
@@ -5348,6 +5314,175 @@ export function useGetAttachmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAttachmentsQueryHookResult = ReturnType<typeof useGetAttachmentsQuery>;
 export type GetAttachmentsLazyQueryHookResult = ReturnType<typeof useGetAttachmentsLazyQuery>;
 export type GetAttachmentsQueryResult = Apollo.QueryResult<GetAttachmentsQuery, GetAttachmentsQueryVariables>;
+export const UpdateAttachmentDataDocument = gql`
+    mutation UpdateAttachmentData($updateAttachmentInput: UpdateAttachmentInput!) {
+  updateAttachmentData(updateAttachmentInput: $updateAttachmentInput) {
+    response {
+      status
+      message
+    }
+    attachment {
+      id
+      key
+      url
+      type
+      title
+      typeId
+      attachmentName
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type UpdateAttachmentDataMutationFn = Apollo.MutationFunction<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>;
+
+/**
+ * __useUpdateAttachmentDataMutation__
+ *
+ * To run a mutation, you first call `useUpdateAttachmentDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAttachmentDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAttachmentDataMutation, { data, loading, error }] = useUpdateAttachmentDataMutation({
+ *   variables: {
+ *      updateAttachmentInput: // value for 'updateAttachmentInput'
+ *   },
+ * });
+ */
+export function useUpdateAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>(UpdateAttachmentDataDocument, options);
+      }
+export type UpdateAttachmentDataMutationHookResult = ReturnType<typeof useUpdateAttachmentDataMutation>;
+export type UpdateAttachmentDataMutationResult = Apollo.MutationResult<UpdateAttachmentDataMutation>;
+export type UpdateAttachmentDataMutationOptions = Apollo.BaseMutationOptions<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>;
+export const CreateAttachmentDataDocument = gql`
+    mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
+  createAttachmentData(createAttachmentInput: $createAttachmentInput) {
+    response {
+      name
+      status
+      message
+      error
+    }
+    attachment {
+      id
+      url
+      key
+      type
+      typeId
+      providerName
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type CreateAttachmentDataMutationFn = Apollo.MutationFunction<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>;
+
+/**
+ * __useCreateAttachmentDataMutation__
+ *
+ * To run a mutation, you first call `useCreateAttachmentDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAttachmentDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAttachmentDataMutation, { data, loading, error }] = useCreateAttachmentDataMutation({
+ *   variables: {
+ *      createAttachmentInput: // value for 'createAttachmentInput'
+ *   },
+ * });
+ */
+export function useCreateAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>(CreateAttachmentDataDocument, options);
+      }
+export type CreateAttachmentDataMutationHookResult = ReturnType<typeof useCreateAttachmentDataMutation>;
+export type CreateAttachmentDataMutationResult = Apollo.MutationResult<CreateAttachmentDataMutation>;
+export type CreateAttachmentDataMutationOptions = Apollo.BaseMutationOptions<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>;
+export const RemoveAttachmentDataDocument = gql`
+    mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
+  removeAttachmentData(removeAttachment: $removeAttachment) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveAttachmentDataMutationFn = Apollo.MutationFunction<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>;
+
+/**
+ * __useRemoveAttachmentDataMutation__
+ *
+ * To run a mutation, you first call `useRemoveAttachmentDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAttachmentDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAttachmentDataMutation, { data, loading, error }] = useRemoveAttachmentDataMutation({
+ *   variables: {
+ *      removeAttachment: // value for 'removeAttachment'
+ *   },
+ * });
+ */
+export function useRemoveAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>(RemoveAttachmentDataDocument, options);
+      }
+export type RemoveAttachmentDataMutationHookResult = ReturnType<typeof useRemoveAttachmentDataMutation>;
+export type RemoveAttachmentDataMutationResult = Apollo.MutationResult<RemoveAttachmentDataMutation>;
+export type RemoveAttachmentDataMutationOptions = Apollo.BaseMutationOptions<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>;
+export const GetAttachmentDocument = gql`
+    query GetAttachment($getMedia: GetMedia!) {
+  getAttachment(getMedia: $getMedia) {
+    preSignedUrl
+    response {
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAttachmentQuery__
+ *
+ * To run a query within a React component, call `useGetAttachmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAttachmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAttachmentQuery({
+ *   variables: {
+ *      getMedia: // value for 'getMedia'
+ *   },
+ * });
+ */
+export function useGetAttachmentQuery(baseOptions: Apollo.QueryHookOptions<GetAttachmentQuery, GetAttachmentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAttachmentQuery, GetAttachmentQueryVariables>(GetAttachmentDocument, options);
+      }
+export function useGetAttachmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttachmentQuery, GetAttachmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAttachmentQuery, GetAttachmentQueryVariables>(GetAttachmentDocument, options);
+        }
+export type GetAttachmentQueryHookResult = ReturnType<typeof useGetAttachmentQuery>;
+export type GetAttachmentLazyQueryHookResult = ReturnType<typeof useGetAttachmentLazyQuery>;
+export type GetAttachmentQueryResult = Apollo.QueryResult<GetAttachmentQuery, GetAttachmentQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
@@ -7952,137 +8087,6 @@ export function useCreateInvoiceMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateInvoiceMutationHookResult = ReturnType<typeof useCreateInvoiceMutation>;
 export type CreateInvoiceMutationResult = Apollo.MutationResult<CreateInvoiceMutation>;
 export type CreateInvoiceMutationOptions = Apollo.BaseMutationOptions<CreateInvoiceMutation, CreateInvoiceMutationVariables>;
-export const CreateAttachmentDataDocument = gql`
-    mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
-  createAttachmentData(createAttachmentInput: $createAttachmentInput) {
-    response {
-      name
-      status
-      message
-      error
-    }
-    attachment {
-      id
-      type
-      typeId
-      key
-      url
-      createdAt
-      updatedAt
-    }
-  }
-}
-    `;
-export type CreateAttachmentDataMutationFn = Apollo.MutationFunction<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>;
-
-/**
- * __useCreateAttachmentDataMutation__
- *
- * To run a mutation, you first call `useCreateAttachmentDataMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateAttachmentDataMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createAttachmentDataMutation, { data, loading, error }] = useCreateAttachmentDataMutation({
- *   variables: {
- *      createAttachmentInput: // value for 'createAttachmentInput'
- *   },
- * });
- */
-export function useCreateAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>(CreateAttachmentDataDocument, options);
-      }
-export type CreateAttachmentDataMutationHookResult = ReturnType<typeof useCreateAttachmentDataMutation>;
-export type CreateAttachmentDataMutationResult = Apollo.MutationResult<CreateAttachmentDataMutation>;
-export type CreateAttachmentDataMutationOptions = Apollo.BaseMutationOptions<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>;
-export const UpdateAttachmentDataDocument = gql`
-    mutation UpdateAttachmentData($updateAttachmentInput: UpdateAttachmentInput!) {
-  updateAttachmentData(updateAttachmentInput: $updateAttachmentInput) {
-    response {
-      status
-      name
-      message
-    }
-    attachment {
-      id
-      type
-      typeId
-      key
-      url
-      createdAt
-      updatedAt
-    }
-  }
-}
-    `;
-export type UpdateAttachmentDataMutationFn = Apollo.MutationFunction<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>;
-
-/**
- * __useUpdateAttachmentDataMutation__
- *
- * To run a mutation, you first call `useUpdateAttachmentDataMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAttachmentDataMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAttachmentDataMutation, { data, loading, error }] = useUpdateAttachmentDataMutation({
- *   variables: {
- *      updateAttachmentInput: // value for 'updateAttachmentInput'
- *   },
- * });
- */
-export function useUpdateAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>(UpdateAttachmentDataDocument, options);
-      }
-export type UpdateAttachmentDataMutationHookResult = ReturnType<typeof useUpdateAttachmentDataMutation>;
-export type UpdateAttachmentDataMutationResult = Apollo.MutationResult<UpdateAttachmentDataMutation>;
-export type UpdateAttachmentDataMutationOptions = Apollo.BaseMutationOptions<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>;
-export const GetAttachmentDocument = gql`
-    query GetAttachment($getMedia: GetMedia!) {
-  getAttachment(getMedia: $getMedia) {
-    preSignedUrl
-    response {
-      message
-    }
-  }
-}
-    `;
-
-/**
- * __useGetAttachmentQuery__
- *
- * To run a query within a React component, call `useGetAttachmentQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAttachmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAttachmentQuery({
- *   variables: {
- *      getMedia: // value for 'getMedia'
- *   },
- * });
- */
-export function useGetAttachmentQuery(baseOptions: Apollo.QueryHookOptions<GetAttachmentQuery, GetAttachmentQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAttachmentQuery, GetAttachmentQueryVariables>(GetAttachmentDocument, options);
-      }
-export function useGetAttachmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttachmentQuery, GetAttachmentQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAttachmentQuery, GetAttachmentQueryVariables>(GetAttachmentDocument, options);
-        }
-export type GetAttachmentQueryHookResult = ReturnType<typeof useGetAttachmentQuery>;
-export type GetAttachmentLazyQueryHookResult = ReturnType<typeof useGetAttachmentLazyQuery>;
-export type GetAttachmentQueryResult = Apollo.QueryResult<GetAttachmentQuery, GetAttachmentQueryVariables>;
 export const FindAllPatientDocument = gql`
     query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {

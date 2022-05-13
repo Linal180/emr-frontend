@@ -168,7 +168,7 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
 };
 
-export const getCurrentTimestamps = (existingDate: string, newDate:string | undefined | MaterialUiPickersDate) => {
+export const getCurrentTimestamps = (existingDate: string, newDate: string | undefined | MaterialUiPickersDate) => {
   const currentDate = moment(newDate).format(`MM-DD-YYYY`)
   const existingTime = moment(existingDate).format(`hh:mm A`)
   const date = moment(currentDate + ' ' + existingTime)
@@ -1002,5 +1002,4 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
     default:
       return PatientWeight
   }
-
 }

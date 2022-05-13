@@ -1,14 +1,3 @@
-mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
-  removeAttachmentData(removeAttachment: $removeAttachment) {
-    response {
-      name
-      status
-      message
-      error
-    }
-  }
-}
-
 query GetAttachments($getAttachment: GetAttachment!){
   getAttachments(getAttachment: $getAttachment){
     response {
@@ -24,8 +13,70 @@ query GetAttachments($getAttachment: GetAttachment!){
       type
       title
       typeId
+      attachmentName
       createdAt
       updatedAt
+    }
+  }
+}
+
+mutation UpdateAttachmentData($updateAttachmentInput: UpdateAttachmentInput!){
+  updateAttachmentData(updateAttachmentInput: $updateAttachmentInput){
+    response {
+      status
+      message
+    }
+    
+    attachment{
+      id
+      key
+      url
+      type
+      title
+      typeId
+      attachmentName
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
+  createAttachmentData(createAttachmentInput: $createAttachmentInput) {
+    response {
+      name
+      status
+      message
+      error
+    }
+
+    attachment {
+      id
+      url
+      key
+      type
+      typeId
+      providerName
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
+  removeAttachmentData(removeAttachment: $removeAttachment) {
+    response {
+      status
+      message
+    }
+  }
+}
+
+query GetAttachment($getMedia: GetMedia!) {
+  getAttachment(getMedia: $getMedia) {
+ 	  preSignedUrl
+      response{
+      message
     }
   }
 }

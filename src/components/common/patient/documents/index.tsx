@@ -13,10 +13,11 @@ import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
 import { getFormattedDate, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { DocumentTableProps, ParamsType } from "../../../../interfacesTypes";
+import { DocumentTableProps, ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
 import {
   AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
-  useRemoveAttachmentDataMutation
+  useRemoveAttachmentDataMutation,
+  useUpdateAttachmentDataMutation
 } from "../../../../generated/graphql";
 import {
   mediaReducer, Action, initialState, State, ActionType
@@ -27,11 +28,21 @@ import {
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
 } from "../../../../constants";
+import InputController from "../../../../controller";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
+import FileViewerComponent from "../../FileViewer";
 
-const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JSX.Element => {
+const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useTableStyles()
-  const [{ preSignedUrl, attachmentUrl, attachmentData, openDelete, deleteAttachmentId }, dispatch] =
+  const methods = useForm<UpdateAttachmentDataInputs>({
+    mode: "all",
+    resolver: yupResolver(attachmentNameUpdateSchema)
+  });
+  const { reset, setValue, handleSubmit } = methods;
+  const [{ isEdit, preSignedUrl, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete, deleteAttachmentId }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const [getAttachment] = useGetAttachmentLazyQuery({
@@ -78,7 +89,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
             attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads
           )
 
-          dispatcher({
+          dispatch({
             type: ActionType.SET_ATTACHMENTS_DATA,
             attachmentsData: documents as AttachmentsPayload['attachments']
           })
@@ -86,6 +97,31 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
       }
     },
   });
+
+  const [updateAttachmentData, { loading: updateAttachmentLoading }] = useUpdateAttachmentDataMutation({
+    onError({ message }) {
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+      Alert.error(message);
+    },
+
+    onCompleted(data) {
+      const { updateAttachmentData } = data
+
+      if (updateAttachmentData) {
+        const { response, attachment } = updateAttachmentData || {}
+
+        if (response) {
+          const { status, message } = response
+
+          if (message && status && status === 200) {
+            Alert.success(message)
+            dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+            
+          }
+        }
+      }
+    }
+  })
 
   const [removeAttachment, { loading: deleteAttachmentLoading }] = useRemoveAttachmentDataMutation({
     onError({ message }) {
@@ -141,6 +177,20 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
     }
   }
 
+  const handleEdit = (attachmentId: string, name: string) => {
+    if (attachmentId) {
+      dispatch({ type: ActionType.SET_IS_EDIT, isEdit: true })
+      dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId })
+      setValue('attachmentName', name)
+    }
+  }
+
+  const onSubmit: SubmitHandler<UpdateAttachmentDataInputs> = async ({ attachmentName }) => {
+    attachmentId && await updateAttachmentData({
+      variables: { updateAttachmentInput: { id: attachmentId, attachmentName } }
+    })
+  }
+
   const search = (query: string) => { }
 
   useEffect(() => {
@@ -172,62 +222,81 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
       </Box>
 
       <Box className="table-overflow">
-        <Table aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              {renderTh(TITLE)}
-              {renderTh(TYPE)}
-              {renderTh(DATE)}
-              {renderTh(ACTION, "center")}
-            </TableRow>
-          </TableHead>
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)}>
 
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={10}>
-                  <TableLoader numberOfRows={4} numberOfColumns={4} />
-                </TableCell>
-              </TableRow>
-            ) : (
-              attachments?.map((attachment) => {
-                const { id, createdAt, url } = attachment || {};
-                const fileName = url?.split(/_(.+)/)[1].replaceAll(/%\d./g, "") || "";
-                const filteredFileName = fileName.length > 40 ? `${fileName.substr(0, 40)}...` : fileName
-                const fileExtension: DefaultExtensionType = url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
+            <Table aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  {renderTh(TITLE)}
+                  {renderTh(TYPE)}
+                  {renderTh(DATE)}
+                  {renderTh(ACTION, "center")}
+                </TableRow>
+              </TableHead>
 
-                return (
+              <TableBody>
+                {loading ? (
                   <TableRow>
-                    <TableCell scope="row">{filteredFileName}</TableCell>
-                    <TableCell scope="row">{fileExtension}</TableCell>
-                    <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
-                    <TableCell scope="row">
-                      <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                        <Box className={classes.iconsBackground}>
-                          <SignedIcon />
-                        </Box>
-
-                        <Box className={classes.iconsBackground}>
-                          <EditNewIcon />
-                        </Box>
-
-                        <Box className={classes.iconsBackground} onClick={() => handleDownload(id || '')}>
-                          <DownloadIcon />
-                        </Box>
-
-                        <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
-                          <TrashNewIcon />
-                        </Box>
-                      </Box>
+                    <TableCell colSpan={10}>
+                      <TableLoader numberOfRows={4} numberOfColumns={4} />
                     </TableCell>
                   </TableRow>
-                )
-              })
-            )}
-          </TableBody>
-        </Table>
+                ) : (
+                  attachmentsData?.map((attachment) => {
+                    const { id, createdAt, url, attachmentName } = attachment || {};
 
-        {!attachments?.length &&
+                    const filteredFileName = attachmentName && attachmentName?.length > 40 ? `${attachmentName?.substr(0, 40)}...` : attachmentName
+                    const fileExtension: DefaultExtensionType = url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
+
+                    return id && (
+                      <TableRow>
+                        <TableCell scope="row">
+                          {isEdit && attachmentId === id ? <>
+                            <InputController
+                              fieldType="text"
+                              controllerName="attachmentName"
+                              controllerLabel={''}
+                              margin={'none'}
+                              onBlur={() => handleSubmit(onSubmit)}
+                            />
+                            <Button type='submit'>save</Button>
+                          </>
+                            :
+                            <Box onClick={() => handleEdit(id || '', attachmentName || '')}>{filteredFileName}</Box>
+                          }
+                        </TableCell>
+                        <TableCell scope="row">{fileExtension}</TableCell>
+                        <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
+                        <TableCell scope="row">
+                          <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
+                            <Box className={classes.iconsBackground}>
+                              <SignedIcon />
+                            </Box>
+
+                            <Box className={classes.iconsBackground}>
+                              <EditNewIcon />
+                            </Box>
+
+                            <Box className={classes.iconsBackground} onClick={() => handleDownload(id || '')}>
+                              <DownloadIcon />
+                            </Box>
+
+                            <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>
+                              <TrashNewIcon />
+                            </Box>
+                          </Box>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </form>
+        </FormProvider>
+
+        {!attachmentsData?.length &&
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>
