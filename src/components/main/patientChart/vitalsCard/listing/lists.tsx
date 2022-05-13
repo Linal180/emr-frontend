@@ -311,6 +311,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           margin={'none'}
                           onBlur={() => handleSubmit(onSubmit)}
                           notStep
+                          isHelperText
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-pulseRate-${i}-${pulseRate}`}
@@ -335,6 +336,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           margin={'none'}
                           onBlur={() => handleSubmit(onSubmit)}
                           notStep
+                          isHelperText
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row"
@@ -358,6 +360,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                             margin={'none'}
                             onBlur={() => handleSubmit(onSubmit)}
                             notStep
+                            isHelperText
                           />
                           <Box mx={1} height={'100%'}>
                             <SlashIcon />
@@ -370,6 +373,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                             margin={'none'}
                             onBlur={() => handleSubmit(onSubmit)}
                             notStep
+                            isHelperText
                           />
                         </Box>
                       </TableCell> :
@@ -394,6 +398,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           margin={'none'}
                           onBlur={() => handleSubmit(onSubmit)}
                           notStep
+                          isHelperText
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row"
@@ -417,6 +422,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           margin={'none'}
                           onBlur={() => handleSubmit(onSubmit)}
                           notStep
+                          isHelperText
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row"
@@ -441,6 +447,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           margin={'none'}
                           onBlur={() => handleSubmit(onSubmit)}
                           notStep
+                          isHelperText
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PatientWeight-${i}-${PatientWeight}`} scope="row"
@@ -471,6 +478,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           margin={'none'}
                           onBlur={() => handleSubmit(onSubmit)}
                           notStep
+                          isHelperText
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row"
@@ -519,6 +527,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           margin={'none'}
                           onBlur={() => handleSubmit(onSubmit)}
                           notStep
+                          isHelperText
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row"
@@ -544,6 +553,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           margin={'none'}
                           onBlur={() => handleSubmit(onSubmit)}
                           notStep
+                          isHelperText
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row"

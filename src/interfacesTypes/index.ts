@@ -432,8 +432,9 @@ export interface CustomInputControlProps extends IControlLabel {
   clearable?: boolean
   handleClearField?: (fieldName: any) => void
   endAdornment?: ReactNode;
-  onBlur?: Function,
-  notStep?: boolean
+  onBlur?: Function;
+  notStep?: boolean;
+  isHelperText?: boolean
 }
 
 export interface TooltipData {
