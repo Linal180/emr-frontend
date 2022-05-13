@@ -30,7 +30,7 @@ import history from "../../../../history";
 import { AuthContext } from '../../../../context';
 import { ListContext } from '../../../../context/listContext';
 import { useFacilityStyles } from '../../../../styles/facilityStyles';
-import { getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
+import { formatServiceCode, getTimeString, isSuperAdmin, setRecord, setTime } from '../../../../utils';
 import { facilitySchedulerSchema, facilitySchemaWithPractice } from '../../../../validationSchemas';
 import { CustomFacilityInputProps, GeneralFormProps, SmartyUserData } from '../../../../interfacesTypes';
 import { facilityReducer, Action, initialState, State, ActionType } from "../../../../reducers/facilityReducer";
@@ -107,7 +107,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             federalTaxId && setValue('federalTaxId', federalTaxId)
             tamxonomyCode && setValue('tamxonomyCode', tamxonomyCode)
             timeZone && setValue('timeZone', setRecord(timeZone, timeZone))
-            serviceCode && setValue('serviceCode', setRecord(serviceCode, serviceCode))
+            serviceCode && setValue('serviceCode', setRecord(serviceCode, formatServiceCode(serviceCode)))
             practiceId && practiceName && setValue('practice', setRecord(practiceId, practiceName))
             mammographyCertificationNumber && setValue('mammographyCertificationNumber', mammographyCertificationNumber)
 
@@ -350,7 +350,6 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   useEffect(() => {
     setIsVerified(false)
   }, [zipCode, city, state, address, address2, watch])
-
 
   const verifiedAddressHandler = (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => {
     deliveryLine1 && setValue('address', deliveryLine1);

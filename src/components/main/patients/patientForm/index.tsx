@@ -157,11 +157,13 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           motherMaidenName && setValue("motherMaidenName", motherMaidenName)
           previouslastName && setValue("previouslastName", previouslastName)
           previousFirstName && setValue("previousFirstName", previousFirstName)
-          homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
+          homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
+          
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
+          
           race && setValue("race", setRecord(race, race))
           gender && setValue("gender", setRecord(gender, gender))
           pronouns && setValue("pronouns", setRecord(pronouns, pronouns))
@@ -170,6 +172,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           maritialStatus && setValue("maritialStatus", setRecord(maritialStatus, maritialStatus))
           genderIdentity && setValue("genderIdentity", setRecord(genderIdentity, genderIdentity))
           sexualOrientation && setValue("sexualOrientation", setRecord(sexualOrientation, sexualOrientation))
+
           setState({
             ...state, callToConsent: callToConsent || false,
             privacyNotice: privacyNotice || false,
@@ -225,7 +228,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             if (guarantorContact) {
               const { id: guarantorContactId, suffix, firstName, lastName, middleName, phone, zipCode, address,
-                address2, city, state, country, ssn, email, employerName
+                address2, city, state, country, ssn, email, employerName, relationship
               } = guarantorContact;
 
               dispatch({ type: ActionType.SET_GUARANTOR_CONTACT_ID, guarantorContactId })
@@ -243,6 +246,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               state && setValue("guarantorState", setRecord(state, state))
               employerName && setValue("guarantorEmployerName", employerName)
               country && setValue("guarantorCountry", setRecord(country, country))
+              relationship && setValue("guarantorRelationship", setRecord(relationship, relationship))
             }
 
             const guardianContact = contacts.filter(contact => contact.contactType === ContactType.Guardian)[0]
@@ -589,7 +593,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
 
             <Box ml={2}>
               <PageHeader
-                title={ADD_PATIENT}
+                title={isEdit ? UPDATE_PATIENT : ADD_PATIENT}
                 path={[USERS_BREAD, PATIENTS_BREAD, isEdit ? PATIENT_EDIT_BREAD : PATIENT_NEW_BREAD]}
               />
             </Box>

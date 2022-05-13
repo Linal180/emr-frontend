@@ -15,10 +15,11 @@ import {
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX, PHONE, MOBILE, ZIP_REGEX,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
-  APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
+  APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
-  SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP, ALLERGY_DATE_VALIDATION_MESSAGE, REACTIONS_VALIDATION_MESSAGE,
-  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, PAIN_TEXT, PULSE_TEXT, RESPIRATORY_RATE_TEXT, WEIGHT_TEXT
+  SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP, ALLERGY_DATE_VALIDATION_MESSAGE, PAIN_TEXT,
+  REACTIONS_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT, WEIGHT_TEXT,
+  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, FACILITY_NAME,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -576,7 +577,7 @@ export const guarantorPatientSchema = {
     .max(15, MaxLength(PHONE_NUMBER, 15)).required(requiredMessage(PHONE_NUMBER)),
   guarantorZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE)
     .required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
-  guarantorCity: yup.string().matches(STRING_REGEX, ValidMessage(ADDRESS))
+  guarantorCity: yup.string().matches(STRING_REGEX, ValidMessage(CITY))
     .required(requiredMessage(CITY)).min(2, MinLength(CITY, 2)).max(20, MaxLength(CITY, 20)),
   guarantorLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
     .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(requiredMessage(LAST_NAME)),
@@ -617,6 +618,12 @@ export const extendedEditPatientSchema = yup.object({
 
 export const extendedPatientAppointmentSchema = yup.object({
   ...PatientSchema,
+  ...basicContactViaAppointmentSchema
+})
+
+export const extendedPatientAppointmentWithNonAdminSchema = yup.object({
+  ...PatientSchema,
+  ...facilityIdSchema,
   ...basicContactViaAppointmentSchema,
 })
 
@@ -694,7 +701,7 @@ export const createPracticeSchema = yup.object({
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),
   name: yup.string().required(requiredMessage(PRACTICE_NAME)),
-  facilityName: yup.string().required(requiredMessage(NAME)),
+  facilityName: yup.string().required(requiredMessage(FACILITY_NAME)),
 })
 
 export const updatePracticeSchema = yup.object({
@@ -762,7 +769,7 @@ export const createPatientAllergySchema = (onset: string) => yup.object({
       label: yup.string(),
       value: yup.string()
     })
-  ).test('', REACTIONS_VALIDATION_MESSAGE, (value: any) => value && value.length > 0)
+  ).test('', REACTIONS_VALIDATION_MESSAGE, (value: any) => !!value && value.length > 0)
 })
 
 export const patientProblemSchema = yup.object({

@@ -2,7 +2,7 @@
 import { ChangeEvent, useEffect, Reducer, useReducer } from "react";
 import moment from "moment";
 import { useParams } from "react-router";
-import { Avatar, Box, Button, Grid, Tab } from "@material-ui/core";
+import { Avatar, Box, Button, Grid, Tab, Typography } from "@material-ui/core";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
 // components block
 import Alert from "../../../common/Alert";
@@ -121,16 +121,16 @@ const DoctorDetailComponent = (): JSX.Element => {
           ))}
         </TabList>
 
-        <Box className={`${classes.profileDetailsContainer} overflowY-auto`} maxHeight="calc(100vh - 248px)">
-          <Box className={classes.profileCard}>
+        <Box className={`${classes.profileDetailsContainer} overflowY-auto`}>
+          <Box className={classes.profileCard} pb={5}>
             <Box pr={3.75}>
               <Avatar variant="square" src="" className={classes.profileImage}></Avatar>
             </Box>
 
             <Box flex={1}>
               <Box display="flex">
-                <Box flex={1}>
-                  <Box display="flex" alignItems="center" className={classes.userName}>
+                <Box flex={1} flexWrap="wrap">
+                  <Box display="flex" alignItems="center" className={classes.userName} mr={1}>
                     {`${firstName} ${lastName}`}
                   </Box>
 
@@ -138,34 +138,34 @@ const DoctorDetailComponent = (): JSX.Element => {
                     {ProfileDetails.map((item, index) => (
                       <Box display="flex" key={`${item.description}-${index}`} className={classes.profileInfoItem}>
                         <Box>{item.icon}</Box>
-                        <Box>{item.description}</Box>
+                        <Typography variant="body1">{item.description}</Typography>
+                      </Box>
+                    ))}
+                  </Box>
+
+                  <Box display="flex" pt={1}>
+                    {ProfileAdditionalDetails.map((item, index) => (
+                      <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
+                        <Box className={classes.profileInfoHeading}>{item.title}</Box>
+
+                        <Box className={classes.profileInfoItem}>
+                          <Typography variant="body1">{item.description}</Typography>
+                        </Box>
                       </Box>
                     ))}
                   </Box>
                 </Box>
-              </Box>
 
-              <Box display="flex" pt={3}>
-                {ProfileAdditionalDetails.map((item, index) => (
-                  <Box key={`${item.title}-${index}`} className={classes.profileAdditionalInfo}>
-                    <Box className={classes.profileInfoHeading}>{item.title}</Box>
-                    <Box>{item.description}</Box>
-                  </Box>
-                ))}
+                <Box pr={1}>
+                  <Button color="primary" variant="contained" onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
+                    {EDIT_DOCTOR}
+                  </Button>
+                </Box>
               </Box>
-            </Box>
-
-            <Box pr={1}>
-              <Button color="primary" variant="contained" onClick={() => history.push(`${DOCTORS_ROUTE}/${id}`)}>
-                {EDIT_DOCTOR}
-              </Button>
             </Box>
           </Box>
 
           <TabPanel value="1">
-            <Grid container spacing={3}>
-
-            </Grid>
           </TabPanel>
 
           <TabPanel value="2">

@@ -153,15 +153,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
           notes && setValue('notes', notes)
           reason && setValue('reason', reason)
-          employment && setValue('employment', employment)
-          autoAccident && setValue('autoAccident', autoAccident)
-          otherAccident && setValue('otherAccident', otherAccident)
+          setValue('employment', Boolean(employment))
+          setValue('autoAccident', Boolean(autoAccident))
+          setValue('otherAccident', Boolean(otherAccident))
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
-          dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: isOtherAccident as boolean })
+          dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: otherAccident as boolean })
           dispatch({
             type: ActionType.SET_DATE,
             date: new Date(getTimeFromTimestamps(scheduleStartDateTime || '')) as MaterialUiPickersDate
@@ -258,9 +258,11 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   useEffect(() => {
     if (selectedService && date) {
       const days = [DAYS.Sunday, DAYS.Monday, DAYS.Tuesday, DAYS.Wednesday, DAYS.Thursday, DAYS.Friday, DAYS.Saturday];
-      const currentDay = new Date(date).getDay()
-
-      const slotsInput = { offset, currentDate: appStartDate ? appStartDate : date.toString(), serviceId: selectedService, day: days[currentDay] };
+      const currentDay = appStartDate ? new Date(appStartDate).getDay() : new Date(date).getDay()
+      const slotsInput = {
+        offset, currentDate: appStartDate ? new Date(appStartDate).toString() : date.toString(),
+        serviceId: selectedService, day: days[currentDay]
+      };
 
       getSlots({
         variables: {
@@ -312,14 +314,17 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime,date), practiceId,
-        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, date), autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime, 
+        appStartDate ? new Date(appStartDate).toString() : date?.toString()), practiceId,
+        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, 
+        appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
         employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
       };
 
-      const payload = selectedProvider ? { ...appointmentInput, providerId: selectedProvider } : { ...appointmentInput }
+      const payload = selectedProvider ?
+        { ...appointmentInput, providerId: selectedProvider } : { ...appointmentInput }
 
       if (isEdit) {
         id ?
@@ -332,7 +337,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
-          variables: { createAppointmentInput: { ...payload } }
+          variables: { createAppointmentInput: { ...payload, isExternal: true } }
         })
       }
     }
@@ -341,6 +346,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
+
       endTime && setValue('scheduleEndDateTime', endTime)
       startTime && setValue('scheduleStartDateTime', startTime)
     }
@@ -367,7 +373,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
   useEffect(() => { }, [date, appStartDate])
 
-
   return (
     <>
       <FormProvider {...methods}>
@@ -379,7 +384,8 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
               <Box ml={2}>
                 <PageHeader
                   title={EDIT_APPOINTMENT}
-                  path={[SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD, isEdit ? APPOINTMENT_EDIT_BREAD : APPOINTMENT_NEW_BREAD]}
+                  path={[SCHEDULE_BREAD, VIEW_APPOINTMENTS_BREAD, isEdit ?
+                    APPOINTMENT_EDIT_BREAD : APPOINTMENT_NEW_BREAD]}
                 />
               </Box>
             </Box>
@@ -459,11 +465,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         controllerLabel={REASON}
                       />
 
-                      <InputController
-                        fieldType="text"
-                        controllerName="notes"
-                        controllerLabel={NOTES}
-                      />
 
                       <InputController
                         fieldType="text"
@@ -475,6 +476,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         fieldType="text"
                         controllerName="secondaryInsurance"
                         controllerLabel={SECONDARY_INSURANCE}
+                      />
+
+                      <InputController
+                        multiline
+                        fieldType="text"
+                        controllerName="notes"
+                        controllerLabel={NOTES}
                       />
                     </>
                   )}

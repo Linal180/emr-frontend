@@ -75,7 +75,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         transformOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Box px={2} pt={1} minWidth={350}>
+        <Box px={2} pt={1} minWidth={350} maxWidth={350} overflow={'auto'}>
           <Box p={1} mb={2} display="flex" justifyContent="space-between"
             alignItems="center" className={classes.dropdownMenuBar}
           >
