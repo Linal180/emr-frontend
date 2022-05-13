@@ -1,5 +1,5 @@
 // packages block
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Table, TableBody, TableCell, TableRow, TableHead, Typography, TableContainer, Box } from '@material-ui/core';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -239,10 +239,8 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
   }
 
   const setPatientBMI = (PatientWeight: string, PatientHeight: string) => {
-
     const patientHeight = parseFloat(PatientHeight);
     const patientWeight = parseFloat(PatientWeight);
-
     let height = 0;
     let weight = 0;
 
@@ -277,6 +275,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
     return Number.isNaN(bmi) ? '' : bmi?.toString()
   }
 
+  useEffect(() => {
+    setVitalId('')
+    setType(VITAL_LABELS.createdAt)
+  }, [heightId, weightId, headCircumferenceId, feverId])
 
   return (
     <TableContainer>
