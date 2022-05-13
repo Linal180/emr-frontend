@@ -16,6 +16,7 @@ import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment, onBlur,
   disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField,
+  notStep
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -76,7 +77,7 @@ const InputController: FC<CustomInputControlProps> = ({
               </IconButton>
             } : fieldType === 'number' ?
               {
-                inputProps: { step: '5' },
+                inputProps: { step: notStep ? 'any' : '5' },
                 endAdornment: endAdornment ? endAdornment : <></>
               } : isSearch ? {
                 endAdornment: <Search />

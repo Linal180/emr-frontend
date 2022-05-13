@@ -14,7 +14,11 @@ import {
 } from '../../../../../generated/graphql';
 import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
 import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
-import { celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI, getCurrentDate, inchesToCentimeter, inchesToMeter, kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, renderTh, } from '../../../../../utils'
+import {
+  celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI, getCurrentDate,
+  getDefaultHead, getDefaultHeight, getDefaultTemp, getDefaultWeight, inchesToCentimeter, inchesToMeter,
+  kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, renderTh,
+} from '../../../../../utils'
 import { patientVitalSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
 import { SlashIcon } from '../../../../../assets/svgs'
@@ -54,9 +58,20 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
   const onSubmit: SubmitHandler<VitalFormInput> = async (data) => {
 
     const {
-      smokingStatus, respiratoryRate, diastolicBloodPressure, systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI,
-      PainRange, pulseRate, patientHeadCircumference, patientTemperature } = data || {}
+      smokingStatus, respiratoryRate, diastolicBloodPressure, systolicBloodPressure, oxygenSaturation, PatientBMI,
+      PainRange, pulseRate, PatientHeight: height, PatientWeight: weight, patientHeadCircumference: head,
+      patientTemperature: temp
+    } = data || {}
     const { id: smokingStatusLabel } = smokingStatus || {}
+    const { id: heightUnitType } = heightUnit || {}
+    const { id: weightUnitType } = weightUnit || {}
+    const { id: headUnitType } = headCircumferenceUnit || {}
+    const { id: feverUnitType } = feverUnit || {}
+
+    const PatientHeight = getDefaultHeight(heightUnitType, height)
+    const PatientWeight = getDefaultWeight(weightUnitType, weight)
+    const patientHeadCircumference = getDefaultHead(headUnitType, head)
+    const patientTemperature = getDefaultTemp(feverUnitType, temp)
 
     try {
       setLoading(true)
@@ -76,6 +91,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
       Alert.error(VITAL_ERROR_MSG)
     }
   }
+
+
 
   const setPatientBMI = useCallback(() => {
 
@@ -118,8 +135,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
   }, [PatientWeight, PatientHeight, heightUnit, weightUnit, setValue])
 
   useMemo(() => {
-    PatientWeight && PatientHeight && setPatientBMI()
-  }, [PatientWeight, PatientHeight, setPatientBMI])
+    PatientWeight && PatientHeight ? setPatientBMI() : setValue('PatientBMI', '')
+  }, [PatientWeight, PatientHeight, setPatientBMI, setValue])
 
   const heightUnitConvertHandler = useCallback(() => {
     dispatcher({ type: ActionType.SET_EDIT_HEIGHT, isHeightEdit: false })
@@ -241,6 +258,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerName="pulseRate"
                   controllerLabel={''}
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -251,6 +269,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerName="respiratoryRate"
                   controllerLabel={''}
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
 
@@ -264,6 +283,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                     controllerLabel={''}
                     placeholder={'e.g 120'}
                     margin={'none'}
+                    notStep
                   />
                   <Box mx={1} height={'100%'}>
                     <SlashIcon />
@@ -274,6 +294,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                     controllerLabel={''}
                     placeholder={'e.g 80'}
                     margin={'none'}
+                    notStep
                   />
                 </Box>
 
@@ -286,6 +307,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerName="oxygenSaturation"
                   controllerLabel={''}
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -296,6 +318,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerName="PatientHeight"
                   controllerLabel={''}
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -306,6 +329,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerName="PatientWeight"
                   controllerLabel={''}
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -317,6 +341,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerLabel={''}
                   disabled
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -327,6 +352,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerName="PainRange"
                   controllerLabel={''}
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -348,6 +374,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerName="patientHeadCircumference"
                   controllerLabel={''}
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -358,6 +385,7 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
                   controllerName="patientTemperature"
                   controllerLabel={''}
                   margin={'none'}
+                  notStep
                 />
               </TableCell>
             </TableRow>
