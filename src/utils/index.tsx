@@ -18,7 +18,8 @@ import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AttachmentType, AllergySeverity, ProblemSeverity
+  AttachmentType, AllergySeverity, ProblemSeverity, HeadCircumferenceType, TempUnitType, WeightType,
+  UnitType
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -725,9 +726,9 @@ export const getFormatDateString = (date: Maybe<string> | undefined, format = "Y
   return moment(date).format(format).toString()
 };
 
-export const convertDateFromUnix = (date: Maybe<string> | undefined,format="MM-DD-YYYY") => {
+export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
   if (!date) return '';
-  return moment(date,'x').format(format).toString()
+  return moment(date, 'x').format(format).toString()
 };
 
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
@@ -926,6 +927,7 @@ export const ounceToKilogram = (o: number) => (o / 35.274)
 export const ounceToPounds = (o: number) => (o / 16)
 
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
+
 export const dataURLtoFile = (url: any, filename: string) => {
   var arr = url.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
@@ -938,4 +940,67 @@ export const dataURLtoFile = (url: any, filename: string) => {
   }
 
   return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
+}
+
+
+export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string) => {
+  const patientHeight = parseFloat(PatientHeight)
+
+  switch (heightUnitType) {
+    case UnitType.Centimeter:
+      const height = centimeterToInches(patientHeight);
+      return height?.toString()
+    case UnitType.Inch:
+      return PatientHeight
+    default:
+      return PatientHeight
+  }
+
+}
+
+export const getDefaultHead = (headType: HeadCircumferenceType, patientHeadCircumference: string) => {
+  const patientHead = parseFloat(patientHeadCircumference)
+
+  switch (headType) {
+    case HeadCircumferenceType.Centimeter:
+      const head = centimeterToInches(patientHead);
+      return head?.toString()
+    case HeadCircumferenceType.Inch:
+      return patientHeadCircumference
+    default:
+      return patientHeadCircumference
+  }
+
+}
+
+export const getDefaultTemp = (tempType: TempUnitType, patientTemperature: string) => {
+  const patientTemp = parseFloat(patientTemperature)
+
+  switch (tempType) {
+    case TempUnitType.DegC:
+      const temp = celsiusToFahrenheit(patientTemp);
+      return temp?.toString()
+    case TempUnitType.DegF:
+      return patientTemperature
+    default:
+      return patientTemperature
+  }
+}
+
+export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: string) => {
+  const patientWeight = parseFloat(PatientWeight)
+
+  switch (weightUnitType) {
+    case WeightType.Pound:
+      const weight = poundsToKilogram(patientWeight);
+      return weight?.toString()
+    case WeightType.PoundOunce:
+      const weight1 = ounceToKilogram(patientWeight);
+      return weight1?.toString()
+    case WeightType.Kg:
+      return PatientWeight
+    default:
+      return PatientWeight
+  }
+
 }

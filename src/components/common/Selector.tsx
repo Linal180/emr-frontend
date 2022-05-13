@@ -8,7 +8,7 @@ import { requiredLabel } from "../../utils";
 import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
 
-const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, addEmpty, margin }): JSX.Element => {
+const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, addEmpty, margin, onBlur }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options] : [...options]
 
@@ -40,6 +40,7 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
+                  onBlur={() => onBlur && onBlur()}
                 />
 
                 <FormHelperText>{message}</FormHelperText>

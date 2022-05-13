@@ -3848,18 +3848,20 @@ export type UpdateVitalInput = {
   PatientBMI?: Maybe<Scalars['String']>;
   PatientHeight?: Maybe<Scalars['String']>;
   PatientWeight?: Maybe<Scalars['String']>;
-  bloodPressure?: Maybe<Scalars['String']>;
-  headCircumference: HeadCircumferenceType;
+  diastolicBloodPressure?: Maybe<Scalars['String']>;
+  headCircumference?: Maybe<HeadCircumferenceType>;
   id: Scalars['String'];
   oxygenSaturation?: Maybe<Scalars['String']>;
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
-  smokingStatus: SmokingStatus;
-  temperatureUnitType: TempUnitType;
-  unitType: UnitType;
+  smokingStatus?: Maybe<SmokingStatus>;
+  systolicBloodPressure?: Maybe<Scalars['String']>;
+  temperatureUnitType?: Maybe<TempUnitType>;
+  unitType?: Maybe<UnitType>;
   vitalCreationDate?: Maybe<Scalars['String']>;
-  weightUnit: WeightType;
+  weightUnit?: Maybe<WeightType>;
 };
 
 export type User = {
@@ -4246,6 +4248,13 @@ export type AddPatientVitalMutationVariables = Exact<{
 
 
 export type AddPatientVitalMutation = { __typename?: 'Mutation', addPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string } | null | undefined } };
+
+export type UpdatePatientVitalMutationVariables = Exact<{
+  updateVitalInput: UpdateVitalInput;
+}>;
+
+
+export type UpdatePatientVitalMutation = { __typename?: 'Mutation', updatePatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, diastolicBloodPressure?: string | null | undefined, systolicBloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, pulseRate?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } };
 
 export type FindAllRoleListQueryVariables = Exact<{
   roleInput: RoleInput;
@@ -6485,6 +6494,68 @@ export function useAddPatientVitalMutation(baseOptions?: Apollo.MutationHookOpti
 export type AddPatientVitalMutationHookResult = ReturnType<typeof useAddPatientVitalMutation>;
 export type AddPatientVitalMutationResult = Apollo.MutationResult<AddPatientVitalMutation>;
 export type AddPatientVitalMutationOptions = Apollo.BaseMutationOptions<AddPatientVitalMutation, AddPatientVitalMutationVariables>;
+export const UpdatePatientVitalDocument = gql`
+    mutation updatePatientVital($updateVitalInput: UpdateVitalInput!) {
+  updatePatientVital(updateVitalInput: $updateVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patientVital {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      diastolicBloodPressure
+      systolicBloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      pulseRate
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type UpdatePatientVitalMutationFn = Apollo.MutationFunction<UpdatePatientVitalMutation, UpdatePatientVitalMutationVariables>;
+
+/**
+ * __useUpdatePatientVitalMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientVitalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientVitalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientVitalMutation, { data, loading, error }] = useUpdatePatientVitalMutation({
+ *   variables: {
+ *      updateVitalInput: // value for 'updateVitalInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientVitalMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientVitalMutation, UpdatePatientVitalMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientVitalMutation, UpdatePatientVitalMutationVariables>(UpdatePatientVitalDocument, options);
+      }
+export type UpdatePatientVitalMutationHookResult = ReturnType<typeof useUpdatePatientVitalMutation>;
+export type UpdatePatientVitalMutationResult = Apollo.MutationResult<UpdatePatientVitalMutation>;
+export type UpdatePatientVitalMutationOptions = Apollo.BaseMutationOptions<UpdatePatientVitalMutation, UpdatePatientVitalMutationVariables>;
 export const FindAllRoleListDocument = gql`
     query FindAllRoleList($roleInput: RoleInput!) {
   getAllRoles(roleInput: $roleInput) {
