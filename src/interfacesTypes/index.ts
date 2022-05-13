@@ -434,7 +434,8 @@ export interface CustomInputControlProps extends IControlLabel {
   endAdornment?: ReactNode;
   onBlur?: Function;
   notStep?: boolean;
-  isHelperText?: boolean
+  isHelperText?: boolean;
+  autoFocus?: boolean
 }
 
 export interface TooltipData {

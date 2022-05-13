@@ -309,9 +309,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           controllerName="pulseRate"
                           controllerLabel={''}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                           notStep
                           isHelperText
+                          autoFocus
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-pulseRate-${i}-${pulseRate}`}
@@ -334,9 +335,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           controllerName="respiratoryRate"
                           controllerLabel={''}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                           notStep
                           isHelperText
+                          autoFocus
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-respiratoryRate-${i}-${respiratoryRate}`} scope="row"
@@ -358,9 +360,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                             controllerLabel={''}
                             placeholder={'e.g 120'}
                             margin={'none'}
-                            onBlur={() => handleSubmit(onSubmit)}
+                            onBlur={handleSubmit(onSubmit)}
                             notStep
                             isHelperText
+                            
                           />
                           <Box mx={1} height={'100%'}>
                             <SlashIcon />
@@ -371,9 +374,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                             controllerLabel={''}
                             placeholder={'e.g 80'}
                             margin={'none'}
-                            onBlur={() => handleSubmit(onSubmit)}
+                            onBlur={handleSubmit(onSubmit)}
                             notStep
                             isHelperText
+                            
                           />
                         </Box>
                       </TableCell> :
@@ -396,9 +400,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           controllerName="oxygenSaturation"
                           controllerLabel={''}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                           notStep
                           isHelperText
+                          autoFocus
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-oxygenSaturation-${i}-${oxygenSaturation}`} scope="row"
@@ -420,9 +425,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           controllerName="PatientHeight"
                           controllerLabel={''}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                           notStep
                           isHelperText
+                          autoFocus
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row"
@@ -445,9 +451,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           controllerName="PatientWeight"
                           controllerLabel={''}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                           notStep
                           isHelperText
+                          autoFocus
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PatientWeight-${i}-${PatientWeight}`} scope="row"
@@ -476,9 +483,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           controllerName="PainRange"
                           controllerLabel={''}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                           notStep
                           isHelperText
+                          autoFocus
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PainRange-${i}-${PainRange}`} scope="row"
@@ -500,7 +508,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           value={EMPTY_OPTION}
                           options={MAPPED_SMOKING_STATUS}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-smokingStatus-${i}-${smokingStatus}`} scope="row"
@@ -525,9 +533,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           controllerName="patientHeadCircumference"
                           controllerLabel={''}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                           notStep
                           isHelperText
+                          autoFocus
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row"
@@ -551,9 +560,10 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                           controllerName="patientTemperature"
                           controllerLabel={''}
                           margin={'none'}
-                          onBlur={() => handleSubmit(onSubmit)}
+                          onBlur={handleSubmit(onSubmit)}
                           notStep
                           isHelperText
+                          autoFocus
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row"
