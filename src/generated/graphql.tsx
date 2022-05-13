@@ -371,6 +371,7 @@ export type CreateAppointmentInput = {
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
   insuranceCompany?: Maybe<Scalars['String']>;
+  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -3412,6 +3413,7 @@ export type UpdateAppointmentInput = {
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
+  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;

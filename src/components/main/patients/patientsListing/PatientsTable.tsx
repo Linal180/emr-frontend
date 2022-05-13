@@ -42,7 +42,7 @@ const PatientsTable: FC = (): JSX.Element => {
   const { user } = useContext(AuthContext)
   const { roles, facility } = user || {};
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const { id: facilityId, practiceId } = facility || {}
   const [open, setOpen] = useState<boolean>(false)
@@ -79,7 +79,7 @@ const PatientsTable: FC = (): JSX.Element => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const patientsInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, facilityId: selectedLocationId ,...pageInputs } :
+        isPracticeUser ? { practiceId, facilityId: selectedLocationId, ...pageInputs } :
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
       patientsInputs && await fetchAllPatientsQuery({
@@ -93,7 +93,7 @@ const PatientsTable: FC = (): JSX.Element => {
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, fetchAllPatientsQuery, searchQuery, dob, selectedProviderId, dos, selectedLocationId])
+  }, [page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, fetchAllPatientsQuery, searchQuery, dob, selectedProviderId, dos, selectedLocationId])
 
   const [removePatient, { loading: deletePatientLoading }] = useRemovePatientMutation({
     notifyOnNetworkStatusChange: true,
@@ -204,7 +204,7 @@ const PatientsTable: FC = (): JSX.Element => {
                   />
                 </Grid>
 
-                {(isSuper || isPracAdmin) &&
+                {(isSuper || isPracticeUser) &&
                   <Grid item md={3} sm={12} xs={12}>
                     <FacilitySelector
                       label={LOCATION}
@@ -222,9 +222,9 @@ const PatientsTable: FC = (): JSX.Element => {
                     addEmpty
                   />
                 </Grid>
-                <Grid item md={(isSuper || isPracAdmin) ? 12 : 3} sm={12} xs={12}>
+                <Grid item md={(isSuper || isPracticeUser) ? 12 : 3} sm={12} xs={12}>
                   <Box display='flex' justifyContent='flex-end' alignItems='center'
-                    style={{ marginTop: (isSuper || isPracAdmin) ? 0 : 20 }}
+                    style={{ marginTop: (isSuper || isPracticeUser) ? 0 : 20 }}
                   >
                     <Button variant="outlined" color="default" onClick={handleReset}>{RESET}</Button>
                   </Box>

@@ -1,5 +1,5 @@
 // packages block
-import { Reducer, useContext, useEffect, useState, useReducer } from "react";
+import { Reducer, useContext, useEffect, useState, useReducer, useCallback } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
@@ -126,12 +126,18 @@ const DoctorPublicAppointmentForm = (): JSX.Element => {
     }
   });
 
-  useEffect(() => {
-    doctorId ?
-      getDoctor({ variables: { getDoctor: { id: doctorId } } })
-      :
-      history.push(PATIENT_APPOINTMENT_FAIL)
+  const fetchDoctor = useCallback(async () => {
+    try {
+      doctorId ?
+        await getDoctor({ variables: { getDoctor: { id: doctorId } } })
+        :
+        history.push(PATIENT_APPOINTMENT_FAIL)
+    } catch (error) { }
   }, [doctorId, getDoctor])
+
+  useEffect(() => {
+    fetchDoctor()  
+  }, [doctorId, fetchDoctor])
 
   useEffect(() => {
     if (selectedService && date) {
