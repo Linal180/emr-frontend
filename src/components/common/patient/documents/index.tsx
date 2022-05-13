@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { DefaultExtensionType } from "react-file-icon";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button } from "@material-ui/core";
@@ -22,7 +22,7 @@ import {
   mediaReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  DownloadIcon, EditNewIcon, PrinterIcon, SignedIcon, TrashNewIcon,
+  DownloadIcon, EditNewIcon, SignedIcon, TrashNewIcon,
 } from "../../../../assets/svgs";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
@@ -31,7 +31,7 @@ import {
 const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useTableStyles()
-  const [{ attachmentUrl, attachmentData, openDelete, deleteAttachmentId }, dispatch] =
+  const [{ preSignedUrl, attachmentUrl, attachmentData, openDelete, deleteAttachmentId }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const [getAttachment] = useGetAttachmentLazyQuery({
@@ -48,7 +48,11 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
 
       if (getAttachment) {
         const { preSignedUrl } = getAttachment
-        preSignedUrl && window.open(preSignedUrl)
+
+        if (preSignedUrl) {
+          window.open(preSignedUrl);
+          preSignedUrl && dispatch({ type: ActionType.SET_PRE_SIGNED_URL, preSignedUrl })
+        }
       }
     },
   });
@@ -85,6 +89,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
 
   const [removeAttachment, { loading: deleteAttachmentLoading }] = useRemoveAttachmentDataMutation({
     onError({ message }) {
+      closeDeleteModal();
       Alert.error(message);
     },
 
@@ -99,6 +104,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
 
           if (message && status && status === 200) {
             Alert.success(message)
+            closeDeleteModal();
             reloadAttachments();
           }
         }
@@ -106,13 +112,17 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
     }
   })
 
-  const reloadAttachments = async () => id && await getAttachments();
-
+  const reloadAttachments = useCallback(async () => id && await getAttachments(), [getAttachments, id])
   const handleDelete = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_ATTACHMENT_ID, deleteAttachmentId: id })
       dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
     }
+  }
+
+  const closeDeleteModal = () => {
+    dispatch({ type: ActionType.SET_DELETE_ATTACHMENT_ID, deleteAttachmentId: '' })
+    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
   }
 
   const handleDeleteDocument = async () => {
@@ -122,12 +132,20 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
   }
 
   const handleDownload = async (id: string) => {
-    id && getAttachment({
-      variables: { getMedia: { id } }
-    })
+    if (preSignedUrl) {
+      window.open(preSignedUrl)
+    } else {
+      id && getAttachment({
+        variables: { getMedia: { id } }
+      })
+    }
   }
 
   const search = (query: string) => { }
+
+  useEffect(() => {
+    reloadAttachments()
+  }, [reloadAttachments])
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -195,10 +213,6 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
 
                         <Box className={classes.iconsBackground} onClick={() => handleDownload(id || '')}>
                           <DownloadIcon />
-                        </Box>
-
-                        <Box className={classes.iconsBackground}>
-                          <PrinterIcon />
                         </Box>
 
                         <Box className={classes.iconsBackground} onClick={() => handleDelete(id || '')}>

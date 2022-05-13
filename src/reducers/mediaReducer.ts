@@ -2,44 +2,44 @@ import { Attachment, AttachmentPayload, AttachmentsPayload, CreateAttachmentInpu
 
 export interface State {
   meta: string
+  action: string
   isOpen: boolean
   isEdit: boolean
   fileUrl: string
   openDelete: boolean
+  preSignedUrl: string
   attachmentId: string
   attachmentUrl: string
   isEditModalOpen: boolean
   attachments: Attachment[]
   deleteAttachmentId: string
-  bannerAttachments: Attachment[]
-  collageAttachments: Attachment[]
   attachment: Attachment | undefined
   insuranceCard1: Attachment | undefined
   insuranceCard2: Attachment | undefined
   drivingLicense1: Attachment | undefined
   drivingLicense2: Attachment | undefined
-  mediaData: Pick<CreateAttachmentInput, "title"> | undefined
   attachmentData: AttachmentPayload['attachment'];
   attachmentsData: AttachmentsPayload['attachments'];
+  mediaData: Pick<CreateAttachmentInput, "title"> | undefined
 }
 
 export const initialState: State = {
   meta: "",
+  action: '',
   fileUrl: '',
   isOpen: false,
   isEdit: false,
   attachments: [],
   attachmentId: '',
+  preSignedUrl: '',
   openDelete: false,
   attachmentUrl: '',
   attachmentsData: [],
   mediaData: undefined,
   attachmentData: null,
   attachment: undefined,
-  bannerAttachments: [],
-  deleteAttachmentId: '',
-  collageAttachments: [],
   isEditModalOpen: false,
+  deleteAttachmentId: '',
   insuranceCard1: undefined,
   insuranceCard2: undefined,
   drivingLicense1: undefined,
@@ -47,6 +47,7 @@ export const initialState: State = {
 }
 
 export enum ActionType {
+  SET_ACTION = 'setAction',
   SET_IS_OPEN = 'setIsOpen',
   SET_IS_EDIT = 'setIsEdit',
   SET_FILE_URL = 'setFileUrl',
@@ -55,6 +56,7 @@ export enum ActionType {
   SET_OPEN_DELETE = 'setOpenDelete',
   SET_ATTACHMENTS = 'setAttachments',
   SET_ATTACHMENT_ID = 'setAttachmentId',
+  SET_PRE_SIGNED_URL = 'setPreSignedUrl',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
   SET_INSURANCE_CARD_1 = 'setInsuranceCard1',
@@ -67,12 +69,14 @@ export enum ActionType {
 }
 
 export type Action =
+  | { type: ActionType.SET_ACTION, action: string }
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_FILE_URL; fileUrl: string }
   | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string }
+  | { type: ActionType.SET_PRE_SIGNED_URL; preSignedUrl: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_ATTACHMENTS; attachments: Attachment[] }
   | { type: ActionType.SET_DELETE_ATTACHMENT_ID; deleteAttachmentId: string }
@@ -93,10 +97,22 @@ export const mediaReducer = (state: State, action: Action): State => {
         isOpen: action.isOpen
       }
 
+    case ActionType.SET_ACTION:
+      return {
+        ...state,
+        action: action.action
+      }
+
     case ActionType.SET_OPEN_DELETE:
       return {
         ...state,
         openDelete: action.openDelete
+      }
+
+    case ActionType.SET_PRE_SIGNED_URL:
+      return {
+        ...state,
+        preSignedUrl: action.preSignedUrl
       }
 
     case ActionType.SET_DRIVING_LICENSE_1:
