@@ -23,7 +23,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload, Maybe, PatientVitals
 } from "../generated/graphql";
 import { CARD_LAYOUT_MODAL } from "../constants";
 
@@ -338,6 +338,7 @@ export interface SelectorProps {
   value?: SelectorOption
   options: SelectorOption[]
   margin?: MuiPropsTypes.Margin
+  onBlur?: Function
 }
 
 export interface PatientSelectorProps {
@@ -430,7 +431,10 @@ export interface CustomInputControlProps extends IControlLabel {
   info?: string;
   clearable?: boolean
   handleClearField?: (fieldName: any) => void
-  endAdornment?: ReactNode
+  endAdornment?: ReactNode;
+  onBlur?: Function;
+  notStep?: boolean;
+  isHelperText?: boolean
 }
 
 export interface TooltipData {
@@ -1264,7 +1268,8 @@ export interface PatientProfileHeroProps {
 
 export interface VitalListingTableProps {
   patientVitals: PatientVitalsPayload['patientVitals'];
-  patientStates: PatientState
+  patientStates: PatientState;
+  setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
 }
 
 export interface VitalFormInput {
@@ -1284,11 +1289,13 @@ export interface VitalFormInput {
 
 export interface AddPatientVitalsProps {
   fetchPatientAllVitals: Function;
-  patientStates: PatientState
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface PatientVitalsListingProps {
-  patientStates: PatientState
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface VitalsLabelsProps {
