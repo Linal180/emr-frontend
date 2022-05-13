@@ -153,15 +153,15 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
 
           notes && setValue('notes', notes)
           reason && setValue('reason', reason)
-          employment && setValue('employment', employment)
-          autoAccident && setValue('autoAccident', autoAccident)
-          otherAccident && setValue('otherAccident', otherAccident)
+          setValue('employment', Boolean(employment))
+          setValue('autoAccident', Boolean(autoAccident))
+          setValue('otherAccident', Boolean(otherAccident))
           primaryInsurance && setValue('primaryInsurance', primaryInsurance)
           secondaryInsurance && setValue('secondaryInsurance', secondaryInsurance)
 
           dispatch({ type: ActionType.SET_IS_EMPLOYMENT, isEmployment: employment as boolean })
           dispatch({ type: ActionType.SET_IS_AUTO_ACCIDENT, isAutoAccident: autoAccident as boolean })
-          dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: isOtherAccident as boolean })
+          dispatch({ type: ActionType.SET_IS_OTHER_ACCIDENT, isOtherAccident: otherAccident as boolean })
           dispatch({
             type: ActionType.SET_DATE,
             date: new Date(getTimeFromTimestamps(scheduleStartDateTime || '')) as MaterialUiPickersDate
@@ -314,14 +314,17 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
       }
 
       const appointmentInput = {
-        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime, appStartDate ? new Date(appStartDate).toString() : date?.toString()), practiceId,
-        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
+        reason, scheduleStartDateTime: getCurrentTimestamps(scheduleStartDateTime, 
+        appStartDate ? new Date(appStartDate).toString() : date?.toString()), practiceId,
+        scheduleEndDateTime: getCurrentTimestamps(scheduleEndDateTime, 
+        appStartDate ? new Date(appStartDate).toString() : date?.toString()), autoAccident: autoAccident || false,
         otherAccident: otherAccident || false, primaryInsurance, secondaryInsurance,
         notes, facilityId: selectedFacility, patientId: selectedPatient, appointmentTypeId: selectedService,
         employment: employment || false, paymentType: PaymentType.Self, billingStatus: BillingStatus.Due
       };
 
-      const payload = selectedProvider ? { ...appointmentInput, providerId: selectedProvider } : { ...appointmentInput }
+      const payload = selectedProvider ?
+        { ...appointmentInput, providerId: selectedProvider } : { ...appointmentInput }
 
       if (isEdit) {
         id ?
@@ -334,7 +337,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
           : Alert.error(CANT_UPDATE_APPOINTMENT)
       } else {
         await createAppointment({
-          variables: { createAppointmentInput: { ...payload } }
+          variables: { createAppointmentInput: { ...payload, isExternal: true } }
         })
       }
     }
@@ -343,6 +346,7 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
   const handleSlot = (slot: Slots) => {
     if (slot) {
       const { startTime, endTime } = slot;
+
       endTime && setValue('scheduleEndDateTime', endTime)
       startTime && setValue('scheduleStartDateTime', startTime)
     }
@@ -460,11 +464,6 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         controllerLabel={REASON}
                       />
 
-                      <InputController
-                        fieldType="text"
-                        controllerName="notes"
-                        controllerLabel={NOTES}
-                      />
 
                       <InputController
                         fieldType="text"
@@ -476,6 +475,13 @@ const AppointmentForm: FC<GeneralFormProps> = ({ isEdit, id }) => {
                         fieldType="text"
                         controllerName="secondaryInsurance"
                         controllerLabel={SECONDARY_INSURANCE}
+                      />
+
+                      <InputController
+                        multiline
+                        fieldType="text"
+                        controllerName="notes"
+                        controllerLabel={NOTES}
                       />
                     </>
                   )}
