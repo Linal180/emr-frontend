@@ -2,7 +2,6 @@ export const GRAY = "#f9f9f9";
 export const GRAY_ONE = "#ECF0F3"
 export const GRAY_THREE = "#464E5F"
 export const GRAY_FOUR = "#dddddd"
-export const GRAY_FIVE = "#F5F8FA"
 export const GRAY_SIX = "#EFF2F5"
 export const GRAY_SEVEN = "#B1B3BB"
 export const GRAY_EIGHT = "#A3A3C7"
@@ -61,6 +60,7 @@ export const GREY_SEVEN = "#B5B5C3";
 export const GREY_EIGHT = "#E7E8ED";
 export const GREY_NINE = "#F9FAFB"
 export const GREY_TEN = "#E0E1E2"
+export const GREY_ELEVEN = "#F5F8FA"
 
 export const WHITE = "#FFFFFF";
 export const RED = "#DD1010";

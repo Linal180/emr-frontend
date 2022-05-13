@@ -1,6 +1,8 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
 import {
-  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GRAY_FIVE, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE
+  BLACK_ONE,
+  BLACK_THREE,
+  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE
 } from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
@@ -36,7 +38,7 @@ export const useTableStyles = makeStyles(() => ({
   },
 
   tablesSearchIcon: {
-    backgroundColor: GRAY_FIVE,
+    backgroundColor: GREY_ELEVEN,
     borderRadius: 6,
     maxWidth: 265,
   },
@@ -168,6 +170,17 @@ export const useTableStyles = makeStyles(() => ({
     padding: theme.spacing(2),
     maxHeight: 500,
     overflowY: 'hidden',
-    border:'1px solid red',
+
+    "& .MuiTableCell-head": {
+      color: BLACK_THREE,
+      fontSize: 12,
+      fontWeight: 600,
+    },
+
+    "& .MuiTableCell-body": {
+      color: BLACK_ONE,
+      fontSize: 14,
+      fontWeight: 500,
+    },
   },
 }))
