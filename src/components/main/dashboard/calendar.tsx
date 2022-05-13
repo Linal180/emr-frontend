@@ -28,7 +28,7 @@ import {
   useFindAllAppointmentsLazyQuery, AppointmentsPayload, Appointmentstatus
 } from "../../../generated/graphql";
 import PageHeader from "../../common/PageHeader";
-import { CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, SCHEDULE_BREAD } from "../../../constants";
+import { CALENDAR_VIEW_APPOINTMENTS_BREAD, CALENDAR_VIEW_TEXT, DASHBOARD_BREAD } from "../../../constants";
 import { useIndicatorStyles } from "../../../styles/indicatorStyles";
 
 const CalendarComponent = (): JSX.Element => {
@@ -144,7 +144,7 @@ const CalendarComponent = (): JSX.Element => {
     <>
       <PageHeader
         title={CALENDAR_VIEW_TEXT}
-        path={[SCHEDULE_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD]}
+        path={[DASHBOARD_BREAD, CALENDAR_VIEW_APPOINTMENTS_BREAD]}
       />
       <Card>
         <Box>

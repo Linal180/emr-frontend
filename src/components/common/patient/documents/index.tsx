@@ -100,6 +100,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher, attachments }): JS
           if (message && status && status === 200) {
             Alert.success(message)
             reloadAttachments();
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
         }
       }

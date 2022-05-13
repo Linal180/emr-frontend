@@ -1,5 +1,5 @@
 // constants block
-import { CLAIM_FEED_TEXT, CLAIMS_ROUTE, BILLING_BREAD, CLAIM_FEED_BREAD, ADD_BILL } from "../../../../constants";
+import { CLAIM_FEED_TEXT, CLAIMS_ROUTE, DASHBOARD_BREAD, CLAIM_FEED_BREAD, ADD_BILL } from "../../../../constants";
 import PageHeader from "../../../common/PageHeader";
 import ClaimFeedTable from "./ClaimFeedTable";
 
@@ -8,7 +8,7 @@ const ClaimFeedComponent = (): JSX.Element => {
     <>
       <PageHeader
         title={CLAIM_FEED_TEXT}
-        path={[BILLING_BREAD, CLAIM_FEED_BREAD]}
+        path={[DASHBOARD_BREAD, CLAIM_FEED_BREAD]}
         hasComponent
         buttonText={ADD_BILL}
         linkToPage={`${CLAIMS_ROUTE}/new`}
