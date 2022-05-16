@@ -2005,6 +2005,7 @@ export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: "" };
 export const FACILITY_SERVICE_EDIT_BREAD = { text: EDIT_SERVICE, link: "" };
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE };
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE };
+export const IS_DOCTOR_BREAD = { text: DOCTORS_TEXT, link: '' };
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new`, };
 
 export const APPOINTMENT_NEW_BREAD = {
