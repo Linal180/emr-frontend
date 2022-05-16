@@ -24,7 +24,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload, Maybe, PatientVitals
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload, Maybe, PatientVitals, UpdateAttachmentInput
 } from "../generated/graphql";
 import { CARD_LAYOUT_MODAL } from "../constants";
 
@@ -167,6 +167,7 @@ export interface DialogTypes {
 
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
+  isSign?: boolean;
   success?: boolean;
   actionText?: string;
   isLoading?: boolean;
@@ -967,11 +968,6 @@ export interface CountrySelectorInterface {
   cityName: string;
 }
 
-export interface DocumentTableProps {
-  dispatcher: Dispatch<Action>;
-  attachments: AttachmentsPayload["attachments"];
-}
-
 export interface PortalTableProps {
   inviteAccepted: boolean;
 }
@@ -1328,3 +1324,4 @@ export interface PredefinedComponentsProps {
   formState: FormBuilderState;
   dispatch: Dispatch<FormBuilderAction>
 }
+export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>

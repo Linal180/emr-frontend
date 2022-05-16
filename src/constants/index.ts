@@ -803,6 +803,7 @@ export const EDIT_ROLE_TEXT = "Update Role";
 export const SKIP_NOW_TEXT = "Skip for now";
 export const CANCELLATIONS = "Cancellations";
 export const PATIENT_CHART = "Patient Chart";
+export const SIGN_DOCUMENT = "Sign Document";
 export const COPAY_AMOUNTS = "Copay Amounts";
 export const ADD_INSURANCE = "Add Insurance";
 export const ABNORMAL_FLAG = "Abnormal Flag";
@@ -874,6 +875,7 @@ export const RESET_PASSWORD_TEXT = "Reset Password";
 export const GROUP_NUMBER = "Policy / Group number";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const YOU_HAVE_ENTERED = "You have entered:";
+export const DOCTOR_PROFILE_TEXT = "Doctor Profile";
 export const NO_SLOT_AVAILABLE = "No Slot available";
 export const NORMAL_RANGE_UNIT = "Normal Range Unit";
 export const USER_STATUS_PLACEHOLDER = "User Status";
@@ -926,6 +928,7 @@ export const VERIFY_EMAIL_HEADING_TEXT = "Verify Your Email";
 export const APPOINTMENT_CONFIRMED = "Appointment Confirmed";
 export const CONFIRM_YOUR_PASSWORD = "Confirm your password";
 export const ANNUAL_OPERATING_DUES = "Annual Operating Dues";
+export const SIGN_PATIENT_DOCUMENT = "Sign Patient Document";
 export const NOT_FOUND_EXCEPTION_CAP = "NOT FOUND EXCEPTION";
 export const PUBLIC_FORM_SUCCESS_HEADING = 'Record Submitted';
 export const PRODUCT_AND_SERVICES_TEXT = "Product & Services";
@@ -959,6 +962,7 @@ export const VERIFICATION_MESSAGE = "You are verified. Please login.";
 export const DELETE_FACILITY_DESCRIPTION = "Confirm to delete facility";
 export const DELETE_LOCATION_DESCRIPTION = "Confirm to delete location";
 export const DELETE_DOCUMENT_DESCRIPTION = "Confirm to delete document";
+export const SIGN_DOCUMENT_DESCRIPTION = "Confirm to sign document";
 export const DELETE_PRACTICE_DESCRIPTION = "Confirm to delete practice";
 export const DELETE_ROLE_DESCRIPTION = "Confirm to delete role";
 export const MOST_USED_STANDARD_POLICES = "Most Used Standard Policies";
@@ -1004,6 +1008,7 @@ export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING1 = "Please bring a valid p
 export const SLOT_CONFIRMATION_SUB_HEADING_TWO = "You can access the information form now or later from your email or text message.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_HEADING = "Thank you! When you arrive, Please make sure to have these documents with you.";
 export const DELETE_RECORD_LEARN_MORE_TEXT = "You are about to delete this record permanently. Are you sure you want to delete this record?";
+export const SIGN_RECORD_LEARN_MORE_TEXT = "You are about to sign this document permanently. Are you sure you want to sign this document?";
 export const CONSENT_AGREEMENT_LABEL = "I agree to the terms & conditions and hereby, authorize EMR health facilities to keep my personal health record.";
 export const APPOINTMENT_SUCCESS_DOCUMENTS_SUBHEADING2 = "Please consult your personal benefit plan details for any out-of-pocket costs which might apply (if applicable).";
 export const APPOINTMENT_CANCEL_SUBHEADING = "You won’t be able to revert this action later!";
@@ -1200,8 +1205,8 @@ export const PATIENT_PROBLEM_ADDED = "Patient problem added successfully!";
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Admins can access Admin Portal!";
-export const PATIENT_ALLERGY_UPDATED = "Patient allergy update successfully!";
-export const PATIENT_PROBLEM_UPDATED = "Patient problem update successfully!";
+export const PATIENT_ALLERGY_UPDATED = "Patient allergy updated successfully!";
+export const PATIENT_PROBLEM_UPDATED = "Patient problem updated successfully!";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
@@ -2001,6 +2006,7 @@ export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: "" };
 export const FACILITY_SERVICE_EDIT_BREAD = { text: EDIT_SERVICE, link: "" };
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE };
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE };
+export const IS_DOCTOR_BREAD = { text: DOCTORS_TEXT, link: '' };
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new`, };
 
 export const APPOINTMENT_NEW_BREAD = {
@@ -2549,7 +2555,7 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: FACILITY_MANAGEMENT,
     link: FACILITIES_ROUTE,
     desc: FACILITY_MANAGEMENT_DESCRIPTION,
-    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin],
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin, SYSTEM_ROLES.FacilityAdmin],
   },
   {
     name: PROVIDER_MANAGEMENT,
@@ -3108,6 +3114,36 @@ export enum USER_PERMISSIONS {
   searchSnoMedCodeByIcdCodes = "searchSnoMedCodeByIcdCodes",
   getPatientProblem = "getPatientProblem",
   removePatientProblem = "removePatientProblem",
+  removePermission = "removePermission",
+  updateLabTestObservation = "updateLabTestObservation",
+  findAllReactions = "findAllReactions",
+  GetPermission = "GetPermission",
+  findAllPatientVitals = "findAllPatientVitals",
+  getPatientAllergy = "getPatientAllergy",
+  addPatientAllergy = "addPatientAllergy",
+  findAllLabTest = "findAllLabTest",
+  findAllPatientAllergies = "findAllPatientAllergies",
+  assignPermissionToRole = "assignPermissionToRole",
+  getPatientVital = "getPatientVital",
+  createLabTestObservation = "createLabTestObservation",
+  emergencyAccess = "emergencyAccess",
+  findAllPermissions = "findAllPermissions",
+  createPermission = "createPermission",
+  updatePatientAllergy = "updatePatientAllergy",
+  getAppointments = "getAppointments",
+  createLabTest = "createLabTest",
+  removeLabTest = "removeLabTest",
+  updatePermission = "updatePermission",
+  removeLabTestObservation = "removeLabTestObservation",
+  updateLabTest = "updateLabTest",
+  removePatientVital = "removePatientVital",
+  fetchAllPatients = "fetchAllPatients",
+  findPatientAttachments = "findPatientAttachments",
+  removePatientAllergy = "removePatientAllergy",
+  getLabTest = "getLabTest",
+  findAllAllergies = "findAllAllergies",
+  updatePatientVital = "updatePatientVital",
+  addPatientVital = "addPatientVital"
 }
 
 //Form Builder API urls

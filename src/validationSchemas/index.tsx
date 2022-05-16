@@ -881,6 +881,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   diastolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (value) {
     if (!value && !!this.parent.systolicBloodPressure) return false
     else if (!value) return true
@@ -890,6 +891,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (val) {
     if (!val && !!this.parent.diastolicBloodPressure) return false
     else if (!val) return true
@@ -900,6 +902,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   respiratoryRate: yup.string().test('', invalidMessage(RESPIRATORY_RATE_TEXT), val => {
     if (!val) return true
     else {
@@ -909,6 +912,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   oxygenSaturation: yup.string().test('', invalidMessage(OXYGEN_SATURATION_TEXT), val => {
     if (!val) return true
     else {
@@ -918,6 +922,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   PatientHeight: yup.string().test('', invalidMessage(HEIGHT_TEXT), function (val) {
     if (!val) return true
     else {
@@ -927,6 +932,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   PatientWeight: yup.string().test('', invalidMessage(WEIGHT_TEXT), function (val) {
     if (!val) return true
     else {
@@ -936,6 +942,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   PainRange: yup.string().test('', invalidMessage(PAIN_TEXT), val => {
     if (!val) return true
     else {
@@ -945,6 +952,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   patientHeadCircumference: yup.string().test('', invalidMessage(HEAD_CIRCUMFERENCE), val => {
     if (!val) return true
     else {
@@ -954,6 +962,7 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+
   patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), val => {
     if (!val) return true
     else {
@@ -963,4 +972,8 @@ export const patientVitalUpdateSchema = yup.object({
       return false
     }
   }),
+})
+
+export const attachmentNameUpdateSchema = yup.object({
+  attachmentName: yup.string().test('', invalidMessage('Attachment name'), value => !!value)
 })

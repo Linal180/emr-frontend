@@ -36,11 +36,11 @@ import {
   LANGUAGE_SPOKEN, SPECIALTY, DOCTOR_UPDATED, ADDITIONAL_INFO, BILLING_ADDRESS, DOCTOR_NOT_FOUND,
   FAILED_TO_UPDATED_DOCTOR, FAILED_TO_CREATE_DOCTOR, DOCTOR_CREATED, EMAIL_OR_USERNAME_ALREADY_EXISTS,
   MAPPED_STATES, MAPPED_COUNTRIES, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, UPIN_INFO, TAX_ID_INFO,
-  SYSTEM_PASSWORD, ADD_DOCTOR, USERS_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD,
+  SYSTEM_PASSWORD, ADD_DOCTOR, DASHBOARD_BREAD, DOCTORS_BREAD, DOCTOR_NEW_BREAD, DOCTOR_EDIT_BREAD, SYSTEM_ROLES, SETTINGS_ROUTE, IS_DOCTOR_BREAD,
 } from "../../../../constants";
 
 const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
-  const { user } = useContext(AuthContext)
+  const { user, userRoles } = useContext(AuthContext)
   const { facilityList } = useContext(ListContext)
   const [{ contactId, billingId }, dispatch] = useReducer<Reducer<State, Action>>(doctorReducer, initialState)
   const methods = useForm<DoctorInputProps>({
@@ -48,6 +48,7 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     resolver: yupResolver(doctorSchema)
   });
   const { reset, handleSubmit, setValue } = methods;
+  const isDoctor = userRoles.includes(SYSTEM_ROLES.Doctor)
 
   const [getDoctor, { loading: GetDoctorLoading }] = useGetDoctorLazyQuery({
     fetchPolicy: "network-only",
@@ -192,7 +193,11 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
         if (status && status === 200) {
           Alert.success(DOCTOR_UPDATED);
           reset()
-          history.push(DOCTORS_ROUTE)
+          if (isDoctor) {
+            history.push(SETTINGS_ROUTE)
+          } else {
+            history.push(DOCTORS_ROUTE)
+          }
         }
       }
     }
@@ -301,13 +306,13 @@ const DoctorForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box display="flex" justifyContent="space-between" alignItems="flex-start">
           <Box display='flex'>
-            <BackButton to={`${DOCTORS_ROUTE}`} />
-            
-            <Box ml={2}/>
+            <BackButton to={isDoctor ? SETTINGS_ROUTE : `${DOCTORS_ROUTE}`} />
+
+            <Box ml={2} />
 
             <PageHeader
               title={ADD_DOCTOR}
-              path={[USERS_BREAD, DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]}
+              path={[DASHBOARD_BREAD, isDoctor ? IS_DOCTOR_BREAD : DOCTORS_BREAD, isEdit ? DOCTOR_EDIT_BREAD : DOCTOR_NEW_BREAD]}
             />
           </Box>
 
