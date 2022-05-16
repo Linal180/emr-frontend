@@ -256,8 +256,8 @@ export const theme = createTheme({
     MuiButton: {
       contained: {
         borderRadius: 6,
-        maxHeight: 40,
-        height: 40,
+        // maxHeight: 40,
+        // height: 40,
         boxShadow: 'none',
         color: BLACK,
 

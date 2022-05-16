@@ -217,7 +217,7 @@ const ProfileComponent = (): JSX.Element => {
           <Box className={classes.profileContainer}>
             <Grid container>
               <Grid item md={4} sm={12} xs={12}>
-                <Box key={attachmentId} mt={9} pl={3.75} position="relative">
+                <Box key={attachmentId} mx={3.5}>
                   <Avatar variant="square" src={attachmentUrl || ""} className={classes.profileImage} />
                 </Box>
 
@@ -241,179 +241,183 @@ const ProfileComponent = (): JSX.Element => {
               </Grid>
 
               <Grid item md={8} sm={12} xs={12}>
-                <FormProvider {...methods}>
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    {userType !== SYSTEM_ROLES.SuperAdmin &&
-                      <Box mb={3} display="flex" justifyContent="flex-end">
-                        <Box display={'flex'}>
-                          {edit ?
-                            <>
-                              <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
+                <Box px={2}>
+                  <FormProvider {...methods}>
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                      {userType !== SYSTEM_ROLES.SuperAdmin &&
+                        <Box mb={3} display="flex" justifyContent="flex-end">
+                          <Box display={'flex'}>
+                            {edit ?
+                              <>
+                                <Button onClick={editHandler} color="secondary">{CANCEL}</Button>
 
-                              <Box display="flex" justifyContent="flex-start" pl={2}>
-                                <Button type="submit" variant="contained" color="primary"
-                                  disabled={updateDoctorLoading || updateStaffLoading}
-                                >
-                                  {SAVE_TEXT}
-                                  {(updateDoctorLoading || updateStaffLoading) &&
-                                    <CircularProgress size={20} color="inherit" />
-                                  }
-                                </Button>
-                              </Box>
-                            </>
-                            :
-                            <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
-                          }
+                                <Box display="flex" justifyContent="flex-start" pl={2}>
+                                  <Button type="submit" variant="contained" color="primary"
+                                    disabled={updateDoctorLoading || updateStaffLoading}
+                                  >
+                                    {SAVE_TEXT}
+                                    {(updateDoctorLoading || updateStaffLoading) &&
+                                      <CircularProgress size={20} color="inherit" />
+                                    }
+                                  </Button>
+                                </Box>
+                              </>
+                              :
+                              <Button onClick={editHandler} variant="contained" color="primary" startIcon={<Edit />}>{EDIT}</Button>
+                            }
+                          </Box>
                         </Box>
-                      </Box>
-                    }
+                      }
 
-                    <Collapse in={!edit} mountOnEnter unmountOnExit>
-                      {!email ?
+                      <Collapse in={!edit} mountOnEnter unmountOnExit>
+                        {!email ?
+                          <Box py={2}>
+                            <ViewDataLoader rows={5} columns={6} hasMedia={false} />
+                          </Box> :
+                          <Box py={2}>
+                            <Grid container spacing={5}>
+                              <Grid item md={6} sm={12} xs={12}>
+                                {renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')}
+                              </Grid>
+
+                              <Grid item md={6} sm={12} xs={12}>
+                                {renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')}
+                              </Grid>
+                            </Grid>
+
+                            <Grid container spacing={5}>
+                              <Grid item md={6} sm={12} xs={12}>
+                                <Box maxWidth='100%' style={{ overflowWrap: 'break-word' }}>
+                                  {renderItem(EMAIL, email)}
+                                </Box>
+                              </Grid>
+
+                              <Grid item md={6} sm={12} xs={12}>
+                                {renderItem(CONTACT_NUMBER, (userPhone && formatPhone(userPhone)) || (phone && formatPhone(phone)) || (doctorPhone && formatPhone(doctorPhone)) || 'N/A')}
+                              </Grid>
+                            </Grid>
+                            {userType === SYSTEM_ROLES.Doctor &&
+                              <Fragment>
+                                <Grid container spacing={5}>
+                                  <Grid item md={12} sm={12} xs={12}>
+                                    {renderItem(ADDRESS_NUMBER, address || 'N/A')}
+                                  </Grid>
+                                </Grid>
+
+                                <Grid container spacing={5}>
+                                  <Grid item md={6} sm={12} xs={12}>
+                                    {renderItem(CITY, city || 'N/A')}
+                                  </Grid>
+
+                                  <Grid item md={6} sm={12} xs={12}>
+                                    {renderItem(STATE, doctorState || 'N/A')}
+                                  </Grid>
+                                </Grid>
+
+                                <Grid container spacing={5}>
+                                  <Grid item md={6} sm={12} xs={12}>
+                                    {renderItem(ZIP_CODE, zipCode || 'N/A')}
+                                  </Grid>
+
+                                  <Grid item md={6} sm={12} xs={12}>
+                                    {renderItem(COUNTRY, country || '')}
+                                  </Grid>
+                                </Grid>
+                              </Fragment>}
+                          </Box>
+                        }
+                      </Collapse>
+
+                      <Collapse in={edit} mountOnEnter unmountOnExit>
                         <Box py={2}>
-                          <ViewDataLoader rows={5} columns={6} hasMedia={false} />
-                        </Box> :
-                        <Box py={2}>
-                          <Grid container spacing={5}>
+                          <Grid container spacing={3}>
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(FIRST_NAME, doctorFirstName || staffFirstName || 'N/A')}
+                              <InputController
+                                fieldType="text"
+                                controllerName="firstName"
+                                controllerLabel={FIRST_NAME}
+                              />
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(LAST_NAME, doctorLastName || staffLastName || 'N/A')}
+                              <InputController
+                                fieldType="text"
+                                controllerName="lastName"
+                                controllerLabel={LAST_NAME}
+                              />
                             </Grid>
                           </Grid>
 
-                          <Grid container spacing={5}>
+                          <Grid container spacing={3}>
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(EMAIL, email)}
+                              <InputController
+                                fieldType="text"
+                                controllerName="email"
+                                disabled
+                                controllerLabel={EMAIL}
+                              />
                             </Grid>
 
                             <Grid item md={6} sm={12} xs={12}>
-                              {renderItem(CONTACT_NUMBER, (userPhone && formatPhone(userPhone)) || (phone && formatPhone(phone)) || (doctorPhone && formatPhone(doctorPhone)) || 'N/A')}
+                              <PhoneField name="phone" label={CONTACT_NUMBER} isRequired={false} />
                             </Grid>
                           </Grid>
+
                           {userType === SYSTEM_ROLES.Doctor &&
                             <Fragment>
-                              <Grid container spacing={5}>
+                              <Grid container spacing={3}>
                                 <Grid item md={12} sm={12} xs={12}>
-                                  {renderItem(ADDRESS_NUMBER, address || 'N/A')}
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="addressNumber"
+                                    controllerLabel={ADDRESS_NUMBER}
+                                  />
                                 </Grid>
                               </Grid>
 
-                              <Grid container spacing={5}>
+                              <Grid container spacing={3}>
                                 <Grid item md={6} sm={12} xs={12}>
-                                  {renderItem(CITY, city || 'N/A')}
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="zipCode"
+                                    controllerLabel={ZIP_CODE}
+                                  />
                                 </Grid>
 
                                 <Grid item md={6} sm={12} xs={12}>
-                                  {renderItem(STATE, doctorState || 'N/A')}
+                                  <InputController
+                                    fieldType="text"
+                                    controllerName="city"
+                                    controllerLabel={CITY}
+                                  />
                                 </Grid>
                               </Grid>
 
-                              <Grid container spacing={5}>
+                              <Grid container spacing={3}>
                                 <Grid item md={6} sm={12} xs={12}>
-                                  {renderItem(ZIP_CODE, zipCode || 'N/A')}
+                                  <Selector
+                                    name="state"
+                                    label={STATE}
+                                    value={EMPTY_OPTION}
+                                    options={MAPPED_STATES}
+                                  />
                                 </Grid>
 
                                 <Grid item md={6} sm={12} xs={12}>
-                                  {renderItem(COUNTRY, country || '')}
+                                  <Selector
+                                    value={EMPTY_OPTION}
+                                    label={COUNTRY}
+                                    name="country"
+                                    options={MAPPED_COUNTRIES}
+                                  />
                                 </Grid>
                               </Grid>
                             </Fragment>}
                         </Box>
-                      }
-                    </Collapse>
-
-                    <Collapse in={edit} mountOnEnter unmountOnExit>
-                      <Box py={2}>
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="firstName"
-                              controllerLabel={FIRST_NAME}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="lastName"
-                              controllerLabel={LAST_NAME}
-                            />
-                          </Grid>
-                        </Grid>
-
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="email"
-                              disabled
-                              controllerLabel={EMAIL}
-                            />
-                          </Grid>
-
-                          <Grid item md={6} sm={12} xs={12}>
-                            <PhoneField name="phone" label={CONTACT_NUMBER} isRequired={false} />
-                          </Grid>
-                        </Grid>
-
-                        {userType === SYSTEM_ROLES.Doctor &&
-                          <Fragment>
-                            <Grid container spacing={3}>
-                              <Grid item md={12} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="addressNumber"
-                                  controllerLabel={ADDRESS_NUMBER}
-                                />
-                              </Grid>
-                            </Grid>
-
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="zipCode"
-                                  controllerLabel={ZIP_CODE}
-                                />
-                              </Grid>
-
-                              <Grid item md={6} sm={12} xs={12}>
-                                <InputController
-                                  fieldType="text"
-                                  controllerName="city"
-                                  controllerLabel={CITY}
-                                />
-                              </Grid>
-                            </Grid>
-
-                            <Grid container spacing={3}>
-                              <Grid item md={6} sm={12} xs={12}>
-                                <Selector
-                                  name="state"
-                                  label={STATE}
-                                  value={EMPTY_OPTION}
-                                  options={MAPPED_STATES}
-                                />
-                              </Grid>
-
-                              <Grid item md={6} sm={12} xs={12}>
-                                <Selector
-                                  value={EMPTY_OPTION}
-                                  label={COUNTRY}
-                                  name="country"
-                                  options={MAPPED_COUNTRIES}
-                                />
-                              </Grid>
-                            </Grid>
-                          </Fragment>}
-                      </Box>
-                    </Collapse>
-                  </form>
-                </FormProvider>
+                      </Collapse>
+                    </form>
+                  </FormProvider>
+                </Box>
               </Grid>
             </Grid>
           </Box>

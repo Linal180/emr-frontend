@@ -106,7 +106,7 @@ export type AllergyInput = {
 export enum AllergyOnset {
   Adulthood = 'ADULTHOOD',
   Childhood = 'CHILDHOOD',
-  Unnkown = 'UNNKOWN'
+  Unknown = 'UNKNOWN'
 }
 
 /** The patient's allergy severity type assigned */
@@ -2204,6 +2204,20 @@ export type PatientAllergyPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type PatientAttachmentsInput = {
+  AttachmentModuleType?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+  typeId?: Maybe<Scalars['String']>;
+};
+
+export type PatientAttachmentsPayload = {
+  __typename?: 'PatientAttachmentsPayload';
+  attachments?: Maybe<Array<Maybe<Attachment>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PatientInfoInput = {
   createContactInput: CreateContactInput;
   createEmergencyContactInput: CreateContactInput;
@@ -2476,6 +2490,7 @@ export type Query = {
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
   findAllUsersForms: UserFormsPayload;
+  findPatientAttachments: PatientAttachmentsPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
@@ -2617,6 +2632,11 @@ export type QueryFindAllStaffArgs = {
 
 export type QueryFindAllUsersFormsArgs = {
   userFormInput: UserFormInput;
+};
+
+
+export type QueryFindPatientAttachmentsArgs = {
+  patientAttachmentsInput: PatientAttachmentsInput;
 };
 
 
@@ -3220,7 +3240,7 @@ export enum SmokingStatus {
   CurrentEverydaySmoker = 'CURRENT_EVERYDAY_SMOKER',
   CurrentSomedaySmoker = 'CURRENT_SOMEDAY_SMOKER',
   FormerSmoker = 'FORMER_SMOKER',
-  NeverSmocked = 'NEVER_SMOCKED',
+  NeverSmoked = 'NEVER_SMOKED',
   SmokerCurrentStatusUnknown = 'SMOKER_CURRENT_STATUS_UNKNOWN',
   UnknownIfEverSmoked = 'UNKNOWN_IF_EVER_SMOKED'
 }

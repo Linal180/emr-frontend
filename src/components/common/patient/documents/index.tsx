@@ -142,6 +142,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
             Alert.success(message)
             closeDeleteModal();
             reloadAttachments();
+            dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
         }
       }

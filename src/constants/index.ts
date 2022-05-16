@@ -1199,8 +1199,8 @@ export const PATIENT_PROBLEM_ADDED = "Patient problem added successfully!";
 export const CANT_CANCELLED_APPOINTMENT = "Appointment can't be cancelled.";
 export const ADMIN_PORTAL_MESSAGE = "Please sign in to explore Admin Portal.";
 export const NOT_SUPER_ADMIN_MESSAGE = "Only Admins can access Admin Portal!";
-export const PATIENT_ALLERGY_UPDATED = "Patient allergy update successfully!";
-export const PATIENT_PROBLEM_UPDATED = "Patient problem update successfully!";
+export const PATIENT_ALLERGY_UPDATED = "Patient allergy updated successfully!";
+export const PATIENT_PROBLEM_UPDATED = "Patient problem updated successfully!";
 export const RESET_PASSWORD_MESSAGE = "Please enter your new secure password.";
 export const PATIENT_ALLERGY_DELETED = "Patient allergy deleted successfully!";
 export const PATIENT_PROBLEM_DELETED = "Patient problem deleted successfully!";
@@ -3169,7 +3169,7 @@ export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
   { id: SmokingStatus.CurrentEverydaySmoker, name: formatValue(SmokingStatus.CurrentEverydaySmoker) },
   { id: SmokingStatus.CurrentSomedaySmoker, name: formatValue(SmokingStatus.CurrentSomedaySmoker) },
   { id: SmokingStatus.FormerSmoker, name: formatValue(SmokingStatus.FormerSmoker) },
-  { id: SmokingStatus.NeverSmocked, name: formatValue(SmokingStatus.NeverSmocked) },
+  { id: SmokingStatus.NeverSmoked, name: formatValue(SmokingStatus.NeverSmoked) },
   { id: SmokingStatus.UnknownIfEverSmoked, name: formatValue(SmokingStatus.UnknownIfEverSmoked) },
 ];
 
