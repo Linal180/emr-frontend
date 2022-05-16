@@ -80,7 +80,7 @@ mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
 
 query GetAttachment($getMedia: GetMedia!) {
   getAttachment(getMedia: $getMedia) {
- 	  preSignedUrl
+     preSignedUrl
       response{
       message
     }
