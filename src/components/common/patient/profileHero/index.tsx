@@ -252,15 +252,17 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                 </Box>
               </Box>
 
-              {!isChart && <Box pr={1}>
-                <Button color="primary" variant="contained" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
-                  {EDIT_PATIENT}
-                </Button>
-              </Box>}
+              <Box display='flex' alignItems='baseline' flexWrap='wrap'>
+                {!isChart && <Box pr={1}>
+                  <Button color="primary" variant="contained" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                    {EDIT_PATIENT}
+                  </Button>
+                </Box>}
 
-              <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
-                {SCHEDULE_APPOINTMENTS_TEXT}
-              </Button>
+                <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
+                  {SCHEDULE_APPOINTMENTS_TEXT}
+                </Button>
+              </Box>
             </Box>
           </Box>
         </Box>
