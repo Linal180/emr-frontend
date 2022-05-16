@@ -10,12 +10,15 @@ import Alert from "./Alert";
 import { AuthContext } from "../../context";
 import { getToken, handleLogout } from "../../utils";
 import { AttachmentType } from "../../generated/graphql";
-import { MediaDoctorDataType, MediaPatientDataType, MediaStaffDataType, MediaUserDataType } from "../../interfacesTypes";
 import { useDropzoneStyles } from "../../styles/dropzoneStyles";
 import { ACCEPTABLE_FILES, PLEASE_ADD_DOCUMENT, PLEASE_CLICK_TO_UPDATE_DOCUMENT } from "../../constants";
+import {
+  MediaDoctorDataType, MediaPatientDataType, MediaStaffDataType, MediaUserDataType
+} from "../../interfacesTypes";
 
 const DropzoneImage: FC<any> = forwardRef(({
-  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment, reload, title,
+  imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
+  reload, title, providerName
 }, ref): JSX.Element => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
@@ -55,10 +58,11 @@ const DropzoneImage: FC<any> = forwardRef(({
 
   const handleFileChange = async () => {
     const formData = new FormData();
-    attachmentId && formData.append("id", attachmentId);
-    itemId && formData.append("typeId", itemId);
-    title && formData.append("title", title);
     file && formData.append("file", file);
+    title && formData.append("title", title);
+    itemId && formData.append("typeId", itemId);
+    attachmentId && formData.append("id", attachmentId);
+    providerName && formData.append("providerName", providerName);
 
     setLoading(true);
     await axios.post(
@@ -117,7 +121,7 @@ const DropzoneImage: FC<any> = forwardRef(({
 
             break;
 
-            case AttachmentType.SuperAdmin:
+          case AttachmentType.SuperAdmin:
             const userData = data as unknown as MediaUserDataType
 
             if (userData) {

@@ -6,7 +6,7 @@ import { Typography, Grid, Box, Button, MenuItem, Menu, Fade, IconButton, colors
 import { AuthContext, ListContext } from "../../context";
 import { BLACK_TWO, WHITE_FOUR } from "../../theme";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { handleLogout, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
+import { handleLogout, isOnlyDoctor, isSuperAdmin, isUserAdmin, onIdle } from "../../utils";
 import { MenuSettingIcon, MenuShieldIcon, NewAvatarIcon, } from "../../assets/svgs";
 
 import {
@@ -21,7 +21,8 @@ const ProfileDropdownMenu = (): JSX.Element => {
   const { email, roles, facility, } = user || {};
   const { firstName, lastName } = currentUser || {}
   const { name: facilityName } = facility || {}
-  const [isSuper, setIsSuper] = useState(false);
+  const [isSuper, setIsSuper] = useState<boolean>(false);
+  const [isDoctor, setIsDoctor] = useState<boolean>(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const FacilityAdmin = isUserAdmin(roles)
@@ -50,6 +51,7 @@ const ProfileDropdownMenu = (): JSX.Element => {
 
   useEffect(() => {
     setIsSuper(isSuperAdmin(roles))
+    setIsDoctor(isOnlyDoctor(roles))
   }, [isSuper, roles, user]);
 
   return (
@@ -122,10 +124,21 @@ const ProfileDropdownMenu = (): JSX.Element => {
               </Box>
 
               <Box mt={1}>
-                {PROFILE_GENERAL_MENU_ITEMS.map(({ link, name }) => !(isSuper && name === SIGNATURE_TEXT) &&
-                  <Link key={`${link}-${name}`} to={link}>
+                {PROFILE_GENERAL_MENU_ITEMS.map(({ link, name }) => {
+                  
+                  if(name === SIGNATURE_TEXT){
+                    if(isDoctor){
+                      return <Link key={`${link}-${name}`} to={link}>
+                      <MenuItem onClick={handleClose}>{name}</MenuItem>
+                    </Link>
+                    }else return null
+                  } else {
+                  return <Link key={`${link}-${name}`} to={link}>
                     <MenuItem onClick={handleClose}>{name}</MenuItem>
                   </Link>
+
+                  }
+                }
                 )}
               </Box>
             </Grid>

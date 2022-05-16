@@ -761,6 +761,7 @@ export const YOUR_NAME = "Your Name";
 export const PRN_FORMAT = 'AA123456';
 export const LAB_ORDER = "Lab Order";
 export const ETHNICITY = "Ethnicity";
+export const SIGNED_BY = "Signed by";
 export const CASH_PAID = "Cash Paid";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";

@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DefaultExtensionType } from "react-file-icon";
@@ -17,7 +17,7 @@ import ConfirmationModal from "../../ConfirmationModal";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
 import { GRAY_SIX } from "../../../../theme";
-import { getFormattedDate, renderTh } from "../../../../utils";
+import { getFormattedDate, isAdmin, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
 import { ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
@@ -29,15 +29,20 @@ import {
 } from "../../../../assets/svgs";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT,
+  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY,
 } from "../../../../constants";
 import {
   AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
 } from "../../../../generated/graphql";
+import { AuthContext } from "../../../../context";
 
 const DocumentsTable: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
+  const { user, currentUser } = useContext(AuthContext)
+  const { firstName, lastName } = currentUser || {}
+  const { roles } = user || {}
+  const admin = isAdmin(roles)
   const classes = useTableStyles()
   const methods = useForm<UpdateAttachmentDataInputs>({
     mode: "all",
@@ -46,7 +51,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   const { setValue, handleSubmit } = methods;
   const [{
     isEdit, preSignedUrl, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
-    deleteAttachmentId, documentTab, openSign
+    deleteAttachmentId, documentTab, openSign, providerName
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -125,6 +130,7 @@ const DocumentsTable: FC = (): JSX.Element => {
             Alert.success(message)
             dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
             closeDeleteModal();
+            getAttachments()
           }
         }
       }
@@ -149,7 +155,7 @@ const DocumentsTable: FC = (): JSX.Element => {
           if (message && status && status === 200) {
             Alert.success(message)
             closeDeleteModal();
-            reloadAttachments();
+            getAttachments();
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
         }
@@ -158,6 +164,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   })
 
   const reloadAttachments = useCallback(async () => id && await getAttachments(), [getAttachments, id])
+
   const handleDelete = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_ATTACHMENT_ID, deleteAttachmentId: id })
@@ -220,6 +227,10 @@ const DocumentsTable: FC = (): JSX.Element => {
     reloadAttachments()
   }, [reloadAttachments, documentTab])
 
+  useEffect(() => {
+    dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'admin' : `${firstName} ${lastName}` })
+  }, [admin, firstName, lastName])
+
   const isLoading = updateAttachmentLoading || loading || deleteAttachmentLoading
 
   return (
@@ -242,6 +253,7 @@ const DocumentsTable: FC = (): JSX.Element => {
           button={true}
           notDescription={true}
           imageSide={attachmentUrl}
+          providerName={providerName}
           moduleType={AttachmentType.Patient}
           title={ATTACHMENT_TITLES.ProviderUploads}
           attachmentData={attachmentData || undefined}
@@ -258,6 +270,7 @@ const DocumentsTable: FC = (): JSX.Element => {
                 <TableRow>
                   {renderTh(TITLE)}
                   {renderTh(TYPE)}
+                  {documentTab && renderTh(SIGNED_BY)}
                   {renderTh(DATE)}
                   {renderTh(ACTION, "center")}
                 </TableRow>
@@ -272,12 +285,12 @@ const DocumentsTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : (
                   attachmentsData?.map((attachment) => {
-                    const { id, createdAt, url, attachmentName } = attachment || {};
+                    const { id, createdAt, url, attachmentName, providerName: signedBy } = attachment || {};
                     const filteredFileName = attachmentName && attachmentName?.length > 40
                       ? `${attachmentName?.substr(0, 40)}...` : attachmentName
                     const fileExtension: DefaultExtensionType =
                       url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
-
+                    console.log(signedBy, ">>>>>>>>>>>>>>>>>")
                     return id && (
                       <TableRow>
                         <TableCell scope="row">
@@ -297,6 +310,9 @@ const DocumentsTable: FC = (): JSX.Element => {
                           }
                         </TableCell>
                         <TableCell scope="row">{fileExtension}</TableCell>
+                        {documentTab &&
+                          <TableCell scope="row">{signedBy}</TableCell>
+                        }
                         <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">

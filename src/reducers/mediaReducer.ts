@@ -8,6 +8,7 @@ export interface State {
   fileUrl: string
   openSign: boolean
   openDelete: boolean
+  providerName: string
   documentTab: boolean
   preSignedUrl: string
   attachmentId: string
@@ -36,6 +37,7 @@ export const initialState: State = {
   attachments: [],
   attachmentId: '',
   preSignedUrl: '',
+  providerName: '',
   openDelete: false,
   attachmentUrl: '',
   documentTab: false,
@@ -64,6 +66,7 @@ export enum ActionType {
   SET_ATTACHMENTS = 'setAttachments',
   SET_DOCUMENT_TAB = 'setDocumentTab',
   SET_ATTACHMENT_ID = 'setAttachmentId',
+  SET_PROVIDER_NAME = 'setProviderName',
   SET_PRE_SIGNED_URL = 'setPreSignedUrl',
   SET_ATTACHMENT_URL = 'setAttachmentUrl',
   SET_ATTACHMENT_DATA = 'setAttachmentData',
@@ -82,11 +85,12 @@ export type Action =
   | { type: ActionType.SET_IS_OPEN; isOpen: boolean }
   | { type: ActionType.SET_IS_EDIT; isEdit: boolean }
   | { type: ActionType.SET_FILE_URL; fileUrl: string }
-  | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_OPEN_SIGN; openSign: boolean }
+  | { type: ActionType.SET_OPEN_DELETE; openDelete: boolean }
   | { type: ActionType.SET_ATTACHMENT; attachment: Attachment }
   | { type: ActionType.SET_DOCUMENT_TAB, documentTab: boolean }
   | { type: ActionType.SET_ATTACHMENT_ID; attachmentId: string }
+  | { type: ActionType.SET_PROVIDER_NAME, providerName: string }
   | { type: ActionType.SET_PRE_SIGNED_URL; preSignedUrl: string }
   | { type: ActionType.SET_ATTACHMENT_URL; attachmentUrl: string }
   | { type: ActionType.SET_ATTACHMENTS; attachments: Attachment[] }
@@ -121,12 +125,17 @@ export const mediaReducer = (state: State, action: Action): State => {
         openSign: action.openSign
       }
 
+    case ActionType.SET_PROVIDER_NAME:
+      return {
+        ...state,
+        providerName: action.providerName
+      }
+
     case ActionType.SET_OPEN_DELETE:
       return {
         ...state,
         openDelete: action.openDelete
       }
-
 
     case ActionType.SET_PRE_SIGNED_URL:
       return {
