@@ -873,6 +873,7 @@ export const RESET_PASSWORD_TEXT = "Reset Password";
 export const GROUP_NUMBER = "Policy / Group number";
 export const REQUEST_STATUS_EVENT = "requestStatus";
 export const YOU_HAVE_ENTERED = "You have entered:";
+export const DOCTOR_PROFILE_TEXT = "Doctor Profile";
 export const NO_SLOT_AVAILABLE = "No Slot available";
 export const NORMAL_RANGE_UNIT = "Normal Range Unit";
 export const USER_STATUS_PLACEHOLDER = "User Status";
