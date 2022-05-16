@@ -506,3 +506,9 @@ body .MuiTabPanel-root {
   color: #202020;
   margin-bottom: 10px !important;
 }
+
+.phoneInputError {
+  border: 1px solid red !important;
+  background-color: #F3F4F6 !important;
+  border-radius: 4px !important;
+}

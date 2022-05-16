@@ -24,7 +24,6 @@ const PhoneField: FC<PhoneInputProps> = ({ name, label, isRequired }) => {
 
           <PhoneInput
             {...field}
-
             country='us'
             disableDropdown
             disableCountryCode
@@ -32,9 +31,11 @@ const PhoneField: FC<PhoneInputProps> = ({ name, label, isRequired }) => {
             onlyCountries={['us']}
             placeholder='(111) 111-1111'
             onChange={(phone: any) => field.onChange(phone)}
+            containerClass={invalid ? 'phoneInputError' : ''}
+            
           />
 
-          <FormHelperText>{message}</FormHelperText>
+          <FormHelperText>{invalid && message}</FormHelperText>
         </FormControl>;
       }}
     />
