@@ -5,7 +5,7 @@ import { Box } from '@material-ui/core';
 import BackButton from '../../../common/BackButton';
 import PageHeader from '../../../common/PageHeader';
 // constants block
-import { RESULT_NEW_BREAD, ADD_RESULT, REPORTS_BREAD, LAB_RESULTS_BREAD, LAB_RESULTS_ROUTE } from '../../../../constants';
+import { RESULT_NEW_BREAD, ADD_RESULT, DASHBOARD_BREAD, LAB_RESULTS_BREAD, LAB_RESULTS_ROUTE } from '../../../../constants';
 
 const AddResultComponent: FC = () => {
   return (
@@ -13,7 +13,7 @@ const AddResultComponent: FC = () => {
       <BackButton to={`${LAB_RESULTS_ROUTE}`} />
     
       <Box ml={2}>
-        <PageHeader title={ADD_RESULT} path={[REPORTS_BREAD, LAB_RESULTS_BREAD, RESULT_NEW_BREAD]} />
+        <PageHeader title={ADD_RESULT} path={[DASHBOARD_BREAD, LAB_RESULTS_BREAD, RESULT_NEW_BREAD]} />
       </Box>
     </Box>
     
