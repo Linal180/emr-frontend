@@ -12,14 +12,16 @@ import {
   APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS, CALENDAR_SETTINGS_ITEMS, CALENDAR_SETTINGS_TEXT,
   CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS, SETTINGS_TEXT,
   MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS, PRACTICE_SETTINGS_ITEMS, SERVICES, SERVICES_ITEMS,
-  USERS_MANAGEMENT, USER_MENU_ITEMS,
+  USERS_MANAGEMENT, USER_MENU_ITEMS, SYSTEM_ROLES, FACILITIES_ROUTE,
 } from "../../../constants";
 import { visibleToUser } from "../../../utils";
 
 export const SettingsComponent = () => {
   const { user } = useContext(AuthContext)
-  const { roles } = user || {}
+  const { roles, facility } = user || {}
   const userRoles = pluck(roles || [], 'role')
+  const { id: facilityId } = facility || {}
+  const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
 
   return (
     <>
@@ -48,9 +50,9 @@ export const SettingsComponent = () => {
               {PRACTICE_SETTINGS_ITEMS.map((item) => {
                 const { name, link, desc, visible } = item || {}
 
-                return visibleToUser(userRoles, visible) &&  (
+                return visibleToUser(userRoles, visible) && (
                   <Box display="flex" alignItems="center" flexWrap="wrap">
-                    <Link key={`${link}-${name}`} to={link}>
+                    <Link key={`${link}-${name}`} to={isFacilityAdmin ? `${FACILITIES_ROUTE}/${facilityId}` : link}>
                       <MenuItem>{name}</MenuItem>
                     </Link>
 

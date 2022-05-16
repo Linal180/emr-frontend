@@ -19,7 +19,7 @@ import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
   FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-   UnitType, WeightType, HeadCircumferenceType, TempUnitType,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType,
 } from "../generated/graphql";
 
 // regex
@@ -2548,7 +2548,7 @@ export const PRACTICE_SETTINGS_ITEMS = [
     name: FACILITY_MANAGEMENT,
     link: FACILITIES_ROUTE,
     desc: FACILITY_MANAGEMENT_DESCRIPTION,
-    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin],
+    visible: [SYSTEM_ROLES.SuperAdmin, SYSTEM_ROLES.PracticeAdmin, SYSTEM_ROLES.FacilityAdmin],
   },
   {
     name: PROVIDER_MANAGEMENT,
@@ -3107,6 +3107,36 @@ export enum USER_PERMISSIONS {
   searchSnoMedCodeByIcdCodes = "searchSnoMedCodeByIcdCodes",
   getPatientProblem = "getPatientProblem",
   removePatientProblem = "removePatientProblem",
+  removePermission = "removePermission",
+  updateLabTestObservation = "updateLabTestObservation",
+  findAllReactions = "findAllReactions",
+  GetPermission = "GetPermission",
+  findAllPatientVitals = "findAllPatientVitals",
+  getPatientAllergy = "getPatientAllergy",
+  addPatientAllergy = "addPatientAllergy",
+  findAllLabTest = "findAllLabTest",
+  findAllPatientAllergies = "findAllPatientAllergies",
+  assignPermissionToRole = "assignPermissionToRole",
+  getPatientVital = "getPatientVital",
+  createLabTestObservation = "createLabTestObservation",
+  emergencyAccess = "emergencyAccess",
+  findAllPermissions = "findAllPermissions",
+  createPermission = "createPermission",
+  updatePatientAllergy = "updatePatientAllergy",
+  getAppointments = "getAppointments",
+  createLabTest = "createLabTest",
+  removeLabTest = "removeLabTest",
+  updatePermission = "updatePermission",
+  removeLabTestObservation = "removeLabTestObservation",
+  updateLabTest = "updateLabTest",
+  removePatientVital = "removePatientVital",
+  fetchAllPatients = "fetchAllPatients",
+  findPatientAttachments = "findPatientAttachments",
+  removePatientAllergy = "removePatientAllergy",
+  getLabTest = "getLabTest",
+  findAllAllergies = "findAllAllergies",
+  updatePatientVital = "updatePatientVital",
+  addPatientVital = "addPatientVital"
 }
 
 //Form Builder API urls
