@@ -1525,7 +1525,6 @@ export type Mutation = {
   createPatient: PatientPayload;
   createPermission: PermissionPayload;
   createPractice: PracticePayload;
-  createPreDefinedComponent: FormPayload;
   createRole: RolePayload;
   createSchedule: SchedulePayload;
   createService: ServicePayload;
@@ -1720,11 +1719,6 @@ export type MutationCreatePermissionArgs = {
 
 export type MutationCreatePracticeArgs = {
   createPracticeInput: CreatePracticeInput;
-};
-
-
-export type MutationCreatePreDefinedComponentArgs = {
-  createFormInput: CreateFormInput;
 };
 
 
