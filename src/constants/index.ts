@@ -19,7 +19,7 @@ import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
   FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-   UnitType, WeightType, HeadCircumferenceType, TempUnitType,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType,
 } from "../generated/graphql";
 
 // regex
@@ -62,6 +62,7 @@ export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
+export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'
 export const CURRENT_DATE = new Date();
 export const LATEST_RECORDED_DATE = "Recorded Date"
@@ -3123,6 +3124,17 @@ export const FORM_BUILDER_FIELDS_TABS = [
   },
 ]
 
+export const FORM_BUILDER_ADD_FIELDS_TABS = [
+  {
+    title: "Fields",
+    value: "1",
+  },
+  {
+    title: "Pre-defined",
+    value: "2",
+  },
+]
+
 export const ROLES_TABS = [
   {
     title: "System Roles",
@@ -3169,7 +3181,7 @@ export const MAPPED_SMOKING_STATUS: SelectorOption[] = [
   { id: SmokingStatus.CurrentEverydaySmoker, name: formatValue(SmokingStatus.CurrentEverydaySmoker) },
   { id: SmokingStatus.CurrentSomedaySmoker, name: formatValue(SmokingStatus.CurrentSomedaySmoker) },
   { id: SmokingStatus.FormerSmoker, name: formatValue(SmokingStatus.FormerSmoker) },
-  { id: SmokingStatus.NeverSmocked, name: formatValue(SmokingStatus.NeverSmocked) },
+  { id: SmokingStatus.NeverSmoked, name: formatValue(SmokingStatus.NeverSmoked) },
   { id: SmokingStatus.UnknownIfEverSmoked, name: formatValue(SmokingStatus.UnknownIfEverSmoked) },
 ];
 

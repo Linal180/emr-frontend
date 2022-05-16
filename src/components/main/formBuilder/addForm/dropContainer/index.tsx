@@ -1,5 +1,5 @@
 //packages block
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { Box, Grid, IconButton, TextField, Typography } from '@material-ui/core';
 //component
@@ -12,23 +12,22 @@ import { FieldsInputs } from '../../../../../generated/graphql';
 import { DropContainerPropsTypes } from '../../../../../interfacesTypes';
 import { useFormBuilderContainerStyles } from '../../../../../styles/formbuilder/dropContainer';
 import { DeleteSmallIcon, EditOutlinedIcon, TrashOutlinedIcon } from '../../../../../assets/svgs';
+import { ActionType } from '../../../../../reducers/formBuilderReducer';
 //component
-const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandler, setFormValues }: DropContainerPropsTypes) => {
+const DropContainer = ({ formState, changeValues, delFieldHandler, delColHandler, dispatch }: DropContainerPropsTypes) => {
   //classes
   const classes = useFormBuilderContainerStyles();
-
-  const [isEdit, setIsEdit] = useState('');
-  const [value, setValue] = useState('')
+  const { formValues, isEdit, sectionValue } = formState || {}
 
   const sectionNameEdit = (id: string, name: string) => {
-    setIsEdit(id)
-    setValue(name)
+    dispatch({ type: ActionType.SET_SECTION_EDIT, isEdit: id })
+    dispatch({ type: ActionType.SET_SECTION_VALUE, sectionValue: name })
   }
 
   const saveHandler = (id: string,) => {
-    const arr = formValues?.map((sec) => sec?.id === id ? { ...sec, name: value } : sec);
-    setFormValues(arr);
-    setIsEdit('')
+    const arr = formValues?.map((sec) => sec?.id === id ? { ...sec, name: sectionValue } : sec);
+    dispatch({ type: ActionType.SET_FORM_VALUES, formValues: arr })
+    dispatch({ type: ActionType.SET_SECTION_EDIT, isEdit: '' })
   }
   //render
   return (
@@ -41,8 +40,9 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
             {formValues?.length > 1 ?
               <Box display={'flex'} justifyContent={'space-between'} alignItems={'flex-end'} p={1}>
                 <Box pl={1}>
-                  {isEdit === list?.id ? <TextField id={list?.id} value={value}
-                    onChange={(e) => setValue(e.target.value)} variant={'outlined'}
+                  {isEdit === list?.id ? <TextField id={list?.id} value={sectionValue}
+                    onChange={(e) => dispatch({ type: ActionType.SET_SECTION_VALUE, sectionValue: e.target.value })}
+                    variant={'outlined'}
                     onBlur={() => saveHandler(list?.id)} /> :
                     <Typography variant='h4' onClick={() => sectionNameEdit(list?.id, list?.name)}>
                       {list?.name}
@@ -57,8 +57,11 @@ const DropContainer = ({ formValues, changeValues, delFieldHandler, delColHandle
               </Box> :
               <Box p={1} pl={2}>
                 {isEdit === list?.id ?
-                  <TextField id={list?.id} value={value}
-                    onChange={(e) => setValue(e.target.value)} variant={'outlined'}
+                  <TextField
+                    id={list?.id}
+                    value={sectionValue}
+                    onChange={(e) => dispatch({ type: ActionType.SET_SECTION_VALUE, sectionValue: e.target.value })}
+                    variant={'outlined'}
                     onBlur={() => saveHandler(list?.id)} /> :
                   <Typography variant='h4' onClick={() => sectionNameEdit(list?.id, list?.name)}>
                     {list?.name}
