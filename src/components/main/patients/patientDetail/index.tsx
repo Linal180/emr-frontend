@@ -36,7 +36,7 @@ const PatientDetailsComponent = (): JSX.Element => {
   const [{ anchorEl, openDelete, tabValue, patientData }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
-  const [{ attachmentsData }, mediaDispatcher] =
+  const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
@@ -155,7 +155,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
 
           <TabPanel value="8">
-            <DocumentsTable dispatcher={mediaDispatcher} attachments={attachmentsData} />
+            <DocumentsTable />
           </TabPanel>
 
           <TabPanel value="9">

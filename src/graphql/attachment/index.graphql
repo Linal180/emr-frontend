@@ -14,8 +14,14 @@ query GetAttachments($getAttachment: GetAttachment!){
       title
       typeId
       attachmentName
+      signedByProvider
       createdAt
       updatedAt
+    }
+
+    pagination {
+      page
+      totalPages
     }
   }
 }

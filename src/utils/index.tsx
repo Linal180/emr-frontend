@@ -214,6 +214,10 @@ export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
 }
 
+export const aboutToSign = (recordType: string) => {
+  return `You are about to sign a patient ${recordType.toLowerCase()}`;
+}
+
 export const aboutToUpdate = (recordType: string) => {
   return `You are about to update ${recordType.toLowerCase()}`;
 }

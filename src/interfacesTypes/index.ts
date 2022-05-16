@@ -166,6 +166,7 @@ export interface DialogTypes {
 
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
+  isSign?: boolean;
   success?: boolean;
   actionText?: string;
   isLoading?: boolean;
@@ -965,10 +966,10 @@ export interface CountrySelectorInterface {
   cityName: string;
 }
 
-export interface DocumentTableProps {
-  dispatcher: Dispatch<Action>;
-  attachments: AttachmentsPayload["attachments"];
-}
+// export interface DocumentTableProps {
+//   dispatcher: Dispatch<Action>;
+//   attachments: AttachmentsPayload["attachments"];
+// }
 
 export interface PortalTableProps {
   inviteAccepted: boolean;

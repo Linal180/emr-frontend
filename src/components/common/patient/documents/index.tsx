@@ -1,48 +1,53 @@
 // packages block
 import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { DefaultExtensionType } from "react-file-icon";
-import { Box, Table, TableBody, TableHead, TableRow, TableCell, Button } from "@material-ui/core";
+import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+import {
+  Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Typography
+} from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
 import Search from "../../Search";
 import TableLoader from "../../TableLoader";
 import MediaCards from "../../AddMedia/MediaCards";
+import InputController from "../../../../controller";
 import ConfirmationModal from "../../ConfirmationModal";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
+import { GRAY_SIX } from "../../../../theme";
 import { getFormattedDate, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-import { DocumentTableProps, ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
-import {
-  AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
-  useRemoveAttachmentDataMutation,
-  useUpdateAttachmentDataMutation
-} from "../../../../generated/graphql";
+import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
+import { ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
 import {
   mediaReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  DownloadIcon, EditNewIcon, SignedIcon, TrashNewIcon,
+  DownloadIcon, EditNewIcon, TrashNewIcon,
 } from "../../../../assets/svgs";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
+  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT,
 } from "../../../../constants";
-import InputController from "../../../../controller";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
-import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
-import FileViewerComponent from "../../FileViewer";
+import {
+  AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
+  useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
+} from "../../../../generated/graphql";
 
-const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => {
+const DocumentsTable: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
   const classes = useTableStyles()
   const methods = useForm<UpdateAttachmentDataInputs>({
     mode: "all",
     resolver: yupResolver(attachmentNameUpdateSchema)
   });
-  const { reset, setValue, handleSubmit } = methods;
-  const [{ isEdit, preSignedUrl, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete, deleteAttachmentId }, dispatch] =
+  const { setValue, handleSubmit } = methods;
+  const [{
+    isEdit, preSignedUrl, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
+    deleteAttachmentId, documentTab, openSign
+  }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
   const [getAttachment] = useGetAttachmentLazyQuery({
@@ -73,7 +78,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
 
-    variables: { getAttachment: { typeId: id } },
+    variables: { getAttachment: { typeId: id, } },
 
     onError() {
       return null
@@ -84,9 +89,11 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
 
       if (getAttachments) {
         const { attachments } = getAttachments
+
         if (attachments) {
           const documents = attachments.filter(
             attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads
+              && attachment.signedByProvider === documentTab
           )
 
           dispatch({
@@ -101,6 +108,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
   const [updateAttachmentData, { loading: updateAttachmentLoading }] = useUpdateAttachmentDataMutation({
     onError({ message }) {
       dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
+      closeDeleteModal();
       Alert.error(message);
     },
 
@@ -108,7 +116,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
       const { updateAttachmentData } = data
 
       if (updateAttachmentData) {
-        const { response, attachment } = updateAttachmentData || {}
+        const { response } = updateAttachmentData || {}
 
         if (response) {
           const { status, message } = response
@@ -116,7 +124,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
           if (message && status && status === 200) {
             Alert.success(message)
             dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
-            
+            closeDeleteModal();
           }
         }
       }
@@ -160,6 +168,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
   const closeDeleteModal = () => {
     dispatch({ type: ActionType.SET_DELETE_ATTACHMENT_ID, deleteAttachmentId: '' })
     dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
+    dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: false })
   }
 
   const handleDeleteDocument = async () => {
@@ -192,11 +201,26 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
     })
   }
 
+  const signDocument = async () => {
+    id && await updateAttachmentData({
+      variables: { updateAttachmentInput: { id: attachmentId, signedByProvider: true } }
+    })
+  }
+
+  const handleSignDocument = (id: string) => {
+    if (id) {
+      dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: true })
+      dispatch({ type: ActionType.SET_ATTACHMENT_ID, attachmentId: id })
+    }
+  }
+
   const search = (query: string) => { }
 
   useEffect(() => {
     reloadAttachments()
-  }, [reloadAttachments])
+  }, [reloadAttachments, documentTab])
+
+  const isLoading = updateAttachmentLoading || loading || deleteAttachmentLoading
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -204,9 +228,12 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
         <Box display="flex" alignItems="center">
           <Search search={search} />
 
-          <Box ml={3} className={classes.RadioButtonsStroke}>
-            <Button size="small" variant="contained" color="primary" className="muted">{PENDING}</Button>
-            <Button size="small">{SIGNED}</Button>
+          <Box display='flex'
+            onClick={() => dispatch({ type: ActionType.SET_DOCUMENT_TAB, documentTab: !documentTab })}
+            ml={3} className={classes.RadioButtonsStroke} border={`1px solid ${GRAY_SIX}`} borderRadius={6}
+          >
+            <Typography className={documentTab ? 'selectBox' : 'selectedBox  selectBox'}>{PENDING}</Typography>
+            <Typography className={documentTab ? 'selectedBox selectBox' : 'selectBox'}>{SIGNED}</Typography>
           </Box>
         </Box>
 
@@ -237,7 +264,7 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
               </TableHead>
 
               <TableBody>
-                {loading ? (
+                {isLoading ? (
                   <TableRow>
                     <TableCell colSpan={10}>
                       <TableLoader numberOfRows={4} numberOfColumns={4} />
@@ -246,9 +273,10 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
                 ) : (
                   attachmentsData?.map((attachment) => {
                     const { id, createdAt, url, attachmentName } = attachment || {};
-
-                    const filteredFileName = attachmentName && attachmentName?.length > 40 ? `${attachmentName?.substr(0, 40)}...` : attachmentName
-                    const fileExtension: DefaultExtensionType = url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
+                    const filteredFileName = attachmentName && attachmentName?.length > 40
+                      ? `${attachmentName?.substr(0, 40)}...` : attachmentName
+                    const fileExtension: DefaultExtensionType =
+                      url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
 
                     return id && (
                       <TableRow>
@@ -263,21 +291,22 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
                             />
                             <Button type='submit'>save</Button>
                           </>
-                            :
-                            <Box onClick={() => handleEdit(id || '', attachmentName || '')}>{filteredFileName}</Box>
+                            : <Box onClick={() => handleEdit(id || '', attachmentName || '')}>
+                              {filteredFileName}
+                            </Box>
                           }
                         </TableCell>
                         <TableCell scope="row">{fileExtension}</TableCell>
                         <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
-                            <Box className={classes.iconsBackground}>
-                              <SignedIcon />
-                            </Box>
-
-                            <Box className={classes.iconsBackground}>
-                              <EditNewIcon />
-                            </Box>
+                            {!documentTab &&
+                              <Box className={classes.iconsBackground}
+                                onClick={() => handleSignDocument(id)}
+                              >
+                                <EditNewIcon />
+                              </Box>
+                            }
 
                             <Box className={classes.iconsBackground} onClick={() => handleDownload(id || '')}>
                               <DownloadIcon />
@@ -312,6 +341,19 @@ const DocumentsTable: FC<DocumentTableProps> = ({ dispatcher }): JSX.Element => 
         handleDelete={handleDeleteDocument}
         setOpen={(open: boolean) =>
           dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: open })
+        }
+      />
+
+      <ConfirmationModal
+        isSign
+        title={DOCUMENT}
+        isOpen={openSign}
+        isLoading={updateAttachmentLoading}
+        description={SIGN_DOCUMENT_DESCRIPTION}
+        handleDelete={signDocument}
+        actionText={SIGN_DOCUMENT}
+        setOpen={(open: boolean) =>
+          dispatch({ type: ActionType.SET_OPEN_SIGN, openSign: open })
         }
       />
     </Box>
