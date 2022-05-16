@@ -1,16 +1,19 @@
 // packages block
 import { FC, useState, ChangeEvent } from "react";
 import {
-  CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes, FormControlLabel, Checkbox, Typography, Box
+  CardContent, Button, Dialog, DialogActions, DialogContent, DialogTitle, CircularProgress, PropTypes,
+  FormControlLabel, Checkbox, Typography, Box
 } from "@material-ui/core";
 // interfaces/types block/theme/svgs/constants
 import { DeleteWarningIcon } from "../../assets/svgs";
 import { ConfirmationTypes } from "../../interfacesTypes";
-import { aboutToDelete, deleteRecordTitle } from "../../utils";
-import { DELETE_RECORD, DELETE_RECORD_LEARN_MORE_TEXT, CANCEL } from "../../constants";
+import { aboutToDelete, aboutToSign, deleteRecordTitle } from "../../utils";
+import {
+  DELETE_RECORD, DELETE_RECORD_LEARN_MORE_TEXT, CANCEL, SIGN_RECORD_LEARN_MORE_TEXT, SIGN_PATIENT_DOCUMENT
+} from "../../constants";
 
 const ConfirmationModal: FC<ConfirmationTypes> = ({
-  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success
+  setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success, isSign
 }): JSX.Element => {
   const [checked, setChecked] = useState(false);
 
@@ -33,7 +36,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
   return (
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth>
       <DialogTitle id="alert-dialog-title">
-        {deleteRecordTitle(title || '')}
+        {isSign ? SIGN_PATIENT_DOCUMENT : deleteRecordTitle(title || '')}
       </DialogTitle>
 
       <DialogContent>
@@ -43,12 +46,14 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
           </Box>
 
           <CardContent>
-            <Typography variant="h5"><strong>{aboutToDelete(title || '')}</strong></Typography>
+            <Typography variant="h5">
+              <strong>{isSign ? aboutToSign(title || '') : aboutToDelete(title || '')}</strong>
+            </Typography>
 
             <Box p={0.5} />
 
             <Typography variant="body1">
-              {DELETE_RECORD_LEARN_MORE_TEXT}
+              {isSign ? SIGN_RECORD_LEARN_MORE_TEXT : DELETE_RECORD_LEARN_MORE_TEXT}
             </Typography>
           </CardContent>
         </Box>
@@ -66,7 +71,7 @@ const ConfirmationModal: FC<ConfirmationTypes> = ({
           {CANCEL}
         </Button>
 
-        <Button onClick={onDelete} color="inherit" disabled={!checked || isLoading} variant="outlined" className={checked ? `danger` : ''}>
+        <Button onClick={onDelete} disabled={!checked || isLoading} variant="outlined" className={checked ? isSign ? 'success' : 'danger' : ''}>
           {isLoading && <CircularProgress size={20} color={buttonColor} />}
 
           {actionText ? actionText : DELETE_RECORD}

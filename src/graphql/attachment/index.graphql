@@ -14,8 +14,14 @@ query GetAttachments($getAttachment: GetAttachment!){
       title
       typeId
       attachmentName
+      signedByProvider
       createdAt
       updatedAt
+    }
+
+    pagination {
+      page
+      totalPages
     }
   }
 }
@@ -74,7 +80,7 @@ mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
 
 query GetAttachment($getMedia: GetMedia!) {
   getAttachment(getMedia: $getMedia) {
- 	  preSignedUrl
+     preSignedUrl
       response{
       message
     }

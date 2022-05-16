@@ -12,14 +12,18 @@ import {
   APPOINTMENT_SETTINGS, APPOINTMENT_SETTINGS_ITEMS, CALENDAR_SETTINGS_ITEMS, CALENDAR_SETTINGS_TEXT,
   CLINICAL_ITEMS, CLINICAL_TEXT, INVENTORY, INVENTORY_ITEMS, MISCELLANEOUS_SETTINGS, SETTINGS_TEXT,
   MISCELLANEOUS_SETTINGS_ITEMS, PRACTICE_SETTINGS, PRACTICE_SETTINGS_ITEMS, SERVICES, SERVICES_ITEMS,
-  USERS_MANAGEMENT, USER_MENU_ITEMS,
+  USERS_MANAGEMENT, USER_MENU_ITEMS, SYSTEM_ROLES, FACILITIES_ROUTE, DOCTOR_PROFILE_TEXT, EDIT_DOCTOR, DOCTORS_ROUTE,
 } from "../../../constants";
 import { visibleToUser } from "../../../utils";
 
 export const SettingsComponent = () => {
-  const { user } = useContext(AuthContext)
-  const { roles } = user || {}
+  const { user, currentDoctor } = useContext(AuthContext)
+  const { roles, facility, } = user || {}
   const userRoles = pluck(roles || [], 'role')
+  const { id: facilityId } = facility || {}
+  const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
+  const isDoctor = userRoles.includes(SYSTEM_ROLES.Doctor)
+  const { id: doctorId } = currentDoctor || {}
 
   return (
     <>
@@ -28,17 +32,35 @@ export const SettingsComponent = () => {
           <PageHeader title={SETTINGS_TEXT} />
 
           <CardComponent cardTitle={USERS_MANAGEMENT}>
-            <Box pb={3}>
-              {USER_MENU_ITEMS.map((item) => {
-                return (
+            {isDoctor ?
+              <>
+                <Box>
                   <Box display="flex" alignItems="center" flexWrap="wrap">
-                    <Link key={`${item.link}-${item.name}`} to={item.link}>
-                      <MenuItem>{item.name}</MenuItem>
+                    <Link key={DOCTOR_PROFILE_TEXT} to={`${DOCTORS_ROUTE}/${doctorId}/details`}>
+                      <MenuItem>{DOCTOR_PROFILE_TEXT}</MenuItem>
                     </Link>
                   </Box>
-                )
-              })}
-            </Box>
+                </Box>
+                <Box pb={3}>
+                  <Box display="flex" alignItems="center" flexWrap="wrap">
+                    <Link key={EDIT_DOCTOR} to={`${DOCTORS_ROUTE}/${doctorId}`}>
+                      <MenuItem>{EDIT_DOCTOR}</MenuItem>
+                    </Link>
+                  </Box>
+                </Box>
+              </>
+              :
+              <Box pb={3}>
+                {USER_MENU_ITEMS.map((item) => {
+                  return (
+                    <Box display="flex" alignItems="center" flexWrap="wrap">
+                      <Link key={`${item.link}-${item.name}`} to={item.link}>
+                        <MenuItem>{item.name}</MenuItem>
+                      </Link>
+                    </Box>
+                  )
+                })}
+              </Box>}
           </CardComponent>
 
           <Box p={2} />
@@ -48,9 +70,9 @@ export const SettingsComponent = () => {
               {PRACTICE_SETTINGS_ITEMS.map((item) => {
                 const { name, link, desc, visible } = item || {}
 
-                return visibleToUser(userRoles, visible) &&  (
+                return visibleToUser(userRoles, visible) && (
                   <Box display="flex" alignItems="center" flexWrap="wrap">
-                    <Link key={`${link}-${name}`} to={link}>
+                    <Link key={`${link}-${name}`} to={isFacilityAdmin ? `${FACILITIES_ROUTE}/${facilityId}` : link}>
                       <MenuItem>{name}</MenuItem>
                     </Link>
 
