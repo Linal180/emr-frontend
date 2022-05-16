@@ -112,7 +112,7 @@ const DropContainer = ({ formState, changeValues, delFieldHandler, delColHandler
                                     </IconButton>
                                   </Box>
                                 </Box>
-                                <FieldRenderer item={item} isCreating />
+                                <FieldRenderer item={item} isCreating key={item.fieldId + item.name} />
                               </div>
                             </Grid>
                           )}
