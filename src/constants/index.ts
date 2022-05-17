@@ -2379,8 +2379,9 @@ export const MODULES = [
   "Facility",
   "Provider",
   "Schedule",
-  "Permission",
   "Appointment",
+  "Lab Orders",
+  "Patient Charting"
 ];
 
 export const MAPPED_STATUS = [

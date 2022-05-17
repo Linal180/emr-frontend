@@ -210,7 +210,6 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
     profileAttachment && fetchAttachment()
   }, [profileAttachment, fetchAttachment])
 
-
   return (
     <AuthContext.Provider
       value={{
