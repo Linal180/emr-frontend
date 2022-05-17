@@ -1,6 +1,6 @@
 import { makeStyles, createStyles } from "@material-ui/core";
 import BlueCard from "../assets/images/blueCard.svg";
-import { GREY_ELEVEN, theme, WHITE, WHITE_FOUR } from "../theme";
+import { GREY_ELEVEN, GREY_THIRTEEN, GREY_TWELVE, theme, WHITE, WHITE_FOUR } from "../theme";
 
 export const useDashboardStyles = makeStyles(() =>
   createStyles({
@@ -48,6 +48,44 @@ export const useDashboardStyles = makeStyles(() =>
 
       "& svg": {
         color: WHITE,
+      },
+
+      "& .MuiInput-underline:before, .MuiInput-underline:after": {
+        borderBottom: "none",
+      },
+
+      "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+        borderBottom: "none",
+      },
+
+      "& .MuiSelect-select:focus": {
+        backgroundColor: 'transparent',
+      },
+    },
+
+    yearDropdown: {
+      "& .MuiTextField-root": {
+        margin: 1,
+        border: 'none',
+        borderRadius: 10,
+        backgroundColor: GREY_TWELVE,
+        width: "12ch",
+        height: 45,
+        paddingLeft: 8,
+        paddingRight: 8,
+      },
+
+      "& .MuiSelect-selectMenu": {
+        margin: 1,
+        minHeight: "auto",
+      },
+
+      "& .MuiInputBase-input": {
+        color: GREY_THIRTEEN,
+      },
+
+      "& svg": {
+        color: GREY_THIRTEEN,
       },
 
       "& .MuiInput-underline:before, .MuiInput-underline:after": {

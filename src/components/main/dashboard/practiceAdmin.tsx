@@ -1,16 +1,18 @@
 // packages block
-import { useState, ChangeEvent, FC } from "react";
+import { ChangeEvent, FC } from "react";
 import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
 // component
 import Search from "../../common/Search";
 // svgs block
-import { ActionIcon, ClaimActionIcon, ClaimAmountIcon, LockIcon, PatientsIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon, ViewIcon } from "../../../assets/svgs";
+import { 
+  ActionIcon, ClaimActionIcon, ClaimAmountIcon, LockIcon, PatientsIcon, PracticeActiveIcon, 
+  PracticeInactiveIcon, RedirectIcon, ViewIcon 
+} from "../../../assets/svgs";
 // constant
 import {
-  CLAIMS_REQUIRING_ACTION, CLAIM_AMOUNT_TO_PROCESS, CLAIM_IN_PROCESS, CLAIM_RECEIVED, EMERGENCY_ACCESS, FACILITIES_LIST, MEDICAL_BILLING,
-  PRACTICE_DETAILS_TEXT,
-  QUICK_ACTIONS,
-  RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT, SEARCH_PLACEHOLDER, TOTAL_CLAIM_TEXT, VIEW_FACILITIES, VIEW_PATIENTS
+  CLAIMS_REQUIRING_ACTION, CLAIM_AMOUNT_TO_PROCESS, CLAIM_IN_PROCESS, CLAIM_RECEIVED, EMERGENCY_ACCESS, FACILITIES_LIST, 
+  MEDICAL_BILLING, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT, SEARCH_PLACEHOLDER, 
+  TOTAL_CLAIM_TEXT, VIEW_FACILITIES, VIEW_PATIENTS
 } from "../../../constants";
 // styles
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
@@ -19,11 +21,8 @@ import PieChart1Component from "../../common/charts/pieChart1";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
-  const [status, setStatus_] = useState('status');
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setStatus_(event.target.value);
-  };
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {};
   const search = (query: string) => { }
 
   return (

@@ -1,6 +1,6 @@
 // packages block
-import { FC } from "react";
-import { Box, Card, Grid, IconButton, Typography } from "@material-ui/core";
+import { ChangeEvent, FC } from "react";
+import { Box, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
 // component
 import PracticesTableComponent from "./tables/practicesTable";
 // svgs block
@@ -13,7 +13,6 @@ import {
 // styles
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE_SEVEN, GREEN_ONE, WHITE } from "../../../theme";
-import StatusSelector from "./statusSelector";
 import PieChart1Component from "../../common/charts/pieChart1";
 import BarChart1Component from "../../common/charts/barChart1";
 import BarChart2Component from "../../common/charts/barChart2";
@@ -21,6 +20,8 @@ import BarChart3Component from "../../common/charts/barChart3";
 
 const SuperAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {};
 
   return (
     <>
@@ -59,18 +60,30 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </Box>
             </Box>
 
-            <Box display='flex' justifyContent='center' className={classes.cardContainer}>
-              <Box className={classes.cardBox}>
-                <PlusRoundIcon />
-                <Typography variant="h6">{CREATE_PRACTICE}</Typography>
-              </Box>
+            <Box className={classes.cardContainer}>
+              <Grid container justifyContent="center">
+                <Grid item md={9} sm={12} xs={12}>
+                  <Grid container spacing={3} justifyContent="center">
+                    <Grid item md={4} sm={12} xs={12}>
+                      <Box className={classes.cardBox}>
+                        <PlusRoundIcon />
+                        <Box p={0.7} />
+                        <Typography variant="h6">{CREATE_PRACTICE}</Typography>
+                      </Box>
+                    </Grid>
 
-              <Box p={2} />
+                    <Box p={1} />
 
-              <Box className={classes.cardBox}>
-                <BillingCardIcon />
-                <Typography variant="h6">{VIEW_BILLING}</Typography>
-              </Box>
+                    <Grid item md={4} sm={12} xs={12}>
+                      <Box className={classes.cardBox}>
+                        <BillingCardIcon />
+                        <Box p={0.2} />
+                        <Typography variant="h6">{VIEW_BILLING}</Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
             </Box>
           </Card>
 
@@ -94,27 +107,35 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             <PieChart1Component />
 
             <Box px={4} pb={2} display='flex' alignItems='center'>
-              <IconButton><PracticeActiveIcon /></IconButton>
+              <Grid container spacing={3}>
+                <Grid item md={6} sm={12} xs={12}>
+                  <Box display='flex'>
+                    <PracticeActiveIcon />
 
-              <Box ml={2}>
-                <Typography variant="h5">24</Typography>
+                    <Box ml={2}>
+                      <Typography variant="h5">24</Typography>
 
-                <Box color={GREEN_ONE}>
-                  <Typography variant="inherit">{ACTIVE}</Typography>
-                </Box>
-              </Box>
+                      <Box mt={0.5} color={GREEN_ONE}>
+                        <Typography variant="inherit">{ACTIVE}</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Grid>
 
-              <Box p={5} />
+                <Grid item md={6} sm={12} xs={12}>
+                  <Box display='flex'>
+                    <PracticeInactiveIcon />
 
-              <IconButton><PracticeInactiveIcon /></IconButton>
+                    <Box ml={2}>
+                      <Typography variant="h5">2</Typography>
 
-              <Box ml={2}>
-                <Typography variant="h5">2</Typography>
-
-                <Box color={BLUE_SEVEN}>
-                  <Typography variant="inherit">{INACTIVE}</Typography>
-                </Box>
-              </Box>
+                      <Box mt={0.5} color={BLUE_SEVEN}>
+                        <Typography variant="inherit">{INACTIVE}</Typography>
+                      </Box>
+                    </Box>
+                  </Box>
+                </Grid>
+              </Grid>
             </Box>
           </Card>
         </Grid>
@@ -130,7 +151,18 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="h4">{PRACTICE_REGISTRATIONS}</Typography>
 
                 <Box>
-                  <StatusSelector />
+                  <Box className={classes.yearDropdown}>
+                    <TextField
+                      id="standard-select-currency"
+                      select
+                      value={'2022'}
+                      onChange={handleChange}
+                    >
+                      <MenuItem value={'2022'}>
+                        {'2022'}
+                      </MenuItem>
+                    </TextField>
+                  </Box>
                 </Box>
               </Box>
 
