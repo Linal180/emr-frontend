@@ -1,32 +1,33 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
-import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
-import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
+import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction, RefObject } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ValidationRule, FieldValues, Ref, ControllerRenderProps, UseFormSetValue,
+  Control, ValidationRule, FieldValues, ControllerRenderProps, UseFormSetValue,
 } from "react-hook-form";
 // graphql block
+import { CARD_LAYOUT_MODAL } from "../constants";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
+import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
-  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
-  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
-  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload, Maybe, PatientVitals, UpdateAttachmentInput
+  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, Schedule,
+  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload,
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs, Allergies,
+  UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
+  IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload,
+  Maybe, PatientVitals, UpdateAttachmentInput, ResponsePayloadResponse, Doctor, CreatePracticeItemInput,
 } from "../generated/graphql";
-import { CARD_LAYOUT_MODAL } from "../constants";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -800,7 +801,7 @@ export interface PhoneInputProps {
 }
 
 export interface DropzoneImageType {
-  ref?: Ref;
+  ref?: RefObject<unknown>;
   itemId: string;
   title?: string;
   isEdit?: boolean;
@@ -833,6 +834,7 @@ export interface ICreateMediaInput {
 
 export interface MediaModalTypes extends DialogTypes {
   buttonText?: string;
+  providerName?: string;
   itemId: string;
   title?: string;
   isProfile?: boolean;
@@ -848,11 +850,12 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
-  buttonText?: string;
   title?: string;
   button?: boolean;
   imageSide: string;
+  buttonText?: string;
   hasCollage?: boolean;
+  providerName?: string;
   hasHighlights?: boolean;
   notDescription?: boolean;
   moduleType: AttachmentType;

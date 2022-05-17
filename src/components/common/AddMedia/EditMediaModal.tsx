@@ -13,7 +13,7 @@ import { TrashNewIcon } from "../../../assets/svgs";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
-  preSignedUrl, title
+  preSignedUrl, title, providerName
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
@@ -63,7 +63,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               <img src={fileUrl} alt={attachment?.key || 'emr images'} />
 
               <Box className="media-overlay">
-                <IconButton aria-label="delete"  onClick={() =>
+                <IconButton aria-label="delete" onClick={() =>
                   dispatch({ type: ActionType.SET_FILE_URL, fileUrl: '' })
                 }>
                   <TrashNewIcon />
@@ -71,12 +71,13 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               </Box>
             </Box> :
             <DropzoneImage
-              ref={dropZoneRef}
               title={title}
               reload={reload}
               itemId={itemId}
               isEdit={isEdit}
+              ref={dropZoneRef}
               handleClose={handleClose}
+              providerName={providerName}
               attachmentId={attachmentId}
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}

@@ -411,6 +411,6 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
           </TableBody>
         </Table>
       </form>
-    </FormProvider >
+    </FormProvider>
   )
 })
