@@ -517,7 +517,6 @@ body .MuiTabPanel-root {
   margin-bottom: 10px !important;
 }
 
-<<<<<<< HEAD
 /* Dashboard-charts-styling */
 .chartContainer > div > div {
   height: 300px !important;
@@ -554,10 +553,3 @@ body .MuiTabPanel-root {
 {
   font-weight: 600 !important;
 }
-=======
-.phoneInputError {
-  border: 1px solid red !important;
-  background-color: #F3F4F6 !important;
-  border-radius: 4px !important;
-}
->>>>>>> 67df2caa87e1caee178d63d1ab4e223346bcaf0b
