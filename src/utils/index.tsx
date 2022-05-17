@@ -18,8 +18,8 @@ import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AttachmentType, AllergySeverity, ProblemSeverity, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType
+  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
+  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -387,6 +387,21 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
   return data;
 }
 
+export const renderAppointments = (appointments: AppointmentsPayload['appointments']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!appointments) {
+    for (let appointment of appointments) {
+      if (appointment) {
+        const { id, appointmentType, scheduleStartDateTime } = appointment;
+        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime,'MM-DD-YYYY hh:mm:ss')}` })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderOptionsForSelector = (options: SelectorOption[]) => {
   const data: AsyncSelectorOption[] = [];
 
@@ -434,6 +449,55 @@ export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
 
   return data;
 }
+
+export const renderIcdCodes = (icdCodes: IcdCodesPayload['icdCodes']) => {
+  const data: multiOptionType[] = [];
+
+  if (!!icdCodes) {
+    for (let icdCode of icdCodes) {
+      if (icdCode) {
+        const { id, code } = icdCode;
+
+        code && data.push({ value: id, label: code })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderTests = (loincCodes: LoincCodesPayload['loincCodes']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!loincCodes) {
+    for (let loincCode of loincCodes) {
+      if (loincCode) {
+        const { id, loincNum, component } = loincCode;
+
+        loincNum && data.push({ id, name: `${loincNum} | ${component}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderSpecimenTypes = (specimenTypes: TestSpecimenTypesPayload['specimenTypes']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!specimenTypes) {
+    for (let specimenType of specimenTypes) {
+      if (specimenType) {
+        const { id, name } = specimenType;
+
+        specimenType && data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
 
 export const setRecord = (id: string, name: string): SelectorOption => {
   let value = ''
@@ -1026,4 +1090,13 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
     default:
       return PatientWeight
   }
+}
+export const generateString = () => {
+  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  const charactersLength = characters.length-2;
+  for ( let i = 0; i < 2; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result+Math.floor(100000 + Math.random() * 9000);
 }

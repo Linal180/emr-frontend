@@ -307,6 +307,11 @@ body .MuiTabPanel-root {
   cursor: pointer;
 }
 
+.remove-box {
+  color: #DD1010;
+  cursor: pointer;
+}
+
 .billing-box .MuiTypography-root {
   padding-left: 5px;
 }
@@ -471,6 +476,7 @@ body .MuiTabPanel-root {
   max-width: 330px !important;
 }
 
+
 .selectorClassTwo > div:first-of-type {
   border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;
@@ -480,6 +486,10 @@ body .MuiTabPanel-root {
 
 .selectorClassTwo svg, .selectorClassTwo span {
   color: #202020 !important;
+}
+
+.diagnosesSelectorClass {
+  min-width: 100% !important;
 }
 
 .selectedBox {

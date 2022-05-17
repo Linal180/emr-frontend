@@ -13,6 +13,7 @@ import Alert from "../components/common/Alert";
 import history from '../history';
 import { handleLogout } from "../utils";
 import {
+  FA_TOKEN,
   FORBIDDEN_EXCEPTION, INVALID_OR_EXPIRED_TOKEN_MESSAGE, MAINTENANCE_ALERT, MAINTENANCE_ROUTE, NOT_FOUND_EXCEPTION,
   PRECONDITION_FAILED_EXCEPTION, TOKEN, TOKEN_INVALID, TOKEN_NOT_FOUND, UNAUTHORIZED
 } from "../constants";
@@ -20,7 +21,7 @@ import {
 dotenv.config()
 
 const authMiddleware = new ApolloLink((operation: any, forward: any) => {
-  const token = localStorage.getItem(TOKEN);
+  const token = localStorage.getItem(TOKEN) || localStorage.getItem(FA_TOKEN);
   operation.setContext({
     headers: {
       authorization: `Bearer ${token}`,
