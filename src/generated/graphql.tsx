@@ -57,6 +57,7 @@ export enum AbnormalFlag {
 
 export type AccessUserPayload = {
   __typename?: 'AccessUserPayload';
+  access_2fa_token?: Maybe<Scalars['String']>;
   access_token?: Maybe<Scalars['String']>;
   isTwoFactorEnabled?: Maybe<Scalars['Boolean']>;
   response?: Maybe<ResponsePayload>;
@@ -1889,11 +1890,6 @@ export type MutationResendVerificationEmailArgs = {
 };
 
 
-export type MutationResentOtpArgs = {
-  seneOTPAgainInput: SeneOtpAgainInput;
-};
-
-
 export type MutationResetPasswordArgs = {
   resetPassword: ResetPasswordInput;
 };
@@ -3100,10 +3096,6 @@ export type SectionsTypes = {
   name: Scalars['String'];
 };
 
-export type SeneOtpAgainInput = {
-  id: Scalars['String'];
-};
-
 export type Service = {
   __typename?: 'Service';
   color?: Maybe<Scalars['String']>;
@@ -3968,6 +3960,7 @@ export type UserInfoInput = {
 
 export type UserPayload = {
   __typename?: 'UserPayload';
+  access_token?: Maybe<Scalars['String']>;
   response?: Maybe<ResponsePayload>;
   user?: Maybe<User>;
 };
@@ -4005,7 +3998,7 @@ export type UsersPayload = {
 };
 
 export type VerifyCodeInput = {
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   otpCode: Scalars['String'];
 };
 
@@ -4130,7 +4123,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, isTwoFactorEnabled?: boolean | null | undefined, userId?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, isTwoFactorEnabled?: boolean | null | undefined, userId?: string | null | undefined, access_2fa_token?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
 
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4179,9 +4172,7 @@ export type Update2FactorAuthMutationVariables = Exact<{
 
 export type Update2FactorAuthMutation = { __typename?: 'Mutation', update2FactorAuth: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
-export type ResentOtpMutationVariables = Exact<{
-  seneOTPAgainInput: SeneOtpAgainInput;
-}>;
+export type ResentOtpMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ResentOtpMutation = { __typename?: 'Mutation', resentOTP: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
@@ -4191,7 +4182,7 @@ export type VerifyOtpMutationVariables = Exact<{
 }>;
 
 
-export type VerifyOtpMutation = { __typename?: 'Mutation', verifyOTP: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type VerifyOtpMutation = { __typename?: 'Mutation', verifyOTP: { __typename?: 'UserPayload', access_token?: string | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type UpdateAutoLogoutTimeMutationVariables = Exact<{
   userInfoInput: UserInfoInput;
@@ -5521,6 +5512,7 @@ export const LoginDocument = gql`
     access_token
     isTwoFactorEnabled
     userId
+    access_2fa_token
     response {
       status
       message
@@ -5906,8 +5898,8 @@ export type Update2FactorAuthMutationHookResult = ReturnType<typeof useUpdate2Fa
 export type Update2FactorAuthMutationResult = Apollo.MutationResult<Update2FactorAuthMutation>;
 export type Update2FactorAuthMutationOptions = Apollo.BaseMutationOptions<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>;
 export const ResentOtpDocument = gql`
-    mutation resentOTP($seneOTPAgainInput: SeneOTPAgainInput!) {
-  resentOTP(seneOTPAgainInput: $seneOTPAgainInput) {
+    mutation resentOTP {
+  resentOTP {
     response {
       error
       status
@@ -5931,7 +5923,6 @@ export type ResentOtpMutationFn = Apollo.MutationFunction<ResentOtpMutation, Res
  * @example
  * const [resentOtpMutation, { data, loading, error }] = useResentOtpMutation({
  *   variables: {
- *      seneOTPAgainInput: // value for 'seneOTPAgainInput'
  *   },
  * });
  */
@@ -5945,6 +5936,7 @@ export type ResentOtpMutationOptions = Apollo.BaseMutationOptions<ResentOtpMutat
 export const VerifyOtpDocument = gql`
     mutation verifyOTP($verifyCodeInput: VerifyCodeInput!) {
   verifyOTP(verifyCodeInput: $verifyCodeInput) {
+    access_token
     response {
       error
       status
