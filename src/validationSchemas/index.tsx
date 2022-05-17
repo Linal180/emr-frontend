@@ -19,7 +19,7 @@ import {
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
   SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP, ALLERGY_DATE_VALIDATION_MESSAGE, PAIN_TEXT,
   REACTIONS_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT, WEIGHT_TEXT,
-  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, FACILITY_NAME,
+  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, FACILITY_NAME, DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, SPECIMEN_FIELD_VALIDATION_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -988,19 +988,19 @@ export const createLabOrdersSchema =  yup.object({
       label: yup.string().required(),
       value: yup.string().required()
     })
-  ),
+  ).test('', DIAGNOSES_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
   testField: yup.array().of(
     yup.object().shape({
       test: yup.object().shape({
         name: yup.string().required(),
         id: yup.string().required()
-      }).test('', 'required', ({ id }) => !!id),
+      }).test('', TEST_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id),
       specimenTypeField: yup.array().of(
         yup.object().shape({
           specimenType: yup.object().shape({
             name: yup.string().required(),
             id: yup.string().required()
-          }).test('', 'required', ({ id }) => !!id)
+          }).test('', SPECIMEN_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id)
         })
       )
     })
