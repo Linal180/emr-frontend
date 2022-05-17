@@ -125,21 +125,18 @@ const ProfileDropdownMenu = (): JSX.Element => {
 
               <Box mt={1}>
                 {PROFILE_GENERAL_MENU_ITEMS.map(({ link, name }) => {
-                  
-                  if(name === SIGNATURE_TEXT){
-                    if(isDoctor){
+                  if (name === SIGNATURE_TEXT) {
+                    if (isDoctor) {
                       return <Link key={`${link}-${name}`} to={link}>
+                        <MenuItem onClick={handleClose}>{name}</MenuItem>
+                      </Link>
+                    } else return null
+                  } else {
+                    return <Link key={`${link}-${name}`} to={link}>
                       <MenuItem onClick={handleClose}>{name}</MenuItem>
                     </Link>
-                    }else return null
-                  } else {
-                  return <Link key={`${link}-${name}`} to={link}>
-                    <MenuItem onClick={handleClose}>{name}</MenuItem>
-                  </Link>
-
                   }
-                }
-                )}
+                })}
               </Box>
             </Grid>
 
