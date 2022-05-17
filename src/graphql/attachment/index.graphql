@@ -13,9 +13,10 @@ query GetAttachments($getAttachment: GetAttachment!){
       type
       title
       typeId
+      signedAt
+      signedBy
       providerName
       attachmentName
-      signedByProvider
       createdAt
       updatedAt
     }

@@ -17,10 +17,11 @@ import ConfirmationModal from "../../ConfirmationModal";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
 import { GRAY_SIX } from "../../../../theme";
-import { getFormattedDate, isAdmin, renderTh } from "../../../../utils";
+import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
 import { ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
+import { getFormattedDate, getTimestamps, isAdmin, renderTh, signedDateTime } from "../../../../utils";
 import {
   mediaReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/mediaReducer";
@@ -29,13 +30,12 @@ import {
 } from "../../../../assets/svgs";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY,
+  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, ADDED_BY,
 } from "../../../../constants";
 import {
   AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
   useRemoveAttachmentDataMutation, useUpdateAttachmentDataMutation
 } from "../../../../generated/graphql";
-import { AuthContext } from "../../../../context";
 
 const DocumentsTable: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
@@ -78,7 +78,7 @@ const DocumentsTable: FC = (): JSX.Element => {
     },
   });
 
-  const [getAttachments, { loading }] = useGetAttachmentsLazyQuery({
+  const [getAttachments, { loading, error }] = useGetAttachmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -98,7 +98,7 @@ const DocumentsTable: FC = (): JSX.Element => {
         if (attachments) {
           const documents = attachments.filter(
             attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads
-              && attachment.signedByProvider === documentTab
+              && !!attachment.signedBy === documentTab
           )
 
           dispatch({
@@ -111,6 +111,9 @@ const DocumentsTable: FC = (): JSX.Element => {
   });
 
   const [updateAttachmentData, { loading: updateAttachmentLoading }] = useUpdateAttachmentDataMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
       closeDeleteModal();
@@ -138,6 +141,9 @@ const DocumentsTable: FC = (): JSX.Element => {
   })
 
   const [removeAttachment, { loading: deleteAttachmentLoading }] = useRemoveAttachmentDataMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       closeDeleteModal();
       Alert.error(message);
@@ -210,7 +216,11 @@ const DocumentsTable: FC = (): JSX.Element => {
 
   const signDocument = async () => {
     id && await updateAttachmentData({
-      variables: { updateAttachmentInput: { id: attachmentId, signedByProvider: true } }
+      variables: {
+        updateAttachmentInput: {
+          id: attachmentId, signedBy: providerName, signedAt: getTimestamps(new Date().toString())
+        }
+      }
     })
   }
 
@@ -230,8 +240,6 @@ const DocumentsTable: FC = (): JSX.Element => {
   useEffect(() => {
     dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'admin' : `${firstName} ${lastName}` })
   }, [admin, firstName, lastName])
-
-  const isLoading = updateAttachmentLoading || loading || deleteAttachmentLoading
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -270,14 +278,20 @@ const DocumentsTable: FC = (): JSX.Element => {
                 <TableRow>
                   {renderTh(TITLE)}
                   {renderTh(TYPE)}
-                  {documentTab && renderTh(SIGNED_BY)}
+                  {renderTh(ADDED_BY)}
+                  {documentTab &&
+                    <>
+                      {renderTh(SIGNED_BY)}
+                      {renderTh(SIGNED_AT)}
+                    </>
+                  }
                   {renderTh(DATE)}
                   {renderTh(ACTION, "center")}
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {isLoading ? (
+                {loading ? (
                   <TableRow>
                     <TableCell colSpan={10}>
                       <TableLoader numberOfRows={4} numberOfColumns={4} />
@@ -285,12 +299,12 @@ const DocumentsTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : (
                   attachmentsData?.map((attachment) => {
-                    const { id, createdAt, url, attachmentName, providerName: signedBy } = attachment || {};
+                    const { id, createdAt, url, attachmentName, providerName: addedBy, signedAt, signedBy } = attachment || {};
                     const filteredFileName = attachmentName && attachmentName?.length > 40
                       ? `${attachmentName?.substr(0, 40)}...` : attachmentName
                     const fileExtension: DefaultExtensionType =
                       url?.split(/\.(?=[^.]+$)/)[1] as DefaultExtensionType
-                    console.log(signedBy, ">>>>>>>>>>>>>>>>>")
+
                     return id && (
                       <TableRow>
                         <TableCell scope="row">
@@ -310,8 +324,13 @@ const DocumentsTable: FC = (): JSX.Element => {
                           }
                         </TableCell>
                         <TableCell scope="row">{fileExtension}</TableCell>
+                        <TableCell scope="row">{addedBy}</TableCell>
                         {documentTab &&
-                          <TableCell scope="row">{signedBy}</TableCell>
+                          <>
+                            <TableCell scope="row">{signedBy}</TableCell>
+                            {signedAt &&
+                              <TableCell scope="row">{signedDateTime(signedAt)}</TableCell>}
+                          </>
                         }
                         <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
                         <TableCell scope="row">
@@ -342,7 +361,7 @@ const DocumentsTable: FC = (): JSX.Element => {
           </form>
         </FormProvider>
 
-        {!attachmentsData?.length &&
+        {((!loading && attachmentsData?.length === 0) || error) &&
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>
