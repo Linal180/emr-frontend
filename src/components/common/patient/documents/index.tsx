@@ -1,5 +1,5 @@
 // packages block
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useContext, useEffect, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { DefaultExtensionType } from "react-file-icon";
@@ -17,10 +17,11 @@ import ConfirmationModal from "../../ConfirmationModal";
 import NoDataFoundComponent from "../../NoDataFoundComponent";
 // constant, utils and styles block
 import { GRAY_SIX } from "../../../../theme";
-import { getFormattedDate, renderTh } from "../../../../utils";
+import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
 import { ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
+import { getFormattedDate, getTimestamps, isAdmin, renderTh, signedDateTime } from "../../../../utils";
 import {
   mediaReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/mediaReducer";
@@ -29,7 +30,7 @@ import {
 } from "../../../../assets/svgs";
 import {
   ACTION, DATE, TITLE, TYPE, PENDING, SIGNED, ATTACHMENT_TITLES, DOCUMENT, DELETE_DOCUMENT_DESCRIPTION,
-  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT,
+  SIGN_DOCUMENT_DESCRIPTION, SIGN_DOCUMENT, SIGNED_BY, SIGNED_AT, ADDED_BY,
 } from "../../../../constants";
 import {
   AttachmentsPayload, AttachmentType, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery,
@@ -38,6 +39,10 @@ import {
 
 const DocumentsTable: FC = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
+  const { user, currentUser } = useContext(AuthContext)
+  const { firstName, lastName } = currentUser || {}
+  const { roles } = user || {}
+  const admin = isAdmin(roles)
   const classes = useTableStyles()
   const methods = useForm<UpdateAttachmentDataInputs>({
     mode: "all",
@@ -46,7 +51,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   const { setValue, handleSubmit } = methods;
   const [{
     isEdit, preSignedUrl, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
-    deleteAttachmentId, documentTab, openSign
+    deleteAttachmentId, documentTab, openSign, providerName
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
 
@@ -73,7 +78,7 @@ const DocumentsTable: FC = (): JSX.Element => {
     },
   });
 
-  const [getAttachments, { loading }] = useGetAttachmentsLazyQuery({
+  const [getAttachments, { loading, error }] = useGetAttachmentsLazyQuery({
     fetchPolicy: "network-only",
     nextFetchPolicy: 'no-cache',
     notifyOnNetworkStatusChange: true,
@@ -93,7 +98,7 @@ const DocumentsTable: FC = (): JSX.Element => {
         if (attachments) {
           const documents = attachments.filter(
             attachment => attachment?.title === ATTACHMENT_TITLES.ProviderUploads
-              && attachment.signedByProvider === documentTab
+              && !!attachment.signedBy === documentTab
           )
 
           dispatch({
@@ -106,6 +111,9 @@ const DocumentsTable: FC = (): JSX.Element => {
   });
 
   const [updateAttachmentData, { loading: updateAttachmentLoading }] = useUpdateAttachmentDataMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
       closeDeleteModal();
@@ -125,6 +133,7 @@ const DocumentsTable: FC = (): JSX.Element => {
             Alert.success(message)
             dispatch({ type: ActionType.SET_IS_EDIT, isEdit: false })
             closeDeleteModal();
+            getAttachments()
           }
         }
       }
@@ -132,6 +141,9 @@ const DocumentsTable: FC = (): JSX.Element => {
   })
 
   const [removeAttachment, { loading: deleteAttachmentLoading }] = useRemoveAttachmentDataMutation({
+    fetchPolicy: "network-only",
+    notifyOnNetworkStatusChange: true,
+
     onError({ message }) {
       closeDeleteModal();
       Alert.error(message);
@@ -149,7 +161,7 @@ const DocumentsTable: FC = (): JSX.Element => {
           if (message && status && status === 200) {
             Alert.success(message)
             closeDeleteModal();
-            reloadAttachments();
+            getAttachments();
             dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: false })
           }
         }
@@ -158,6 +170,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   })
 
   const reloadAttachments = useCallback(async () => id && await getAttachments(), [getAttachments, id])
+
   const handleDelete = (id: string) => {
     if (id) {
       dispatch({ type: ActionType.SET_DELETE_ATTACHMENT_ID, deleteAttachmentId: id })
@@ -203,7 +216,11 @@ const DocumentsTable: FC = (): JSX.Element => {
 
   const signDocument = async () => {
     id && await updateAttachmentData({
-      variables: { updateAttachmentInput: { id: attachmentId, signedByProvider: true } }
+      variables: {
+        updateAttachmentInput: {
+          id: attachmentId, signedBy: providerName, signedAt: getTimestamps(new Date().toString())
+        }
+      }
     })
   }
 
@@ -220,7 +237,9 @@ const DocumentsTable: FC = (): JSX.Element => {
     reloadAttachments()
   }, [reloadAttachments, documentTab])
 
-  const isLoading = updateAttachmentLoading || loading || deleteAttachmentLoading
+  useEffect(() => {
+    dispatch({ type: ActionType.SET_PROVIDER_NAME, providerName: admin ? 'admin' : `${firstName} ${lastName}` })
+  }, [admin, firstName, lastName])
 
   return (
     <Box className={classes.mainTableContainer}>
@@ -242,6 +261,7 @@ const DocumentsTable: FC = (): JSX.Element => {
           button={true}
           notDescription={true}
           imageSide={attachmentUrl}
+          providerName={providerName}
           moduleType={AttachmentType.Patient}
           title={ATTACHMENT_TITLES.ProviderUploads}
           attachmentData={attachmentData || undefined}
@@ -258,13 +278,20 @@ const DocumentsTable: FC = (): JSX.Element => {
                 <TableRow>
                   {renderTh(TITLE)}
                   {renderTh(TYPE)}
+                  {renderTh(ADDED_BY)}
+                  {documentTab &&
+                    <>
+                      {renderTh(SIGNED_BY)}
+                      {renderTh(SIGNED_AT)}
+                    </>
+                  }
                   {renderTh(DATE)}
                   {renderTh(ACTION, "center")}
                 </TableRow>
               </TableHead>
 
               <TableBody>
-                {isLoading ? (
+                {loading ? (
                   <TableRow>
                     <TableCell colSpan={10}>
                       <TableLoader numberOfRows={4} numberOfColumns={4} />
@@ -272,7 +299,7 @@ const DocumentsTable: FC = (): JSX.Element => {
                   </TableRow>
                 ) : (
                   attachmentsData?.map((attachment) => {
-                    const { id, createdAt, url, attachmentName } = attachment || {};
+                    const { id, createdAt, url, attachmentName, providerName: addedBy, signedAt, signedBy } = attachment || {};
                     const filteredFileName = attachmentName && attachmentName?.length > 40
                       ? `${attachmentName?.substr(0, 40)}...` : attachmentName
                     const fileExtension: DefaultExtensionType =
@@ -297,6 +324,14 @@ const DocumentsTable: FC = (): JSX.Element => {
                           }
                         </TableCell>
                         <TableCell scope="row">{fileExtension}</TableCell>
+                        <TableCell scope="row">{addedBy}</TableCell>
+                        {documentTab &&
+                          <>
+                            <TableCell scope="row">{signedBy}</TableCell>
+                            {signedAt &&
+                              <TableCell scope="row">{signedDateTime(signedAt)}</TableCell>}
+                          </>
+                        }
                         <TableCell scope="row">{getFormattedDate(createdAt || '')}</TableCell>
                         <TableCell scope="row">
                           <Box display="flex" alignItems="center" minWidth={100} justifyContent="center">
@@ -326,7 +361,7 @@ const DocumentsTable: FC = (): JSX.Element => {
           </form>
         </FormProvider>
 
-        {!attachmentsData?.length &&
+        {((!loading && attachmentsData?.length === 0) || error) &&
           <Box display="flex" justifyContent="center" pb={12} pt={5}>
             <NoDataFoundComponent />
           </Box>

@@ -43,7 +43,8 @@ export const upperToNormal = (value: string) => {
 export const formatValue = (value: string) => {
   let formatted = ''
 
-  value.split("_").map(term => formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
+  value.split("_").map(term =>
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
 
   return formatted;
 };
@@ -120,10 +121,27 @@ export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
 }
 
+export const isAdmin = (roles: RolesPayload['roles']) => {
+  const userRoles = roles ? pluck(roles, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.SuperAdmin) || userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
+    || userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
+}
+
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   const userRoles = roles ? pluck(roles, 'role') : ['']
 
   return userRoles.includes(SYSTEM_ROLES.SuperAdmin)
+}
+
+export const isOnlyDoctor = (roles: RolesPayload['roles']) => {
+  const userRoles = roles ? pluck(roles, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Doctor) && (
+    !userRoles.includes(SYSTEM_ROLES.Staff)
+    && !userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
+    && !userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
+  )
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
@@ -196,7 +214,9 @@ export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 
 export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
 
-export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`);
+export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+
+export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")

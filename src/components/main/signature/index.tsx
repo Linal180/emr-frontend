@@ -12,7 +12,7 @@ import { AuthContext } from '../../../context';
 import { WHITE, WHITE_FOUR } from '../../../theme';
 import { SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
-import { dataURLtoFile, getToken, isSuperAdmin } from '../../../utils';
+import { dataURLtoFile, getToken, isOnlyDoctor } from '../../../utils';
 import {
   AttachmentPayload, useGetAttachmentLazyQuery, useGetAttachmentsLazyQuery
 } from '../../../generated/graphql';
@@ -108,7 +108,7 @@ const SignatureComponent = (): JSX.Element => {
     file && formData.append("file", file);
 
     await axios.post(
-      id ?
+      signatureUrl ?
         `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
         :
         `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
@@ -153,7 +153,7 @@ const SignatureComponent = (): JSX.Element => {
   }
 
   useEffect(() => {
-    if (isSuperAdmin(roles)) {
+    if (!isOnlyDoctor(roles)) {
       history.push(DASHBOARD_ROUTE)
     } else {
       signAttachment?.id && getAttachment({

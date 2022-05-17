@@ -11,7 +11,8 @@ import { MediaCardsType } from "../../../interfacesTypes";
 import { Action, ActionType, initialState, mediaReducer, State } from '../../../reducers/mediaReducer'
 
 const MediaCards: FC<MediaCardsType> = ({
-  moduleType, itemId, attachmentData, imageSide, notDescription, reload, title, button, buttonText
+  moduleType, itemId, attachmentData, imageSide, notDescription, reload, title, button, 
+  buttonText, providerName
 }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { isOpen, attachments, attachment, isEdit, isEditModalOpen } = state
@@ -75,6 +76,7 @@ const MediaCards: FC<MediaCardsType> = ({
       <AddImageModal
         title={title}
         reload={reload}
+        providerName={providerName}
         imageModuleType={moduleType}
         setOpen={(isOpen: boolean) => {
           dispatch({
@@ -106,6 +108,7 @@ const MediaCards: FC<MediaCardsType> = ({
 
       <EditMediaModal
         reload={reload}
+        providerName={providerName}
         imageModuleType={moduleType}
         setOpen={(isOpen: boolean) => {
           dispatch({
