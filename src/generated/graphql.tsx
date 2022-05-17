@@ -1110,6 +1110,7 @@ export type FormElement = {
 
 export type FormInput = {
   facilityId?: Maybe<Scalars['String']>;
+  formType?: Maybe<FormType>;
   isSystemForm?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
 };
@@ -1131,6 +1132,7 @@ export enum FormType {
   Appointment = 'APPOINTMENT',
   Doctor = 'DOCTOR',
   Patient = 'PATIENT',
+  PreDefined = 'PRE_DEFINED',
   Staff = 'STAFF',
   Template = 'TEMPLATE'
 }

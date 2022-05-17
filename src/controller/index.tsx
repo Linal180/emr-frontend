@@ -16,7 +16,7 @@ import { CustomInputControlProps, PasswordType } from "../interfacesTypes";
 const InputController: FC<CustomInputControlProps> = ({
   isRequired, controllerName, controllerLabel, fieldType, error, isPassword, endAdornment, onBlur,
   disabled, multiline, info, placeholder, className, isSearch, margin, clearable, handleClearField,
-  notStep, isHelperText
+  notStep, isHelperText, autoFocus
 }): JSX.Element => {
   const classes = useFormStyles();
   const { control } = useFormContext();
@@ -60,6 +60,7 @@ const InputController: FC<CustomInputControlProps> = ({
             className={className}
             disabled={disabled}
             id={controllerName}
+            autoFocus={autoFocus}
             placeholder={placeholder ? placeholder : ""}
             type={fieldType === "password" ? passwordType : fieldType}
             helperText={!isHelperText ? error ? error : message : ""}
