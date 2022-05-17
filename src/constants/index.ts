@@ -577,6 +577,7 @@ export const RESULT = "Result";
 export const RESULTS = "Results";
 export const FILE = "File";
 export const TOKEN = "emr_token";
+export const FA_TOKEN = "2fa_token";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";

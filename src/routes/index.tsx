@@ -106,7 +106,7 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute path={`${PROVIDER_PUBLIC_APPOINTMENT_ROUTE}/:id`} component={DoctorPublicAppointment} exact />
       <PublicRoute exact path={`${PUBLIC_FORM_BUILDER_ROUTE}/:id`} component={PublicFormPreview} />
       <PublicRoute exact path={PUBLIC_FORM_BUILDER_FAIL_ROUTE} component={PublicFormFail} />
-      <PublicRoute exact path={`${TWO_FA_AUTHENTICATION_ROUTE}/:id`} component={TwoFaAuthentication} />
+      <PublicRoute exact path={TWO_FA_AUTHENTICATION_ROUTE} component={TwoFaAuthentication} />
       <PublicRoute exact path={PUBLIC_FORM_BUILDER_SUCCESS_ROUTE} component={PublicFormSuccessComponent} />
 
       <Route exact path="/">
