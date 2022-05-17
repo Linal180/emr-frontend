@@ -62,6 +62,7 @@ export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
+export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'
 export const CURRENT_DATE = new Date();
 export const LATEST_RECORDED_DATE = "Recorded Date"
@@ -747,6 +748,7 @@ export const GUARDIAN = "Guardian";
 export const EMPLOYER = "Employer";
 export const CHECKOUT = "checkout";
 export const INDUSTRY = "Industry";
+export const ADDED_BY = "Added by";
 export const RELOAD = "Go To Home";
 export const LANGUAGE = "Language";
 export const PRONOUNS = "Pronouns";
@@ -762,6 +764,8 @@ export const YOUR_NAME = "Your Name";
 export const PRN_FORMAT = 'AA123456';
 export const LAB_ORDER = "Lab Order";
 export const ETHNICITY = "Ethnicity";
+export const SIGNED_BY = "Signed by";
+export const SIGNED_AT   = "Signed at";
 export const CASH_PAID = "Cash Paid";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
@@ -3156,6 +3160,17 @@ export const FORM_BUILDER_FIELDS_TABS = [
   },
   {
     title: "Templates",
+    value: "2",
+  },
+]
+
+export const FORM_BUILDER_ADD_FIELDS_TABS = [
+  {
+    title: "Fields",
+    value: "1",
+  },
+  {
+    title: "Pre-defined",
     value: "2",
   },
 ]
