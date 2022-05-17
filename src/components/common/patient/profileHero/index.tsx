@@ -6,18 +6,18 @@ import ViewDataLoader from "../../ViewDataLoader";
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import history from "../../../../history";
-import { Box, Avatar, CircularProgress, Button, Typography } from "@material-ui/core";
+import { Box, Avatar, CircularProgress, Button, Typography, Tooltip } from "@material-ui/core";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, APPOINTMENTS_ROUTE
+  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, APPOINTMENTS_ROUTE, NOTES
 } from "../../../../constants";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
-import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon } from "../../../../assets/svgs";
+import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
@@ -76,6 +76,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
         const { getPatient } = data;
 
         if (getPatient) {
+          debugger
           const { patient } = getPatient;
           const { attachments } = patient || {}
           const profilePicture = attachments && attachments.filter(attachment =>
@@ -147,6 +148,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     {
       icon: AtIcon(),
       description: selfEmail
+    },
+    {
+      icon: LocationIcon(),
+      description: selfCurrentLocation
     },
     {
       icon: LocationIcon(),
@@ -237,6 +242,15 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                       <Typography variant="body1">{item.description}</Typography>
                     </Box>
                   ))}
+                  <Tooltip open={true} placement="bottom-start" title="Add">
+                  <Box display="flex" flexWrap="wrap" className={classes.profileInfoItem} onClick={()=>{}}>
+                    <Box><NotesCardIcon /></Box>
+                    <Box display="flex" alignItems="center">
+                      <Typography variant="body1">{NOTES} </Typography>
+                      <RedCircleIcon />
+                    </Box>
+                  </Box>
+                  </Tooltip>
                 </Box>
 
                 <Box display="flex" pt={1}>
