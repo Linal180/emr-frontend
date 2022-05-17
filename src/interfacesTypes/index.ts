@@ -15,6 +15,7 @@ import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
+import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
@@ -435,7 +436,8 @@ export interface CustomInputControlProps extends IControlLabel {
   endAdornment?: ReactNode;
   onBlur?: Function;
   notStep?: boolean;
-  isHelperText?: boolean
+  isHelperText?: boolean;
+  autoFocus?: boolean
 }
 
 export interface TooltipData {
@@ -1013,11 +1015,11 @@ export interface FieldEditModalProps {
 }
 
 export interface DropContainerPropsTypes {
-  formValues: FormValuesTypes[];
+  formState: FormBuilderState;
   changeValues: (id: string, item: FieldsInputs) => void;
   delFieldHandler: (id: number, index: number) => void;
   delColHandler: (index: number) => void;
-  setFormValues: Dispatch<SetStateAction<SectionsInputs[]>>;
+  dispatch: Dispatch<FormBuilderAction>
 }
 
 export interface FormBuilderFormInitial {
@@ -1158,7 +1160,7 @@ export interface CreateTemplateTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
-  setFormName: Dispatch<SetStateAction<string>>
+  dispatch: Dispatch<FormBuilderAction>
   formName: string
 }
 
@@ -1313,4 +1315,13 @@ export interface AutoLogoutInputTypes {
   autoLogoutTime: SelectStringOptions
 }
 
+export interface FormSidebarProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
+
+export interface PredefinedComponentsProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
 export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>

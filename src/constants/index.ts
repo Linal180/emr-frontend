@@ -62,6 +62,7 @@ export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
+export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'
 export const CURRENT_DATE = new Date();
 export const LATEST_RECORDED_DATE = "Recorded Date"
@@ -2005,6 +2006,7 @@ export const FACILITY_SERVICE_NEW_BREAD = { text: ADD_SERVICE, link: "" };
 export const FACILITY_SERVICE_EDIT_BREAD = { text: EDIT_SERVICE, link: "" };
 export const STAFF_BREAD = { text: STAFF_TEXT, link: STAFF_ROUTE };
 export const DOCTORS_BREAD = { text: DOCTORS_TEXT, link: DOCTORS_ROUTE };
+export const IS_DOCTOR_BREAD = { text: DOCTORS_TEXT, link: '' };
 export const DOCTOR_NEW_BREAD = { text: ADD_DOCTOR, link: `${DOCTORS_ROUTE}/new`, };
 
 export const APPOINTMENT_NEW_BREAD = {
@@ -3154,6 +3156,17 @@ export const FORM_BUILDER_FIELDS_TABS = [
   },
   {
     title: "Templates",
+    value: "2",
+  },
+]
+
+export const FORM_BUILDER_ADD_FIELDS_TABS = [
+  {
+    title: "Fields",
+    value: "1",
+  },
+  {
+    title: "Pre-defined",
     value: "2",
   },
 ]

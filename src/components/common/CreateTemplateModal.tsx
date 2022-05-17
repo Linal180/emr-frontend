@@ -8,10 +8,11 @@ import {
 import { CreateTemplateTypes } from "../../interfacesTypes";
 import { SUBMIT, CANCEL } from "../../constants";
 import { usePreviewModalStyles } from "../../styles/formbuilder/previewModalStyles";
+import { ActionType } from '../../reducers/formBuilderReducer'
 
 const TemplateModal: FC<CreateTemplateTypes> = ({
   setOpen, isOpen, title, description, handleDelete, isLoading, actionText, success,
-  formName, setFormName
+  formName, dispatch
 }): JSX.Element => {
   const classes = usePreviewModalStyles()
 
@@ -33,7 +34,10 @@ const TemplateModal: FC<CreateTemplateTypes> = ({
               <InputLabel shrink>
                 {description}
               </InputLabel>
-              <TextField variant="outlined" onChange={(e) => setFormName(e.target.value)} value={formName}>
+              <TextField
+                variant="outlined"
+                onChange={(e) => dispatch({ type: ActionType.SET_FORM_NAME, formName: e.target.value })}
+                value={formName}>
               </TextField>
             </FormControl>
           </Box>

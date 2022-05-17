@@ -5,11 +5,11 @@ import { usStreet } from 'smartystreets-javascript-sdk';
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { AddCircleOutline, CheckBox as CheckBoxIcon } from '@material-ui/icons';
 import {
-  TabContext, TabList, TabPanel, Timeline, TimelineConnector, TimelineContent, TimelineDot, 
+  TabContext, TabList, TabPanel, Timeline, TimelineConnector, TimelineContent, TimelineDot,
   TimelineItem, TimelineSeparator
 } from '@material-ui/lab';
 import {
-  Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup, 
+  Box, Button, Checkbox, CircularProgress, Collapse, FormControl, FormControlLabel, FormGroup,
   Grid, List, ListItem, Tab, Typography
 } from "@material-ui/core";
 // components block
@@ -38,20 +38,20 @@ import {
   FacilityPayload, ServiceCode, useCreateFacilityMutation, useGetFacilityLazyQuery, useUpdateFacilityMutation
 } from "../../../../generated/graphql";
 import {
-  ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING, 
-  EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE, 
+  ADDRESS_2, FEDERAL_TAX_ID, CLIA_ID_NUMBER, TIME_ZONE_TEXT, MAPPED_TIME_ZONES, ADD_FACILITY_BILLING,
+  EMAIL_OR_USERNAME_ALREADY_EXISTS, FACILITIES_ROUTE, MAPPED_SERVICE_CODES, FACILITY_INFO, TAXONOMY_CODE,
   COUNTRY, EMAIL, FAX, PHONE, STATE, ADDRESS, FACILITY_UPDATED, NAME, NPI, MAMMOGRAPHY_CERTIFICATION_NUMBER,
   CANCEL, FACILITY_NOT_FOUND, FACILITY_CREATED, FORBIDDEN_EXCEPTION, NOT_FOUND_EXCEPTION, MAPPED_STATES,
-  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER, 
+  MAPPED_COUNTRIES, BILLING_PROFILE, SAME_AS_FACILITY_LOCATION, PAYABLE_ADDRESS, BILLING_IDENTIFIER,
   BILLING_PROFILE_ROUTE, FACILITY_SCHEDULE_ROUTE, FacilityMenuNav, FACILITY_HOURS_END, FACILITY_HOURS_START,
-  ZIP, SERVICE_CODE, UPDATE_FACILITY, CITY, FACILITY_LOCATION, FACILITY_REGISTRATION, PRACTICE, 
+  ZIP, SERVICE_CODE, UPDATE_FACILITY, CITY, FACILITY_LOCATION, FACILITY_REGISTRATION, PRACTICE,
   CLIA_ID_NUMBER_INFO, CREATE_FACILITY, EMPTY_OPTION, FACILITY_INFO_ROUTE, FACILITY_LOCATION_ROUTE,
   BUSINESS_HOURS, FACILITY_SCHEDULE, VERIFY_ADDRESS, VERIFIED, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER,
-  TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, 
+  TAXONOMY_CODE_INFO, NPI_INFO, MAMOGRAPHY_CERTIFICATION_NUMBER_INFO, FEDERAL_TAX_ID_INFO, SYSTEM_ROLES, SETTINGS_ROUTE,
 } from "../../../../constants";
 
 const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
-  const { user } = useContext(AuthContext);
+  const { user, userRoles } = useContext(AuthContext);
   const [tabValue, setTabValue] = useState<string>('1')
   const [isVerified, setIsVerified] = useState(false)
   const [addressOpen, setAddressOpen] = useState(false);
@@ -70,6 +70,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   const [{ sameAddress, addBilling, billingId, contactId }, dispatch] =
     useReducer<Reducer<State, Action>>(facilityReducer, initialState)
   const classes = useFacilityStyles()
+  const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
 
   const [getFacility, { loading: getFacilityLoading }] = useGetFacilityLazyQuery({
     fetchPolicy: "network-only",
@@ -188,7 +189,11 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           reset()
           Alert.success(FACILITY_UPDATED);
           updateFacilityList(facility)
-          history.push(FACILITIES_ROUTE)
+          if (isFacilityAdmin) {
+            history.push(SETTINGS_ROUTE)
+          } else {
+            history.push(FACILITIES_ROUTE)
+          }
         }
       }
     }
@@ -361,7 +366,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
   return (
     <TabContext value={tabValue}>
       <Box display="flex">
-        <BackButton to={`${FACILITIES_ROUTE}`} />
+        <BackButton to={isFacilityAdmin ? SETTINGS_ROUTE : `${FACILITIES_ROUTE}`} />
 
         <Box ml={2}>
           <TabList onChange={handleChange} aria-label="Profile top tabs">
@@ -370,7 +375,7 @@ const FacilityForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           </TabList>
         </Box>
       </Box>
-      
+
       <TabPanel value="1">
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
