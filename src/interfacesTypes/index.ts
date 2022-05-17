@@ -20,13 +20,13 @@ import { Action as FormBuilderAction , State as FormBuilderState} from "../reduc
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
-  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, Schedule,
-  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload,
+  Maybe, PatientVitals, UpdateAttachmentInput, Doctor,
+  CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
+  CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs, Allergies,
-  UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload,
-  Maybe, PatientVitals, UpdateAttachmentInput, ResponsePayloadResponse, Doctor, CreatePracticeItemInput,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -367,6 +367,7 @@ export interface FacilitySelectorProps {
   addEmpty?: boolean
   isRequired?: boolean
   isMultiple?: boolean
+  patientId?: string
 }
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
@@ -495,6 +496,9 @@ export type ParamsType = {
   id: string;
   facilityId?: string;
   templateId?: string;
+  orderNum?: string;
+  patientId?: string;
+  tabValue?: string
 }
 
 export type ExtendedStaffInputProps = Omit<
@@ -830,6 +834,59 @@ export interface ICreateMediaInput {
   title?: string;
   subTitle?: string;
   description?: string;
+}
+export interface SpecimenTypeOption {
+  id?: string
+  specimenType: SelectorOption,
+  collectionDate: string
+  collectionTime: string,
+  specimenNotes: string
+}
+
+export interface TestOption {
+   testId?: string
+   test: SelectorOption,
+   testDate: string
+   testTime: string
+   testNotes: string
+   newTest?: boolean
+   specimenTypeField?: SpecimenTypeOption[]
+}
+
+export interface LabOrdersCreateFormInput {
+  appointment?: SelectorOption,
+  labTestStatus?: SelectorOption,
+  diagnosesIds: multiOptionType[]
+  testField: TestOption[]
+};
+
+export interface LabOrdersSpecimenTypeInput {
+  index:number
+};
+
+export interface LabOrdersResultOption {
+  observationId?: string
+  resultValue?: string
+  resultUnits?: string
+  normalRange?: string
+  normalRangeUnits?: string
+  abnormalFlag?: SelectorOption
+}
+
+export interface LoinsCodeFields {
+  testId: string
+  loinccode: string
+  description: string
+  resultsField: LabOrdersResultOption[]
+}
+
+export interface LabOrderResultsFormInput {
+  loinsCodeFields: LoinsCodeFields[]
+};
+
+export interface LabOrdersResultSubFormProps {
+  index: number
+  setResultsToRemove: Function
 }
 
 export interface MediaModalTypes extends DialogTypes {

@@ -38,7 +38,6 @@ import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
 import { EmergencyAccess } from "../pages/main/emergencyAccess";
-import { ViewLabOrders } from "../pages/main/labOrders/addOrder";
 import LabResults from "../pages/main/reports/labResultsListing";
 import { AddPractice } from "../pages/main/practices/addPractice";
 import { AddFacility } from "../pages/main/facilities/addFacility";
@@ -70,6 +69,7 @@ import { AppointmentConfirmation } from "../pages/main/publicAppointments/confir
 import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
 import { PatientVitals } from "../pages/main/patientChart/patientVitals";
 import { FormBuilderResponses } from "../pages/main/formBuilder/formResponses";
+import EditLabOrdersComponent from "../components/main/labOrders/editOrder";
 // constants
 import { AuthContext } from "../context";
 import {
@@ -82,8 +82,10 @@ import {
   SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, LOCK_ROUTE,
   PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE, FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE,
   CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, TWO_FA_ROUTE, TWO_FA_AUTHENTICATION_ROUTE,
-  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_COPY_TEMPLATE_ROUTE
+  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_COPY_TEMPLATE_ROUTE, EDIT_LAB_ORDERS_ROUTE, ADD_LAB_ORDERS_RESULTS_ROUTE
 } from "../constants";
+import { AddLabOrdersComponent } from "../components/main/labOrders/addOrder";
+import ResultsLabOrdersComponent from "../components/main/labOrders/results";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn } = useContext(AuthContext)
@@ -135,7 +137,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={PATIENTS_ROUTE} component={Patients} permission={USER_PERMISSIONS.findAllPatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/new`} component={AddPatient} permission={USER_PERMISSIONS.createPatient} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id`} component={ViewPatient} permission={USER_PERMISSIONS.updatePatient} />
-      <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details`} component={PatientDetail} />
+      <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id/details/:tabValue?`} component={PatientDetail} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id${CHART_ROUTE}`} component={PatientChart} />
       <PrivateRoute exact path={`${PATIENTS_ROUTE}/:id${CHART_ROUTE}${VITALS_ROUTE}`} component={PatientVitals} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/:id/details`} component={DetailDoctor} />
@@ -159,7 +161,9 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} permission={USER_PERMISSIONS.updateService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
-      <PrivateRoute exact path={CREATE_LAB_ORDERS_ROUTE} component={ViewLabOrders} />
+      <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:patientId`} component={AddLabOrdersComponent} />
+      <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrdersComponent} />
+      <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={ResultsLabOrdersComponent} />
       <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/add`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_COPY_TEMPLATE_ROUTE}/:templateId`} component={AddFormBuilder} />

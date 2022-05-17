@@ -977,3 +977,32 @@ export const patientVitalUpdateSchema = yup.object({
 export const attachmentNameUpdateSchema = yup.object({
   attachmentName: yup.string().test('', invalidMessage('Attachment name'), value => !!value)
 })
+
+export const createLabOrdersSchema =  yup.object({
+  labTestStatus: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+  diagnosesIds: yup.array().of(
+    yup.object().shape({
+      label: yup.string().required(),
+      value: yup.string().required()
+    })
+  ),
+  testField: yup.array().of(
+    yup.object().shape({
+      test: yup.object().shape({
+        name: yup.string().required(),
+        id: yup.string().required()
+      }).test('', 'required', ({ id }) => !!id),
+      specimenTypeField: yup.array().of(
+        yup.object().shape({
+          specimenType: yup.object().shape({
+            name: yup.string().required(),
+            id: yup.string().required()
+          }).test('', 'required', ({ id }) => !!id)
+        })
+      )
+    })
+  )
+})

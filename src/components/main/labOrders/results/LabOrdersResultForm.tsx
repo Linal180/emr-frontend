@@ -1,36 +1,159 @@
 // packages block
-import { FC, useState, ChangeEvent } from 'react';
-import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
-import { Box, Card, colors, Grid, Typography, Button, FormControlLabel, FormGroup, Checkbox, Collapse, IconButton, } from "@material-ui/core";
-// components block
-import Selector from '../../../common/Selector';
-import InputController from '../../../../controller';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { Box, Card, colors, Grid, Typography, Button, CircularProgress, } from "@material-ui/core";
 // interfaces, graphql, constants block
-import { GeneralFormProps } from "../../../../interfacesTypes";
+import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
-  ABNORMAL_FLAG, ADD_ANOTHER_RESULT, ADD_RESULT_FILE, DESCRIPTION, DOCTOR_SIGNOFF, EMPTY_OPTION, LOINC_CODE, NORMAL_RANGE, 
-  NORMAL_RANGE_UNITS, RESULTS, RESULT_UNITS, RESULT_VALUE, SAVE_TEXT,
+  DESCRIPTION, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, RESULTS, SAVE_TEXT, USER_NOT_FOUND_EXCEPTION_MESSAGE,
 } from '../../../../constants';
 import { GREY_THREE } from '../../../../theme';
-import { AddCircleOutline } from '@material-ui/icons';
-import { DocumentUploadIcon } from '../../../../assets/svgs';
+import { AbnormalFlag, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation } from '../../../../generated/graphql';
+import { useParams } from 'react-router';
+import Alert from '../../../common/Alert';
+import history from '../../../../history';
+import LabOrdersResultSubForm from './LabOrdersResultSubForm';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
-  const [openResult, setOpenResult] = useState<boolean>(false);
-  const [isChecked, setIsChecked] = useState({ one: false });
+  const { orderNum, patientId } = useParams<ParamsType>();
+  const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
 
-  const methods = useForm<any>({
+  const methods = useForm<LabOrderResultsFormInput>({
     mode: "all",
   });
 
-  const handleChangeForCheckBox = (name: string) => (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    setIsChecked({ ...isChecked, [name]: event.target.checked });
-  };
+  const [updateLabTestObservation, { loading: updateLoading }] = useUpdateLabTestObservationMutation({
+    onError({ message }) {
+      message === NOT_FOUND_EXCEPTION ?
+        Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
+        :
+        Alert.error(message)
+    },
 
-  const { handleSubmit } = methods;
-  const onSubmit: SubmitHandler<any> = () => { }
+    onCompleted() {
+      history.push(`/patients/${patientId}/details`)
+    }
+  });
+
+  const [removeLabTestMutation, { loading: removeLoading }] = useRemoveLabTestObservationMutation({
+    onError({ message }) {
+      message === NOT_FOUND_EXCEPTION ?
+        Alert.error(USER_NOT_FOUND_EXCEPTION_MESSAGE)
+        :
+        Alert.error(message)
+    },
+  });
+
+  const { handleSubmit, setValue, control } = methods;
+
+  const onSubmit: SubmitHandler<LabOrderResultsFormInput> = async (values) => {
+    if(resultsToRemove.length){
+      resultsToRemove.forEach(async(resultId)=>{
+         await removeLabTestMutation({
+           variables: {
+             removeLabTestObservation: {
+               id: resultId ?? ''
+             }
+           }
+         })
+      })
+    }
+
+    values.loinsCodeFields.forEach(async (loinsCodeField) => {
+      const { testId, description, resultsField } = loinsCodeField ?? {}
+
+      const transformedObservations = resultsField.map((resultsFieldValues) => {
+        const { abnormalFlag, normalRange, normalRangeUnits, observationId, resultUnits, resultValue } = resultsFieldValues ?? {}
+
+        return {
+          id: observationId ?? '',
+          ...(abnormalFlag?.id && { abnormalFlag: abnormalFlag?.id as AbnormalFlag }),
+          description,
+          normalRange,
+          normalRangeUnit: normalRangeUnits,
+          resultUnit: resultUnits,
+          resultValue: resultValue,
+        }
+      })
+
+      await updateLabTestObservation({
+        variables: {
+          updateLabTestObservationInput: {
+            updateLabTestObservationItemInput: transformedObservations,
+            labTestId: testId
+          }
+        }
+      })
+    })
+  }
+
+  const { fields: resultFields } = useFieldArray({ control: control, name: "loinsCodeFields" });
+
+  const [findLabTestsByOrderNum] = useFindLabTestsByOrderNumLazyQuery({
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: "network-only",
+
+    onError({ message }) {
+      message !== NOT_FOUND_EXCEPTION && Alert.error(message)
+      history.push(`/patients/${patientId}/details/10`)
+    },
+
+    async onCompleted(data) {
+      const { findLabTestsByOrderNum } = data || {};
+
+      if (findLabTestsByOrderNum) {
+        const { labTests } = findLabTestsByOrderNum
+
+        const transformedLabTests = labTests?.map((labTest) => {
+          const { test, id, testObservations } = labTest ?? {}
+          const { component, loincNum, unitsRequired } = test ?? {}
+
+          const transformedObservations = testObservations?.map((testObservation) => {
+            const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id } = testObservation ?? {}
+
+            return {
+              observationId: id,
+              resultValue: resultValue ?? '',
+              resultUnits: resultUnit ?? unitsRequired ?? '',
+              normalRange: normalRange ?? '',
+              normalRangeUnits: normalRangeUnit ?? '',
+              abnormalFlag: {
+                id: abnormalFlag ?? '',
+                name: abnormalFlag ?? ''
+              }
+            }
+          })
+
+          return {
+            testId: id ?? '',
+            loinccode: loincNum ?? '',
+            description: component ?? '',
+            resultsField: transformedObservations?.length ? transformedObservations : [{ ...ORDERS_RESULT_INITIAL_VALUES, resultUnits: unitsRequired ?? '' }]
+          }
+        }) ?? []
+
+        setValue('loinsCodeFields', transformedLabTests)
+      }
+    }
+  });
+
+
+
+  const fetchlabTests = useCallback(async () => {
+    try {
+      await findLabTestsByOrderNum({
+        variables: {
+          labTestByOrderNumInput: {
+            orderNumber: orderNum ?? ''
+          }
+        }
+      });
+    } catch (error) { }
+  }, [findLabTestsByOrderNum, orderNum])
+
+  useEffect(() => {
+    fetchlabTests()
+  }, [fetchlabTests])
 
   return (
     <Card>
@@ -42,159 +165,49 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
             </Box>
 
             <Grid container spacing={3}>
-              <Grid item md={12} sm={12} xs={12}>
-                <Box pt={2}>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Checkbox color="primary" checked={isChecked.one} onChange={handleChangeForCheckBox("one")} />
-                      }
-                      label={DOCTOR_SIGNOFF}
-                    />
-                  </FormGroup>
-                </Box>
-              </Grid>
-              <Grid item md={12}>
-                <Grid container spacing={3}>
-                  <Grid item md={4}>
-                    <InputController
-                      fieldType="text"
-                      controllerName="loinccode"
-                      controllerLabel={LOINC_CODE}
-                    />
-                  </Grid>
+              {resultFields?.map((resultField, index) => {
+                return (
+                  <Grid item container spacing={3}>
+                    <Grid item md={12}>
+                      <Grid container spacing={3}>
+                        <Grid item md={4}>
+                          <Typography variant='h6'>{LOINC_CODE}</Typography>
 
-                  <Grid item md={8}>
-                    <Typography variant='h6'>{DESCRIPTION}</Typography>
-
-                    <Box py={0.6} mb={2} color={GREY_THREE}>
-                      <Typography variant='body1'>N/A</Typography>
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="resultValue"
-                  controllerLabel={RESULT_VALUE}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="resultUnits"
-                  controllerLabel={RESULT_UNITS}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="normalRange"
-                  controllerLabel={NORMAL_RANGE}
-                />
-              </Grid>
-
-              <Grid item md={2} sm={12} xs={12}>
-                <InputController
-                  fieldType="text"
-                  controllerName="normalUnits"
-                  controllerLabel={NORMAL_RANGE_UNITS}
-                />
-              </Grid>
-
-              <Grid item md={4} sm={12} xs={12}>
-                <Selector
-                  name="abnormalFlag"
-                  label={ABNORMAL_FLAG}
-                  value={EMPTY_OPTION}
-                  options={[]}
-                />
-              </Grid>
-
-              <Grid item md={12} sm={12} xs={12}>
-                <Grid container spacing={3} justifyContent="flex-end">
-                  <Grid item md={4} sm={12} xs={12}>
-                    <Collapse in={!openResult} mountOnEnter unmountOnExit>
-                      <Box pb={3}
-                        onClick={() => setOpenResult(!openResult)}
-                        className="billing-box" display="flex" alignItems="center"
-                      >
-                        <AddCircleOutline color='inherit' />
-
-                        <Typography>{ADD_ANOTHER_RESULT}</Typography>
-                      </Box>
-                    </Collapse>
-                  </Grid>
-                </Grid>
-
-                <Grid container spacing={3} justifyContent="flex-end">
-                  <Grid item md={12} sm={12} xs={12}>
-                    <Collapse in={openResult} mountOnEnter unmountOnExit>
-                      <Box>
-                        <Grid container spacing={3}>
-                          <Grid item md={2} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="resultValue"
-                              controllerLabel={RESULT_VALUE}
-                            />
-                          </Grid>
-
-                          <Grid item md={2} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="resultUnits"
-                              controllerLabel={RESULT_UNITS}
-                            />
-                          </Grid>
-
-                          <Grid item md={2} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="normalRange"
-                              controllerLabel={NORMAL_RANGE}
-                            />
-                          </Grid>
-
-                          <Grid item md={2} sm={12} xs={12}>
-                            <InputController
-                              fieldType="text"
-                              controllerName="normalUnits"
-                              controllerLabel={NORMAL_RANGE_UNITS}
-                            />
-                          </Grid>
-
-                          <Grid item md={4} sm={12} xs={12}>
-                            <Selector
-                              name="abnormalFlag"
-                              label={ABNORMAL_FLAG}
-                              value={EMPTY_OPTION}
-                              options={[]}
-                            />
-                          </Grid>
+                          <Box py={0.6} mb={2} color={GREY_THREE}>
+                            <Typography variant='body1'>{resultField.loinccode}</Typography>
+                          </Box>
                         </Grid>
-                      </Box>
-                    </Collapse>
-                  </Grid>
-                </Grid>
-              </Grid>
 
-              <Grid item md={4}>
+                        <Grid item md={8}>
+                          <Typography variant='h6'>{DESCRIPTION}</Typography>
+
+                          <Box py={0.6} mb={2} color={GREY_THREE}>
+                            <Typography variant='body1'>{resultField.description}</Typography>
+                          </Box>
+                        </Grid>
+
+                      </Grid>
+                    </Grid>
+
+                    <LabOrdersResultSubForm index={index} setResultsToRemove={setResultsToRemove}/>
+                  </Grid>
+                )
+              })
+              }
+              {/* <Grid item md={4}>
                 <Box mb={3} display='flex' alignItems='center'>
                   <IconButton>
                     <DocumentUploadIcon />
                   </IconButton>
                   <Typography variant='h6'>{ADD_RESULT_FILE}</Typography>
                 </Box>
-              </Grid>
+              </Grid> */}
             </Grid>
 
             <Box mb={3}>
-              <Button type="submit" variant="contained" color="primary">{SAVE_TEXT}</Button>
+              <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
+                {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
+                </Button>
             </Box>
           </form>
         </FormProvider>
