@@ -57,12 +57,13 @@ const LabOrdersTable = (): JSX.Element => {
       await findAllLabTest({
         variables: {
           labTestInput:{
-            paginationOptions: pageInputs
+            paginationOptions: pageInputs,
+            patientId: id
           }
         }
       });
     } catch (error) { }
-  }, [findAllLabTest, page])
+  }, [findAllLabTest, id, page])
 
   useEffect(() => {
     fetchlabTests()

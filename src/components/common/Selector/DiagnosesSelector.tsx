@@ -3,12 +3,11 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import Select from 'react-select';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, FormHelperText, Box } from '@material-ui/core'
+// constants and type/interfaces block
 import { multiOptionType, ReactionSelectorInterface } from '../../../interfacesTypes';
 import { IcdCodesPayload, useSearchIcdCodesLazyQuery } from '../../../generated/graphql';
 import { renderIcdCodes, requiredLabel } from '../../../utils';
 import { INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT } from '../../../constants';
-// constants and type/interfaces block
-
 
 const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, isRequired, defaultValues }) => {
   const { control, setValue } = useFormContext();
@@ -92,7 +91,7 @@ const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label,
               options={options}
               value={values}
               onChange={(newValue) => {
-                field.onChange(newValue)                
+                field.onChange(newValue)
                 updateValues(newValue as multiOptionType[])
               }}
               onInputChange={(query: string) => {

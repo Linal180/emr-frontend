@@ -2,6 +2,7 @@
 import { FC } from 'react';
 import { useFieldArray, useFormContext } from 'react-hook-form';
 import { Box, Grid, Typography, Button, } from "@material-ui/core";
+import { AddCircleOutline, RemoveCircleOutline } from '@material-ui/icons';
 // components block
 import Selector from '../../../common/Selector';
 import InputController from '../../../../controller';
@@ -10,9 +11,7 @@ import {
   ABNORMAL_FLAG, ABNORMAL_FLAG_OPTIONS, ADD_ANOTHER_RESULT, EMPTY_OPTION, NORMAL_RANGE,
   NORMAL_RANGE_UNITS, ORDERS_RESULT_INITIAL_VALUES, REMOVE_RESULT, RESULT_UNITS, RESULT_VALUE,
 } from '../../../../constants';
-import { AddCircleOutline, RemoveCircleOutline } from '@material-ui/icons';
 import { LabOrdersResultOption, LabOrdersResultSubFormProps } from '../../../../interfacesTypes';
-
 
 const LabOrdersResultSubForm: FC<LabOrdersResultSubFormProps> = ({ index, setResultsToRemove }): JSX.Element => {
   const { control } = useFormContext()
@@ -22,7 +21,6 @@ const LabOrdersResultSubForm: FC<LabOrdersResultSubFormProps> = ({ index, setRes
   });
 
   return (
-
     <Grid item container spacing={3}>
       {subFields.map((subField, subIndex) => {
         return (
@@ -71,7 +69,7 @@ const LabOrdersResultSubForm: FC<LabOrdersResultSubFormProps> = ({ index, setRes
             {!!(subFields.length > 1 && subIndex !== 0) && <Grid item md={2} sm={12} xs={12}>
               <Box marginTop={3}
                 onClick={() => {
-                  setResultsToRemove((prevState:string[])=>[...prevState, (subField as LabOrdersResultOption).observationId])
+                  setResultsToRemove((prevState: string[]) => [...prevState, (subField as LabOrdersResultOption).observationId])
                   removeSubField(subIndex)
                 }}
                 className="remove-box" display="flex" alignItems="center"

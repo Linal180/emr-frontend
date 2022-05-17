@@ -1,7 +1,11 @@
 // packages block
 import { FC, useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { Box, Card, colors, Grid, Typography, Button, CircularProgress, } from "@material-ui/core";
+//components block
+import LabOrdersResultSubForm from './LabOrdersResultSubForm';
+import Alert from '../../../common/Alert';
 // interfaces, graphql, constants block
 import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
@@ -9,10 +13,7 @@ import {
 } from '../../../../constants';
 import { GREY_THREE } from '../../../../theme';
 import { AbnormalFlag, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation } from '../../../../generated/graphql';
-import { useParams } from 'react-router';
-import Alert from '../../../common/Alert';
 import history from '../../../../history';
-import LabOrdersResultSubForm from './LabOrdersResultSubForm';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();

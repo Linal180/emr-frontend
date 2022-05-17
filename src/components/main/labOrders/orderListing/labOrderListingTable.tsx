@@ -1,18 +1,18 @@
 
 // packages block
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router";
 import { Pagination } from "@material-ui/lab";
 import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, } from "@material-ui/core";
+//components block
+import TableLoader from "../../../common/TableLoader";
+import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
 import { renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
-// import { appointmentReducer, Action, initialState, State, ActionType } from "../../../../reducers/appointmentReducer";
 import { DATE, STATUS, DOCTOR, LOINC_CODE, DESCRIPTION, SIGN_OFF, COMMENTS, RESULT, FILE, PAGE_LIMIT, } from "../../../../constants";
 import { BLUE } from "../../../../theme";
 import { LabTestsPayload, useFindLabTestsByOrderNumLazyQuery } from "../../../../generated/graphql";
-import TableLoader from "../../../common/TableLoader";
-import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
-import { useParams } from "react-router";
 import { ParamsType } from "../../../../interfacesTypes";
 
 const LabOrderListingTable = (): JSX.Element => {
