@@ -1,6 +1,6 @@
 import { makeStyles, createStyles } from "@material-ui/core";
 import BlueCard from "../assets/images/blueCard.svg";
-import { GREY_ELEVEN, theme } from "../theme";
+import { GREY_ELEVEN, theme, WHITE, WHITE_FOUR } from "../theme";
 
 export const useDashboardStyles = makeStyles(() =>
   createStyles({
@@ -25,5 +25,56 @@ export const useDashboardStyles = makeStyles(() =>
       minHeight: 120,
       cursor: 'pointer',
     },
+
+    facilitiesDropdown: {
+      "& .MuiTextField-root": {
+        margin: 1,
+        border: `1px solid ${WHITE_FOUR}`,
+        borderRadius: 4,
+        width: "18ch",
+        height: 52,
+        paddingLeft: 12,
+        paddingRight: 12,
+      },
+
+      "& .MuiSelect-selectMenu": {
+        margin: 1,
+        minHeight: "auto",
+      },
+
+      "& .MuiInputBase-input": {
+        color: WHITE,
+      },
+
+      "& svg": {
+        color: WHITE,
+      },
+
+      "& .MuiInput-underline:before, .MuiInput-underline:after": {
+        borderBottom: "none",
+      },
+
+      "& .MuiInput-underline:hover:not(.Mui-disabled):before": {
+        borderBottom: "none",
+      },
+
+      "& .MuiSelect-select:focus": {
+        backgroundColor: 'transparent',
+      },
+    },
+
+    searchContainer: {
+      "& .MuiBox-root": {
+        border: 'none',
+        backgroundColor: WHITE,
+      },
+
+      "& .MuiOutlinedInput-root": {
+        backgroundColor: WHITE,
+        borderRadius: 0,
+        border: 'none',
+      }
+    },
+
   })
   );

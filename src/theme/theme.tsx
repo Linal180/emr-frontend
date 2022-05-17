@@ -266,6 +266,11 @@ export const theme = createTheme({
           color: WHITE,
         },
 
+        "&.success": {
+          backgroundColor: GREEN,
+          color: WHITE,
+        },
+
         "&.muted": {
           backgroundColor: GREY_TWO,
           color: WHITE,
@@ -283,6 +288,12 @@ export const theme = createTheme({
           backgroundColor: WHITE,
           borderColor: RED,
           color: RED,
+        },
+
+        "&.success": {
+          backgroundColor: WHITE,
+          borderColor: GREEN,
+          color: GREEN,
         },
 
         "&.muted": {

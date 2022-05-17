@@ -71,6 +71,7 @@ import { ExternalPayment } from "../pages/main/publicAppointments/payment/Extern
 import { PatientVitals } from "../pages/main/patientChart/patientVitals";
 import { FormBuilderResponses } from "../pages/main/formBuilder/formResponses";
 import { Dashboard1 } from "../pages/main/dashboard/SuperAdmin";
+import { Dashboard2 } from "../pages/main/dashboard/PracticeAdmin";
 // constants
 import { AuthContext } from "../context";
 import {
@@ -83,7 +84,7 @@ import {
   SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, LOCK_ROUTE,
   PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE, FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE,
   CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, TWO_FA_ROUTE, TWO_FA_AUTHENTICATION_ROUTE,
-  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_COPY_TEMPLATE_ROUTE, SUPER_ADMIN_DASHBOARD_ROUTE
+  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_COPY_TEMPLATE_ROUTE, SUPER_ADMIN_DASHBOARD_ROUTE, PRACTICE_ADMIN_DASHBOARD_ROUTE
 } from "../constants";
 
 const Routes: FC = (): JSX.Element => {
@@ -130,6 +131,7 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={CHANGE_PASSWORD_ROUTE} component={ChangePassword} />
       <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
       <PrivateRoute exact path={SUPER_ADMIN_DASHBOARD_ROUTE} component={Dashboard1} />
+      <PrivateRoute exact path={PRACTICE_ADMIN_DASHBOARD_ROUTE} component={Dashboard2} />
       <PrivateRoute exact path={`${CALENDAR_ROUTE}`} component={Calendar} />
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} permission={USER_PERMISSIONS.findAllDoctor} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} permission={USER_PERMISSIONS.createDoctor} />

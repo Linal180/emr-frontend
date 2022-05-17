@@ -443,6 +443,7 @@ export interface SearchComponentProps {
   search: Function;
   info?: boolean;
   tooltipData?: TooltipData[]
+  placeHolder? : string;
 }
 
 export interface AppMenuItemTypes {
