@@ -88,3 +88,39 @@ mutation addPatientVital($createVitalInput: CreateVitalInput!) {
     }
   }
 }
+
+mutation updatePatientVital($updateVitalInput: UpdateVitalInput!) {
+  updatePatientVital(updateVitalInput: $updateVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+
+    patientVital {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      diastolicBloodPressure
+      systolicBloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      pulseRate
+      createdAt
+      updatedAt
+    }
+  }
+}

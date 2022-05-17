@@ -1,5 +1,5 @@
 // packages block
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
@@ -14,18 +14,26 @@ import {
 } from '../../../../../generated/graphql';
 import { AddPatientVitalsProps, ParamsType, VitalFormInput } from '../../../../../interfacesTypes';
 import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
-import { getBMI, getCurrentDate, inchesToMeter, renderTh, } from '../../../../../utils'
+import {
+  celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI, getCurrentDate,
+  getDefaultHead, getDefaultHeight, getDefaultTemp, getDefaultWeight, inchesToCentimeter, inchesToMeter,
+  kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, renderTh,
+} from '../../../../../utils'
 import { patientVitalSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
 import { SlashIcon } from '../../../../../assets/svgs'
+import { ActionType } from '../../../../../reducers/patientReducer';
 
-export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps) => {
+export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatcher }: AddPatientVitalsProps) => {
 
   const classes = usePatientVitalFormStyles()
   const { id: patientId } = useParams<ParamsType>()
   const methods = useForm<VitalFormInput>({ mode: "all", resolver: yupResolver(patientVitalSchema) });
   const { handleSubmit, reset, watch, setValue } = methods;
-  const { PatientHeight, PatientWeight } = watch()
+  const { PatientHeight, PatientWeight, patientHeadCircumference, patientTemperature } = watch()
+  const {
+    prevHeightUnit, heightUnit, isHeightEdit, isWeightEdit, prevWeightUnit, weightUnit, isHeadEdit, prevHeadUnit,
+    headCircumferenceUnit, isTempEdit, feverUnit, prevFeverUnit } = patientStates || {}
 
   const [loading, setLoading] = useState<boolean>(false)
 
@@ -50,9 +58,20 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
   const onSubmit: SubmitHandler<VitalFormInput> = async (data) => {
 
     const {
-      smokingStatus, respiratoryRate, diastolicBloodPressure, systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI,
-      PainRange, pulseRate, patientHeadCircumference, patientTemperature } = data || {}
+      smokingStatus, respiratoryRate, diastolicBloodPressure, systolicBloodPressure, oxygenSaturation, PatientBMI,
+      PainRange, pulseRate, PatientHeight: height, PatientWeight: weight, patientHeadCircumference: head,
+      patientTemperature: temp
+    } = data || {}
     const { id: smokingStatusLabel } = smokingStatus || {}
+    const { id: heightUnitType } = heightUnit || {}
+    const { id: weightUnitType } = weightUnit || {}
+    const { id: headUnitType } = headCircumferenceUnit || {}
+    const { id: feverUnitType } = feverUnit || {}
+
+    const PatientHeight = getDefaultHeight(heightUnitType, height)
+    const PatientWeight = getDefaultWeight(weightUnitType, weight)
+    const patientHeadCircumference = getDefaultHead(headUnitType, head)
+    const patientTemperature = getDefaultTemp(feverUnitType, temp)
 
     try {
       setLoading(true)
@@ -73,20 +92,153 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
     }
   }
 
+
+
   const setPatientBMI = useCallback(() => {
 
     const patientHeight = parseFloat(PatientHeight);
     const patientWeight = parseFloat(PatientWeight);
+    const { id: heightUnitType } = heightUnit || {}
+    const { id: weightUnitType } = weightUnit || {}
+    let height = 0;
+    let weight = 0;
 
-    const height = inchesToMeter(patientHeight)
-    const bmi = getBMI(patientWeight, height)
+    switch (heightUnitType) {
+      case UnitType.Centimeter:
+        height = centimeterToMeter(patientHeight)
+        break;
+      case UnitType.Inch:
+        height = inchesToMeter(patientHeight)
+        break;
+      default:
+        height = inchesToMeter(patientHeight)
+        break;
+    }
 
+    switch (weightUnitType) {
+      case WeightType.Kg:
+        weight = patientWeight
+        break;
+      case WeightType.Pound:
+        weight = poundsToKilogram(patientWeight)
+        break;
+      case WeightType.PoundOunce:
+        weight = ounceToKilogram(patientWeight)
+        break;
+      default:
+        weight = patientWeight
+        break;
+    }
+
+    const bmi = getBMI(weight, height)
     bmi && setValue('PatientBMI', bmi?.toString())
-  }, [PatientWeight, PatientHeight, setValue])
+  }, [PatientWeight, PatientHeight, heightUnit, weightUnit, setValue])
 
   useMemo(() => {
-    PatientWeight && PatientHeight && setPatientBMI()
-  }, [PatientWeight, PatientHeight, setPatientBMI])
+    PatientWeight && PatientHeight ? setPatientBMI() : setValue('PatientBMI', '')
+  }, [PatientWeight, PatientHeight, setPatientBMI, setValue])
+
+  const heightUnitConvertHandler = useCallback(() => {
+    dispatcher({ type: ActionType.SET_EDIT_HEIGHT, isHeightEdit: false })
+    if (PatientHeight) {
+      const { id: heightUnitType } = heightUnit || {}
+      const patientHeight = parseFloat(PatientHeight);
+
+      if (prevHeightUnit === UnitType.Inch && heightUnitType === UnitType.Centimeter) {
+        const height = inchesToCentimeter(patientHeight)
+        height && setValue('PatientHeight', height?.toString())
+      }
+
+      else if (prevHeightUnit === UnitType.Centimeter && heightUnitType === UnitType.Inch) {
+        const height = centimeterToInches(patientHeight)
+        height && setValue('PatientHeight', height?.toString())
+      }
+    }
+  }, [prevHeightUnit, heightUnit, PatientHeight, setValue, dispatcher])
+
+  useEffect(() => {
+    isHeightEdit && heightUnitConvertHandler()
+  }, [isHeightEdit, heightUnitConvertHandler])
+
+  const weightUnitConvertHandler = useCallback(() => {
+    dispatcher({ type: ActionType.SET_EDIT_WEIGHT, isWeightEdit: false })
+    if (PatientWeight) {
+      const { id: weightUnitType } = weightUnit || {}
+      const patientWeight = parseFloat(PatientWeight);
+
+      if (prevWeightUnit === WeightType.Kg && weightUnitType === WeightType.Pound) {
+        const weight = kilogramToPounds(patientWeight)
+        setValue('PatientWeight', weight.toString())
+      }
+      else if (prevWeightUnit === WeightType.Kg && weightUnitType === WeightType.PoundOunce) {
+        const weight = kilogramToOunce(patientWeight)
+        setValue('PatientWeight', weight.toString())
+      }
+      else if (prevWeightUnit === WeightType.Pound && weightUnitType === WeightType.Kg) {
+        const weight = poundsToKilogram(patientWeight)
+        setValue('PatientWeight', weight.toString())
+      }
+      else if (prevWeightUnit === WeightType.Pound && weightUnitType === WeightType.PoundOunce) {
+        const weight = poundsToOunce(patientWeight)
+        setValue('PatientWeight', weight.toString())
+      }
+      else if (prevWeightUnit === WeightType.PoundOunce && weightUnitType === WeightType.Kg) {
+        const weight = ounceToKilogram(patientWeight)
+        setValue('PatientWeight', weight.toString())
+      }
+      else if (prevWeightUnit === WeightType.PoundOunce && weightUnitType === WeightType.Pound) {
+        const weight = ounceToPounds(patientWeight)
+        setValue('PatientWeight', weight.toString())
+      }
+    }
+  }, [prevWeightUnit, weightUnit, PatientWeight, setValue, dispatcher])
+
+  useEffect(() => {
+    isWeightEdit && weightUnitConvertHandler()
+  }, [isWeightEdit, weightUnitConvertHandler])
+
+  const headUnitConvertHandler = useCallback(() => {
+    dispatcher({ type: ActionType.SET_EDIT_HEAD, isHeadEdit: false })
+    if (patientHeadCircumference) {
+      const { id: headUnitType } = headCircumferenceUnit || {}
+      const patientHead = parseFloat(patientHeadCircumference);
+
+      if (prevHeadUnit === HeadCircumferenceType.Inch && headUnitType === HeadCircumferenceType.Centimeter) {
+        const head = inchesToCentimeter(patientHead)
+        head && setValue('patientHeadCircumference', head?.toString())
+      }
+
+      else if (prevHeadUnit === HeadCircumferenceType.Centimeter && headUnitType === HeadCircumferenceType.Inch) {
+        const head = centimeterToInches(patientHead)
+        head && setValue('patientHeadCircumference', head?.toString())
+      }
+    }
+  }, [patientHeadCircumference, headCircumferenceUnit, prevHeadUnit, setValue, dispatcher])
+
+  useEffect(() => {
+    isHeadEdit && headUnitConvertHandler()
+  }, [isHeadEdit, headUnitConvertHandler])
+
+  const tempUnitConvertHandler = useCallback(() => {
+    dispatcher({ type: ActionType.SET_EDIT_TEMP, isTempEdit: false })
+    if (patientTemperature) {
+      const { id: feverUnitType } = feverUnit || {}
+      const patientTemp = parseFloat(patientTemperature);
+      if (prevFeverUnit === TempUnitType.DegF && feverUnitType === TempUnitType.DegC) {
+        const temp = fahrenheitToCelsius(patientTemp)
+        temp && setValue('patientTemperature', temp?.toString())
+      }
+
+      else if (prevFeverUnit === TempUnitType.DegC && feverUnitType === TempUnitType.DegF) {
+        const temp = celsiusToFahrenheit(patientTemp)
+        temp && setValue('patientTemperature', temp?.toString())
+      }
+    }
+  }, [patientTemperature, dispatcher, feverUnit, prevFeverUnit, setValue])
+
+  useEffect(() => {
+    isTempEdit && tempUnitConvertHandler()
+  }, [isTempEdit, tempUnitConvertHandler])
 
   return (
     <FormProvider {...methods}>
@@ -106,6 +258,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   controllerName="pulseRate"
                   controllerLabel={''}
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -116,6 +270,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   controllerName="respiratoryRate"
                   controllerLabel={''}
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
 
@@ -129,6 +285,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                     controllerLabel={''}
                     placeholder={'e.g 120'}
                     margin={'none'}
+                    isHelperText
+                    notStep
                   />
                   <Box mx={1} height={'100%'}>
                     <SlashIcon />
@@ -139,6 +297,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                     controllerLabel={''}
                     placeholder={'e.g 80'}
                     margin={'none'}
+                    isHelperText
+                    notStep
                   />
                 </Box>
 
@@ -151,6 +311,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   controllerName="oxygenSaturation"
                   controllerLabel={''}
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -160,8 +322,9 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   fieldType="number"
                   controllerName="PatientHeight"
                   controllerLabel={''}
-                  // endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -170,9 +333,10 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                 <InputController
                   fieldType="number"
                   controllerName="PatientWeight"
-                  // endAdornment={<Fragment>{KG_TEXT}</Fragment>}
                   controllerLabel={''}
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -184,6 +348,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   controllerLabel={''}
                   disabled
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -194,6 +360,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   controllerName="PainRange"
                   controllerLabel={''}
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -214,8 +382,9 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   fieldType="number"
                   controllerName="patientHeadCircumference"
                   controllerLabel={''}
-                  // endAdornment={<Fragment>{IN_TEXT}</Fragment>}
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
             </TableRow>
@@ -225,8 +394,9 @@ export const AddVitals = memo(({ fetchPatientAllVitals }: AddPatientVitalsProps)
                   fieldType="number"
                   controllerName="patientTemperature"
                   controllerLabel={''}
-                  // endAdornment={<Box dangerouslySetInnerHTML={{ __html: `<sup>o</sup>F` }} ></Box>}
                   margin={'none'}
+                  isHelperText
+                  notStep
                 />
               </TableCell>
             </TableRow>

@@ -3,7 +3,7 @@ mutation Login($loginUser: LoginUserInput!) {
     access_token
     isTwoFactorEnabled
     userId
-    
+    access_2fa_token
 
     response {
       status
@@ -181,8 +181,8 @@ mutation update2FactorAuth($twoFactorInput: TwoFactorInput!){
   }
 }
 
-mutation resentOTP($seneOTPAgainInput: SeneOTPAgainInput!){
-  resentOTP(seneOTPAgainInput: $seneOTPAgainInput){
+mutation resentOTP{
+  resentOTP{
     response {
       error
       status
@@ -193,6 +193,8 @@ mutation resentOTP($seneOTPAgainInput: SeneOTPAgainInput!){
 
 mutation verifyOTP($verifyCodeInput: VerifyCodeInput!){
   verifyOTP(verifyCodeInput: $verifyCodeInput){
+    access_token
+
     response {
       error
       status

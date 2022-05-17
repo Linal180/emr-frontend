@@ -145,7 +145,7 @@ const RolesTable = ({customRole=false}:RolesTableProps) => {
                               color="primary"
                               disabled={!customRole || false}
                               className={customRole ? classes.rolesIconsBackground : classes.rolesIconsBackgroundDisabled}
-                              onClick={() => onDelete(id || '')} >
+                              onClick={() => onDelete(id || '')}>
                               <TrashNewIcon />
                             </IconButton>
                           </Box>

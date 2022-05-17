@@ -162,5 +162,14 @@ export const useHeaderStyles = makeStyles((theme) => ({
 
   iconPadding: {
     paddingRight: 10
+  },
+
+  cursor: {
+    cursor: 'pointer',
+
+    "&:hover": {
+      textDecoration: 'underline',
+      color: BLUE,
+    }
   }
 }));

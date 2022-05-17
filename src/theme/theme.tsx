@@ -3,8 +3,14 @@ import { createTheme } from "@material-ui/core/styles";
 import createBreakpoints from '@material-ui/core/styles/createBreakpoints'
 // constants block
 import {
+<<<<<<< HEAD
   GREEN, BLUE, WHITE, BLACK, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, GRAY_SIX, ORANGE, GREY_ELEVEN, BLACK_THREE, GRAY_SEVEN, 
   ORANGE_ONE, BLACK_SIX, RED_THREE, RED, INTER, GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY, BLUE_TWO,
+=======
+  GREEN, BLUE, WHITE, BLACK, GRAY_THREE, BLUE_ONE, BLACK_ONE, WHITE_THREE, BLACK_TWO, GRAY_SIX,
+  ORANGE, GRAY_FIVE, BLACK_THREE, GRAY_SEVEN, ORANGE_ONE, BLACK_SIX, RED_THREE, RED, INTER,
+  GREY_ONE, GREY_TWO, GREY_THREE, GREY_FOUR, GREY, BLUE_TWO,
+>>>>>>> 67df2caa87e1caee178d63d1ab4e223346bcaf0b
 } from ".";
 
 const breakpoints = createBreakpoints({})
@@ -256,8 +262,8 @@ export const theme = createTheme({
     MuiButton: {
       contained: {
         borderRadius: 6,
-        maxHeight: 40,
-        height: 40,
+        // maxHeight: 40,
+        // height: 40,
         boxShadow: 'none',
         color: BLACK,
 

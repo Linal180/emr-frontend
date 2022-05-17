@@ -19,7 +19,7 @@ dotenv.config()
 
 const AddImageModal: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, preSignedUrl,
-  title, reload
+  title, reload, providerName
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
   const { handleSubmit, reset } = useForm<ICreateMediaInput>();
@@ -103,6 +103,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
               isEdit={isEdit}
               itemId={itemId}
               handleClose={handleClose}
+              providerName={providerName}
               attachmentId={attachmentId}
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}

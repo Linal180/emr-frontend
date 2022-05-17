@@ -1,31 +1,33 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
-import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
-import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
+import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction, RefObject } from "react";
 import { RouteProps } from "react-router-dom";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
 import {
-  Control, ValidationRule, FieldValues, Ref, ControllerRenderProps, UseFormSetValue,
+  Control, ValidationRule, FieldValues, ControllerRenderProps, UseFormSetValue,
 } from "react-hook-form";
 // graphql block
+import { CARD_LAYOUT_MODAL } from "../constants";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
-import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
+import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
+import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
+  Maybe, PatientVitals, UpdateAttachmentInput, Doctor,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload,
 } from "../generated/graphql";
-import { CARD_LAYOUT_MODAL } from "../constants";
 
 export interface PrivateRouteProps extends RouteProps {
   component: ComponentType<any>;
@@ -166,6 +168,7 @@ export interface DialogTypes {
 
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
+  isSign?: boolean;
   success?: boolean;
   actionText?: string;
   isLoading?: boolean;
@@ -338,6 +341,7 @@ export interface SelectorProps {
   value?: SelectorOption
   options: SelectorOption[]
   margin?: MuiPropsTypes.Margin
+  onBlur?: Function
 }
 
 export interface PatientSelectorProps {
@@ -363,6 +367,7 @@ export interface FacilitySelectorProps {
   addEmpty?: boolean
   isRequired?: boolean
   isMultiple?: boolean
+  patientId?: string
 }
 
 export interface DoctorSelectorProps extends FacilitySelectorProps {
@@ -430,7 +435,11 @@ export interface CustomInputControlProps extends IControlLabel {
   info?: string;
   clearable?: boolean
   handleClearField?: (fieldName: any) => void
-  endAdornment?: ReactNode
+  endAdornment?: ReactNode;
+  onBlur?: Function;
+  notStep?: boolean;
+  isHelperText?: boolean;
+  autoFocus?: boolean
 }
 
 export interface TooltipData {
@@ -488,6 +497,9 @@ export type ParamsType = {
   id: string;
   facilityId?: string;
   templateId?: string;
+  orderNum?: string;
+  patientId?: string;
+  tabValue?: string
 }
 
 export type ExtendedStaffInputProps = Omit<
@@ -794,7 +806,7 @@ export interface PhoneInputProps {
 }
 
 export interface DropzoneImageType {
-  ref?: Ref;
+  ref?: RefObject<unknown>;
   itemId: string;
   title?: string;
   isEdit?: boolean;
@@ -824,9 +836,63 @@ export interface ICreateMediaInput {
   subTitle?: string;
   description?: string;
 }
+export interface SpecimenTypeOption {
+  id?: string
+  specimenType: SelectorOption,
+  collectionDate: string
+  collectionTime: string,
+  specimenNotes: string
+}
+
+export interface TestOption {
+   testId?: string
+   test: SelectorOption,
+   testDate: string
+   testTime: string
+   testNotes: string
+   newTest?: boolean
+   specimenTypeField?: SpecimenTypeOption[]
+}
+
+export interface LabOrdersCreateFormInput {
+  appointment?: SelectorOption,
+  labTestStatus?: SelectorOption,
+  diagnosesIds: multiOptionType[]
+  testField: TestOption[]
+};
+
+export interface LabOrdersSpecimenTypeInput {
+  index:number
+};
+
+export interface LabOrdersResultOption {
+  observationId?: string
+  resultValue?: string
+  resultUnits?: string
+  normalRange?: string
+  normalRangeUnits?: string
+  abnormalFlag?: SelectorOption
+}
+
+export interface LoinsCodeFields {
+  testId: string
+  loinccode: string
+  description: string
+  resultsField: LabOrdersResultOption[]
+}
+
+export interface LabOrderResultsFormInput {
+  loinsCodeFields: LoinsCodeFields[]
+};
+
+export interface LabOrdersResultSubFormProps {
+  index: number
+  setResultsToRemove: Function
+}
 
 export interface MediaModalTypes extends DialogTypes {
   buttonText?: string;
+  providerName?: string;
   itemId: string;
   title?: string;
   isProfile?: boolean;
@@ -842,11 +908,12 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
-  buttonText?: string;
   title?: string;
   button?: boolean;
   imageSide: string;
+  buttonText?: string;
   hasCollage?: boolean;
+  providerName?: string;
   hasHighlights?: boolean;
   notDescription?: boolean;
   moduleType: AttachmentType;
@@ -962,11 +1029,6 @@ export interface CountrySelectorInterface {
   cityName: string;
 }
 
-export interface DocumentTableProps {
-  dispatcher: Dispatch<Action>;
-  attachments: AttachmentsPayload["attachments"];
-}
-
 export interface PortalTableProps {
   inviteAccepted: boolean;
 }
@@ -1014,11 +1076,11 @@ export interface FieldEditModalProps {
 }
 
 export interface DropContainerPropsTypes {
-  formValues: FormValuesTypes[];
+  formState: FormBuilderState;
   changeValues: (id: string, item: FieldsInputs) => void;
   delFieldHandler: (id: number, index: number) => void;
   delColHandler: (index: number) => void;
-  setFormValues: Dispatch<SetStateAction<SectionsInputs[]>>;
+  dispatch: Dispatch<FormBuilderAction>
 }
 
 export interface FormBuilderFormInitial {
@@ -1159,7 +1221,7 @@ export interface CreateTemplateTypes extends DialogTypes {
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
-  setFormName: Dispatch<SetStateAction<string>>
+  dispatch: Dispatch<FormBuilderAction>
   formName: string
 }
 
@@ -1265,7 +1327,8 @@ export interface PatientProfileHeroProps {
 
 export interface VitalListingTableProps {
   patientVitals: PatientVitalsPayload['patientVitals'];
-  patientStates: PatientState
+  patientStates: PatientState;
+  setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
 }
 
 export interface VitalFormInput {
@@ -1285,11 +1348,13 @@ export interface VitalFormInput {
 
 export interface AddPatientVitalsProps {
   fetchPatientAllVitals: Function;
-  patientStates: PatientState
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface PatientVitalsListingProps {
-  patientStates: PatientState
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
 }
 
 export interface VitalsLabelsProps {
@@ -1310,3 +1375,14 @@ export interface SelectStringOptions {
 export interface AutoLogoutInputTypes {
   autoLogoutTime: SelectStringOptions
 }
+
+export interface FormSidebarProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
+
+export interface PredefinedComponentsProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
+export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>

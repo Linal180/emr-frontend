@@ -151,7 +151,7 @@ const VitalsChartingTable: FC<CalendarChart> = ({ isCalendar }): JSX.Element => 
 
       <Box>
         <Box className="table-overflow">
-          <VitalsListing patientStates={patientStates} />
+          <VitalsListing patientStates={patientStates} dispatcher={dispatch} />
         </Box>
       </Box>
 

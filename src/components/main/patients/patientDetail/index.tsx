@@ -1,5 +1,5 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer } from 'react';
+import { MouseEvent, ChangeEvent, Reducer, useReducer, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { Link } from "react-router-dom";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
@@ -31,12 +31,12 @@ import {
 
 const PatientDetailsComponent = (): JSX.Element => {
   const widgetId = "widget-menu";
-  const { id } = useParams<ParamsType>();
+  const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const classes = useProfileDetailsStyles();
   const [{ anchorEl, openDelete, tabValue, patientData }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
-  const [{ attachmentsData }, mediaDispatcher] =
+  const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
   const isMenuOpen = Boolean(anchorEl);
   const methods = useForm<any>({ mode: "all", });
@@ -54,6 +54,12 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const handleDeleteWidget = () => { };
   const onSubmit: SubmitHandler<any> = async (inputs) => { }
+
+  useEffect(()=>{
+    if(routeParamValue){
+      dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: routeParamValue })
+    }
+  },[routeParamValue])
 
   return (
     <Box>
@@ -155,7 +161,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
 
           <TabPanel value="8">
-            <DocumentsTable dispatcher={mediaDispatcher} attachments={attachmentsData} />
+            <DocumentsTable />
           </TabPanel>
 
           <TabPanel value="9">

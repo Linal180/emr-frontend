@@ -106,6 +106,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="name"
                 controllerLabel={NAME}
+                key={'name'}
               />
             </Grid>
 
@@ -114,6 +115,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="label"
                 controllerLabel={LABEL}
+                key={'label'}
               />
             </Grid>
 
@@ -122,6 +124,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="css"
                 controllerLabel={CSS_CLASSES}
+                key={'css'}
               />
             </Grid>
 
@@ -130,6 +133,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="placeholder"
                 controllerLabel={PLACEHOLDER}
+                key={'placeholder'}
               />
             </Grid>
 
@@ -138,6 +142,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 controllerLabel={SELECT_COLUMN_TEXT}
                 controllerName="column"
                 options={COLUMN_LENGTH}
+                key={'column'}
               />
             </Grid>
 
@@ -158,12 +163,14 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                           <InputController
                             fieldType="text"
                             controllerName={`options.${index}.name`}
+                            key={`options.${index}.name`}
                           />
                         </td>
                         <td>
                           <InputController
                             fieldType="text"
                             controllerName={`options.${index}.value`}
+                            key={`options.${index}.value`}
                           />
                         </td>
                         {fields?.length > 1 &&
