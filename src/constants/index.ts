@@ -9,6 +9,9 @@ import {
 import {
   SelectorOption, StepLabelType, ColumnTypes, ItemsTypes, SelectOptions, FormBuilderFormInitial,
   FormInitialType,
+  TestOption,
+  SpecimenTypeOption,
+  LabOrdersResultOption,
 } from "../interfacesTypes";
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
@@ -19,7 +22,7 @@ import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
   Race, RelationshipType, ServiceCode, Sexualorientation, Speciality, Communicationtype, Gender,
   FormType, ElementType, FieldOptionsInputType, Appointmentstatus, AllergySeverity, SmokingStatus,
-  UnitType, WeightType, HeadCircumferenceType, TempUnitType,
+  UnitType, WeightType, HeadCircumferenceType, TempUnitType, LabTestStatus, AbnormalFlag,
 } from "../generated/graphql";
 
 // regex
@@ -116,6 +119,7 @@ export const FORM_UPDATED = "Form updated successfully!";
 export const PUBLIC_FORM_LINK = "Public form preview Link";
 export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
 export const EMPTY_OPTION = { id: "", name: "--" };
+export const EMPTY_MULTISELECT_OPTION = { value: "", label: "" };
 export const NO_RECORDS_OPTION = { id: "", name: "No Record Found" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
@@ -251,9 +255,13 @@ export const PRACTICE_MANAGEMENT_TEXT = "Practice Management";
 export const CANT_UPDATE_SCHEDULE = "Schedule cant be updated";
 export const ADD_ANOTHER_PATIENT_PAYMENT = "Add Another Patient Payment";
 export const ADD_ANOTHER_TEST = "Add Another Test";
+export const REMOVE_TEST = "Remove Test";
 export const ADD_ANOTHER_RESULT = "Add Another Result";
+export const REMOVE_RESULT = "Remove Result";
 export const ADD_RESULT_FILE = "Add Result File";
 export const ADD_ANOTHER_SPECIMEN = "Add Another Specimen";
+export const ADD_SPECIMEN = "Add a Specimen";
+export const REMOVE_SPECIMEN = "Remove Specimen";
 export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
 export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
@@ -555,6 +563,7 @@ export const ADULTHOOD = "Adulthood";
 export const TEST_TAKEN = "Test Taken";
 export const DROPDOWN_PAGE_LIMIT = 10;
 export const APPOINTMENT = "Appointment";
+export const ORDER_NUM = "Order #";
 export const BILLING_TYPE = "Billing Type";
 export const PRESCRIBED_BY = "Prescribed By";
 export const STARTING_TIME = "Starting time";
@@ -578,6 +587,7 @@ export const RESULT = "Result";
 export const RESULTS = "Results";
 export const FILE = "File";
 export const TOKEN = "emr_token";
+export const FA_TOKEN = "2fa_token";
 export const BACK_TO = "Back to";
 export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
@@ -1064,6 +1074,8 @@ export const CANCEL_APPOINTMENT = "/cancel-appointment";
 export const PUBLIC_FORM_BUILDER_ROUTE = "/public/form";
 export const FORM_BUILDER_RESPONSES = "/form-responses";
 export const CREATE_LAB_ORDERS_ROUTE = "/lab-orders/new";
+export const EDIT_LAB_ORDERS_ROUTE = "/lab-orders/edit";
+export const ADD_LAB_ORDERS_RESULTS_ROUTE = "/lab-orders/result/add";
 export const EMERGENCY_ACCESS_ROUTE = "/emergency-access";
 export const PRACTICE_DETAILS_ROUTE = "/practice-details";
 export const VIEW_APPOINTMENTS_ROUTE = "/view-appointments";
@@ -1103,6 +1115,9 @@ export const TID_VALIDATION_MESSAGE = "Tax id valid format is 9xxxxxxxx";
 export const NPI_VALIDATION_MESSAGE = "NPI should be a 10-digit combination";
 export const ALLERGY_DATE_VALIDATION_MESSAGE = "Allergy start date is invalid";
 export const REACTIONS_VALIDATION_MESSAGE = "At least one reaction is required";
+export const DIAGNOSES_VALIDATION_MESSAGE = "At least one diagnose is required";
+export const TEST_FIELD_VALIDATION_MESSAGE = "Test is required";
+export const SPECIMEN_FIELD_VALIDATION_MESSAGE = "Specimen Type is required";
 export const EIN_VALIDATION_MESSAGE = "EIN should be NN-NNNNNNN, dash is optional";
 export const PLEASE_ADD_DOCUMENT = "Please upload or drag and drop the documents here";
 export const PLEASE_CLICK_TO_UPDATE_DOCUMENT = "Please click here to update the documents";
@@ -1218,6 +1233,7 @@ export const CANT_DELETE_DOCTOR_SCHEDULE = "Doctor schedule can't be deleted.";
 export const SET_PASSWORD_SUCCESS = "Your password has been set successfully.";
 export const SCHEDULE_UPDATED_SUCCESSFULLY = "Schedule is updated successfully";
 export const TRANSACTION_PAID_SUCCESSFULLY = "Transaction is paid successfully";
+export const ORDER_DELETION_MESSAGE = "Order is deleted successfully";
 export const PRECONDITION_FAILED_EXCEPTION_MESSAGE =
   "Resource can't be deleted.";
 export const WRONG_EMAIL_OR_PASSWORD =
@@ -1468,6 +1484,14 @@ export const MAPPED_PRACTICE_TYPES: SelectorOption[] = [
   { id: PracticeType.Lab, name: formatValue(PracticeType.Lab) },
   { id: PracticeType.Clinic, name: formatValue(PracticeType.Clinic) },
   { id: PracticeType.Hospital, name: formatValue(PracticeType.Hospital) },
+];
+
+export const LAB_TEST_STATUSES: SelectorOption[] = [
+  { id: LabTestStatus.Discontinued, name: formatValue(LabTestStatus.Discontinued) },
+  { id: LabTestStatus.InProgress, name: formatValue(LabTestStatus.InProgress) },
+  { id: LabTestStatus.OrderEntered, name: formatValue(LabTestStatus.OrderEntered) },
+  { id: LabTestStatus.ResultReceived, name: formatValue(LabTestStatus.ResultReceived) },
+  { id: LabTestStatus.ResultReviewedWithPatient, name: formatValue(LabTestStatus.ResultReviewedWithPatient) },
 ];
 
 export const MAPPED_APPOINTMENT_STATUS: SelectorOption[] = [
@@ -2899,6 +2923,28 @@ export const MAPPED_FORM_TYPES: SelectorOption[] = [
   { id: FormType.Staff, name: formatValue(FormType.Staff) },
 ];
 
+export const ABNORMAL_FLAG_OPTIONS: SelectorOption[] = [
+  { id: AbnormalFlag.None, name: formatValue(AbnormalFlag.None).trim() },
+  { id: AbnormalFlag.BelowLowNormal, name: formatValue(AbnormalFlag.BelowLowNormal) },
+  { id: AbnormalFlag.AboveHighNormal, name: formatValue(AbnormalFlag.AboveHighNormal) },
+  { id: AbnormalFlag.BelowLowerPanicLimit, name: formatValue(AbnormalFlag.BelowLowerPanicLimit) },
+  { id: AbnormalFlag.BelowUpperPanicLimit, name: formatValue(AbnormalFlag.BelowUpperPanicLimit) },
+  { id: AbnormalFlag.BelowAbsoluteLowOffScale, name: formatValue(AbnormalFlag.BelowAbsoluteLowOffScale) },
+  { id: AbnormalFlag.AboveAbsoluteHighOffScale, name: formatValue(AbnormalFlag.AboveAbsoluteHighOffScale) },
+  { id: AbnormalFlag.Normal, name: formatValue(AbnormalFlag.Normal) },
+  { id: AbnormalFlag.AbnormalAppliedToNonNumericResults, name: formatValue(AbnormalFlag.AbnormalAppliedToNonNumericResults) },
+  { id: AbnormalFlag.VeryAbnormalAppliedToNonNumeric, name: formatValue(AbnormalFlag.VeryAbnormalAppliedToNonNumeric) },
+  { id: AbnormalFlag.SignificantChangeUp, name: formatValue(AbnormalFlag.SignificantChangeUp) },
+  { id: AbnormalFlag.SignificantChangeDown, name: formatValue(AbnormalFlag.SignificantChangeDown) },
+  { id: AbnormalFlag.BetterUseWhenDirectionNotRelevant, name: formatValue(AbnormalFlag.BetterUseWhenDirectionNotRelevant) },
+  { id: AbnormalFlag.WorstUseWhenDirectionNotRelevant, name: formatValue(AbnormalFlag.WorstUseWhenDirectionNotRelevant) },
+  { id: AbnormalFlag.Susceptible, name: formatValue(AbnormalFlag.Susceptible) },
+  { id: AbnormalFlag.Resistant, name: formatValue(AbnormalFlag.Resistant) },
+  { id: AbnormalFlag.Intermediate, name: formatValue(AbnormalFlag.Intermediate) },
+  { id: AbnormalFlag.Moderately, name: formatValue(AbnormalFlag.Moderately) },
+  { id: AbnormalFlag.VerySusceptible, name: formatValue(AbnormalFlag.VerySusceptible) }
+];
+
 export const FORM_BUILDER_INITIAL_VALUES: FormBuilderFormInitial = {
   name: "",
   type: {
@@ -2935,6 +2981,29 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
   textArea: false,
   options: [],
 };
+
+export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
+    specimenType: { id: '',name: '' },
+    collectionDate: '',
+    specimenNotes: '',
+    collectionTime: ''
+};
+
+export const TEST_FIELD_INITIAL_VALUES: TestOption = {
+  test: { id: '',name: '' },
+  testDate: '',
+  testNotes: '',
+  testTime: '',
+};
+
+export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
+  normalRange:'',
+  normalRangeUnits:'',
+  resultUnits:'',
+  resultValue:'',
+  abnormalFlag: { id: '',name: '' },
+};
+
 
 export const CHECK_IN_STEPS = [
   CHECK_IN,
