@@ -2,18 +2,20 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Box, Card, colors, Grid, Typography, Button, CircularProgress, } from "@material-ui/core";
+import { Box, Card, colors, Grid, Typography, Button, CircularProgress, IconButton, } from "@material-ui/core";
 //components block
 import LabOrdersResultSubForm from './LabOrdersResultSubForm';
 import Alert from '../../../common/Alert';
 // interfaces, graphql, constants block
 import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
+  ADD_RESULT_FILE,
   DESCRIPTION, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, RESULTS, SAVE_TEXT, USER_NOT_FOUND_EXCEPTION_MESSAGE,
 } from '../../../../constants';
 import { GREY_THREE } from '../../../../theme';
 import { AbnormalFlag, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation } from '../../../../generated/graphql';
 import history from '../../../../history';
+import { DocumentUploadIcon } from '../../../../assets/svgs';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
@@ -32,7 +34,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     },
 
     onCompleted() {
-      history.push(`/patients/${patientId}/details`)
+      history.push(`/patients/${patientId}/details/10`)
     }
   });
 
@@ -195,14 +197,14 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
                 )
               })
               }
-              {/* <Grid item md={4}>
+              <Grid item md={4}>
                 <Box mb={3} display='flex' alignItems='center'>
                   <IconButton>
                     <DocumentUploadIcon />
                   </IconButton>
                   <Typography variant='h6'>{ADD_RESULT_FILE}</Typography>
                 </Box>
-              </Grid> */}
+              </Grid>
             </Grid>
 
             <Box mb={3}>
