@@ -22,7 +22,7 @@ import {
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
   Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload, Maybe, PatientVitals, UpdateAttachmentInput
 } from "../generated/graphql";
