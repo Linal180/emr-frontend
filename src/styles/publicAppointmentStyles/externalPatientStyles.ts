@@ -297,6 +297,10 @@ export const AntSwitch = withStyles(() =>
           transform: "translateX(0)",
         },
       },
+
+      "&:hover": {
+        backgroundColor: 'transparent'
+      }
     },
 
     track: {
