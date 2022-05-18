@@ -19,7 +19,7 @@ import {
 // styles
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
 import { BLUE, BLUE_SEVEN, GREEN_ONE, GREY_SEVEN, RED_ONE, WHITE } from "../../../theme";
-import PieChart1Component from "../../common/charts/pieChart1";
+import PieChart from "../../common/charts/PieChart";
 
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
@@ -100,7 +100,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               </IconButton>
             </Box>
 
-            <PieChart1Component />
+            <PieChart />
 
             <Box px={4} mt={2} mb={3}>
               <Grid container spacing={3}>

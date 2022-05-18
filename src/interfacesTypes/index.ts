@@ -15,6 +15,7 @@ import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
+import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
 import {
@@ -1388,4 +1389,13 @@ export interface PredefinedComponentsProps {
   formState: FormBuilderState;
   dispatch: Dispatch<FormBuilderAction>
 }
+
 export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
+
+export interface PracticesTableProps {
+  dispatch: Dispatch<PracticeAction>
+} 
+
+export interface PieChartProps {
+  practices?: PracticesPayload['practices']
+}
