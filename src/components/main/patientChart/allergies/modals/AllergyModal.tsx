@@ -22,16 +22,16 @@ import { AddModalProps, CreatePatientAllergyProps, ParamsType } from '../../../.
 import { Action, ActionType, chartReducer, initialState, State } from '../../../../../reducers/chartReducer';
 import {
   AllergyOnset, AllergySeverity, ReactionsPayload, useAddPatientAllergyMutation, useGetPatientAllergyLazyQuery,
-  useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation, Allergies,
+  useRemovePatientAllergyMutation, useUpdatePatientAllergyMutation, Allergies, AllergyType,
 } from '../../../../../generated/graphql';
 import {
   ADD, DELETE, EMPTY_OPTION, MAPPED_ALLERGY_SEVERITY, NOTE, ONSET_DATE, PATIENT_ALLERGY_ADDED,
   PATIENT_ALLERGY_DELETED, PATIENT_ALLERGY_UPDATED, REACTION, SEVERITY, UPDATE
 } from '../../../../../constants';
 
-const AllergyModal: FC<AddModalProps> = (
-  { item, dispatcher, isEdit, recordId, fetch }
-): JSX.Element => {
+const AllergyModal: FC<AddModalProps> = ({
+  item, dispatcher, isEdit, recordId, fetch, newAllergy, allergyType
+}): JSX.Element => {
   const { id, name } = item as Allergies || {}
   const { id: patientId } = useParams<ParamsType>()
   const onsets = Object.keys(AllergyOnset)
@@ -175,9 +175,10 @@ const AllergyModal: FC<AddModalProps> = (
   }) => {
     const selectedReactions = pluck(reactionIds || [], 'value')
     const { id: selectedSeverity } = severityId || {}
-
+    const allergyInput = !!item ? { allergyId: id }
+      : { allergyName: newAllergy, allergyType: allergyType?.toUpperCase() as AllergyType }
     const commonInputs = {
-      patientId, allergyId: id, reactionsIds: selectedReactions
+      patientId, reactionsIds: selectedReactions, ...allergyInput
     }
 
     const inputs = {

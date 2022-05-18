@@ -560,6 +560,7 @@ export const ROLE_NAME = "Role name";
 export const HISTORICAL = "Historical";
 export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
+export const REACTION_PAGE_LIMIT = 50;
 export const TEST_TAKEN = "Test Taken";
 export const DROPDOWN_PAGE_LIMIT = 10;
 export const APPOINTMENT = "Appointment";
