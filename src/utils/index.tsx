@@ -394,7 +394,7 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
     for (let appointment of appointments) {
       if (appointment) {
         const { id, appointmentType, scheduleStartDateTime } = appointment;
-        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime,'MM-DD-YYYY hh:mm:ss')}` })
+        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` })
       }
     }
   }
@@ -1092,11 +1092,23 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
   }
 }
 export const generateString = () => {
-  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
-  const charactersLength = characters.length-2;
-  for ( let i = 0; i < 2; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  const charactersLength = characters.length - 2;
+  for (let i = 0; i < 2; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  return result+Math.floor(100000 + Math.random() * 9000);
+  return result + Math.floor(100000 + Math.random() * 9000);
+}
+
+export const roundOffUpto2Decimal = (str: number | undefined | string | null): string => {
+  if (str) {
+    if (typeof str === 'string') {
+      const num = parseFloat(str)
+      const isNaN = Number.isNaN(num)
+      return isNaN ? '' : `${Math.round((num + Number.EPSILON) * 100) / 100}`;
+    }
+    return `${Math.round((str + Number.EPSILON) * 100) / 100}`;
+  }
+  return ""
 }
