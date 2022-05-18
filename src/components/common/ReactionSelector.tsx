@@ -86,6 +86,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
               id="selectedId"
               options={options}
               value={values}
+              className={invalid ? 'selectorClassTwoError' : 'selectorClassTwo'}
               onChange={(newValue) => {
                 field.onChange(newValue)                
                 updateValues(newValue as multiOptionType[])
@@ -93,7 +94,6 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
               onInputChange={(query: string) => {
                 (query.length > 2 || query.length === 0) && fetchReactions(query)
               }}
-              className={message ? 'selectorClassTwoError' : 'selectorClassTwo'}
             />
 
             <FormHelperText>{invalid && message}</FormHelperText>

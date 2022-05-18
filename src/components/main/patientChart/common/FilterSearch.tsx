@@ -7,7 +7,7 @@ import AllergyModal from '../allergies/modals/AllergyModal';
 // constants block
 import { FilterSearchProps } from '../../../../interfacesTypes';
 import { Allergies, IcdCodes } from '../../../../generated/graphql';
-import { GRAY_FIVE, GRAY_SIX, GREY_SEVEN } from '../../../../theme';
+import { GREY_ELEVEN, GRAY_SIX, GREY_SEVEN } from '../../../../theme';
 import { ClearIcon, NoDataIcon, SmallSearchIcon } from '../../../../assets/svgs';
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
 import { chartReducer, Action, initialState, State, ActionType } from "../../../../reducers/chartReducer";
@@ -119,7 +119,7 @@ const FilterSearch: FC<FilterSearchProps> = (
 
       {!!tabs && renderTabs()}
 
-      <Box px={1.5} mt={!!!tabs && 2} display='flex' alignItems='center' bgcolor={GRAY_FIVE} borderRadius={6}>
+      <Box px={1.5} mt={!!!tabs && 2} display='flex' alignItems='center' bgcolor={GREY_ELEVEN} borderRadius={6}>
         <SmallSearchIcon />
 
         <Box p={0.2} />

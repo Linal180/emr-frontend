@@ -5,7 +5,7 @@ import { Box, Button, Card, colors, Typography } from '@material-ui/core';
 // components block
 import Alert from "../../../common/Alert";
 // utils, styles  block, constants
-import { GRAY_FIVE, GREY_THREE, GREY_TWO, WHITE_TWO } from '../../../../theme';
+import { GREY_ELEVEN, GREY_THREE, GREY_TWO, WHITE_TWO } from '../../../../theme';
 import { ParamsType } from "../../../../interfacesTypes";
 import { useCancelAppointmentMutation } from "../../../../generated/graphql";
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles"
@@ -61,7 +61,7 @@ const CancelAppointmentComponent: FC = (): JSX.Element => {
 
         </Box>
 
-        <Box py={3} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
+        <Box py={3} p={3} bgcolor={GREY_ELEVEN} display="flex" justifyContent="flex-end" flexWrap="wrap">
           <Box mr={2} color={GREY_TWO}>
             <Button type="submit" variant="text" color="inherit" className="muted">{DISMISS}</Button>
           </Box>
