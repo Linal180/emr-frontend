@@ -38,7 +38,7 @@ import {
   FACILITY, FORBIDDEN_EXCEPTION, TRY_AGAIN, FORM_BUILDER_ROUTE, FORM_UPDATED, ADD_COLUMNS_TEXT, CLEAR_TEXT,
   FORM_NAME, FORM_TYPE, FORM_BUILDER, PUBLISH,
   FORMS_EDIT_BREAD, DROP_FIELD, SAVE_DRAFT, FORM_TEXT, getFormInitialValues, CREATE_FORM_BUILDER,
-  NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD, PRE_DEFINED,
+  NOT_FOUND_EXCEPTION, CREATE_TEMPLATE, CREATE_FORM_TEMPLATE, FORMS_BREAD, FORMS_ADD_BREAD, PRE_DEFINED, ITEMS_ID,
 } from '../../../../constants';
 import { formBuilderReducer, initialState, State, Action, ActionType } from '../../../../reducers/formBuilderReducer';
 
@@ -173,7 +173,7 @@ const AddForm = () => {
 
         return item;
       });
-    } else if (source.droppableId === 'ITEMS') {
+    } else if (source.droppableId === ITEMS_ID) {
       formValues?.map((item) => {
         if (destination.droppableId === item.id) {
           const itemField = ITEMS?.find(
@@ -210,9 +210,10 @@ const AddForm = () => {
       })
       const { layout } = preDefined || {}
       const { sections } = layout || {}
-      const section = sections?.map(({ fields, name }) => ({ fields, name, id: uuid(), col: 12 }))
+      const section = sections?.map(({ fields, name }) => ({ fields: fields?.map((field) => ({ ...field, fieldId: uuid() })), name, id: uuid(), col: 12 }))
       const sect = section && section?.length > 0 && section[0]
-      sect && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: [...formValues, { ...sect as SectionsInputs }] })
+      const isEmpty = formValues[0]?.fields?.length === 0
+      sect && dispatch({ type: ActionType.SET_FORM_VALUES, formValues: isEmpty ? [{ ...sect as SectionsInputs }] : [...formValues, { ...sect as SectionsInputs }] })
     }
     else if (destination.droppableId !== source.droppableId) {
       return
@@ -419,7 +420,7 @@ const AddForm = () => {
               />
             </Box>
 
-            <Box display='flex' justifyContent='flex-start'>
+            <Box display='flex' justifyContent='flex-start' alignItems="baseline">
               <Button onClick={clearHandler} variant="outlined" color="default">
                 {CLEAR_TEXT}
               </Button>
@@ -427,13 +428,13 @@ const AddForm = () => {
               <Box mx={1} />
 
               <Button type='submit' onClick={() => dispatch({ type: ActionType.SET_ACTIVE, isActive: false })} variant='contained' className='blue-button-new' color='inherit' disabled={loading || updateLoading}>
-                {loading || updateLoading ? <CircularProgress size={20} color="inherit" /> : SAVE_DRAFT}
+                {loading ? <CircularProgress size={20} color="inherit" /> : SAVE_DRAFT}
               </Button>
 
               <Box mx={1} />
 
-              <Button type='button' onClick={templateCreateClick} variant={'contained'} color="primary">
-                {CREATE_TEMPLATE}
+              <Button type='button' onClick={templateCreateClick} variant={'contained'} color="secondary">
+                {createTemplateLoading ? <CircularProgress size={20} color="inherit" /> : CREATE_TEMPLATE}
               </Button>
 
               <Box mx={1} />

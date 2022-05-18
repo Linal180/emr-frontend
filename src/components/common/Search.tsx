@@ -7,7 +7,7 @@ import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
 import { SearchTooltip } from "../../styles/searchTooltip";
 
-const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.Element => {
+const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHolder }): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
   const [open, setOpen] = useState(false);
@@ -31,7 +31,7 @@ const Search: FC<SearchComponentProps> = ({ search, info, tooltipData }): JSX.El
         fullWidth
         variant="outlined"
         name="searchQuery"
-        placeholder="Search here..."
+        placeholder= {placeHolder ? placeHolder :  "Search here..."}
         className={classes.searchInput}
         value={query}
         onChange={({ target: { value } }) => {

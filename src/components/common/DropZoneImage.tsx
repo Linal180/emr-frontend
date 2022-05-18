@@ -33,9 +33,11 @@ const DropzoneImage: FC<any> = forwardRef(({
     case AttachmentType.Patient:
       moduleRoute = "patients";
       break;
+
     case AttachmentType.Doctor:
       moduleRoute = "doctor";
       break;
+
     case AttachmentType.Staff:
       moduleRoute = "staff";
       break;

@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { GRAY_FIVE, WHITE } from "../theme";
+import { GREY_ELEVEN, WHITE } from "../theme";
 
 export const useDocumentModalStyles = makeStyles((theme) => ({
   modalContent: {
@@ -14,6 +14,6 @@ export const useDocumentModalStyles = makeStyles((theme) => ({
   },
 
   modalActions: {
-    backgroundColor: `${GRAY_FIVE}`,
+    backgroundColor: `${GREY_ELEVEN}`,
   },
 }));
