@@ -1201,6 +1201,8 @@ export interface CardLayoutProps {
 }
 
 export interface AddModalProps {
+  newAllergy?: string;
+  allergyType?: string; 
   isEdit?: boolean;
   recordId?: string;
   item?: Allergies | IcdCodes;

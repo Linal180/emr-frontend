@@ -20,14 +20,13 @@ const FilterSearch: FC<FilterSearchProps> = (
 ): JSX.Element => {
   const classes = usePatientChartingStyles()
   const [tab, setTab] = useState<string>(!!tabs ? tabs[0] : '');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [{ isFormOpen, selectedItem }, dispatch] =
+  const [{ isFormOpen, selectedItem, searchQuery, newRecord }, dispatch] =
     useReducer<Reducer<State, Action>>(chartReducer, initialState)
   const isMenuOpen = Boolean(isFormOpen);
   const cardId = "widget-menu";
 
   const closeSearchMenu = () => {
-    setSearchQuery('')
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' })
     dispatcher({ type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: null })
   }
 
@@ -40,18 +39,25 @@ const FilterSearch: FC<FilterSearchProps> = (
   const handleMenuClose = () => dispatcher({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: null });
 
   const handleSearch = useCallback(async (query: string, tabName?: string) => {
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: query })
+
     if (query.length > 2 || query.length === 0) {
-      setSearchQuery(query)
       searchItem(tabName ? tabName : tab, query)
-    } else setSearchQuery(query)
+    }
   }, [searchItem, tab])
 
   const handleTabChange = (name: string) => {
     setTab(name)
     dispatcher({ type: ActionType.SET_SEARCHED_DATA, searchedData: [] })
-    setSearchQuery('')
+    dispatch({ type: ActionType.SET_SEARCH_QUERY, searchQuery: '' })
     handleSearch('', name);
   };
+
+  const handleNewAllergy = ({ currentTarget }: MouseEvent<HTMLElement>) => {
+    dispatch({ type: ActionType.SET_NEW_RECORD, newRecord: searchQuery })
+    dispatch({ type: ActionType.SET_IS_FORM_OPEN, isFormOpen: currentTarget })
+    closeSearchMenu();
+  }
 
   const renderTabs = () => (
     <Box p={1} mb={3} mt={2} display='flex' border={`1px solid ${GRAY_SIX}`} borderRadius={6}>
@@ -101,8 +107,12 @@ const FilterSearch: FC<FilterSearchProps> = (
           }) :
           <Box color={GREY_SEVEN} margin='auto' textAlign='center'>
             <NoDataIcon />
-            
+
             <Typography variant="h6">{NO_RECORDS}</Typography>
+            {searchQuery && modal === CARD_LAYOUT_MODAL.Allergies && <Box onClick={(event) => handleNewAllergy(event)}>
+              <Typography>Add new allergy</Typography>
+            </Box>
+            }
           </Box>)
       }
     </Box>
@@ -148,15 +158,17 @@ const FilterSearch: FC<FilterSearchProps> = (
         onClose={handleMenuClose}
         className={classes.dropdown}
       >
-        {selectedItem &&
-          <>
-            {modal === CARD_LAYOUT_MODAL.Allergies &&
-              <AllergyModal dispatcher={dispatch} item={selectedItem} fetch={fetch} />}
+        {modal === CARD_LAYOUT_MODAL.Allergies &&
+          <AllergyModal
+            newAllergy={newRecord}
+            allergyType={tab}
+            dispatcher={dispatch}
+            item={selectedItem}
+            fetch={fetch}
+          />}
 
-            {modal === CARD_LAYOUT_MODAL.ICDCodes &&
-              <ProblemModal dispatcher={dispatch} item={selectedItem} fetch={fetch} />}
-          </>
-        }
+        {selectedItem && modal === CARD_LAYOUT_MODAL.ICDCodes &&
+          <ProblemModal dispatcher={dispatch} item={selectedItem} fetch={fetch} />}
       </Menu>
     </>
   )
