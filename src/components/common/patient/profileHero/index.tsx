@@ -1,14 +1,14 @@
 import { FC, Reducer, useCallback, useEffect, useReducer, Fragment } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
+import { Box, Avatar, CircularProgress, Button, Typography } from "@material-ui/core";
 // components block
 import ViewDataLoader from "../../ViewDataLoader";
 import MediaCards from "../../AddMedia/MediaCards";
 // interfaces, reducers, constants and styles block
 import history from "../../../../history";
-import { Box, Avatar, CircularProgress, Button, Typography, Tooltip } from "@material-ui/core";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
+import { getTimestamps, formatPhone, getFormattedDate, LightTooltip } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
@@ -17,7 +17,7 @@ import {
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
-import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon } from "../../../../assets/svgs";
+import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon, EditOutlinedIcon } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
@@ -119,7 +119,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
-    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt
+    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt, patientNote
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
@@ -242,11 +242,17 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                       <Typography variant="body1">{item.description}</Typography>
                     </Box>
                   ))}
-                  <Tooltip open={isNoteOpen} placement="bottom-start" title={
+                  <LightTooltip open={isNoteOpen} placement="bottom-start" title={
                     <Fragment>
-                      <Typography color="inherit">Tooltip with HTML</Typography>
-                      <em>{"And here's"}</em> <b>{'some'}</b> <u>{'amazing content'}</u>.{' '}
-                      {"It's very engaging. Right?"}
+                      <Box  display="flex">
+                        <Typography>
+                          Pinned Notes
+                        </Typography>
+                        <Button>
+                          <EditOutlinedIcon />
+                        </Button>
+                      </Box>
+                      <Typography color="inherit">{patientNote}</Typography>
                     </Fragment>
                   }>
                     <Box display="flex" flexWrap="wrap" className={classes.profileInfoItem} onClick={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: !isNoteOpen })}>
@@ -256,7 +262,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                         <RedCircleIcon />
                       </Box>
                     </Box>
-                  </Tooltip>
+                  </LightTooltip>
                 </Box>
 
                 <Box display="flex" pt={1}>

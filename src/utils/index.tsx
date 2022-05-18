@@ -5,7 +5,7 @@ import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
+import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
@@ -394,7 +394,7 @@ export const renderAppointments = (appointments: AppointmentsPayload['appointmen
     for (let appointment of appointments) {
       if (appointment) {
         const { id, appointmentType, scheduleStartDateTime } = appointment;
-        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime,'MM-DD-YYYY hh:mm:ss')}` })
+        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` })
       }
     }
   }
@@ -1091,12 +1091,22 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
       return PatientWeight
   }
 }
+
 export const generateString = () => {
-  const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
-  const charactersLength = characters.length-2;
-  for ( let i = 0; i < 2; i++ ) {
-      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  const charactersLength = characters.length - 2;
+  for (let i = 0; i < 2; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
-  return result+Math.floor(100000 + Math.random() * 9000);
+  return result + Math.floor(100000 + Math.random() * 9000);
 }
+
+export const LightTooltip = withStyles((theme: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[1],
+    fontSize: 11,
+  },
+}))(Tooltip);
