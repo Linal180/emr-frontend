@@ -3,7 +3,7 @@ import { Box, Typography } from '@material-ui/core';
 import { Fragment } from 'react';
 import { Draggable, Droppable } from 'react-beautiful-dnd';
 //constants, styles block
-import { ITEMS } from '../../../../../constants';
+import { ITEMS, ITEMS_ID } from '../../../../../constants';
 import { useFormBuilderSidebarStyles } from '../../../../../styles/formbuilder/sidebarStyle';
 import { BLACK, GRAY_ONE, WHITE } from '../../../../../theme';
 
@@ -12,7 +12,7 @@ export const FormFields = () => {
 
   return (
     <Box mt={4} pt={1} maxHeight={500} className="overflowY-auto">
-      <Droppable droppableId='ITEMS' isDropDisabled={true}>
+      <Droppable droppableId={ITEMS_ID} isDropDisabled={true}>
         {(provided, snapshot) => (
           <div
             style={{ borderRadius: '8px', border: `1px ${snapshot.isDraggingOver ? `dashed ${BLACK}` : `solid ${WHITE}`}` }}

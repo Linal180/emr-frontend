@@ -632,6 +632,7 @@ export type CreatePatientAllergyInput = {
   allergyOnset?: Maybe<AllergyOnset>;
   allergySeverity?: Maybe<AllergySeverity>;
   allergyStartDate?: Maybe<Scalars['String']>;
+  allergyType?: Maybe<AllergyType>;
   appointmentId?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   isActive?: Maybe<Scalars['Boolean']>;

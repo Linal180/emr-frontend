@@ -452,6 +452,7 @@ export interface SearchComponentProps {
   search: Function;
   info?: boolean;
   tooltipData?: TooltipData[]
+  placeHolder? : string;
 }
 
 export interface AppMenuItemTypes {
@@ -1200,6 +1201,8 @@ export interface CardLayoutProps {
 }
 
 export interface AddModalProps {
+  newAllergy?: string;
+  allergyType?: string; 
   isEdit?: boolean;
   recordId?: string;
   item?: Allergies | IcdCodes;
@@ -1262,6 +1265,7 @@ export interface ReactionSelectorInterface {
   selectDisabled?: boolean
   selectedOptions?: string
   defaultValues?: multiOptionType[]
+  margin?: MuiPropsTypes.Margin
   setFieldValue?: Function
 }
 

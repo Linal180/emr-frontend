@@ -5,12 +5,12 @@ import LabOrderListingTable from '../orderListing/labOrderListingTable';
 import LabOrdersEditForm from './LabOrdersEditForm';
 
 const EditLabOrdersComponent: FC = (): JSX.Element => {
-    return (
-       <>
-        <LabOrderListingTable />
-        <LabOrdersEditForm />
-       </>
-    )
+  return (
+    <>
+      <LabOrderListingTable />
+      <LabOrdersEditForm />
+    </>
+  )
 }
 
 export default EditLabOrdersComponent;
