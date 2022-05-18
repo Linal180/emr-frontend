@@ -590,7 +590,9 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
 
 export const setTime = (time: string): string => {
   const Time = moment(time, "hh:mm").format('lll').toString()
-  return Time
+  const CurrentTime = new Date(Time)
+  let NewTime = moment(CurrentTime).format().toString();
+  return NewTime
 }
 
 export const setTimeDay = (time: string, day: string): string => {
