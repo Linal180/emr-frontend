@@ -1,13 +1,13 @@
 // packages block
-import { MouseEvent, ChangeEvent, Reducer, useReducer } from 'react';
-import { useParams } from 'react-router';
+import { ChangeEvent, Reducer, useReducer, useEffect } from 'react';
 import { Link } from "react-router-dom";
+import { useParams } from 'react-router';
+import { Box, Button, Tab } from "@material-ui/core";
+// import { SubmitHandler, useForm } from "react-hook-form";
 import { TabContext, TabList, TabPanel } from "@material-ui/lab";
-import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
-import { Box, Button, Grid, Menu, Tab, Typography } from "@material-ui/core";
 //components block
 import Insurance from './Insurance';
-import Selector from "../../../common/Selector";
+// import Selector from "../../../common/Selector";
 import PortalTable from '../../../common/patient/portal';
 import LabOrdersTable from '../../../common/patient/labOrders';
 import DocumentsTable from '../../../common/patient/documents';
@@ -15,8 +15,9 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import PatientProfileHero from '../../../common/patient/profileHero';
 // constants, history, styling block
 import { ParamsType } from "../../../../interfacesTypes";
-import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
-import { AddWidgetIcon, DeleteWidgetIcon } from "../../../../assets/svgs";
+// import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
+import GENERAL_INFO from "../../../../assets/images/general-info.png";
+// import { AddWidgetIcon, DeleteWidgetIcon } from "../../../../assets/svgs";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { AttachmentsPayload, PatientPayload } from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
@@ -25,35 +26,41 @@ import {
   ActionType as mediaActionType
 } from "../../../../reducers/mediaReducer";
 import {
-  ADD_WIDGET_TEXT, DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, EMPTY_OPTION, VIEW_CHART_TEXT,
-  MAPPED_WIDGETS, CHART_ROUTE, PATIENTS_ROUTE, PROFILE_DETAIL_DATA, PROFILE_TOP_TABS,
+  DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
+  PROFILE_TOP_TABS,
 } from "../../../../constants";
 
 const PatientDetailsComponent = (): JSX.Element => {
-  const widgetId = "widget-menu";
-  const { id } = useParams<ParamsType>();
+  // const widgetId = "widget-menu";
+  const { id, tabValue: routeParamValue } = useParams<ParamsType>();
   const classes = useProfileDetailsStyles();
-  const [{ anchorEl, openDelete, tabValue, patientData }, dispatch] =
+  const [{ openDelete, tabValue, patientData }, dispatch] =
     useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
-  const [{ attachmentsData }, mediaDispatcher] =
+  const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
-  const isMenuOpen = Boolean(anchorEl);
-  const methods = useForm<any>({ mode: "all", });
-  const { handleSubmit } = methods;
-  const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
+  // const isMenuOpen = Boolean(anchorEl);
+  // const methods = useForm<any>({ mode: "all", });
+  // const { handleSubmit } = methods;
+  // const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
 
-  const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) =>
-    dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
+  // const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) =>
+  //   dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
-  const onDeleteClick = () =>
-    dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
+  // const onDeleteClick = () =>
+  //   dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
 
   const handleDeleteWidget = () => { };
-  const onSubmit: SubmitHandler<any> = async (inputs) => { }
+  // const onSubmit: SubmitHandler<any> = async (inputs) => { }
+
+  useEffect(() => {
+    if (routeParamValue) {
+      dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: routeParamValue })
+    }
+  }, [routeParamValue])
 
   return (
     <Box>
@@ -85,7 +92,9 @@ const PatientDetailsComponent = (): JSX.Element => {
           />
 
           <TabPanel value="1">
-            <Grid container spacing={3}>
+            <img src={GENERAL_INFO} alt="" />
+
+            {/* <Grid container spacing={3}>
               {PROFILE_DETAIL_DATA.map((item, index) => (
                 <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
                   {item && item.title === "Allergies" && <>
@@ -147,7 +156,7 @@ const PatientDetailsComponent = (): JSX.Element => {
                   </Box>
                 </Grid>
               ))}
-            </Grid>
+            </Grid> */}
           </TabPanel>
 
           <TabPanel value="2">
@@ -155,7 +164,7 @@ const PatientDetailsComponent = (): JSX.Element => {
           </TabPanel>
 
           <TabPanel value="8">
-            <DocumentsTable dispatcher={mediaDispatcher} attachments={attachmentsData} />
+            <DocumentsTable />
           </TabPanel>
 
           <TabPanel value="9">

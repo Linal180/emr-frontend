@@ -21,7 +21,7 @@ import {
   SMOKING_STATUS_TEXT, VITAL_LIST_PAGE_LIMIT, WEIGHT_TEXT
 } from "../../../../constants";
 import { VitalListComponent } from "../common/VitalList";
-import { formatValue, getDate } from "../../../../utils";
+import { formatValue, getDate, roundOffUpto2Decimal } from "../../../../utils";
 import ViewDataLoader from "../../../common/ViewDataLoader";
 import { GREY_SEVEN } from "../../../../theme";
 
@@ -151,7 +151,7 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${BMI_TEXT} (${KG_PER_METER_SQUARE_TEXT})`}
-                      description={PatientBMI || DASHES}
+                      description={roundOffUpto2Decimal(PatientBMI) || DASHES}
                       isError={!!PatientBMI ? (parseFloat(PatientBMI) < 18.5 || parseFloat(PatientBMI) > 25) : false} />
                   </Grid>
 
@@ -172,7 +172,7 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
                     <VitalListComponent
                       title={`${BLOOD_PRESSURE_TEXT} (${MMHG_TEXT})`}
                       description={`${diastolicBloodPressure}/${systolicBloodPressure}` || DASHES}
-                      isError={!!PainRange ? (parseInt(PainRange) > 3) : false} />
+                      isError={!!diastolicBloodPressure ? (parseInt(diastolicBloodPressure) > 120) : false} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
@@ -189,26 +189,26 @@ const VitalCardComponent: FC<ChartingCardComponentType> = (
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${HEAD_CIRCUMFERENCE} (${IN_TEXT})`}
-                      description={patientHeadCircumference || DASHES}
+                      description={roundOffUpto2Decimal(patientHeadCircumference) || DASHES}
                       isError={!!patientHeadCircumference ? (parseFloat(patientHeadCircumference) < 23.62 || parseFloat(patientHeadCircumference) > 24.8) : false} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${HEIGHT_TEXT} (${IN_TEXT})`}
-                      description={PatientHeight || DASHES} />
+                      description={roundOffUpto2Decimal(PatientHeight) || DASHES} />
                   </Grid>
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${FEVER_TEXT} (${(temperatureUnitType && formatValue(temperatureUnitType))})`}
-                      description={patientTemperature || DASHES}
+                      description={roundOffUpto2Decimal(patientTemperature) || DASHES}
                       isError={!!patientTemperature ? (parseFloat(patientTemperature) < 97 || parseFloat(patientTemperature) > 99) : false} />
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={6}>
                     <VitalListComponent
                       title={`${WEIGHT_TEXT} (${LBS_TEXT})`}
-                      description={PatientWeight || DASHES} />
+                      description={roundOffUpto2Decimal(PatientWeight) || DASHES} />
                   </Grid>
                 </Grid>}
           </CardContent>

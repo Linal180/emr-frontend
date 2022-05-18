@@ -29,7 +29,7 @@ const StaffTable: FC = (): JSX.Element => {
   const { facility, roles } = user || {};
   const { id: facilityId, practiceId } = facility || {};
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(staffReducer, initialState)
   const { page, totalPages, searchQuery, openDelete, deleteStaffId, allStaff } = state;
@@ -40,6 +40,7 @@ const StaffTable: FC = (): JSX.Element => {
 
     onError() {
       dispatch({ type: ActionType.SET_ALL_STAFF, allStaff: [] })
+      dispatch({ type: ActionType.SET_TOTAL_PAGES, totalPages: 0 })
     },
 
     onCompleted(data) {
@@ -62,7 +63,7 @@ const StaffTable: FC = (): JSX.Element => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
       const staffInputs = isSuper ? { ...pageInputs } :
-        isPracAdmin ? { practiceId, ...pageInputs } :
+        isPracticeUser ? { practiceId, ...pageInputs } :
           isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
       staffInputs && await findAllStaff({
@@ -71,7 +72,7 @@ const StaffTable: FC = (): JSX.Element => {
         }
       })
     } catch (error) { }
-  }, [page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId, findAllStaff, searchQuery]);
+  }, [page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId, findAllStaff, searchQuery]);
 
   const [removeStaff, { loading: deleteStaffLoading }] = useRemoveStaffMutation({
     onError() {

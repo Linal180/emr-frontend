@@ -143,18 +143,18 @@ export const CheckboxGroupComponent = ({ item }: FieldComponentProps) => {
 
 //field renderer component
 export const FieldRenderer = ({ item, field, isCreating }: FieldComponentProps) => {
-  const { type } = item;
+  const { type, fieldId } = item;
   switch (type) {
     case ElementType.Checkbox:
-      return <CheckboxGroupComponent item={item} field={field} isCreating={isCreating} />
+      return <CheckboxGroupComponent item={item} field={field} isCreating={isCreating} key={fieldId}/>
     case ElementType.Radio:
-      return <RadioGroupComponent item={item} field={field} isCreating={isCreating} />
+      return <RadioGroupComponent item={item} field={field} isCreating={isCreating} key={fieldId}/>
     case ElementType.File:
-      return <FileFieldComponent item={item} field={field} isCreating={isCreating} />
+      return <FileFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId}/>
     case ElementType.Select:
-      return <SelectFieldComponent item={item} field={field} isCreating={isCreating} />
+      return <SelectFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId}/>
     default:
-      return <TextFieldComponent item={item} field={field} isCreating={isCreating} />
+      return <TextFieldComponent item={item} field={field} isCreating={isCreating} key={fieldId}/>
   }
 }
 

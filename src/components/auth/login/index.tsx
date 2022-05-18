@@ -17,7 +17,7 @@ import { LoginUserInput, useLoginMutation } from "../../../generated/graphql";
 import {
   EMAIL, EMAIL_CHANGED_OR_NOT_VERIFIED_MESSAGE, EXCEPTION, FORBIDDEN_EXCEPTION, LOGIN_SUCCESSFULLY,
   NOT_SUPER_ADMIN_MESSAGE, PASSWORD_LABEL, SIGN_IN, TOKEN, WRONG_EMAIL_OR_PASSWORD, DASHBOARD_ROUTE,
-  SOMETHING_WENT_WRONG, TWO_FA_AUTHENTICATION_ROUTE, SYSTEM_ROLES,
+  SOMETHING_WENT_WRONG, TWO_FA_AUTHENTICATION_ROUTE, SYSTEM_ROLES, FA_TOKEN,
 } from "../../../constants";
 
 const LoginComponent = (): JSX.Element => {
@@ -44,7 +44,7 @@ const LoginComponent = (): JSX.Element => {
 
     onCompleted(data) {
       if (data) {
-        const { login: { response, access_token, roles, isTwoFactorEnabled, userId } } = data
+        const { login: { response, access_token, roles, isTwoFactorEnabled, access_2fa_token } } = data
 
         if (response) {
           const { status } = response
@@ -53,21 +53,21 @@ const LoginComponent = (): JSX.Element => {
             return Alert.error(WRONG_EMAIL_OR_PASSWORD);
           }
 
-          if (status === 200 && access_token && roles) {
+          if (status === 200 && roles) {
             const userRoles = roles.map(role => role.role)
             const isAdmin = userRoles.filter(role => role !== SYSTEM_ROLES.Patient)
             
             if (!!isAdmin?.length) {
               if (!isTwoFactorEnabled) {
-                localStorage.setItem(TOKEN, access_token);
+                access_token && localStorage.setItem(TOKEN, access_token);
                 setIsLoggedIn(true);
                 fetchAllFacilityList();
                 Alert.success(LOGIN_SUCCESSFULLY)
                 history.push(DASHBOARD_ROUTE);
               } else {
-                history.push(`${TWO_FA_AUTHENTICATION_ROUTE}/${userId}?token=${access_token}`);
-
-              }
+                access_2fa_token && localStorage.setItem(FA_TOKEN, access_2fa_token);
+                history.push(TWO_FA_AUTHENTICATION_ROUTE);
+              } 
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
             }

@@ -19,7 +19,7 @@ import {
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
   SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP, ALLERGY_DATE_VALIDATION_MESSAGE, PAIN_TEXT,
   REACTIONS_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT, WEIGHT_TEXT,
-  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT,
+  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, FACILITY_NAME, DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, SPECIMEN_FIELD_VALIDATION_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -577,7 +577,7 @@ export const guarantorPatientSchema = {
     .max(15, MaxLength(PHONE_NUMBER, 15)).required(requiredMessage(PHONE_NUMBER)),
   guarantorZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE)
     .required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
-  guarantorCity: yup.string().matches(STRING_REGEX, ValidMessage(ADDRESS))
+  guarantorCity: yup.string().matches(STRING_REGEX, ValidMessage(CITY))
     .required(requiredMessage(CITY)).min(2, MinLength(CITY, 2)).max(20, MaxLength(CITY, 20)),
   guarantorLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
     .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(requiredMessage(LAST_NAME)),
@@ -701,7 +701,7 @@ export const createPracticeSchema = yup.object({
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),
   name: yup.string().required(requiredMessage(PRACTICE_NAME)),
-  facilityName: yup.string().required(requiredMessage(NAME)),
+  facilityName: yup.string().required(requiredMessage(FACILITY_NAME)),
 })
 
 export const updatePracticeSchema = yup.object({
@@ -795,69 +795,214 @@ export const patientVitalSchema = yup.object({
       return false
     }
   }),
-  systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (value) {
-    if (!value && !!this.parent.diastolicBloodPressure) return false
+  systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (val) {
+    if (!val && !!this.parent.diastolicBloodPressure) return false
+    else if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 400) return true
+      return false
+    }
+  }),
+  respiratoryRate: yup.string().test('', invalidMessage(RESPIRATORY_RATE_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 50) return true
+      return false
+    }
+  }),
+  oxygenSaturation: yup.string().test('', invalidMessage(OXYGEN_SATURATION_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value <= 100) return true
+      return false
+    }
+  }),
+  PatientHeight: yup.string().test('', invalidMessage(HEIGHT_TEXT), function (val) {
+    if (!val && !!this.parent.PatientWeight) return false
+    else if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 500) return true
+      return false
+    }
+  }),
+  PatientWeight: yup.string().test('', invalidMessage(WEIGHT_TEXT), function (val) {
+    if (!val && !!this.parent.PatientHeight) return false
+    else if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 10000) return true
+      return false
+    }
+  }),
+  PainRange: yup.string().test('', invalidMessage(PAIN_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value >= 0 && value <= 10) return true
+      return false
+    }
+  }),
+  patientHeadCircumference: yup.string().test('', invalidMessage(HEAD_CIRCUMFERENCE), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 300) return true
+      return false
+    }
+  }),
+  patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 150) return true
+      return false
+    }
+  }),
+})
+
+export const patientVitalUpdateSchema = yup.object({
+  pulseRate: yup.string().test('', invalidMessage(PULSE_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 5) return true
+      return false
+    }
+  }),
+
+  diastolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (value) {
+    if (!value && !!this.parent.systolicBloodPressure) return false
     else if (!value) return true
     else {
       if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length < 4) return true
+      if (value && value.length < 3) return true
       return false
     }
   }),
-  respiratoryRate: yup.string().test('', invalidMessage(RESPIRATORY_RATE_TEXT), value => {
-    if (!value) return true
+
+  systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (val) {
+    if (!val && !!this.parent.diastolicBloodPressure) return false
+    else if (!val) return true
     else {
-      if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length > 0 && value.length < 4) return true
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 400) return true
       return false
     }
   }),
-  oxygenSaturation: yup.string().test('', invalidMessage(OXYGEN_SATURATION_TEXT), value => {
-    if (!value) return true
+
+  respiratoryRate: yup.string().test('', invalidMessage(RESPIRATORY_RATE_TEXT), val => {
+    if (!val) return true
     else {
-      if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length > 0 && value.length < 4) return true
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 50) return true
       return false
     }
   }),
-  PatientHeight: yup.string().test('', invalidMessage(HEIGHT_TEXT), value => {
-    if (!value) return true
+
+  oxygenSaturation: yup.string().test('', invalidMessage(OXYGEN_SATURATION_TEXT), val => {
+    if (!val) return true
     else {
-      if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length > 0 && value.length < 6) return true
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value <= 100) return true
       return false
     }
   }),
-  PatientWeight: yup.string().test('', invalidMessage(WEIGHT_TEXT), value => {
-    if (!value) return true
+
+  PatientHeight: yup.string().test('', invalidMessage(HEIGHT_TEXT), function (val) {
+    if (!val) return true
     else {
-      if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length > 0 && value.length < 5) return true
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 500) return true
       return false
     }
   }),
-  PainRange: yup.string().test('', invalidMessage(PAIN_TEXT), value => {
-    if (!value) return true
+
+  PatientWeight: yup.string().test('', invalidMessage(WEIGHT_TEXT), function (val) {
+    if (!val) return true
     else {
-      if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length > 0 && value.length < 3) return true
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 10000) return true
       return false
     }
   }),
-  patientHeadCircumference: yup.string().test('', invalidMessage(HEAD_CIRCUMFERENCE), value => {
-    if (!value) return true
+
+  PainRange: yup.string().test('', invalidMessage(PAIN_TEXT), val => {
+    if (!val) return true
     else {
-      if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length > 0 && value.length < 5) return true
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value >= 0 && value <= 10) return true
       return false
     }
   }),
-  patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), value => {
-    if (!value) return true
+
+  patientHeadCircumference: yup.string().test('', invalidMessage(HEAD_CIRCUMFERENCE), val => {
+    if (!val) return true
     else {
-      if (value && (value.includes('-') || value === '0')) return false
-      if (value && value.length > 0 && value.length < 4) return true
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 300) return true
       return false
     }
   }),
+
+  patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 150) return true
+      return false
+    }
+  }),
+})
+
+export const attachmentNameUpdateSchema = yup.object({
+  attachmentName: yup.string().test('', invalidMessage('Attachment name'), value => !!value)
+})
+
+export const createLabOrdersSchema =  yup.object({
+  labTestStatus: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+  diagnosesIds: yup.array().of(
+    yup.object().shape({
+      label: yup.string().required(),
+      value: yup.string().required()
+    })
+  ).test('', DIAGNOSES_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
+  testField: yup.array().of(
+    yup.object().shape({
+      test: yup.object().shape({
+        name: yup.string().required(),
+        id: yup.string().required()
+      }).test('', TEST_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id),
+      specimenTypeField: yup.array().of(
+        yup.object().shape({
+          specimenType: yup.object().shape({
+            name: yup.string().required(),
+            id: yup.string().required()
+          }).test('', SPECIMEN_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id)
+        })
+      )
+    })
+  )
 })

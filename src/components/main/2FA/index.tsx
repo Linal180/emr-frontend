@@ -6,7 +6,7 @@ import InputController from '../../../controller';
 import CardComponent from '../../common/CardComponent';
 import { Box, Button, CircularProgress, FormControl, Grid, IconButton, MenuItem, Typography, } from '@material-ui/core';
 // constants, history, styling block
-import { GRAY_ONE, RED, WHITE } from '../../../theme';
+import { GRAY_THREE, RED, WHITE } from '../../../theme';
 import { InfoSearchIcon, SettingsIcon, ShieldIcon } from '../../../assets/svgs';
 import { useHeaderStyles } from " ../../../src/styles/headerStyles";
 import {
@@ -23,8 +23,11 @@ import Alert from '../../common/Alert';
 import { AntSwitch } from '../../../styles/publicAppointmentStyles/externalPatientStyles';
 
 const TwoFAComponent = (): JSX.Element => {
-  const { user, fetchUser } = useContext(AuthContext)
+  const { user, currentDoctor, currentStaff, fetchUser } = useContext(AuthContext)
   const { id, isTwoFactorEnabled: userTwoFactor, phone } = user || {}
+  const { contacts } = currentDoctor || {}
+  const { phone: doctorPhone } = contacts?.find(({ primaryContact }) => primaryContact) || {}
+  const { phone: staffPhone } = currentStaff || {}
   const classes = useHeaderStyles();
   const [isChecked, setIsChecked] = useState<boolean>(userTwoFactor as boolean);
   const methods = useForm<TwoFactorInputProps>({
@@ -67,7 +70,7 @@ const TwoFAComponent = (): JSX.Element => {
     id && await faEnabled({
       variables: {
         twoFactorInput: {
-          isTwoFactorEnabled: isTwoFactorEnabled || false , userId: id, password
+          isTwoFactorEnabled: isTwoFactorEnabled || false, userId: id, password
         }
       }
     })
@@ -128,7 +131,7 @@ const TwoFAComponent = (): JSX.Element => {
         <Grid item md={5} sm={12} xs={12}>
           <CardComponent cardTitle={TWO_FA_AUTHENTICATION}>
             <Box p={2} mb={2}>
-              {!phone &&
+              {!(phone || doctorPhone || staffPhone) &&
                 <Box display="flex" bgcolor={RED} color={WHITE} justifyContent='space-between' px={2} py={1} mb={1} borderRadius={5}>
                   <Box display="flex" alignItems='center'>
                     <IconButton size="small" color='inherit' className={classes.iconPadding}>
@@ -144,10 +147,12 @@ const TwoFAComponent = (): JSX.Element => {
                   </Button>
                 </Box>
               }
+
+              <Typography variant='body1'>{TWO_FA_AUTHENTICATION_DESCRIPTION}</Typography>
+
               <FormProvider {...methods}>
                 <form onSubmit={handleSubmit(onSubmit)}>
-                  <Box mb={4} display="flex" alignItems="center">
-                    <Box p={1} />
+                  <Box mt={4} display="flex" alignItems="center">
                     <Typography variant='h4'>{STATUS}</Typography>
                     <Box pl={2}>
                       {loading ?
@@ -159,9 +164,9 @@ const TwoFAComponent = (): JSX.Element => {
                           render={() => (
                             <FormControl fullWidth className={classes.toggleContainer}>
                               <label className="toggle-main">
-                                <Box color={isChecked ? WHITE : GRAY_ONE} pr={1}>{ENABLED}</Box>
+                                <Box color={isChecked ? WHITE : GRAY_THREE} pr={1}>{ENABLED}</Box>
                                 <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='isTwoFactorEnabled' />
-                                <Box color={isChecked ? GRAY_ONE : WHITE}>{DISABLED}</Box>
+                                <Box color={isChecked ? GRAY_THREE : WHITE}>{DISABLED}</Box>
                               </label>
                             </FormControl>
                           )}
@@ -169,8 +174,6 @@ const TwoFAComponent = (): JSX.Element => {
                       }
                     </Box>
                   </Box>
-
-                  <Typography variant='body1'>{TWO_FA_AUTHENTICATION_DESCRIPTION}</Typography>
 
                   <Box p={2} />
 

@@ -18,7 +18,8 @@ import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
-  AttachmentType, AllergySeverity, ProblemSeverity
+  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
+  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -42,7 +43,8 @@ export const upperToNormal = (value: string) => {
 export const formatValue = (value: string) => {
   let formatted = ''
 
-  value.split("_").map(term => formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
+  value.split("_").map(term =>
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
 
   return formatted;
 };
@@ -119,10 +121,27 @@ export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
     || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
 }
 
+export const isAdmin = (roles: RolesPayload['roles']) => {
+  const userRoles = roles ? pluck(roles, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.SuperAdmin) || userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
+    || userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
+}
+
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   const userRoles = roles ? pluck(roles, 'role') : ['']
 
   return userRoles.includes(SYSTEM_ROLES.SuperAdmin)
+}
+
+export const isOnlyDoctor = (roles: RolesPayload['roles']) => {
+  const userRoles = roles ? pluck(roles, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Doctor) && (
+    !userRoles.includes(SYSTEM_ROLES.Staff)
+    && !userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
+    && !userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
+  )
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
@@ -167,7 +186,7 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
 };
 
-export const getCurrentTimestamps = (existingDate: string, newDate:string | undefined | MaterialUiPickersDate) => {
+export const getCurrentTimestamps = (existingDate: string, newDate: string | undefined | MaterialUiPickersDate) => {
   const currentDate = moment(newDate).format(`MM-DD-YYYY`)
   const existingTime = moment(existingDate).format(`hh:mm A`)
   const date = moment(currentDate + ' ' + existingTime)
@@ -195,7 +214,9 @@ export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
 
 export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
 
-export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`);
+export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+
+export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
@@ -211,6 +232,10 @@ export const UpdateRecordTitle = (recordType: string) => {
 
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const aboutToSign = (recordType: string) => {
+  return `You are about to sign a patient ${recordType.toLowerCase()}`;
 }
 
 export const aboutToUpdate = (recordType: string) => {
@@ -362,6 +387,21 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
   return data;
 }
 
+export const renderAppointments = (appointments: AppointmentsPayload['appointments']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!appointments) {
+    for (let appointment of appointments) {
+      if (appointment) {
+        const { id, appointmentType, scheduleStartDateTime } = appointment;
+        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` })
+      }
+    }
+  }
+
+  return data;
+}
+
 export const renderOptionsForSelector = (options: SelectorOption[]) => {
   const data: AsyncSelectorOption[] = [];
 
@@ -409,6 +449,55 @@ export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
 
   return data;
 }
+
+export const renderIcdCodes = (icdCodes: IcdCodesPayload['icdCodes']) => {
+  const data: multiOptionType[] = [];
+
+  if (!!icdCodes) {
+    for (let icdCode of icdCodes) {
+      if (icdCode) {
+        const { id, code } = icdCode;
+
+        code && data.push({ value: id, label: code })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderTests = (loincCodes: LoincCodesPayload['loincCodes']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!loincCodes) {
+    for (let loincCode of loincCodes) {
+      if (loincCode) {
+        const { id, loincNum, component } = loincCode;
+
+        loincNum && data.push({ id, name: `${loincNum} | ${component}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderSpecimenTypes = (specimenTypes: TestSpecimenTypesPayload['specimenTypes']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!specimenTypes) {
+    for (let specimenType of specimenTypes) {
+      if (specimenType) {
+        const { id, name } = specimenType;
+
+        specimenType && data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
 
 export const setRecord = (id: string, name: string): SelectorOption => {
   let value = ''
@@ -501,7 +590,9 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
 
 export const setTime = (time: string): string => {
   const Time = moment(time, "hh:mm").format('lll').toString()
-  return Time
+  const CurrentTime = new Date(Time)
+  let NewTime = moment(CurrentTime).format().toString();
+  return NewTime
 }
 
 export const setTimeDay = (time: string, day: string): string => {
@@ -725,9 +816,9 @@ export const getFormatDateString = (date: Maybe<string> | undefined, format = "Y
   return moment(date).format(format).toString()
 };
 
-export const convertDateFromUnix = (date: Maybe<string> | undefined,format="MM-DD-YYYY") => {
+export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
   if (!date) return '';
-  return moment(date,'x').format(format).toString()
+  return moment(date, 'x').format(format).toString()
 };
 
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
@@ -926,6 +1017,7 @@ export const ounceToKilogram = (o: number) => (o / 35.274)
 export const ounceToPounds = (o: number) => (o / 16)
 
 export const getBMI = (weight: number, height: number) => (weight / (height * height))
+
 export const dataURLtoFile = (url: any, filename: string) => {
   var arr = url.split(','),
     mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
@@ -938,4 +1030,87 @@ export const dataURLtoFile = (url: any, filename: string) => {
   }
 
   return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
+}
+
+
+export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string) => {
+  const patientHeight = parseFloat(PatientHeight)
+
+  switch (heightUnitType) {
+    case UnitType.Centimeter:
+      const height = centimeterToInches(patientHeight);
+      return height?.toString()
+    case UnitType.Inch:
+      return PatientHeight
+    default:
+      return PatientHeight
+  }
+
+}
+
+export const getDefaultHead = (headType: HeadCircumferenceType, patientHeadCircumference: string) => {
+  const patientHead = parseFloat(patientHeadCircumference)
+
+  switch (headType) {
+    case HeadCircumferenceType.Centimeter:
+      const head = centimeterToInches(patientHead);
+      return head?.toString()
+    case HeadCircumferenceType.Inch:
+      return patientHeadCircumference
+    default:
+      return patientHeadCircumference
+  }
+
+}
+
+export const getDefaultTemp = (tempType: TempUnitType, patientTemperature: string) => {
+  const patientTemp = parseFloat(patientTemperature)
+
+  switch (tempType) {
+    case TempUnitType.DegC:
+      const temp = celsiusToFahrenheit(patientTemp);
+      return temp?.toString()
+    case TempUnitType.DegF:
+      return patientTemperature
+    default:
+      return patientTemperature
+  }
+}
+
+export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: string) => {
+  const patientWeight = parseFloat(PatientWeight)
+
+  switch (weightUnitType) {
+    case WeightType.Pound:
+      const weight = poundsToKilogram(patientWeight);
+      return weight?.toString()
+    case WeightType.PoundOunce:
+      const weight1 = ounceToKilogram(patientWeight);
+      return weight1?.toString()
+    case WeightType.Kg:
+      return PatientWeight
+    default:
+      return PatientWeight
+  }
+}
+export const generateString = () => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  const charactersLength = characters.length - 2;
+  for (let i = 0; i < 2; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result + Math.floor(100000 + Math.random() * 9000);
+}
+
+export const roundOffUpto2Decimal = (str: number | undefined | string | null): string => {
+  if (str) {
+    if (typeof str === 'string') {
+      const num = parseFloat(str)
+      const isNaN = Number.isNaN(num)
+      return isNaN ? '' : `${Math.round((num + Number.EPSILON) * 100) / 100}`;
+    }
+    return `${Math.round((str + Number.EPSILON) * 100) / 100}`;
+  }
+  return ""
 }

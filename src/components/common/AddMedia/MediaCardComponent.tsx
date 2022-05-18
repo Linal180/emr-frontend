@@ -109,7 +109,7 @@ const MediaCardComponent: FC<MediaCardComponentType> = ({
             </Button>}
 
             {notDescription && <Typography className={classes.cameraIcon} onClick={handleAddMedia}>
-              <CameraAlt color="secondary" />
+              <CameraAlt color="primary" />
             </Typography>}
 
             {!notDescription && <Box display="flex" className={classes.dropZoneContainer} onClick={handleAddMedia}>

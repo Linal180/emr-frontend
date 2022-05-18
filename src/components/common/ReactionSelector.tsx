@@ -4,12 +4,14 @@ import Select from 'react-select';
 import { Controller, useFormContext } from 'react-hook-form';
 import { FormControl, InputLabel, FormHelperText, Box } from '@material-ui/core'
 // constants and type/interfaces block
-import { INITIAL_PAGE_LIMIT } from '../../constants';
+import { REACTION_PAGE_LIMIT } from '../../constants';
 import { renderReactions, requiredLabel } from "../../utils";
 import { multiOptionType, ReactionSelectorInterface } from '../../interfacesTypes';
 import { ReactionsPayload, useFindAllReactionsLazyQuery } from '../../generated/graphql';
 
-const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, isRequired, defaultValues }) => {
+const ReactionSelector: FC<ReactionSelectorInterface> = ({
+  name, isEdit, label, isRequired, defaultValues
+}) => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[]>([])
   const [values, setValues] = useState<multiOptionType[]>([])
@@ -38,7 +40,7 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
         variables: {
           reactionInput: {
             reactionName: query,
-            paginationOptions: { limit: !query ? INITIAL_PAGE_LIMIT : 10, page: 1 }
+            paginationOptions: { limit: query ? 10 : REACTION_PAGE_LIMIT, page: 1 }
           }
         }
       })
@@ -86,14 +88,14 @@ const ReactionSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, 
               id="selectedId"
               options={options}
               value={values}
+              className={invalid ? 'selectorClassTwoError' : 'selectorClassTwo'}
               onChange={(newValue) => {
-                field.onChange(newValue)                
+                field.onChange(newValue)
                 updateValues(newValue as multiOptionType[])
               }}
               onInputChange={(query: string) => {
                 (query.length > 2 || query.length === 0) && fetchReactions(query)
               }}
-              className={message ? 'selectorClassTwoError' : 'selectorClassTwo'}
             />
 
             <FormHelperText>{invalid && message}</FormHelperText>

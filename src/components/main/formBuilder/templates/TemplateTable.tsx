@@ -10,7 +10,7 @@ import FormPreviewModal from '../previewModal'
 import NoDataFoundComponent from '../../../common/NoDataFoundComponent';
 //constants block
 import { ACTION, CREATED_ON, FORM_BUILDER_COPY_TEMPLATE_ROUTE, NAME, PAGE_LIMIT, TYPE } from '../../../../constants';
-import { FormPayload, LayoutJsonType, SectionsInputs, useFindAllFormsLazyQuery } from '../../../../generated/graphql';
+import { FormPayload, FormType, LayoutJsonType, SectionsInputs, useFindAllFormsLazyQuery } from '../../../../generated/graphql';
 import { useTableStyles } from '../../../../styles/tableStyles';
 import { getFormatDate, renderTh } from '../../../../utils';
 import { CopyIcon, EyeIcon } from '../../../../assets/svgs';
@@ -49,7 +49,7 @@ export const TemplatesTable = () => {
   const fetchAllForms = useCallback(async () => {
     try {
       const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
-      const formInputs = { ...pageInputs, isSystemForm: true }
+      const formInputs = { ...pageInputs, isSystemForm: true, formType: FormType.Template }
       await getAllFormTemplates({
         variables: {
           formInput: { ...formInputs }

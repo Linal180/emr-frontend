@@ -307,6 +307,11 @@ body .MuiTabPanel-root {
   cursor: pointer;
 }
 
+.remove-box {
+  color: #DD1010;
+  cursor: pointer;
+}
+
 .billing-box .MuiTypography-root {
   padding-left: 5px;
 }
@@ -471,15 +476,21 @@ body .MuiTabPanel-root {
   max-width: 330px !important;
 }
 
-.selectorClassTwo > div:first-of-type {
+
+.selectorClassTwo>div:first-of-type {
   border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;
   border-radius: 4px !important;
   min-height: 48px !important;
 }
 
-.selectorClassTwo svg, .selectorClassTwo span {
+.selectorClassTwo svg,
+.selectorClassTwo span {
   color: #202020 !important;
+}
+
+.diagnosesSelectorClass {
+  min-width: 100% !important;
 }
 
 .selectedBox {
@@ -505,4 +516,45 @@ body .MuiTabPanel-root {
   font-size: 14px;
   color: #202020;
   margin-bottom: 10px !important;
+}
+
+/* Dashboard-charts-styling */
+.chartContainer > div > div {
+  height: 300px !important;
+}
+
+.chartContainer svg {
+  height: 320px !important;
+  transform: scale(1.25) !important;
+}
+
+.barChart1Container text,
+.barChart3Container text  
+{
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+.barChart1Container .highcharts-color-0,
+.barChart2Container .highcharts-color-0,
+.barChart3Container .highcharts-color-0,
+.barChart1Container .highcharts-legend-item,
+.barChart2Container .highcharts-legend-item,
+.barChart3Container .highcharts-legend-item,
+.barChart1Container .highcharts-axis,
+.barChart2Container .highcharts-axis,
+.barChart3Container .highcharts-axis
+{
+  display: none !important;
+}
+
+.barChart1Container .highcharts-axis-labels text, 
+.barChart2Container .highcharts-axis-labels text,
+.barChart3Container .highcharts-axis-labels text
+{
+  font-weight: 600 !important;
+}
+
+.overflowVisible {
+  overflow: visible !important;
 }
