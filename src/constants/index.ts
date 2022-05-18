@@ -65,6 +65,7 @@ export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
+export const ITEMS_ID = 'ITEMS'
 export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'
 export const CURRENT_DATE = new Date();
@@ -3241,7 +3242,7 @@ export const FORM_BUILDER_ADD_FIELDS_TABS = [
     value: "1",
   },
   {
-    title: "Pre-defined",
+    title: "Components",
     value: "2",
   },
 ]

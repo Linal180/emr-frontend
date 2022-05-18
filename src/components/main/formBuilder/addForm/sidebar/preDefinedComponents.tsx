@@ -17,7 +17,7 @@ import { ActionType } from '../../../../../reducers/formBuilderReducer';
 export const PreDefinedComponents = ({ dispatch, formState }: PredefinedComponentsProps) => {
   const classes = useFormBuilderSidebarStyles()
   const { preDefinedComponent } = formState || {}
-  
+
 
   const [getAllPreDefinedComponent, { loading, error }] = useFindAllFormsLazyQuery({
     onCompleted: (data) => {
@@ -48,7 +48,7 @@ export const PreDefinedComponents = ({ dispatch, formState }: PredefinedComponen
   }, [getAllPreDefinedComponent])
 
   useEffect(() => {
-     preDefinedComponent?.length <= 0 && fetchAllForms()
+    preDefinedComponent?.length <= 0 && fetchAllForms()
   }, [preDefinedComponent, fetchAllForms]);
 
   return (
@@ -80,10 +80,6 @@ export const PreDefinedComponents = ({ dispatch, formState }: PredefinedComponen
                             }}
                             className={classes.dragContainer}
                           >
-                            {/* <Box marginRight={1} display="flex" alignItems="center">
-                            <item.icon />
-                          </Box> */}
-
                             <Typography variant='h6'>{name}</Typography>
                           </div>
 
