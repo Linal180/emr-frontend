@@ -1,12 +1,14 @@
 // packages block
 import { FC, useState } from "react";
-import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
+import HighchartsReact from "highcharts-react-official";
 // constant
 import { PRACTICES } from "../../../constants";
+import { PieChartProps } from "../../../interfacesTypes";
 
-const PieChart1Component: FC = (): JSX.Element => {
+
+const PieChart: FC<PieChartProps> = ({ practices }): JSX.Element => {
   const [pieChart1] = useState(
     {
       tooltip: { enabled: true },
@@ -66,10 +68,10 @@ const PieChart1Component: FC = (): JSX.Element => {
         type: 'pie',
         name: 'Practices',
         innerSize: '85%',
-        
+
         data: [
-          ['active', 85],
-          ['inactive', 15],
+          ['active', 100],
+          ['inactive', 0],
         ],
 
         states: {
@@ -87,4 +89,4 @@ const PieChart1Component: FC = (): JSX.Element => {
   )
 };
 
-export default PieChart1Component;
+export default PieChart;

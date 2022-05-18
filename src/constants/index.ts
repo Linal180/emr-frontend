@@ -610,6 +610,7 @@ export const END_TIME = "End Time";
 export const USER_NAME = "Username";
 export const CANCELLED = "Cancelled";
 export const CVV = "CVV";
+export const REGISTERED_ON = "Registered on";
 export const PAY = "Pay";
 export const EDIT = "Edit";
 export const CANCEL = "Cancel";
@@ -3327,39 +3328,6 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "5", name: '24 Hours' },
   { id: "6", name: '2 Days' },
   { id: "7", name: '7 Days' },
-]
-
-export const PRACTICES_TABLE_DATA = [
-  {
-    practiceName: "Our Lady's Hospital Navan",
-    adminName: 'Jenny Wilson',
-    email: 'danghoang87hl@gmail.com',
-    phone: '2085550112',
-  },
-  {
-    practiceName: 'University Hospital Kerry',
-    adminName: 'Courtney Henry',
-    email: 'nvt.isst.nute@gmail.com',
-    phone: '3075550133',
-  },
-  {
-    practiceName: 'Mercy University Hospital',
-    adminName: 'Kathryn Murphy',
-    email: 'ckctm12@gmail.com',
-    phone: '6715550110',
-  },
-  {
-    practiceName: 'Cavan General Hospital',
-    adminName: 'Albert Flores',
-    email: 'binhan628@gmail.com',
-    phone: '6845550102',
-  },
-  {
-    practiceName: 'Roscommon County Hospital',
-    adminName: 'Jerome Bell',
-    email: 'vuhaithuongnute@gmail.com',
-    phone: '3035550105',
-  },
 ]
 
 export const FACILITIES_LIST = [
