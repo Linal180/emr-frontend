@@ -9,7 +9,7 @@ import ConfirmationModal from "../../../../components/common/ConfirmationModal";
 // utils, styles  block, constants
 import history from "../../../../history";
 import { ParamsType } from "../../../../interfacesTypes";
-import { GRAY_FIVE, GREY_THREE, GREY_TWO, WHITE, WHITE_TWO } from '../../../../theme';
+import { GREY_ELEVEN, GREY_THREE, GREY_TWO, WHITE, WHITE_TWO } from '../../../../theme';
 import { confirmationStyles } from "../../../../styles/publicAppointmentStyles/confirmationStyles";
 import {
   AppointmentPayload, Appointmentstatus, useCancelAppointmentMutation, useGetAppointmentLazyQuery
@@ -131,7 +131,7 @@ const AppointmentConfirmationComponent: FC = (): JSX.Element => {
 
             </Box>
 
-            <Box py={3} p={3} bgcolor={GRAY_FIVE} display="flex" justifyContent="flex-end" flexWrap="wrap">
+            <Box py={3} p={3} bgcolor={GREY_ELEVEN} display="flex" justifyContent="flex-end" flexWrap="wrap">
               <Box mr={2} color={GREY_TWO}>
                 <Button type="submit" variant="text" color="inherit" className="muted"
                   onClick={() => handleCancelAppointment()}

@@ -517,8 +517,39 @@ body .MuiTabPanel-root {
   margin-bottom: 10px !important;
 }
 
-.phoneInputError {
-  border: 1px solid red !important;
-  background-color: #F3F4F6 !important;
-  border-radius: 4px !important;
+/* Dashboard-charts-styling */
+.chartContainer > div > div {
+  height: 300px !important;
+}
+
+.chartContainer svg {
+  height: 320px !important;
+  transform: scale(1.25) !important;
+}
+
+.barChart1Container text,
+.barChart3Container text  
+{
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
+.barChart1Container .highcharts-color-0,
+.barChart2Container .highcharts-color-0,
+.barChart3Container .highcharts-color-0,
+.barChart1Container .highcharts-legend-item,
+.barChart2Container .highcharts-legend-item,
+.barChart3Container .highcharts-legend-item,
+.barChart1Container .highcharts-axis,
+.barChart2Container .highcharts-axis,
+.barChart3Container .highcharts-axis
+{
+  display: none !important;
+}
+
+.barChart1Container .highcharts-axis-labels text, 
+.barChart2Container .highcharts-axis-labels text,
+.barChart3Container .highcharts-axis-labels text
+{
+  font-weight: 600 !important;
 }

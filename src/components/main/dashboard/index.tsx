@@ -26,6 +26,7 @@ const DashboardComponent: FC = (): JSX.Element => (
     <Box display="flex" justifyContent="flex-end">
       <img src={DASHBOARD_IMAGE} alt="" />
     </Box>
+    
   </Box>
 );
 

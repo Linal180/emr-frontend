@@ -616,7 +616,18 @@ export const USER_ID = "User ID";
 export const PATIENT = "Patient";
 export const DOCUMENT = "Document";
 export const PRACTICE = "Practice";
+export const PRACTICES = "Practices";
+export const MEDICAL_BILLING = "Medical Billing";
+export const TOTAL_CLAIM_TEXT = "7900 Claim in Total";
+export const PRACTICE_REGISTRATIONS = "Practice Registrations";
+export const RECENTLY_ADDED_FACILITIES = "Recently Added Facilities";
+export const CLAIMS_REQUIRING_ACTION = "Claims Requiring Action";
+export const CLAIM_AMOUNT_TO_PROCESS = "Claim Amount to Process";
 export const NO_RECORDS = "No Records";
+export const CLAIM_RECEIVED = "Claim Received";
+export const CLAIM_IN_PROCESS = "Claims in Process";
+export const VIEW_FACILITIES = "View Facilities";
+export const VIEW_PATIENTS = "View Patients";
 export const IN_PROGRESS = "In Progress";
 export const LAST_NAME = "Last Name";
 export const BILLING_TEXT = "Billing";
@@ -704,6 +715,10 @@ export const DELETE_REQUEST = "Delete Request";
 export const REQUEST_DETAIL = "Request Detail";
 export const REQUEST_STATUS = "Request Status";
 export const TEST_DATE_TIME = "Test Date/Time";
+export const QUICK_ACTIONS = "Quick Actions";
+export const CREATE_PRACTICE = "Create Practice";
+export const VIEW_BILLING = "View Billing";
+export const SEARCH_PATIENT = "Search Patient";
 export const TEST_DATE = "Test Date";
 export const TEST_TIME = "Test Time";
 export const TEST_NOTES = "Test Notes";
@@ -726,8 +741,10 @@ export const STATE_IMMUNIZATION_ID = "State Immunization ID";
 export const BILLING_PERMISSIONS_TEXT = "Billing Permissions";
 export const PRACTICE_PERMISSIONS_TEXT = "Practice Permissions";
 export const FACILITY_PERMISSIONS_TEXT = "Facility Permissions";
+export const TOTAL_USERS_PER_PRACTICE = "Total Users Per Practice";
 export const APPOINTMENT_PERMISSIONS_TEXT = "Appointment Permissions";
 export const MISCELLANEOUS_PERMISSIONS_TEXT = "Miscellaneous Permissions";
+export const TOTAL_FACILITIES_PER_PRACTICE = "Total Facilities Per Practice";
 export const US_DATE_FORMAT = "mm/dd/yyyy";
 export const USD = "USD";
 export const SEX = "Sex";
@@ -1051,6 +1068,8 @@ export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
+export const SUPER_ADMIN_DASHBOARD_ROUTE = "/dashboard1";
+export const PRACTICE_ADMIN_DASHBOARD_ROUTE = "/dashboard2";
 export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
@@ -3326,6 +3345,65 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "7", name: '7 Days' },
 ]
 
+export const PRACTICES_TABLE_DATA = [
+  {
+    practiceName: "Our Lady's Hospital Navan",
+    adminName: 'Jenny Wilson',
+    email: 'danghoang87hl@gmail.com',
+    phone: '2085550112',
+  },
+  {
+    practiceName: 'University Hospital Kerry',
+    adminName: 'Courtney Henry',
+    email: 'nvt.isst.nute@gmail.com',
+    phone: '3075550133',
+  },
+  {
+    practiceName: 'Mercy University Hospital',
+    adminName: 'Kathryn Murphy',
+    email: 'ckctm12@gmail.com',
+    phone: '6715550110',
+  },
+  {
+    practiceName: 'Cavan General Hospital',
+    adminName: 'Albert Flores',
+    email: 'binhan628@gmail.com',
+    phone: '6845550102',
+  },
+  {
+    practiceName: 'Roscommon County Hospital',
+    adminName: 'Jerome Bell',
+    email: 'vuhaithuongnute@gmail.com',
+    phone: '3035550105',
+  },
+]
+
+export const FACILITIES_LIST = [
+  {
+    shortName: "NH",
+    fullName: "National Hospital",
+  },
+  {
+    shortName: "EC",
+    fullName: "Eye Care Center",
+  },
+  {
+    shortName: "MS",
+    fullName: "Medix Premium Care Services",
+  },
+  {
+    shortName: "HL",
+    fullName: "Horizon Labs",
+  },
+  {
+    shortName: "CC",
+    fullName: "City Medical Center",
+  },
+  {
+    shortName: "HL",
+    fullName: "Horizon Labs",
+  },
+]
 export enum VITAL_LABELS {
   createdAt = "",
   pulseRate = 'Pulse (bpm)',

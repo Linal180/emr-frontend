@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLACK, BLACK_THREE, BLUE, GRAY_FIVE, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX, BLUE_ONE } from "../theme";
+import { BLACK, BLACK_THREE, BLUE, GREY_ELEVEN, GREY_SEVEN, WHITE, WHITE_FOUR, GRAY_SIX,BLUE_ONE  } from "../theme";
 
 export const useHeaderStyles = makeStyles((theme) => ({
   menuButton: {
@@ -88,7 +88,7 @@ export const useHeaderStyles = makeStyles((theme) => ({
   },
 
   dropdownMenuBar: {
-    backgroundColor: GRAY_FIVE,
+    backgroundColor: GREY_ELEVEN,
     borderRadius: 5,
   },
 
