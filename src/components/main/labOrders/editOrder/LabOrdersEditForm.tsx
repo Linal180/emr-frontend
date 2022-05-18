@@ -344,7 +344,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
                   label={DIAGNOSES}
                   name="diagnosesIds"
                   defaultValues={diagnosesIds}
-                  // defaultValues={[]}
                 />
               </Grid>
             </Grid>
@@ -352,7 +351,6 @@ const LabOrdersEditForm: FC<GeneralFormProps> = (): JSX.Element => {
         </Card>
 
         {testFields.map((testField, index) => {
-          console.log("testField",testField)
           return (
             <Card>
               <Box p={2}>

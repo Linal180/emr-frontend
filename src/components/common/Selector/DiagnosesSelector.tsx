@@ -74,7 +74,6 @@ const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label,
       control={control}
       defaultValue={options}
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
-        console.log(invalid, message,field,"error")
         return (
           <FormControl margin="normal" fullWidth error={Boolean(invalid)}>
             <Box position="relative">
