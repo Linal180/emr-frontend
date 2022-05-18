@@ -21,8 +21,7 @@ import {
 
 const TwoFaAuthenticationComponent = (): JSX.Element => {
   const { setIsLoggedIn } = useContext(AuthContext)
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
+  const token = localStorage.getItem(FA_TOKEN);
   const { fetchAllFacilityList } = useContext(ListContext)
   const classes = useHeaderStyles()
   const methods = useForm<VerifyCodeInputProps>({
@@ -79,7 +78,6 @@ const TwoFaAuthenticationComponent = (): JSX.Element => {
 
   const onSubmit: SubmitHandler<VerifyCodeInputProps> = async (inputs) => {
     const { otpCode } = inputs
-
 
     token && await verifyOtp({
       variables: {
