@@ -1,6 +1,7 @@
 // packages block
 import { FC, Reducer, useReducer, MouseEvent, useState, useCallback } from 'react';
-import { Box, CircularProgress, IconButton, InputBase, Menu, Typography } from '@material-ui/core';
+import { Box, Button, CircularProgress, IconButton, InputBase, Menu, Typography } from '@material-ui/core';
+import { Add as AddIcon, } from '@material-ui/icons'
 // component block
 import ProblemModal from '../problems/modals/ProblemModal';
 import AllergyModal from '../allergies/modals/AllergyModal';
@@ -12,7 +13,7 @@ import { ClearIcon, NoDataIcon, SmallSearchIcon } from '../../../../assets/svgs'
 import { usePatientChartingStyles } from "../../../../styles/patientCharting";
 import { chartReducer, Action, initialState, State, ActionType } from "../../../../reducers/chartReducer";
 import {
-  CARD_LAYOUT_MODAL, NO_RECORDS, SEARCH_FOR_ALLERGIES, SEARCH_FOR_ICD_CODES, TYPE
+  ADD_ALLERGY, CARD_LAYOUT_MODAL, NO_RECORDS, SEARCH_FOR_ALLERGIES, SEARCH_FOR_ICD_CODES, TYPE
 } from '../../../../constants';
 
 const FilterSearch: FC<FilterSearchProps> = (
@@ -109,10 +110,16 @@ const FilterSearch: FC<FilterSearchProps> = (
             <NoDataIcon />
 
             <Typography variant="h6">{NO_RECORDS}</Typography>
-            {searchQuery && modal === CARD_LAYOUT_MODAL.Allergies && <Box onClick={(event) => handleNewAllergy(event)}>
-              <Typography>Add new allergy</Typography>
-            </Box>
-            }
+
+            <Box p={1} />
+            
+            {searchQuery && modal === CARD_LAYOUT_MODAL.Allergies && 
+              <Button type="submit" size='small' variant='contained' color='primary'
+                onClick={(event) => handleNewAllergy(event)}
+                startIcon={<AddIcon />}  
+              >
+                {ADD_ALLERGY}
+              </Button> }
           </Box>)
       }
     </Box>

@@ -78,7 +78,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                     <Grid item md={4} sm={12} xs={12}>
                       <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
                         <BillingCardIcon />
-                        <Box p={0.2} />
+                        <Box p={0.7} />
                         <Typography variant="h6">{VIEW_BILLING}</Typography>
                       </Box>
                     </Grid>

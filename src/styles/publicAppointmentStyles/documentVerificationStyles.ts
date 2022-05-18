@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { GREY_SEVEN, WHITE, } from "../../theme";
+import { BLUE, GREY_SEVEN, WHITE, } from "../../theme";
 
 export const documentVerificationFormStyles = makeStyles({
   dropZoneContainer: {
@@ -41,7 +41,7 @@ export const documentVerificationFormStyles = makeStyles({
     cursor: "pointer",
     top: 10,
     right: 40,
-    position: "absolute"
+    position: "absolute",
   }
 });
 
