@@ -316,7 +316,7 @@ const DocumentsTable: FC = (): JSX.Element => {
                               margin={'none'}
                               onBlur={() => handleSubmit(onSubmit)}
                             />
-                            <Button type='submit'>save</Button>
+                            {/* <Button type='submit'>save</Button> */}
                           </>
                             : <Box onClick={() => handleEdit(id || '', attachmentName || '')}>
                               {filteredFileName}
