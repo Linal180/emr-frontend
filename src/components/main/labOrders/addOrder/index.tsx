@@ -2,7 +2,7 @@
 import clsx from 'clsx';
 import { Box, Card, Grid, Step, StepIconProps, StepLabel, Stepper, Typography } from '@material-ui/core';
 import { FC, useState } from 'react';
-import { CREATE_LAB_ORDER, LAB_ORDER_STEPS } from '../../../../constants';
+import { LAB_ORDER, LAB_ORDER_STEPS } from '../../../../constants';
 import { CheckInConnector, useCheckInStepIconStyles } from '../../../../styles/checkInStyles';
 import PageHeader from '../../../common/PageHeader';
 import LabOrdersCreateForm from './LabOrdersCreateForm';
@@ -48,7 +48,7 @@ export const AddLabOrdersComponent: FC = (): JSX.Element => {
 
   return (
     <>
-       <PageHeader title={CREATE_LAB_ORDER} />
+       <PageHeader title={LAB_ORDER} />
        <Card>
           <Box p={2}>
             <Grid container spacing={3} justifyContent="center">

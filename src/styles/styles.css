@@ -477,14 +477,15 @@ body .MuiTabPanel-root {
 }
 
 
-.selectorClassTwo > div:first-of-type {
+.selectorClassTwo>div:first-of-type {
   border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;
   border-radius: 4px !important;
   min-height: 48px !important;
 }
 
-.selectorClassTwo svg, .selectorClassTwo span {
+.selectorClassTwo svg,
+.selectorClassTwo span {
   color: #202020 !important;
 }
 
@@ -521,4 +522,8 @@ body .MuiTabPanel-root {
   border: 1px solid red !important;
   background-color: #F3F4F6 !important;
   border-radius: 4px !important;
+}
+
+.overflowVisible {
+  overflow: visible !important;
 }
