@@ -9,7 +9,7 @@ import { IcdCodesPayload, useSearchIcdCodesLazyQuery } from '../../../generated/
 import { renderIcdCodes, requiredLabel } from '../../../utils';
 import { INITIAL_PAGE_LIMIT, LIST_PAGE_LIMIT } from '../../../constants';
 
-const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, isRequired, defaultValues }) => {
+const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label, margin, isRequired, defaultValues }): JSX.Element => {
   const { control, setValue } = useFormContext();
   const [options, setOptions] = useState<multiOptionType[]>([])
   const [values, setValues] = useState<multiOptionType[]>([])
@@ -76,7 +76,7 @@ const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label,
       render={({ field, fieldState: { invalid, error: { message } = {} } }) => {
         console.log(invalid, message,field,"error")
         return (
-          <FormControl margin="normal" fullWidth error={Boolean(invalid)}>
+          <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
             <Box position="relative">
               <InputLabel id={`${name}-autocomplete`} shrink>
                 {isRequired ? requiredLabel(label) : label}
@@ -88,7 +88,6 @@ const DiagnosesSelector: FC<ReactionSelectorInterface> = ({ name, isEdit, label,
               isMulti
               name={name}
               defaultValue={options}
-              id="selectedId"
               options={options}
               value={values}
               onChange={(newValue) => {

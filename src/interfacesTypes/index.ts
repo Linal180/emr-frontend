@@ -1263,6 +1263,7 @@ export interface ReactionSelectorInterface {
   selectDisabled?: boolean
   selectedOptions?: string
   defaultValues?: multiOptionType[]
+  margin?: MuiPropsTypes.Margin
   setFieldValue?: Function
 }
 
