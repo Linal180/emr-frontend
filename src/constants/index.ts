@@ -626,6 +626,7 @@ export const RECENTLY_ADDED_FACILITIES = "Recently Added Facilities";
 export const CLAIMS_REQUIRING_ACTION = "Claims Requiring Action";
 export const CLAIM_AMOUNT_TO_PROCESS = "Claim Amount to Process";
 export const NO_RECORDS = "No Records";
+export const ADD_ALLERGY = "Add Allergy";
 export const CLAIM_RECEIVED = "Claim Received";
 export const CLAIM_IN_PROCESS = "Claims in Process";
 export const VIEW_FACILITIES = "View Facilities";

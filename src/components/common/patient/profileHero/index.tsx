@@ -251,7 +251,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
               <Box display='flex' alignItems='baseline' flexWrap='wrap'>
                 {!isChart && <Box pr={1}>
-                  <Button color="primary" variant="contained" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                  <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
                     {EDIT_PATIENT}
                   </Button>
                 </Box>}
