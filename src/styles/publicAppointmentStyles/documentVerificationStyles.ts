@@ -41,7 +41,7 @@ export const documentVerificationFormStyles = makeStyles({
     cursor: "pointer",
     top: 10,
     right: 40,
-    position: "absolute"
+    position: "absolute",
   }
 });
 

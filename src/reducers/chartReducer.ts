@@ -3,6 +3,8 @@ import { multiOptionType } from "../interfacesTypes";
 
 export interface State {
   itemId: string;
+  searchQuery: string;
+  newRecord: string;
   selectedReactions: multiOptionType[]
   reactionList: ReactionsPayload['reactions'];
   selectedItem: Allergies | IcdCodes | undefined;
@@ -14,6 +16,8 @@ export interface State {
 
 export const initialState: State = {
   itemId: '',
+  searchQuery: '',
+  newRecord: '',
   selectedReactions: [],
   reactionList: [],
   selectedItem: undefined,
@@ -25,6 +29,8 @@ export const initialState: State = {
 
 export enum ActionType {
   SET_ITEM_ID = 'setItemId',
+  SET_SEARCH_QUERY = 'setSearchQuery',
+  SET_NEW_RECORD = 'setNewRecord',
   SET_SELECTED_ITEM = 'setSelectedItem',
   SET_REACTION_PAGE = 'setReactionPage',
   SET_REACTION_LIST = 'setReactionList',
@@ -39,6 +45,8 @@ export type Action =
   | { type: ActionType.SET_REACTION_LIST, reactionList: ReactionsPayload['reactions'] }
   | { type: ActionType.SET_REACTION_PAGE, reactionPage: number }
   | { type: ActionType.SET_ITEM_ID, itemId: string }
+  | { type: ActionType.SET_NEW_RECORD, newRecord: string }
+  | { type: ActionType.SET_SEARCH_QUERY, searchQuery: string }
   | { type: ActionType.SET_SELECTED_ITEM, selectedItem: Allergies | IcdCodes | undefined }
   | { type: ActionType.SET_IS_SEARCH_OPEN, isSearchOpen: HTMLElement | null }
   | { type: ActionType.SET_IS_FORM_OPEN, isFormOpen: HTMLElement | null }
@@ -57,6 +65,18 @@ export const chartReducer = (state: State, action: Action): State => {
       return {
         ...state,
         itemId: action.itemId
+      }
+
+      case ActionType.SET_NEW_RECORD:
+        return {
+          ...state,
+          newRecord: action.newRecord
+        }
+
+    case ActionType.SET_SEARCH_QUERY:
+      return {
+        ...state,
+        searchQuery: action.searchQuery
       }
 
     case ActionType.SET_SELECTED_REACTIONS:

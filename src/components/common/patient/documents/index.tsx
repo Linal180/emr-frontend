@@ -21,7 +21,9 @@ import { AuthContext } from "../../../../context";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { attachmentNameUpdateSchema } from "../../../../validationSchemas";
 import { ParamsType, UpdateAttachmentDataInputs } from "../../../../interfacesTypes";
-import { getFormattedDate, getTimestamps, isAdmin, renderTh, signedDateTime } from "../../../../utils";
+import {
+  getFormattedDate, getTimestamps, isSuperAdmin, renderTh, signedDateTime
+} from "../../../../utils";
 import {
   mediaReducer, Action, initialState, State, ActionType
 } from "../../../../reducers/mediaReducer";
@@ -42,7 +44,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   const { user, currentUser } = useContext(AuthContext)
   const { firstName, lastName } = currentUser || {}
   const { roles } = user || {}
-  const admin = isAdmin(roles)
+  const admin = isSuperAdmin(roles)
   const classes = useTableStyles()
   const methods = useForm<UpdateAttachmentDataInputs>({
     mode: "all",
@@ -50,7 +52,7 @@ const DocumentsTable: FC = (): JSX.Element => {
   });
   const { setValue, handleSubmit } = methods;
   const [{
-    isEdit, preSignedUrl, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
+    isEdit, attachmentsData, attachmentId, attachmentUrl, attachmentData, openDelete,
     deleteAttachmentId, documentTab, openSign, providerName
   }, dispatch] =
     useReducer<Reducer<State, Action>>(mediaReducer, initialState)
@@ -72,6 +74,7 @@ const DocumentsTable: FC = (): JSX.Element => {
 
         if (preSignedUrl) {
           window.open(preSignedUrl);
+
           preSignedUrl && dispatch({ type: ActionType.SET_PRE_SIGNED_URL, preSignedUrl })
         }
       }
@@ -191,13 +194,9 @@ const DocumentsTable: FC = (): JSX.Element => {
   }
 
   const handleDownload = async (id: string) => {
-    if (preSignedUrl) {
-      window.open(preSignedUrl)
-    } else {
-      id && getAttachment({
-        variables: { getMedia: { id } }
-      })
-    }
+    id && getAttachment({
+      variables: { getMedia: { id } }
+    })
   }
 
   const handleEdit = (attachmentId: string, name: string) => {

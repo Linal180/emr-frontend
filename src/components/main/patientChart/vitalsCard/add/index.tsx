@@ -17,7 +17,7 @@ import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsSt
 import {
   celsiusToFahrenheit, centimeterToInches, centimeterToMeter, fahrenheitToCelsius, getBMI, getCurrentDate,
   getDefaultHead, getDefaultHeight, getDefaultTemp, getDefaultWeight, inchesToCentimeter, inchesToMeter,
-  kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, renderTh,
+  kilogramToOunce, kilogramToPounds, ounceToKilogram, ounceToPounds, poundsToKilogram, poundsToOunce, renderTh, roundOffUpto2Decimal,
 } from '../../../../../utils'
 import { patientVitalSchema } from '../../../../../validationSchemas';
 import Alert from '../../../../common/Alert';
@@ -81,8 +81,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
             patientId, weightUnit: WeightType.Kg, unitType: UnitType.Inch, temperatureUnitType: TempUnitType.DegF,
             headCircumference: HeadCircumferenceType.Inch, respiratoryRate, diastolicBloodPressure, PainRange,
             systolicBloodPressure, oxygenSaturation, PatientHeight, PatientWeight, PatientBMI, pulseRate,
-            patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature
-            , vitalCreationDate: new Date().toUTCString()
+            patientHeadCircumference, smokingStatus: smokingStatusLabel as SmokingStatus, patientTemperature,
+            vitalCreationDate: new Date().toUTCString()
           }
         }
       })
@@ -130,8 +130,8 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
         break;
     }
 
-    const bmi = getBMI(weight, height)
-    bmi && setValue('PatientBMI', bmi?.toString())
+    const bmi = roundOffUpto2Decimal(getBMI(weight, height))
+    bmi && setValue('PatientBMI', bmi)
   }, [PatientWeight, PatientHeight, heightUnit, weightUnit, setValue])
 
   useMemo(() => {
@@ -145,13 +145,13 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
       const patientHeight = parseFloat(PatientHeight);
 
       if (prevHeightUnit === UnitType.Inch && heightUnitType === UnitType.Centimeter) {
-        const height = inchesToCentimeter(patientHeight)
-        height && setValue('PatientHeight', height?.toString())
+        const height = roundOffUpto2Decimal(inchesToCentimeter(patientHeight))
+        height && setValue('PatientHeight', height)
       }
 
       else if (prevHeightUnit === UnitType.Centimeter && heightUnitType === UnitType.Inch) {
-        const height = centimeterToInches(patientHeight)
-        height && setValue('PatientHeight', height?.toString())
+        const height = roundOffUpto2Decimal(centimeterToInches(patientHeight))
+        height && setValue('PatientHeight', height)
       }
     }
   }, [prevHeightUnit, heightUnit, PatientHeight, setValue, dispatcher])
@@ -167,28 +167,28 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
       const patientWeight = parseFloat(PatientWeight);
 
       if (prevWeightUnit === WeightType.Kg && weightUnitType === WeightType.Pound) {
-        const weight = kilogramToPounds(patientWeight)
-        setValue('PatientWeight', weight.toString())
+        const weight = roundOffUpto2Decimal(kilogramToPounds(patientWeight))
+        setValue('PatientWeight', weight)
       }
       else if (prevWeightUnit === WeightType.Kg && weightUnitType === WeightType.PoundOunce) {
-        const weight = kilogramToOunce(patientWeight)
-        setValue('PatientWeight', weight.toString())
+        const weight = roundOffUpto2Decimal(kilogramToOunce(patientWeight))
+        setValue('PatientWeight', weight)
       }
       else if (prevWeightUnit === WeightType.Pound && weightUnitType === WeightType.Kg) {
-        const weight = poundsToKilogram(patientWeight)
-        setValue('PatientWeight', weight.toString())
+        const weight = roundOffUpto2Decimal(poundsToKilogram(patientWeight))
+        setValue('PatientWeight', weight)
       }
       else if (prevWeightUnit === WeightType.Pound && weightUnitType === WeightType.PoundOunce) {
-        const weight = poundsToOunce(patientWeight)
-        setValue('PatientWeight', weight.toString())
+        const weight = roundOffUpto2Decimal(poundsToOunce(patientWeight))
+        setValue('PatientWeight', weight)
       }
       else if (prevWeightUnit === WeightType.PoundOunce && weightUnitType === WeightType.Kg) {
-        const weight = ounceToKilogram(patientWeight)
-        setValue('PatientWeight', weight.toString())
+        const weight = roundOffUpto2Decimal(ounceToKilogram(patientWeight))
+        setValue('PatientWeight', weight)
       }
       else if (prevWeightUnit === WeightType.PoundOunce && weightUnitType === WeightType.Pound) {
-        const weight = ounceToPounds(patientWeight)
-        setValue('PatientWeight', weight.toString())
+        const weight = roundOffUpto2Decimal(ounceToPounds(patientWeight))
+        setValue('PatientWeight', weight)
       }
     }
   }, [prevWeightUnit, weightUnit, PatientWeight, setValue, dispatcher])
@@ -204,13 +204,13 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
       const patientHead = parseFloat(patientHeadCircumference);
 
       if (prevHeadUnit === HeadCircumferenceType.Inch && headUnitType === HeadCircumferenceType.Centimeter) {
-        const head = inchesToCentimeter(patientHead)
-        head && setValue('patientHeadCircumference', head?.toString())
+        const head = roundOffUpto2Decimal(inchesToCentimeter(patientHead))
+        head && setValue('patientHeadCircumference', head)
       }
 
       else if (prevHeadUnit === HeadCircumferenceType.Centimeter && headUnitType === HeadCircumferenceType.Inch) {
-        const head = centimeterToInches(patientHead)
-        head && setValue('patientHeadCircumference', head?.toString())
+        const head = roundOffUpto2Decimal(centimeterToInches(patientHead))
+        head && setValue('patientHeadCircumference', head)
       }
     }
   }, [patientHeadCircumference, headCircumferenceUnit, prevHeadUnit, setValue, dispatcher])
@@ -225,13 +225,13 @@ export const AddVitals = memo(({ fetchPatientAllVitals, patientStates, dispatche
       const { id: feverUnitType } = feverUnit || {}
       const patientTemp = parseFloat(patientTemperature);
       if (prevFeverUnit === TempUnitType.DegF && feverUnitType === TempUnitType.DegC) {
-        const temp = fahrenheitToCelsius(patientTemp)
-        temp && setValue('patientTemperature', temp?.toString())
+        const temp = roundOffUpto2Decimal(fahrenheitToCelsius(patientTemp))
+        temp && setValue('patientTemperature', temp)
       }
 
       else if (prevFeverUnit === TempUnitType.DegC && feverUnitType === TempUnitType.DegF) {
-        const temp = celsiusToFahrenheit(patientTemp)
-        temp && setValue('patientTemperature', temp?.toString())
+        const temp = roundOffUpto2Decimal(celsiusToFahrenheit(patientTemp))
+        temp && setValue('patientTemperature', temp)
       }
     }
   }, [patientTemperature, dispatcher, feverUnit, prevFeverUnit, setValue])
