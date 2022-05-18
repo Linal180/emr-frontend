@@ -7,7 +7,7 @@ import PracticesTableComponent from "./tables/practicesTable";
 import { BillingCardIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon } from "../../../assets/svgs";
 // constant
 import {
-  ACTIVE, CREATE_PRACTICE, INACTIVE, PRACTICES, PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE,
+  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE,
   TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, VIEW_BILLING
 } from "../../../constants";
 // styles
@@ -17,11 +17,12 @@ import PieChart1Component from "../../common/charts/pieChart1";
 import BarChart1Component from "../../common/charts/barChart1";
 import BarChart2Component from "../../common/charts/barChart2";
 import BarChart3Component from "../../common/charts/barChart3";
+import history from "../../../history";
 
 const SuperAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {};
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => { };
 
   return (
     <>
@@ -65,7 +66,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                 <Grid item md={9} sm={12} xs={12}>
                   <Grid container spacing={3} justifyContent="center">
                     <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox}>
+                      <Box className={classes.cardBox} onClick={() => history.push(`${PRACTICE_MANAGEMENT_ROUTE}/new`)}>
                         <PlusRoundIcon />
                         <Box p={0.7} />
                         <Typography variant="h6">{CREATE_PRACTICE}</Typography>
@@ -75,7 +76,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                     <Box p={1} />
 
                     <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox}>
+                      <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
                         <BillingCardIcon />
                         <Box p={0.2} />
                         <Typography variant="h6">{VIEW_BILLING}</Typography>

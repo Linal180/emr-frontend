@@ -66,7 +66,7 @@ const LoginComponent = (): JSX.Element => {
                 history.push(DASHBOARD_ROUTE);
               } else {
                 access_2fa_token && localStorage.setItem(FA_TOKEN, access_2fa_token);
-                history.push(`${TWO_FA_AUTHENTICATION_ROUTE}?token=${access_2fa_token}`);
+                history.push(TWO_FA_AUTHENTICATION_ROUTE);
               } 
             } else {
               Alert.error(NOT_SUPER_ADMIN_MESSAGE)
