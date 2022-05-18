@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/core";
-import { BLUE, GREY_SEVEN, WHITE, } from "../../theme";
+import { GREY_SEVEN, WHITE, } from "../../theme";
 
 export const documentVerificationFormStyles = makeStyles({
   dropZoneContainer: {
