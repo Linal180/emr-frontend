@@ -2662,27 +2662,11 @@ export const INVENTORY_ITEMS = [
   },
 ];
 
-export const SERVICES_ITEMS = [
-  {
-    name: FACILITY_SERVICES_TEXT,
-    link: "/",
-    desc: FACILITY_SERVICES_DESCRIPTION,
-  },
-];
-
 export const APPOINTMENT_SETTINGS_ITEMS = [
   {
     name: CANCELLED_APPOINTMENT,
     link: "/",
     desc: CANCELLED_APPOINTMENT_DESCRIPTION,
-  },
-];
-
-export const CALENDAR_SETTINGS_ITEMS = [
-  {
-    name: FACILITY_SCHEDULE,
-    link: "/",
-    desc: FACILITY_SCHEDULE_DESCRIPTION,
   },
 ];
 
