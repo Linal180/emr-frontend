@@ -1,4 +1,4 @@
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, Fragment } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 // components block
@@ -26,7 +26,7 @@ import {
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
   const classes = useProfileDetailsStyles();
   const { id } = useParams<ParamsType>();
-  const [{ patientData }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [{ patientData, isNoteOpen }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -242,14 +242,20 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                       <Typography variant="body1">{item.description}</Typography>
                     </Box>
                   ))}
-                  <Tooltip open={true} placement="bottom-start" title="Add">
-                  <Box display="flex" flexWrap="wrap" className={classes.profileInfoItem} onClick={()=>{}}>
-                    <Box><NotesCardIcon /></Box>
-                    <Box display="flex" alignItems="center">
-                      <Typography variant="body1">{NOTES} </Typography>
-                      <RedCircleIcon />
+                  <Tooltip open={isNoteOpen} placement="bottom-start" title={
+                    <Fragment>
+                      <Typography color="inherit">Tooltip with HTML</Typography>
+                      <em>{"And here's"}</em> <b>{'some'}</b> <u>{'amazing content'}</u>.{' '}
+                      {"It's very engaging. Right?"}
+                    </Fragment>
+                  }>
+                    <Box display="flex" flexWrap="wrap" className={classes.profileInfoItem} onClick={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: !isNoteOpen })}>
+                      <Box><NotesCardIcon /></Box>
+                      <Box display="flex" alignItems="center">
+                        <Typography variant="body1">{NOTES} </Typography>
+                        <RedCircleIcon />
+                      </Box>
                     </Box>
-                  </Box>
                   </Tooltip>
                 </Box>
 

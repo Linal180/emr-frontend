@@ -57,6 +57,7 @@ export interface State {
   feverUnit: { id: TempUnitType, name: string };
   prevFeverUnit: TempUnitType;
   isTempEdit: boolean;
+  isNoteOpen: boolean
 }
 
 export const initialState: State = {
@@ -109,7 +110,8 @@ export const initialState: State = {
   isHeadEdit: false,
   feverUnit: { id: TempUnitType.DegF, name: formatValue(TempUnitType.DegF) },
   prevFeverUnit: TempUnitType.DegF,
-  isTempEdit: false
+  isTempEdit: false,
+  isNoteOpen: false
 }
 
 export enum ActionType {
@@ -160,6 +162,7 @@ export enum ActionType {
   SET_EDIT_WEIGHT = 'setEditWeight',
   SET_EDIT_HEIGHT = 'setEditHeight',
   SET_EDIT_HEAD = 'setEditHead',
+  SET_NOTE_OPEN = 'setNoteOpen'
 }
 
 export type Action =
@@ -211,6 +214,7 @@ export type Action =
   | { type: ActionType.SET_EDIT_HEIGHT; isHeightEdit: boolean }
   | { type: ActionType.SET_EDIT_WEIGHT; isWeightEdit: boolean }
   | { type: ActionType.SET_EDIT_HEAD; isHeadEdit: boolean }
+  | { type: ActionType.SET_NOTE_OPEN; isNoteOpen: boolean }
 
 export const patientReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -483,6 +487,11 @@ export const patientReducer = (state: State, action: Action): State => {
       return {
         ...state,
         isTempEdit: action.isTempEdit
+      }
+    case ActionType.SET_NOTE_OPEN:
+      return {
+        ...state,
+        isNoteOpen: action.isNoteOpen
       }
   }
 };
