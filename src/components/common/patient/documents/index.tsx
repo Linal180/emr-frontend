@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { DefaultExtensionType } from "react-file-icon";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import {
-  Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Typography
+  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography
 } from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
@@ -316,7 +316,6 @@ const DocumentsTable: FC = (): JSX.Element => {
                               margin={'none'}
                               onBlur={() => handleSubmit(onSubmit)}
                             />
-                            {/* <Button type='submit'>save</Button> */}
                           </>
                             : <Box onClick={() => handleEdit(id || '', attachmentName || '')}>
                               {filteredFileName}
