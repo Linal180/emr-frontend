@@ -528,7 +528,9 @@ body .MuiTabPanel-root {
 }
 
 .barChart1Container text,
-.barChart3Container text  
+.barChart3Container text ,
+.barChart4Container text,
+.barChart5Container text   
 {
   color: #ffffff !important;
   fill: #ffffff !important;
@@ -539,17 +541,47 @@ body .MuiTabPanel-root {
 .barChart3Container .highcharts-color-0,
 .barChart1Container .highcharts-legend-item,
 .barChart2Container .highcharts-legend-item,
-.barChart3Container .highcharts-legend-item,
-.barChart1Container .highcharts-axis,
-.barChart2Container .highcharts-axis,
-.barChart3Container .highcharts-axis
+.barChart3Container .highcharts-legend-item
 {
   display: none !important;
 }
 
 .barChart1Container .highcharts-axis-labels text, 
 .barChart2Container .highcharts-axis-labels text,
-.barChart3Container .highcharts-axis-labels text
+.barChart3Container .highcharts-axis-labels text,
+.barChart4Container .highcharts-axis-labels text,
+.barChart5Container .highcharts-axis-labels text,
+.barChart6Container .highcharts-axis-labels text
 {
   font-weight: 600 !important;
 }
+.barChart4Container .highcharts-grid-line,
+.barChart5Container .highcharts-grid-line
+{
+  display: none !important;
+}
+.barChart4Container .highcharts-axis,
+.barChart5Container .highcharts-axis,
+.barChart1Container .highcharts-axis
+{
+  display: none !important;
+}
+ 
+.Recent-Activity-Timeline 
+.MuiTimelineItem-missingOppositeContent:before {
+    display: none;
+}
+.Recent-Activity-Timeline p{
+  color: #7E8299;
+}
+
+.Recent-Activity-Timeline 
+.MuiTimelineDot-root {
+   border-width: 4px;
+}
+
+.Recent-Activity-Timeline  .MuiTimelineConnector-root{
+background: #E5EAEE;
+}
+
+ 

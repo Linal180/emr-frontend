@@ -1,6 +1,12 @@
 // packages block
 import { ChangeEvent, FC } from "react";
 import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
+import Timeline from '@material-ui/lab/Timeline';
+import TimelineItem from '@material-ui/lab/TimelineItem';
+import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
+import TimelineConnector from '@material-ui/lab/TimelineConnector';
+import TimelineContent from '@material-ui/lab/TimelineContent';
+import TimelineDot from '@material-ui/lab/TimelineDot';
 // component
 import Search from "../../common/Search";
 // svgs block
@@ -12,13 +18,15 @@ import {
 import {
   CLAIMS_REQUIRING_ACTION, CLAIM_AMOUNT_TO_PROCESS, CLAIM_IN_PROCESS, CLAIM_RECEIVED, EMERGENCY_ACCESS, FACILITIES_LIST, 
   MEDICAL_BILLING, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT, SEARCH_PLACEHOLDER, 
-  TOTAL_CLAIM_TEXT, VIEW_FACILITIES, VIEW_PATIENTS
+  TOTAL_CLAIM_TEXT, VIEW_FACILITIES, VIEW_PATIENTS, EMERGENCY_ACCESS_LOG,EMERGENCY_LOG_LIST, RECENT_ACTIVITIES
 } from "../../../constants";
 // styles
 import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { BLUE, BLUE_SEVEN, GREEN_ONE, GREY_SEVEN, RED_ONE, WHITE } from "../../../theme";
-import PieChart1Component from "../../common/charts/pieChart1";
-
+import { BLUE, BLUE_SEVEN, GREEN_ONE, GREY_SEVEN, RED_ONE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, BLUE_EIGHT } from "../../../theme";
+import PieChart2Component from "../../common/charts/pieChart2";
+import BarChart4Component from "../../common/charts/barChart4";
+import BarChart5Component from "../../common/charts/barChart5";
+import BarChart6Component from "../../common/charts/barChart6";
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
 
@@ -98,7 +106,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
               </IconButton>
             </Box>
 
-            <PieChart1Component />
+            <PieChart2Component />
 
             <Box px={4} mt={2} mb={3}>
               <Grid container spacing={3}>
@@ -173,7 +181,6 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 <Typography variant="h5">{QUICK_ACTIONS}</Typography>
               </Box>
             </Box>
-
             <Box className={classes.cardContainer}>
               <Grid container justifyContent="center">
                 <Grid item md={9} sm={12} xs={12}>
@@ -228,6 +235,178 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
           </Card>
         </Grid>
       </Grid>
+      <Grid container spacing={3}>
+        <Grid item md={8}>
+             <Box p={2} />
+             <Card>
+                <Box px={3} pt={3} color={WHITE} bgcolor="#21E1D8" paddingBottom={3}>
+                  <Typography variant="h4"> Total Users Per Facility</Typography>
+                </Box>
+                <BarChart4Component />
+              </Card>
+              <Box p={2} />
+              <Card>
+                <Box px={3} pt={3} color={WHITE} bgcolor="#A075F8" paddingBottom={3}>
+                  <Typography variant="h4">Total User Per Role</Typography>
+                </Box>
+                <BarChart5Component />
+              </Card>
+              <Box p={2} />
+              <Card>
+                <Box className="appointmentsPerFacilityChartContainer">
+                  <Box px={3} pt={3} color={WHITE} bgcolor="#FF6A7A" >
+                    <Typography variant="h4">Appointments Per Facility</Typography>
+                  </Box>
+                  <BarChart6Component/>
+                </Box>
+              </Card>
+        </Grid>
+        <Grid item md={4}>
+          <Card style={{ paddingTop: '20px' }}>
+            <Box px={2} mb={2} display='flex' justifyContent='space-between' alignItems='center'>
+              <Typography variant="h5">{EMERGENCY_ACCESS_LOG}</Typography>
+
+              <IconButton>
+                <RedirectIcon />
+              </IconButton>
+            </Box>
+
+            {EMERGENCY_LOG_LIST.map((item) => {
+              return (
+                <Box px={2} mb={3} display='flex' alignItems='start'>
+                  <Box bgcolor={!item.imageUrl&&BLUE} color={WHITE} borderRadius={6} width={45} height={45} mr={2} display="flex" justifyContent="center" alignItems="center">
+                      {
+                        item.imageUrl ? <img src={item.imageUrl} alt={item.shortName} /> : <Typography variant="h6">{item.shortName}</Typography>
+                      }                      
+                  </Box>
+                  <Box>
+                    <Box>
+                       <Typography variant="body1">{item.fullName}</Typography>
+                    </Box>
+                    <Box color={GREY_THIRTEEN} style={{ fontStyle: 'italic' }}>
+                       <Typography variant="body1">{item.hospitalName}</Typography>
+                    </Box>
+                    <Box color={ GRAY_SEVEN }>
+                       <Typography variant="body1">Acitivated: {item.activatedDate}</Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              )
+            })} 
+          </Card>
+          <Card>
+            <Box px={2} mb={2} fontWeight="bold" display='flex' justifyContent='space-between' alignItems='center'>
+              <Typography variant="h6">{RECENT_ACTIVITIES}</Typography>
+
+              <IconButton>
+                <RedirectIcon />
+              </IconButton>
+            </Box>
+
+             <Box className="Recent-Activity-Timeline">
+                <Timeline>
+                  <TimelineItem >
+                      <TimelineSeparator>
+                        <TimelineDot  variant="outlined" color="secondary"/>
+                        <TimelineConnector />
+                      </TimelineSeparator>
+                      <TimelineContent>
+                          <Box>
+                            <Typography variant="body1">
+                               Upcoming Appointment in 10 minutes for <strong>“John Doe” </strong>                      
+                            </Typography>  
+                            <Typography variant="body2" style={{  color : BLUE_EIGHT, marginTop : '5px' }}>
+                                5 minutes ago                      
+                            </Typography>                           
+                          </Box>
+                      </TimelineContent>
+                  </TimelineItem>   
+                  <TimelineItem >
+                      <TimelineSeparator>
+                        <TimelineDot  variant="outlined" color="secondary"/>
+                        <TimelineConnector />
+                      </TimelineSeparator>
+                      <TimelineContent>
+                         <Box>
+                            <Typography variant="body1">
+                               Reports recieved from imaging lab for <strong>“John Doe” </strong>                      
+                            </Typography>  
+                            <Typography variant="body2" style={{  color : BLUE_EIGHT, marginTop : '5px' }}>
+                                10 minutes ago                      
+                            </Typography>                           
+                          </Box>
+                      </TimelineContent>
+                  </TimelineItem>
+                  <TimelineItem >
+                      <TimelineSeparator>
+                        <TimelineDot  variant="outlined" color="secondary"/>
+                        <TimelineConnector />
+                      </TimelineSeparator>
+                      <TimelineContent>
+                          <Box>
+                            <Typography variant="body1">
+                            <strong>“June Liam”</strong> self checked in at 10:42AM                     
+                            </Typography>  
+                            <Typography variant="body2" style={{  color : BLUE_EIGHT, marginTop : '5px' }}>
+                                5 minutes ago                      
+                            </Typography>                           
+                          </Box>
+                      </TimelineContent>
+                  </TimelineItem>
+                  <TimelineItem >
+                      <TimelineSeparator>
+                        <TimelineDot  variant="outlined" color="secondary"/>
+                        <TimelineConnector />
+                      </TimelineSeparator>
+                      <TimelineContent>
+                          <Box>
+                            <Typography variant="body1">
+                               Upcoming Appointment in 10 minutes for <strong>“John Doe” </strong>                      
+                            </Typography>  
+                            <Typography variant="body2" style={{  color : BLUE_EIGHT, marginTop : '5px' }}>
+                                5 minutes ago                      
+                            </Typography>                           
+                          </Box>
+                      </TimelineContent>
+                  </TimelineItem>   
+                  <TimelineItem >
+                      <TimelineSeparator>
+                        <TimelineDot  variant="outlined" color="secondary"/>
+                        <TimelineConnector />
+                      </TimelineSeparator>
+                      <TimelineContent>
+                         <Box>
+                            <Typography variant="body1">
+                               Reports recieved from imaging lab for <strong>“John Doe” </strong>                      
+                            </Typography>  
+                            <Typography variant="body2" style={{  color : BLUE_EIGHT, marginTop : '5px' }}>
+                                10 minutes ago                      
+                            </Typography>                           
+                          </Box>
+                      </TimelineContent>
+                  </TimelineItem>
+                  <TimelineItem >
+                      <TimelineSeparator>
+                        <TimelineDot  variant="outlined" color="secondary"/>
+                        
+                      </TimelineSeparator>
+                      <TimelineContent>
+                          <Box>
+                            <Typography variant="body1">
+                            <strong>“June Liam”</strong> self checked in at 10:42AM                     
+                            </Typography>  
+                            <Typography variant="body2" style={{  color : BLUE_EIGHT, marginTop : '5px' }}>
+                                5 minutes ago                      
+                            </Typography>                           
+                          </Box>
+                      </TimelineContent>
+                  </TimelineItem>                              
+                </Timeline>
+             </Box>
+          </Card>
+        </Grid>
+      </Grid>
+     
     </>
   )
 };

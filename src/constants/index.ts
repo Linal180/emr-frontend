@@ -2,6 +2,9 @@
 import states from "states-us";
 import { v4 as uuid } from "uuid";
 import moment from "moment-timezone";
+import EMERGENCY_LOG_OBD from '../../src/assets/images/obaid.png'
+import EMERGENCY_LOG_PHLEPS from '../../src/assets/images/phleps.png'
+import EMERGENCY_LOG_WILLIAMS from '../../src/assets/images/wiilaims.png'
 // graphql and interfaces block
 import {
   formatServiceCode, formatValue, getFormattedDate, getStandardTime,
@@ -621,6 +624,8 @@ export const MEDICAL_BILLING = "Medical Billing";
 export const TOTAL_CLAIM_TEXT = "7900 Claim in Total";
 export const PRACTICE_REGISTRATIONS = "Practice Registrations";
 export const RECENTLY_ADDED_FACILITIES = "Recently Added Facilities";
+export const EMERGENCY_ACCESS_LOG = "Emergency Access Log";
+export const RECENT_ACTIVITIES = "Recent Activities";
 export const CLAIMS_REQUIRING_ACTION = "Claims Requiring Action";
 export const CLAIM_AMOUNT_TO_PROCESS = "Claim Amount to Process";
 export const NO_RECORDS = "No Records";
@@ -3404,6 +3409,64 @@ export const FACILITIES_LIST = [
     fullName: "Horizon Labs",
   },
 ]
+export const EMERGENCY_LOG_LIST = [
+  {
+    shortName : 'AW',
+    fullName: "Andrew Williams",
+    hospitalName: "National Hospital",
+    activatedDate : '24/2/2022',
+    imageUrl : EMERGENCY_LOG_WILLIAMS
+  },
+  {
+    shortName : 'OM',
+    fullName: "Obaid McCoy",
+    hospitalName: "Horizon Eye Care and Medical Center",
+    activatedDate : '17/10/2022',
+    imageUrl : EMERGENCY_LOG_OBD
+  },
+  {
+    shortName : 'MP',
+    fullName: "Micheal Phelps",
+    hospitalName: "City Medical Center",
+    activatedDate : '2/6/2022',
+    imageUrl : EMERGENCY_LOG_PHLEPS
+  },
+  {
+    shortName : 'ND',
+    fullName: "Novac Dominic",
+    hospitalName: "National Hospital",
+    activatedDate : '30/2/2022',
+    imageUrl : ''
+  },
+]
+
+export const RECENT_ACTIVITY_LIST = [
+  {
+    shortName : 'AW',
+    fullName: "Andrew Williams",
+    hospitalName: "National Hospital",
+    activatedDate : '24/2/2022'
+  },
+  {
+    shortName : 'OM',
+    fullName: "Obaid McCoy",
+    hospitalName: "Horizon Eye Care and Medical Center",
+    activatedDate : '17/10/2022'
+  },
+  {
+    shortName : 'MP',
+    fullName: "Micheal Phelps",
+    hospitalName: "City Medical Center",
+    activatedDate : '2/6/2022'
+  },
+  {
+    shortName : 'ND',
+    fullName: "Novac Dominic",
+    hospitalName: "National Hospital",
+    activatedDate : '30/2/2022'
+  },
+]
+
 export enum VITAL_LABELS {
   createdAt = "",
   pulseRate = 'Pulse (bpm)',
