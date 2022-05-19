@@ -10,6 +10,7 @@ import { AUTO_OPEN_NOTES, PINNED_NOTES } from "../../../../constants";
 import { PatientNoteModalProps } from "../../../../interfacesTypes";
 import { ActionType } from "../../../../reducers/patientReducer";
 import { PatientPayload, useUpdatePatientNoteInfoMutation } from "../../../../generated/graphql";
+import Alert from "../../Alert";
 
 export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patientStates }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
@@ -25,12 +26,13 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
       const { status } = response || {}
       if (status && status === 200) {
         const { patientNote, patientNoteOpen } = patient || {}
-        debugger
-          // dispatcher({ type: ActionType.SET_PATIENT_DATA, patientData: { ...patientData as PatientPayload['patient'], patientNoteOpen, patientNote } })
+        const newPatient = { ...patientData, patientNoteOpen, patientNote }
+        dispatcher({ type: ActionType.SET_PATIENT_DATA, patientData: newPatient as PatientPayload['patient'] })
+        Alert.success('Patient Notes is updated successfully.')
       }
     },
-    onError: (error) => {
-
+    onError: () => {
+      Alert.error('Patient Notes is not updated')
     }
   })
 
@@ -42,6 +44,21 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
         updatePatientNoteInfoInputs: {
           id,
           patientNote,
+          patientNoteOpen
+        }
+      }
+    })
+    setIsEdit(!isEdit)
+  }
+
+  const handleChange = async () => {
+    dispatcher({ type: ActionType.SET_PATIENT_NOTE_OPEN, patientNoteOpen: !patientNoteOpen })
+    id && await updatePatientNotesInfo({
+      variables: {
+        updatePatientNoteInfoInputs: {
+          id,
+          patientNoteOpen: !patientNoteOpen,
+          patientNote
         }
       }
     })
@@ -51,22 +68,9 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
     dispatcher({ type: ActionType.SET_PATIENT_NOTE_OPEN, patientNoteOpen: !!isNote })
   }, [isNote, dispatcher])
 
-  const handleChange = async () => {
-    dispatcher({ type: ActionType.SET_PATIENT_NOTE_OPEN, patientNoteOpen: !patientNoteOpen })
-    id && await updatePatientNotesInfo({
-      variables: {
-        updatePatientNoteInfoInputs: {
-          id,
-          patientNoteOpen: !patientNoteOpen
-        }
-      }
-    })
-  }
-
   useEffect(() => {
     patientNote && setValue('patientNote', patientNote)
   }, [patientNote, setValue])
-
 
   return (
     <Fragment>
@@ -86,7 +90,9 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
             <InputController fieldType="text" controllerName="patientNote" /> :
             <Typography color="inherit">{patientNote}</Typography>
           }
-          <FormControlLabel control={<Checkbox checked={patientNoteOpen} onChange={handleChange} name="checked" />} label={AUTO_OPEN_NOTES} />
+          <FormControlLabel
+            control={<Checkbox checked={patientNoteOpen} onChange={handleChange} name="checked" />}
+            label={AUTO_OPEN_NOTES} />
         </form>
       </FormProvider>
     </Fragment>

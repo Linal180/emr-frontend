@@ -1,4 +1,4 @@
-import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer, useRef } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
 import { Box, Avatar, CircularProgress, Button, Typography, Menu } from "@material-ui/core";
@@ -27,12 +27,13 @@ import {
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
   const classes = useProfileDetailsStyles();
   const { id } = useParams<ParamsType>();
+  const noteRef = useRef(null)
   const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
 
-  const { patientData, isNoteOpen } = patientState
+  const { patientData, isNoteOpen, patientNoteOpen } = patientState
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -199,6 +200,10 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
     // },
   ]
 
+  useEffect(() => {
+    patientNoteOpen && dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: noteRef.current })
+  }, [patientNoteOpen, dispatch])
+
   const isLoading = getPatientLoading || getAttachmentLoading
 
   return (
@@ -245,13 +250,13 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                       <Typography variant="body1">{item.description}</Typography>
                     </Box>
                   ))}
-                  <Box display="flex" flexWrap="wrap" className={classes.profileInfoItem} onClick={(event) => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget })}>
+                  <div ref={noteRef} className={classes.profileNoteInfoItem} onClick={(event) => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget })}>
                     <Box><NotesCardIcon /></Box>
                     <Box display="flex" alignItems="center">
                       <Typography variant="body1">{NOTES}</Typography>
                       <RedCircleIcon />
                     </Box>
-                  </Box>
+                  </div>
                   <Menu
                     getContentAnchorEl={null}
                     anchorEl={isNoteOpen}
