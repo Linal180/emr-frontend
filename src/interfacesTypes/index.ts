@@ -1329,6 +1329,11 @@ export interface PatientProfileHeroProps {
   setAttachmentsData: Function;
 }
 
+export interface DoctorProfileHeroProps {
+  setDoctor: Function;
+  setAttachmentsData: Function;
+}
+
 export interface VitalListingTableProps {
   patientVitals: PatientVitalsPayload['patientVitals'];
   patientStates: PatientState;
