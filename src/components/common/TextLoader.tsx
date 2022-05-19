@@ -8,14 +8,14 @@ import { TextLoaderInterface } from "../../interfacesTypes";
 const TextLoader: FC<TextLoaderInterface> = ({ rows }): JSX.Element => {
   const skeltonReplica = () => {
     return (
-      <Box pl={2} pr={2} pb={2} display="flex" justifyContent="space-between" alignItems="center">
-        <Skeleton animation="wave" variant="text" width={1200} height={30} />
-      </Box>
+        <Box pl={2} pr={2} pb={2}  display="flex" justifyContent="space-between" alignItems="center">
+          <Skeleton animation="wave" variant="text" width={1200} height={30} />
+        </Box>
     )
   }
 
   return (
-    <>
+    <Box>
       {rows.map((value, index) => {
         const { column, size } = value;
 
@@ -25,7 +25,7 @@ const TextLoader: FC<TextLoaderInterface> = ({ rows }): JSX.Element => {
           ))}
         </Grid>
       })}
-    </>
+    </Box>
   )
 }
 
