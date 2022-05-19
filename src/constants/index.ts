@@ -16,7 +16,7 @@ import {
 import {
   UsersIcon, AppointmentsIcon, FacilitiesIcon, ReportsIcon, BillingIcon, CheckboxIcon,
   DateIcon, EmailIcon, FileInputIcon, NumberIcon, RadioGroupIcon, SelectIcon,
-  TextAreaIcon, TextIcon,
+  TextAreaIcon, TextIcon, NewAvatarIcon,
 } from "../assets/svgs";
 import {
   Ethnicity, Genderidentity, Homebound, Maritialstatus, PaymentType, PracticeType, Pronouns,
@@ -71,6 +71,8 @@ export const DASHES = '--'
 export const CURRENT_DATE = new Date();
 export const LATEST_RECORDED_DATE = "Recorded Date"
 export const NOTE = "Note";
+export const MY_CARE_TEAM = "My Care Team";
+export const PRACTICE_DETAILS = "Practice Details";
 export const Ok_TEXT = "OK";
 export const NOTES = "Notes";
 export const ACUTE = "Acute";
@@ -1080,6 +1082,8 @@ export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
 export const MAINTENANCE_ROUTE = "/maintenance";
+export const UPCOMING_APPOINTMENTS = "Upcoming Appointments";
+export const PAST_APPOINTMENTS = "Past Appointments";
 export const LAB_RESULTS_ROUTE = "/lab-results";
 export const CLAIMS_ROUTE = "/insurance-claims";
 export const CANCELLATION_ROUTE = "/cancellation";
@@ -3376,3 +3380,13 @@ export enum VITAL_LABELS {
   patientHeadCircumference = 'Head Circumference',
   patientTemperature = 'Temperature',
 }
+
+export const PROVIDERS_DUMMY_DATA = [
+  {
+    name: "William Warren",
+    specialist: "Cardiac Electrophysiology",
+    phone: "+12859374923",
+    address: "328 Gibraltar Dr. Sunnyvale, CA 94089 Lakewood, NY 11731",
+    icon: NewAvatarIcon,
+  },
+];

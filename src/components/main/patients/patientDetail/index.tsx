@@ -15,9 +15,6 @@ import ConfirmationModal from "../../../common/ConfirmationModal";
 import PatientProfileHero from '../../../common/patient/profileHero';
 // constants, history, styling block
 import { ParamsType } from "../../../../interfacesTypes";
-// import { BLACK, BLACK_TWO, WHITE } from "../../../../theme";
-import GENERAL_INFO from "../../../../assets/images/general-info.png";
-// import { AddWidgetIcon, DeleteWidgetIcon } from "../../../../assets/svgs";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
 import { AttachmentsPayload, PatientPayload } from '../../../../generated/graphql';
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
@@ -28,7 +25,12 @@ import {
 import {
   DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
   PROFILE_TOP_TABS,
+  UPCOMING_APPOINTMENTS,
+  PAST_APPOINTMENTS,
 } from "../../../../constants";
+import BarChart2Component from '../../../common/charts/barChart2';
+import AppointmentsComponent from './appointmentsComponent';
+import CareTeamComponent from './careTeam';
 
 const PatientDetailsComponent = (): JSX.Element => {
   // const widgetId = "widget-menu";
@@ -39,22 +41,11 @@ const PatientDetailsComponent = (): JSX.Element => {
 
   const [, mediaDispatcher] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
-  // const isMenuOpen = Boolean(anchorEl);
-  // const methods = useForm<any>({ mode: "all", });
-  // const { handleSubmit } = methods;
-  // const handleMenuClose = () => dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: null });
-
-  // const handleWidgetMenuOpen = (event: MouseEvent<HTMLElement>) =>
-  //   dispatch({ type: ActionType.SET_ANCHOR_EL, anchorEl: event.currentTarget })
 
   const handleChange = (_: ChangeEvent<{}>, newValue: string) =>
     dispatch({ type: ActionType.SET_TAB_VALUE, tabValue: newValue })
 
-  // const onDeleteClick = () =>
-  //   dispatch({ type: ActionType.SET_OPEN_DELETE, openDelete: true })
-
   const handleDeleteWidget = () => { };
-  // const onSubmit: SubmitHandler<any> = async (inputs) => { }
 
   useEffect(() => {
     if (routeParamValue) {
@@ -92,71 +83,17 @@ const PatientDetailsComponent = (): JSX.Element => {
           />
 
           <TabPanel value="1">
-            <img src={GENERAL_INFO} alt="" />
+            <Box display="flex" justifyContent='flex-end'>
 
-            {/* <Grid container spacing={3}>
-              {PROFILE_DETAIL_DATA.map((item, index) => (
-                <Grid item md={4} sm={12} xs={12} key={`${item.title}-${index}`}>
-                  {item && item.title === "Allergies" && <>
-                    <Box
-                      my={2}
-                      aria-haspopup="true"
-                      aria-controls={widgetId}
-                      className={classes.addSlot}
-                      aria-label="widget's patient"
-                      onClick={handleWidgetMenuOpen}
-                    >
-                      <AddWidgetIcon />
-                      <Typography component='h1' variant="h4">
-                        {ADD_WIDGET_TEXT}
-                      </Typography>
-                    </Box>
+              <BarChart2Component />
+            </Box>
+            <AppointmentsComponent title={UPCOMING_APPOINTMENTS} />
+            <Box display="flex">
+              <CareTeamComponent />
+              <AppointmentsComponent title={PAST_APPOINTMENTS} />
+            </Box>
 
-                    <FormProvider {...methods}>
-                      <form onSubmit={handleSubmit(onSubmit)}>
-                        <Menu
-                          getContentAnchorEl={null}
-                          anchorEl={anchorEl}
-                          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                          id={widgetId}
-                          keepMounted
-                          transformOrigin={{ vertical: "top", horizontal: "right" }}
-                          open={isMenuOpen}
-                          onClose={handleMenuClose}
-                          className={classes.dropdown}
-                        >
-                          <Selector
-                            isRequired
-                            value={EMPTY_OPTION}
-                            label={ADD_WIDGET_TEXT}
-                            name="addWidget"
-                            options={MAPPED_WIDGETS}
-                            isMultiple
-                          />
-                        </Menu>
-                      </form>
-                    </FormProvider>
-                  </>
-                  }
 
-                  <Box bgcolor={WHITE} p={4}>
-                    <Box display="flex" justifyContent="space-between" borderBottom={`2px solid ${BLACK}`} pb={2}>
-                      <Box className={classes.profileInfoHeading}>
-                        {item.title}
-                      </Box>
-
-                      <Box onClick={onDeleteClick} className={classes.deleteWidget}>
-                        <DeleteWidgetIcon />
-                      </Box>
-                    </Box>
-
-                    <Box fontSize={16} color={BLACK_TWO} pb={3.75} pt={2}>
-                      <Typography color="inherit">{item.description}</Typography>
-                    </Box>
-                  </Box>
-                </Grid>
-              ))}
-            </Grid> */}
           </TabPanel>
 
           <TabPanel value="2">

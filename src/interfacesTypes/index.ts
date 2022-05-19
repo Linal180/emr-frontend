@@ -1305,6 +1305,10 @@ export interface BackButtonProps {
   to: string;
 }
 
+export interface AppointmentsComponentProps {
+  title: string;
+}
+
 export interface PatientSearchInputProps {
   dob: string;
   dos: string;
