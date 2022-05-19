@@ -19,7 +19,7 @@ dotenv.config()
 
 const AddImageModal: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, setAttachments, attachment, preSignedUrl,
-  title, reload, providerName
+  title, reload, providerName, filesLimit, attachmentMetadata
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
   const { handleSubmit, reset } = useForm<ICreateMediaInput>();
@@ -97,6 +97,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
             </Box>
             :
             <DropzoneImage
+              filesLimit={filesLimit}
               ref={dropZoneRef}
               title={title}
               reload={reload}
@@ -107,6 +108,7 @@ const AddImageModal: FC<MediaModalTypes> = ({
               attachmentId={attachmentId}
               setAttachments={setAttachments}
               imageModuleType={imageModuleType}
+              attachmentMetadata={attachmentMetadata}
             />
           }
         </DialogContent>

@@ -806,6 +806,11 @@ export const onIdle = () => {
   history.push(LOCK_ROUTE);
 }
 
+export const getFormatTime = (time: Maybe<string> | undefined,format="hh:mm") => {
+  if (!time) return '';
+  return moment(time, "hh:mm").format(format)
+};
+
 export const getFormatDate = (date: Maybe<string> | undefined) => {
   if (!date) return '';
   return moment(date, "x").format("DD/MM/YY")
