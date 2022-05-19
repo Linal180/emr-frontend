@@ -1,28 +1,32 @@
 // packages block
-import { ChangeEvent, FC } from "react";
+import { ChangeEvent, FC, Reducer, useReducer } from "react";
 import { Box, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
-// component
+// components block
+import PieChart from "../../common/charts/PieChart";
 import PracticesTableComponent from "./tables/practicesTable";
-// svgs block
-import { BillingCardIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon } from "../../../assets/svgs";
-// constant
-import {
-  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE, PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE,
-  TOTAL_TEXT, TOTAL_USERS_PER_PRACTICE, VIEW_BILLING
-} from "../../../constants";
-// styles
-import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { BLUE_SEVEN, GREEN_ONE, WHITE } from "../../../theme";
-import PieChart1Component from "../../common/charts/pieChart1";
 import BarChart1Component from "../../common/charts/barChart1";
 import BarChart2Component from "../../common/charts/barChart2";
 import BarChart3Component from "../../common/charts/barChart3";
+// constants, styles and svgs block
 import history from "../../../history";
+import { BLUE_SEVEN, GREEN_ONE, WHITE } from "../../../theme";
+import { useDashboardStyles } from "../../../styles/dashboardStyles";
+import {
+  practiceReducer, Action, initialState, State
+} from "../../../reducers/practiceReducer";
+import {
+  BillingCardIcon, PlusRoundIcon, PracticeActiveIcon, PracticeInactiveIcon, RedirectIcon
+} from "../../../assets/svgs";
+import {
+  ACTIVE, CREATE_PRACTICE, INACTIVE, INVOICES_ROUTE, PRACTICES, PRACTICE_MANAGEMENT_ROUTE,
+  PRACTICE_REGISTRATIONS, QUICK_ACTIONS, TOTAL_FACILITIES_PER_PRACTICE, TOTAL_TEXT,
+  TOTAL_USERS_PER_PRACTICE, VIEW_BILLING
+} from "../../../constants";
 
 const SuperAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
-
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => { };
+  const [{ practices }, dispatch] = useReducer<Reducer<State, Action>>(practiceReducer, initialState)
+  const handleChange = (_: ChangeEvent<HTMLInputElement>) => { };
 
   return (
     <>
@@ -38,7 +42,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
             </Box>
 
             <Box p={1}>
-              <PracticesTableComponent />
+              <PracticesTableComponent dispatch={dispatch} />
             </Box>
           </Card>
 
@@ -78,7 +82,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                     <Grid item md={4} sm={12} xs={12}>
                       <Box className={classes.cardBox} onClick={() => history.push(INVOICES_ROUTE)}>
                         <BillingCardIcon />
-                        <Box p={0.2} />
+                        <Box p={0.7} />
                         <Typography variant="h6">{VIEW_BILLING}</Typography>
                       </Box>
                     </Grid>
@@ -97,7 +101,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
 
                 <Box p={0.5} />
 
-                <Typography variant="body2">26 {TOTAL_TEXT}</Typography>
+                <Typography variant="body2">{practices?.length} {TOTAL_TEXT}</Typography>
               </Box>
 
               <IconButton>
@@ -105,7 +109,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
               </IconButton>
             </Box>
 
-            <PieChart1Component />
+            <PieChart practices={practices} />
 
             <Box px={4} pb={2} display='flex' alignItems='center'>
               <Grid container spacing={3}>
@@ -114,7 +118,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                     <PracticeActiveIcon />
 
                     <Box ml={2}>
-                      <Typography variant="h5">24</Typography>
+                      <Typography variant="h5">{practices?.length}</Typography>
 
                       <Box mt={0.5} color={GREEN_ONE}>
                         <Typography variant="inherit">{ACTIVE}</Typography>
@@ -128,7 +132,7 @@ const SuperAdminDashboardComponent: FC = (): JSX.Element => {
                     <PracticeInactiveIcon />
 
                     <Box ml={2}>
-                      <Typography variant="h5">2</Typography>
+                      <Typography variant="h5">0</Typography>
 
                       <Box mt={0.5} color={BLUE_SEVEN}>
                         <Typography variant="inherit">{INACTIVE}</Typography>
