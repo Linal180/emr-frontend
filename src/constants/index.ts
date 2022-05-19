@@ -595,6 +595,7 @@ export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
 export const VITAL_LIST_PAGE_LIMIT = 5;
+export const LAB_RESULTS_LIMIT = 10;
 export const USERS_TEXT = "Users";
 export const STAFF_TEXT = "Staff";
 export const LATITUDE = "Latitude";
@@ -609,6 +610,7 @@ export const FACILITY = "Facility";
 export const END_TIME = "End Time";
 export const USER_NAME = "Username";
 export const CANCELLED = "Cancelled";
+export const RESULT_FILE_NAME = "Result File Name";
 export const CVV = "CVV";
 export const REGISTERED_ON = "Registered on";
 export const PAY = "Pay";
@@ -712,6 +714,7 @@ export const RECORD_VITALS = "Record Vitals";
 export const BACK_TO_HOME = "Return to Home";
 export const APPOINTMENT_TEXT = "Appointment";
 export const LAB_RESULTS_TEXT = "Lab Results";
+export const LAB_ORDER_RESULT = "Lab Order Result";
 export const VISIT_REASON = "Reason for visit";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const EXCEPTION = "Forbidden exception";
@@ -1014,6 +1017,7 @@ export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
+export const DELETE_LAB_ORDER_RESULT_DESCRIPTION = "Confirm to delete lab order result file";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
@@ -2396,6 +2400,7 @@ export enum ATTACHMENT_TITLES {
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
   Signature = "Signature",
+  LabOrders = "Lab Orders",
 }
 
 export enum MODULE_TYPES {
