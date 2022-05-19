@@ -15,9 +15,11 @@ import {
   TID_REGEX, MAMMOGRAPHY_VALIDATION_MESSAGE, MAMMOGRAPHY_CERT_NUMBER_REGEX, PHONE, MOBILE, ZIP_REGEX,
   MOTHERS_MAIDEN_NAME, PREVIOUS_LAST_NAME, LANGUAGE_SPOKEN, SUFFIX, INDUSTRY, USUAL_OCCUPATION,
   PRIMARY_INSURANCE, SECONDARY_INSURANCE, ISSUE_DATE, REGISTRATION_DATE, START_TIME, END_TIME, UPIN_REGEX,
-  APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE,
+  APPOINTMENT, DECEASED_DATE, EXPIRATION_DATE, PREFERRED_PHARMACY, ZIP_VALIDATION_MESSAGE,
   UPIN_VALIDATION_MESSAGE, PRACTICE_NAME, PRACTICE, OLD_PASSWORD, ROLE_NAME, STRING_REGEX, MIDDLE_NAME,
-  SERVICE_NAME_TEXT, DOB, FORM_NAME, PAGER,
+  SERVICE_NAME_TEXT, DOB, OTP_CODE, FORM_NAME, ValidOTP, ALLERGY_DATE_VALIDATION_MESSAGE, PAIN_TEXT,
+  REACTIONS_VALIDATION_MESSAGE, EIN_VALIDATION_MESSAGE, PULSE_TEXT, RESPIRATORY_RATE_TEXT, WEIGHT_TEXT,
+  PAGER, BLOOD_PRESSURE_TEXT, FEVER_TEXT, HEAD_CIRCUMFERENCE, HEIGHT_TEXT, OXYGEN_SATURATION_TEXT, FACILITY_NAME, DIAGNOSES_VALIDATION_MESSAGE, TEST_FIELD_VALIDATION_MESSAGE, SPECIMEN_FIELD_VALIDATION_MESSAGE,
 } from "../constants";
 
 const notRequiredMatches = (message: string, regex: RegExp) => {
@@ -85,6 +87,14 @@ const notRequiredPhone = (label: string) => {
       })
 }
 
+const notRequiredOTP = (label: string, isRequired: boolean) => {
+  return yup.string()
+    .test('', requiredMessage(label), value => isRequired ? !!value : true)
+    .matches(NUMBER_REGEX, ValidOTP())
+    .min(6, MinLength(label, 6)).max(6, MaxLength(label, 6))
+    .required(requiredMessage(label))
+}
+
 const stateSchema = (isRequired: boolean) => {
   return yup.object().shape({
     name: yup.string(),
@@ -140,8 +150,8 @@ const patientIdSchema = {
     name: yup.string().required(),
     id: yup.string().required()
   }).test(
-    '', requiredMessage(PATIENT), ({ id }) => !!id
-  )
+    '', requiredMessage(PATIENT), (patient) => !!patient?.id
+  ).nullable()
 }
 
 const serviceCodeSchema = {
@@ -320,6 +330,10 @@ export const loginValidationSchema = yup.object({
   ...passwordSchema
 });
 
+export const twoFAValidationSchema = yup.object({
+  ...passwordSchema
+});
+
 export const resetPasswordValidationSchema = yup.object({
   ...passwordAndRepeatPasswordSchema
 });
@@ -355,6 +369,13 @@ export const basicContactSchema = {
     .required(requiredMessage(PHONE_NUMBER)),
 };
 
+export const basicContactViaAppointmentSchema = {
+  basicMobile: notRequiredPhone(MOBILE_NUMBER),
+  basicEmail: yup.string().email(INVALID_EMAIL).required(requiredMessage(EMAIL)),
+  basicPhone: yup.string().min(10, MinLength(PHONE_NUMBER, 10)).max(15, MaxLength(PHONE_NUMBER, 15))
+    .required(requiredMessage(PHONE_NUMBER)),
+};
+
 export const billingAddressSchema = {
   billingState: stateSchema(false),
   billingFax: notRequiredPhone(FAX),
@@ -386,7 +407,7 @@ export const createStaffSchema = yup.object({
   ...emailSchema,
   ...roleTypeSchema,
   ...staffBasicSchema,
-  providerIds: providerIdSchema(),
+  // providerIds: providerIdSchema(),
 })
 
 export const updateStaffSchema = yup.object({
@@ -556,7 +577,7 @@ export const guarantorPatientSchema = {
     .max(15, MaxLength(PHONE_NUMBER, 15)).required(requiredMessage(PHONE_NUMBER)),
   guarantorZipCode: yup.string().required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE)
     .required(requiredMessage(ZIP_CODE)).matches(ZIP_REGEX, ZIP_VALIDATION_MESSAGE),
-  guarantorCity: yup.string().matches(STRING_REGEX, ValidMessage(ADDRESS))
+  guarantorCity: yup.string().matches(STRING_REGEX, ValidMessage(CITY))
     .required(requiredMessage(CITY)).min(2, MinLength(CITY, 2)).max(20, MaxLength(CITY, 20)),
   guarantorLastName: yup.string().matches(ALPHABETS_REGEX, ValidMessage(LAST_NAME))
     .min(3, MinLength(LAST_NAME, 3)).max(26, MaxLength(LAST_NAME, 26)).required(requiredMessage(LAST_NAME)),
@@ -595,6 +616,17 @@ export const extendedEditPatientSchema = yup.object({
   ...guarantorPatientSchema,
 })
 
+export const extendedPatientAppointmentSchema = yup.object({
+  ...PatientSchema,
+  ...basicContactViaAppointmentSchema
+})
+
+export const extendedPatientAppointmentWithNonAdminSchema = yup.object({
+  ...PatientSchema,
+  ...facilityIdSchema,
+  ...basicContactViaAppointmentSchema,
+})
+
 export const settingSchema = yup.object({
   ...facilityIdSchema,
   ...timeZoneSchema
@@ -603,7 +635,6 @@ export const settingSchema = yup.object({
 export const appointmentSchema = yup.object({
   ...patientIdSchema,
   ...serviceIdSchema,
-  // ...facilityIdSchema,
   notes: yup.string(),
   primaryInsurance: notRequiredStringOnly(PRIMARY_INSURANCE),
   secondaryInsurance: notRequiredStringOnly(SECONDARY_INSURANCE),
@@ -670,7 +701,7 @@ export const createPracticeSchema = yup.object({
   ...practiceFacilitySchema,
   address: addressValidation(ADDRESS, true),
   name: yup.string().required(requiredMessage(PRACTICE_NAME)),
-  facilityName: yup.string().required(requiredMessage(NAME)),
+  facilityName: yup.string().required(requiredMessage(FACILITY_NAME)),
 })
 
 export const updatePracticeSchema = yup.object({
@@ -689,7 +720,7 @@ export const roleSchema = yup.object({
 
 export const createFormBuilderSchemaWithFacility = yup.object({
   name: yup.string().min(3, MinLength(FORM_NAME, 3))
-    .max(30, MaxLength(FORM_NAME, 30)).required(),
+    .max(250, MaxLength(FORM_NAME, 250)).required(),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -702,7 +733,7 @@ export const createFormBuilderSchemaWithFacility = yup.object({
 
 export const createFormBuilderSchema = yup.object({
   name: yup.string().min(3, MinLength(FORM_NAME, 3))
-    .max(30, MaxLength(FORM_NAME, 30)).required(),
+    .max(250, MaxLength(FORM_NAME, 250)).required(),
   type: yup.object().shape({
     name: yup.string().required(),
     id: yup.string().required()
@@ -715,4 +746,263 @@ export const facilityScheduleSchema = yup.object({
     name: yup.string().required(),
     id: yup.string().required()
   }).test('', requiredMessage(DAY), ({ id }) => !!id),
+})
+
+const otpBasicSchema = {
+  otpCode: notRequiredOTP(OTP_CODE, true),
+}
+
+export const otpSchema = yup.object({
+  ...otpBasicSchema,
+})
+
+export const createPatientAllergySchema = (onset: string) => yup.object({
+  allergyStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
+    value => !!onset || new Date(value || '') <= new Date()
+  ),
+  severityId: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+  reactionIds: yup.array().of(
+    yup.object().shape({
+      label: yup.string(),
+      value: yup.string()
+    })
+  ).test('', REACTIONS_VALIDATION_MESSAGE, (value: any) => !!value && value.length > 0)
+})
+
+export const patientProblemSchema = yup.object({
+  problemStartDate: yup.string().test('', ALLERGY_DATE_VALIDATION_MESSAGE,
+    value => new Date(value || '') <= new Date()),
+})
+
+export const patientVitalSchema = yup.object({
+  pulseRate: yup.string().test('', invalidMessage(PULSE_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 5) return true
+      return false
+    }
+  }),
+  diastolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (value) {
+    if (!value && !!this.parent.systolicBloodPressure) return false
+    else if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length < 3) return true
+      return false
+    }
+  }),
+  systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (val) {
+    if (!val && !!this.parent.diastolicBloodPressure) return false
+    else if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 400) return true
+      return false
+    }
+  }),
+  respiratoryRate: yup.string().test('', invalidMessage(RESPIRATORY_RATE_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 50) return true
+      return false
+    }
+  }),
+  oxygenSaturation: yup.string().test('', invalidMessage(OXYGEN_SATURATION_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value <= 100) return true
+      return false
+    }
+  }),
+  PatientHeight: yup.string().test('', invalidMessage(HEIGHT_TEXT), function (val) {
+    if (!val && !!this.parent.PatientWeight) return false
+    else if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 500) return true
+      return false
+    }
+  }),
+  PatientWeight: yup.string().test('', invalidMessage(WEIGHT_TEXT), function (val) {
+    if (!val && !!this.parent.PatientHeight) return false
+    else if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 10000) return true
+      return false
+    }
+  }),
+  PainRange: yup.string().test('', invalidMessage(PAIN_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value >= 0 && value <= 10) return true
+      return false
+    }
+  }),
+  patientHeadCircumference: yup.string().test('', invalidMessage(HEAD_CIRCUMFERENCE), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 300) return true
+      return false
+    }
+  }),
+  patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 150) return true
+      return false
+    }
+  }),
+})
+
+export const patientVitalUpdateSchema = yup.object({
+  pulseRate: yup.string().test('', invalidMessage(PULSE_TEXT), value => {
+    if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length > 0 && value.length < 5) return true
+      return false
+    }
+  }),
+
+  diastolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (value) {
+    if (!value && !!this.parent.systolicBloodPressure) return false
+    else if (!value) return true
+    else {
+      if (value && (value.includes('-') || value === '0')) return false
+      if (value && value.length < 3) return true
+      return false
+    }
+  }),
+
+  systolicBloodPressure: yup.string().test('', invalidMessage(BLOOD_PRESSURE_TEXT), function (val) {
+    if (!val && !!this.parent.diastolicBloodPressure) return false
+    else if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 400) return true
+      return false
+    }
+  }),
+
+  respiratoryRate: yup.string().test('', invalidMessage(RESPIRATORY_RATE_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 50) return true
+      return false
+    }
+  }),
+
+  oxygenSaturation: yup.string().test('', invalidMessage(OXYGEN_SATURATION_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value <= 100) return true
+      return false
+    }
+  }),
+
+  PatientHeight: yup.string().test('', invalidMessage(HEIGHT_TEXT), function (val) {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 500) return true
+      return false
+    }
+  }),
+
+  PatientWeight: yup.string().test('', invalidMessage(WEIGHT_TEXT), function (val) {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 10000) return true
+      return false
+    }
+  }),
+
+  PainRange: yup.string().test('', invalidMessage(PAIN_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value >= 0 && value <= 10) return true
+      return false
+    }
+  }),
+
+  patientHeadCircumference: yup.string().test('', invalidMessage(HEAD_CIRCUMFERENCE), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 300) return true
+      return false
+    }
+  }),
+
+  patientTemperature: yup.string().test('', invalidMessage(FEVER_TEXT), val => {
+    if (!val) return true
+    else {
+      const value = parseFloat(val)
+      if (value && value < 0) return false
+      if (value && value > 0 && value < 150) return true
+      return false
+    }
+  }),
+})
+
+export const attachmentNameUpdateSchema = yup.object({
+  attachmentName: yup.string().test('', invalidMessage('Attachment name'), value => !!value)
+})
+
+export const createLabOrdersSchema =  yup.object({
+  labTestStatus: yup.object().shape({
+    name: yup.string().required(),
+    id: yup.string().required()
+  }).test('', 'required', ({ id }) => !!id),
+  diagnosesIds: yup.array().of(
+    yup.object().shape({
+      label: yup.string().required(),
+      value: yup.string().required()
+    })
+  ).test('', DIAGNOSES_VALIDATION_MESSAGE, (value) => !!value && value.length > 0),
+  testField: yup.array().of(
+    yup.object().shape({
+      test: yup.object().shape({
+        name: yup.string().required(),
+        id: yup.string().required()
+      }).test('', TEST_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id),
+      specimenTypeField: yup.array().of(
+        yup.object().shape({
+          specimenType: yup.object().shape({
+            name: yup.string().required(),
+            id: yup.string().required()
+          }).test('', SPECIMEN_FIELD_VALIDATION_MESSAGE, ({ id }) => !!id)
+        })
+      )
+    })
+  )
 })

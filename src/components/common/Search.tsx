@@ -1,14 +1,20 @@
 // packages block
-import { FC, useState } from "react";
-import { Box, IconButton, TextField } from "@material-ui/core";
-import { Clear, Search as SearchIcon } from "@material-ui/icons";
-// styles and interfaces block
+import { FC, Fragment, useState } from "react";
+import { Box, ClickAwayListener, IconButton, TextField, Typography } from "@material-ui/core";
+// styles, constants, utils and interfaces block
+import { SearchIcon, ClearIcon, InfoSearchIcon } from "../../assets/svgs";
 import { useTableStyles } from "../../styles/tableStyles";
 import { SearchComponentProps } from "../../interfacesTypes";
+import { SearchTooltip } from "../../styles/searchTooltip";
 
-const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
+const Search: FC<SearchComponentProps> = ({ search, info, tooltipData, placeHolder }): JSX.Element => {
   const classes = useTableStyles()
   const [query, setQuery] = useState<string>('')
+  const [open, setOpen] = useState(false);
+
+  const handleTooltipClose = () => setOpen(false);
+
+  const handleTooltipOpen = () => setOpen(true);
 
   const handleClear = () => {
     setQuery('')
@@ -16,8 +22,8 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
   }
 
   return (
-    <Box className={classes.tableSearchBox}>
-      <IconButton aria-label="search" disabled={!query} onClick={() => search(query)}>
+    <Box className={classes.searchBox}>
+      <IconButton aria-label="search">
         <SearchIcon />
       </IconButton>
 
@@ -25,18 +31,59 @@ const Search: FC<SearchComponentProps> = ({ search }): JSX.Element => {
         fullWidth
         variant="outlined"
         name="searchQuery"
-        placeholder="Search"
+        placeholder= {placeHolder ? placeHolder :  "Search here..."}
+        className={classes.searchInput}
         value={query}
-        className={classes.tableSearchInput}
-        onChange={({ target: { value } }) => setQuery(value)}
-        onKeyPress={({ key }) => key === "Enter" && search(query)}
+        onChange={({ target: { value } }) => {
+          if(value.length>2){
+            search(value)
+            setQuery(value)
+          }
+
+          if(!value.length){
+            search('')
+          }
+
+          setQuery(value)
+        } }
       />
 
       {query &&
         <IconButton type="submit" aria-label="clear" onClick={handleClear}>
-          <Clear />
+          <ClearIcon />
         </IconButton>
       }
+      {info && <ClickAwayListener onClickAway={handleTooltipClose}>
+        <SearchTooltip
+          PopperProps={{
+            disablePortal: true,
+          }}
+          onClose={handleTooltipClose}
+          arrow
+          placement="right"
+          open={open}
+          disableFocusListener
+          disableHoverListener
+          disableTouchListener
+          className={classes.tooltipContainer}
+          title={
+            <Fragment>
+              {tooltipData?.map((item) => {
+                return (
+                  <Box display='flex' justifyContent='space-between'>
+                    <Typography variant="h6">{item.name}</Typography>
+                    <Typography variant="caption">{item.format}</Typography>
+                  </Box>
+                )
+              })}
+            </Fragment>
+          }
+        >
+          <Box onClick={handleTooltipOpen} pr={2}>
+            <InfoSearchIcon />
+          </Box>
+        </SearchTooltip>
+      </ClickAwayListener>}
     </Box>
   );
 };

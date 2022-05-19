@@ -1,23 +1,33 @@
 // packages block
-import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction } from "react";
-import { GridSize } from "@material-ui/core";
+import { ComponentType, Dispatch, ReactNode, ElementType, SetStateAction, RefObject } from "react";
 import { RouteProps } from "react-router-dom";
-import { Control, ValidationRule, FieldValues, Ref, ControllerRenderProps } from "react-hook-form";
-import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { usStreet, usZipcode } from "smartystreets-javascript-sdk";
+import { GridSize, PropTypes as MuiPropsTypes } from "@material-ui/core";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { AppointmentTooltip } from "@devexpress/dx-react-scheduler-material-ui";
+import {
+  Control, ValidationRule, FieldValues, ControllerRenderProps, UseFormSetValue,
+} from "react-hook-form";
 // graphql block
+import { CARD_LAYOUT_MODAL } from "../constants";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
+import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
-import { Action as PatientAction } from "../reducers/patientReducer";
+import { Action as PracticeAction } from "../reducers/practiceReducer";
+import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
+import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
 import {
   LoginUserInput, User, UpdateContactInput, CreateScheduleInput, CreateAppointmentInput, Staff,
   UpdateFacilityItemInput, FacilitiesPayload, CreateContactInput, CreateDoctorItemInput, Gender,
+  Maybe, PatientVitals, UpdateAttachmentInput, Doctor,
   CreatePatientItemInput, ServicesPayload, CreateExternalAppointmentItemInput, CreatePracticeItemInput,
   CreateServiceInput, AllDoctorPayload, Attachment, AttachmentType, Patient, PatientsPayload, Schedule,
-  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs, Doctor,
-  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, AttachmentsPayload, FieldsInputs, ResponsePayloadResponse, UsersFormsElements, FormElement,
+  UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs,
+  UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs,
+  ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -27,27 +37,40 @@ export interface PrivateRouteProps extends RouteProps {
 
 type Key = string | number | undefined;
 
-export interface CloseSnackbarProps { id: Key; }
+export interface CloseSnackbarProps {
+  id: Key;
+}
 
 export interface BackdropInputType {
-  loading: boolean
+  loading: boolean;
 }
 
 export interface CalendarChart {
-  isCalendar: boolean
+  isCalendar: boolean;
 }
 
 export interface AuthContextProps {
   user: User | null;
-  userRoles: string[],
+  userRoles: string[];
   isLoggedIn: boolean;
-  practiceName: string,
-  userPermissions: string[],
+  practiceName: string;
+  userPermissions: string[];
   currentUser: Doctor | Staff | null;
+  currentDoctor: Doctor | null;
+  currentStaff: Staff | null;
   setUser: (user: User | null) => void;
   setPracticeName: (name: string) => void;
   setIsLoggedIn: (isLoggedIn: boolean) => void;
   setCurrentUser: (user: Doctor | Staff | null) => void;
+  setCurrentDoctor: (doctor: Doctor | null) => void;
+  setCurrentStaff: (staff: Staff | null) => void;
+  setUserRoles: (roles: string[]) => void;
+  setUserPermissions: (permissions: string[]) => void;
+  setProfileUrl: (url: string) => void;
+  profileUrl: string;
+  fetchUser: () => void
+  fetchAttachment: () => void,
+  profileAttachment: null | Attachment
 }
 
 export interface DoctorScheduleSlotProps {
@@ -60,13 +83,13 @@ export interface AppContextProps {
 }
 
 export interface ListContextInterface {
-  roleList: RolesPayload['roles'];
+  roleList: RolesPayload["roles"];
   setRoleList: Function;
   fetchAllRoleList: Function;
-  practiceList: PracticesPayload['practices'];
+  practiceList: PracticesPayload["practices"];
   setPracticeList: Function;
   fetchAllPracticeList: Function;
-  facilityList: FacilitiesPayload['facilities'];
+  facilityList: FacilitiesPayload["facilities"];
   setFacilityList: Function;
   fetchAllFacilityList: Function;
   deletePracticeList: Function;
@@ -81,40 +104,45 @@ export interface ListContextInterface {
 }
 
 export interface FacilityContextInterface {
-  doctorList: AllDoctorPayload['doctors'];
+  doctorList: AllDoctorPayload["doctors"];
   setDoctorList: Function;
   fetchAllDoctorList: Function;
-  serviceList: ServicesPayload['services'];
+  serviceList: ServicesPayload["services"];
   setServicesList: Function;
   fetchAllServicesList: Function;
-  patientList: PatientsPayload['patients'];
+  patientList: PatientsPayload["patients"];
   setPatientList: Function;
   fetchAllPatientList: Function;
 }
 
 export interface PermissionContextInterface {
   permissionLoading: boolean;
-  permissions: PermissionsPayload['permissions']
+  permissions: PermissionsPayload["permissions"];
 }
 
 export interface AppointmentContextInterface {
-  appointmentList: AppointmentsPayload['appointments'];
+  appointmentList: AppointmentsPayload["appointments"];
   setAppointmentList: Function;
   fetchAllAppointmentList: Function;
+}
+
+export interface ChartContextInterface {
+  reactionList: ReactionsPayload['reactions'];
+  fetchAllReactionList: Function;
 }
 
 export interface Children {
   children: ReactNode;
 }
 
-type Path = { text: string; link: string }
+type Path = { text: string; link: string };
 
 export interface BreadcrumbProps {
-  path: Path[]
+  path: Path[];
 }
 
 export interface MainLayoutProps {
-  children: ReactNode,
+  children: ReactNode;
 }
 
 export interface TableLoaderType {
@@ -123,7 +151,7 @@ export interface TableLoaderType {
 }
 
 export interface ActionLayoutType extends Children {
-  hasBorder: boolean
+  hasBorder: boolean;
 }
 
 export interface OpenElement {
@@ -141,17 +169,27 @@ export interface DialogTypes {
 
 export interface ConfirmationTypes extends DialogTypes {
   title?: string;
+  isSign?: boolean;
   success?: boolean;
   actionText?: string;
   isLoading?: boolean;
   description?: string;
   handleDelete: () => void;
+  learnMoreText?: string
 }
 
 export interface ConfirmationDaysTypes extends DialogTypes {
   title?: string;
-  id?: string
-  isEdit?: boolean
+  id?: string;
+  isEdit?: boolean;
+}
+
+export interface ConfirmationAuthenticationTypes extends DialogTypes {
+  title?: string;
+  isLoading?: boolean;
+  actionText?: string;
+  success?: boolean;
+  description?: string;
 }
 
 export interface GraphModalProps extends DialogTypes {
@@ -188,7 +226,7 @@ export interface CardComponentType extends Children {
   isEdit?: boolean;
   hasEdit?: boolean;
   cardTitle: string;
-  requestLink?: string
+  requestLink?: string;
   hideSaveIcon?: boolean;
   disableSaveIcon?: boolean;
   disableEditIcon?: boolean;
@@ -199,7 +237,7 @@ export interface ChartingCardComponentType {
   link?: string;
   hasAdd?: boolean;
   cardTitle: string;
-  requestLink?: string
+  requestLink?: string;
   vitalsCard?: boolean;
   hideSaveIcon?: boolean;
   onAddClick?: () => void;
@@ -222,12 +260,12 @@ export interface PageHeaderProps {
   hasComponent?: boolean;
   openModal?: () => void;
   setTableData?: Function;
-  tableData?: ServicesPayload['services'];
+  tableData?: ServicesPayload["services"];
   startIcon?: JSX.Element;
 }
 
 export interface IDropzoneImage {
-  error?: string
+  error?: string;
   optionId: string;
   isDisabled?: boolean;
   imageForView?: string;
@@ -241,45 +279,56 @@ export interface IFieldTypes {
   fieldType?: string;
   isRequired?: boolean;
   isMultiline?: boolean;
-  label: string | JSX.Element
+  label: string | JSX.Element;
 }
 
 export type RecordType = {
   id: string;
   name: string;
-}
+};
 
 export type OptionType = {
   value: string;
   label: string;
-}
+};
 
 export interface DataLoaderInterface {
-  rows: number,
+  rows: number;
   hasMedia?: boolean;
-  columns: GridSize
+  columns: GridSize;
 }
 
-export type TableAlignType = "left" | "center" | "right" | "justify" | "inherit" | undefined;
+export type TableAlignType =
+  | "left"
+  | "center"
+  | "right"
+  | "justify"
+  | "inherit"
+  | undefined;
 
 export interface IDetailCellProps {
-  description: string
+  description: string;
 }
 
 export interface SelectorOption {
-  id: string
-  name: string | undefined | null
+  id: string;
+  name: string | undefined | null;
+}
+
+export interface AsyncSelectorOption {
+  value: string
+  label: string | undefined | null
 }
 
 export interface DropDownOption {
-  name: string
-  link: string
+  name: string;
+  link: string;
 }
 
 export interface CardChartingOption {
-  date: string
-  title: string
-  description: string
+  date: string;
+  title: string;
+  description: string;
 }
 
 export interface SelectorProps {
@@ -292,28 +341,63 @@ export interface SelectorProps {
   isMultiple?: boolean
   value?: SelectorOption
   options: SelectorOption[]
+  margin?: MuiPropsTypes.Margin
+  onBlur?: Function
+}
+
+export interface PatientSelectorProps {
+  name: string
+  label: string
+  error?: string
+  disabled?: boolean
+  addEmpty?: boolean
+  isRequired?: boolean
+  isMultiple?: boolean
+  value?: SelectorOption
+  isModal?: boolean
+  handlePatientModal?: Function
+  isOpen?: boolean
+  setValue: UseFormSetValue<ExtendedAppointmentInputProps>
+}
+
+export interface FacilitySelectorProps {
+  name: string
+  label: string
+  error?: string
+  disabled?: boolean
+  addEmpty?: boolean
+  isRequired?: boolean
+  isMultiple?: boolean
+  patientId?: string
+}
+
+export interface DoctorSelectorProps extends FacilitySelectorProps {
+  facilityId?: string
+  shouldOmitFacilityId?: boolean
 }
 
 export interface CardSelectorProps {
-  name: string
-  error?: string
-  disabled?: boolean
-  value?: SelectorOption
-  options: SelectorOption[]
+  name: string;
+  error?: string;
+  disabled?: boolean;
+  value?: SelectorOption;
+  options: SelectorOption[];
 }
 
 type ResetPasswordControlTypes = "password" | "repeatPassword";
 
 export type ForgetPasswordInputs = {
-  email: string
-}
+  email: string;
+};
 
 export type ResetPasswordInputs = {
   password: string;
   repeatPassword: string;
 };
 
-export type updatePasswordInputs = ResetPasswordInputs & { oldPassword: string; };
+export type updatePasswordInputs = ResetPasswordInputs & {
+  oldPassword: string;
+};
 
 interface IControlLabel {
   error?: string;
@@ -325,6 +409,7 @@ interface IControlLabel {
   placeholder?: string;
   controllerLabel?: string;
   className?: string;
+  margin?: MuiPropsTypes.Margin
 }
 
 export interface ResetPasswordInputControlProps extends IControlLabel {
@@ -347,11 +432,28 @@ export type SubMenuTypes = {
 
 export interface CustomInputControlProps extends IControlLabel {
   controllerName: string;
+  isSearch?: boolean;
   info?: string;
+  clearable?: boolean
+  handleClearField?: (fieldName: any) => void
+  endAdornment?: ReactNode;
+  onBlur?: Function;
+  notStep?: boolean;
+  isHelperText?: boolean;
+  autoFocus?: boolean
 }
+
+export interface TooltipData {
+  name: string;
+  format: string;
+}
+
 
 export interface SearchComponentProps {
   search: Function;
+  info?: boolean;
+  tooltipData?: TooltipData[]
+  placeHolder? : string;
 }
 
 export interface AppMenuItemTypes {
@@ -362,7 +464,7 @@ export interface AppMenuItemTypes {
   index?: number;
   activeCollapse?: number;
   setActiveCollapse?: (item: number) => void;
-  sectionName?: boolean
+  sectionName?: boolean;
 }
 
 export type AppMenuItemPropsWithoutItems = Omit<AppMenuItemTypes, "items">;
@@ -380,7 +482,8 @@ export interface PickerProps {
   name: string;
   label: string;
   error?: string;
-  isRequired?: boolean
+  isRequired?: boolean;
+  clearable?: boolean
 }
 
 export interface TimePickerProps {
@@ -394,16 +497,23 @@ export interface TimePickerProps {
 export type ParamsType = {
   id: string;
   facilityId?: string;
+  templateId?: string;
+  orderNum?: string;
+  patientId?: string;
+  tabValue?: string
 }
 
-export type ExtendedStaffInputProps = Omit<CreateStaffItemInput, "facilityId" | "roleType" | "gender">
-  & { facilityId: SelectorOption } & { roleType: SelectorOption } & { gender: SelectorOption }
-  & { providerIds: SelectorOption };
+export type ExtendedStaffInputProps = Omit<
+  CreateStaffItemInput,
+  "facilityId" | "roleType" | "gender"
+> & { facilityId: SelectorOption } & { roleType: SelectorOption } & {
+  gender: SelectorOption;
+} & { providerIds: SelectorOption };
 
-export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds">
+export type ScheduleInputProps = Omit<CreateScheduleInput, "servicesIds" | "day">
   & { serviceId: SelectorOption } & { day: SelectorOption };
 
-export type FacilityScheduleInputProps = CreateScheduleInput & { day: SelectorOption };
+export type FacilityScheduleInputProps = Omit<CreateScheduleInput, "day"> & { day: SelectorOption };
 
 interface CustomBillingAddressInputs {
   billingFax: string;
@@ -421,35 +531,52 @@ interface CustomBillingAddressInputs {
   billingCountry: SelectorOption;
 }
 
-export type CustomFacilityInputProps = Omit<UpdateContactInput, "serviceCode" | "state" | "country">
-  & Omit<UpdateFacilityItemInput, "practiceType" | "serviceCode" | "timeZone" | "practiceId"> & CustomBillingAddressInputs
-  & { serviceCode: SelectorOption } & { practiceType: SelectorOption } & { timeZone: SelectorOption }
-  & { state: SelectorOption } & { country: SelectorOption } & { practice: SelectorOption };
+export type CustomFacilityInputProps = Omit<
+  UpdateContactInput,
+  "serviceCode" | "state" | "country"
+> &
+  Omit<
+    UpdateFacilityItemInput,
+    "practiceType" | "serviceCode" | "timeZone" | "practiceId"
+  > &
+  CustomBillingAddressInputs & { serviceCode: SelectorOption } & {
+    practiceType: SelectorOption;
+  } & { timeZone: SelectorOption } & { state: SelectorOption } & {
+    country: SelectorOption;
+  } & { practice: SelectorOption };
 
-type UpdateFacilityTimeZoneControlTypes = | "timeZone" | "facilityId";
+type UpdateFacilityTimeZoneControlTypes = "timeZone" | "facilityId";
 
 export interface UpdateFacilityTimeZoneControlProps extends IControlLabel {
   controllerName: UpdateFacilityTimeZoneControlTypes;
 }
 
-export type CustomUpdateFacilityTimeZoneInputProps = Omit<UpdateFacilityTimeZoneInput, "timeZone">
-  & { timeZone: SelectorOption } & { facilityId: SelectorOption };
+export type CustomUpdateFacilityTimeZoneInputProps = Omit<
+  UpdateFacilityTimeZoneInput,
+  "timeZone"
+> & { timeZone: SelectorOption } & { facilityId: SelectorOption };
 
-export type DoctorInputProps = Omit<CreateDoctorItemInput, "facilityId" | "speciality">
-  & Omit<CreateContactInput, "facilityId" | "state" | "country"> & CustomBillingAddressInputs
-  & { facilityId: SelectorOption } & { country: SelectorOption }
-  & { speciality: SelectorOption } & { state: SelectorOption };
+export type DoctorInputProps = Omit<
+  CreateDoctorItemInput,
+  "facilityId" | "speciality"
+> &
+  Omit<CreateContactInput, "facilityId" | "state" | "country"> &
+  CustomBillingAddressInputs & { facilityId: SelectorOption } & {
+    country: SelectorOption;
+  } & { speciality: SelectorOption } & { state: SelectorOption };
 
-export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & { facilityId: SelectorOption };
+export type ServiceInputProps = Omit<CreateServiceInput, "facilityId"> & {
+  facilityId: SelectorOption;
+};
 
 export interface RenderInputFieldProps {
-  name: string
-  label: string
-  control?: Control<FieldValues, object> | undefined
+  name: string;
+  label: string;
+  control?: Control<FieldValues, object> | undefined;
 }
 
 export interface StepLabelType {
-  title: string
+  title: string;
 }
 
 export interface FormVerification {
@@ -457,7 +584,7 @@ export interface FormVerification {
 }
 
 export interface StepperComponentProps {
-  activeStep: number
+  activeStep: number;
 }
 
 interface BasicContactControlInputs {
@@ -529,50 +656,96 @@ interface EmployerControlInputs {
 }
 
 interface RegisterUserInputs {
-  userFirstName: string
-  userLastName: string
-  userPassword: string
-  userEmail: string
-  userPhone: string
-  userZipCode: string
+  userFirstName: string;
+  userLastName: string;
+  userPassword: string;
+  userEmail: string;
+  userPhone: string;
+  userZipCode: string;
 }
 
-export type PatientInputProps = BasicContactControlInputs & EmergencyContactControlInputs & KinContactControlInputs
-  & GuardianContactControlInputs & GuarantorContactControlInputs & EmployerControlInputs & RegisterUserInputs
-  & Omit<CreatePatientItemInput, "gender" | "race" | "genderIdentity" | "maritialStatus" | "sexAtBirth"
-    | "pronouns" | "ethnicity" | "sexualOrientation"
-    | "facilityId" | "usualProviderId" | "sexualOrientation" | "genderIdentity" | "homeBound">
-  & { usualProviderId: SelectorOption } & { gender: SelectorOption } & { race: SelectorOption }
-  & { sexualOrientation: SelectorOption } & { sexualOrientation: SelectorOption }
-  & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & { facilityId: SelectorOption }
-  & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & { homeBound: boolean }
-  & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption }
+export type PatientInputProps = BasicContactControlInputs &
+  EmergencyContactControlInputs &
+  KinContactControlInputs &
+  GuardianContactControlInputs &
+  GuarantorContactControlInputs &
+  EmployerControlInputs &
+  RegisterUserInputs &
+  Omit<
+    CreatePatientItemInput,
+    | "gender"
+    | "race"
+    | "genderIdentity"
+    | "maritialStatus"
+    | "sexAtBirth"
+    | "pronouns"
+    | "ethnicity"
+    | "sexualOrientation"
+    | "facilityId"
+    | "usualProviderId"
+    | "sexualOrientation"
+    | "genderIdentity"
+    | "homeBound"
+  > & { usualProviderId: SelectorOption } & { gender: SelectorOption } & {
+    race: SelectorOption;
+  } & { sexualOrientation: SelectorOption } & {
+    sexualOrientation: SelectorOption;
+  } & { pronouns: SelectorOption } & { ethnicity: SelectorOption } & {
+    facilityId: SelectorOption;
+  } & { genderIdentity: SelectorOption } & { sexAtBirth: SelectorOption } & {
+    homeBound: boolean;
+  } & { genderIdentity: SelectorOption } & { maritialStatus: SelectorOption };
 
-export type ExternalPatientInputProps =
-  { preferredCommunicationMethod: SelectorOption } & { providerId: SelectorOption }
-  & { state: SelectorOption } & { country: SelectorOption }
-  & { emergencyCountry: SelectorOption } & { emergencyState: SelectorOption }
-  & Pick<CreatePatientItemInput, 'pharmacy' | 'voiceCallPermission' | 'phonePermission'
-    | 'callToConsent' | 'releaseOfInfoBill'>
-  & Pick<CreateContactInput, 'address' | 'address2' | 'city' | 'zipCode' | 'ssn'>
-  & Pick<EmergencyContactControlInputs, 'emergencyName' | 'emergencyRelationship' | 'emergencyPhone' |
-    'emergencyCity' | 'emergencyZipCode' | 'emergencyAddress' |
-    'emergencyAddress2'>
+export type ExternalPatientInputProps = {
+  preferredCommunicationMethod: SelectorOption;
+} & { providerId: SelectorOption } & { state: SelectorOption } & {
+  country: SelectorOption;
+} & { emergencyCountry: SelectorOption } & {
+  emergencyState: SelectorOption;
+} & Pick<
+  CreatePatientItemInput,
+  | "pharmacy"
+  | "smsPermission"
+  | "phonePermission"
+  | "callToConsent"
+  | "releaseOfInfoBill"
+> &
+  Pick<
+    CreateContactInput,
+    "address" | "address2" | "city" | "zipCode" | "ssn"
+  > &
+  Pick<
+    EmergencyContactControlInputs,
+    | "emergencyName"
+    | "emergencyRelationship"
+    | "emergencyPhone"
+    | "emergencyCity"
+    | "emergencyZipCode"
+    | "emergencyAddress"
+    | "emergencyAddress2"
+  >;
 
-export type ExtendedAppointmentInputProps = Omit<CreateAppointmentInput, "patientId" | "facilityId" |
-  "serviceId" | "providerId"> & { facilityId: SelectorOption } & { patientId: SelectorOption }
-  & { serviceId: SelectorOption } & { providerId: SelectorOption };
+export type ExtendedAppointmentInputProps = Omit<
+  CreateAppointmentInput,
+  "patientId" | "facilityId" | "serviceId" | "providerId"
+> & { facilityId: SelectorOption } & { patientId: SelectorOption } & {
+  serviceId: SelectorOption;
+} & { providerId: SelectorOption };
 
-export type ExtendedExternalAppointmentInputProps = Pick<CreateExternalAppointmentItemInput, "scheduleEndDateTime"
-  | "scheduleStartDateTime"> & { serviceId: SelectorOption } & { providerId: SelectorOption }
-  & Pick<CreatePatientItemInput, "firstName" | "lastName" | "email" | "dob"> & { phone: string } &
-{ sexAtBirth: SelectorOption }
+export type ExtendedExternalAppointmentInputProps = Pick<
+  CreateExternalAppointmentItemInput,
+  "scheduleEndDateTime" | "scheduleStartDateTime"
+> & { serviceId: SelectorOption } & { providerId: SelectorOption } & Pick<
+  CreatePatientItemInput,
+  "firstName" | "lastName" | "email" | "dob"
+> & { phone: string } & { sexAtBirth: SelectorOption };
 
-export type extendedServiceInput = Omit<CreateServiceInput, "facilityId">
-  & { facilityId: SelectorOption };
+export type extendedServiceInput = Omit<CreateServiceInput, "facilityId"> & {
+  facilityId: SelectorOption;
+};
 
 export interface ServiceTableProps {
-  serviceDispatch: Dispatch<serviceAction>
+  serviceDispatch: Dispatch<serviceAction>;
   openModal: boolean;
 }
 
@@ -582,11 +755,15 @@ export interface ServiceModalProps extends DialogTypes {
 }
 
 export interface CustomInputControlProps extends IControlLabel {
-  controllerName: string
+  controllerName: string;
 }
 
-export type extendedContactInput = Omit<CreateContactInput, "facilityId" | "serviceCode" | "state">
-  & { facilityId: SelectorOption } & { serviceCode: SelectorOption } & { state: SelectorOption }
+export type extendedContactInput = Omit<
+  CreateContactInput,
+  "facilityId" | "serviceCode" | "state"
+> & { facilityId: SelectorOption } & { serviceCode: SelectorOption } & {
+  state: SelectorOption;
+};
 
 export interface LocationTableProps {
   openModal: boolean;
@@ -599,23 +776,38 @@ export interface LocationModalProps extends DialogTypes {
 }
 
 export interface GeneralFormProps {
-  id?: string
-  isEdit?: boolean
+  id?: string;
+  isEdit?: boolean;
 }
 
-type PhoneInputTypes = | "phone" | "fax" | "mobile" | "basicPhone" | "basicMobile" | "basicFax"
-  | "billingPhone" | "billingFax" | "billingMobile" | "emergencyPhone" | "emergencyMobile"
-  | "kinPhone" | "kinMobile" | "employerPhone" | "guarantorPhone" | "pager" | "userPhone"
+type PhoneInputTypes =
+  | "phone"
+  | "fax"
+  | "mobile"
+  | "basicPhone"
+  | "basicMobile"
+  | "basicFax"
+  | "billingPhone"
+  | "billingFax"
+  | "billingMobile"
+  | "emergencyPhone"
+  | "emergencyMobile"
+  | "kinPhone"
+  | "kinMobile"
+  | "employerPhone"
+  | "guarantorPhone"
+  | "pager"
+  | "userPhone";
 
 export interface PhoneInputProps {
-  label: string
-  error?: string
-  isRequired?: boolean
-  name: PhoneInputTypes
+  label: string;
+  error?: string;
+  isRequired?: boolean;
+  name: PhoneInputTypes;
 }
 
 export interface DropzoneImageType {
-  ref?: Ref;
+  ref?: RefObject<unknown>;
   itemId: string;
   title?: string;
   isEdit?: boolean;
@@ -645,9 +837,63 @@ export interface ICreateMediaInput {
   subTitle?: string;
   description?: string;
 }
+export interface SpecimenTypeOption {
+  id?: string
+  specimenType: SelectorOption,
+  collectionDate: string
+  collectionTime: string,
+  specimenNotes: string
+}
+
+export interface TestOption {
+   testId?: string
+   test: SelectorOption,
+   testDate: string
+   testTime: string
+   testNotes: string
+   newTest?: boolean
+   specimenTypeField?: SpecimenTypeOption[]
+}
+
+export interface LabOrdersCreateFormInput {
+  appointment?: SelectorOption,
+  labTestStatus?: SelectorOption,
+  diagnosesIds: multiOptionType[]
+  testField: TestOption[]
+};
+
+export interface LabOrdersSpecimenTypeInput {
+  index:number
+};
+
+export interface LabOrdersResultOption {
+  observationId?: string
+  resultValue?: string
+  resultUnits?: string
+  normalRange?: string
+  normalRangeUnits?: string
+  abnormalFlag?: SelectorOption
+}
+
+export interface LoinsCodeFields {
+  testId: string
+  loinccode: string
+  description: string
+  resultsField: LabOrdersResultOption[]
+}
+
+export interface LabOrderResultsFormInput {
+  loinsCodeFields: LoinsCodeFields[]
+};
+
+export interface LabOrdersResultSubFormProps {
+  index: number
+  setResultsToRemove: Function
+}
 
 export interface MediaModalTypes extends DialogTypes {
   buttonText?: string;
+  providerName?: string;
   itemId: string;
   title?: string;
   isProfile?: boolean;
@@ -663,12 +909,13 @@ export interface MediaModalTypes extends DialogTypes {
 
 export interface MediaCardsType {
   itemId: string;
-  buttonText?: string;
   title?: string;
   button?: boolean;
   imageSide: string;
+  buttonText?: string;
   hasCollage?: boolean;
-  hasHighlights?: boolean
+  providerName?: string;
+  hasHighlights?: boolean;
   notDescription?: boolean;
   moduleType: AttachmentType;
   attachmentData?: Attachment;
@@ -703,6 +950,7 @@ export interface MediaCardComponentType {
   setEdit: Function;
   setAttachment?: Function;
   setAttachments: Function;
+  buttonText?: string;
 }
 
 export interface DocumentModalComponentType {
@@ -710,13 +958,26 @@ export interface DocumentModalComponentType {
   isOpen: boolean;
 }
 
-type Days = | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday"
+type Days =
+  | "Monday"
+  | "Tuesday"
+  | "Wednesday"
+  | "Thursday"
+  | "Friday"
+  | "Saturday"
+  | "Sunday";
 
 export interface DoctorScheduleModalProps extends GeneralFormProps {
   isOpen: boolean;
   reload: Function;
   doctorDispatcher: Dispatch<DoctorAction>;
   doctorFacilityId: string | undefined;
+}
+
+export interface AddPatientModalProps {
+  isOpen: boolean;
+  setIsOpen: Function;
+  facilityId: string | undefined;
 }
 
 export interface FacilityScheduleModalProps extends GeneralFormProps {
@@ -746,13 +1007,14 @@ export interface AppointmentsTableProps {
 }
 
 export interface AppointmentDatePickerProps {
-  date: MaterialUiPickersDate,
-  setDate: Dispatch<SetStateAction<MaterialUiPickersDate>>
+  date: MaterialUiPickersDate;
+  setDate: Dispatch<SetStateAction<MaterialUiPickersDate>>;
 }
 
-export type CustomPracticeInputProps = CreatePracticeItemInput & RegisterUserInputs
-  & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email"> & { facilityName: string }
-  & { roleType: SelectorOption } & { country: SelectorOption } & { state: SelectorOption } & { isAdmin: boolean }
+export type CustomPracticeInputProps = CreatePracticeItemInput &
+  RegisterUserInputs & Pick<CreateContactInput, "city" | "address" | "address2" | "zipCode" | "email">
+  & { facilityName: string } & { roleType: SelectorOption } & { country: SelectorOption }
+  & { state: SelectorOption } & { isAdmin: boolean };
 
 export interface PaymentProps {
   clientToken: string;
@@ -765,19 +1027,16 @@ export interface CountrySelectorInterface {
   stateLabel: string;
   countryName: string;
   stateName: string;
-  cityName: string
-}
-
-export interface DocumentTableProps {
-  dispatcher: Dispatch<Action>;
-  attachments: AttachmentsPayload['attachments'];
+  cityName: string;
 }
 
 export interface PortalTableProps {
   inviteAccepted: boolean;
 }
 
-export type UpdateStatusInputProps = UpdateAppointmentInput & { appointmentStatus: SelectorOption };
+export type UpdateStatusInputProps = UpdateAppointmentInput & {
+  appointmentStatus: SelectorOption;
+};
 
 export interface ColumnTypes {
   COL_1: string;
@@ -786,7 +1045,7 @@ export interface ColumnTypes {
 }
 
 export interface ItemsTypes extends FieldsInputs {
-  icon: ElementType
+  icon: ElementType;
 }
 export interface FormInitialType extends FieldsInputs {
   list: string;
@@ -796,36 +1055,34 @@ export interface FormValuesTypes {
   id: string;
   col: number;
   name: string;
-  fields: FieldsInputs[],
+  fields: FieldsInputs[];
 }
 
 export interface SelectOptions {
-  id: number
-  name: number
+  id: number;
+  name: number;
 }
 
 export interface CustomSelectControlProps extends IControlLabel {
   controllerName: string;
   info?: string;
-  options: SelectOptions[]
+  options: SelectOptions[];
 }
 
 export interface FieldEditModalProps {
   open?: boolean;
-  closeModalHanlder?: () => void;
+  closeModalHandler?: () => void;
   setFieldValuesHandler: (values: any) => void;
   selected: FormInitialType;
 }
 
-
 export interface DropContainerPropsTypes {
-  formValues: FormValuesTypes[];
+  formState: FormBuilderState;
   changeValues: (id: string, item: FieldsInputs) => void;
   delFieldHandler: (id: number, index: number) => void;
-  delColHandler: (index: number) => void
-  setFormValues: Dispatch<SetStateAction<SectionsInputs[]>>
+  delColHandler: (index: number) => void;
+  dispatch: Dispatch<FormBuilderAction>
 }
-
 
 export interface FormBuilderFormInitial {
   name: string;
@@ -834,14 +1091,14 @@ export interface FormBuilderFormInitial {
 }
 
 export interface LoaderProps {
-  open: boolean
+  open: boolean;
 }
 
 export interface FormBuilderPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
   data: SectionsInputs[];
-  formName: string
+  formName: string;
 }
 
 export interface FieldComponentProps {
@@ -861,12 +1118,18 @@ export interface SmartyUserData {
   street: string;
   address: string;
 }
+
 export interface SmartyModalComponentType {
   setOpen: Function;
   isOpen: boolean;
   data: usStreet.Candidate[];
   userData: SmartyUserData;
-  verifiedAddressHandler: (deliveryLine1: string, zipCode: string, plus4Code: string, cityName: string) => void
+  verifiedAddressHandler: (
+    deliveryLine1: string,
+    zipCode: string,
+    plus4Code: string,
+    cityName: string
+  ) => void;
 }
 
 export interface GetAddressResponse {
@@ -878,39 +1141,265 @@ export interface GetAddressResponse {
 export interface VerifyResponse {
   status: boolean;
   message: string;
-  options: usStreet.Candidate[]
+  options: usStreet.Candidate[];
 }
 
 export interface AutoCompleteResponse {
   status: boolean;
   message: string;
-  options: any
+  options: any;
 }
 
-
 export interface UserFormType {
-  attachmentId: string
-  title: string
-  file: File
+  attachmentId: string;
+  title: string;
+  file: File;
 }
 
 export interface FormAttachmentPayload {
   attachment?: String | null | undefined;
-  response?: ResponsePayloadResponse
+  response?: ResponsePayloadResponse;
 }
 
 export interface FormMediaPreviewProps {
   open: Boolean;
   closeModalHandler: () => void;
   url: string;
-  formId: string
+  formId: string;
 }
 
 export interface UserFormPreviewModalProps {
   open: Boolean;
   closeModalHandler: () => void;
-  formId: string
-  userForms: UsersFormsElements[]
-  formLabels: FormElement[]
-  imagePreviewHandler: (id: string) => void
+  formId: string;
+  userForms: UsersFormsElements[];
+  formLabels: FormElement[];
+  imagePreviewHandler: (id: string) => void;
+}
+
+export interface RolesTableProps {
+  customRole?: boolean
+}
+
+export interface CardLayoutProps {
+  modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes
+  cardId: string;
+  hasAdd?: boolean;
+  cardTitle: string;
+  isMenuOpen: boolean;
+  children: ReactNode;
+  filterTabs?: string[];
+  searchLoading: boolean;
+  disableAddIcon?: boolean;
+  openSearch: HTMLElement | null;
+  dispatcher: Dispatch<ChartAction>;
+  searchComponent: ComponentType<any>;
+  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
+  fetch: () => void;
+  handleMenuClose: () => void;
+  onClickAddIcon: (event: any) => void;
+  onSearch: (tab: string, query: string) => void;
+}
+
+export interface AddModalProps {
+  newAllergy?: string;
+  allergyType?: string; 
+  isEdit?: boolean;
+  recordId?: string;
+  item?: Allergies | IcdCodes;
+  dispatcher: Dispatch<ChartAction>;
+  fetch: () => void;
+}
+
+export type CreatePatientAllergyProps = Pick<CreatePatientAllergyInput, | 'comments' | 'allergyStartDate'>
+  & { reactionIds: multiOptionType[] } & { severityId: SelectorOption }
+
+export type PatientProblemInputs = Pick<CreateProblemInput, | 'note' | 'problemStartDate'>
+  & { appointmentId: SelectorOption }
+
+export interface CreateTemplateTypes extends DialogTypes {
+  title?: string;
+  success?: boolean;
+  actionText?: string;
+  isLoading?: boolean;
+  description?: string;
+  handleDelete: () => void;
+  dispatch: Dispatch<FormBuilderAction>
+  formName: string
+}
+
+export interface AppointmentCardProps {
+  tooltip: AppointmentTooltip.LayoutProps
+  setCurrentView: Function
+  setCurrentDate: Function
+}
+
+export interface ProfileEditFormType {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  addressNumber: string
+  city: string
+  state: SelectorOption
+  country: SelectorOption
+  zipCode: string
+  contactId: string
+}
+
+export interface RolePayloadInterface {
+  id: string
+  roles?: RolesPayload['roles']
+}
+
+export type multiOptionType = {
+  value: string,
+  label: string
+}
+
+export interface ReactionSelectorInterface {
+  name: string
+  label: string
+  isEdit?: boolean;
+  disable?: boolean
+  isRequired?: boolean
+  selectDisabled?: boolean
+  selectedOptions?: string
+  defaultValues?: multiOptionType[]
+  margin?: MuiPropsTypes.Margin
+  setFieldValue?: Function
+}
+
+export interface MediaDoctorDataType extends Message {
+  doctor: Doctor;
+}
+
+export interface MediaStaffDataType extends Message {
+  staff: Staff;
+}
+
+export interface MediaUserDataType extends Message {
+  user: User;
+}
+
+export interface BackButtonProps {
+  to: string;
+}
+
+export interface PatientSearchInputProps {
+  dob: string;
+  dos: string;
+  location: SelectorOption;
+  provider: SelectorOption;
+}
+
+export type TwoFactorInputProps = Omit<TwoFactorInput, "userId">;
+
+export type VerifyCodeInputProps = Omit<VerifyCodeInput, "id">;
+
+export interface OTPInputProps {
+  value: number | string;
+  onChange: any;
+  numInputs: number;
+  separator?: JSX.Element | undefined;
+  isDisabled?: boolean | undefined;
+  shouldAutoFocus?: boolean | undefined;
+  hasErrored?: boolean | undefined;
+  isInputNum?: boolean | undefined;
+  containerStyle?: string | React.CSSProperties | undefined;
+  inputStyle?: string | React.CSSProperties | undefined;
+  focusStyle?: string | React.CSSProperties | undefined;
+  disabledStyle?: string | React.CSSProperties | undefined;
+  errorStyle?: string | React.CSSProperties | undefined;
+}
+
+export interface FilterSearchProps {
+  tabs?: string[];
+  loading: boolean;
+  dispatcher: Dispatch<ChartAction>;
+  modal: CARD_LAYOUT_MODAL.Allergies | CARD_LAYOUT_MODAL.ICDCodes;
+  searchData: AllergiesPayload['allergies'] | IcdCodesPayload['icdCodes'];
+  fetch: () => void;
+  searchItem: (tab: string, query: string) => void;
+}
+
+export interface PatientProfileHeroProps {
+  isChart?: boolean;
+  setPatient: Function;
+  setAttachmentsData: Function;
+}
+
+export interface VitalListingTableProps {
+  patientVitals: PatientVitalsPayload['patientVitals'];
+  patientStates: PatientState;
+  setPatientVitals: Dispatch<SetStateAction<Maybe<Maybe<PatientVitals>[]> | undefined>>
+}
+
+export interface VitalFormInput {
+  smokingStatus: SelectorOption
+  respiratoryRate: string
+  systolicBloodPressure: string
+  diastolicBloodPressure: string
+  oxygenSaturation: string
+  PatientHeight: string
+  PatientWeight: string
+  PatientBMI: string
+  PainRange: string
+  pulseRate: string
+  patientHeadCircumference: string
+  patientTemperature: string
+}
+
+export interface AddPatientVitalsProps {
+  fetchPatientAllVitals: Function;
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
+}
+
+export interface PatientVitalsListingProps {
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
+}
+
+export interface VitalsLabelsProps {
+  patientStates: PatientState
+}
+
+export interface VitalListComponentProps {
+  title: string;
+  description: string;
+  isError?: boolean
+}
+
+export interface SelectStringOptions {
+  id: string;
+  name: string;
+}
+
+export interface AutoLogoutInputTypes {
+  autoLogoutTime: SelectStringOptions
+}
+
+export interface FormSidebarProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
+
+export interface PredefinedComponentsProps {
+  formState: FormBuilderState;
+  dispatch: Dispatch<FormBuilderAction>
+}
+
+export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
+
+export interface PatientNoteModalProps{
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
+}
+export interface PracticesTableProps {
+  dispatch: Dispatch<PracticeAction>
+} 
+
+export interface PieChartProps {
+  practices?: PracticesPayload['practices']
 }

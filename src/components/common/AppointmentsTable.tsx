@@ -29,7 +29,7 @@ import {
 } from "../../generated/graphql";
 import {
   ACTION, DOCTOR, PATIENT, DATE, FACILITY, PAGE_LIMIT, CANT_CANCELLED_APPOINTMENT, STATUS, APPOINTMENT,
-  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME,
+  TYPE, APPOINTMENTS_ROUTE, DELETE_APPOINTMENT_DESCRIPTION, CANCEL_TIME_EXPIRED_MESSAGE, TIME, AppointmentSearchingTooltipData,
 } from "../../constants";
 
 dotenv.config()
@@ -40,7 +40,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   const { facility, roles } = user || {}
   const { id: facilityId, practiceId } = facility || {}
   const isSuper = isSuperAdmin(roles);
-  const isPracAdmin = isPracticeAdmin(roles);
+  const isPracticeUser = isPracticeAdmin(roles);
   const isFacAdmin = isFacilityAdmin(roles);
   const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState)
   const { page, totalPages, deleteAppointmentId, openDelete, searchQuery, appointments } = state;
@@ -138,7 +138,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       else {
         const pageInputs = { paginationOptions: { page, limit: PAGE_LIMIT } }
         const inputs = isSuper ? { ...pageInputs } :
-          isPracAdmin ? { practiceId, ...pageInputs } :
+          isPracticeUser ? { practiceId, ...pageInputs } :
             isFacAdmin ? { facilityId, ...pageInputs } : undefined
 
         inputs && await findAllAppointments({
@@ -149,7 +149,7 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
       }
     } catch (error) { }
   }, [
-    doctorId, getAppointments, page, isSuper, isPracAdmin, practiceId, isFacAdmin, facilityId,
+    doctorId, getAppointments, page, isSuper, isPracticeUser, practiceId, isFacAdmin, facilityId,
     findAllAppointments, searchQuery
   ])
 
@@ -187,8 +187,8 @@ const AppointmentsTable: FC<AppointmentsTableProps> = ({ doctorId }): JSX.Elemen
   return (
     <>
       <Box className={classes.mainTableContainer}>
-        <Box py={2}>
-          <Search search={search} />
+        <Box py={2} mb={2} maxWidth={450}>
+          <Search search={search} info tooltipData={AppointmentSearchingTooltipData} />
         </Box>
 
         <Box className="table-overflow">

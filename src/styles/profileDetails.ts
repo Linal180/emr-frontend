@@ -1,5 +1,5 @@
 import { makeStyles, createStyles } from "@material-ui/core";
-import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GRAY_TWO, theme, WHITE, WHITE_SIX } from "../theme";
+import { BLACK_ONE, BLACK_THREE, BLUE_SEVEN, GREY_SEVEN, GREY_THREE, theme, WHITE, WHITE_SIX } from "../theme";
 
 export const useProfileDetailsStyles = makeStyles(() =>
   createStyles({
@@ -15,7 +15,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
       borderRadius: 8,
       padding: 30,
     },
-    
+
     profileDetailsContainer: {
       maxHeight: 'calc(100vh - 175px)',
     },
@@ -25,7 +25,7 @@ export const useProfileDetailsStyles = makeStyles(() =>
       padding: 30,
       background: WHITE,
       borderRadius: 12,
-      display: 'flex'
+      display: 'flex',
     },
 
     patientProfileCard: {
@@ -39,10 +39,10 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileImage: {
-      height: 160,
-      width: 160,
+      height: 120,
+      width: 120,
       borderRadius: 12,
-      
+
       "& > img": {
         height: '100%',
         width: '100%',
@@ -53,7 +53,8 @@ export const useProfileDetailsStyles = makeStyles(() =>
     userName: {
       fontSize: 19,
       fontWeight: 700,
-      paddingBottom: 5,
+      color: BLACK_ONE,
+      textTransform: 'capitalize',
 
       "& > svg": {
         marginLeft: 10,
@@ -61,10 +62,11 @@ export const useProfileDetailsStyles = makeStyles(() =>
     },
 
     profileInfoItem: {
-      width: "25%",
+      minWidth: "20%",
       alignItems: 'center',
-      color: GRAY_TWO,
+      color: GREY_THREE,
       marginBottom: 8,
+      marginRight: 5,
 
       "& svg": {
         display: 'block',
@@ -76,12 +78,12 @@ export const useProfileDetailsStyles = makeStyles(() =>
     profileAdditionalInfo: {
       width: '25%',
       fontSize: 14,
-      color: GRAY_TWO,
+      color: GREY_SEVEN,
     },
 
     profileInfoHeading: {
       fontSize: 15,
-      fontWeight: 600,
+      fontWeight: 700,
       color: BLACK_ONE
     },
 
@@ -141,6 +143,36 @@ export const useProfileDetailsStyles = makeStyles(() =>
       "& .MuiListItem-root": {
         color: BLACK_THREE,
       },
+    },
+
+    noteDropdown: {
+      "& .MuiMenu-paper": {
+        padding: 10
+      },
+      "& .MuiPopover-paper": {
+        [theme.breakpoints.up('sm')]: {
+          minWidth: 300
+        },
+        [theme.breakpoints.only('sm')]: {
+          minWidth: 150
+        }
+      }
+    },
+
+    profileNoteInfoItem: {
+      minWidth: "20%",
+      alignItems: 'center',
+      color: GREY_THREE,
+      marginBottom: 8,
+      marginRight: 5,
+      display: "flex",
+      flexWrap: "wrap",
+
+      "& svg": {
+        display: 'block',
+        marginRight: 7,
+        minWidth: 14
+      }
     },
   })
 );

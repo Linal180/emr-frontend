@@ -1,5 +1,5 @@
 import { makeStyles } from '@material-ui/core'
-import { BLACK, GRAY_FOUR, GRAY_ONE, GRAY_THIRTEEN, WHITE } from '../../theme'
+import { BLACK, GRAY_FOUR, GRAY_ONE, GREY_NINE, WHITE } from '../../theme'
 
 export const useFormBuilderContainerStyles = makeStyles((theme) => ({
   main: {
@@ -12,7 +12,7 @@ export const useFormBuilderContainerStyles = makeStyles((theme) => ({
 
   dropContainer: {
     minHeight: 120,
-    backgroundColor: GRAY_THIRTEEN,
+    backgroundColor: GREY_NINE,
     border: `1px solid ${GRAY_ONE}`,
     borderRadius: theme.spacing(1),
     padding: theme.spacing(1),
@@ -41,7 +41,6 @@ export const useFormBuilderContainerStyles = makeStyles((theme) => ({
   placeholderContainer: {
     display: 'flex',
     alignItems: 'center',
-    alignContent: 'center',
     justifyContent: 'center',
     padding: '0.5rem',
     margin: '0 0.5rem 0.5rem',

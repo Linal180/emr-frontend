@@ -2,12 +2,11 @@
 import { FC, useEffect } from "react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, useForm, SubmitHandler } from "react-hook-form";
-import { Button, Dialog, DialogActions, Box, Grid, CircularProgress } from "@material-ui/core";
+import { Button, Dialog, DialogActions, Box, Grid, CircularProgress, DialogTitle, DialogContent } from "@material-ui/core";
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from '../../../../common/Selector';
 import TimePicker from "../../../../common/TimePicker";
-import CardComponent from "../../../../common/CardComponent";
 import ViewDataLoader from "../../../../common/ViewDataLoader";
 // interfaces/types block, theme, svgs and constants
 import { ActionType } from "../../../../../reducers/facilityReducer";
@@ -117,7 +116,7 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
     const { id: dayName } = day || {}
 
     const scheduleInput = {
-      facilityId, servicesIds: [],
+      facilityId, servicesIds: [], day: dayName,
       startAt: setTimeDay(startAt, dayName), endAt: setTimeDay(endAt, dayName),
     };
     if (facilityId) {
@@ -145,62 +144,60 @@ const FacilityScheduleModal: FC<FacilityScheduleModalProps> = ({
     <Dialog open={isOpen} onClose={handleClose} aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description" maxWidth="sm" fullWidth
     >
+      <DialogTitle id="alert-dialog-title">
+        {FACILITY_SCHEDULE}
+      </DialogTitle>
+
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <CardComponent cardTitle={FACILITY_SCHEDULE}>
-            <Box ml={3} mr={3} pt={3}>
-              <Grid container spacing={3}>
-                <Grid item md={12} sm={12} xs={12}>
-                  {getScheduleLoading ?
-                    <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
-                      <>
-                        <Selector
-                          isRequired
-                          value={EMPTY_OPTION}
-                          label={PICK_DAY_TEXT}
-                          name="day"
-                          options={WEEK_DAYS}
-                        />
+          <DialogContent>
+            <Box className="dialogBg">
+              {getScheduleLoading ?
+                <ViewDataLoader rows={4} columns={6} hasMedia={false} /> : (
+                  <Grid container spacing={3}>
+                    <Grid item md={12} sm={12} xs={12}>
+                      <Selector
+                        isRequired
+                        value={EMPTY_OPTION}
+                        label={PICK_DAY_TEXT}
+                        name="day"
+                        options={WEEK_DAYS}
+                      />
+                    </Grid>
 
-                        <Grid container spacing={3}>
-                          <Grid item md={6} sm={12} xs={12}>
-                            <TimePicker
-                              isRequired
-                              label={START_TIME}
-                              name="startAt"
-                            />
-                          </Grid>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <TimePicker
+                        isRequired
+                        label={START_TIME}
+                        name="startAt"
+                      />
+                    </Grid>
 
-                          <Grid item md={6} sm={12} xs={12}>
-                            <TimePicker
-                              isRequired
-                              label={END_TIME}
-                              name="endAt"
-                            />
-                          </Grid>
-                        </Grid>
-                      </>
-                    )}
-
-                  <DialogActions>
-                    <Box pr={1}>
-                      <Button onClick={handleClose} color="default">
-                        {CANCEL}
-                      </Button>
-                    </Box>
-
-                    <Button type="submit" variant="contained" color="primary"
-                      disabled={disableSubmit}
-                    >
-                      {isEdit ? UPDATE_SCHEDULE : CREATE_SCHEDULE}
-
-                      {disableSubmit && <CircularProgress size={20} color="inherit" />}
-                    </Button>
-                  </DialogActions>
-                </Grid>
-              </Grid>
+                    <Grid item md={6} sm={12} xs={12}>
+                      <TimePicker
+                        isRequired
+                        label={END_TIME}
+                        name="endAt"
+                      />
+                    </Grid>
+                  </Grid>
+                )}
             </Box>
-          </CardComponent>
+          </DialogContent>
+
+          <DialogActions>
+            <Box pr={2} display="flex">
+              <Button onClick={handleClose} color="default">{CANCEL}</Button>
+
+              <Box p={1} />
+
+              <Button type="submit" variant="contained" color="primary" disabled={disableSubmit}>
+                {isEdit ? UPDATE_SCHEDULE : CREATE_SCHEDULE}
+
+                {disableSubmit && <CircularProgress size={20} color="inherit" />}
+              </Button>
+            </Box>
+          </DialogActions>
         </form>
       </FormProvider>
     </Dialog>

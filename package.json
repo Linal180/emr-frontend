@@ -36,6 +36,8 @@
     "draftjs-to-html": "^0.9.1",
     "graphql": "^15.6.0",
     "graphql-tag": "^2.12.5",
+    "highcharts": "^10.1.0",
+    "highcharts-react-official": "^3.1.0",
     "html-to-draftjs": "^1.5.0",
     "material-ui-dropzone": "^3.5.0",
     "moment": "^2.29.1",
@@ -74,7 +76,7 @@
   "engines": {
     "node": "^16.13.1",
     "npm": "^8.1.2"
-},
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

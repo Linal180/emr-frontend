@@ -36,7 +36,7 @@ const ShareModal: FC<ShareModalTypes> = ({ setOpen, isOpen, title, description, 
           </Button>
         </Box>
 
-        <Button onClick={onCopy} color="secondary" variant="contained">
+        <Button onClick={onCopy} color="primary" variant="contained">
 
           {actionText ? actionText : FORM_COPY}
         </Button>

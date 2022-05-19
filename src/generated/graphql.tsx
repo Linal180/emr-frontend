@@ -32,8 +32,32 @@ export enum Appointmentstatus {
   Rescheduled = 'RESCHEDULED'
 }
 
+/** The test result's abnormal flag status assigned */
+export enum AbnormalFlag {
+  AbnormalAppliedToNonNumericResults = 'ABNORMAL_APPLIED_TO_NON_NUMERIC_RESULTS',
+  AboveAbsoluteHighOffScale = 'ABOVE_ABSOLUTE_HIGH_OFF_SCALE',
+  AboveHighNormal = 'ABOVE_HIGH_NORMAL',
+  BelowAbsoluteLowOffScale = 'BELOW_ABSOLUTE_LOW_OFF_SCALE',
+  BelowLowerPanicLimit = 'BELOW_LOWER_PANIC_LIMIT',
+  BelowLowNormal = 'BELOW_LOW_NORMAL',
+  BelowUpperPanicLimit = 'BELOW_UPPER_PANIC_LIMIT',
+  BetterUseWhenDirectionNotRelevant = 'BETTER_USE_WHEN_DIRECTION_NOT_RELEVANT',
+  Intermediate = 'INTERMEDIATE',
+  Moderately = 'MODERATELY',
+  None = 'NONE',
+  Normal = 'NORMAL',
+  Resistant = 'RESISTANT',
+  SignificantChangeDown = 'SIGNIFICANT_CHANGE_DOWN',
+  SignificantChangeUp = 'SIGNIFICANT_CHANGE_UP',
+  Susceptible = 'SUSCEPTIBLE',
+  VeryAbnormalAppliedToNonNumeric = 'VERY_ABNORMAL_APPLIED_TO_NON_NUMERIC',
+  VerySusceptible = 'VERY_SUSCEPTIBLE',
+  WorstUseWhenDirectionNotRelevant = 'WORST_USE_WHEN_DIRECTION_NOT_RELEVANT'
+}
+
 export type AccessUserPayload = {
   __typename?: 'AccessUserPayload';
+  access_2fa_token?: Maybe<Scalars['String']>;
   access_token?: Maybe<Scalars['String']>;
   isTwoFactorEnabled?: Maybe<Scalars['Boolean']>;
   response?: Maybe<ResponsePayload>;
@@ -66,11 +90,24 @@ export type Allergies = {
   updatedAt?: Maybe<Scalars['String']>;
 };
 
+export type AllergiesPayload = {
+  __typename?: 'AllergiesPayload';
+  allergies?: Maybe<Array<Maybe<Allergies>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type AllergyInput = {
+  allergyName?: Maybe<Scalars['String']>;
+  allergyType?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+};
+
 /** The patient's allergy onset type assigned */
 export enum AllergyOnset {
   Adulthood = 'ADULTHOOD',
   Childhood = 'CHILDHOOD',
-  Unnkown = 'UNNKOWN'
+  Unknown = 'UNKNOWN'
 }
 
 /** The patient's allergy severity type assigned */
@@ -105,6 +142,7 @@ export type Appointment = {
   invoice?: Maybe<Invoice>;
   invoiceId?: Maybe<Scalars['String']>;
   isExternal?: Maybe<Scalars['Boolean']>;
+  labTests?: Maybe<Array<LabTests>>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -135,6 +173,7 @@ export type AppointmentInput = {
   paginationOptions: PaginationInput;
   patientId?: Maybe<Scalars['String']>;
   practiceId?: Maybe<Scalars['String']>;
+  relationTable?: Maybe<Scalars['String']>;
   searchString?: Maybe<Scalars['String']>;
 };
 
@@ -164,12 +203,16 @@ export type ArrayOfStringsTypeInput = {
 
 export type Attachment = {
   __typename?: 'Attachment';
+  attachmentMetadata?: Maybe<AttachmentMetadata>;
+  attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   id: Scalars['String'];
   key?: Maybe<Scalars['String']>;
   providerName?: Maybe<Scalars['String']>;
+  signedAt?: Maybe<Scalars['String']>;
+  signedBy?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   type: AttachmentType;
   typeId: Scalars['String'];
@@ -183,6 +226,31 @@ export type AttachmentMediaPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+/** The type is assigned */
+export enum AttachmentMetaDataType {
+  DrivingLicense1 = 'DRIVING_LICENSE1',
+  DrivingLicense2 = 'DRIVING_LICENSE2',
+  InsuranceCard1 = 'INSURANCE_CARD1',
+  InsuranceCard2 = 'INSURANCE_CARD2',
+  LabOrders = 'LAB_ORDERS',
+  ProfilePicture = 'PROFILE_PICTURE',
+  ProviderUploads = 'PROVIDER_UPLOADS',
+  Signature = 'SIGNATURE'
+}
+
+export type AttachmentMetadata = {
+  __typename?: 'AttachmentMetadata';
+  assignedTo?: Maybe<Scalars['String']>;
+  attachment?: Maybe<Attachment>;
+  attachmentId?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  labOrderNum?: Maybe<Scalars['String']>;
+  metadataType: AttachmentMetaDataType;
+  pending?: Maybe<Scalars['Boolean']>;
+  updatedAt: Scalars['String'];
+};
+
 export type AttachmentPayload = {
   __typename?: 'AttachmentPayload';
   attachment?: Maybe<Attachment>;
@@ -194,6 +262,8 @@ export enum AttachmentType {
   Doctor = 'DOCTOR',
   FormBuilder = 'FORM_BUILDER',
   Patient = 'PATIENT',
+  Staff = 'STAFF',
+  SuperAdmin = 'SUPER_ADMIN',
   Lab = 'lab'
 }
 
@@ -332,6 +402,7 @@ export type CreateAppointmentInput = {
   employment?: Maybe<Scalars['Boolean']>;
   facilityId?: Maybe<Scalars['String']>;
   insuranceCompany?: Maybe<Scalars['String']>;
+  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -351,7 +422,12 @@ export type CreateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  providerName?: Maybe<Scalars['String']>;
+  labOrderNum?: Maybe<Scalars['String']>;
+  /** enum type for module type - Upload Media */
+  metadataType?: Maybe<AttachmentMetaDataType>;
+  signedAt?: Maybe<Scalars['String']>;
+  signedBy?: Maybe<Scalars['String']>;
+  signedByProvider?: Maybe<Scalars['Boolean']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -529,12 +605,12 @@ export type CreateFacilityItemInput = {
 };
 
 export type CreateFormInput = {
-  facilityId: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
   isActive?: Maybe<Scalars['Boolean']>;
   isSystemForm?: Maybe<Scalars['Boolean']>;
   layout: LayoutJsonInputType;
   name: Scalars['String'];
-  type: FormType;
+  type?: Maybe<FormType>;
 };
 
 export type CreateInvoiceInputs = {
@@ -548,11 +624,45 @@ export type CreateInvoiceInputs = {
   status: Status;
 };
 
+export type CreateLabTestInput = {
+  createLabTestItemInput?: Maybe<CreateLabTestItemInput>;
+  createSpecimenItemInput?: Maybe<Array<CreateSpecimenItemInput>>;
+  diagnoses?: Maybe<Array<Scalars['String']>>;
+  test?: Maybe<Scalars['String']>;
+};
+
+export type CreateLabTestItemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  orderNumber?: Maybe<Scalars['String']>;
+  patientId: Scalars['String'];
+  status?: Maybe<LabTestStatus>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+};
+
+export type CreateLabTestObservationInput = {
+  createLabTestObservationItemInput?: Maybe<Array<CreateLabTestObservationItemInput>>;
+  labTestId: Scalars['String'];
+};
+
+export type CreateLabTestObservationItemInput = {
+  abnormalFlag: AbnormalFlag;
+  description: Scalars['String'];
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  normalRange: Scalars['String'];
+  normalRangeUnit: Scalars['String'];
+  resultUnit: Scalars['String'];
+  resultValue: Scalars['String'];
+};
+
 export type CreatePatientAllergyInput = {
   allergyId?: Maybe<Scalars['String']>;
+  allergyName?: Maybe<Scalars['String']>;
   allergyOnset?: Maybe<AllergyOnset>;
   allergySeverity?: Maybe<AllergySeverity>;
   allergyStartDate?: Maybe<Scalars['String']>;
+  allergyType?: Maybe<AllergyType>;
   appointmentId?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   isActive?: Maybe<Scalars['Boolean']>;
@@ -611,6 +721,7 @@ export type CreatePatientItemInput = {
   releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
+  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -618,7 +729,6 @@ export type CreatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
-  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreatePracticeInput = {
@@ -654,6 +764,7 @@ export type CreateProblemInput = {
 };
 
 export type CreateScheduleInput = {
+  day: Scalars['String'];
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
   facilityId?: Maybe<Scalars['String']>;
@@ -671,6 +782,13 @@ export type CreateServiceInput = {
   price: Scalars['String'];
   /** Service type */
   serviceType?: Maybe<ServiceType>;
+};
+
+export type CreateSpecimenItemInput = {
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  specimenNotes?: Maybe<Scalars['String']>;
+  testSpecimen: Scalars['String'];
 };
 
 export type CreateStaffInput = {
@@ -711,15 +829,17 @@ export type CreateVitalInput = {
   PatientHeight?: Maybe<Scalars['String']>;
   PatientWeight?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
-  bloodPressure?: Maybe<Scalars['String']>;
+  diastolicBloodPressure?: Maybe<Scalars['String']>;
   headCircumference: HeadCircumferenceType;
   oxygenSaturation?: Maybe<Scalars['String']>;
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
   staffId?: Maybe<Scalars['String']>;
+  systolicBloodPressure?: Maybe<Scalars['String']>;
   temperatureUnitType: TempUnitType;
   unitType: UnitType;
   vitalCreationDate?: Maybe<Scalars['String']>;
@@ -737,6 +857,7 @@ export type DisableStaff = {
 export type Doctor = {
   __typename?: 'Doctor';
   anesthesiaLicense?: Maybe<Scalars['String']>;
+  attachments?: Maybe<Array<Attachment>>;
   billingAddress?: Maybe<Array<BillingAddress>>;
   billingFacility?: Maybe<Scalars['String']>;
   blueShildNumber?: Maybe<Scalars['String']>;
@@ -788,6 +909,7 @@ export type Doctor = {
 };
 
 export type DoctorInput = {
+  doctorFirstName?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   practiceId?: Maybe<Scalars['String']>;
@@ -850,6 +972,20 @@ export enum ElementType {
   Url = 'URL',
   Week = 'WEEK'
 }
+
+export type EmergencyAccessUserInput = {
+  email?: Maybe<Scalars['String']>;
+  facilityId?: Maybe<Scalars['String']>;
+  paginationInput?: Maybe<PaginationInput>;
+  practiceId?: Maybe<Scalars['String']>;
+};
+
+export type EmergencyAccessUserPayload = {
+  __typename?: 'EmergencyAccessUserPayload';
+  emergencyAccessUsers?: Maybe<Array<User>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
 
 export type Employer = {
   __typename?: 'Employer';
@@ -936,6 +1072,7 @@ export type FieldsInputs = {
   defaultValue: Scalars['String'];
   errorMsg: Scalars['String'];
   fieldId: Scalars['String'];
+  isMultiSelect?: Maybe<Scalars['Boolean']>;
   label: Scalars['String'];
   name: Scalars['String'];
   options: Array<FieldOptionsInputType>;
@@ -954,6 +1091,7 @@ export type FieldsTypes = {
   defaultValue: Scalars['String'];
   errorMsg: Scalars['String'];
   fieldId: Scalars['String'];
+  isMultiSelect?: Maybe<Scalars['Boolean']>;
   label: Scalars['String'];
   name: Scalars['String'];
   options: Array<FieldOptionsType>;
@@ -976,13 +1114,13 @@ export type ForgotPasswordPayload = {
 export type Form = {
   __typename?: 'Form';
   createdAt?: Maybe<Scalars['String']>;
-  facilityId: Scalars['String'];
+  facilityId?: Maybe<Scalars['String']>;
   formElements?: Maybe<Array<FormElement>>;
   id: Scalars['String'];
   isActive?: Maybe<Scalars['Boolean']>;
   isSystemForm?: Maybe<Scalars['Boolean']>;
   layout: LayoutJsonType;
-  name: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
   type: FormType;
   updatedAt?: Maybe<Scalars['String']>;
   userForms?: Maybe<Array<UserForms>>;
@@ -1008,6 +1146,8 @@ export type FormElement = {
 
 export type FormInput = {
   facilityId?: Maybe<Scalars['String']>;
+  formType?: Maybe<FormType>;
+  isSystemForm?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
 };
 
@@ -1028,12 +1168,14 @@ export enum FormType {
   Appointment = 'APPOINTMENT',
   Doctor = 'DOCTOR',
   Patient = 'PATIENT',
-  Staff = 'STAFF'
+  PreDefined = 'PRE_DEFINED',
+  Staff = 'STAFF',
+  Template = 'TEMPLATE'
 }
 
 export type FormsPayload = {
   __typename?: 'FormsPayload';
-  forms?: Maybe<Array<Maybe<Form>>>;
+  forms: Array<Form>;
   pagination?: Maybe<PaginationPayload>;
   response?: Maybe<ResponsePayload>;
 };
@@ -1073,6 +1215,11 @@ export type GetAttachment = {
   typeId: Scalars['String'];
 };
 
+export type GetAttachmentsByLabOrder = {
+  orderNum: Scalars['String'];
+  typeId: Scalars['String'];
+};
+
 export type GetContact = {
   id?: Maybe<Scalars['String']>;
 };
@@ -1095,6 +1242,10 @@ export type GetFacilitySchedule = {
 
 export type GetForm = {
   id: Scalars['String'];
+};
+
+export type GetLabTest = {
+  id?: Maybe<Scalars['String']>;
 };
 
 export type GetMedia = {
@@ -1148,6 +1299,7 @@ export type GetService = {
 
 export type GetSlots = {
   currentDate: Scalars['String'];
+  day?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   offset: Scalars['Float'];
   providerId?: Maybe<Scalars['String']>;
@@ -1193,6 +1345,7 @@ export type IcdCodes = {
   createdAt?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  labTests?: Maybe<LabTests>;
   updatedAt?: Maybe<Scalars['String']>;
   version?: Maybe<Scalars['String']>;
 };
@@ -1245,6 +1398,68 @@ export type InvoicesPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type LabTestByOrderNumInput = {
+  labTestStatus?: Maybe<Scalars['String']>;
+  orderNumber?: Maybe<Scalars['String']>;
+  paginationOptions?: Maybe<PaginationInput>;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type LabTestInput = {
+  labTestStatus?: Maybe<Scalars['String']>;
+  orderNumber?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  patientId?: Maybe<Scalars['String']>;
+};
+
+export type LabTestObservationPayload = {
+  __typename?: 'LabTestObservationPayload';
+  labTestObservation?: Maybe<Observations>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type LabTestPayload = {
+  __typename?: 'LabTestPayload';
+  labTest?: Maybe<LabTests>;
+  response?: Maybe<ResponsePayload>;
+};
+
+/** The lab's test status assigned */
+export enum LabTestStatus {
+  Discontinued = 'DISCONTINUED',
+  InProgress = 'IN_PROGRESS',
+  OrderEntered = 'ORDER_ENTERED',
+  ResultReceived = 'RESULT_RECEIVED',
+  ResultReviewedWithPatient = 'RESULT_REVIEWED_WITH_PATIENT'
+}
+
+export type LabTests = {
+  __typename?: 'LabTests';
+  appointment?: Maybe<Appointment>;
+  appointmentId?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  diagnoses?: Maybe<Array<Maybe<IcdCodes>>>;
+  id: Scalars['String'];
+  labTestStatus: LabTestStatus;
+  orderNumber?: Maybe<Scalars['String']>;
+  patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
+  test?: Maybe<LoincCodes>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testObservations?: Maybe<Array<Observations>>;
+  testSpecimens?: Maybe<Array<TestSpecimens>>;
+  testTime?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type LabTestsPayload = {
+  __typename?: 'LabTestsPayload';
+  labTests?: Maybe<Array<Maybe<LabTests>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type LayoutJsonInputType = {
   sections: Array<SectionsInputs>;
 };
@@ -1257,6 +1472,78 @@ export type LayoutJsonType = {
 export type LoginUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type LoincCodeInput = {
+  component?: Maybe<Scalars['String']>;
+  loincNum?: Maybe<Scalars['String']>;
+};
+
+export type LoincCodePayload = {
+  __typename?: 'LoincCodePayload';
+  loincCode?: Maybe<LoincCodes>;
+  response?: Maybe<ResponsePayload>;
+};
+
+export type LoincCodes = {
+  __typename?: 'LoincCodes';
+  askAtOrderEntry?: Maybe<Scalars['String']>;
+  associationObservations?: Maybe<Scalars['String']>;
+  cdiscCommonTests?: Maybe<Scalars['String']>;
+  changeReasonPublic?: Maybe<Scalars['String']>;
+  chngType?: Maybe<Scalars['String']>;
+  class?: Maybe<Scalars['String']>;
+  classType?: Maybe<Scalars['String']>;
+  commonOrderRank?: Maybe<Scalars['String']>;
+  commonSiTestRank?: Maybe<Scalars['String']>;
+  commonTestRank?: Maybe<Scalars['String']>;
+  component?: Maybe<Scalars['String']>;
+  consumerName?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  definitionDescription?: Maybe<Scalars['String']>;
+  displayName?: Maybe<Scalars['String']>;
+  exampleSiUcumUnits?: Maybe<Scalars['String']>;
+  exampleUcumUnits?: Maybe<Scalars['String']>;
+  exampleUnits?: Maybe<Scalars['String']>;
+  exmplAnswers?: Maybe<Scalars['String']>;
+  externalCopyRightLink?: Maybe<Scalars['String']>;
+  externalCopyRightNotice?: Maybe<Scalars['String']>;
+  formula?: Maybe<Scalars['String']>;
+  hl7AttachmentStructure?: Maybe<Scalars['String']>;
+  hl7FieldSubFieldId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  labTests?: Maybe<Array<LabTests>>;
+  loincNum?: Maybe<Scalars['String']>;
+  longCommonName?: Maybe<Scalars['String']>;
+  methodTyp?: Maybe<Scalars['String']>;
+  observations?: Maybe<Array<Observations>>;
+  orderObs?: Maybe<Scalars['String']>;
+  panelType?: Maybe<Scalars['String']>;
+  property?: Maybe<Scalars['String']>;
+  relatedNames2?: Maybe<Scalars['String']>;
+  scaleTyp?: Maybe<Scalars['String']>;
+  shortName?: Maybe<Scalars['String']>;
+  status?: Maybe<Scalars['String']>;
+  statusReason?: Maybe<Scalars['String']>;
+  statusText?: Maybe<Scalars['String']>;
+  submittedUnits?: Maybe<Scalars['String']>;
+  surveyQuestSRC?: Maybe<Scalars['String']>;
+  surveyQuestTest?: Maybe<Scalars['String']>;
+  system?: Maybe<Scalars['String']>;
+  timeAspect?: Maybe<Scalars['String']>;
+  unitsAndRange?: Maybe<Scalars['String']>;
+  unitsRequired?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+  validHl7AttachmentRequest?: Maybe<Scalars['String']>;
+  versionFirstRelease?: Maybe<Scalars['String']>;
+  versionLastChanged?: Maybe<Scalars['String']>;
+};
+
+export type LoincCodesPayload = {
+  __typename?: 'LoincCodesPayload';
+  loincCodes?: Maybe<Array<LoincCodes>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
 };
 
 /** The patient's maritial status type assigned */
@@ -1287,7 +1574,11 @@ export type Mutation = {
   createExternalInvoice: InvoicePayload;
   createFacility: FacilityPayload;
   createForm: FormPayload;
+  createFormTemplate: FormPayload;
   createInvoice: InvoicePayload;
+  createLabTest: LabTestPayload;
+  createLabTestObservation: LabTestObservationPayload;
+  createLoincCode: LoincCodePayload;
   createPatient: PatientPayload;
   createPermission: PermissionPayload;
   createPractice: PracticePayload;
@@ -1306,10 +1597,13 @@ export type Mutation = {
   registerUser: UserPayload;
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
+  removeAttachmentMedia: AttachmentPayload;
   removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
   removeForm: FormPayload;
+  removeLabTest: LabTestPayload;
+  removeLabTestObservation: LabTestObservationPayload;
   removePatient: PatientPayload;
   removePatientAllergy: PatientAllergyPayload;
   removePatientProblem: PatientProblemPayload;
@@ -1331,15 +1625,20 @@ export type Mutation = {
   updateAppointmentBillingStatus: AppointmentPayload;
   updateAppointmentStatus: AppointmentPayload;
   updateAttachmentData: AttachmentPayload;
+  updateAutoLogoutTime: UserPayload;
   updateContact: ContactPayload;
   updateDoctor: DoctorPayload;
   updateFacility: FacilityPayload;
   updateFacilityTimeZone: FacilityPayload;
   updateForm: FormPayload;
   updateInvoiceStatus: InvoicePayload;
+  updateLabTest: LabTestPayload;
+  updateLabTestObservation: LabTestObservationPayload;
+  updateLoincCode: LoincCodePayload;
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientAllergy: PatientAllergyPayload;
+  updatePatientNoteInfo: PatientPayload;
   updatePatientProblem: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
@@ -1442,8 +1741,28 @@ export type MutationCreateFormArgs = {
 };
 
 
+export type MutationCreateFormTemplateArgs = {
+  createFormInput: CreateFormInput;
+};
+
+
 export type MutationCreateInvoiceArgs = {
   createInvoiceInputs: CreateInvoiceInputs;
+};
+
+
+export type MutationCreateLabTestArgs = {
+  createLabTestInput: CreateLabTestInput;
+};
+
+
+export type MutationCreateLabTestObservationArgs = {
+  createLabTestObservationInput: CreateLabTestObservationInput;
+};
+
+
+export type MutationCreateLoincCodeArgs = {
+  loincCodeInput: LoincCodeInput;
 };
 
 
@@ -1537,6 +1856,11 @@ export type MutationRemoveAttachmentDataArgs = {
 };
 
 
+export type MutationRemoveAttachmentMediaArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationRemoveContactArgs = {
   removeContact: RemoveContact;
 };
@@ -1554,6 +1878,16 @@ export type MutationRemoveFacilityArgs = {
 
 export type MutationRemoveFormArgs = {
   removeForm: RemoveForm;
+};
+
+
+export type MutationRemoveLabTestArgs = {
+  removeLabTest: RemoveLabTest;
+};
+
+
+export type MutationRemoveLabTestObservationArgs = {
+  removeLabTestObservation: RemoveLabTestObservation;
 };
 
 
@@ -1617,11 +1951,6 @@ export type MutationResendVerificationEmailArgs = {
 };
 
 
-export type MutationResentOtpArgs = {
-  seneOTPAgainInput: SeneOtpAgainInput;
-};
-
-
 export type MutationResetPasswordArgs = {
   resetPassword: ResetPasswordInput;
 };
@@ -1662,6 +1991,11 @@ export type MutationUpdateAttachmentDataArgs = {
 };
 
 
+export type MutationUpdateAutoLogoutTimeArgs = {
+  userInfoInput: UserInfoInput;
+};
+
+
 export type MutationUpdateContactArgs = {
   updateContactInput: UpdateContactInput;
 };
@@ -1692,6 +2026,21 @@ export type MutationUpdateInvoiceStatusArgs = {
 };
 
 
+export type MutationUpdateLabTestArgs = {
+  updateLabTestInput: UpdateLabTestInput;
+};
+
+
+export type MutationUpdateLabTestObservationArgs = {
+  updateLabTestObservationInput: UpdateLabTestObservationInput;
+};
+
+
+export type MutationUpdateLoincCodeArgs = {
+  updateLoincCodeInput: UpdateLoincCodeInput;
+};
+
+
 export type MutationUpdatePasswordArgs = {
   updatePasswordInput: UpdatePasswordInput;
 };
@@ -1704,6 +2053,11 @@ export type MutationUpdatePatientArgs = {
 
 export type MutationUpdatePatientAllergyArgs = {
   updateAllergyInput: UpdateAllergyInput;
+};
+
+
+export type MutationUpdatePatientNoteInfoArgs = {
+  updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs;
 };
 
 
@@ -1776,6 +2130,24 @@ export type MutationVerifyOtpArgs = {
   verifyCodeInput: VerifyCodeInput;
 };
 
+export type Observations = {
+  __typename?: 'Observations';
+  abnormalFlag: AbnormalFlag;
+  attachments?: Maybe<Array<Attachment>>;
+  createdAt?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  id: Scalars['String'];
+  labTest?: Maybe<LabTests>;
+  labTestId?: Maybe<Scalars['String']>;
+  loincCodes?: Maybe<LoincCodes>;
+  normalRange?: Maybe<Scalars['String']>;
+  normalRangeUnit?: Maybe<Scalars['String']>;
+  resultUnit?: Maybe<Scalars['String']>;
+  resultValue?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 /** The patient's pronouns type assigned */
 export enum Pronouns {
   He = 'HE',
@@ -1819,6 +2191,7 @@ export type Patient = {
   homeBound?: Maybe<Homebound>;
   id: Scalars['String'];
   inviteAccepted?: Maybe<Scalars['Boolean']>;
+  labTests?: Maybe<Array<LabTests>>;
   language?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   maritialStatus?: Maybe<Maritialstatus>;
@@ -1827,11 +2200,12 @@ export type Patient = {
   motherMaidenName?: Maybe<Scalars['String']>;
   patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientNote?: Maybe<Scalars['String']>;
+  patientNoteOpen?: Maybe<Scalars['Boolean']>;
   patientProblems?: Maybe<Array<PatientProblems>>;
   patientRecord?: Maybe<Scalars['String']>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   pharmacy?: Maybe<Scalars['String']>;
-  phonePermission: Scalars['Boolean'];
+  phonePermission?: Maybe<Scalars['Boolean']>;
   practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod: Communicationtype;
   prefferedName?: Maybe<Scalars['String']>;
@@ -1844,6 +2218,7 @@ export type Patient = {
   releaseOfInfoBill: Scalars['Boolean'];
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
+  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -1853,7 +2228,6 @@ export type Patient = {
   transaction?: Maybe<Transactions>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
-  voiceCallPermission: Scalars['Boolean'];
 };
 
 export type PatientAllergies = {
@@ -1871,6 +2245,7 @@ export type PatientAllergies = {
   id: Scalars['String'];
   isActive?: Maybe<Scalars['Boolean']>;
   patient?: Maybe<Patient>;
+  patientId?: Maybe<Scalars['String']>;
   reactions?: Maybe<Array<Maybe<Reactions>>>;
   staff?: Maybe<Staff>;
   staffId?: Maybe<Scalars['String']>;
@@ -1896,6 +2271,20 @@ export type PatientAllergyPayload = {
   response?: Maybe<ResponsePayload>;
 };
 
+export type PatientAttachmentsInput = {
+  AttachmentModuleType?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchString?: Maybe<Scalars['String']>;
+  typeId?: Maybe<Scalars['String']>;
+};
+
+export type PatientAttachmentsPayload = {
+  __typename?: 'PatientAttachmentsPayload';
+  attachments?: Maybe<Array<Maybe<Attachment>>>;
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+};
+
 export type PatientInfoInput = {
   createContactInput: CreateContactInput;
   createEmergencyContactInput: CreateContactInput;
@@ -1911,11 +2300,14 @@ export type PatientInfoItemInput = {
   phonePermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   race?: Maybe<Race>;
+  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
-  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type PatientInput = {
+  appointmentDate?: Maybe<Scalars['String']>;
+  dob?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
   paginationOptions: PaginationInput;
   patientRecord?: Maybe<Scalars['String']>;
@@ -1991,8 +2383,8 @@ export type PatientVitals = {
   addedBy?: Maybe<Staff>;
   appointment?: Maybe<Appointment>;
   appointmentId?: Maybe<Scalars['String']>;
-  bloodPressure?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
+  diastolicBloodPressure?: Maybe<Scalars['String']>;
   headCircumference: HeadCircumferenceType;
   id: Scalars['String'];
   oxygenSaturation?: Maybe<Scalars['String']>;
@@ -2000,8 +2392,10 @@ export type PatientVitals = {
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
   smokingStatus: SmokingStatus;
+  systolicBloodPressure?: Maybe<Scalars['String']>;
   temperatureUnitType: TempUnitType;
   unitType: UnitType;
   updatedAt?: Maybe<Scalars['String']>;
@@ -2140,36 +2534,48 @@ export enum ProblemType {
 export type Query = {
   __typename?: 'Query';
   GetPermission: PermissionPayload;
+  fetchAllPatients: PatientsPayload;
   fetchAllRoles: RolesPayload;
   fetchAllUsers: UsersPayload;
+  fetchEmergencyAccessUsers: EmergencyAccessUserPayload;
   fetchUser: UserPayload;
+  findAllAllergies: AllergiesPayload;
   findAllAppointments: AppointmentsPayload;
   findAllContacts: ContactsPayload;
   findAllDoctor: AllDoctorPayload;
   findAllFacility: FacilitiesPayload;
   findAllForms: FormsPayload;
+  findAllLabTest: LabTestsPayload;
+  findAllLoincCodes: LoincCodesPayload;
   findAllPatient: PatientsPayload;
   findAllPatientAllergies: PatientAllergiesPayload;
   findAllPatientProblem: PatientProblemsPayload;
   findAllPatientVitals: PatientVitalsPayload;
   findAllPermissions: PermissionsPayload;
   findAllPractices: PracticesPayload;
+  findAllReactions: ReactionsPayload;
   findAllSchedules: SchedulesPayload;
   findAllServices: ServicesPayload;
   findAllStaff: AllStaffPayload;
+  findAllTestSpecimenTypes: TestSpecimenTypesPayload;
   findAllUsersForms: UserFormsPayload;
+  findLabTestsByOrderNum: LabTestsPayload;
+  findLoincCode: LoincCodes;
+  findPatientAttachments: PatientAttachmentsPayload;
   getAllInvoices: InvoicesPayload;
   getAllRoles: RolesPayload;
   getAppointment: AppointmentPayload;
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
+  getAttachmentsByLabOrder: AttachmentsPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
   getFacility: FacilityPayload;
   getFacilitySchedule: SchedulesPayload;
   getForm: FormPayload;
+  getLabTest: LabTestPayload;
   getPatient: PatientPayload;
   getPatientAllergy: PatientAllergyPayload;
   getPatientAppointment: AppointmentsPayload;
@@ -2196,8 +2602,23 @@ export type QueryGetPermissionArgs = {
 };
 
 
+export type QueryFetchAllPatientsArgs = {
+  patientInput: PatientInput;
+};
+
+
 export type QueryFetchAllUsersArgs = {
   userInput: UsersInput;
+};
+
+
+export type QueryFetchEmergencyAccessUsersArgs = {
+  emergencyAccessUsersInput: EmergencyAccessUserInput;
+};
+
+
+export type QueryFindAllAllergiesArgs = {
+  allergyInput: AllergyInput;
 };
 
 
@@ -2223,6 +2644,16 @@ export type QueryFindAllFacilityArgs = {
 
 export type QueryFindAllFormsArgs = {
   formInput: FormInput;
+};
+
+
+export type QueryFindAllLabTestArgs = {
+  labTestInput: LabTestInput;
+};
+
+
+export type QueryFindAllLoincCodesArgs = {
+  searchLoincCodesInput: SearchLoincCodesInput;
 };
 
 
@@ -2256,6 +2687,11 @@ export type QueryFindAllPracticesArgs = {
 };
 
 
+export type QueryFindAllReactionsArgs = {
+  reactionInput: ReactionInput;
+};
+
+
 export type QueryFindAllSchedulesArgs = {
   scheduleInput: ScheduleInput;
 };
@@ -2271,8 +2707,28 @@ export type QueryFindAllStaffArgs = {
 };
 
 
+export type QueryFindAllTestSpecimenTypesArgs = {
+  testSpecimenTypeInput: TestSpecimenTypeInput;
+};
+
+
 export type QueryFindAllUsersFormsArgs = {
   userFormInput: UserFormInput;
+};
+
+
+export type QueryFindLabTestsByOrderNumArgs = {
+  labTestByOrderNumInput: LabTestByOrderNumInput;
+};
+
+
+export type QueryFindLoincCodeArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryFindPatientAttachmentsArgs = {
+  patientAttachmentsInput: PatientAttachmentsInput;
 };
 
 
@@ -2306,6 +2762,11 @@ export type QueryGetAttachmentsArgs = {
 };
 
 
+export type QueryGetAttachmentsByLabOrderArgs = {
+  getAttachmentsByLabOrder: GetAttachmentsByLabOrder;
+};
+
+
 export type QueryGetContactArgs = {
   getContact: GetContact;
 };
@@ -2333,6 +2794,11 @@ export type QueryGetFacilityScheduleArgs = {
 
 export type QueryGetFormArgs = {
   getForm: GetForm;
+};
+
+
+export type QueryGetLabTestArgs = {
+  getLabTest: GetLabTest;
 };
 
 
@@ -2425,6 +2891,11 @@ export enum Race {
   White = 'WHITE'
 }
 
+export type ReactionInput = {
+  paginationOptions: PaginationInput;
+  reactionName?: Maybe<Scalars['String']>;
+};
+
 export type Reactions = {
   __typename?: 'Reactions';
   createdAt?: Maybe<Scalars['String']>;
@@ -2432,6 +2903,13 @@ export type Reactions = {
   name: Scalars['String'];
   patientAllergies?: Maybe<PatientAllergies>;
   updatedAt?: Maybe<Scalars['String']>;
+};
+
+export type ReactionsPayload = {
+  __typename?: 'ReactionsPayload';
+  pagination?: Maybe<PaginationPayload>;
+  reactions?: Maybe<Array<Maybe<Reactions>>>;
+  response?: Maybe<ResponsePayload>;
 };
 
 export type RegisterUserInput = {
@@ -2500,6 +2978,14 @@ export type RemoveFacility = {
 };
 
 export type RemoveForm = {
+  id: Scalars['String'];
+};
+
+export type RemoveLabTest = {
+  id?: Maybe<Scalars['String']>;
+};
+
+export type RemoveLabTestObservation = {
   id: Scalars['String'];
 };
 
@@ -2581,8 +3067,10 @@ export type Role = {
 };
 
 export type RoleInput = {
+  customRole?: Maybe<Scalars['Boolean']>;
   paginationOptions: PaginationInput;
   role?: Maybe<Scalars['String']>;
+  roleName?: Maybe<Scalars['String']>;
 };
 
 export type RoleItemInput = {
@@ -2638,6 +3126,7 @@ export enum Status {
 export type Schedule = {
   __typename?: 'Schedule';
   createdAt: Scalars['String'];
+  day?: Maybe<Scalars['String']>;
   doctor?: Maybe<Doctor>;
   doctorId?: Maybe<Scalars['String']>;
   endAt: Scalars['String'];
@@ -2680,11 +3169,20 @@ export type SchedulesPayload = {
 };
 
 export type SearchIcdCodesInput = {
+  paginationOptions: PaginationInput;
   searchTerm: Scalars['String'];
 };
 
+export type SearchLoincCodesInput = {
+  component?: Maybe<Scalars['String']>;
+  loincNum?: Maybe<Scalars['String']>;
+  paginationOptions: PaginationInput;
+  searchTerm?: Maybe<Scalars['String']>;
+};
+
 export type SearchSnoMedCodesInput = {
-  IcdCodes: Scalars['String'];
+  paginationOptions: PaginationInput;
+  searchTerm: Scalars['String'];
 };
 
 export type SectionsInputs = {
@@ -2700,10 +3198,6 @@ export type SectionsTypes = {
   fields: Array<FieldsTypes>;
   id: Scalars['String'];
   name: Scalars['String'];
-};
-
-export type SeneOtpAgainInput = {
-  id: Scalars['String'];
 };
 
 export type Service = {
@@ -2846,7 +3340,7 @@ export enum SmokingStatus {
   CurrentEverydaySmoker = 'CURRENT_EVERYDAY_SMOKER',
   CurrentSomedaySmoker = 'CURRENT_SOMEDAY_SMOKER',
   FormerSmoker = 'FORMER_SMOKER',
-  NeverSmocked = 'NEVER_SMOCKED',
+  NeverSmoked = 'NEVER_SMOKED',
   SmokerCurrentStatusUnknown = 'SMOKER_CURRENT_STATUS_UNKNOWN',
   UnknownIfEverSmoked = 'UNKNOWN_IF_EVER_SMOKED'
 }
@@ -2903,8 +3397,18 @@ export enum Speciality {
   Psychiatry = 'PSYCHIATRY'
 }
 
+export type SpecimenTypes = {
+  __typename?: 'SpecimenTypes';
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
+  testSpecimens?: Maybe<Array<TestSpecimens>>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
+
 export type Staff = {
   __typename?: 'Staff';
+  attachments?: Maybe<Array<Attachment>>;
   createdAt: Scalars['String'];
   dob?: Maybe<Scalars['String']>;
   email: Scalars['String'];
@@ -2950,6 +3454,32 @@ export enum TempUnitType {
   DegC = 'DEG_C',
   DegF = 'DEG_F'
 }
+
+export type TestSpecimenTypeInput = {
+  paginationOptions: PaginationInput;
+  specimenTypeName?: Maybe<Scalars['String']>;
+};
+
+export type TestSpecimenTypesPayload = {
+  __typename?: 'TestSpecimenTypesPayload';
+  pagination?: Maybe<PaginationPayload>;
+  response?: Maybe<ResponsePayload>;
+  specimenTypes?: Maybe<Array<SpecimenTypes>>;
+};
+
+export type TestSpecimens = {
+  __typename?: 'TestSpecimens';
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  createdAt?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  labTest?: Maybe<LabTests>;
+  labTestId?: Maybe<Scalars['String']>;
+  specimenNotes?: Maybe<Scalars['String']>;
+  specimenTypes?: Maybe<SpecimenTypes>;
+  specimenTypesId?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['String']>;
+};
 
 export type TransactionPayload = {
   __typename?: 'TransactionPayload';
@@ -3018,6 +3548,7 @@ export type UpdateAppointmentInput = {
   facilityId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   insuranceCompany?: Maybe<Scalars['String']>;
+  isExternal?: Maybe<Scalars['Boolean']>;
   membershipID?: Maybe<Scalars['String']>;
   notes?: Maybe<Scalars['String']>;
   otherAccident?: Maybe<Scalars['Boolean']>;
@@ -3044,7 +3575,12 @@ export type UpdateAttachmentInput = {
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
-  providerName?: Maybe<Scalars['String']>;
+  labOrderNum?: Maybe<Scalars['String']>;
+  /** enum type for module type - Upload Media */
+  metadataType?: Maybe<AttachmentMetaDataType>;
+  signedAt?: Maybe<Scalars['String']>;
+  signedBy?: Maybe<Scalars['String']>;
+  signedByProvider?: Maybe<Scalars['Boolean']>;
   subTitle?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
   /** enum type for module type - Upload Media */
@@ -3209,6 +3745,46 @@ export type UpdateFormInput = {
   type?: Maybe<FormType>;
 };
 
+export type UpdateLabTestInput = {
+  diagnoses?: Maybe<Array<Scalars['String']>>;
+  test?: Maybe<Scalars['String']>;
+  updateLabTestItemInput?: Maybe<UpdateLabTestItemInput>;
+  updateSpecimenItemInput?: Maybe<Array<UpdateSpecimenItemInput>>;
+};
+
+export type UpdateLabTestItemInput = {
+  appointmentId?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  orderNumber?: Maybe<Scalars['String']>;
+  patientId?: Maybe<Scalars['String']>;
+  status?: Maybe<LabTestStatus>;
+  testDate?: Maybe<Scalars['String']>;
+  testNotes?: Maybe<Scalars['String']>;
+  testTime?: Maybe<Scalars['String']>;
+};
+
+export type UpdateLabTestObservationInput = {
+  labTestId: Scalars['String'];
+  updateLabTestObservationItemInput?: Maybe<Array<UpdateLabTestObservationItemInput>>;
+};
+
+export type UpdateLabTestObservationItemInput = {
+  abnormalFlag?: Maybe<AbnormalFlag>;
+  description?: Maybe<Scalars['String']>;
+  doctorsSignOff?: Maybe<Scalars['Boolean']>;
+  id: Scalars['String'];
+  normalRange?: Maybe<Scalars['String']>;
+  normalRangeUnit?: Maybe<Scalars['String']>;
+  resultUnit?: Maybe<Scalars['String']>;
+  resultValue?: Maybe<Scalars['String']>;
+};
+
+export type UpdateLoincCodeInput = {
+  component?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  loincNum?: Maybe<Scalars['String']>;
+};
+
 export type UpdatePasswordInput = {
   id: Scalars['String'];
   newPassword: Scalars['String'];
@@ -3274,6 +3850,7 @@ export type UpdatePatientItemInput = {
   releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
+  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -3281,7 +3858,12 @@ export type UpdatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
-  voiceCallPermission?: Maybe<Scalars['Boolean']>;
+};
+
+export type UpdatePatientNoteInfoInputs = {
+  id: Scalars['String'];
+  patientNote?: Maybe<Scalars['String']>;
+  patientNoteOpen?: Maybe<Scalars['Boolean']>;
 };
 
 export type UpdatePatientProfileInput = {
@@ -3341,6 +3923,7 @@ export type UpdateRoleItemInput = {
 };
 
 export type UpdateScheduleInput = {
+  day?: Maybe<Scalars['String']>;
   doctorId?: Maybe<Scalars['String']>;
   endAt?: Maybe<Scalars['String']>;
   facilityId?: Maybe<Scalars['String']>;
@@ -3362,8 +3945,16 @@ export type UpdateServiceInput = {
   serviceType?: Maybe<ServiceType>;
 };
 
+export type UpdateSpecimenItemInput = {
+  collectionDate?: Maybe<Scalars['String']>;
+  collectionTime?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  specimenNotes?: Maybe<Scalars['String']>;
+  testSpecimen?: Maybe<Scalars['String']>;
+};
+
 export type UpdateStaffInput = {
-  providers: Array<Scalars['String']>;
+  providers?: Maybe<Array<Scalars['String']>>;
   updateStaffItemInput: UpdateStaffItemInput;
 };
 
@@ -3404,22 +3995,26 @@ export type UpdateVitalInput = {
   PatientBMI?: Maybe<Scalars['String']>;
   PatientHeight?: Maybe<Scalars['String']>;
   PatientWeight?: Maybe<Scalars['String']>;
-  bloodPressure?: Maybe<Scalars['String']>;
-  headCircumference: HeadCircumferenceType;
+  diastolicBloodPressure?: Maybe<Scalars['String']>;
+  headCircumference?: Maybe<HeadCircumferenceType>;
   id: Scalars['String'];
   oxygenSaturation?: Maybe<Scalars['String']>;
   patientHeadCircumference?: Maybe<Scalars['String']>;
   patientTemperature?: Maybe<Scalars['String']>;
+  pulseRate?: Maybe<Scalars['String']>;
   respiratoryRate?: Maybe<Scalars['String']>;
-  smokingStatus: SmokingStatus;
-  temperatureUnitType: TempUnitType;
-  unitType: UnitType;
+  smokingStatus?: Maybe<SmokingStatus>;
+  systolicBloodPressure?: Maybe<Scalars['String']>;
+  temperatureUnitType?: Maybe<TempUnitType>;
+  unitType?: Maybe<UnitType>;
   vitalCreationDate?: Maybe<Scalars['String']>;
-  weightUnit: WeightType;
+  weightUnit?: Maybe<WeightType>;
 };
 
 export type User = {
   __typename?: 'User';
+  attachments?: Maybe<Array<Attachment>>;
+  autoLogoutTime?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   email: Scalars['String'];
   emailVerified: Scalars['Boolean'];
@@ -3440,7 +4035,8 @@ export type User = {
 
 export type UserFormElementInputs = {
   FormsElementsId: Scalars['String'];
-  arrayOfStrings: Array<ArrayOfStringsTypeInput>;
+  arrayOfObjects: Array<ArrayOfStringsTypeInput>;
+  arrayOfStrings: Array<Scalars['String']>;
   value: Scalars['String'];
 };
 
@@ -3482,8 +4078,16 @@ export type UserIdInput = {
   userId: Scalars['String'];
 };
 
+export type UserInfoInput = {
+  autoLogoutTime?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['String']>;
+  id: Scalars['String'];
+  phone?: Maybe<Scalars['String']>;
+};
+
 export type UserPayload = {
   __typename?: 'UserPayload';
+  access_token?: Maybe<Scalars['String']>;
   response?: Maybe<ResponsePayload>;
   user?: Maybe<User>;
 };
@@ -3498,7 +4102,8 @@ export type UsersFormsElements = {
   __typename?: 'UsersFormsElements';
   FormsElementsId: Scalars['String'];
   UsersFormsId: Scalars['String'];
-  arrayOfStrings: Array<ArrayOfStringsType>;
+  arrayOfObjects: Array<ArrayOfStringsType>;
+  arrayOfStrings: Array<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   id: Scalars['String'];
   updatedAt?: Maybe<Scalars['String']>;
@@ -3520,7 +4125,7 @@ export type UsersPayload = {
 };
 
 export type VerifyCodeInput = {
-  id: Scalars['String'];
+  id?: Maybe<Scalars['String']>;
   otpCode: Scalars['String'];
 };
 
@@ -3605,31 +4210,52 @@ export type UpdateAppointmentStatusMutationVariables = Exact<{
 
 export type UpdateAppointmentStatusMutation = { __typename?: 'Mutation', updateAppointmentStatus: { __typename?: 'AppointmentPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, appointment?: { __typename?: 'Appointment', id: string, status: Appointmentstatus } | null | undefined } };
 
-export type RemoveAttachmentDataMutationVariables = Exact<{
-  removeAttachment: RemoveAttachment;
-}>;
-
-
-export type RemoveAttachmentDataMutation = { __typename?: 'Mutation', removeAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined } };
-
 export type GetAttachmentsQueryVariables = Exact<{
   getAttachment: GetAttachment;
 }>;
 
 
-export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string } | null | undefined> | null | undefined } };
+export type GetAttachmentsQuery = { __typename?: 'Query', getAttachments: { __typename?: 'AttachmentsPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, signedAt?: string | null | undefined, signedBy?: string | null | undefined, providerName?: string | null | undefined, attachmentName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+
+export type UpdateAttachmentDataMutationVariables = Exact<{
+  updateAttachmentInput: UpdateAttachmentInput;
+}>;
+
+
+export type UpdateAttachmentDataMutation = { __typename?: 'Mutation', updateAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, attachment?: { __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, attachmentName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined } };
+
+export type CreateAttachmentDataMutationVariables = Exact<{
+  createAttachmentInput: CreateAttachmentInput;
+}>;
+
+
+export type CreateAttachmentDataMutation = { __typename?: 'Mutation', createAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined, attachment?: { __typename?: 'Attachment', id: string, url?: string | null | undefined, key?: string | null | undefined, type: AttachmentType, typeId: string, providerName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined } };
+
+export type RemoveAttachmentDataMutationVariables = Exact<{
+  removeAttachment: RemoveAttachment;
+}>;
+
+
+export type RemoveAttachmentDataMutation = { __typename?: 'Mutation', removeAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type GetAttachmentQueryVariables = Exact<{
+  getMedia: GetMedia;
+}>;
+
+
+export type GetAttachmentQuery = { __typename?: 'Query', getAttachment: { __typename?: 'AttachmentMediaPayload', preSignedUrl?: string | null | undefined, response?: { __typename?: 'ResponsePayload', message?: string | null | undefined } | null | undefined } };
 
 export type LoginMutationVariables = Exact<{
   loginUser: LoginUserInput;
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'AccessUserPayload', access_token?: string | null | undefined, isTwoFactorEnabled?: boolean | null | undefined, userId?: string | null | undefined, access_2fa_token?: string | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined }> | null | undefined } };
 
 export type GetLoggedInUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, token?: string | null | undefined, userId: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } | null | undefined } | null | undefined } };
+export type GetLoggedInUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, email: string, phone?: string | null | undefined, isTwoFactorEnabled: boolean, token?: string | null | undefined, userId: string, userType: string, autoLogoutTime?: string | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, practiceId?: string | null | undefined, practice?: { __typename?: 'Practice', id: string, name: string } | null | undefined } | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
 
 export type ForgetPasswordMutationVariables = Exact<{
   forgotPasswordInput: ForgotPasswordInput;
@@ -3657,14 +4283,145 @@ export type GetDoctorUserQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorUserQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined } };
+export type GetDoctorUserQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, address?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined } };
 
 export type GetStaffUserQueryVariables = Exact<{
   getStaff: GetStaff;
 }>;
 
 
-export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename?: 'Staff', id: string, email: string, lastName: string, firstName: string } | null | undefined } };
+export type GetStaffUserQuery = { __typename?: 'Query', getStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, staff?: { __typename: 'Staff', id: string, email: string, lastName: string, firstName: string, phone?: string | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
+
+export type Update2FactorAuthMutationVariables = Exact<{
+  twoFactorInput: TwoFactorInput;
+}>;
+
+
+export type Update2FactorAuthMutation = { __typename?: 'Mutation', update2FactorAuth: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type ResentOtpMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ResentOtpMutation = { __typename?: 'Mutation', resentOTP: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type VerifyOtpMutationVariables = Exact<{
+  verifyCodeInput: VerifyCodeInput;
+}>;
+
+
+export type VerifyOtpMutation = { __typename?: 'Mutation', verifyOTP: { __typename?: 'UserPayload', access_token?: string | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type UpdateAutoLogoutTimeMutationVariables = Exact<{
+  userInfoInput: UserInfoInput;
+}>;
+
+
+export type UpdateAutoLogoutTimeMutation = { __typename?: 'Mutation', updateAutoLogoutTime: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, autoLogoutTime?: string | null | undefined } | null | undefined } };
+
+export type FindAllPatientAllergiesQueryVariables = Exact<{
+  patientAllergyInput: PatientAllergyInput;
+}>;
+
+
+export type FindAllPatientAllergiesQuery = { __typename?: 'Query', findAllPatientAllergies: { __typename?: 'PatientAllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientAllergies?: Array<{ __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null | undefined, allergy?: { __typename: 'Allergies', id: string, name?: string | null | undefined } | null | undefined, reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } | null | undefined> | null | undefined } };
+
+export type GetPatientAllergyQueryVariables = Exact<{
+  getPatientAllergy: GetPatientAllergy;
+}>;
+
+
+export type GetPatientAllergyQuery = { __typename?: 'Query', getPatientAllergy: { __typename?: 'PatientAllergyPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientAllergy?: { __typename?: 'PatientAllergies', id: string, allergySeverity: AllergySeverity, allergyOnset: AllergyOnset, allergyStartDate?: string | null | undefined, allergy?: { __typename?: 'Allergies', id: string, name?: string | null | undefined } | null | undefined, reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } | null | undefined } };
+
+export type AddPatientAllergyMutationVariables = Exact<{
+  createPatientAllergyInput: CreatePatientAllergyInput;
+}>;
+
+
+export type AddPatientAllergyMutation = { __typename?: 'Mutation', addPatientAllergy: { __typename?: 'PatientAllergyPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type UpdatePatientAllergyMutationVariables = Exact<{
+  updateAllergyInput: UpdateAllergyInput;
+}>;
+
+
+export type UpdatePatientAllergyMutation = { __typename?: 'Mutation', updatePatientAllergy: { __typename?: 'PatientAllergyPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type RemovePatientAllergyMutationVariables = Exact<{
+  removePatientAllergy: RemovePatientAllergy;
+}>;
+
+
+export type RemovePatientAllergyMutation = { __typename?: 'Mutation', removePatientAllergy: { __typename?: 'PatientAllergyPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type FindAllAllergiesQueryVariables = Exact<{
+  allergyInput: AllergyInput;
+}>;
+
+
+export type FindAllAllergiesQuery = { __typename?: 'Query', findAllAllergies: { __typename?: 'AllergiesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, allergies?: Array<{ __typename?: 'Allergies', id: string, name?: string | null | undefined } | null | undefined> | null | undefined } };
+
+export type FindAllPatientProblemsQueryVariables = Exact<{
+  patientProblemInput: PatientProblemInput;
+}>;
+
+
+export type FindAllPatientProblemsQuery = { __typename?: 'Query', findAllPatientProblem: { __typename?: 'PatientProblemsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientProblems?: Array<{ __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, ICDCode?: { __typename: 'ICDCodes', id: string, code: string } | null | undefined } | null | undefined> | null | undefined } };
+
+export type GetPatientProblemQueryVariables = Exact<{
+  getPatientProblem: GetPatientProblem;
+}>;
+
+
+export type GetPatientProblemQuery = { __typename?: 'Query', getPatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientProblem?: { __typename?: 'PatientProblems', id: string, problemType: ProblemType, problemSeverity: ProblemSeverity, problemStartDate?: string | null | undefined, note?: string | null | undefined, appointment?: { __typename?: 'Appointment', id: string, appointmentType?: { __typename?: 'Service', id: string, serviceType: ServiceType } | null | undefined } | null | undefined } | null | undefined } };
+
+export type AddPatientProblemMutationVariables = Exact<{
+  createProblemInput: CreateProblemInput;
+}>;
+
+
+export type AddPatientProblemMutation = { __typename?: 'Mutation', addPatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type UpdatePatientProblemMutationVariables = Exact<{
+  updateProblemInput: UpdateProblemInput;
+}>;
+
+
+export type UpdatePatientProblemMutation = { __typename?: 'Mutation', updatePatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type RemovePatientProblemMutationVariables = Exact<{
+  removeProblem: RemoveProblem;
+}>;
+
+
+export type RemovePatientProblemMutation = { __typename?: 'Mutation', removePatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type GetPatientVitalQueryVariables = Exact<{
+  getPatientVital: GetPatientVital;
+}>;
+
+
+export type GetPatientVitalQuery = { __typename?: 'Query', getPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, diastolicBloodPressure?: string | null | undefined, systolicBloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } };
+
+export type FindAllPatientVitalsQueryVariables = Exact<{
+  patientVitalInput: PatientVitalInput;
+}>;
+
+
+export type FindAllPatientVitalsQuery = { __typename?: 'Query', findAllPatientVitals: { __typename?: 'PatientVitalsPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', totalPages?: number | null | undefined, page?: number | null | undefined } | null | undefined, patientVitals?: Array<{ __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, diastolicBloodPressure?: string | null | undefined, systolicBloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, pulseRate?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined> | null | undefined } };
+
+export type AddPatientVitalMutationVariables = Exact<{
+  createVitalInput: CreateVitalInput;
+}>;
+
+
+export type AddPatientVitalMutation = { __typename?: 'Mutation', addPatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string } | null | undefined } };
+
+export type UpdatePatientVitalMutationVariables = Exact<{
+  updateVitalInput: UpdateVitalInput;
+}>;
+
+
+export type UpdatePatientVitalMutation = { __typename?: 'Mutation', updatePatientVital: { __typename?: 'PatientVitalPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patientVital?: { __typename?: 'PatientVitals', id: string, unitType: UnitType, weightUnit: WeightType, headCircumference: HeadCircumferenceType, temperatureUnitType: TempUnitType, smokingStatus: SmokingStatus, patientTemperature?: string | null | undefined, diastolicBloodPressure?: string | null | undefined, systolicBloodPressure?: string | null | undefined, respiratoryRate?: string | null | undefined, oxygenSaturation?: string | null | undefined, PatientHeight?: string | null | undefined, PatientWeight?: string | null | undefined, PatientBMI?: string | null | undefined, PainRange?: string | null | undefined, patientHeadCircumference?: string | null | undefined, vitalCreationDate?: string | null | undefined, patientId?: string | null | undefined, appointmentId?: string | null | undefined, pulseRate?: string | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } };
 
 export type FindAllRoleListQueryVariables = Exact<{
   roleInput: RoleInput;
@@ -3734,7 +4491,7 @@ export type GetDoctorQueryVariables = Exact<{
 }>;
 
 
-export type GetDoctorQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, prefix?: string | null | undefined, suffix?: string | null | undefined, email?: string | null | undefined, providerIntials?: string | null | undefined, degreeCredentials?: string | null | undefined, speciality?: Speciality | null | undefined, dob?: string | null | undefined, taxId?: string | null | undefined, facilityId?: string | null | undefined, ssn?: string | null | undefined, taxonomyCode?: string | null | undefined, deaNumber?: string | null | undefined, prescriptiveAuthNumber?: string | null | undefined, licenseTermDate?: string | null | undefined, stateLicense?: string | null | undefined, languagesSpoken?: string | null | undefined, dpsCtpNumber?: string | null | undefined, anesthesiaLicense?: string | null | undefined, specialityLicense?: string | null | undefined, taxIdStuff?: string | null | undefined, blueShildNumber?: string | null | undefined, campusGrpNumber?: string | null | undefined, medicareGrpNumber?: string | null | undefined, billingFacility?: string | null | undefined, emcProviderId?: string | null | undefined, upin?: string | null | undefined, npi?: string | null | undefined, practiceId?: string | null | undefined, licenseActiveDate?: string | null | undefined, meammographyCertNumber?: string | null | undefined, medicaidGrpNumber?: string | null | undefined, deaActiveDate?: string | null | undefined, deaTermDate?: string | null | undefined, createdAt: string, updatedAt: string, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null | undefined, mobile?: string | null | undefined, phone?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, userId?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, serviceCode: ServiceCodes, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, userId?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type GetDoctorQuery = { __typename?: 'Query', getDoctor: { __typename?: 'DoctorPayload', doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, prefix?: string | null | undefined, suffix?: string | null | undefined, email?: string | null | undefined, providerIntials?: string | null | undefined, degreeCredentials?: string | null | undefined, speciality?: Speciality | null | undefined, dob?: string | null | undefined, taxId?: string | null | undefined, facilityId?: string | null | undefined, ssn?: string | null | undefined, taxonomyCode?: string | null | undefined, deaNumber?: string | null | undefined, prescriptiveAuthNumber?: string | null | undefined, licenseTermDate?: string | null | undefined, stateLicense?: string | null | undefined, languagesSpoken?: string | null | undefined, dpsCtpNumber?: string | null | undefined, anesthesiaLicense?: string | null | undefined, specialityLicense?: string | null | undefined, taxIdStuff?: string | null | undefined, blueShildNumber?: string | null | undefined, campusGrpNumber?: string | null | undefined, medicareGrpNumber?: string | null | undefined, billingFacility?: string | null | undefined, emcProviderId?: string | null | undefined, upin?: string | null | undefined, npi?: string | null | undefined, practiceId?: string | null | undefined, licenseActiveDate?: string | null | undefined, meammographyCertNumber?: string | null | undefined, medicaidGrpNumber?: string | null | undefined, deaActiveDate?: string | null | undefined, deaTermDate?: string | null | undefined, createdAt: string, updatedAt: string, billingAddress?: Array<{ __typename?: 'BillingAddress', id: string, email?: string | null | undefined, mobile?: string | null | undefined, phone?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, userId?: string | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, pager?: string | null | undefined, fax?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, serviceCode: ServiceCodes, zipCode?: string | null | undefined, city?: string | null | undefined, state?: string | null | undefined, country?: string | null | undefined, userId?: string | null | undefined, primaryContact?: boolean | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, createdAt?: string | null | undefined, updatedAt?: string | null | undefined } | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type UpdateDoctorMutationVariables = Exact<{
   updateDoctorInput: UpdateDoctorInput;
@@ -3783,14 +4540,14 @@ export type CreateFormMutationVariables = Exact<{
 }>;
 
 
-export type CreateFormMutation = { __typename?: 'Mutation', createForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string } | null | undefined } };
+export type CreateFormMutation = { __typename?: 'Mutation', createForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined } | null | undefined } };
 
 export type FindAllFormsQueryVariables = Exact<{
   formInput: FormInput;
 }>;
 
 
-export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms?: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId: string, name: string, createdAt?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+export type FindAllFormsQuery = { __typename?: 'Query', findAllForms: { __typename?: 'FormsPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, forms: Array<{ __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, name?: string | null | undefined, createdAt?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } }>, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type RemoveFormMutationVariables = Exact<{
   removeForm: RemoveForm;
@@ -3804,28 +4561,28 @@ export type GetFormQueryVariables = Exact<{
 }>;
 
 
-export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, type: FormType, facilityId: string, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+export type GetFormQuery = { __typename?: 'Query', getForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined, type: FormType, facilityId?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
 
 export type UpdateFormMutationVariables = Exact<{
   updateFormInput: UpdateFormInput;
 }>;
 
 
-export type UpdateFormMutation = { __typename?: 'Mutation', updateForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string } | null | undefined } };
+export type UpdateFormMutation = { __typename?: 'Mutation', updateForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined } | null | undefined } };
 
 export type GetPublicFormQueryVariables = Exact<{
   getForm: GetForm;
 }>;
 
 
-export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId: string, name: string, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
+export type GetPublicFormQuery = { __typename?: 'Query', getPublicForm: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, type: FormType, facilityId?: string | null | undefined, name?: string | null | undefined, isActive?: boolean | null | undefined, layout: { __typename?: 'LayoutJSONType', sections: Array<{ __typename?: 'SectionsTypes', id: string, col: number, name: string, fields: Array<{ __typename?: 'FieldsTypes', label: string, name: string, type: ElementType, css: string, column: number, placeholder: string, defaultValue: string, required: boolean, errorMsg: string, tableName?: string | null | undefined, columnName?: string | null | undefined, fieldId: string, textArea: boolean, isMultiSelect?: boolean | null | undefined, options: Array<{ __typename?: 'FieldOptionsType', name: string, value: string }> }> }> } } | null | undefined } };
 
 export type FindAllUsersFormsQueryVariables = Exact<{
   userFormInput: UserFormInput;
 }>;
 
 
-export type FindAllUsersFormsQuery = { __typename?: 'Query', findAllUsersForms: { __typename?: 'UserFormsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name: string, formElements?: Array<{ __typename?: 'FormElement', id: string, name: string, label?: string | null | undefined, fieldId: string, sectionId: string, isDeleted: boolean }> | null | undefined, userForms?: Array<{ __typename?: 'UserForms', id: string, FormId: string, DoctorId?: string | null | undefined, PatientId?: string | null | undefined, StaffId?: string | null | undefined, SubmitterId?: string | null | undefined, userFormElements?: Array<{ __typename?: 'UsersFormsElements', id: string, value?: string | null | undefined, UsersFormsId: string, FormsElementsId: string, arrayOfStrings: Array<{ __typename?: 'ArrayOfStringsType', name: string, value: boolean }> }> | null | undefined }> | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
+export type FindAllUsersFormsQuery = { __typename?: 'Query', findAllUsersForms: { __typename?: 'UserFormsPayload', response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string, name?: string | null | undefined, formElements?: Array<{ __typename?: 'FormElement', id: string, name: string, label?: string | null | undefined, fieldId: string, sectionId: string, isDeleted: boolean }> | null | undefined, userForms?: Array<{ __typename?: 'UserForms', id: string, FormId: string, DoctorId?: string | null | undefined, PatientId?: string | null | undefined, StaffId?: string | null | undefined, SubmitterId?: string | null | undefined, userFormElements?: Array<{ __typename?: 'UsersFormsElements', id: string, value?: string | null | undefined, UsersFormsId: string, FormsElementsId: string, arrayOfStrings: Array<string>, arrayOfObjects: Array<{ __typename?: 'ArrayOfStringsType', name: string, value: boolean }> }> | null | undefined }> | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, limit?: number | null | undefined, totalCount?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined } };
 
 export type SaveUserFormValuesMutationVariables = Exact<{
   createUserFormInput: CreateUserFormInput;
@@ -3841,6 +4598,13 @@ export type GetFormPublicMediaUrlMutationVariables = Exact<{
 
 export type GetFormPublicMediaUrlMutation = { __typename?: 'Mutation', getFormPublicMediaUrl: { __typename?: 'FormMediaPayload', publicUrl?: string | null | undefined, response?: { __typename?: 'ResponsePayloadResponse', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined } };
 
+export type CreateFormTemplateMutationVariables = Exact<{
+  createFormInput: CreateFormInput;
+}>;
+
+
+export type CreateFormTemplateMutation = { __typename?: 'Mutation', createFormTemplate: { __typename?: 'FormPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined, form?: { __typename?: 'Form', id: string } | null | undefined } };
+
 export type CreateInvoiceMutationVariables = Exact<{
   createInvoiceInputs: CreateInvoiceInputs;
 }>;
@@ -3848,26 +4612,68 @@ export type CreateInvoiceMutationVariables = Exact<{
 
 export type CreateInvoiceMutation = { __typename?: 'Mutation', createInvoice: { __typename?: 'InvoicePayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, invoice?: { __typename?: 'Invoice', invoiceNo: string } | null | undefined } };
 
-export type CreateAttachmentDataMutationVariables = Exact<{
-  createAttachmentInput: CreateAttachmentInput;
+export type FindAllLabTestQueryVariables = Exact<{
+  labTestInput: LabTestInput;
 }>;
 
 
-export type CreateAttachmentDataMutation = { __typename?: 'Mutation', createAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined, error?: string | null | undefined } | null | undefined, attachment?: { __typename?: 'Attachment', id: string, type: AttachmentType, typeId: string, key?: string | null | undefined, url?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined } };
+export type FindAllLabTestQuery = { __typename?: 'Query', findAllLabTest: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, orderNumber?: string | null | undefined, labTestStatus: LabTestStatus, testDate?: string | null | undefined, testTime?: string | null | undefined, patientId?: string | null | undefined, createdAt?: string | null | undefined, testNotes?: string | null | undefined, patient?: { __typename?: 'Patient', firstName?: string | null | undefined, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined, diagnoses?: Array<{ __typename?: 'ICDCodes', code: string, description?: string | null | undefined } | null | undefined> | null | undefined, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null | undefined, component?: string | null | undefined } | null | undefined, testObservations?: Array<{ __typename?: 'Observations', doctorsSignOff?: boolean | null | undefined }> | null | undefined, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null | undefined, appointmentType?: { __typename?: 'Service', name: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
-export type UpdateAttachmentDataMutationVariables = Exact<{
-  updateAttachmentInput: UpdateAttachmentInput;
+export type FindAllLoincCodesQueryVariables = Exact<{
+  searchLoincCodesInput: SearchLoincCodesInput;
 }>;
 
 
-export type UpdateAttachmentDataMutation = { __typename?: 'Mutation', updateAttachmentData: { __typename?: 'AttachmentPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, name?: string | null | undefined, message?: string | null | undefined } | null | undefined, attachment?: { __typename?: 'Attachment', id: string, type: AttachmentType, typeId: string, key?: string | null | undefined, url?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined } };
+export type FindAllLoincCodesQuery = { __typename?: 'Query', findAllLoincCodes: { __typename?: 'LoincCodesPayload', loincCodes?: Array<{ __typename?: 'LoincCodes', id: string, loincNum?: string | null | undefined, component?: string | null | undefined }> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
-export type GetAttachmentQueryVariables = Exact<{
-  getMedia: GetMedia;
+export type FindAllTestSpecimenTypesQueryVariables = Exact<{
+  testSpecimenTypeInput: TestSpecimenTypeInput;
 }>;
 
 
-export type GetAttachmentQuery = { __typename?: 'Query', getAttachment: { __typename?: 'AttachmentMediaPayload', preSignedUrl?: string | null | undefined, response?: { __typename?: 'ResponsePayload', message?: string | null | undefined } | null | undefined } };
+export type FindAllTestSpecimenTypesQuery = { __typename?: 'Query', findAllTestSpecimenTypes: { __typename?: 'TestSpecimenTypesPayload', specimenTypes?: Array<{ __typename?: 'SpecimenTypes', id: string, name?: string | null | undefined }> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type FindLabTestsByOrderNumQueryVariables = Exact<{
+  labTestByOrderNumInput: LabTestByOrderNumInput;
+}>;
+
+
+export type FindLabTestsByOrderNumQuery = { __typename?: 'Query', findLabTestsByOrderNum: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null | undefined, testTime?: string | null | undefined, patientId?: string | null | undefined, createdAt?: string | null | undefined, testNotes?: string | null | undefined, patient?: { __typename?: 'Patient', firstName?: string | null | undefined, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined> | null | undefined, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null | undefined, component?: string | null | undefined, unitsRequired?: string | null | undefined } | null | undefined, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null | undefined, collectionTime?: string | null | undefined, specimenNotes?: string | null | undefined, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null | undefined, resultUnit?: string | null | undefined, resultValue?: string | null | undefined, normalRange?: string | null | undefined, normalRangeUnit?: string | null | undefined, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null | undefined, id: string, attachmentName?: string | null | undefined, url?: string | null | undefined }> | null | undefined }> | null | undefined, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null | undefined, appointmentType?: { __typename?: 'Service', name: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type CreateLabTestMutationVariables = Exact<{
+  createLabTestInput: CreateLabTestInput;
+}>;
+
+
+export type CreateLabTestMutation = { __typename?: 'Mutation', createLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type UpdateLabTestMutationVariables = Exact<{
+  updateLabTestInput: UpdateLabTestInput;
+}>;
+
+
+export type UpdateLabTestMutation = { __typename?: 'Mutation', updateLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type RemoveLabTestMutationVariables = Exact<{
+  removeLabTest: RemoveLabTest;
+}>;
+
+
+export type RemoveLabTestMutation = { __typename?: 'Mutation', removeLabTest: { __typename?: 'LabTestPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type RemoveLabTestObservationMutationVariables = Exact<{
+  removeLabTestObservation: RemoveLabTestObservation;
+}>;
+
+
+export type RemoveLabTestObservationMutation = { __typename?: 'Mutation', removeLabTestObservation: { __typename?: 'LabTestObservationPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type UpdateLabTestObservationMutationVariables = Exact<{
+  updateLabTestObservationInput: UpdateLabTestObservationInput;
+}>;
+
+
+export type UpdateLabTestObservationMutation = { __typename?: 'Mutation', updateLabTestObservation: { __typename?: 'LabTestObservationPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type FindAllPatientQueryVariables = Exact<{
   patientInput: PatientInput;
@@ -3876,12 +4682,19 @@ export type FindAllPatientQueryVariables = Exact<{
 
 export type FindAllPatientQuery = { __typename?: 'Query', findAllPatient: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
 
+export type FetchAllPatientQueryVariables = Exact<{
+  patientInput: PatientInput;
+}>;
+
+
+export type FetchAllPatientQuery = { __typename?: 'Query', fetchAllPatients: { __typename?: 'PatientsPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patients?: Array<{ __typename?: 'Patient', id: string, email?: string | null | undefined, dob?: string | null | undefined, lastName?: string | null | undefined, firstName?: string | null | undefined, patientRecord?: string | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, name?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, primaryContact?: boolean | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+
 export type GetPatientQueryVariables = Exact<{
   getPatient: GetPatient;
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, email?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, inviteAccepted?: boolean | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, registrationDate?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, email?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, inviteAccepted?: boolean | null | undefined, patientRecord?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, registrationDate?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission?: boolean | null | undefined, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null | undefined, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, patientNoteOpen?: boolean | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -3909,7 +4722,14 @@ export type SendInviteToPatientMutationVariables = Exact<{
 }>;
 
 
-export type SendInviteToPatientMutation = { __typename?: 'Mutation', sendInviteToPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, inviteAccepted?: boolean | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+export type SendInviteToPatientMutation = { __typename?: 'Mutation', sendInviteToPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, inviteAccepted?: boolean | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission?: boolean | null | undefined, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null | undefined, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+
+export type UpdatePatientNoteInfoMutationVariables = Exact<{
+  updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs;
+}>;
+
+
+export type UpdatePatientNoteInfoMutation = { __typename?: 'Mutation', updatePatientNoteInfo: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, patientNote?: string | null | undefined, patientNoteOpen?: boolean | null | undefined } | null | undefined } };
 
 export type GetTokenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3979,12 +4799,26 @@ export type RemovePracticeMutationVariables = Exact<{
 
 export type RemovePracticeMutation = { __typename?: 'Mutation', removePractice: { __typename?: 'PracticePayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
+export type SearchIcdCodesQueryVariables = Exact<{
+  searchIcdCodesInput: SearchIcdCodesInput;
+}>;
+
+
+export type SearchIcdCodesQuery = { __typename?: 'Query', searchIcdCodes: { __typename?: 'IcdCodesPayload', icdCodes?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined> | null | undefined } };
+
+export type FindAllReactionsQueryVariables = Exact<{
+  reactionInput: ReactionInput;
+}>;
+
+
+export type FindAllReactionsQuery = { __typename?: 'Query', findAllReactions: { __typename?: 'ReactionsPayload', reactions?: Array<{ __typename?: 'Reactions', id: string, name: string } | null | undefined> | null | undefined } };
+
 export type FindAllRolesQueryVariables = Exact<{
   roleInput: RoleInput;
 }>;
 
 
-export type FindAllRolesQuery = { __typename?: 'Query', getAllRoles: { __typename?: 'RolesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, description?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', id: string, permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllRolesQuery = { __typename?: 'Query', getAllRoles: { __typename?: 'RolesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, description?: string | null | undefined, customRole?: boolean | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', id: string, permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetRoleQueryVariables = Exact<{
   getRole: GetRole;
@@ -4006,6 +4840,13 @@ export type UpdateRoleMutationVariables = Exact<{
 
 
 export type UpdateRoleMutation = { __typename?: 'Mutation', updateRole: { __typename?: 'RolePayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, role?: { __typename?: 'Role', id: string, role?: string | null | undefined, description?: string | null | undefined } | null | undefined } };
+
+export type UpdateUserRoleMutationVariables = Exact<{
+  updateUserRoleItemInput: UpdateRoleInput;
+}>;
+
+
+export type UpdateUserRoleMutation = { __typename?: 'Mutation', updateUserRole: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, roles?: Array<{ __typename?: 'Role', id: string, role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', id: string, permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined } | null | undefined } };
 
 export type RemoveRoleMutationVariables = Exact<{
   removeRole: RemoveRole;
@@ -4124,7 +4965,7 @@ export type FindAllStaffQueryVariables = Exact<{
 }>;
 
 
-export type FindAllStaffQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, allstaff?: Array<{ __typename?: 'Staff', id: string, email: string, firstName: string, lastName: string, username?: string | null | undefined, phone?: string | null | undefined } | null | undefined> | null | undefined } };
+export type FindAllStaffQuery = { __typename?: 'Query', findAllStaff: { __typename?: 'AllStaffPayload', pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, allstaff?: Array<{ __typename?: 'Staff', id: string, email: string, firstName: string, lastName: string, username?: string | null | undefined, phone?: string | null | undefined, user?: { __typename?: 'User', id: string } | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetStaffQueryVariables = Exact<{
   getStaff: GetStaff;
@@ -4153,6 +4994,18 @@ export type CreateStaffMutationVariables = Exact<{
 
 
 export type CreateStaffMutation = { __typename?: 'Mutation', createStaff: { __typename?: 'StaffPayload', response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+
+export type FetchEmergencyAccessUserQueryVariables = Exact<{
+  emergencyAccessUsersInput: EmergencyAccessUserInput;
+}>;
+
+
+export type FetchEmergencyAccessUserQuery = { __typename?: 'Query', fetchEmergencyAccessUsers: { __typename?: 'EmergencyAccessUserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, emergencyAccessUsers?: Array<{ __typename?: 'User', id: string, email: string, facilityId?: string | null | undefined, roles?: Array<{ __typename?: 'Role', role?: string | null | undefined, rolePermissions?: Array<{ __typename?: 'RolePermission', permission?: { __typename?: 'Permission', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined> | null | undefined }> | null | undefined } };
+
+export type GetCurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCurrentUserQuery = { __typename?: 'Query', me: { __typename?: 'UserPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, user?: { __typename?: 'User', id: string, userId: string, userType: string, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined } | null | undefined } };
 
 
 export const FindAllAppointmentsDocument = gql`
@@ -4624,44 +5477,6 @@ export function useUpdateAppointmentStatusMutation(baseOptions?: Apollo.Mutation
 export type UpdateAppointmentStatusMutationHookResult = ReturnType<typeof useUpdateAppointmentStatusMutation>;
 export type UpdateAppointmentStatusMutationResult = Apollo.MutationResult<UpdateAppointmentStatusMutation>;
 export type UpdateAppointmentStatusMutationOptions = Apollo.BaseMutationOptions<UpdateAppointmentStatusMutation, UpdateAppointmentStatusMutationVariables>;
-export const RemoveAttachmentDataDocument = gql`
-    mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
-  removeAttachmentData(removeAttachment: $removeAttachment) {
-    response {
-      name
-      status
-      message
-      error
-    }
-  }
-}
-    `;
-export type RemoveAttachmentDataMutationFn = Apollo.MutationFunction<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>;
-
-/**
- * __useRemoveAttachmentDataMutation__
- *
- * To run a mutation, you first call `useRemoveAttachmentDataMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useRemoveAttachmentDataMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [removeAttachmentDataMutation, { data, loading, error }] = useRemoveAttachmentDataMutation({
- *   variables: {
- *      removeAttachment: // value for 'removeAttachment'
- *   },
- * });
- */
-export function useRemoveAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>(RemoveAttachmentDataDocument, options);
-      }
-export type RemoveAttachmentDataMutationHookResult = ReturnType<typeof useRemoveAttachmentDataMutation>;
-export type RemoveAttachmentDataMutationResult = Apollo.MutationResult<RemoveAttachmentDataMutation>;
-export type RemoveAttachmentDataMutationOptions = Apollo.BaseMutationOptions<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>;
 export const GetAttachmentsDocument = gql`
     query GetAttachments($getAttachment: GetAttachment!) {
   getAttachments(getAttachment: $getAttachment) {
@@ -4677,8 +5492,16 @@ export const GetAttachmentsDocument = gql`
       type
       title
       typeId
+      signedAt
+      signedBy
+      providerName
+      attachmentName
       createdAt
       updatedAt
+    }
+    pagination {
+      page
+      totalPages
     }
   }
 }
@@ -4711,10 +5534,182 @@ export function useGetAttachmentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAttachmentsQueryHookResult = ReturnType<typeof useGetAttachmentsQuery>;
 export type GetAttachmentsLazyQueryHookResult = ReturnType<typeof useGetAttachmentsLazyQuery>;
 export type GetAttachmentsQueryResult = Apollo.QueryResult<GetAttachmentsQuery, GetAttachmentsQueryVariables>;
+export const UpdateAttachmentDataDocument = gql`
+    mutation UpdateAttachmentData($updateAttachmentInput: UpdateAttachmentInput!) {
+  updateAttachmentData(updateAttachmentInput: $updateAttachmentInput) {
+    response {
+      status
+      message
+    }
+    attachment {
+      id
+      key
+      url
+      type
+      title
+      typeId
+      attachmentName
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type UpdateAttachmentDataMutationFn = Apollo.MutationFunction<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>;
+
+/**
+ * __useUpdateAttachmentDataMutation__
+ *
+ * To run a mutation, you first call `useUpdateAttachmentDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAttachmentDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAttachmentDataMutation, { data, loading, error }] = useUpdateAttachmentDataMutation({
+ *   variables: {
+ *      updateAttachmentInput: // value for 'updateAttachmentInput'
+ *   },
+ * });
+ */
+export function useUpdateAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>(UpdateAttachmentDataDocument, options);
+      }
+export type UpdateAttachmentDataMutationHookResult = ReturnType<typeof useUpdateAttachmentDataMutation>;
+export type UpdateAttachmentDataMutationResult = Apollo.MutationResult<UpdateAttachmentDataMutation>;
+export type UpdateAttachmentDataMutationOptions = Apollo.BaseMutationOptions<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>;
+export const CreateAttachmentDataDocument = gql`
+    mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
+  createAttachmentData(createAttachmentInput: $createAttachmentInput) {
+    response {
+      name
+      status
+      message
+      error
+    }
+    attachment {
+      id
+      url
+      key
+      type
+      typeId
+      providerName
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type CreateAttachmentDataMutationFn = Apollo.MutationFunction<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>;
+
+/**
+ * __useCreateAttachmentDataMutation__
+ *
+ * To run a mutation, you first call `useCreateAttachmentDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAttachmentDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAttachmentDataMutation, { data, loading, error }] = useCreateAttachmentDataMutation({
+ *   variables: {
+ *      createAttachmentInput: // value for 'createAttachmentInput'
+ *   },
+ * });
+ */
+export function useCreateAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>(CreateAttachmentDataDocument, options);
+      }
+export type CreateAttachmentDataMutationHookResult = ReturnType<typeof useCreateAttachmentDataMutation>;
+export type CreateAttachmentDataMutationResult = Apollo.MutationResult<CreateAttachmentDataMutation>;
+export type CreateAttachmentDataMutationOptions = Apollo.BaseMutationOptions<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>;
+export const RemoveAttachmentDataDocument = gql`
+    mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
+  removeAttachmentData(removeAttachment: $removeAttachment) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveAttachmentDataMutationFn = Apollo.MutationFunction<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>;
+
+/**
+ * __useRemoveAttachmentDataMutation__
+ *
+ * To run a mutation, you first call `useRemoveAttachmentDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveAttachmentDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeAttachmentDataMutation, { data, loading, error }] = useRemoveAttachmentDataMutation({
+ *   variables: {
+ *      removeAttachment: // value for 'removeAttachment'
+ *   },
+ * });
+ */
+export function useRemoveAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>(RemoveAttachmentDataDocument, options);
+      }
+export type RemoveAttachmentDataMutationHookResult = ReturnType<typeof useRemoveAttachmentDataMutation>;
+export type RemoveAttachmentDataMutationResult = Apollo.MutationResult<RemoveAttachmentDataMutation>;
+export type RemoveAttachmentDataMutationOptions = Apollo.BaseMutationOptions<RemoveAttachmentDataMutation, RemoveAttachmentDataMutationVariables>;
+export const GetAttachmentDocument = gql`
+    query GetAttachment($getMedia: GetMedia!) {
+  getAttachment(getMedia: $getMedia) {
+    preSignedUrl
+    response {
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAttachmentQuery__
+ *
+ * To run a query within a React component, call `useGetAttachmentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAttachmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAttachmentQuery({
+ *   variables: {
+ *      getMedia: // value for 'getMedia'
+ *   },
+ * });
+ */
+export function useGetAttachmentQuery(baseOptions: Apollo.QueryHookOptions<GetAttachmentQuery, GetAttachmentQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAttachmentQuery, GetAttachmentQueryVariables>(GetAttachmentDocument, options);
+      }
+export function useGetAttachmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttachmentQuery, GetAttachmentQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAttachmentQuery, GetAttachmentQueryVariables>(GetAttachmentDocument, options);
+        }
+export type GetAttachmentQueryHookResult = ReturnType<typeof useGetAttachmentQuery>;
+export type GetAttachmentLazyQueryHookResult = ReturnType<typeof useGetAttachmentLazyQuery>;
+export type GetAttachmentQueryResult = Apollo.QueryResult<GetAttachmentQuery, GetAttachmentQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($loginUser: LoginUserInput!) {
   login(loginUser: $loginUser) {
     access_token
+    isTwoFactorEnabled
+    userId
+    access_2fa_token
     response {
       status
       message
@@ -4765,8 +5760,13 @@ export const GetLoggedInUserDocument = gql`
     user {
       id
       email
+      phone
+      isTwoFactorEnabled
       token
       userId
+      userType
+      phone
+      autoLogoutTime
       roles {
         id
         role
@@ -4785,6 +5785,16 @@ export const GetLoggedInUserDocument = gql`
           id
           name
         }
+      }
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
       }
     }
   }
@@ -4932,9 +5942,31 @@ export const GetDoctorUserDocument = gql`
     query GetDoctorUser($getDoctor: GetDoctor!) {
   getDoctor(getDoctor: $getDoctor) {
     doctor {
+      __typename
       id
       firstName
       lastName
+      contacts {
+        id
+        email
+        phone
+        address
+        zipCode
+        city
+        state
+        country
+        primaryContact
+      }
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
     response {
       status
@@ -4977,10 +6009,22 @@ export const GetStaffUserDocument = gql`
       status
     }
     staff {
+      __typename
       id
       email
       lastName
       firstName
+      phone
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
     }
   }
 }
@@ -5013,6 +6057,861 @@ export function useGetStaffUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetStaffUserQueryHookResult = ReturnType<typeof useGetStaffUserQuery>;
 export type GetStaffUserLazyQueryHookResult = ReturnType<typeof useGetStaffUserLazyQuery>;
 export type GetStaffUserQueryResult = Apollo.QueryResult<GetStaffUserQuery, GetStaffUserQueryVariables>;
+export const Update2FactorAuthDocument = gql`
+    mutation update2FactorAuth($twoFactorInput: TwoFactorInput!) {
+  update2FactorAuth(twoFactorInput: $twoFactorInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type Update2FactorAuthMutationFn = Apollo.MutationFunction<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>;
+
+/**
+ * __useUpdate2FactorAuthMutation__
+ *
+ * To run a mutation, you first call `useUpdate2FactorAuthMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdate2FactorAuthMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [update2FactorAuthMutation, { data, loading, error }] = useUpdate2FactorAuthMutation({
+ *   variables: {
+ *      twoFactorInput: // value for 'twoFactorInput'
+ *   },
+ * });
+ */
+export function useUpdate2FactorAuthMutation(baseOptions?: Apollo.MutationHookOptions<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>(Update2FactorAuthDocument, options);
+      }
+export type Update2FactorAuthMutationHookResult = ReturnType<typeof useUpdate2FactorAuthMutation>;
+export type Update2FactorAuthMutationResult = Apollo.MutationResult<Update2FactorAuthMutation>;
+export type Update2FactorAuthMutationOptions = Apollo.BaseMutationOptions<Update2FactorAuthMutation, Update2FactorAuthMutationVariables>;
+export const ResentOtpDocument = gql`
+    mutation resentOTP {
+  resentOTP {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type ResentOtpMutationFn = Apollo.MutationFunction<ResentOtpMutation, ResentOtpMutationVariables>;
+
+/**
+ * __useResentOtpMutation__
+ *
+ * To run a mutation, you first call `useResentOtpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResentOtpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resentOtpMutation, { data, loading, error }] = useResentOtpMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useResentOtpMutation(baseOptions?: Apollo.MutationHookOptions<ResentOtpMutation, ResentOtpMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResentOtpMutation, ResentOtpMutationVariables>(ResentOtpDocument, options);
+      }
+export type ResentOtpMutationHookResult = ReturnType<typeof useResentOtpMutation>;
+export type ResentOtpMutationResult = Apollo.MutationResult<ResentOtpMutation>;
+export type ResentOtpMutationOptions = Apollo.BaseMutationOptions<ResentOtpMutation, ResentOtpMutationVariables>;
+export const VerifyOtpDocument = gql`
+    mutation verifyOTP($verifyCodeInput: VerifyCodeInput!) {
+  verifyOTP(verifyCodeInput: $verifyCodeInput) {
+    access_token
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type VerifyOtpMutationFn = Apollo.MutationFunction<VerifyOtpMutation, VerifyOtpMutationVariables>;
+
+/**
+ * __useVerifyOtpMutation__
+ *
+ * To run a mutation, you first call `useVerifyOtpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVerifyOtpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [verifyOtpMutation, { data, loading, error }] = useVerifyOtpMutation({
+ *   variables: {
+ *      verifyCodeInput: // value for 'verifyCodeInput'
+ *   },
+ * });
+ */
+export function useVerifyOtpMutation(baseOptions?: Apollo.MutationHookOptions<VerifyOtpMutation, VerifyOtpMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VerifyOtpMutation, VerifyOtpMutationVariables>(VerifyOtpDocument, options);
+      }
+export type VerifyOtpMutationHookResult = ReturnType<typeof useVerifyOtpMutation>;
+export type VerifyOtpMutationResult = Apollo.MutationResult<VerifyOtpMutation>;
+export type VerifyOtpMutationOptions = Apollo.BaseMutationOptions<VerifyOtpMutation, VerifyOtpMutationVariables>;
+export const UpdateAutoLogoutTimeDocument = gql`
+    mutation updateAutoLogoutTime($userInfoInput: UserInfoInput!) {
+  updateAutoLogoutTime(userInfoInput: $userInfoInput) {
+    response {
+      status
+      error
+      message
+    }
+    user {
+      id
+      autoLogoutTime
+    }
+  }
+}
+    `;
+export type UpdateAutoLogoutTimeMutationFn = Apollo.MutationFunction<UpdateAutoLogoutTimeMutation, UpdateAutoLogoutTimeMutationVariables>;
+
+/**
+ * __useUpdateAutoLogoutTimeMutation__
+ *
+ * To run a mutation, you first call `useUpdateAutoLogoutTimeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAutoLogoutTimeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateAutoLogoutTimeMutation, { data, loading, error }] = useUpdateAutoLogoutTimeMutation({
+ *   variables: {
+ *      userInfoInput: // value for 'userInfoInput'
+ *   },
+ * });
+ */
+export function useUpdateAutoLogoutTimeMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAutoLogoutTimeMutation, UpdateAutoLogoutTimeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateAutoLogoutTimeMutation, UpdateAutoLogoutTimeMutationVariables>(UpdateAutoLogoutTimeDocument, options);
+      }
+export type UpdateAutoLogoutTimeMutationHookResult = ReturnType<typeof useUpdateAutoLogoutTimeMutation>;
+export type UpdateAutoLogoutTimeMutationResult = Apollo.MutationResult<UpdateAutoLogoutTimeMutation>;
+export type UpdateAutoLogoutTimeMutationOptions = Apollo.BaseMutationOptions<UpdateAutoLogoutTimeMutation, UpdateAutoLogoutTimeMutationVariables>;
+export const FindAllPatientAllergiesDocument = gql`
+    query FindAllPatientAllergies($patientAllergyInput: PatientAllergyInput!) {
+  findAllPatientAllergies(patientAllergyInput: $patientAllergyInput) {
+    response {
+      status
+      message
+    }
+    patientAllergies {
+      id
+      allergySeverity
+      allergyOnset
+      allergyStartDate
+      allergy {
+        __typename
+        id
+        name
+      }
+      reactions {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPatientAllergiesQuery__
+ *
+ * To run a query within a React component, call `useFindAllPatientAllergiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPatientAllergiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPatientAllergiesQuery({
+ *   variables: {
+ *      patientAllergyInput: // value for 'patientAllergyInput'
+ *   },
+ * });
+ */
+export function useFindAllPatientAllergiesQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientAllergiesQuery, FindAllPatientAllergiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientAllergiesQuery, FindAllPatientAllergiesQueryVariables>(FindAllPatientAllergiesDocument, options);
+      }
+export function useFindAllPatientAllergiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientAllergiesQuery, FindAllPatientAllergiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientAllergiesQuery, FindAllPatientAllergiesQueryVariables>(FindAllPatientAllergiesDocument, options);
+        }
+export type FindAllPatientAllergiesQueryHookResult = ReturnType<typeof useFindAllPatientAllergiesQuery>;
+export type FindAllPatientAllergiesLazyQueryHookResult = ReturnType<typeof useFindAllPatientAllergiesLazyQuery>;
+export type FindAllPatientAllergiesQueryResult = Apollo.QueryResult<FindAllPatientAllergiesQuery, FindAllPatientAllergiesQueryVariables>;
+export const GetPatientAllergyDocument = gql`
+    query GetPatientAllergy($getPatientAllergy: GetPatientAllergy!) {
+  getPatientAllergy(getPatientAllergy: $getPatientAllergy) {
+    response {
+      status
+      message
+    }
+    patientAllergy {
+      id
+      allergySeverity
+      allergyOnset
+      allergyStartDate
+      allergy {
+        id
+        name
+      }
+      reactions {
+        id
+        name
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientAllergyQuery__
+ *
+ * To run a query within a React component, call `useGetPatientAllergyQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientAllergyQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientAllergyQuery({
+ *   variables: {
+ *      getPatientAllergy: // value for 'getPatientAllergy'
+ *   },
+ * });
+ */
+export function useGetPatientAllergyQuery(baseOptions: Apollo.QueryHookOptions<GetPatientAllergyQuery, GetPatientAllergyQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientAllergyQuery, GetPatientAllergyQueryVariables>(GetPatientAllergyDocument, options);
+      }
+export function useGetPatientAllergyLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientAllergyQuery, GetPatientAllergyQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientAllergyQuery, GetPatientAllergyQueryVariables>(GetPatientAllergyDocument, options);
+        }
+export type GetPatientAllergyQueryHookResult = ReturnType<typeof useGetPatientAllergyQuery>;
+export type GetPatientAllergyLazyQueryHookResult = ReturnType<typeof useGetPatientAllergyLazyQuery>;
+export type GetPatientAllergyQueryResult = Apollo.QueryResult<GetPatientAllergyQuery, GetPatientAllergyQueryVariables>;
+export const AddPatientAllergyDocument = gql`
+    mutation AddPatientAllergy($createPatientAllergyInput: CreatePatientAllergyInput!) {
+  addPatientAllergy(createPatientAllergyInput: $createPatientAllergyInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type AddPatientAllergyMutationFn = Apollo.MutationFunction<AddPatientAllergyMutation, AddPatientAllergyMutationVariables>;
+
+/**
+ * __useAddPatientAllergyMutation__
+ *
+ * To run a mutation, you first call `useAddPatientAllergyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPatientAllergyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPatientAllergyMutation, { data, loading, error }] = useAddPatientAllergyMutation({
+ *   variables: {
+ *      createPatientAllergyInput: // value for 'createPatientAllergyInput'
+ *   },
+ * });
+ */
+export function useAddPatientAllergyMutation(baseOptions?: Apollo.MutationHookOptions<AddPatientAllergyMutation, AddPatientAllergyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPatientAllergyMutation, AddPatientAllergyMutationVariables>(AddPatientAllergyDocument, options);
+      }
+export type AddPatientAllergyMutationHookResult = ReturnType<typeof useAddPatientAllergyMutation>;
+export type AddPatientAllergyMutationResult = Apollo.MutationResult<AddPatientAllergyMutation>;
+export type AddPatientAllergyMutationOptions = Apollo.BaseMutationOptions<AddPatientAllergyMutation, AddPatientAllergyMutationVariables>;
+export const UpdatePatientAllergyDocument = gql`
+    mutation UpdatePatientAllergy($updateAllergyInput: UpdateAllergyInput!) {
+  updatePatientAllergy(updateAllergyInput: $updateAllergyInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientAllergyMutationFn = Apollo.MutationFunction<UpdatePatientAllergyMutation, UpdatePatientAllergyMutationVariables>;
+
+/**
+ * __useUpdatePatientAllergyMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientAllergyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientAllergyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientAllergyMutation, { data, loading, error }] = useUpdatePatientAllergyMutation({
+ *   variables: {
+ *      updateAllergyInput: // value for 'updateAllergyInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientAllergyMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientAllergyMutation, UpdatePatientAllergyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientAllergyMutation, UpdatePatientAllergyMutationVariables>(UpdatePatientAllergyDocument, options);
+      }
+export type UpdatePatientAllergyMutationHookResult = ReturnType<typeof useUpdatePatientAllergyMutation>;
+export type UpdatePatientAllergyMutationResult = Apollo.MutationResult<UpdatePatientAllergyMutation>;
+export type UpdatePatientAllergyMutationOptions = Apollo.BaseMutationOptions<UpdatePatientAllergyMutation, UpdatePatientAllergyMutationVariables>;
+export const RemovePatientAllergyDocument = gql`
+    mutation RemovePatientAllergy($removePatientAllergy: RemovePatientAllergy!) {
+  removePatientAllergy(removePatientAllergy: $removePatientAllergy) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemovePatientAllergyMutationFn = Apollo.MutationFunction<RemovePatientAllergyMutation, RemovePatientAllergyMutationVariables>;
+
+/**
+ * __useRemovePatientAllergyMutation__
+ *
+ * To run a mutation, you first call `useRemovePatientAllergyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePatientAllergyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePatientAllergyMutation, { data, loading, error }] = useRemovePatientAllergyMutation({
+ *   variables: {
+ *      removePatientAllergy: // value for 'removePatientAllergy'
+ *   },
+ * });
+ */
+export function useRemovePatientAllergyMutation(baseOptions?: Apollo.MutationHookOptions<RemovePatientAllergyMutation, RemovePatientAllergyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemovePatientAllergyMutation, RemovePatientAllergyMutationVariables>(RemovePatientAllergyDocument, options);
+      }
+export type RemovePatientAllergyMutationHookResult = ReturnType<typeof useRemovePatientAllergyMutation>;
+export type RemovePatientAllergyMutationResult = Apollo.MutationResult<RemovePatientAllergyMutation>;
+export type RemovePatientAllergyMutationOptions = Apollo.BaseMutationOptions<RemovePatientAllergyMutation, RemovePatientAllergyMutationVariables>;
+export const FindAllAllergiesDocument = gql`
+    query FindAllAllergies($allergyInput: AllergyInput!) {
+  findAllAllergies(allergyInput: $allergyInput) {
+    response {
+      status
+      message
+    }
+    allergies {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllAllergiesQuery__
+ *
+ * To run a query within a React component, call `useFindAllAllergiesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllAllergiesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllAllergiesQuery({
+ *   variables: {
+ *      allergyInput: // value for 'allergyInput'
+ *   },
+ * });
+ */
+export function useFindAllAllergiesQuery(baseOptions: Apollo.QueryHookOptions<FindAllAllergiesQuery, FindAllAllergiesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllAllergiesQuery, FindAllAllergiesQueryVariables>(FindAllAllergiesDocument, options);
+      }
+export function useFindAllAllergiesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllAllergiesQuery, FindAllAllergiesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllAllergiesQuery, FindAllAllergiesQueryVariables>(FindAllAllergiesDocument, options);
+        }
+export type FindAllAllergiesQueryHookResult = ReturnType<typeof useFindAllAllergiesQuery>;
+export type FindAllAllergiesLazyQueryHookResult = ReturnType<typeof useFindAllAllergiesLazyQuery>;
+export type FindAllAllergiesQueryResult = Apollo.QueryResult<FindAllAllergiesQuery, FindAllAllergiesQueryVariables>;
+export const FindAllPatientProblemsDocument = gql`
+    query FindAllPatientProblems($patientProblemInput: PatientProblemInput!) {
+  findAllPatientProblem(patientProblemInput: $patientProblemInput) {
+    response {
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    patientProblems {
+      id
+      problemType
+      problemSeverity
+      problemStartDate
+      note
+      ICDCode {
+        __typename
+        id
+        code
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPatientProblemsQuery__
+ *
+ * To run a query within a React component, call `useFindAllPatientProblemsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPatientProblemsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPatientProblemsQuery({
+ *   variables: {
+ *      patientProblemInput: // value for 'patientProblemInput'
+ *   },
+ * });
+ */
+export function useFindAllPatientProblemsQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientProblemsQuery, FindAllPatientProblemsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientProblemsQuery, FindAllPatientProblemsQueryVariables>(FindAllPatientProblemsDocument, options);
+      }
+export function useFindAllPatientProblemsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientProblemsQuery, FindAllPatientProblemsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientProblemsQuery, FindAllPatientProblemsQueryVariables>(FindAllPatientProblemsDocument, options);
+        }
+export type FindAllPatientProblemsQueryHookResult = ReturnType<typeof useFindAllPatientProblemsQuery>;
+export type FindAllPatientProblemsLazyQueryHookResult = ReturnType<typeof useFindAllPatientProblemsLazyQuery>;
+export type FindAllPatientProblemsQueryResult = Apollo.QueryResult<FindAllPatientProblemsQuery, FindAllPatientProblemsQueryVariables>;
+export const GetPatientProblemDocument = gql`
+    query GetPatientProblem($getPatientProblem: GetPatientProblem!) {
+  getPatientProblem(getPatientProblem: $getPatientProblem) {
+    response {
+      status
+      message
+    }
+    patientProblem {
+      id
+      problemType
+      problemSeverity
+      problemStartDate
+      note
+      appointment {
+        id
+        appointmentType {
+          id
+          serviceType
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientProblemQuery__
+ *
+ * To run a query within a React component, call `useGetPatientProblemQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientProblemQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientProblemQuery({
+ *   variables: {
+ *      getPatientProblem: // value for 'getPatientProblem'
+ *   },
+ * });
+ */
+export function useGetPatientProblemQuery(baseOptions: Apollo.QueryHookOptions<GetPatientProblemQuery, GetPatientProblemQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientProblemQuery, GetPatientProblemQueryVariables>(GetPatientProblemDocument, options);
+      }
+export function useGetPatientProblemLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientProblemQuery, GetPatientProblemQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientProblemQuery, GetPatientProblemQueryVariables>(GetPatientProblemDocument, options);
+        }
+export type GetPatientProblemQueryHookResult = ReturnType<typeof useGetPatientProblemQuery>;
+export type GetPatientProblemLazyQueryHookResult = ReturnType<typeof useGetPatientProblemLazyQuery>;
+export type GetPatientProblemQueryResult = Apollo.QueryResult<GetPatientProblemQuery, GetPatientProblemQueryVariables>;
+export const AddPatientProblemDocument = gql`
+    mutation AddPatientProblem($createProblemInput: CreateProblemInput!) {
+  addPatientProblem(createProblemInput: $createProblemInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type AddPatientProblemMutationFn = Apollo.MutationFunction<AddPatientProblemMutation, AddPatientProblemMutationVariables>;
+
+/**
+ * __useAddPatientProblemMutation__
+ *
+ * To run a mutation, you first call `useAddPatientProblemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPatientProblemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPatientProblemMutation, { data, loading, error }] = useAddPatientProblemMutation({
+ *   variables: {
+ *      createProblemInput: // value for 'createProblemInput'
+ *   },
+ * });
+ */
+export function useAddPatientProblemMutation(baseOptions?: Apollo.MutationHookOptions<AddPatientProblemMutation, AddPatientProblemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPatientProblemMutation, AddPatientProblemMutationVariables>(AddPatientProblemDocument, options);
+      }
+export type AddPatientProblemMutationHookResult = ReturnType<typeof useAddPatientProblemMutation>;
+export type AddPatientProblemMutationResult = Apollo.MutationResult<AddPatientProblemMutation>;
+export type AddPatientProblemMutationOptions = Apollo.BaseMutationOptions<AddPatientProblemMutation, AddPatientProblemMutationVariables>;
+export const UpdatePatientProblemDocument = gql`
+    mutation UpdatePatientProblem($updateProblemInput: UpdateProblemInput!) {
+  updatePatientProblem(updateProblemInput: $updateProblemInput) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdatePatientProblemMutationFn = Apollo.MutationFunction<UpdatePatientProblemMutation, UpdatePatientProblemMutationVariables>;
+
+/**
+ * __useUpdatePatientProblemMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientProblemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientProblemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientProblemMutation, { data, loading, error }] = useUpdatePatientProblemMutation({
+ *   variables: {
+ *      updateProblemInput: // value for 'updateProblemInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientProblemMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientProblemMutation, UpdatePatientProblemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientProblemMutation, UpdatePatientProblemMutationVariables>(UpdatePatientProblemDocument, options);
+      }
+export type UpdatePatientProblemMutationHookResult = ReturnType<typeof useUpdatePatientProblemMutation>;
+export type UpdatePatientProblemMutationResult = Apollo.MutationResult<UpdatePatientProblemMutation>;
+export type UpdatePatientProblemMutationOptions = Apollo.BaseMutationOptions<UpdatePatientProblemMutation, UpdatePatientProblemMutationVariables>;
+export const RemovePatientProblemDocument = gql`
+    mutation RemovePatientProblem($removeProblem: RemoveProblem!) {
+  removePatientProblem(removeProblem: $removeProblem) {
+    response {
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemovePatientProblemMutationFn = Apollo.MutationFunction<RemovePatientProblemMutation, RemovePatientProblemMutationVariables>;
+
+/**
+ * __useRemovePatientProblemMutation__
+ *
+ * To run a mutation, you first call `useRemovePatientProblemMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemovePatientProblemMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removePatientProblemMutation, { data, loading, error }] = useRemovePatientProblemMutation({
+ *   variables: {
+ *      removeProblem: // value for 'removeProblem'
+ *   },
+ * });
+ */
+export function useRemovePatientProblemMutation(baseOptions?: Apollo.MutationHookOptions<RemovePatientProblemMutation, RemovePatientProblemMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemovePatientProblemMutation, RemovePatientProblemMutationVariables>(RemovePatientProblemDocument, options);
+      }
+export type RemovePatientProblemMutationHookResult = ReturnType<typeof useRemovePatientProblemMutation>;
+export type RemovePatientProblemMutationResult = Apollo.MutationResult<RemovePatientProblemMutation>;
+export type RemovePatientProblemMutationOptions = Apollo.BaseMutationOptions<RemovePatientProblemMutation, RemovePatientProblemMutationVariables>;
+export const GetPatientVitalDocument = gql`
+    query getPatientVital($getPatientVital: GetPatientVital!) {
+  getPatientVital(getPatientVital: $getPatientVital) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patientVital {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      diastolicBloodPressure
+      systolicBloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPatientVitalQuery__
+ *
+ * To run a query within a React component, call `useGetPatientVitalQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPatientVitalQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPatientVitalQuery({
+ *   variables: {
+ *      getPatientVital: // value for 'getPatientVital'
+ *   },
+ * });
+ */
+export function useGetPatientVitalQuery(baseOptions: Apollo.QueryHookOptions<GetPatientVitalQuery, GetPatientVitalQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPatientVitalQuery, GetPatientVitalQueryVariables>(GetPatientVitalDocument, options);
+      }
+export function useGetPatientVitalLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPatientVitalQuery, GetPatientVitalQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPatientVitalQuery, GetPatientVitalQueryVariables>(GetPatientVitalDocument, options);
+        }
+export type GetPatientVitalQueryHookResult = ReturnType<typeof useGetPatientVitalQuery>;
+export type GetPatientVitalLazyQueryHookResult = ReturnType<typeof useGetPatientVitalLazyQuery>;
+export type GetPatientVitalQueryResult = Apollo.QueryResult<GetPatientVitalQuery, GetPatientVitalQueryVariables>;
+export const FindAllPatientVitalsDocument = gql`
+    query findAllPatientVitals($patientVitalInput: PatientVitalInput!) {
+  findAllPatientVitals(patientVitalInput: $patientVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    pagination {
+      totalPages
+      page
+    }
+    patientVitals {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      diastolicBloodPressure
+      systolicBloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      pulseRate
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllPatientVitalsQuery__
+ *
+ * To run a query within a React component, call `useFindAllPatientVitalsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllPatientVitalsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllPatientVitalsQuery({
+ *   variables: {
+ *      patientVitalInput: // value for 'patientVitalInput'
+ *   },
+ * });
+ */
+export function useFindAllPatientVitalsQuery(baseOptions: Apollo.QueryHookOptions<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>(FindAllPatientVitalsDocument, options);
+      }
+export function useFindAllPatientVitalsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>(FindAllPatientVitalsDocument, options);
+        }
+export type FindAllPatientVitalsQueryHookResult = ReturnType<typeof useFindAllPatientVitalsQuery>;
+export type FindAllPatientVitalsLazyQueryHookResult = ReturnType<typeof useFindAllPatientVitalsLazyQuery>;
+export type FindAllPatientVitalsQueryResult = Apollo.QueryResult<FindAllPatientVitalsQuery, FindAllPatientVitalsQueryVariables>;
+export const AddPatientVitalDocument = gql`
+    mutation addPatientVital($createVitalInput: CreateVitalInput!) {
+  addPatientVital(createVitalInput: $createVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patientVital {
+      id
+    }
+  }
+}
+    `;
+export type AddPatientVitalMutationFn = Apollo.MutationFunction<AddPatientVitalMutation, AddPatientVitalMutationVariables>;
+
+/**
+ * __useAddPatientVitalMutation__
+ *
+ * To run a mutation, you first call `useAddPatientVitalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPatientVitalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPatientVitalMutation, { data, loading, error }] = useAddPatientVitalMutation({
+ *   variables: {
+ *      createVitalInput: // value for 'createVitalInput'
+ *   },
+ * });
+ */
+export function useAddPatientVitalMutation(baseOptions?: Apollo.MutationHookOptions<AddPatientVitalMutation, AddPatientVitalMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddPatientVitalMutation, AddPatientVitalMutationVariables>(AddPatientVitalDocument, options);
+      }
+export type AddPatientVitalMutationHookResult = ReturnType<typeof useAddPatientVitalMutation>;
+export type AddPatientVitalMutationResult = Apollo.MutationResult<AddPatientVitalMutation>;
+export type AddPatientVitalMutationOptions = Apollo.BaseMutationOptions<AddPatientVitalMutation, AddPatientVitalMutationVariables>;
+export const UpdatePatientVitalDocument = gql`
+    mutation updatePatientVital($updateVitalInput: UpdateVitalInput!) {
+  updatePatientVital(updateVitalInput: $updateVitalInput) {
+    response {
+      name
+      error
+      status
+      message
+    }
+    patientVital {
+      id
+      unitType
+      weightUnit
+      headCircumference
+      temperatureUnitType
+      smokingStatus
+      patientTemperature
+      diastolicBloodPressure
+      systolicBloodPressure
+      respiratoryRate
+      oxygenSaturation
+      PatientHeight
+      PatientWeight
+      PatientBMI
+      PainRange
+      patientHeadCircumference
+      vitalCreationDate
+      patientId
+      appointmentId
+      pulseRate
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type UpdatePatientVitalMutationFn = Apollo.MutationFunction<UpdatePatientVitalMutation, UpdatePatientVitalMutationVariables>;
+
+/**
+ * __useUpdatePatientVitalMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientVitalMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientVitalMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientVitalMutation, { data, loading, error }] = useUpdatePatientVitalMutation({
+ *   variables: {
+ *      updateVitalInput: // value for 'updateVitalInput'
+ *   },
+ * });
+ */
+export function useUpdatePatientVitalMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientVitalMutation, UpdatePatientVitalMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientVitalMutation, UpdatePatientVitalMutationVariables>(UpdatePatientVitalDocument, options);
+      }
+export type UpdatePatientVitalMutationHookResult = ReturnType<typeof useUpdatePatientVitalMutation>;
+export type UpdatePatientVitalMutationResult = Apollo.MutationResult<UpdatePatientVitalMutation>;
+export type UpdatePatientVitalMutationOptions = Apollo.BaseMutationOptions<UpdatePatientVitalMutation, UpdatePatientVitalMutationVariables>;
 export const FindAllRoleListDocument = gql`
     query FindAllRoleList($roleInput: RoleInput!) {
   getAllRoles(roleInput: $roleInput) {
@@ -5478,6 +7377,16 @@ export const GetDoctorDocument = gql`
         createdAt
         updatedAt
       }
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
       facility {
         id
         name
@@ -5901,6 +7810,7 @@ export const FindAllFormsDocument = gql`
             columnName
             fieldId
             textArea
+            isMultiSelect
             options {
               name
               value
@@ -6014,6 +7924,7 @@ export const GetFormDocument = gql`
             columnName
             fieldId
             textArea
+            isMultiSelect
             options {
               name
               value
@@ -6124,6 +8035,7 @@ export const GetPublicFormDocument = gql`
             columnName
             fieldId
             textArea
+            isMultiSelect
             options {
               name
               value
@@ -6193,7 +8105,8 @@ export const FindAllUsersFormsDocument = gql`
           value
           UsersFormsId
           FormsElementsId
-          arrayOfStrings {
+          arrayOfStrings
+          arrayOfObjects {
             name
             value
           }
@@ -6315,6 +8228,46 @@ export function useGetFormPublicMediaUrlMutation(baseOptions?: Apollo.MutationHo
 export type GetFormPublicMediaUrlMutationHookResult = ReturnType<typeof useGetFormPublicMediaUrlMutation>;
 export type GetFormPublicMediaUrlMutationResult = Apollo.MutationResult<GetFormPublicMediaUrlMutation>;
 export type GetFormPublicMediaUrlMutationOptions = Apollo.BaseMutationOptions<GetFormPublicMediaUrlMutation, GetFormPublicMediaUrlMutationVariables>;
+export const CreateFormTemplateDocument = gql`
+    mutation CreateFormTemplate($createFormInput: CreateFormInput!) {
+  createFormTemplate(createFormInput: $createFormInput) {
+    response {
+      status
+      message
+      error
+    }
+    form {
+      id
+    }
+  }
+}
+    `;
+export type CreateFormTemplateMutationFn = Apollo.MutationFunction<CreateFormTemplateMutation, CreateFormTemplateMutationVariables>;
+
+/**
+ * __useCreateFormTemplateMutation__
+ *
+ * To run a mutation, you first call `useCreateFormTemplateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateFormTemplateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createFormTemplateMutation, { data, loading, error }] = useCreateFormTemplateMutation({
+ *   variables: {
+ *      createFormInput: // value for 'createFormInput'
+ *   },
+ * });
+ */
+export function useCreateFormTemplateMutation(baseOptions?: Apollo.MutationHookOptions<CreateFormTemplateMutation, CreateFormTemplateMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateFormTemplateMutation, CreateFormTemplateMutationVariables>(CreateFormTemplateDocument, options);
+      }
+export type CreateFormTemplateMutationHookResult = ReturnType<typeof useCreateFormTemplateMutation>;
+export type CreateFormTemplateMutationResult = Apollo.MutationResult<CreateFormTemplateMutation>;
+export type CreateFormTemplateMutationOptions = Apollo.BaseMutationOptions<CreateFormTemplateMutation, CreateFormTemplateMutationVariables>;
 export const CreateInvoiceDocument = gql`
     mutation CreateInvoice($createInvoiceInputs: CreateInvoiceInputs!) {
   createInvoice(createInvoiceInputs: $createInvoiceInputs) {
@@ -6355,104 +8308,55 @@ export function useCreateInvoiceMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateInvoiceMutationHookResult = ReturnType<typeof useCreateInvoiceMutation>;
 export type CreateInvoiceMutationResult = Apollo.MutationResult<CreateInvoiceMutation>;
 export type CreateInvoiceMutationOptions = Apollo.BaseMutationOptions<CreateInvoiceMutation, CreateInvoiceMutationVariables>;
-export const CreateAttachmentDataDocument = gql`
-    mutation CreateAttachmentData($createAttachmentInput: CreateAttachmentInput!) {
-  createAttachmentData(createAttachmentInput: $createAttachmentInput) {
+export const FindAllLabTestDocument = gql`
+    query FindAllLabTest($labTestInput: LabTestInput!) {
+  findAllLabTest(labTestInput: $labTestInput) {
+    labTests {
+      id
+      orderNumber
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      patient {
+        doctorPatients {
+          doctor {
+            firstName
+            lastName
+          }
+          currentProvider
+        }
+        firstName
+      }
+      diagnoses {
+        code
+        description
+      }
+      test {
+        id
+        loincNum
+        component
+      }
+      testObservations {
+        doctorsSignOff
+      }
+      appointment {
+        id
+        appointmentType {
+          name
+        }
+        scheduleStartDateTime
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
     response {
-      name
-      status
-      message
       error
-    }
-    attachment {
-      id
-      type
-      typeId
-      key
-      url
-      createdAt
-      updatedAt
-    }
-  }
-}
-    `;
-export type CreateAttachmentDataMutationFn = Apollo.MutationFunction<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>;
-
-/**
- * __useCreateAttachmentDataMutation__
- *
- * To run a mutation, you first call `useCreateAttachmentDataMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateAttachmentDataMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createAttachmentDataMutation, { data, loading, error }] = useCreateAttachmentDataMutation({
- *   variables: {
- *      createAttachmentInput: // value for 'createAttachmentInput'
- *   },
- * });
- */
-export function useCreateAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>(CreateAttachmentDataDocument, options);
-      }
-export type CreateAttachmentDataMutationHookResult = ReturnType<typeof useCreateAttachmentDataMutation>;
-export type CreateAttachmentDataMutationResult = Apollo.MutationResult<CreateAttachmentDataMutation>;
-export type CreateAttachmentDataMutationOptions = Apollo.BaseMutationOptions<CreateAttachmentDataMutation, CreateAttachmentDataMutationVariables>;
-export const UpdateAttachmentDataDocument = gql`
-    mutation UpdateAttachmentData($updateAttachmentInput: UpdateAttachmentInput!) {
-  updateAttachmentData(updateAttachmentInput: $updateAttachmentInput) {
-    response {
       status
-      name
-      message
-    }
-    attachment {
-      id
-      type
-      typeId
-      key
-      url
-      createdAt
-      updatedAt
-    }
-  }
-}
-    `;
-export type UpdateAttachmentDataMutationFn = Apollo.MutationFunction<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>;
-
-/**
- * __useUpdateAttachmentDataMutation__
- *
- * To run a mutation, you first call `useUpdateAttachmentDataMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateAttachmentDataMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateAttachmentDataMutation, { data, loading, error }] = useUpdateAttachmentDataMutation({
- *   variables: {
- *      updateAttachmentInput: // value for 'updateAttachmentInput'
- *   },
- * });
- */
-export function useUpdateAttachmentDataMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>(UpdateAttachmentDataDocument, options);
-      }
-export type UpdateAttachmentDataMutationHookResult = ReturnType<typeof useUpdateAttachmentDataMutation>;
-export type UpdateAttachmentDataMutationResult = Apollo.MutationResult<UpdateAttachmentDataMutation>;
-export type UpdateAttachmentDataMutationOptions = Apollo.BaseMutationOptions<UpdateAttachmentDataMutation, UpdateAttachmentDataMutationVariables>;
-export const GetAttachmentDocument = gql`
-    query GetAttachment($getMedia: GetMedia!) {
-  getAttachment(getMedia: $getMedia) {
-    preSignedUrl
-    response {
       message
     }
   }
@@ -6460,32 +8364,419 @@ export const GetAttachmentDocument = gql`
     `;
 
 /**
- * __useGetAttachmentQuery__
+ * __useFindAllLabTestQuery__
  *
- * To run a query within a React component, call `useGetAttachmentQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAttachmentQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useFindAllLabTestQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllLabTestQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetAttachmentQuery({
+ * const { data, loading, error } = useFindAllLabTestQuery({
  *   variables: {
- *      getMedia: // value for 'getMedia'
+ *      labTestInput: // value for 'labTestInput'
  *   },
  * });
  */
-export function useGetAttachmentQuery(baseOptions: Apollo.QueryHookOptions<GetAttachmentQuery, GetAttachmentQueryVariables>) {
+export function useFindAllLabTestQuery(baseOptions: Apollo.QueryHookOptions<FindAllLabTestQuery, FindAllLabTestQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAttachmentQuery, GetAttachmentQueryVariables>(GetAttachmentDocument, options);
+        return Apollo.useQuery<FindAllLabTestQuery, FindAllLabTestQueryVariables>(FindAllLabTestDocument, options);
       }
-export function useGetAttachmentLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAttachmentQuery, GetAttachmentQueryVariables>) {
+export function useFindAllLabTestLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllLabTestQuery, FindAllLabTestQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAttachmentQuery, GetAttachmentQueryVariables>(GetAttachmentDocument, options);
+          return Apollo.useLazyQuery<FindAllLabTestQuery, FindAllLabTestQueryVariables>(FindAllLabTestDocument, options);
         }
-export type GetAttachmentQueryHookResult = ReturnType<typeof useGetAttachmentQuery>;
-export type GetAttachmentLazyQueryHookResult = ReturnType<typeof useGetAttachmentLazyQuery>;
-export type GetAttachmentQueryResult = Apollo.QueryResult<GetAttachmentQuery, GetAttachmentQueryVariables>;
+export type FindAllLabTestQueryHookResult = ReturnType<typeof useFindAllLabTestQuery>;
+export type FindAllLabTestLazyQueryHookResult = ReturnType<typeof useFindAllLabTestLazyQuery>;
+export type FindAllLabTestQueryResult = Apollo.QueryResult<FindAllLabTestQuery, FindAllLabTestQueryVariables>;
+export const FindAllLoincCodesDocument = gql`
+    query FindAllLoincCodes($searchLoincCodesInput: SearchLoincCodesInput!) {
+  findAllLoincCodes(searchLoincCodesInput: $searchLoincCodesInput) {
+    loincCodes {
+      id
+      loincNum
+      component
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllLoincCodesQuery__
+ *
+ * To run a query within a React component, call `useFindAllLoincCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllLoincCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllLoincCodesQuery({
+ *   variables: {
+ *      searchLoincCodesInput: // value for 'searchLoincCodesInput'
+ *   },
+ * });
+ */
+export function useFindAllLoincCodesQuery(baseOptions: Apollo.QueryHookOptions<FindAllLoincCodesQuery, FindAllLoincCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllLoincCodesQuery, FindAllLoincCodesQueryVariables>(FindAllLoincCodesDocument, options);
+      }
+export function useFindAllLoincCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllLoincCodesQuery, FindAllLoincCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllLoincCodesQuery, FindAllLoincCodesQueryVariables>(FindAllLoincCodesDocument, options);
+        }
+export type FindAllLoincCodesQueryHookResult = ReturnType<typeof useFindAllLoincCodesQuery>;
+export type FindAllLoincCodesLazyQueryHookResult = ReturnType<typeof useFindAllLoincCodesLazyQuery>;
+export type FindAllLoincCodesQueryResult = Apollo.QueryResult<FindAllLoincCodesQuery, FindAllLoincCodesQueryVariables>;
+export const FindAllTestSpecimenTypesDocument = gql`
+    query FindAllTestSpecimenTypes($testSpecimenTypeInput: TestSpecimenTypeInput!) {
+  findAllTestSpecimenTypes(testSpecimenTypeInput: $testSpecimenTypeInput) {
+    specimenTypes {
+      id
+      name
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllTestSpecimenTypesQuery__
+ *
+ * To run a query within a React component, call `useFindAllTestSpecimenTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllTestSpecimenTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllTestSpecimenTypesQuery({
+ *   variables: {
+ *      testSpecimenTypeInput: // value for 'testSpecimenTypeInput'
+ *   },
+ * });
+ */
+export function useFindAllTestSpecimenTypesQuery(baseOptions: Apollo.QueryHookOptions<FindAllTestSpecimenTypesQuery, FindAllTestSpecimenTypesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllTestSpecimenTypesQuery, FindAllTestSpecimenTypesQueryVariables>(FindAllTestSpecimenTypesDocument, options);
+      }
+export function useFindAllTestSpecimenTypesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllTestSpecimenTypesQuery, FindAllTestSpecimenTypesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllTestSpecimenTypesQuery, FindAllTestSpecimenTypesQueryVariables>(FindAllTestSpecimenTypesDocument, options);
+        }
+export type FindAllTestSpecimenTypesQueryHookResult = ReturnType<typeof useFindAllTestSpecimenTypesQuery>;
+export type FindAllTestSpecimenTypesLazyQueryHookResult = ReturnType<typeof useFindAllTestSpecimenTypesLazyQuery>;
+export type FindAllTestSpecimenTypesQueryResult = Apollo.QueryResult<FindAllTestSpecimenTypesQuery, FindAllTestSpecimenTypesQueryVariables>;
+export const FindLabTestsByOrderNumDocument = gql`
+    query FindLabTestsByOrderNum($labTestByOrderNumInput: LabTestByOrderNumInput!) {
+  findLabTestsByOrderNum(labTestByOrderNumInput: $labTestByOrderNumInput) {
+    labTests {
+      id
+      labTestStatus
+      testDate
+      testTime
+      patientId
+      createdAt
+      testNotes
+      patient {
+        doctorPatients {
+          doctor {
+            firstName
+            lastName
+          }
+          currentProvider
+        }
+        firstName
+      }
+      diagnoses {
+        id
+        code
+        description
+      }
+      test {
+        id
+        loincNum
+        component
+        unitsRequired
+      }
+      testSpecimens {
+        id
+        collectionDate
+        collectionTime
+        specimenNotes
+        specimenTypes {
+          id
+          name
+        }
+      }
+      testObservations {
+        id
+        doctorsSignOff
+        resultUnit
+        resultValue
+        normalRange
+        normalRangeUnit
+        abnormalFlag
+        attachments {
+          title
+          id
+          attachmentName
+          url
+        }
+      }
+      appointment {
+        id
+        appointmentType {
+          name
+        }
+        scheduleStartDateTime
+      }
+    }
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindLabTestsByOrderNumQuery__
+ *
+ * To run a query within a React component, call `useFindLabTestsByOrderNumQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindLabTestsByOrderNumQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindLabTestsByOrderNumQuery({
+ *   variables: {
+ *      labTestByOrderNumInput: // value for 'labTestByOrderNumInput'
+ *   },
+ * });
+ */
+export function useFindLabTestsByOrderNumQuery(baseOptions: Apollo.QueryHookOptions<FindLabTestsByOrderNumQuery, FindLabTestsByOrderNumQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindLabTestsByOrderNumQuery, FindLabTestsByOrderNumQueryVariables>(FindLabTestsByOrderNumDocument, options);
+      }
+export function useFindLabTestsByOrderNumLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindLabTestsByOrderNumQuery, FindLabTestsByOrderNumQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindLabTestsByOrderNumQuery, FindLabTestsByOrderNumQueryVariables>(FindLabTestsByOrderNumDocument, options);
+        }
+export type FindLabTestsByOrderNumQueryHookResult = ReturnType<typeof useFindLabTestsByOrderNumQuery>;
+export type FindLabTestsByOrderNumLazyQueryHookResult = ReturnType<typeof useFindLabTestsByOrderNumLazyQuery>;
+export type FindLabTestsByOrderNumQueryResult = Apollo.QueryResult<FindLabTestsByOrderNumQuery, FindLabTestsByOrderNumQueryVariables>;
+export const CreateLabTestDocument = gql`
+    mutation CreateLabTest($createLabTestInput: CreateLabTestInput!) {
+  createLabTest(createLabTestInput: $createLabTestInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type CreateLabTestMutationFn = Apollo.MutationFunction<CreateLabTestMutation, CreateLabTestMutationVariables>;
+
+/**
+ * __useCreateLabTestMutation__
+ *
+ * To run a mutation, you first call `useCreateLabTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateLabTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createLabTestMutation, { data, loading, error }] = useCreateLabTestMutation({
+ *   variables: {
+ *      createLabTestInput: // value for 'createLabTestInput'
+ *   },
+ * });
+ */
+export function useCreateLabTestMutation(baseOptions?: Apollo.MutationHookOptions<CreateLabTestMutation, CreateLabTestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateLabTestMutation, CreateLabTestMutationVariables>(CreateLabTestDocument, options);
+      }
+export type CreateLabTestMutationHookResult = ReturnType<typeof useCreateLabTestMutation>;
+export type CreateLabTestMutationResult = Apollo.MutationResult<CreateLabTestMutation>;
+export type CreateLabTestMutationOptions = Apollo.BaseMutationOptions<CreateLabTestMutation, CreateLabTestMutationVariables>;
+export const UpdateLabTestDocument = gql`
+    mutation UpdateLabTest($updateLabTestInput: UpdateLabTestInput!) {
+  updateLabTest(updateLabTestInput: $updateLabTestInput) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateLabTestMutationFn = Apollo.MutationFunction<UpdateLabTestMutation, UpdateLabTestMutationVariables>;
+
+/**
+ * __useUpdateLabTestMutation__
+ *
+ * To run a mutation, you first call `useUpdateLabTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLabTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLabTestMutation, { data, loading, error }] = useUpdateLabTestMutation({
+ *   variables: {
+ *      updateLabTestInput: // value for 'updateLabTestInput'
+ *   },
+ * });
+ */
+export function useUpdateLabTestMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLabTestMutation, UpdateLabTestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateLabTestMutation, UpdateLabTestMutationVariables>(UpdateLabTestDocument, options);
+      }
+export type UpdateLabTestMutationHookResult = ReturnType<typeof useUpdateLabTestMutation>;
+export type UpdateLabTestMutationResult = Apollo.MutationResult<UpdateLabTestMutation>;
+export type UpdateLabTestMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestMutation, UpdateLabTestMutationVariables>;
+export const RemoveLabTestDocument = gql`
+    mutation RemoveLabTest($removeLabTest: RemoveLabTest!) {
+  removeLabTest(removeLabTest: $removeLabTest) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveLabTestMutationFn = Apollo.MutationFunction<RemoveLabTestMutation, RemoveLabTestMutationVariables>;
+
+/**
+ * __useRemoveLabTestMutation__
+ *
+ * To run a mutation, you first call `useRemoveLabTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveLabTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeLabTestMutation, { data, loading, error }] = useRemoveLabTestMutation({
+ *   variables: {
+ *      removeLabTest: // value for 'removeLabTest'
+ *   },
+ * });
+ */
+export function useRemoveLabTestMutation(baseOptions?: Apollo.MutationHookOptions<RemoveLabTestMutation, RemoveLabTestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveLabTestMutation, RemoveLabTestMutationVariables>(RemoveLabTestDocument, options);
+      }
+export type RemoveLabTestMutationHookResult = ReturnType<typeof useRemoveLabTestMutation>;
+export type RemoveLabTestMutationResult = Apollo.MutationResult<RemoveLabTestMutation>;
+export type RemoveLabTestMutationOptions = Apollo.BaseMutationOptions<RemoveLabTestMutation, RemoveLabTestMutationVariables>;
+export const RemoveLabTestObservationDocument = gql`
+    mutation RemoveLabTestObservation($removeLabTestObservation: RemoveLabTestObservation!) {
+  removeLabTestObservation(removeLabTestObservation: $removeLabTestObservation) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type RemoveLabTestObservationMutationFn = Apollo.MutationFunction<RemoveLabTestObservationMutation, RemoveLabTestObservationMutationVariables>;
+
+/**
+ * __useRemoveLabTestObservationMutation__
+ *
+ * To run a mutation, you first call `useRemoveLabTestObservationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveLabTestObservationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [removeLabTestObservationMutation, { data, loading, error }] = useRemoveLabTestObservationMutation({
+ *   variables: {
+ *      removeLabTestObservation: // value for 'removeLabTestObservation'
+ *   },
+ * });
+ */
+export function useRemoveLabTestObservationMutation(baseOptions?: Apollo.MutationHookOptions<RemoveLabTestObservationMutation, RemoveLabTestObservationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RemoveLabTestObservationMutation, RemoveLabTestObservationMutationVariables>(RemoveLabTestObservationDocument, options);
+      }
+export type RemoveLabTestObservationMutationHookResult = ReturnType<typeof useRemoveLabTestObservationMutation>;
+export type RemoveLabTestObservationMutationResult = Apollo.MutationResult<RemoveLabTestObservationMutation>;
+export type RemoveLabTestObservationMutationOptions = Apollo.BaseMutationOptions<RemoveLabTestObservationMutation, RemoveLabTestObservationMutationVariables>;
+export const UpdateLabTestObservationDocument = gql`
+    mutation UpdateLabTestObservation($updateLabTestObservationInput: UpdateLabTestObservationInput!) {
+  updateLabTestObservation(
+    updateLabTestObservationInput: $updateLabTestObservationInput
+  ) {
+    response {
+      error
+      status
+      message
+    }
+  }
+}
+    `;
+export type UpdateLabTestObservationMutationFn = Apollo.MutationFunction<UpdateLabTestObservationMutation, UpdateLabTestObservationMutationVariables>;
+
+/**
+ * __useUpdateLabTestObservationMutation__
+ *
+ * To run a mutation, you first call `useUpdateLabTestObservationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateLabTestObservationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateLabTestObservationMutation, { data, loading, error }] = useUpdateLabTestObservationMutation({
+ *   variables: {
+ *      updateLabTestObservationInput: // value for 'updateLabTestObservationInput'
+ *   },
+ * });
+ */
+export function useUpdateLabTestObservationMutation(baseOptions?: Apollo.MutationHookOptions<UpdateLabTestObservationMutation, UpdateLabTestObservationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateLabTestObservationMutation, UpdateLabTestObservationMutationVariables>(UpdateLabTestObservationDocument, options);
+      }
+export type UpdateLabTestObservationMutationHookResult = ReturnType<typeof useUpdateLabTestObservationMutation>;
+export type UpdateLabTestObservationMutationResult = Apollo.MutationResult<UpdateLabTestObservationMutation>;
+export type UpdateLabTestObservationMutationOptions = Apollo.BaseMutationOptions<UpdateLabTestObservationMutation, UpdateLabTestObservationMutationVariables>;
 export const FindAllPatientDocument = gql`
     query FindAllPatient($patientInput: PatientInput!) {
   findAllPatient(patientInput: $patientInput) {
@@ -6544,6 +8835,65 @@ export function useFindAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type FindAllPatientQueryHookResult = ReturnType<typeof useFindAllPatientQuery>;
 export type FindAllPatientLazyQueryHookResult = ReturnType<typeof useFindAllPatientLazyQuery>;
 export type FindAllPatientQueryResult = Apollo.QueryResult<FindAllPatientQuery, FindAllPatientQueryVariables>;
+export const FetchAllPatientDocument = gql`
+    query FetchAllPatient($patientInput: PatientInput!) {
+  fetchAllPatients(patientInput: $patientInput) {
+    pagination {
+      page
+      totalPages
+    }
+    response {
+      error
+      status
+      message
+    }
+    patients {
+      id
+      email
+      dob
+      lastName
+      firstName
+      patientRecord
+      contacts {
+        id
+        name
+        city
+        email
+        phone
+        primaryContact
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchAllPatientQuery__
+ *
+ * To run a query within a React component, call `useFetchAllPatientQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchAllPatientQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchAllPatientQuery({
+ *   variables: {
+ *      patientInput: // value for 'patientInput'
+ *   },
+ * });
+ */
+export function useFetchAllPatientQuery(baseOptions: Apollo.QueryHookOptions<FetchAllPatientQuery, FetchAllPatientQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchAllPatientQuery, FetchAllPatientQueryVariables>(FetchAllPatientDocument, options);
+      }
+export function useFetchAllPatientLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchAllPatientQuery, FetchAllPatientQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchAllPatientQuery, FetchAllPatientQueryVariables>(FetchAllPatientDocument, options);
+        }
+export type FetchAllPatientQueryHookResult = ReturnType<typeof useFetchAllPatientQuery>;
+export type FetchAllPatientLazyQueryHookResult = ReturnType<typeof useFetchAllPatientLazyQuery>;
+export type FetchAllPatientQueryResult = Apollo.QueryResult<FetchAllPatientQuery, FetchAllPatientQueryVariables>;
 export const GetPatientDocument = gql`
     query GetPatient($getPatient: GetPatient!) {
   getPatient(getPatient: $getPatient) {
@@ -6561,6 +8911,7 @@ export const GetPatientDocument = gql`
       lastName
       suffix
       inviteAccepted
+      patientRecord
       firstNameUsed
       prefferedName
       previousFirstName
@@ -6574,7 +8925,7 @@ export const GetPatientDocument = gql`
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-      voiceCallPermission
+      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
@@ -6596,6 +8947,7 @@ export const GetPatientDocument = gql`
       statementNote
       statementNoteDateFrom
       statementNoteDateTo
+      patientNoteOpen
       createdAt
       updatedAt
       doctorPatients {
@@ -6835,7 +9187,7 @@ export const SendInviteToPatientDocument = gql`
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-      voiceCallPermission
+      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
@@ -6956,6 +9308,48 @@ export function useSendInviteToPatientMutation(baseOptions?: Apollo.MutationHook
 export type SendInviteToPatientMutationHookResult = ReturnType<typeof useSendInviteToPatientMutation>;
 export type SendInviteToPatientMutationResult = Apollo.MutationResult<SendInviteToPatientMutation>;
 export type SendInviteToPatientMutationOptions = Apollo.BaseMutationOptions<SendInviteToPatientMutation, SendInviteToPatientMutationVariables>;
+export const UpdatePatientNoteInfoDocument = gql`
+    mutation UpdatePatientNoteInfo($updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs!) {
+  updatePatientNoteInfo(updatePatientNoteInfoInputs: $updatePatientNoteInfoInputs) {
+    response {
+      status
+      error
+      message
+    }
+    patient {
+      id
+      patientNote
+      patientNoteOpen
+    }
+  }
+}
+    `;
+export type UpdatePatientNoteInfoMutationFn = Apollo.MutationFunction<UpdatePatientNoteInfoMutation, UpdatePatientNoteInfoMutationVariables>;
+
+/**
+ * __useUpdatePatientNoteInfoMutation__
+ *
+ * To run a mutation, you first call `useUpdatePatientNoteInfoMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePatientNoteInfoMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePatientNoteInfoMutation, { data, loading, error }] = useUpdatePatientNoteInfoMutation({
+ *   variables: {
+ *      updatePatientNoteInfoInputs: // value for 'updatePatientNoteInfoInputs'
+ *   },
+ * });
+ */
+export function useUpdatePatientNoteInfoMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePatientNoteInfoMutation, UpdatePatientNoteInfoMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePatientNoteInfoMutation, UpdatePatientNoteInfoMutationVariables>(UpdatePatientNoteInfoDocument, options);
+      }
+export type UpdatePatientNoteInfoMutationHookResult = ReturnType<typeof useUpdatePatientNoteInfoMutation>;
+export type UpdatePatientNoteInfoMutationResult = Apollo.MutationResult<UpdatePatientNoteInfoMutation>;
+export type UpdatePatientNoteInfoMutationOptions = Apollo.BaseMutationOptions<UpdatePatientNoteInfoMutation, UpdatePatientNoteInfoMutationVariables>;
 export const GetTokenDocument = gql`
     query GetToken {
   getToken {
@@ -7375,6 +9769,83 @@ export function useRemovePracticeMutation(baseOptions?: Apollo.MutationHookOptio
 export type RemovePracticeMutationHookResult = ReturnType<typeof useRemovePracticeMutation>;
 export type RemovePracticeMutationResult = Apollo.MutationResult<RemovePracticeMutation>;
 export type RemovePracticeMutationOptions = Apollo.BaseMutationOptions<RemovePracticeMutation, RemovePracticeMutationVariables>;
+export const SearchIcdCodesDocument = gql`
+    query SearchIcdCodes($searchIcdCodesInput: SearchIcdCodesInput!) {
+  searchIcdCodes(searchIcdCodesInput: $searchIcdCodesInput) {
+    icdCodes {
+      id
+      code
+      description
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchIcdCodesQuery__
+ *
+ * To run a query within a React component, call `useSearchIcdCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchIcdCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchIcdCodesQuery({
+ *   variables: {
+ *      searchIcdCodesInput: // value for 'searchIcdCodesInput'
+ *   },
+ * });
+ */
+export function useSearchIcdCodesQuery(baseOptions: Apollo.QueryHookOptions<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>(SearchIcdCodesDocument, options);
+      }
+export function useSearchIcdCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>(SearchIcdCodesDocument, options);
+        }
+export type SearchIcdCodesQueryHookResult = ReturnType<typeof useSearchIcdCodesQuery>;
+export type SearchIcdCodesLazyQueryHookResult = ReturnType<typeof useSearchIcdCodesLazyQuery>;
+export type SearchIcdCodesQueryResult = Apollo.QueryResult<SearchIcdCodesQuery, SearchIcdCodesQueryVariables>;
+export const FindAllReactionsDocument = gql`
+    query FindAllReactions($reactionInput: ReactionInput!) {
+  findAllReactions(reactionInput: $reactionInput) {
+    reactions {
+      id
+      name
+    }
+  }
+}
+    `;
+
+/**
+ * __useFindAllReactionsQuery__
+ *
+ * To run a query within a React component, call `useFindAllReactionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFindAllReactionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFindAllReactionsQuery({
+ *   variables: {
+ *      reactionInput: // value for 'reactionInput'
+ *   },
+ * });
+ */
+export function useFindAllReactionsQuery(baseOptions: Apollo.QueryHookOptions<FindAllReactionsQuery, FindAllReactionsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FindAllReactionsQuery, FindAllReactionsQueryVariables>(FindAllReactionsDocument, options);
+      }
+export function useFindAllReactionsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FindAllReactionsQuery, FindAllReactionsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FindAllReactionsQuery, FindAllReactionsQueryVariables>(FindAllReactionsDocument, options);
+        }
+export type FindAllReactionsQueryHookResult = ReturnType<typeof useFindAllReactionsQuery>;
+export type FindAllReactionsLazyQueryHookResult = ReturnType<typeof useFindAllReactionsLazyQuery>;
+export type FindAllReactionsQueryResult = Apollo.QueryResult<FindAllReactionsQuery, FindAllReactionsQueryVariables>;
 export const FindAllRolesDocument = gql`
     query FindAllRoles($roleInput: RoleInput!) {
   getAllRoles(roleInput: $roleInput) {
@@ -7391,6 +9862,7 @@ export const FindAllRolesDocument = gql`
       id
       role
       description
+      customRole
       rolePermissions {
         id
         permission {
@@ -7567,6 +10039,57 @@ export function useUpdateRoleMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UpdateRoleMutationHookResult = ReturnType<typeof useUpdateRoleMutation>;
 export type UpdateRoleMutationResult = Apollo.MutationResult<UpdateRoleMutation>;
 export type UpdateRoleMutationOptions = Apollo.BaseMutationOptions<UpdateRoleMutation, UpdateRoleMutationVariables>;
+export const UpdateUserRoleDocument = gql`
+    mutation UpdateUserRole($updateUserRoleItemInput: UpdateRoleInput!) {
+  updateUserRole(user: $updateUserRoleItemInput) {
+    response {
+      status
+      error
+      message
+    }
+    user {
+      id
+      roles {
+        id
+        role
+        rolePermissions {
+          id
+          permission {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type UpdateUserRoleMutationFn = Apollo.MutationFunction<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>;
+
+/**
+ * __useUpdateUserRoleMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserRoleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserRoleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserRoleMutation, { data, loading, error }] = useUpdateUserRoleMutation({
+ *   variables: {
+ *      updateUserRoleItemInput: // value for 'updateUserRoleItemInput'
+ *   },
+ * });
+ */
+export function useUpdateUserRoleMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>(UpdateUserRoleDocument, options);
+      }
+export type UpdateUserRoleMutationHookResult = ReturnType<typeof useUpdateUserRoleMutation>;
+export type UpdateUserRoleMutationResult = Apollo.MutationResult<UpdateUserRoleMutation>;
+export type UpdateUserRoleMutationOptions = Apollo.BaseMutationOptions<UpdateUserRoleMutation, UpdateUserRoleMutationVariables>;
 export const RemoveRoleDocument = gql`
     mutation RemoveRole($removeRole: RemoveRole!) {
   removeRole(removeRole: $removeRole) {
@@ -8308,6 +10831,9 @@ export const FindAllStaffDocument = gql`
       lastName
       username
       phone
+      user {
+        id
+      }
     }
   }
 }
@@ -8515,3 +11041,113 @@ export function useCreateStaffMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateStaffMutationHookResult = ReturnType<typeof useCreateStaffMutation>;
 export type CreateStaffMutationResult = Apollo.MutationResult<CreateStaffMutation>;
 export type CreateStaffMutationOptions = Apollo.BaseMutationOptions<CreateStaffMutation, CreateStaffMutationVariables>;
+export const FetchEmergencyAccessUserDocument = gql`
+    query fetchEmergencyAccessUser($emergencyAccessUsersInput: EmergencyAccessUserInput!) {
+  fetchEmergencyAccessUsers(emergencyAccessUsersInput: $emergencyAccessUsersInput) {
+    response {
+      status
+      error
+      message
+    }
+    pagination {
+      page
+      totalPages
+    }
+    emergencyAccessUsers {
+      id
+      email
+      facilityId
+      roles {
+        role
+        rolePermissions {
+          permission {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useFetchEmergencyAccessUserQuery__
+ *
+ * To run a query within a React component, call `useFetchEmergencyAccessUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useFetchEmergencyAccessUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useFetchEmergencyAccessUserQuery({
+ *   variables: {
+ *      emergencyAccessUsersInput: // value for 'emergencyAccessUsersInput'
+ *   },
+ * });
+ */
+export function useFetchEmergencyAccessUserQuery(baseOptions: Apollo.QueryHookOptions<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>(FetchEmergencyAccessUserDocument, options);
+      }
+export function useFetchEmergencyAccessUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>(FetchEmergencyAccessUserDocument, options);
+        }
+export type FetchEmergencyAccessUserQueryHookResult = ReturnType<typeof useFetchEmergencyAccessUserQuery>;
+export type FetchEmergencyAccessUserLazyQueryHookResult = ReturnType<typeof useFetchEmergencyAccessUserLazyQuery>;
+export type FetchEmergencyAccessUserQueryResult = Apollo.QueryResult<FetchEmergencyAccessUserQuery, FetchEmergencyAccessUserQueryVariables>;
+export const GetCurrentUserDocument = gql`
+    query GetCurrentUser {
+  me {
+    response {
+      status
+      error
+      message
+    }
+    user {
+      id
+      userId
+      userType
+      attachments {
+        id
+        key
+        url
+        type
+        title
+        typeId
+        createdAt
+        updatedAt
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetCurrentUserQuery__
+ *
+ * To run a query within a React component, call `useGetCurrentUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurrentUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCurrentUserQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCurrentUserQuery(baseOptions?: Apollo.QueryHookOptions<GetCurrentUserQuery, GetCurrentUserQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCurrentUserQuery, GetCurrentUserQueryVariables>(GetCurrentUserDocument, options);
+      }
+export function useGetCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCurrentUserQuery, GetCurrentUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCurrentUserQuery, GetCurrentUserQueryVariables>(GetCurrentUserDocument, options);
+        }
+export type GetCurrentUserQueryHookResult = ReturnType<typeof useGetCurrentUserQuery>;
+export type GetCurrentUserLazyQueryHookResult = ReturnType<typeof useGetCurrentUserLazyQuery>;
+export type GetCurrentUserQueryResult = Apollo.QueryResult<GetCurrentUserQuery, GetCurrentUserQueryVariables>;

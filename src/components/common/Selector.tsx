@@ -2,13 +2,13 @@
 import { FC } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextField, FormControl, FormHelperText, InputLabel } from "@material-ui/core";
+import { TextField, FormControl, FormHelperText, InputLabel, Box } from "@material-ui/core";
 // utils and interfaces/types block
 import { requiredLabel } from "../../utils";
 import { EMPTY_OPTION } from "../../constants";
 import { SelectorProps } from "../../interfacesTypes";
 
-const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, addEmpty }): JSX.Element => {
+const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequired, addEmpty, margin, onBlur }): JSX.Element => {
   const { control } = useFormContext()
   const updatedOptions = addEmpty ? [EMPTY_OPTION, ...options] : [...options]
 
@@ -28,15 +28,19 @@ const Selector: FC<SelectorProps> = ({ name, label, options, disabled, isRequire
             getOptionLabel={(option) => option.name || ""}
             renderOption={(option) => option.name}
             renderInput={(params) => (
-              <FormControl fullWidth margin='normal' error={Boolean(invalid)}>
-                <InputLabel id={`${name}-autocomplete`} shrink>
-                  {isRequired ? requiredLabel(label) : label}
-                </InputLabel>
+              <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
+                <Box position="relative">
+                  <InputLabel id={`${name}-autocomplete`} shrink>
+                    {isRequired ? requiredLabel(label) : label}
+                  </InputLabel>
+                </Box>
 
                 <TextField
                   {...params}
                   variant="outlined"
                   error={invalid}
+                  className="selectorClass"
+                  onBlur={() => onBlur && onBlur()}
                 />
 
                 <FormHelperText>{message}</FormHelperText>

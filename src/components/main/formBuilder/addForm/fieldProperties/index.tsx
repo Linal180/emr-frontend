@@ -8,7 +8,7 @@ import InputController from '../../../../../controller';
 import LabeledInputController from '../../../../../controller';
 //constants & interfaces
 import { Add as AddIcon } from '@material-ui/icons';
-import { GRAY_TWO, WHITE } from '../../../../../theme';
+import { GREY_SEVEN, WHITE } from '../../../../../theme';
 import { TrashOutlinedIcon } from '../../../../../assets/svgs';
 import { ElementType } from '../../../../../generated/graphql';
 import { FieldEditModalProps, FormInitialType } from '../../../../../interfacesTypes';
@@ -90,11 +90,11 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                   >
                     <InputLabel shrink>{REQUIRED_TEXT}</InputLabel>
                     <label className="toggle-main">
-                      <Box color={isChecked ? WHITE : GRAY_TWO}>{YES_TEXT}</Box>
+                      <Box color={isChecked ? WHITE : GREY_SEVEN}>{YES_TEXT}</Box>
 
                       <AntSwitch checked={isChecked} onChange={(event) => { toggleHandleChange(event) }} name='required' />
 
-                      <Box color={isChecked ? GRAY_TWO : WHITE}>{NO_TEXT}</Box>
+                      <Box color={isChecked ? GREY_SEVEN : WHITE}>{NO_TEXT}</Box>
                     </label>
                   </FormControl>
                 )}
@@ -106,6 +106,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="name"
                 controllerLabel={NAME}
+                key={'name'}
               />
             </Grid>
 
@@ -114,6 +115,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="label"
                 controllerLabel={LABEL}
+                key={'label'}
               />
             </Grid>
 
@@ -122,6 +124,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="css"
                 controllerLabel={CSS_CLASSES}
+                key={'css'}
               />
             </Grid>
 
@@ -130,6 +133,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 fieldType="text"
                 controllerName="placeholder"
                 controllerLabel={PLACEHOLDER}
+                key={'placeholder'}
               />
             </Grid>
 
@@ -138,6 +142,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 controllerLabel={SELECT_COLUMN_TEXT}
                 controllerName="column"
                 options={COLUMN_LENGTH}
+                key={'column'}
               />
             </Grid>
 
@@ -148,22 +153,24 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                     <tr>
                       <th align="center">{NAME}</th>
                       <th align="center">{VALUE}</th>
-                      {fields?.length > 1 && <th >{ACTION}</th>}
+                      {fields?.length > 1 && <th>{ACTION}</th>}
                     </tr>
                   </thead>
                   <tbody>
                     {fields?.map((option, index) => (
-                      <tr key={`${option.value}-${index}-${option.name}`} >
+                      <tr key={`${option.value}-${index}-${option.name}`}>
                         <td>
                           <InputController
                             fieldType="text"
                             controllerName={`options.${index}.name`}
+                            key={`options.${index}.name`}
                           />
                         </td>
                         <td>
                           <InputController
                             fieldType="text"
                             controllerName={`options.${index}.value`}
+                            key={`options.${index}.value`}
                           />
                         </td>
                         {fields?.length > 1 &&
@@ -181,7 +188,7 @@ const FieldProperties = ({ setFieldValuesHandler, selected }: FieldEditModalProp
                 </table>
 
                 <Box display='flex' justifyContent='flex-end'>
-                  <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />} >
+                  <Button variant='outlined' onClick={() => append({ name: "", value: "" })} startIcon={<AddIcon />}>
                     {OPTION_TEXT}
                   </Button>
                 </Box>

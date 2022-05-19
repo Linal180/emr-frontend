@@ -3,7 +3,7 @@ import { ChangeEvent, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, FormControl, InputLabel } from "@material-ui/core";
 // theme, interface/type and theme block
-import { GRAY_TWO, WHITE } from "../../theme";
+import { GREY_SEVEN, WHITE } from "../../theme";
 import { RenderInputFieldProps } from "../../interfacesTypes";
 import { AntSwitch, toggleButtonComponent } from "../../styles/publicAppointmentStyles/externalPatientStyles";
 
@@ -28,9 +28,9 @@ const ToggleButtonComponent = ({ name, label }: RenderInputFieldProps) => {
           <InputLabel shrink>{label}</InputLabel>
 
           <label className="toggle-main">
-            <Box color={isChecked ? WHITE : GRAY_TWO}>Yes</Box>
+            <Box color={isChecked ? WHITE : GREY_SEVEN}>Yes</Box>
             <AntSwitch checked={isChecked} onChange={handleChange} name={`${name}-toggle`} />
-            <Box color={isChecked ? GRAY_TWO : WHITE}>No</Box>
+            <Box color={isChecked ? GREY_SEVEN : WHITE}>No</Box>
           </label>
         </FormControl>
       )}

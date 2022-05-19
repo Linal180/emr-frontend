@@ -1,5 +1,9 @@
 import { withStyles, Theme, Tooltip, makeStyles } from "@material-ui/core";
-import { BLACK_EIGHT, BLACK_TWO, GRAY_FIVE, GRAY_SIX, WHITE, WHITE_THREE, GRAY_ELEVEN } from "../theme";
+import {
+  BLACK_ONE,
+  BLACK_THREE,
+  BLACK_TWO, BLUE_TWO, GRAY_ELEVEN, GREY_ELEVEN, GRAY_SIX, GREY, GREY_FOUR, theme, WHITE, WHITE_THREE
+} from "../theme";
 
 export const DetailTooltip = withStyles((theme: Theme) => ({
   tooltip: {
@@ -14,17 +18,19 @@ export const DetailTooltip = withStyles((theme: Theme) => ({
 }))(Tooltip);
 
 export const useTableStyles = makeStyles(() => ({
-  tableSearchBox: {
-    backgroundColor: WHITE,
+  searchBox: {
+    backgroundColor: GREY,
     borderRadius: 4,
-    border: `1px solid ${BLACK_EIGHT}`,
+    border: `1px solid ${GREY_FOUR}`,
+    minHeight: 48,
     display: 'flex',
     alignItems: 'center',
-    maxWidth: 400,
-    margin: 10,
+    "&:hover": {
+      borderColor: BLUE_TWO,
+    },
   },
 
-  tableSearchInput: {
+  searchInput: {
     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
       border: 'none',
       padding: 0,
@@ -32,7 +38,7 @@ export const useTableStyles = makeStyles(() => ({
   },
 
   tablesSearchIcon: {
-    backgroundColor: GRAY_FIVE,
+    backgroundColor: GREY_ELEVEN,
     borderRadius: 6,
     maxWidth: 265,
   },
@@ -41,6 +47,7 @@ export const useTableStyles = makeStyles(() => ({
     background: WHITE,
     borderRadius: 12,
     overflow: "auto",
+    padding: theme.spacing(2),
     maxHeight: "calc(100vh - 248px)",
   },
 
@@ -90,9 +97,10 @@ export const useTableStyles = makeStyles(() => ({
     justifyContent: 'center',
     borderRadius: 6,
     marginLeft: 6,
+    opacity: 0.5,
 
     "& svg": {
-      maxWidth: 16
+      maxWidth: 16,
     }
   },
 
@@ -120,5 +128,59 @@ export const useTableStyles = makeStyles(() => ({
     "& svg": {
       maxWidth: 20
     }
+  },
+
+  tooltipContainer: {
+    cursor: 'pointer'
+  },
+
+  rolesIconsBackground: {
+    background: WHITE_THREE,
+    height: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginLeft: 6,
+    cursor: 'pointer',
+
+    "& svg": {
+      maxWidth: 16
+    }
+  },
+
+  rolesIconsBackgroundDisabled: {
+    height: 32,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 6,
+    marginLeft: 6,
+    opacity: 0.5,
+
+    "& svg": {
+      maxWidth: 16,
+    }
+  },
+
+  dashboardTableContainer: {
+    background: WHITE,
+    borderRadius: 12,
+    overflow: "auto",
+    padding: theme.spacing(2),
+    maxHeight: 500,
+    overflowY: 'hidden',
+
+    "& .MuiTableCell-head": {
+      color: BLACK_THREE,
+      fontSize: 12,
+      fontWeight: 600,
+    },
+
+    "& .MuiTableCell-body": {
+      color: BLACK_ONE,
+      fontSize: 14,
+      fontWeight: 500,
+    },
   },
 }))

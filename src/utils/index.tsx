@@ -4,22 +4,28 @@ import axios from "axios";
 import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
-import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
-import { BLUE_FIVE, RED_ONE, RED, GREEN } from "../theme";
-import { DaySchedule, FormAttachmentPayload, LoaderProps, SelectorOption, TableAlignType, UserFormType } from "../interfacesTypes";
+import { BLUE_FIVE, RED_ONE, RED, GREEN, VERY_MILD, MILD, MODERATE, ACUTE } from "../theme";
+import {
+  AsyncSelectorOption, DaySchedule, FormAttachmentPayload, LoaderProps, multiOptionType,
+  SelectorOption, TableAlignType, UserFormType
+} from "../interfacesTypes";
 import {
   Maybe, PracticeType, FacilitiesPayload, AllDoctorPayload, Appointmentstatus, PracticesPayload,
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
-  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement
+  AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
+  AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
+  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
 } from "../generated/graphql"
 import {
-  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A, ADMIN,
+  CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
   SUPER_ADMIN, LAB_RESULTS_ROUTE, LOGIN_ROUTE, PATIENTS_ROUTE, PRACTICE_MANAGEMENT_ROUTE, TOKEN,
-  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL, SYSTEM_ROLES,
-  USER_FORM_IMAGE_UPLOAD_URL
+  VIEW_APPOINTMENTS_ROUTE, CANCELLED, ATTACHMENT_TITLES, CALENDAR_ROUTE, ROUTE, LOCK_ROUTE, EMAIL,
+  SYSTEM_ROLES, USER_FORM_IMAGE_UPLOAD_URL
 } from "../constants";
 
 export const handleLogout = () => {
@@ -37,7 +43,8 @@ export const upperToNormal = (value: string) => {
 export const formatValue = (value: string) => {
   let formatted = ''
 
-  value.split("_").map(term => formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
+  value.split("_").map(term =>
+    formatted = `${formatted} ${term.charAt(0).toUpperCase()}${term.slice(1).toLowerCase()} `)
 
   return formatted;
 };
@@ -71,10 +78,13 @@ export const renderItem = (
   </>
 );
 
-export const renderTh = (text: string, align?: TableAlignType) => (
-  <TableCell component="th" align={align}>
-    <Typography component="h5" variant="h5">
-      {text}
+export const renderTh = (text: string, align?: TableAlignType, isDangerous?: boolean, classes?: string, noWrap?: boolean) => (
+  <TableCell component="th" align={align} className={classes}>
+    <Typography component="h5" variant="h5" noWrap={noWrap}>
+      {isDangerous ?
+        <Box dangerouslySetInnerHTML={{ __html: text }}>
+        </Box> : text
+      }
     </Typography>
   </TableCell>
 );
@@ -83,24 +93,12 @@ export const requiredLabel = (label: string) => {
   return (
     <Box>
       {label}
-      <Box component="span" color="red">
+      <Box component="span" color="black">
         {' '}
         *
       </Box>
     </Box>
   )
-}
-
-export const isCurrentUserCanMakeAdmin = (currentUserRole: RolesPayload['roles']) => {
-  let isSuperAdmin: boolean = true
-
-  if (currentUserRole) {
-    for (let role of currentUserRole) {
-      isSuperAdmin = !(role?.role === ADMIN)
-    }
-  }
-
-  return isSuperAdmin;
 }
 
 export const isUserAdmin = (currentUserRole: RolesPayload['roles'] | undefined) => {
@@ -120,13 +118,30 @@ export const isFacilityAdmin = (currentUserRole: RolesPayload['roles']) => {
 
   return userRoles.includes(SYSTEM_ROLES.FacilityAdmin) || userRoles.includes(SYSTEM_ROLES.Doctor)
     || userRoles.includes(SYSTEM_ROLES.Staff) || userRoles.includes(SYSTEM_ROLES.Nurse)
-    || userRoles.includes(SYSTEM_ROLES.NursePractitioner)
+    || userRoles.includes(SYSTEM_ROLES.NursePractitioner) || userRoles.includes(SYSTEM_ROLES.EmergencyAccess)
+}
+
+export const isAdmin = (roles: RolesPayload['roles']) => {
+  const userRoles = roles ? pluck(roles, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.SuperAdmin) || userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
+    || userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
 }
 
 export const isSuperAdmin = (roles: RolesPayload['roles']) => {
   const userRoles = roles ? pluck(roles, 'role') : ['']
 
   return userRoles.includes(SYSTEM_ROLES.SuperAdmin)
+}
+
+export const isOnlyDoctor = (roles: RolesPayload['roles']) => {
+  const userRoles = roles ? pluck(roles, 'role') : ['']
+
+  return userRoles.includes(SYSTEM_ROLES.Doctor) && (
+    !userRoles.includes(SYSTEM_ROLES.Staff)
+    && !userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
+    && !userRoles.includes(SYSTEM_ROLES.PracticeAdmin)
+  )
 }
 
 export const getUserRole = (roles: RolesPayload['roles']) => {
@@ -171,6 +186,18 @@ export const getTimestamps = (date: string): string => {
   return date ? moment(date).format().toString() : moment().format().toString()
 };
 
+export const getCurrentTimestamps = (existingDate: string, newDate: string | undefined | MaterialUiPickersDate) => {
+  const currentDate = moment(newDate).format(`MM-DD-YYYY`)
+  const existingTime = moment(existingDate).format(`hh:mm A`)
+  const date = moment(currentDate + ' ' + existingTime)
+  const updateDate = moment(date).format().toString()
+  return updateDate ? moment(updateDate).format().toString() : moment().format().toString()
+};
+
+export const getTimestampsForDob = (date: string): string => {
+  return date ? moment(date).format("MM-DD-YYYY").toString() : moment().format("MM-DD-YYYY").toString()
+};
+
 export const getAppointmentTime = (date: SchedulerDateTime | undefined): string => {
   return date ? moment(date).format("h:mm a") : moment().format("h:mm a")
 };
@@ -179,9 +206,17 @@ export const getAppointmentDate = (date: SchedulerDateTime | undefined): string 
   return date ? moment(date).format("MMMM Do YYYY") : moment().format("MMMM Do YYYY")
 };
 
-export const getDate = (date: string) => {
-  return moment(date, "x").format("YYYY-MM-DD")
+export const getAppointmentDatePassingView = (date: SchedulerDateTime | undefined): string => {
+  return date ? (moment(new Date(date))).format().toString() : moment().format().toString()
 };
+
+export const getDate = (date: string) => moment(date, "x").format("YYYY-MM-DD");
+
+export const getCurrentDate = (date: string) => moment(date).format(`YYYY-MM-DD hh:mm A`);
+
+export const signedDateTime = (date: string) => moment(new Date(date), 'x').format(`YYYY-MM-DD hh:mm A`)
+
+export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const getFormattedDate = (date: string) => {
   return moment(date, "x").format("ddd MMM. DD, YYYY")
@@ -191,8 +226,20 @@ export const deleteRecordTitle = (recordType: string) => {
   return `Delete ${recordType} Record`;
 }
 
+export const UpdateRecordTitle = (recordType: string) => {
+  return `Update ${recordType}`;
+}
+
 export const aboutToDelete = (recordType: string) => {
   return `You are about to delete ${recordType.toLowerCase()} record`;
+}
+
+export const aboutToSign = (recordType: string) => {
+  return `You are about to sign a patient ${recordType.toLowerCase()}`;
+}
+
+export const aboutToUpdate = (recordType: string) => {
+  return `You are about to update ${recordType.toLowerCase()}`;
 }
 
 export const renderPractices = (practices: PracticesPayload['practices']) => {
@@ -253,9 +300,9 @@ export const renderStaffRoles = (roles: RolesPayload['roles']) => {
         // && name !== SYSTEM_ROLES.FacilityAdmin
         if (
           name !== SYSTEM_ROLES.Patient && name !== SUPER_ADMIN && name !== SYSTEM_ROLES.PracticeAdmin
-          && name !== SYSTEM_ROLES.Doctor
+          && name !== SYSTEM_ROLES.Doctor && name !== SYSTEM_ROLES.EmergencyAccess
         )
-          name && data.push({ id: name, name: formatValue(name) })
+          name && data.push({ id: name.trim(), name: formatValue(name).trim() })
       }
     }
   }
@@ -317,7 +364,7 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
     for (let doctor of doctors) {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
-        data.push({ id, name: `${firstName} ${lastName}` })
+        data.push({ id, name: `${firstName} ${lastName}`.trim() })
       }
     }
   }
@@ -339,6 +386,118 @@ export const renderPatient = (patients: PatientsPayload['patients']) => {
 
   return data;
 }
+
+export const renderAppointments = (appointments: AppointmentsPayload['appointments']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!appointments) {
+    for (let appointment of appointments) {
+      if (appointment) {
+        const { id, appointmentType, scheduleStartDateTime } = appointment;
+        data.push({ id, name: `${appointmentType?.name ?? ''}  ${convertDateFromUnix(scheduleStartDateTime, 'MM-DD-YYYY hh:mm:ss')}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderOptionsForSelector = (options: SelectorOption[]) => {
+  const data: AsyncSelectorOption[] = [];
+
+  if (!!options) {
+    for (let option of options) {
+      if (option) {
+        const { id, name } = option;
+
+        name && data.push({ value: id, label: formatValue(name) })
+      }
+    }
+  }
+
+  return data;
+}
+
+// export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
+//   const data: SelectorOption[] = [];
+
+//   if (!!reactions) {
+//     for (let reaction of reactions) {
+//       if (reaction) {
+//         const { id, name } = reaction;
+
+//         name && data.push({ id, name: formatValue(name) })
+//       }
+//     }
+//   }
+
+//   return data;
+// }
+
+export const renderReactions = (reactions: ReactionsPayload['reactions']) => {
+  const data: multiOptionType[] = [];
+
+  if (!!reactions) {
+    for (let reaction of reactions) {
+      if (reaction) {
+        const { id, name } = reaction;
+
+        name && data.push({ value: id, label: formatValue(name) })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderIcdCodes = (icdCodes: IcdCodesPayload['icdCodes']) => {
+  const data: multiOptionType[] = [];
+
+  if (!!icdCodes) {
+    for (let icdCode of icdCodes) {
+      if (icdCode) {
+        const { id, code } = icdCode;
+
+        code && data.push({ value: id, label: code })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderTests = (loincCodes: LoincCodesPayload['loincCodes']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!loincCodes) {
+    for (let loincCode of loincCodes) {
+      if (loincCode) {
+        const { id, loincNum, component } = loincCode;
+
+        loincNum && data.push({ id, name: `${loincNum} | ${component}` })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderSpecimenTypes = (specimenTypes: TestSpecimenTypesPayload['specimenTypes']) => {
+  const data: SelectorOption[] = [];
+
+  if (!!specimenTypes) {
+    for (let specimenType of specimenTypes) {
+      if (specimenType) {
+        const { id, name } = specimenType;
+
+        specimenType && data.push({ id, name })
+      }
+    }
+  }
+
+  return data;
+}
+
 
 export const setRecord = (id: string, name: string): SelectorOption => {
   let value = ''
@@ -431,7 +590,9 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
 
 export const setTime = (time: string): string => {
   const Time = moment(time, "hh:mm").format('lll').toString()
-  return Time
+  const CurrentTime = new Date(Time)
+  let NewTime = moment(CurrentTime).format().toString();
+  return NewTime
 }
 
 export const setTimeDay = (time: string, day: string): string => {
@@ -451,7 +612,7 @@ export const setTimeDay = (time: string, day: string): string => {
   } else if (currentDay > selectedDay) {
     x = currentDay - selectedDay
 
-    result = moment(date.setDate(date.getDate() - (x % 7))).format().toString()
+    result = moment(date.setDate(date.getDate() + (7 - x))).format().toString()
   }
 
   return result
@@ -521,7 +682,6 @@ export const mapAppointmentData = (data: AppointmentsPayload['appointments']) =>
     const facilityContact = fContact && fContact.filter(contact => contact.primaryContact)[0]
     const appointmentStatus = status && formatValue(status)
     const patientContact = pContact && pContact.filter(contact => contact.primaryContact)[0];
-
     return {
       token,
       reason,
@@ -553,6 +713,25 @@ export const appointmentStatus = (status: string) => {
     bgColor: cancelled ? BLUE_FIVE : RED_ONE,
     textColor: cancelled ? RED : GREEN
   }
+};
+
+export const getSeverityColor = (severity: AllergySeverity | ProblemSeverity) => {
+  switch (severity) {
+    case AllergySeverity.VeryMild:
+      return VERY_MILD;
+
+    case AllergySeverity.Mild:
+    case ProblemSeverity.Chronic:
+      return MILD;
+
+    case AllergySeverity.Moderate:
+      return MODERATE;
+
+    case AllergySeverity.Acute:
+    case ProblemSeverity.Acute:
+      return ACUTE;
+  }
+
 };
 
 export const getDocumentByType = (attachmentData: AttachmentsPayload['attachments']) => {
@@ -632,6 +811,16 @@ export const getFormatDate = (date: Maybe<string> | undefined) => {
   return moment(date, "x").format("DD/MM/YY")
 };
 
+export const getFormatDateString = (date: Maybe<string> | undefined, format = "YYYY-MM-DD") => {
+  if (!date) return '';
+  return moment(date).format(format).toString()
+};
+
+export const convertDateFromUnix = (date: Maybe<string> | undefined, format = "MM-DD-YYYY") => {
+  if (!date) return '';
+  return moment(date, 'x').format(format).toString()
+};
+
 export const userFormUploadImage = async (file: File, attachmentId: string, title: string, id: string) => {
   const formData = new FormData();
   attachmentId && formData.append("id", attachmentId);
@@ -656,22 +845,26 @@ export const userFormUploadImage = async (file: File, attachmentId: string, titl
   } catch (error) {
     return null;
   }
-
 }
-
 
 export const getUserFormFormattedValues = async (values: any, id: string) => {
   const arr = [];
   for (const property in values) {
     if (Array.isArray(values[property])) {
-      const options = values[property]?.map((val: any) => {
-        const key = Object.keys(val);
-        const name = key[0];
-        const data = Object.values(val);
-        const value = data[0]
-        return { name, value: value ?? false }
-      })
-      arr.push({ FormsElementsId: property, value: '', arrayOfStrings: options })
+      const isStringArray = values[property]?.every((i: any) => typeof i === 'string')
+      if (isStringArray) {
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: values[property], arrayOfObjects: [] })
+      }
+      else {
+        const options = values[property]?.map((val: any) => {
+          const key = Object.keys(val);
+          const name = key[0];
+          const data = Object.values(val);
+          const value = data[0]
+          return { name, value: value ?? false }
+        })
+        arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: options })
+      }
     }
     else if ((values[property] instanceof FileList) && typeof values[property] === 'object') {
       if (values[property][0] instanceof File) {
@@ -679,15 +872,15 @@ export const getUserFormFormattedValues = async (values: any, id: string) => {
         const title = values[property][0]?.name;
         const key = await userFormUploadImage(file, property, title, id);
         if (key) {
-          arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [] })
+          arr.push({ FormsElementsId: property, value: key, arrayOfStrings: [], arrayOfObjects: [] })
         }
         else {
-          arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [] })
+          arr.push({ FormsElementsId: property, value: '', arrayOfStrings: [], arrayOfObjects: [] })
         }
       }
     }
     else {
-      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [] })
+      arr.push({ FormsElementsId: property, value: values[property], arrayOfStrings: [], arrayOfObjects: [] })
     }
   }
   return arr;
@@ -707,14 +900,12 @@ export const getUserFormFiles = (values: any): UserFormType[] => {
 }
 
 
-export const getUserFormDefaultValue = (type: ElementType) => {
+export const getUserFormDefaultValue = (type: ElementType, isMultiSelect: boolean | undefined | null) => {
   switch (type) {
     case ElementType.Text:
       return ''
-
     case ElementType.Select:
-      return ''
-
+      return isMultiSelect ? [] : ''
     case ElementType.Radio:
       return ''
     case ElementType.Checkbox:
@@ -733,15 +924,17 @@ export const getSortedFormElementLabel = (userForm: UserForms[], elementLabels: 
       userFormElements?.map((val) => {
         const { FormsElementsId } = val;
         const obj = elementLabels?.find((value) => value?.fieldId === FormsElementsId);
-        if (obj) {
-          arr.push(obj)
-        }
+        if (obj) arr.push(obj)
+
         return obj
       })
+
       return arr ?? [];
     }
+
     return []
   }
+
   return []
 }
 
@@ -752,4 +945,184 @@ export const visibleToUser = (userRoles: string[], visible: string[] | undefined
   visible && userRoles.map(role => allow = visible.includes(role))
 
   return allow;
-}; 
+};
+
+export const getReactionData = (data: ReactionsPayload['reactions']) => {
+  let result: multiOptionType[] = [];
+
+  if (!!data) {
+    data.map(reaction => {
+      const { id, name } = reaction || {}
+
+      return id && name && result.push({ value: id, label: formatValue(name).trim() })
+    })
+  }
+
+  return result;
+};
+
+export const getHigherRole = (roles: string[]) => {
+  if (roles.includes(SYSTEM_ROLES.SuperAdmin)) return formatRoleName(SYSTEM_ROLES.SuperAdmin)
+  if (roles.includes(SYSTEM_ROLES.PracticeAdmin)) return formatRoleName(SYSTEM_ROLES.PracticeAdmin)
+  if (roles.includes(SYSTEM_ROLES.FacilityAdmin)) return formatRoleName(SYSTEM_ROLES.FacilityAdmin)
+  if (roles.includes(SYSTEM_ROLES.EmergencyAccess)) return formatRoleName(SYSTEM_ROLES.EmergencyAccess)
+  if (roles.includes(SYSTEM_ROLES.Doctor)) return formatRoleName(SYSTEM_ROLES.Doctor)
+  if (roles.includes(SYSTEM_ROLES.NursePractitioner)) return formatRoleName(SYSTEM_ROLES.NursePractitioner)
+  if (roles.includes(SYSTEM_ROLES.DoctorAssistant)) return formatRoleName(SYSTEM_ROLES.DoctorAssistant)
+  if (roles.includes(SYSTEM_ROLES.Staff)) return formatRoleName(SYSTEM_ROLES.Staff)
+  if (roles.includes(SYSTEM_ROLES.Nurse)) return formatRoleName(SYSTEM_ROLES.Nurse)
+  if (roles.includes(SYSTEM_ROLES.FrontDesk)) return formatRoleName(SYSTEM_ROLES.FrontDesk)
+  if (roles.includes(SYSTEM_ROLES.OfficeManager)) return formatRoleName(SYSTEM_ROLES.OfficeManager)
+
+  return roles[0]
+}
+
+export const getProfileImageType = (userType: string) => {
+
+  if (userType === SYSTEM_ROLES.SuperAdmin) {
+    return AttachmentType.SuperAdmin
+  }
+
+  else if (userType === SYSTEM_ROLES.Doctor) {
+    return AttachmentType.Doctor
+  }
+
+  else {
+    return AttachmentType.Staff
+  }
+}
+
+export const fahrenheitToCelsius = (f: number) => ((5 / 9) * (f - 32))
+
+export const celsiusToFahrenheit = (c: number) => ((c * (9 / 5)) + 32)
+
+export const inchesToCentimeter = (i: number) => (i * 2.54)
+
+export const inchesToMeter = (i: number) => (i / 39.37)
+
+export const centimeterToMeter = (c: number) => (c / 100)
+
+export const centimeterToInches = (c: number) => (c / 2.54)
+
+export const kilogramToPounds = (kg: number) => (kg * 2.2046)
+
+export const kilogramToOunce = (kg: number) => (kg * 35.274)
+
+export const poundsToKilogram = (po: number) => (po / 2.2046)
+
+export const poundsToOunce = (po: number) => (po * 16)
+
+export const ounceToKilogram = (o: number) => (o / 35.274)
+
+export const ounceToPounds = (o: number) => (o / 16)
+
+export const getBMI = (weight: number, height: number) => (weight / (height * height))
+
+export const dataURLtoFile = (url: any, filename: string) => {
+  var arr = url.split(','),
+    mime = arr && arr[0] && arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], `${filename}.${mime.split('/').pop()}`, { type: mime });
+}
+
+
+export const getDefaultHeight = (heightUnitType: UnitType, PatientHeight: string) => {
+  const patientHeight = parseFloat(PatientHeight)
+
+  switch (heightUnitType) {
+    case UnitType.Centimeter:
+      const height = centimeterToInches(patientHeight);
+      return height?.toString()
+    case UnitType.Inch:
+      return PatientHeight
+    default:
+      return PatientHeight
+  }
+
+}
+
+export const getDefaultHead = (headType: HeadCircumferenceType, patientHeadCircumference: string) => {
+  const patientHead = parseFloat(patientHeadCircumference)
+
+  switch (headType) {
+    case HeadCircumferenceType.Centimeter:
+      const head = centimeterToInches(patientHead);
+      return head?.toString()
+    case HeadCircumferenceType.Inch:
+      return patientHeadCircumference
+    default:
+      return patientHeadCircumference
+  }
+
+}
+
+export const getDefaultTemp = (tempType: TempUnitType, patientTemperature: string) => {
+  const patientTemp = parseFloat(patientTemperature)
+
+  switch (tempType) {
+    case TempUnitType.DegC:
+      const temp = celsiusToFahrenheit(patientTemp);
+      return temp?.toString()
+    case TempUnitType.DegF:
+      return patientTemperature
+    default:
+      return patientTemperature
+  }
+}
+
+export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: string) => {
+  const patientWeight = parseFloat(PatientWeight)
+
+  switch (weightUnitType) {
+    case WeightType.Pound:
+      const weight = poundsToKilogram(patientWeight);
+      return weight?.toString()
+    case WeightType.PoundOunce:
+      const weight1 = ounceToKilogram(patientWeight);
+      return weight1?.toString()
+    case WeightType.Kg:
+      return PatientWeight
+    default:
+      return PatientWeight
+  }
+}
+
+export const generateString = () => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  const charactersLength = characters.length - 2;
+  for (let i = 0; i < 2; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result + Math.floor(100000 + Math.random() * 9000);
+}
+
+export const roundOffUpto2Decimal = (str: number | undefined | string | null): string => {
+  if (str) {
+    if (typeof str === 'string') {
+      const num = parseFloat(str)
+      const isNaN = Number.isNaN(num)
+      return isNaN ? '' : `${Math.round((num + Number.EPSILON) * 100) / 100}`;
+    }
+    return `${Math.round((str + Number.EPSILON) * 100) / 100}`;
+  }
+  return ""
+}
+
+export const LightTooltip = withStyles((theme: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[21],
+    fontSize: 11,
+    borderRadius: 4,
+    width: 320
+  },
+}))(Tooltip);

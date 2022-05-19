@@ -11,10 +11,13 @@ import Search from "../../../common/Search";
 
 const ClaimFeedTable: FC = (): JSX.Element => {
   const classes = useTableStyles()
+  const search = (query: string) => { }
 
   return (
     <Box className={classes.mainTableContainer}>
-      <Search search={Search} />
+      <Box py={2} mb={2} maxWidth={450}>
+        <Search search={search} />
+      </Box>
 
       <Box className="table-overflow">
         <Table aria-label="customized table">

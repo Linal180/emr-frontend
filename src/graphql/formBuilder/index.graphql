@@ -45,6 +45,7 @@ query findAllForms($formInput: FormInput!) {
             columnName
             fieldId
             textArea
+            isMultiSelect
 
             options {
               name
@@ -107,6 +108,7 @@ query getForm($getForm: GetForm!) {
             columnName
             fieldId
             textArea
+            isMultiSelect
 
             options {
               name
@@ -166,6 +168,7 @@ query getPublicForm($getForm: GetForm!) {
             columnName
             fieldId
             textArea
+            isMultiSelect
 
             options {
               name
@@ -211,8 +214,9 @@ query findAllUsersForms($userFormInput: UserFormInput!) {
           value
           UsersFormsId
           FormsElementsId
+          arrayOfStrings
 
-          arrayOfStrings {
+          arrayOfObjects {
             name
             value
           }
@@ -246,10 +250,25 @@ mutation saveUserFormValues($createUserFormInput: CreateUserFormInput!) {
 mutation getFormPublicMediaUrl($getPublicMediaInput: GetPublicMediaInput!) {
   getFormPublicMediaUrl(getPublicMediaInput: $getPublicMediaInput) {
     publicUrl
+
     response {
       status
       error
       message
+    }
+  }
+}
+
+mutation CreateFormTemplate($createFormInput: CreateFormInput!) {
+  createFormTemplate(createFormInput: $createFormInput) {
+    response {
+      status
+      message
+      error
+    }
+
+    form {
+      id
     }
   }
 }

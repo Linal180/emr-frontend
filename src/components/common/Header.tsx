@@ -10,11 +10,11 @@ import history from "../../history";
 import { AuthContext } from "../../context";
 import { EMRLogo, SettingsIcon } from "../../assets/svgs";
 import { useHeaderStyles } from "../../styles/headerStyles";
-import { activeClass, checkPermission, formatRoleName, isSuperAdmin } from "../../utils";
+import { activeClass, checkPermission, getHigherRole, isSuperAdmin } from "../../utils";
 import {
   APPOINTMENT_MENU_ITEMS, LAB_RESULTS_ROUTE, BILLING_MENU_ITEMS, FACILITIES_TEXT, SUPER_ADMIN,
   FACILITIES_ROUTE, ROOT_ROUTE, PRACTICE_MANAGEMENT_TEXT, PRACTICE_MANAGEMENT_ROUTE, SETTINGS_ROUTE,
-  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS,
+  BILLING_TEXT, SCHEDULE_TEXT, HOME_TEXT, REPORTS, PATIENTS_ROUTE, PATIENTS_TEXT, USER_PERMISSIONS, SYSTEM_ROLES,
 } from "../../constants";
 
 const HeaderNew: FC = (): JSX.Element => {
@@ -25,6 +25,8 @@ const HeaderNew: FC = (): JSX.Element => {
   const { roles } = user || {};
   const [isSuper, setIsSuper] = useState(false);
   const currentRoute = activeClass(pathname || '');
+  const roleName = getHigherRole(userRoles) || ''
+  const isFacilityAdmin = userRoles.includes(SYSTEM_ROLES.FacilityAdmin)
 
   useEffect(() => {
     setIsSuper(isSuperAdmin(roles))
@@ -81,7 +83,7 @@ const HeaderNew: FC = (): JSX.Element => {
           />
 
           {checkPermission(userPermissions, USER_PERMISSIONS.findAllFacility)
-            &&
+            && !isFacilityAdmin &&
             <Typography
               component={Link}
               to={FACILITIES_ROUTE}
@@ -123,9 +125,7 @@ const HeaderNew: FC = (): JSX.Element => {
                     <Typography variant="h6">{firstName} {lastName}</Typography>
 
                     <Box className={classes.roleName}>
-                      {userRoles.map(roleName =>
-                        <Typography variant="body1">{formatRoleName(roleName)}</Typography>
-                      )}
+                      <Typography variant="body1">{roleName}</Typography>
                     </Box>
                   </>
                 )}
