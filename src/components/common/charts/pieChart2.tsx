@@ -57,6 +57,7 @@ const PieChart2Component: FC = (): JSX.Element => {
           startAngle: -90,
           endAngle: 90,
           size: '80%',
+          
         }
       },
 
