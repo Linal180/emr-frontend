@@ -6,7 +6,7 @@ import { Box, Checkbox, FormControlLabel, IconButton, Typography } from "@materi
 import InputController from "../../../../controller";
 // interfaces, reducers, constants and styles block
 import { EditOutlinedIcon, SaveIcon } from "../../../../assets/svgs";
-import { AUTO_OPEN_NOTES, PINNED_NOTES } from "../../../../constants";
+import { AUTO_OPEN_NOTES, PATIENT_NOTE_ERROR_MESSAGE, PATIENT_NOTE_SUCCESS_MESSAGE, PINNED_NOTES } from "../../../../constants";
 import { PatientNoteModalProps } from "../../../../interfacesTypes";
 import { ActionType } from "../../../../reducers/patientReducer";
 import { PatientPayload, useUpdatePatientNoteInfoMutation } from "../../../../generated/graphql";
@@ -28,11 +28,11 @@ export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patien
         const { patientNote, patientNoteOpen } = patient || {}
         const newPatient = { ...patientData, patientNoteOpen, patientNote }
         dispatcher({ type: ActionType.SET_PATIENT_DATA, patientData: newPatient as PatientPayload['patient'] })
-        Alert.success('Patient Notes is updated successfully.')
+        Alert.success(PATIENT_NOTE_SUCCESS_MESSAGE)
       }
     },
     onError: () => {
-      Alert.error('Patient Notes is not updated')
+      Alert.error(PATIENT_NOTE_ERROR_MESSAGE)
     }
   })
 

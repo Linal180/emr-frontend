@@ -61,6 +61,8 @@ export enum SYSTEM_ROLES {
   Patient = "patient",
 }
 // constants
+export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
+export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";
 export const AUTO_OPEN_NOTES = "Auto Open Notes";
 export const SUPER_ADMIN = "super-admin";
