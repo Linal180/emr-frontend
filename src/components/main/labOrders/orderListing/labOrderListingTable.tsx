@@ -8,7 +8,7 @@ import { Box, Table, TableBody, TableHead, TableRow, TableCell, Typography, } fr
 import TableLoader from "../../../common/TableLoader";
 import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // constant, utils and styles block
-import { renderTh } from "../../../../utils";
+import { convertDateFromUnix, getFormatTime, renderTh } from "../../../../utils";
 import { useTableStyles } from "../../../../styles/tableStyles";
 import { DATE, STATUS, DOCTOR, LOINC_CODE, DESCRIPTION, SIGN_OFF, COMMENTS, RESULT, FILE, PAGE_LIMIT, } from "../../../../constants";
 import { BLUE } from "../../../../theme";
@@ -66,6 +66,24 @@ const LabOrderListingTable = (): JSX.Element => {
 
   const handleChange = (_: ChangeEvent<unknown>, value: number) => setPage(value)
 
+  const getPerformedDate = (testDate:string, testTime:string) =>{
+    if(testDate && testTime){
+      return `${testDate} ${getFormatTime(testTime)}`
+    }
+
+    let performedDate=''
+
+    if(testDate){
+      performedDate+=testDate
+    }
+
+    if(testTime){
+      performedDate+=getFormatTime(testTime)
+    }
+
+    return performedDate
+  }
+
   return (
     <>
       <Box className={classes.mainTableContainer}>
@@ -112,7 +130,7 @@ const LabOrderListingTable = (): JSX.Element => {
                   return acc
                 },'')
                 const { scheduleStartDateTime : appointmentDate } = appointment ?? {}
-                const performed = `${testDate}, ${testTime}`
+                const performed = getPerformedDate(testDate || '',testTime || '')
                 const { doctorsSignOff, attachments, resultValue, resultUnit} = testObservations?.[0] ?? {}
                 const { title } = attachments?.[0] ?? {}
 
@@ -122,9 +140,9 @@ const LabOrderListingTable = (): JSX.Element => {
                   <TableCell scope="row">{loincNum}</TableCell>
                   <TableCell scope="row">{description}</TableCell>
                   <TableCell scope="row">
-                    <Typography variant="body1">Appointment Date: {appointmentDate}</Typography>
-                    <Typography variant="body1">Entered: {createdAt}</Typography>
-                    <Typography variant="body1">Performed: {performed}</Typography>
+                   {appointmentDate && <Typography variant="body1">Appointment Date: {convertDateFromUnix(appointmentDate, 'MM-DD-YYYY hh:mm')}</Typography>}
+                    <Typography variant="body1">Entered: {convertDateFromUnix(createdAt, 'MM-DD-YYYY hh:mm')}</Typography>
+                    {performed && <Typography variant="body1">Performed: {performed}</Typography>}
                   </TableCell>
                   <TableCell scope="row">{doctorsSignOff}</TableCell>
                   <TableCell scope="row">{labTestStatus}</TableCell>

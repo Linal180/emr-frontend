@@ -80,6 +80,15 @@ mutation RemoveAttachmentData($removeAttachment: RemoveAttachment!) {
   }
 }
 
+mutation RemoveAttachmentMedia($id: String!) {
+  removeAttachmentMedia(id: $id) {
+    response {
+      status
+      message
+    }
+  }
+}
+
 query GetAttachment($getMedia: GetMedia!) {
   getAttachment(getMedia: $getMedia) {
      preSignedUrl
@@ -88,3 +97,23 @@ query GetAttachment($getMedia: GetMedia!) {
     }
   }
 }
+
+query GetAttachmentsByLabOrder($getAttachmentsByLabOrder: GetAttachmentsByLabOrder!) {
+  getAttachmentsByLabOrder(getAttachmentsByLabOrder: $getAttachmentsByLabOrder) {
+     attachments{
+      id
+      title
+      attachmentName
+      url
+      type
+      comments
+      attachmentMetadata{
+        metadataType
+        labOrderNum
+      }
+      attachmentMetadataId
+    }
+  }
+}
+
+
