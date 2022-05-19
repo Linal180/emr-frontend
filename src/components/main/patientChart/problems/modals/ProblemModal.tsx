@@ -18,12 +18,13 @@ import { patientProblemSchema } from '../../../../../validationSchemas';
 import { AddModalProps, ParamsType, PatientProblemInputs } from '../../../../../interfacesTypes';
 import {
   ADD, DELETE, ONSET_DATE, PATIENT_PROBLEM_ADDED, TYPE, UPDATE, PATIENT_PROBLEM_DELETED,
-  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS,
+  PATIENT_PROBLEM_UPDATED, STATUS, COMMENTS, ITEM_MODULE,
 } from '../../../../../constants';
 import {
   IcdCodes, ProblemSeverity, ProblemType, useAddPatientProblemMutation,
   useGetPatientProblemLazyQuery, useRemovePatientProblemMutation, useUpdatePatientProblemMutation
 } from '../../../../../generated/graphql';
+import ItemSelector from '../../../../common/ItemSelector';
 
 const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, recordId }): JSX.Element => {
   const { id: icdCodeId, code, description } = item as IcdCodes || {}
@@ -229,12 +230,11 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
           )}
         </Box>
 
-        {/* <Selector
-          value={EMPTY_OPTION}
-          label={APPOINTMENT}
+        <ItemSelector
+          label='SnoMed'
           name="appointmentId"
-          options={[]}
-        /> */}
+          modalName={ITEM_MODULE.snoMedCode}
+        />
 
         <InputController
           multiline

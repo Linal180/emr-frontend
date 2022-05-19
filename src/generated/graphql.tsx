@@ -4396,6 +4396,13 @@ export type RemovePatientProblemMutationVariables = Exact<{
 
 export type RemovePatientProblemMutation = { __typename?: 'Mutation', removePatientProblem: { __typename?: 'PatientProblemPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
+export type SearchSnoMedCodesQueryVariables = Exact<{
+  searchSnoMedCodesInput: SearchSnoMedCodesInput;
+}>;
+
+
+export type SearchSnoMedCodesQuery = { __typename?: 'Query', searchSnoMedCodeByIcdCodes: { __typename?: 'snoMedCodesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, snoMedCodes?: Array<{ __typename?: 'SnoMedCodes', id: string, mapTarget?: string | null | undefined } | null | undefined> | null | undefined } };
+
 export type GetPatientVitalQueryVariables = Exact<{
   getPatientVital: GetPatientVital;
 }>;
@@ -6755,6 +6762,48 @@ export function useRemovePatientProblemMutation(baseOptions?: Apollo.MutationHoo
 export type RemovePatientProblemMutationHookResult = ReturnType<typeof useRemovePatientProblemMutation>;
 export type RemovePatientProblemMutationResult = Apollo.MutationResult<RemovePatientProblemMutation>;
 export type RemovePatientProblemMutationOptions = Apollo.BaseMutationOptions<RemovePatientProblemMutation, RemovePatientProblemMutationVariables>;
+export const SearchSnoMedCodesDocument = gql`
+    query SearchSnoMedCodes($searchSnoMedCodesInput: SearchSnoMedCodesInput!) {
+  searchSnoMedCodeByIcdCodes(searchSnoMedCodesInput: $searchSnoMedCodesInput) {
+    response {
+      status
+      message
+    }
+    snoMedCodes {
+      id
+      mapTarget
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchSnoMedCodesQuery__
+ *
+ * To run a query within a React component, call `useSearchSnoMedCodesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchSnoMedCodesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchSnoMedCodesQuery({
+ *   variables: {
+ *      searchSnoMedCodesInput: // value for 'searchSnoMedCodesInput'
+ *   },
+ * });
+ */
+export function useSearchSnoMedCodesQuery(baseOptions: Apollo.QueryHookOptions<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>(SearchSnoMedCodesDocument, options);
+      }
+export function useSearchSnoMedCodesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>(SearchSnoMedCodesDocument, options);
+        }
+export type SearchSnoMedCodesQueryHookResult = ReturnType<typeof useSearchSnoMedCodesQuery>;
+export type SearchSnoMedCodesLazyQueryHookResult = ReturnType<typeof useSearchSnoMedCodesLazyQuery>;
+export type SearchSnoMedCodesQueryResult = Apollo.QueryResult<SearchSnoMedCodesQuery, SearchSnoMedCodesQueryVariables>;
 export const GetPatientVitalDocument = gql`
     query getPatientVital($getPatientVital: GetPatientVital!) {
   getPatientVital(getPatientVital: $getPatientVital) {

@@ -9,7 +9,7 @@ import {
   Control, ValidationRule, FieldValues, ControllerRenderProps, UseFormSetValue,
 } from "react-hook-form";
 // graphql block
-import { CARD_LAYOUT_MODAL } from "../constants";
+import { CARD_LAYOUT_MODAL, ITEM_MODULE } from "../constants";
 import { Action } from "../reducers/mediaReducer";
 import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
@@ -27,7 +27,7 @@ import {
   UpdateAppointmentInput, AppointmentsPayload, RolesPayload, PermissionsPayload, SectionsInputs,
   UpdateFacilityTimeZoneInput, PracticesPayload, CreateStaffItemInput, FieldsInputs,
   ResponsePayloadResponse, UsersFormsElements, FormElement, AllergiesPayload, ReactionsPayload, CreatePatientAllergyInput,
-  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload,
+  Allergies, IcdCodesPayload, IcdCodes, CreateProblemInput, TwoFactorInput, VerifyCodeInput, PatientVitalsPayload, SnoMedCodesPayload,
 } from "../generated/graphql";
 
 export interface PrivateRouteProps extends RouteProps {
@@ -349,34 +349,19 @@ export interface SelectorProps {
   isRequired?: boolean
   isMultiple?: boolean
   value?: SelectorOption
-  options: SelectorOption[]
+  options?: SelectorOption[]
   margin?: MuiPropsTypes.Margin
   onBlur?: Function
 }
 
-export interface PatientSelectorProps {
-  name: string
-  label: string
-  error?: string
-  disabled?: boolean
-  addEmpty?: boolean
-  isRequired?: boolean
-  isMultiple?: boolean
-  value?: SelectorOption
+export interface PatientSelectorProps extends SelectorProps {
+  isOpen?: boolean
   isModal?: boolean
   handlePatientModal?: Function
-  isOpen?: boolean
   setValue: UseFormSetValue<ExtendedAppointmentInputProps>
 }
 
-export interface FacilitySelectorProps {
-  name: string
-  label: string
-  error?: string
-  disabled?: boolean
-  addEmpty?: boolean
-  isRequired?: boolean
-  isMultiple?: boolean
+export interface FacilitySelectorProps extends SelectorProps {
   patientId?: string
 }
 
@@ -409,15 +394,16 @@ export type updatePasswordInputs = ResetPasswordInputs & {
 };
 
 interface IControlLabel {
+  info?: string;
   error?: string;
   fieldType?: string;
   disabled?: boolean;
-  isRequired?: boolean;
+  className?: string;
   multiline?: boolean;
   isPassword?: boolean;
+  isRequired?: boolean;
   placeholder?: string;
   controllerLabel?: string;
-  className?: string;
   margin?: MuiPropsTypes.Margin
 }
 
@@ -1084,8 +1070,11 @@ export interface SelectOptions {
 
 export interface CustomSelectControlProps extends IControlLabel {
   controllerName: string;
-  info?: string;
   options: SelectOptions[];
+}
+
+export interface ItemSelectorProps extends SelectorProps {
+  modalName: ITEM_MODULE;
 }
 
 export interface FieldEditModalProps {
@@ -1423,3 +1412,5 @@ export interface PracticesTableProps {
 export interface PieChartProps {
   practices?: PracticesPayload['practices']
 }
+
+export type RenderListOptionTypes = SnoMedCodesPayload['snoMedCodes']
