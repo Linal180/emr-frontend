@@ -15,6 +15,7 @@ import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
+import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
 import {
@@ -1201,6 +1202,8 @@ export interface CardLayoutProps {
 }
 
 export interface AddModalProps {
+  newAllergy?: string;
+  allergyType?: string; 
   isEdit?: boolean;
   recordId?: string;
   item?: Allergies | IcdCodes;
@@ -1263,6 +1266,7 @@ export interface ReactionSelectorInterface {
   selectDisabled?: boolean
   selectedOptions?: string
   defaultValues?: multiOptionType[]
+  margin?: MuiPropsTypes.Margin
   setFieldValue?: Function
 }
 
@@ -1385,9 +1389,17 @@ export interface PredefinedComponentsProps {
   formState: FormBuilderState;
   dispatch: Dispatch<FormBuilderAction>
 }
+
 export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
 
 export interface PatientNoteModalProps{
   patientStates: PatientState;
   dispatcher: Dispatch<PatientAction>;
+}
+export interface PracticesTableProps {
+  dispatch: Dispatch<PracticeAction>
+} 
+
+export interface PieChartProps {
+  practices?: PracticesPayload['practices']
 }

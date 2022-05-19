@@ -242,7 +242,7 @@ export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
 export const CONTACT_METHOD = "How we can contact you?";
 export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
-export const VOICE_MAIL_PERMISSIONS = "Is it okay for us to leave a voicemail?";
+export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Doctor";
@@ -562,6 +562,7 @@ export const ROLE_NAME = "Role name";
 export const HISTORICAL = "Historical";
 export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
+export const REACTION_PAGE_LIMIT = 50;
 export const TEST_TAKEN = "Test Taken";
 export const DROPDOWN_PAGE_LIMIT = 10;
 export const APPOINTMENT = "Appointment";
@@ -610,6 +611,7 @@ export const END_TIME = "End Time";
 export const USER_NAME = "Username";
 export const CANCELLED = "Cancelled";
 export const CVV = "CVV";
+export const REGISTERED_ON = "Registered on";
 export const PAY = "Pay";
 export const EDIT = "Edit";
 export const CANCEL = "Cancel";
@@ -626,6 +628,7 @@ export const RECENTLY_ADDED_FACILITIES = "Recently Added Facilities";
 export const CLAIMS_REQUIRING_ACTION = "Claims Requiring Action";
 export const CLAIM_AMOUNT_TO_PROCESS = "Claim Amount to Process";
 export const NO_RECORDS = "No Records";
+export const ADD_ALLERGY = "Add Allergy";
 export const CLAIM_RECEIVED = "Claim Received";
 export const CLAIM_IN_PROCESS = "Claims in Process";
 export const VIEW_FACILITIES = "View Facilities";
@@ -3327,39 +3330,6 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "5", name: '24 Hours' },
   { id: "6", name: '2 Days' },
   { id: "7", name: '7 Days' },
-]
-
-export const PRACTICES_TABLE_DATA = [
-  {
-    practiceName: "Our Lady's Hospital Navan",
-    adminName: 'Jenny Wilson',
-    email: 'danghoang87hl@gmail.com',
-    phone: '2085550112',
-  },
-  {
-    practiceName: 'University Hospital Kerry',
-    adminName: 'Courtney Henry',
-    email: 'nvt.isst.nute@gmail.com',
-    phone: '3075550133',
-  },
-  {
-    practiceName: 'Mercy University Hospital',
-    adminName: 'Kathryn Murphy',
-    email: 'ckctm12@gmail.com',
-    phone: '6715550110',
-  },
-  {
-    practiceName: 'Cavan General Hospital',
-    adminName: 'Albert Flores',
-    email: 'binhan628@gmail.com',
-    phone: '6845550102',
-  },
-  {
-    practiceName: 'Roscommon County Hospital',
-    adminName: 'Jerome Bell',
-    email: 'vuhaithuongnute@gmail.com',
-    phone: '3035550105',
-  },
 ]
 
 export const FACILITIES_LIST = [

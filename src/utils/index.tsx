@@ -590,7 +590,9 @@ export const getDaySchedules = (schedules: SchedulesPayload['schedules']): DaySc
 
 export const setTime = (time: string): string => {
   const Time = moment(time, "hh:mm").format('lll').toString()
-  return Time
+  const CurrentTime = new Date(Time)
+  let NewTime = moment(CurrentTime).format().toString();
+  return NewTime
 }
 
 export const setTimeDay = (time: string, day: string): string => {
@@ -1100,6 +1102,18 @@ export const generateString = () => {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
   }
   return result + Math.floor(100000 + Math.random() * 9000);
+}
+
+export const roundOffUpto2Decimal = (str: number | undefined | string | null): string => {
+  if (str) {
+    if (typeof str === 'string') {
+      const num = parseFloat(str)
+      const isNaN = Number.isNaN(num)
+      return isNaN ? '' : `${Math.round((num + Number.EPSILON) * 100) / 100}`;
+    }
+    return `${Math.round((str + Number.EPSILON) * 100) / 100}`;
+  }
+  return ""
 }
 
 export const LightTooltip = withStyles((theme: Theme) => ({

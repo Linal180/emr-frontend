@@ -46,7 +46,7 @@ import {
   MAPPED_RELATIONSHIP_TYPE, MAPPED_COMMUNICATION_METHOD, STATE, STREET_ADDRESS, ZIP_CODE,
   FORBIDDEN_EXCEPTION, EMAIL_OR_USERNAME_ALREADY_EXISTS, PATIENT_UPDATED, SSN, ATTACHMENT_DELETED,
   CITY, COUNTRY, EMPTY_OPTION, PREFERRED_PHARMACY, APPOINTMENT_CONFIRMATION_PERMISSIONS, DONE,
-  PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, VOICE_MAIL_PERMISSIONS,
+  PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, SMS_PERMISSIONS,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS, NAME,
   MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, MORE_INFO, PATIENT_NOT_FOUND, DEMOGRAPHICS,
   APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, N_A,
@@ -61,7 +61,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
   const {
     basicContactId, emergencyContactId, kinContactId, guardianContactId, guarantorContactId, employerId,
-    activeStep, isAppointment, isBilling, isVoice, facilityId
+    activeStep, isAppointment, isBilling, isSms, facilityId
   } = state
   const [{ drivingLicense1, drivingLicense2, insuranceCard1, insuranceCard2 }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
@@ -174,7 +174,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
             preferredCommunicationMethod &&
               setValue("preferredCommunicationMethod",
                 setRecord(preferredCommunicationMethod, preferredCommunicationMethod))
-            dispatch({ type: ActionType.SET_IS_VOICE, isVoice: smsPermission as boolean })
+            dispatch({ type: ActionType.SET_IS_SMS, isSms: smsPermission as boolean })
             dispatch({ type: ActionType.SET_IS_BILLING, isBilling: releaseOfInfoBill as boolean })
             dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: phonePermission as boolean })
 
@@ -317,7 +317,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
         return;
 
       case 'smsPermission':
-        dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
+        dispatch({ type: ActionType.SET_IS_SMS, isSms: checked })
         setValue('smsPermission', checked)
         return;
 
@@ -659,12 +659,12 @@ const PatientFormComponent: FC = (): JSX.Element => {
                               control={control}
                               render={() => (
                                 <FormControl fullWidth margin="normal" className={toggleButtonClass.toggleContainer}>
-                                  <InputLabel shrink>{VOICE_MAIL_PERMISSIONS}</InputLabel>
+                                  <InputLabel shrink>{SMS_PERMISSIONS}</InputLabel>
 
                                   <label className="toggle-main">
-                                    <Box color={isVoice ? WHITE : GREY_SEVEN}>Yes</Box>
-                                    <AntSwitch checked={isVoice} onChange={(event) => { handleChange(event) }} name='smsPermission' />
-                                    <Box color={isVoice ? GREY_SEVEN : WHITE}>No</Box>
+                                    <Box color={isSms ? WHITE : GREY_SEVEN}>Yes</Box>
+                                    <AntSwitch checked={isSms} onChange={(event) => { handleChange(event) }} name='smsPermission' />
+                                    <Box color={isSms ? GREY_SEVEN : WHITE}>No</Box>
                                   </label>
                                 </FormControl>
                               )}

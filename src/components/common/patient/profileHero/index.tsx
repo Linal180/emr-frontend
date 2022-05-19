@@ -13,7 +13,7 @@ import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils"
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
-  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, SCHEDULE_APPOINTMENTS_TEXT, N_A, APPOINTMENTS_ROUTE, NOTES
+  ATTACHMENT_TITLES, PATIENTS_ROUTE, EDIT_PATIENT, N_A, NOTES
 } from "../../../../constants";
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
@@ -126,7 +126,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
-  const patientName = `${firstName} ${lastName}`;
+  // const patientName = `${firstName} ${lastName}`;
   const PATIENT_AGE = moment().diff(getTimestamps(dob || ''), 'years');
   let selfPhoneNumber = "";
   let selfEmail = ""
@@ -285,14 +285,14 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
 
               <Box display='flex' alignItems='baseline' flexWrap='wrap'>
                 {!isChart && <Box pr={1}>
-                  <Button color="primary" variant="contained" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
+                  <Button color="secondary" variant="outlined" onClick={() => history.push(`${PATIENTS_ROUTE}/${id}`)}>
                     {EDIT_PATIENT}
                   </Button>
                 </Box>}
 
-                <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
+                {/* <Button color="secondary" variant="contained" onClick={() => history.push(`${APPOINTMENTS_ROUTE}/new?patientId=${id}&patientName=${patientName}`)}>
                   {SCHEDULE_APPOINTMENTS_TEXT}
-                </Button>
+                </Button> */}
               </Box>
             </Box>
           </Box>

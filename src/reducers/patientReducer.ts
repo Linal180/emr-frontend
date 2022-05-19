@@ -8,7 +8,7 @@ import { formatValue } from "../utils";
 
 export interface State {
   page: number;
-  isVoice: boolean;
+  isSms: boolean;
   tabValue: string;
   selection: string;
   patientId: string;
@@ -70,7 +70,7 @@ export const initialState: State = {
   patientId: '',
   employerId: '',
   anchorEl: null,
-  isVoice: false,
+  isSms: false,
   selection: 'NO',
   searchQuery: '',
   isBilling: false,
@@ -119,7 +119,7 @@ export const initialState: State = {
 export enum ActionType {
   SET_PAGE = 'setPage',
   SET_IS_OPEN = "setIsOpen",
-  SET_IS_VOICE = 'setIsVoice',
+  SET_IS_SMS = 'setIsSms',
   SET_PATIENTS = 'setPatients',
   SET_TAB_VALUE = 'setTabValue',
   SET_ANCHOR_EL = 'setAnchorEl',
@@ -170,7 +170,7 @@ export enum ActionType {
 
 export type Action =
   | { type: ActionType.SET_PAGE; page: number }
-  | { type: ActionType.SET_IS_VOICE, isVoice: boolean }
+  | { type: ActionType.SET_IS_SMS, isSms: boolean }
   | { type: ActionType.SET_TAB_VALUE; tabValue: string }
   | { type: ActionType.SET_SELECTION; selection: string }
   | { type: ActionType.SET_PATIENT_ID; patientId: string }
@@ -381,10 +381,10 @@ export const patientReducer = (state: State, action: Action): State => {
         isEditCard: action.isEditCard
       }
 
-    case ActionType.SET_IS_VOICE:
+    case ActionType.SET_IS_SMS:
       return {
         ...state,
-        isVoice: action.isVoice
+        isSms: action.isSms
       }
 
     case ActionType.SET_IS_BILLING:
