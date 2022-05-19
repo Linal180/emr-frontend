@@ -1,14 +1,15 @@
-import { FC, Reducer, useCallback, useEffect, useReducer, Fragment } from "react";
+import { FC, Reducer, useCallback, useEffect, useReducer } from "react";
 import moment from "moment";
 import { useParams } from "react-router-dom";
-import { Box, Avatar, CircularProgress, Button, Typography } from "@material-ui/core";
+import { Box, Avatar, CircularProgress, Button, Typography, Menu } from "@material-ui/core";
 // components block
 import ViewDataLoader from "../../ViewDataLoader";
 import MediaCards from "../../AddMedia/MediaCards";
+import { PatientNoteModal } from './NoteModal'
 // interfaces, reducers, constants and styles block
 import history from "../../../../history";
 import { useProfileDetailsStyles } from "../../../../styles/profileDetails";
-import { getTimestamps, formatPhone, getFormattedDate, LightTooltip } from "../../../../utils";
+import { getTimestamps, formatPhone, getFormattedDate } from "../../../../utils";
 import { ParamsType, PatientProfileHeroProps } from "../../../../interfacesTypes";
 import { patientReducer, Action, initialState, State, ActionType } from "../../../../reducers/patientReducer";
 import {
@@ -17,7 +18,7 @@ import {
 import {
   AttachmentType, Contact, Patient, useGetAttachmentLazyQuery, useGetPatientLazyQuery
 } from "../../../../generated/graphql";
-import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon, EditOutlinedIcon } from "../../../../assets/svgs";
+import { ProfileUserIcon, HashIcon, AtIcon, LocationIcon, NotesCardIcon, RedCircleIcon } from "../../../../assets/svgs";
 import {
   mediaReducer, Action as mediaAction, initialState as mediaInitialState, State as mediaState,
   ActionType as mediaActionType
@@ -26,10 +27,12 @@ import {
 const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttachmentsData, isChart }) => {
   const classes = useProfileDetailsStyles();
   const { id } = useParams<ParamsType>();
-  const [{ patientData, isNoteOpen }, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
+  const [patientState, dispatch] = useReducer<Reducer<State, Action>>(patientReducer, initialState)
 
   const [{ attachmentUrl, attachmentData, attachmentId }, mediaDispatch] =
     useReducer<Reducer<mediaState, mediaAction>>(mediaReducer, mediaInitialState)
+
+  const { patientData, isNoteOpen } = patientState
 
   const [getAttachment, { loading: getAttachmentLoading }] = useGetAttachmentLazyQuery({
     fetchPolicy: "network-only",
@@ -76,7 +79,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
         const { getPatient } = data;
 
         if (getPatient) {
-          debugger
+
           const { patient } = getPatient;
           const { attachments } = patient || {}
           const profilePicture = attachments && attachments.filter(attachment =>
@@ -119,7 +122,7 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
   }, [attachmentId, fetchAttachment, attachmentData])
 
   const {
-    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt, patientNote
+    firstName, email: patientEmail, lastName, patientRecord, dob, contacts, doctorPatients, createdAt
   } = patientData || {}
 
   const selfContact = contacts?.filter((item: Contact) => item.primaryContact)
@@ -242,27 +245,29 @@ const PatientProfileHero: FC<PatientProfileHeroProps> = ({ setPatient, setAttach
                       <Typography variant="body1">{item.description}</Typography>
                     </Box>
                   ))}
-                  <LightTooltip open={isNoteOpen} placement="bottom-start" title={
-                    <Fragment>
-                      <Box  display="flex">
-                        <Typography>
-                          Pinned Notes
-                        </Typography>
-                        <Button>
-                          <EditOutlinedIcon />
-                        </Button>
-                      </Box>
-                      <Typography color="inherit">{patientNote}</Typography>
-                    </Fragment>
-                  }>
-                    <Box display="flex" flexWrap="wrap" className={classes.profileInfoItem} onClick={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: !isNoteOpen })}>
-                      <Box><NotesCardIcon /></Box>
-                      <Box display="flex" alignItems="center">
-                        <Typography variant="body1">{NOTES} </Typography>
-                        <RedCircleIcon />
-                      </Box>
+                  <Box display="flex" flexWrap="wrap" className={classes.profileInfoItem} onClick={(event) => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: event.currentTarget })}>
+                    <Box><NotesCardIcon /></Box>
+                    <Box display="flex" alignItems="center">
+                      <Typography variant="body1">{NOTES}</Typography>
+                      <RedCircleIcon />
                     </Box>
-                  </LightTooltip>
+                  </Box>
+                  <Menu
+                    getContentAnchorEl={null}
+                    anchorEl={isNoteOpen}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                    id={'patient-notes'}
+                    keepMounted
+                    transformOrigin={{ vertical: "top", horizontal: "left" }}
+                    open={!!isNoteOpen}
+                    onClose={() => dispatch({ type: ActionType.SET_NOTE_OPEN, isNoteOpen: null })}
+                    className={classes.noteDropdown}
+                  >
+                    <PatientNoteModal
+                      patientStates={patientState}
+                      dispatcher={dispatch}
+                    />
+                  </Menu>
                 </Box>
 
                 <Box display="flex" pt={1}>

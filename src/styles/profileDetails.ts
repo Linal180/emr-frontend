@@ -144,5 +144,19 @@ export const useProfileDetailsStyles = makeStyles(() =>
         color: BLACK_THREE,
       },
     },
+
+    noteDropdown: {
+      "& .MuiMenu-paper": {
+        padding: 10
+      },
+      "& .MuiPopover-paper": {
+        [theme.breakpoints.up('sm')]:{
+          minWidth: 300
+        },
+        [theme.breakpoints.only('sm')]:{
+          minWidth: 150
+        }
+      }
+    },
   })
 );

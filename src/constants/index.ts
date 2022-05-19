@@ -60,11 +60,12 @@ export enum SYSTEM_ROLES {
   FrontDesk = "front-desk",
   Patient = "patient",
 }
-
+// constants
+export const PINNED_NOTES = "Pinned Notes";
+export const AUTO_OPEN_NOTES = "Auto Open Notes";
 export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
-// constants
 export const ITEMS_ID = 'ITEMS'
 export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'

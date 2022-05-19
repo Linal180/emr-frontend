@@ -1106,7 +1106,9 @@ export const LightTooltip = withStyles((theme: Theme) => ({
   tooltip: {
     backgroundColor: theme.palette.common.white,
     color: 'rgba(0, 0, 0, 0.87)',
-    boxShadow: theme.shadows[1],
+    boxShadow: theme.shadows[21],
     fontSize: 11,
+    borderRadius: 4,
+    width: 320
   },
 }))(Tooltip);

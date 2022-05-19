@@ -704,7 +704,7 @@ export type ExternalPatientInputProps = {
 } & Pick<
   CreatePatientItemInput,
   | "pharmacy"
-  | "voiceCallPermission"
+  | "smsPermission"
   | "phonePermission"
   | "callToConsent"
   | "releaseOfInfoBill"
@@ -1386,3 +1386,8 @@ export interface PredefinedComponentsProps {
   dispatch: Dispatch<FormBuilderAction>
 }
 export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
+
+export interface PatientNoteModalProps{
+  patientStates: PatientState;
+  dispatcher: Dispatch<PatientAction>;
+}

@@ -132,7 +132,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
           if (patient) {
             const {
-              ssn, contacts, doctorPatients, facility, phonePermission, pharmacy, voiceCallPermission,
+              ssn, contacts, doctorPatients, facility, phonePermission, pharmacy, smsPermission,
               preferredCommunicationMethod, releaseOfInfoBill, attachments,
             } = patient;
 
@@ -170,11 +170,11 @@ const PatientFormComponent: FC = (): JSX.Element => {
             ssn && setValue("ssn", ssn)
             pharmacy && setValue("pharmacy", pharmacy)
             phonePermission && setValue("phonePermission", phonePermission)
-            voiceCallPermission && setValue("voiceCallPermission", voiceCallPermission)
+            smsPermission && setValue("smsPermission", smsPermission)
             preferredCommunicationMethod &&
               setValue("preferredCommunicationMethod",
                 setRecord(preferredCommunicationMethod, preferredCommunicationMethod))
-            dispatch({ type: ActionType.SET_IS_VOICE, isVoice: voiceCallPermission as boolean })
+            dispatch({ type: ActionType.SET_IS_VOICE, isVoice: smsPermission as boolean })
             dispatch({ type: ActionType.SET_IS_BILLING, isBilling: releaseOfInfoBill as boolean })
             dispatch({ type: ActionType.SET_IS_APPOINTMENT, isAppointment: phonePermission as boolean })
 
@@ -243,7 +243,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
   const onSubmit: SubmitHandler<ExternalPatientInputProps> = async (inputs) => {
     if (activeStep === 0) {
       const {
-        ssn, callToConsent, pharmacy, preferredCommunicationMethod, voiceCallPermission, releaseOfInfoBill,
+        ssn, callToConsent, pharmacy, preferredCommunicationMethod, smsPermission, releaseOfInfoBill,
         phonePermission, emergencyName, emergencyPhone, emergencyState, emergencyCity, emergencyAddress,
         emergencyAddress2, emergencyCountry, emergencyZipCode, emergencyRelationship, address, address2,
         state, city, country, zipCode, providerId
@@ -256,7 +256,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
       const { id: selectedCommunicationMethod } = preferredCommunicationMethod
 
       const patientItemInput = {
-        ssn, releaseOfInfoBill, callToConsent, phonePermission, pharmacy, voiceCallPermission,
+        ssn, releaseOfInfoBill, callToConsent, phonePermission, pharmacy, smsPermission,
         preferredCommunicationMethod: selectedCommunicationMethod as Communicationtype
       };
 
@@ -316,9 +316,9 @@ const PatientFormComponent: FC = (): JSX.Element => {
         setValue('releaseOfInfoBill', checked)
         return;
 
-      case 'voiceCallPermission':
+      case 'smsPermission':
         dispatch({ type: ActionType.SET_IS_VOICE, isVoice: checked })
-        setValue('voiceCallPermission', checked)
+        setValue('smsPermission', checked)
         return;
 
       case 'phonePermission':
@@ -655,7 +655,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
                         <Grid container spacing={3}>
                           <Grid item md={6} sm={12} xs={12}>
                             <Controller
-                              name='voiceCallPermission'
+                              name='smsPermission'
                               control={control}
                               render={() => (
                                 <FormControl fullWidth margin="normal" className={toggleButtonClass.toggleContainer}>
@@ -663,7 +663,7 @@ const PatientFormComponent: FC = (): JSX.Element => {
 
                                   <label className="toggle-main">
                                     <Box color={isVoice ? WHITE : GREY_SEVEN}>Yes</Box>
-                                    <AntSwitch checked={isVoice} onChange={(event) => { handleChange(event) }} name='voiceCallPermission' />
+                                    <AntSwitch checked={isVoice} onChange={(event) => { handleChange(event) }} name='smsPermission' />
                                     <Box color={isVoice ? GREY_SEVEN : WHITE}>No</Box>
                                   </label>
                                 </FormControl>
