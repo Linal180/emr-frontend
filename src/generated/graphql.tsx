@@ -203,6 +203,8 @@ export type ArrayOfStringsTypeInput = {
 
 export type Attachment = {
   __typename?: 'Attachment';
+  attachmentMetadata?: Maybe<AttachmentMetadata>;
+  attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
@@ -222,6 +224,31 @@ export type AttachmentMediaPayload = {
   __typename?: 'AttachmentMediaPayload';
   preSignedUrl?: Maybe<Scalars['String']>;
   response?: Maybe<ResponsePayload>;
+};
+
+/** The type is assigned */
+export enum AttachmentMetaDataType {
+  DrivingLicense1 = 'DRIVING_LICENSE1',
+  DrivingLicense2 = 'DRIVING_LICENSE2',
+  InsuranceCard1 = 'INSURANCE_CARD1',
+  InsuranceCard2 = 'INSURANCE_CARD2',
+  LabOrders = 'LAB_ORDERS',
+  ProfilePicture = 'PROFILE_PICTURE',
+  ProviderUploads = 'PROVIDER_UPLOADS',
+  Signature = 'SIGNATURE'
+}
+
+export type AttachmentMetadata = {
+  __typename?: 'AttachmentMetadata';
+  assignedTo?: Maybe<Scalars['String']>;
+  attachment?: Maybe<Attachment>;
+  attachmentId?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  labOrderNum?: Maybe<Scalars['String']>;
+  metadataType: AttachmentMetaDataType;
+  pending?: Maybe<Scalars['Boolean']>;
+  updatedAt: Scalars['String'];
 };
 
 export type AttachmentPayload = {
@@ -395,6 +422,9 @@ export type CreateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  labOrderNum?: Maybe<Scalars['String']>;
+  /** enum type for module type - Upload Media */
+  metadataType?: Maybe<AttachmentMetaDataType>;
   signedAt?: Maybe<Scalars['String']>;
   signedBy?: Maybe<Scalars['String']>;
   signedByProvider?: Maybe<Scalars['Boolean']>;
@@ -691,6 +721,7 @@ export type CreatePatientItemInput = {
   releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
+  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -698,7 +729,6 @@ export type CreatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
-  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type CreatePracticeInput = {
@@ -1185,6 +1215,11 @@ export type GetAttachment = {
   typeId: Scalars['String'];
 };
 
+export type GetAttachmentsByLabOrder = {
+  orderNum: Scalars['String'];
+  typeId: Scalars['String'];
+};
+
 export type GetContact = {
   id?: Maybe<Scalars['String']>;
 };
@@ -1562,6 +1597,7 @@ export type Mutation = {
   registerUser: UserPayload;
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
+  removeAttachmentMedia: AttachmentPayload;
   removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
@@ -1602,6 +1638,7 @@ export type Mutation = {
   updatePassword: UserPayload;
   updatePatient: PatientPayload;
   updatePatientAllergy: PatientAllergyPayload;
+  updatePatientNoteInfo: PatientPayload;
   updatePatientProblem: PatientProblemPayload;
   updatePatientProfile: PatientPayload;
   updatePatientProvider: PatientPayload;
@@ -1819,6 +1856,11 @@ export type MutationRemoveAttachmentDataArgs = {
 };
 
 
+export type MutationRemoveAttachmentMediaArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationRemoveContactArgs = {
   removeContact: RemoveContact;
 };
@@ -2014,6 +2056,11 @@ export type MutationUpdatePatientAllergyArgs = {
 };
 
 
+export type MutationUpdatePatientNoteInfoArgs = {
+  updatePatientNoteInfoInputs: UpdatePatientNoteInfoInputs;
+};
+
+
 export type MutationUpdatePatientProblemArgs = {
   updateProblemInput: UpdateProblemInput;
 };
@@ -2153,11 +2200,12 @@ export type Patient = {
   motherMaidenName?: Maybe<Scalars['String']>;
   patientAllergies?: Maybe<Array<PatientAllergies>>;
   patientNote?: Maybe<Scalars['String']>;
+  patientNoteOpen?: Maybe<Scalars['Boolean']>;
   patientProblems?: Maybe<Array<PatientProblems>>;
   patientRecord?: Maybe<Scalars['String']>;
   patientVitals?: Maybe<Array<PatientVitals>>;
   pharmacy?: Maybe<Scalars['String']>;
-  phonePermission: Scalars['Boolean'];
+  phonePermission?: Maybe<Scalars['Boolean']>;
   practiceId?: Maybe<Scalars['String']>;
   preferredCommunicationMethod: Communicationtype;
   prefferedName?: Maybe<Scalars['String']>;
@@ -2170,6 +2218,7 @@ export type Patient = {
   releaseOfInfoBill: Scalars['Boolean'];
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
+  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -2179,7 +2228,6 @@ export type Patient = {
   transaction?: Maybe<Transactions>;
   updatedAt: Scalars['String'];
   user?: Maybe<User>;
-  voiceCallPermission: Scalars['Boolean'];
 };
 
 export type PatientAllergies = {
@@ -2252,8 +2300,8 @@ export type PatientInfoItemInput = {
   phonePermission?: Maybe<Scalars['Boolean']>;
   preferredCommunicationMethod?: Maybe<Communicationtype>;
   race?: Maybe<Race>;
+  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
-  voiceCallPermission?: Maybe<Scalars['Boolean']>;
 };
 
 export type PatientInput = {
@@ -2520,6 +2568,7 @@ export type Query = {
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
+  getAttachmentsByLabOrder: AttachmentsPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
@@ -2710,6 +2759,11 @@ export type QueryGetAttachmentArgs = {
 
 export type QueryGetAttachmentsArgs = {
   getAttachment: GetAttachment;
+};
+
+
+export type QueryGetAttachmentsByLabOrderArgs = {
+  getAttachmentsByLabOrder: GetAttachmentsByLabOrder;
 };
 
 
@@ -3521,6 +3575,9 @@ export type UpdateAttachmentInput = {
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
+  labOrderNum?: Maybe<Scalars['String']>;
+  /** enum type for module type - Upload Media */
+  metadataType?: Maybe<AttachmentMetaDataType>;
   signedAt?: Maybe<Scalars['String']>;
   signedBy?: Maybe<Scalars['String']>;
   signedByProvider?: Maybe<Scalars['Boolean']>;
@@ -3793,6 +3850,7 @@ export type UpdatePatientItemInput = {
   releaseOfInfoBill?: Maybe<Scalars['Boolean']>;
   sexAtBirth?: Maybe<Genderidentity>;
   sexualOrientation?: Maybe<Sexualorientation>;
+  smsPermission?: Maybe<Scalars['Boolean']>;
   ssn?: Maybe<Scalars['String']>;
   statementDelivereOnline?: Maybe<Scalars['Boolean']>;
   statementNote?: Maybe<Scalars['String']>;
@@ -3800,7 +3858,12 @@ export type UpdatePatientItemInput = {
   statementNoteDateTo?: Maybe<Scalars['String']>;
   suffix?: Maybe<Scalars['String']>;
   usualProviderId?: Maybe<Scalars['String']>;
-  voiceCallPermission?: Maybe<Scalars['Boolean']>;
+};
+
+export type UpdatePatientNoteInfoInputs = {
+  id: Scalars['String'];
+  patientNote: Scalars['String'];
+  patientNoteOpen: Scalars['Boolean'];
 };
 
 export type UpdatePatientProfileInput = {
@@ -4631,7 +4694,7 @@ export type GetPatientQueryVariables = Exact<{
 }>;
 
 
-export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, email?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, inviteAccepted?: boolean | null | undefined, patientRecord?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, registrationDate?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+export type GetPatientQuery = { __typename?: 'Query', getPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', name?: string | null | undefined, error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, email?: string | null | undefined, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, inviteAccepted?: boolean | null | undefined, patientRecord?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, registrationDate?: string | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission?: boolean | null | undefined, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null | undefined, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type RemovePatientMutationVariables = Exact<{
   removePatient: RemovePatient;
@@ -4659,7 +4722,7 @@ export type SendInviteToPatientMutationVariables = Exact<{
 }>;
 
 
-export type SendInviteToPatientMutation = { __typename?: 'Mutation', sendInviteToPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, inviteAccepted?: boolean | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission: boolean, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, voiceCallPermission: boolean, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
+export type SendInviteToPatientMutation = { __typename?: 'Mutation', sendInviteToPatient: { __typename?: 'PatientPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, error?: string | null | undefined, message?: string | null | undefined } | null | undefined, patient?: { __typename?: 'Patient', id: string, firstName?: string | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, suffix?: string | null | undefined, firstNameUsed?: string | null | undefined, prefferedName?: string | null | undefined, previousFirstName?: string | null | undefined, previouslastName?: string | null | undefined, motherMaidenName?: string | null | undefined, inviteAccepted?: boolean | null | undefined, ssn?: string | null | undefined, gender: Genderidentity, dob?: string | null | undefined, phonePermission?: boolean | null | undefined, pharmacy?: string | null | undefined, medicationHistoryAuthority: boolean, releaseOfInfoBill: boolean, smsPermission?: boolean | null | undefined, deceasedDate?: string | null | undefined, privacyNotice: boolean, callToConsent: boolean, preferredCommunicationMethod: Communicationtype, patientNote?: string | null | undefined, language?: string | null | undefined, race?: Race | null | undefined, ethnicity?: Ethnicity | null | undefined, maritialStatus?: Maritialstatus | null | undefined, sexualOrientation?: Sexualorientation | null | undefined, genderIdentity?: Genderidentity | null | undefined, sexAtBirth?: Genderidentity | null | undefined, pronouns?: Pronouns | null | undefined, homeBound?: Homebound | null | undefined, holdStatement?: Holdstatement | null | undefined, statementDelivereOnline?: boolean | null | undefined, statementNote?: string | null | undefined, statementNoteDateFrom?: string | null | undefined, statementNoteDateTo?: string | null | undefined, createdAt: string, updatedAt: string, doctorPatients?: Array<{ __typename?: 'DoctorPatient', id: string, doctorId?: string | null | undefined, currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', id: string, firstName?: string | null | undefined, lastName?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined }> | null | undefined, attachments?: Array<{ __typename?: 'Attachment', id: string, key?: string | null | undefined, url?: string | null | undefined, type: AttachmentType, title?: string | null | undefined, typeId: string, createdAt: string, updatedAt: string }> | null | undefined, contacts?: Array<{ __typename?: 'Contact', id: string, fax?: string | null | undefined, ssn?: string | null | undefined, city?: string | null | undefined, email?: string | null | undefined, pager?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, address?: string | null | undefined, address2?: string | null | undefined, state?: string | null | undefined, zipCode?: string | null | undefined, country?: string | null | undefined, name?: string | null | undefined, suffix?: string | null | undefined, firstName?: string | null | undefined, primaryContact?: boolean | null | undefined, middleName?: string | null | undefined, lastName?: string | null | undefined, serviceCode: ServiceCodes, employerName?: string | null | undefined, relationship?: RelationshipType | null | undefined, contactType?: ContactType | null | undefined, createdAt: string, updatedAt: string }> | null | undefined, employer?: { __typename?: 'Employer', id: string, name?: string | null | undefined, email?: string | null | undefined, phone?: string | null | undefined, mobile?: string | null | undefined, industry?: string | null | undefined, usualOccupation?: string | null | undefined, createdAt: string, updatedAt: string } | null | undefined, facility?: { __typename?: 'Facility', id: string, name: string, isPrivate?: boolean | null | undefined, serviceCode: ServiceCode, updatedAt?: string | null | undefined } | null | undefined } | null | undefined } };
 
 export type GetTokenQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -8855,7 +8918,7 @@ export const GetPatientDocument = gql`
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-      voiceCallPermission
+      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
@@ -9116,7 +9179,7 @@ export const SendInviteToPatientDocument = gql`
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-      voiceCallPermission
+      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill

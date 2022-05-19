@@ -94,7 +94,7 @@ query GetPatient($getPatient: GetPatient!) {
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-      voiceCallPermission
+      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
@@ -252,7 +252,7 @@ mutation SendInviteToPatient($patientInviteInput: PatientInviteInput!){
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
-      voiceCallPermission
+      smsPermission
       deceasedDate
       privacyNotice
       releaseOfInfoBill
