@@ -1,18 +1,13 @@
 // packages block
 import { FC, useState } from "react";
-import HighchartsReact from "highcharts-react-official";
 import Highcharts from "highcharts";
 import { Box } from "@material-ui/core";
-// constant
-import { PRACTICES } from "../../../constants";
+import HighchartsReact from "highcharts-react-official";
 
 const PieChart2Component: FC = (): JSX.Element => {
-  const [pieChart2] = useState(
-    {
+  const [pieChart2] = useState({
       tooltip: { enabled: true },
-
       credits: { enabled: false },
-
       chart: {
         renderTo: 'container',
         plotBackgroundColor: null,
@@ -30,9 +25,7 @@ const PieChart2Component: FC = (): JSX.Element => {
       },
 
       colors: ['#0BB783', '#3699FF', '#F64E60'],
-
       borderWidth: 10,
-
       accessibility: {
         point: {
           valueSuffix: '%'
@@ -42,9 +35,7 @@ const PieChart2Component: FC = (): JSX.Element => {
       plotOptions: {
         series: {
           states: {
-            hover: {
-              enabled: false
-            }
+            hover: { enabled: false }
           }
         },
 
@@ -54,10 +45,10 @@ const PieChart2Component: FC = (): JSX.Element => {
             enabled: false,
             distance: -10,
           },
+
           startAngle: -90,
           endAngle: 90,
-          size: '80%',
-          
+          size: '80%'
         }
       },
 
@@ -71,6 +62,7 @@ const PieChart2Component: FC = (): JSX.Element => {
           ['inactive', 30],
           ['noninactive', 20],
         ],
+
         states: {
           hover: {
             enabled: false

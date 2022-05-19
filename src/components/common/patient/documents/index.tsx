@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { DefaultExtensionType } from "react-file-icon";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import {
-  Box, Table, TableBody, TableHead, TableRow, TableCell, Button, Typography
+  Box, Table, TableBody, TableHead, TableRow, TableCell, Typography
 } from "@material-ui/core";
 // components block
 import Alert from "../../Alert";
