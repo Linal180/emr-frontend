@@ -165,9 +165,9 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   }, [fetchlabTests])
 
   const handleDoctorSignOffToggle = (
-    event: ChangeEvent<HTMLInputElement>
+    {target: { checked }}: ChangeEvent<HTMLInputElement>
   ) => {
-    setDoctorSignOff(event.target.checked);
+    setDoctorSignOff(checked);
   };
 
   return (
