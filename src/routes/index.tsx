@@ -5,11 +5,10 @@ import Login from "../pages/auth/login";
 import PublicRoute from "./PublicRoute";
 import { Lock } from "../pages/auth/lock";
 import PrivateRoute from "./PrivateRoute";
-import { PageNotFound } from "../pages/404";
 import { TwoFA } from "../pages/main/2FA";
+import { PageNotFound } from "../pages/404";
 import Settings from "../pages/main/settings";
 import { CheckIn } from "../pages/main/checkIn";
-import Dashboard from "../pages/main/dashboard";
 import { Profile } from "../pages/main/profile";
 import { Maintenance } from "../pages/maintenance";
 import { Signature } from "../pages/main/signature";
@@ -27,6 +26,7 @@ import { Roles } from "../pages/main/roles/roleListing";
 import ViewDoctor from "../pages/main/doctors/viewDoctor";
 import ForgetPassword from "../pages/auth/forgetPassword";
 import { Cancellation } from "../pages/main/cancellation";
+import { PatientChart } from "../pages/main/patientChart";
 import AddPatient from "../pages/main/patients/addPatient";
 import Doctors from "../pages/main/doctors/doctorsListing";
 import { Calendar } from "../pages/main/dashboard/calendar";
@@ -37,18 +37,21 @@ import { ChangePassword } from "../pages/main/changePassword";
 import DetailDoctor from "../pages/main/doctors/detailDoctor";
 import Patients from "../pages/main/patients/patientsListing";
 import ClaimFeed from "../pages/main/billing/claimFeedListing";
+import { SuperDashboard } from "../pages/main/dashboard/Super";
 import { EmergencyAccess } from "../pages/main/emergencyAccess";
 import LabResults from "../pages/main/reports/labResultsListing";
 import { AddPractice } from "../pages/main/practices/addPractice";
 import { AddFacility } from "../pages/main/facilities/addFacility";
 import { AddFormBuilder } from "../pages/main/formBuilder/addForm";
 import { ViewPractice } from "../pages/main/practices/viewPractice";
+import { PracticeDashboard } from "../pages/main/dashboard/Practice";
 import { PatientDetail } from "../pages/main/patients/patientDetail";
 import { ViewFacility } from "../pages/main/facilities/viewFacility";
 import { TwoFaAuthentication } from "../pages/main/2FaAuthentication";
 import { DetailPractice } from "../pages/main/practices/detailPractice";
 import { Facilities } from "../pages/main/facilities/facilitiesListing";
 import { AppointmentFail } from "../pages/main/publicAppointments/fail";
+import { PatientVitals } from "../pages/main/patientChart/patientVitals";
 import { PracticeListing } from "../pages/main/practices/practiceListing";
 import { AddService } from "../pages/main/facilities/services/addService";
 import { AddAppointment } from "../pages/main/appointments/addAppointment";
@@ -61,18 +64,14 @@ import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
 import { Appointments } from "../pages/main/appointments/appointmentsListing";
 import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
-import { PatientChart } from "../pages/main/patientChart";
+import { FormBuilderResponses } from "../pages/main/formBuilder/formResponses";
 import { DoctorPublicAppointment } from "../pages/main/doctorPublicAppointments";
-import { PublicFormPreview, PublicFormFail, PublicFormSuccessComponent } from '../pages/main/publicFormbuilder';
 import { CancelAppointment } from "../pages/main/publicAppointments/cancelAppointment";
 import { AppointmentConfirmation } from "../pages/main/publicAppointments/confirmation";
 import { ExternalPayment } from "../pages/main/publicAppointments/payment/ExternalPayment";
-import { PatientVitals } from "../pages/main/patientChart/patientVitals";
-import { FormBuilderResponses } from "../pages/main/formBuilder/formResponses";
-import { Dashboard1 } from "../pages/main/dashboard/SuperAdmin";
-import { Dashboard2 } from "../pages/main/dashboard/PracticeAdmin";
-import EditLabOrdersComponent from "../components/main/labOrders/editOrder";
-// constants
+import { PublicFormPreview, PublicFormFail, PublicFormSuccessComponent } from '../pages/main/publicFormbuilder';
+// constants, contexts and utils
+import { isSuperAdmin } from "../utils";
 import { AuthContext } from "../context";
 import {
   STAFF_ROUTE, DOCTORS_ROUTE, PATIENTS_ROUTE, VIEW_APPOINTMENTS_ROUTE, CANCEL_APPOINTMENT,
@@ -83,15 +82,18 @@ import {
   EMERGENCY_ACCESS_ROUTE, FORM_BUILDER_ROUTE, SLOT_CONFIRMATION, PATIENT_APPOINTMENT_SUCCESS, INVOICES_ROUTE,
   SET_PASSWORD_ROUTE, CHANGE_PASSWORD_ROUTE, SIGNATURE_ROUTE, CANCELLATION_ROUTE, AUTO_LOGOUT_ROUTE, LOCK_ROUTE,
   PUBLIC_FORM_BUILDER_ROUTE, PUBLIC_FORM_BUILDER_FAIL_ROUTE, FORM_BUILDER_EDIT_ROUTE, PRACTICE_DETAILS_ROUTE,
-  CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, TWO_FA_ROUTE, TWO_FA_AUTHENTICATION_ROUTE,
-  USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE, FORM_BUILDER_RESPONSES, FORM_BUILDER_COPY_TEMPLATE_ROUTE, 
-  SUPER_ADMIN_DASHBOARD_ROUTE, PRACTICE_ADMIN_DASHBOARD_ROUTE, EDIT_LAB_ORDERS_ROUTE, ADD_LAB_ORDERS_RESULTS_ROUTE
+  CHECK_IN_ROUTE, FACILITY_PUBLIC_APPOINTMENT_ROUTE, PROVIDER_PUBLIC_APPOINTMENT_ROUTE, TWO_FA_ROUTE,
+  TWO_FA_AUTHENTICATION_ROUTE, USER_PERMISSIONS, CREATE_LAB_ORDERS_ROUTE, PUBLIC_FORM_BUILDER_SUCCESS_ROUTE,
+  FORM_BUILDER_RESPONSES, FORM_BUILDER_COPY_TEMPLATE_ROUTE, EDIT_LAB_ORDERS_ROUTE, ADD_LAB_ORDERS_RESULTS_ROUTE,
+  ROOT_ROUTE
 } from "../constants";
-import { AddLabOrdersComponent } from "../components/main/labOrders/addOrder";
-import ResultsLabOrdersComponent from "../components/main/labOrders/results";
+import { EditLabOrders } from "../pages/main/labOrders/editOrder";
+import { AddLabOrders } from "../pages/main/labOrders/addOrder";
+import { LabOrderResults } from "../pages/main/labOrders/orderResults";
 
 const Routes: FC = (): JSX.Element => {
-  const { isLoggedIn } = useContext(AuthContext)
+  const { isLoggedIn, user } = useContext(AuthContext)
+  const { roles } = user || {}
 
   return (
     <Switch>
@@ -114,9 +116,14 @@ const Routes: FC = (): JSX.Element => {
       <PublicRoute exact path={TWO_FA_AUTHENTICATION_ROUTE} component={TwoFaAuthentication} />
       <PublicRoute exact path={PUBLIC_FORM_BUILDER_SUCCESS_ROUTE} component={PublicFormSuccessComponent} />
 
-      <Route exact path="/">
+      <Route exact path={ROOT_ROUTE}>
         {isLoggedIn ? <Redirect to={DASHBOARD_ROUTE} /> : <Login />}
       </Route>
+
+      {isSuperAdmin(roles) ?
+        <PrivateRoute exact path={DASHBOARD_ROUTE} component={SuperDashboard} />
+        : <PrivateRoute exact path={DASHBOARD_ROUTE} component={PracticeDashboard} />
+      }
 
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/new`} component={AddPractice} permission={USER_PERMISSIONS.createPractice} />
       <PrivateRoute exact path={`${PRACTICE_MANAGEMENT_ROUTE}/:id`} component={ViewPractice} permission={USER_PERMISSIONS.updatePractice} />
@@ -132,9 +139,6 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${ROLES_ROUTE}/:id`} component={EditRole} permission={USER_PERMISSIONS.updateRole} />
       <PrivateRoute exact path={AUTO_LOGOUT_ROUTE} component={AutoLogout} />
       <PrivateRoute exact path={CHANGE_PASSWORD_ROUTE} component={ChangePassword} />
-      <PrivateRoute exact path={DASHBOARD_ROUTE} component={Dashboard} />
-      <PrivateRoute exact path={SUPER_ADMIN_DASHBOARD_ROUTE} component={Dashboard1} />
-      <PrivateRoute exact path={PRACTICE_ADMIN_DASHBOARD_ROUTE} component={Dashboard2} />
       <PrivateRoute exact path={`${CALENDAR_ROUTE}`} component={Calendar} />
       <PrivateRoute exact path={DOCTORS_ROUTE} component={Doctors} permission={USER_PERMISSIONS.findAllDoctor} />
       <PrivateRoute exact path={`${DOCTORS_ROUTE}/new`} component={AddDoctor} permission={USER_PERMISSIONS.createDoctor} />
@@ -166,9 +170,9 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} permission={USER_PERMISSIONS.updateService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
-      <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:patientId`} component={AddLabOrdersComponent} />
-      <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrdersComponent} />
-      <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={ResultsLabOrdersComponent} />
+      <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:patientId`} component={AddLabOrders} />
+      <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrders} />
+      <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={LabOrderResults} />
       <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/add`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_COPY_TEMPLATE_ROUTE}/:templateId`} component={AddFormBuilder} />

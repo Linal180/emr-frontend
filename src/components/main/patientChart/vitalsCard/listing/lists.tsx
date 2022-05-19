@@ -16,7 +16,7 @@ import { DASHES, EMPTY_OPTION, MAPPED_SMOKING_STATUS, VITAL_LABELS } from '../..
 import {
   formatValue, getFormattedDateTime, inchesToCentimeter, renderTh, kilogramToPounds, kilogramToOunce,
   fahrenheitToCelsius, getDefaultHeight, getDefaultWeight, getDefaultHead, getDefaultTemp, getBMI,
-  centimeterToMeter, inchesToMeter, poundsToKilogram, ounceToKilogram
+  centimeterToMeter, inchesToMeter, poundsToKilogram, ounceToKilogram, roundOffUpto2Decimal
 } from '../../../../../utils';
 import { patientVitalUpdateSchema } from '../../../../../validationSchemas';
 import { usePatientVitalFormStyles } from '../../../../../styles/patientVitalsStyles';
@@ -415,8 +415,8 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                 <TableRow>
                   {patientVitals?.map((item, i) => {
                     const { id, PatientHeight, PatientWeight } = item || {};
-                    const height = getHeightValue(PatientHeight || '')
-                    const weight = getWeightValue(PatientWeight || '')
+                    const height = roundOffUpto2Decimal(getHeightValue(PatientHeight || ''))
+                    const weight = roundOffUpto2Decimal(getWeightValue(PatientWeight || ''))
 
                     return vitalId === id && type === VITAL_LABELS.PatientHeight ?
                       <TableCell className={classes.input}>
@@ -432,7 +432,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PatientHeight-${i}-${PatientHeight}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.PatientHeight, height?.toString(), weight?.toString())}
+                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.PatientHeight, height, weight)}
                       >
                         {height || DASHES}
                       </TableCell>)
@@ -442,8 +442,8 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                 <TableRow>
                   {patientVitals?.map((item, i) => {
                     const { id, PatientWeight, PatientHeight } = item || {};
-                    const height = getHeightValue(PatientHeight || '')
-                    const weight = getWeightValue(PatientWeight || '')
+                    const height = roundOffUpto2Decimal(getHeightValue(PatientHeight || ''))
+                    const weight = roundOffUpto2Decimal(getWeightValue(PatientWeight || ''))
                     return vitalId === id && type === VITAL_LABELS.PatientWeight ?
                       <TableCell className={classes.input}>
                         <InputController
@@ -458,7 +458,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-PatientWeight-${i}-${PatientWeight}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.PatientWeight, weight?.toString(), height?.toString())}
+                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.PatientWeight, weight, height)}
                       >
                         {weight || DASHES}
                       </TableCell>)
@@ -468,7 +468,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                 <TableRow>
                   {patientVitals?.map((item, i) => {
                     const { id, PatientBMI } = item || {};
-                    return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">{PatientBMI || DASHES}</TableCell>)
+                    return (<TableCell key={`${id}-PatientBMI-${i}-${PatientBMI}`} scope="row">{roundOffUpto2Decimal(PatientBMI) || DASHES}</TableCell>)
                   })}
                 </TableRow>
 
@@ -524,7 +524,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                 <TableRow>
                   {patientVitals?.map((item, i) => {
                     const { id, patientHeadCircumference } = item || {};
-                    const head = getHeadValue(patientHeadCircumference || '')
+                    const head = roundOffUpto2Decimal(getHeadValue(patientHeadCircumference || ''))
 
                     return vitalId === id && type === VITAL_LABELS.patientHeadCircumference ?
                       <TableCell className={classes.input}>
@@ -540,7 +540,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-headCircumference-${i}-${patientHeadCircumference}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.patientHeadCircumference, head?.toString())}
+                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.patientHeadCircumference, head)}
                       >
                         <Typography>
                           {head || DASHES}
@@ -552,7 +552,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                 <TableRow>
                   {patientVitals?.map((item, i) => {
                     const { id, patientTemperature } = item || {};
-                    const fever = getFeverValue(patientTemperature || '')
+                    const fever = roundOffUpto2Decimal(getFeverValue(patientTemperature || ''))
                     return vitalId === id && type === VITAL_LABELS.patientTemperature ?
                       <TableCell className={classes.input}>
                         <InputController
@@ -567,7 +567,7 @@ export const VitalListingTable = ({ patientVitals, patientStates, setPatientVita
                         />
                       </TableCell> :
                       (<TableCell key={`${id}-patientTemperature-${i}-${patientTemperature}`} scope="row"
-                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.patientTemperature, fever?.toString())}>
+                        onDoubleClick={() => editHandler(id || "", VITAL_LABELS.patientTemperature, fever)}>
                         <Typography>
                           {fever || DASHES}
                         </Typography>

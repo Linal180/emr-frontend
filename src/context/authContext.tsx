@@ -191,7 +191,9 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const setIsLoggedIn = (isLoggedIn: boolean) => _setIsLoggedIn(isLoggedIn);
 
   const getUser = useCallback(async () => {
-    await fetchUser()
+    try {
+      await fetchUser()
+    } catch (error) { }
   }, [fetchUser])
 
   useEffect(() => {
@@ -202,7 +204,8 @@ export const AuthContextProvider: FC = ({ children }): JSX.Element => {
   const fetchAttachment = useCallback(async () => {
     try {
       const { id } = profileAttachment || {}
-      id && await getAttachment({ variables: { getMedia: { id } }, })
+
+      id && await getAttachment({ variables: { getMedia: { id } } })
     } catch (error) { }
   }, [profileAttachment, getAttachment])
 

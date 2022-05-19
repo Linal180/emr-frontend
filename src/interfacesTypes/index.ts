@@ -15,6 +15,7 @@ import { serviceAction } from "../reducers/serviceReducer";
 import { Action as ChartAction } from "../reducers/chartReducer";
 import { Action as DoctorAction } from "../reducers/doctorReducer";
 import { Action as FacilityAction } from "../reducers/facilityReducer";
+import { Action as PracticeAction } from "../reducers/practiceReducer";
 import { Action as PatientAction, State as PatientState } from "../reducers/patientReducer";
 import { Action as FormBuilderAction , State as FormBuilderState} from "../reducers/formBuilderReducer";
 import {
@@ -290,6 +291,15 @@ export type OptionType = {
   value: string;
   label: string;
 };
+
+interface TextLoaderRow {
+  column: number
+  size: GridSize
+}
+
+export interface TextLoaderInterface {
+  rows: TextLoaderRow[]
+}
 
 export interface DataLoaderInterface {
   rows: number;
@@ -885,6 +895,12 @@ export interface LabOrderResultsFormInput {
   loinsCodeFields: LoinsCodeFields[]
 };
 
+export interface LabOrderResultsAttachmentInput {
+  attachmentId: string
+  attachmentName: string
+  comments?: string
+};
+
 export interface LabOrdersResultSubFormProps {
   index: number
   setResultsToRemove: Function
@@ -904,6 +920,8 @@ export interface MediaModalTypes extends DialogTypes {
   reload: Function;
   setEdit: Function;
   setAttachments: Function;
+  filesLimit?: number;
+  attachmentMetadata?: any
 }
 
 export interface MediaCardsType {
@@ -919,6 +937,8 @@ export interface MediaCardsType {
   moduleType: AttachmentType;
   attachmentData?: Attachment;
   reload: Function;
+  filesLimit?: number;
+  attachmentMetadata?: any
 }
 
 export interface DropDownItems {
@@ -1201,6 +1221,8 @@ export interface CardLayoutProps {
 }
 
 export interface AddModalProps {
+  newAllergy?: string;
+  allergyType?: string; 
   isEdit?: boolean;
   recordId?: string;
   item?: Allergies | IcdCodes;
@@ -1263,6 +1285,7 @@ export interface ReactionSelectorInterface {
   selectDisabled?: boolean
   selectedOptions?: string
   defaultValues?: multiOptionType[]
+  margin?: MuiPropsTypes.Margin
   setFieldValue?: Function
 }
 
@@ -1322,6 +1345,11 @@ export interface FilterSearchProps {
 export interface PatientProfileHeroProps {
   isChart?: boolean;
   setPatient: Function;
+  setAttachmentsData: Function;
+}
+
+export interface DoctorProfileHeroProps {
+  setDoctor: Function;
   setAttachmentsData: Function;
 }
 
@@ -1385,4 +1413,13 @@ export interface PredefinedComponentsProps {
   formState: FormBuilderState;
   dispatch: Dispatch<FormBuilderAction>
 }
+
 export type UpdateAttachmentDataInputs = Pick<UpdateAttachmentInput, 'attachmentName'>
+
+export interface PracticesTableProps {
+  dispatch: Dispatch<PracticeAction>
+} 
+
+export interface PieChartProps {
+  practices?: PracticesPayload['practices']
+}

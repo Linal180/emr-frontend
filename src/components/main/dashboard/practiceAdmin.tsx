@@ -1,36 +1,37 @@
 // packages block
 import { ChangeEvent, FC } from "react";
 import { Box, Button, Card, Grid, IconButton, MenuItem, TextField, Typography } from "@material-ui/core";
-import Timeline from '@material-ui/lab/Timeline';
-import TimelineItem from '@material-ui/lab/TimelineItem';
-import TimelineSeparator from '@material-ui/lab/TimelineSeparator';
-import TimelineConnector from '@material-ui/lab/TimelineConnector';
-import TimelineContent from '@material-ui/lab/TimelineContent';
-import TimelineDot from '@material-ui/lab/TimelineDot';
-// component
-import Search from "../../common/Search";
-// svgs block
 import { 
-  ActionIcon, ClaimActionIcon, ClaimAmountIcon, LockIcon, PatientsIcon, PracticeActiveIcon, 
-  PracticeInactiveIcon, RedirectIcon, ViewIcon 
-} from "../../../assets/svgs";
-// constant
-import {
-  CLAIMS_REQUIRING_ACTION, CLAIM_AMOUNT_TO_PROCESS, CLAIM_IN_PROCESS, CLAIM_RECEIVED, EMERGENCY_ACCESS, FACILITIES_LIST, 
-  MEDICAL_BILLING, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT, SEARCH_PLACEHOLDER, 
-  TOTAL_CLAIM_TEXT, VIEW_FACILITIES, VIEW_PATIENTS, EMERGENCY_ACCESS_LOG,EMERGENCY_LOG_LIST, RECENT_ACTIVITIES
-} from "../../../constants";
-// styles
-import { useDashboardStyles } from "../../../styles/dashboardStyles";
-import { BLUE, BLUE_SEVEN, GREEN_ONE, GREY_SEVEN, RED_ONE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, BLUE_EIGHT } from "../../../theme";
+  Timeline, TimelineItem, TimelineDot, TimelineSeparator, TimelineConnector, TimelineContent
+} from '@material-ui/lab';
+// components block
+import Search from "../../common/Search";
 import PieChart2Component from "../../common/charts/pieChart2";
 import BarChart4Component from "../../common/charts/barChart4";
 import BarChart5Component from "../../common/charts/barChart5";
 import BarChart6Component from "../../common/charts/barChart6";
+// svgs block
+import history from "../../../history";
+import { useDashboardStyles } from "../../../styles/dashboardStyles";
+import {
+  ActionIcon, ClaimActionIcon, ClaimAmountIcon, LockIcon, PatientsIcon, PracticeActiveIcon,
+  PracticeInactiveIcon, RedirectIcon, ViewIcon
+} from "../../../assets/svgs";
+// constant
+import { 
+  BLUE, BLUE_SEVEN, GREEN_ONE, GREY_SEVEN, RED_ONE, WHITE, GREY_THIRTEEN, GRAY_SEVEN, BLUE_EIGHT
+} from "../../../theme";
+import {
+  CLAIMS_REQUIRING_ACTION, CLAIM_AMOUNT_TO_PROCESS, CLAIM_IN_PROCESS, CLAIM_RECEIVED, 
+  EMERGENCY_ACCESS, FACILITIES_LIST, MEDICAL_BILLING, PRACTICE_DETAILS_TEXT, QUICK_ACTIONS, 
+  RECENTLY_ADDED_FACILITIES, SEARCH_PATIENT, SEARCH_PLACEHOLDER, TOTAL_CLAIM_TEXT, VIEW_FACILITIES,
+   VIEW_PATIENTS, EMERGENCY_ACCESS_LOG,EMERGENCY_LOG_LIST, RECENT_ACTIVITIES, EMERGENCY_ACCESS_ROUTE, FACILITIES_ROUTE, PATIENTS_ROUTE, PRACTICE_DETAILS_ROUTE
+} from "../../../constants";
+
 const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
   const classes = useDashboardStyles();
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {};
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => { };
   const search = (query: string) => { }
 
   return (
@@ -186,7 +187,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 <Grid item md={9} sm={12} xs={12}>
                   <Grid container spacing={3} justifyContent="center">
                     <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox}>
+                      <Box className={classes.cardBox} onClick={() => history.push(FACILITIES_ROUTE)}>
                         <ViewIcon />
                         <Box p={0.7} />
                         <Typography variant="h6">{VIEW_FACILITIES}</Typography>
@@ -196,7 +197,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                     <Box p={1} />
 
                     <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox}>
+                      <Box className={classes.cardBox} onClick={() => history.push(PATIENTS_ROUTE)}>
                         <PatientsIcon />
                         <Box p={0.2} />
                         <Typography variant="h6">{VIEW_PATIENTS}</Typography>
@@ -212,7 +213,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                 <Grid item md={9} sm={12} xs={12}>
                   <Grid container spacing={3} justifyContent="center">
                     <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox}>
+                      <Box className={classes.cardBox} onClick={() => history.push(PRACTICE_DETAILS_ROUTE)}>
                         <ActionIcon />
                         <Box p={0.7} />
                         <Typography variant="h6">{PRACTICE_DETAILS_TEXT}</Typography>
@@ -222,7 +223,7 @@ const PracticeAdminDashboardComponent: FC = (): JSX.Element => {
                     <Box p={1} />
 
                     <Grid item md={4} sm={12} xs={12}>
-                      <Box className={classes.cardBox}>
+                      <Box className={classes.cardBox} onClick={() => history.push(EMERGENCY_ACCESS_ROUTE)}>
                         <LockIcon />
                         <Box p={0.2} />
                         <Typography variant="h6">{EMERGENCY_ACCESS}</Typography>

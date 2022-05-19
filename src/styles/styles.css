@@ -84,7 +84,7 @@ body {
 }
 
 .media-image img {
-  height: 80%;
+  height: 100%;
   object-fit: cover;
   border-radius: 6px;
 }
@@ -477,14 +477,15 @@ body .MuiTabPanel-root {
 }
 
 
-.selectorClassTwo > div:first-of-type {
+.selectorClassTwo>div:first-of-type {
   border: 1px solid #F3F4F6 !important;
   background-color: #F3F4F6 !important;
   border-radius: 4px !important;
   min-height: 48px !important;
 }
 
-.selectorClassTwo svg, .selectorClassTwo span {
+.selectorClassTwo svg,
+.selectorClassTwo span {
   color: #202020 !important;
 }
 
@@ -555,11 +556,13 @@ body .MuiTabPanel-root {
 {
   font-weight: 600 !important;
 }
+
 .barChart4Container .highcharts-grid-line,
 .barChart5Container .highcharts-grid-line
 {
   display: none !important;
 }
+
 .barChart4Container .highcharts-axis,
 .barChart5Container .highcharts-axis,
 .barChart1Container .highcharts-axis
@@ -571,6 +574,7 @@ body .MuiTabPanel-root {
 .MuiTimelineItem-missingOppositeContent:before {
     display: none;
 }
+
 .Recent-Activity-Timeline p{
   color: #7E8299;
 }
@@ -584,4 +588,14 @@ body .MuiTabPanel-root {
 background: #E5EAEE;
 }
 
- 
+.overflowVisible {
+  overflow: visible !important;
+}
+
+.media-inner-image {
+  padding: 0px !important;
+}
+
+.media-inner-image > img {
+  height: 150px !important;
+}

@@ -1,25 +1,28 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Box, Card, colors, Grid, Typography, Button, CircularProgress, IconButton, } from "@material-ui/core";
+import { Box, Card, colors, Grid, Typography, Button, CircularProgress, FormGroup, FormControlLabel, Checkbox, } from "@material-ui/core";
 //components block
+import LabOrdersResultAttachment from './LabOrdersResultAttachment';
 import LabOrdersResultSubForm from './LabOrdersResultSubForm';
 import Alert from '../../../common/Alert';
 // interfaces, graphql, constants block
 import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
-  ADD_RESULT_FILE,
-  DESCRIPTION, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, RESULTS, SAVE_TEXT, USER_NOT_FOUND_EXCEPTION_MESSAGE,
+  DESCRIPTION, DOCTOR_SIGNOFF, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, RESULTS, SAVE_TEXT, USER_NOT_FOUND_EXCEPTION_MESSAGE,
 } from '../../../../constants';
 import { GREY_THREE } from '../../../../theme';
-import { AbnormalFlag, useFindLabTestsByOrderNumLazyQuery, useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation } from '../../../../generated/graphql';
+import {
+  AbnormalFlag, useFindLabTestsByOrderNumLazyQuery,
+  useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation
+} from '../../../../generated/graphql';
 import history from '../../../../history';
-import { DocumentUploadIcon } from '../../../../assets/svgs';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
   const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
+  const [doctorSignOff, setDoctorSignOff] = useState(false);
 
   const methods = useForm<LabOrderResultsFormInput>({
     mode: "all",
@@ -50,15 +53,15 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { handleSubmit, setValue, control } = methods;
 
   const onSubmit: SubmitHandler<LabOrderResultsFormInput> = async (values) => {
-    if(resultsToRemove.length){
-      resultsToRemove.forEach(async(resultId)=>{
-         await removeLabTestMutation({
-           variables: {
-             removeLabTestObservation: {
-               id: resultId ?? ''
-             }
-           }
-         })
+    if (resultsToRemove.length) {
+      resultsToRemove.forEach(async (resultId) => {
+        await removeLabTestMutation({
+          variables: {
+            removeLabTestObservation: {
+              id: resultId ?? ''
+            }
+          }
+        })
       })
     }
 
@@ -76,6 +79,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           normalRangeUnit: normalRangeUnits,
           resultUnit: resultUnits,
           resultValue: resultValue,
+          doctorsSignOff: doctorSignOff
         }
       })
 
@@ -112,7 +116,9 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           const { component, loincNum, unitsRequired } = test ?? {}
 
           const transformedObservations = testObservations?.map((testObservation) => {
-            const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id } = testObservation ?? {}
+            const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id, doctorsSignOff } = testObservation ?? {}
+
+            setDoctorSignOff(doctorsSignOff || false)
 
             return {
               observationId: id,
@@ -158,64 +164,78 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     fetchlabTests()
   }, [fetchlabTests])
 
+  const handleDoctorSignOffToggle = (
+    {target: { checked }}: ChangeEvent<HTMLInputElement>
+  ) => {
+    setDoctorSignOff(checked);
+  };
+
   return (
-    <Card>
-      <Box px={3}>
-        <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`}>
-              <Typography variant='h4'>{RESULTS}</Typography>
-            </Box>
-
-            <Grid container spacing={3}>
-              {resultFields?.map((resultField, index) => {
-                return (
-                  <Grid item container spacing={3}>
-                    <Grid item md={12}>
-                      <Grid container spacing={3}>
-                        <Grid item md={4}>
-                          <Typography variant='h6'>{LOINC_CODE}</Typography>
-
-                          <Box py={0.6} mb={2} color={GREY_THREE}>
-                            <Typography variant='body1'>{resultField.loinccode}</Typography>
-                          </Box>
-                        </Grid>
-
-                        <Grid item md={8}>
-                          <Typography variant='h6'>{DESCRIPTION}</Typography>
-
-                          <Box py={0.6} mb={2} color={GREY_THREE}>
-                            <Typography variant='body1'>{resultField.description}</Typography>
-                          </Box>
-                        </Grid>
-
-                      </Grid>
-                    </Grid>
-
-                    <LabOrdersResultSubForm index={index} setResultsToRemove={setResultsToRemove}/>
-                  </Grid>
-                )
-              })
+    <>
+      <Card>
+        <Box m={3}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox color="primary" checked={doctorSignOff} onChange={handleDoctorSignOffToggle} />
               }
-              <Grid item md={4}>
-                <Box mb={3} display='flex' alignItems='center'>
-                  <IconButton>
-                    <DocumentUploadIcon />
-                  </IconButton>
-                  <Typography variant='h6'>{ADD_RESULT_FILE}</Typography>
-                </Box>
-              </Grid>
-            </Grid>
+              label={DOCTOR_SIGNOFF}
+            />
+          </FormGroup>
+        </Box>
+        <Box px={3}>
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`}>
+                <Typography variant='h4'>{RESULTS}</Typography>
+              </Box>
 
-            <Box mb={3}>
-              <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
-                {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
+              <Grid container spacing={3}>
+                {resultFields?.map((resultField, index) => {
+                  return (
+                    <Grid item container spacing={3}>
+                      <Grid item md={12}>
+                        <Grid container spacing={3}>
+                          <Grid item md={4}>
+                            <Typography variant='h6'>{LOINC_CODE}</Typography>
+
+                            <Box py={0.6} mb={2} color={GREY_THREE}>
+                              <Typography variant='body1'>{resultField.loinccode}</Typography>
+                            </Box>
+                          </Grid>
+
+                          <Grid item md={8}>
+                            <Typography variant='h6'>{DESCRIPTION}</Typography>
+
+                            <Box py={0.6} mb={2} color={GREY_THREE}>
+                              <Typography variant='body1'>{resultField.description}</Typography>
+                            </Box>
+                          </Grid>
+
+                        </Grid>
+                      </Grid>
+
+                      <LabOrdersResultSubForm index={index} setResultsToRemove={setResultsToRemove} />
+                    </Grid>
+                  )
+                })
+                }
+              </Grid>
+
+              <Box mb={3}>
+                <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
+                  {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
                 </Button>
-            </Box>
-          </form>
-        </FormProvider>
-      </Box>
-    </Card>
+              </Box>
+            </form>
+          </FormProvider>
+        </Box>
+      </Card>
+
+      <Box p={2} />
+
+      <LabOrdersResultAttachment />
+    </>
   );
 };
 

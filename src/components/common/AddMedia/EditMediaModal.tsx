@@ -13,7 +13,7 @@ import { TrashNewIcon } from "../../../assets/svgs";
 
 const EditMediaModel: FC<MediaModalTypes> = ({
   imageModuleType, itemId, isOpen, setOpen, isEdit, setEdit, reload, setAttachments, attachment,
-  preSignedUrl, title, providerName
+  preSignedUrl, title, providerName, filesLimit
 }): JSX.Element => {
   const dropZoneRef = useRef<any>();
   const { handleSubmit, setValue } = useForm<ICreateMediaInput>();
@@ -71,6 +71,7 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               </Box>
             </Box> :
             <DropzoneImage
+              filesLimit={filesLimit}
               title={title}
               reload={reload}
               itemId={itemId}
@@ -83,8 +84,6 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               imageModuleType={imageModuleType}
             />
           }
-
-          <Box pt={3} />
         </DialogContent>
 
         <DialogActions>

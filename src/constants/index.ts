@@ -68,6 +68,7 @@ export const SUPER_ADMIN = "super-admin";
 export const ADMIN = "admin";
 export const AUTO_LOGOUT_ERROR = "Auto logout time is not updated";
 // constants
+export const ITEMS_ID = 'ITEMS'
 export const PRE_DEFINED = 'PRE-DEFINED'
 export const DASHES = '--'
 export const CURRENT_DATE = new Date();
@@ -563,6 +564,7 @@ export const ROLE_NAME = "Role name";
 export const HISTORICAL = "Historical";
 export const CHILDHOOD = "Childhood";
 export const ADULTHOOD = "Adulthood";
+export const REACTION_PAGE_LIMIT = 50;
 export const TEST_TAKEN = "Test Taken";
 export const DROPDOWN_PAGE_LIMIT = 10;
 export const APPOINTMENT = "Appointment";
@@ -596,6 +598,7 @@ export const FOUR_O_FOUR = "404";
 export const ROLE_EVENT = "role";
 export const LIST_PAGE_LIMIT = 25;
 export const VITAL_LIST_PAGE_LIMIT = 5;
+export const LAB_RESULTS_LIMIT = 10;
 export const USERS_TEXT = "Users";
 export const STAFF_TEXT = "Staff";
 export const LATITUDE = "Latitude";
@@ -610,7 +613,9 @@ export const FACILITY = "Facility";
 export const END_TIME = "End Time";
 export const USER_NAME = "Username";
 export const CANCELLED = "Cancelled";
+export const RESULT_FILE_NAME = "Result File Name";
 export const CVV = "CVV";
+export const REGISTERED_ON = "Registered on";
 export const PAY = "Pay";
 export const EDIT = "Edit";
 export const CANCEL = "Cancel";
@@ -629,6 +634,7 @@ export const RECENT_ACTIVITIES = "Recent Activities";
 export const CLAIMS_REQUIRING_ACTION = "Claims Requiring Action";
 export const CLAIM_AMOUNT_TO_PROCESS = "Claim Amount to Process";
 export const NO_RECORDS = "No Records";
+export const ADD_ALLERGY = "Add Allergy";
 export const CLAIM_RECEIVED = "Claim Received";
 export const CLAIM_IN_PROCESS = "Claims in Process";
 export const VIEW_FACILITIES = "View Facilities";
@@ -713,6 +719,7 @@ export const RECORD_VITALS = "Record Vitals";
 export const BACK_TO_HOME = "Return to Home";
 export const APPOINTMENT_TEXT = "Appointment";
 export const LAB_RESULTS_TEXT = "Lab Results";
+export const LAB_ORDER_RESULT = "Lab Order Result";
 export const VISIT_REASON = "Reason for visit";
 export const PAGE_NOT_FOUND = "Page Not Found";
 export const EXCEPTION = "Forbidden exception";
@@ -1015,6 +1022,7 @@ export const PATIENT_CANCELLED_APPOINTMENT = "Patient cancelled appointment";
 export const PRECONDITION_FAILED_EXCEPTION = "Precondition Failed Exception";
 export const GUARANTOR_NOTE = "Guarantor (Name to whom statements are sent)";
 export const DELETE_APPOINTMENT_DESCRIPTION = "Confirm to cancel appointment";
+export const DELETE_LAB_ORDER_RESULT_DESCRIPTION = "Confirm to delete lab order result file";
 export const PREFERRED_COMMUNICATION_METHOD = "Preferred Communication Method";
 export const UPLOADS_DOCUMENT_LEARN_MORE_TEXT = "Drop your image here, or browse";
 export const MAMMOGRAPHY_CERTIFICATION_NUMBER = "Mammography Certification Number";
@@ -1073,8 +1081,6 @@ export const SETTINGS_ROUTE = "/settings";
 export const PATIENTS_ROUTE = "/patients";
 export const INVOICES_ROUTE = "/invoices";
 export const DASHBOARD_ROUTE = "/dashboard";
-export const SUPER_ADMIN_DASHBOARD_ROUTE = "/dashboard1";
-export const PRACTICE_ADMIN_DASHBOARD_ROUTE = "/dashboard2";
 export const SIGNATURE_ROUTE = "/signature";
 export const AUTO_LOGOUT_ROUTE = "/auto-logout";
 export const TWO_FA_AUTHENTICATION_ROUTE = "/2FA-authentication";
@@ -2399,6 +2405,7 @@ export enum ATTACHMENT_TITLES {
   InsuranceCard2 = "Insurance Card 2",
   ProviderUploads = "Provider Uploads",
   Signature = "Signature",
+  LabOrders = "Lab Orders",
 }
 
 export enum MODULE_TYPES {
@@ -2667,27 +2674,11 @@ export const INVENTORY_ITEMS = [
   },
 ];
 
-export const SERVICES_ITEMS = [
-  {
-    name: FACILITY_SERVICES_TEXT,
-    link: "/",
-    desc: FACILITY_SERVICES_DESCRIPTION,
-  },
-];
-
 export const APPOINTMENT_SETTINGS_ITEMS = [
   {
     name: CANCELLED_APPOINTMENT,
     link: "/",
     desc: CANCELLED_APPOINTMENT_DESCRIPTION,
-  },
-];
-
-export const CALENDAR_SETTINGS_ITEMS = [
-  {
-    name: FACILITY_SCHEDULE,
-    link: "/",
-    desc: FACILITY_SCHEDULE_DESCRIPTION,
   },
 ];
 
@@ -3263,7 +3254,7 @@ export const FORM_BUILDER_ADD_FIELDS_TABS = [
     value: "1",
   },
   {
-    title: "Pre-defined",
+    title: "Components",
     value: "2",
   },
 ]
@@ -3348,39 +3339,6 @@ export const MAPPED_AUTO_LOGOUT = [
   { id: "5", name: '24 Hours' },
   { id: "6", name: '2 Days' },
   { id: "7", name: '7 Days' },
-]
-
-export const PRACTICES_TABLE_DATA = [
-  {
-    practiceName: "Our Lady's Hospital Navan",
-    adminName: 'Jenny Wilson',
-    email: 'danghoang87hl@gmail.com',
-    phone: '2085550112',
-  },
-  {
-    practiceName: 'University Hospital Kerry',
-    adminName: 'Courtney Henry',
-    email: 'nvt.isst.nute@gmail.com',
-    phone: '3075550133',
-  },
-  {
-    practiceName: 'Mercy University Hospital',
-    adminName: 'Kathryn Murphy',
-    email: 'ckctm12@gmail.com',
-    phone: '6715550110',
-  },
-  {
-    practiceName: 'Cavan General Hospital',
-    adminName: 'Albert Flores',
-    email: 'binhan628@gmail.com',
-    phone: '6845550102',
-  },
-  {
-    practiceName: 'Roscommon County Hospital',
-    adminName: 'Jerome Bell',
-    email: 'vuhaithuongnute@gmail.com',
-    phone: '3035550105',
-  },
 ]
 
 export const FACILITIES_LIST = [

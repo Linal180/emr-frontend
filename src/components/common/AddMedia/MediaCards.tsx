@@ -12,7 +12,7 @@ import { Action, ActionType, initialState, mediaReducer, State } from '../../../
 
 const MediaCards: FC<MediaCardsType> = ({
   moduleType, itemId, attachmentData, imageSide, notDescription, reload, title, button, 
-  buttonText, providerName
+  buttonText, providerName,filesLimit, attachmentMetadata
 }): JSX.Element => {
   const [state, dispatch] = useReducer<Reducer<State, Action>>(mediaReducer, initialState)
   const { isOpen, attachments, attachment, isEdit, isEditModalOpen } = state
@@ -104,6 +104,8 @@ const MediaCards: FC<MediaCardsType> = ({
 
         attachment={attachment}
         preSignedUrl={imageSide}
+        filesLimit={filesLimit}
+        attachmentMetadata={attachmentMetadata}
       />
 
       <EditMediaModal
@@ -136,6 +138,7 @@ const MediaCards: FC<MediaCardsType> = ({
         attachment={attachment}
         attachments={attachments}
         preSignedUrl={imageSide}
+        filesLimit={filesLimit}
       />
     </Box>
   );
