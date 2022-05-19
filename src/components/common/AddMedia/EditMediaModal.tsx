@@ -84,8 +84,6 @@ const EditMediaModel: FC<MediaModalTypes> = ({
               imageModuleType={imageModuleType}
             />
           }
-
-          <Box pt={3} />
         </DialogContent>
 
         <DialogActions>
