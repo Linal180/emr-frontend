@@ -1,8 +1,8 @@
 // packages block
-import { FC, useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import { Box, Card, colors, Grid, Typography, Button, CircularProgress, } from "@material-ui/core";
+import { Box, Card, colors, Grid, Typography, Button, CircularProgress, FormGroup, FormControlLabel, Checkbox, } from "@material-ui/core";
 //components block
 import LabOrdersResultAttachment from './LabOrdersResultAttachment';
 import LabOrdersResultSubForm from './LabOrdersResultSubForm';
@@ -10,16 +10,19 @@ import Alert from '../../../common/Alert';
 // interfaces, graphql, constants block
 import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
-  DESCRIPTION, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, RESULTS, SAVE_TEXT, USER_NOT_FOUND_EXCEPTION_MESSAGE,
+  DESCRIPTION, DOCTOR_SIGNOFF, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, RESULTS, SAVE_TEXT, USER_NOT_FOUND_EXCEPTION_MESSAGE,
 } from '../../../../constants';
 import { GREY_THREE } from '../../../../theme';
-import { AbnormalFlag, useFindLabTestsByOrderNumLazyQuery, 
-         useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation } from '../../../../generated/graphql';
+import {
+  AbnormalFlag, useFindLabTestsByOrderNumLazyQuery,
+  useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation
+} from '../../../../generated/graphql';
 import history from '../../../../history';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
   const [resultsToRemove, setResultsToRemove] = useState<string[]>([])
+  const [doctorSignOff, setDoctorSignOff] = useState(false);
 
   const methods = useForm<LabOrderResultsFormInput>({
     mode: "all",
@@ -76,6 +79,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           normalRangeUnit: normalRangeUnits,
           resultUnit: resultUnits,
           resultValue: resultValue,
+          doctorsSignOff: doctorSignOff
         }
       })
 
@@ -112,7 +116,9 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
           const { component, loincNum, unitsRequired } = test ?? {}
 
           const transformedObservations = testObservations?.map((testObservation) => {
-            const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id } = testObservation ?? {}
+            const { normalRange, resultUnit, resultValue, normalRangeUnit, abnormalFlag, id, doctorsSignOff } = testObservation ?? {}
+
+            setDoctorSignOff(doctorsSignOff || false)
 
             return {
               observationId: id,
@@ -158,9 +164,25 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     fetchlabTests()
   }, [fetchlabTests])
 
+  const handleDoctorSignOffToggle = (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    setDoctorSignOff(event.target.checked);
+  };
+
   return (
     <>
       <Card>
+        <Box m={3}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Checkbox color="primary" checked={doctorSignOff} onChange={handleDoctorSignOffToggle} />
+              }
+              label={DOCTOR_SIGNOFF}
+            />
+          </FormGroup>
+        </Box>
         <Box px={3}>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -210,8 +232,8 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
         </Box>
       </Card>
 
-      <Box p={2}/>
-      
+      <Box p={2} />
+
       <LabOrdersResultAttachment />
     </>
   );
