@@ -203,6 +203,8 @@ export type ArrayOfStringsTypeInput = {
 
 export type Attachment = {
   __typename?: 'Attachment';
+  attachmentMetadata?: Maybe<AttachmentMetadata>;
+  attachmentMetadataId?: Maybe<Scalars['String']>;
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
@@ -222,6 +224,31 @@ export type AttachmentMediaPayload = {
   __typename?: 'AttachmentMediaPayload';
   preSignedUrl?: Maybe<Scalars['String']>;
   response?: Maybe<ResponsePayload>;
+};
+
+/** The type is assigned */
+export enum AttachmentMetaDataType {
+  DrivingLicense1 = 'DRIVING_LICENSE1',
+  DrivingLicense2 = 'DRIVING_LICENSE2',
+  InsuranceCard1 = 'INSURANCE_CARD1',
+  InsuranceCard2 = 'INSURANCE_CARD2',
+  LabOrders = 'LAB_ORDERS',
+  ProfilePicture = 'PROFILE_PICTURE',
+  ProviderUploads = 'PROVIDER_UPLOADS',
+  Signature = 'SIGNATURE'
+}
+
+export type AttachmentMetadata = {
+  __typename?: 'AttachmentMetadata';
+  assignedTo?: Maybe<Scalars['String']>;
+  attachment?: Maybe<Attachment>;
+  attachmentId?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  labOrderNum?: Maybe<Scalars['String']>;
+  metadataType: AttachmentMetaDataType;
+  pending?: Maybe<Scalars['Boolean']>;
+  updatedAt: Scalars['String'];
 };
 
 export type AttachmentPayload = {
@@ -395,6 +422,9 @@ export type CreateAttachmentInput = {
   attachmentName?: Maybe<Scalars['String']>;
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  labOrderNum?: Maybe<Scalars['String']>;
+  /** enum type for module type - Upload Media */
+  metadataType?: Maybe<AttachmentMetaDataType>;
   signedAt?: Maybe<Scalars['String']>;
   signedBy?: Maybe<Scalars['String']>;
   signedByProvider?: Maybe<Scalars['Boolean']>;
@@ -1185,6 +1215,11 @@ export type GetAttachment = {
   typeId: Scalars['String'];
 };
 
+export type GetAttachmentsByLabOrder = {
+  orderNum: Scalars['String'];
+  typeId: Scalars['String'];
+};
+
 export type GetContact = {
   id?: Maybe<Scalars['String']>;
 };
@@ -1562,6 +1597,7 @@ export type Mutation = {
   registerUser: UserPayload;
   removeAppointment: AppointmentPayload;
   removeAttachmentData: AttachmentPayload;
+  removeAttachmentMedia: AttachmentPayload;
   removeContact: ContactPayload;
   removeDoctor: DoctorPayload;
   removeFacility: FacilityPayload;
@@ -1816,6 +1852,11 @@ export type MutationRemoveAppointmentArgs = {
 
 export type MutationRemoveAttachmentDataArgs = {
   removeAttachment: RemoveAttachment;
+};
+
+
+export type MutationRemoveAttachmentMediaArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -2520,6 +2561,7 @@ export type Query = {
   getAppointments: AppointmentsPayload;
   getAttachment: AttachmentMediaPayload;
   getAttachments: AttachmentsPayload;
+  getAttachmentsByLabOrder: AttachmentsPayload;
   getContact: ContactPayload;
   getDoctor: DoctorPayload;
   getDoctorSchedule: SchedulesPayload;
@@ -2710,6 +2752,11 @@ export type QueryGetAttachmentArgs = {
 
 export type QueryGetAttachmentsArgs = {
   getAttachment: GetAttachment;
+};
+
+
+export type QueryGetAttachmentsByLabOrderArgs = {
+  getAttachmentsByLabOrder: GetAttachmentsByLabOrder;
 };
 
 
@@ -3521,6 +3568,9 @@ export type UpdateAttachmentInput = {
   comments?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   id?: Maybe<Scalars['String']>;
+  labOrderNum?: Maybe<Scalars['String']>;
+  /** enum type for module type - Upload Media */
+  metadataType?: Maybe<AttachmentMetaDataType>;
   signedAt?: Maybe<Scalars['String']>;
   signedBy?: Maybe<Scalars['String']>;
   signedByProvider?: Maybe<Scalars['Boolean']>;

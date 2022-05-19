@@ -292,6 +292,15 @@ export type OptionType = {
   label: string;
 };
 
+interface TextLoaderRow {
+  column: number
+  size: GridSize
+}
+
+export interface TextLoaderInterface {
+  rows: TextLoaderRow[]
+}
+
 export interface DataLoaderInterface {
   rows: number;
   hasMedia?: boolean;

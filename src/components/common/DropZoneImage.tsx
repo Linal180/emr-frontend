@@ -207,7 +207,7 @@ const DropzoneImage: FC<any> = forwardRef(({
               acceptedFiles={ACCEPTABLE_FILES}
               onChange={(files) => setFile(files[0])}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
-              dropzoneText={isEdit ? PLEASE_CLICK_TO_UPDATE_DOCUMENT : PLEASE_ADD_DOCUMENT}
+              dropzoneText={imageEdit ? PLEASE_CLICK_TO_UPDATE_DOCUMENT : PLEASE_ADD_DOCUMENT}
             />
           </Box>
         )
