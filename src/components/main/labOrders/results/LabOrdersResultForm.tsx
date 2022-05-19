@@ -10,12 +10,20 @@ import Alert from '../../../common/Alert';
 // interfaces, graphql, constants block
 import { GeneralFormProps, LabOrderResultsFormInput, ParamsType } from "../../../../interfacesTypes";
 import {
-  DESCRIPTION, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, RESULTS, SAVE_TEXT, USER_NOT_FOUND_EXCEPTION_MESSAGE,
+  ACCESSION_NUMBER,
+  ASSIGNED_PROVIDER,
+  COLLECTED_DATE,
+  DESCRIPTION, EMPTY_OPTION, LAB_TEXT, LOINC_CODE, NOT_FOUND_EXCEPTION, ORDERS_RESULT_INITIAL_VALUES, ORDER_NUMBER, RECEIVED_DATE, RESULTS, SAVE_TEXT, TESTS, USER_NOT_FOUND_EXCEPTION_MESSAGE, VENDOR_NAME,
 } from '../../../../constants';
-import { GREY_THREE } from '../../../../theme';
-import { AbnormalFlag, useFindLabTestsByOrderNumLazyQuery, 
-         useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation } from '../../../../generated/graphql';
+import { GREY, GREY_THREE } from '../../../../theme';
+import {
+  AbnormalFlag, useFindLabTestsByOrderNumLazyQuery,
+  useRemoveLabTestObservationMutation, useUpdateLabTestObservationMutation
+} from '../../../../generated/graphql';
 import history from '../../../../history';
+import Selector from '../../../common/Selector';
+import InputController from '../../../../controller';
+import DatePicker from '../../../common/DatePicker';
 
 const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   const { orderNum, patientId } = useParams<ParamsType>();
@@ -140,8 +148,6 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
     }
   });
 
-
-
   const fetchlabTests = useCallback(async () => {
     try {
       await findLabTestsByOrderNum({
@@ -161,7 +167,7 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
   return (
     <>
       <Card>
-        <Box px={3}>
+        <Box p={3}>
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`}>
@@ -169,49 +175,118 @@ const LabOrdersResultForm: FC<GeneralFormProps> = (): JSX.Element => {
               </Box>
 
               <Grid container spacing={3}>
-                {resultFields?.map((resultField, index) => {
-                  return (
-                    <Grid item container spacing={3}>
-                      <Grid item md={12}>
-                        <Grid container spacing={3}>
-                          <Grid item md={4}>
-                            <Typography variant='h6'>{LOINC_CODE}</Typography>
+                <Grid item md={3} sm={12} xs={12}>
+                  <Selector
+                    name="lab"
+                    label={LAB_TEXT}
+                    value={EMPTY_OPTION}
+                    options={[]}
+                  />
+                </Grid>
 
-                            <Box py={0.6} mb={2} color={GREY_THREE}>
-                              <Typography variant='body1'>{resultField.loinccode}</Typography>
-                            </Box>
-                          </Grid>
+                <Grid item md={3} sm={12} xs={12}>
+                  <Selector
+                    name="assignedProvider"
+                    label={ASSIGNED_PROVIDER}
+                    value={EMPTY_OPTION}
+                    options={[]}
+                  />
+                </Grid>
 
-                          <Grid item md={8}>
-                            <Typography variant='h6'>{DESCRIPTION}</Typography>
+                <Grid item md={3} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName={''}
+                    controllerLabel={ACCESSION_NUMBER}
+                  />
+                </Grid>
 
-                            <Box py={0.6} mb={2} color={GREY_THREE}>
-                              <Typography variant='body1'>{resultField.description}</Typography>
-                            </Box>
-                          </Grid>
+                <Grid item md={3} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName={''}
+                    controllerLabel={VENDOR_NAME}
+                  />
+                </Grid>
 
-                        </Grid>
-                      </Grid>
+                <Grid item md={6} sm={12} xs={12}>
+                  <InputController
+                    fieldType="text"
+                    controllerName={''}
+                    controllerLabel={ORDER_NUMBER}
+                  />
+                </Grid>
 
-                      <LabOrdersResultSubForm index={index} setResultsToRemove={setResultsToRemove} />
-                    </Grid>
-                  )
-                })
-                }
+                <Grid item md={3} sm={12} xs={12}>
+                  <DatePicker name={''} label={COLLECTED_DATE} />
+                </Grid>
+
+                <Grid item md={3} sm={12} xs={12}>
+                  <DatePicker name={''} label={RECEIVED_DATE} />
+                </Grid>
               </Grid>
-
-              <Box mb={3}>
-                <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
-                  {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
-                </Button>
-              </Box>
             </form>
           </FormProvider>
         </Box>
       </Card>
 
-      <Box p={2}/>
-      
+      <Box p={2} />
+
+      <Card>
+        <Box px={3}>
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Box py={2} mb={4} borderBottom={`1px solid ${colors.grey[300]}`} display="flex" justifyContent="space-between" alignItems="center">
+                <Typography variant='h4'>{TESTS}</Typography>
+
+                <Button type="submit" variant="contained" color="primary" disabled={removeLoading || updateLoading}>
+                  {SAVE_TEXT} {(removeLoading || updateLoading) && <CircularProgress size={20} color="inherit" />}
+                </Button>
+              </Box>
+
+              <Grid container spacing={3}>
+                {resultFields?.map((resultField, index) => {
+                  return (
+                    <Box mb={2} borderBottom={(resultFields.length - 1) === index ? 'none' : `2px solid ${GREY}`}>
+                      <Grid container spacing={3}>
+                        <Grid item md={12}>
+                          <Box p={1.5} display='flex'>
+                            <Grid container>
+                              <Grid item md={4}>
+                                <Typography variant='h6'>{LOINC_CODE}</Typography>
+
+                                <Box py={0.6} mb={2} color={GREY_THREE}>
+                                  <Typography variant='body1'>{resultField.loinccode}</Typography>
+                                </Box>
+                              </Grid>
+
+                              <Grid item md={8}>
+                                <Typography variant='h6'>{DESCRIPTION}</Typography>
+
+                                <Box py={0.6} mb={2} color={GREY_THREE}>
+                                  <Typography variant='body1'>{resultField.description}</Typography>
+                                </Box>
+                              </Grid>
+                            </Grid>
+                          </Box>
+                        </Grid>
+
+                        <Grid item md={12}>
+                          <LabOrdersResultSubForm index={index} setResultsToRemove={setResultsToRemove} />
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )
+                })
+                }
+              </Grid>
+            </form>
+          </FormProvider>
+        </Box>
+      </Card>
+
+      <Box p={2} />
+
       <LabOrdersResultAttachment />
     </>
   );
