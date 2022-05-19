@@ -241,7 +241,9 @@ export const APARTMENT_SUITE_OTHER = "Apartment/Suite/Other";
 export const PAYMENT_DETAILS = "Payment Details";
 export const CONTACT_METHOD = "How we can contact you?";
 export const HCFA_DESC = "HCFA Box 10 - Is patient's condition related to:";
-export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
+// export const SMS_PERMISSIONS = "Is it okay for us to leave a SMS/Txt messages";
+export const CONSENT_TO_MESSAGES = "Consent To messages";
+export const CONSENT_TO_MESSAGES_DESCRIPTION = "Disable all SMS/Txt messages for this user";
 export const ADD_NEW_TEXT = "Add New";
 export const EDIT_STAFF = "Edit Staff";
 export const CREATE_DOCTOR = "Create Doctor";
@@ -266,7 +268,7 @@ export const REMOVE_SPECIMEN = "Remove Specimen";
 export const RELEASE_BILLING_INFO_PERMISSIONS =
   "Can we release medical and billing information to this contact?";
 export const APPOINTMENT_CONFIRMATION_PERMISSIONS =
-  "May we phone, email, or send a text to you to confirm appointments?";
+  "May we phone, or send a email to you to confirm appointments?";
 export const ADD_DOCTOR = "Add Doctor";
 export const ADD_RESULT = "Add Result";
 export const VIEW_STAFF = "View Staff";

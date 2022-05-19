@@ -54,7 +54,7 @@ import {
   PATIENT_NOT_FOUND, CONSENT_TO_CALL, PATIENT_CREATED, FAILED_TO_CREATE_PATIENT, CREATE_PATIENT,
   MAPPED_COUNTRIES, MAPPED_GENDER_IDENTITY, ZIP_CODE_AND_CITY, ZIP_CODE_ENTER, VERIFY_ADDRESS,
   SAME_AS_PATIENT, SSN_FORMAT, DOCTOR, UPDATE_PATIENT, EMAIL, VERIFIED, ADD_PATIENT, PATIENTS_BREAD,
-  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, DASHBOARD_BREAD,
+  PATIENT_EDIT_BREAD, PATIENT_NEW_BREAD, DASHBOARD_BREAD, CONSENT_TO_MESSAGES_DESCRIPTION, CONSENT_TO_MESSAGES,
 } from "../../../../constants";
 
 const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
@@ -70,6 +70,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
     releaseOfInfoBill: false,
     callToConsent: false,
     medicationHistoryAuthority: false,
+    smsPermission: false
   })
   const [userData, setUserData] = useState<SmartyUserData>({ street: '', address: '' })
   const classes = usePublicAppointmentStyles();
@@ -112,7 +113,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             releaseOfInfoBill, callToConsent, patientNote, language, race, ethnicity, maritialStatus, employer,
             sexualOrientation, genderIdentity, sexAtBirth, pronouns, homeBound, holdStatement, contacts,
             statementDelivereOnline, statementNote, statementNoteDateFrom, statementNoteDateTo, facility,
-            medicationHistoryAuthority, doctorPatients, registrationDate
+            medicationHistoryAuthority, doctorPatients, registrationDate, smsPermission
           } = patient;
 
           if (facility) {
@@ -159,11 +160,11 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
           previousFirstName && setValue("previousFirstName", previousFirstName)
           homeBound && setValue("homeBound", homeBound === Homebound.Yes ? true : false)
           homeBound && dispatch({ type: ActionType.SET_IS_CHECKED, isChecked: homeBound === Homebound.Yes ? true : false })
-          
+
           statementNoteDateTo && setValue("statementNoteDateTo", getDate(statementNoteDateTo))
           statementDelivereOnline && setValue("statementDelivereOnline", statementDelivereOnline)
           statementNoteDateFrom && setValue("statementNoteDateFrom", getDate(statementNoteDateFrom))
-          
+
           race && setValue("race", setRecord(race, race))
           gender && setValue("gender", setRecord(gender, gender))
           pronouns && setValue("pronouns", setRecord(pronouns, pronouns))
@@ -178,6 +179,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
             privacyNotice: privacyNotice || false,
             releaseOfInfoBill: releaseOfInfoBill || false,
             medicationHistoryAuthority: medicationHistoryAuthority || false,
+            smsPermission: smsPermission || false
           })
 
           if (contacts) {
@@ -363,7 +365,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const { id: selectedSexualOrientation } = sexualOrientation;
       const { id: selectedGuarantorRelationship } = guarantorRelationship;
       const { id: selectedEmergencyRelationship } = emergencyRelationship;
-      const { privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill } = state
+      const { privacyNotice, callToConsent, medicationHistoryAuthority, releaseOfInfoBill, smsPermission } = state
 
       let practiceId = '';
       if (selectedFacility) {
@@ -376,7 +378,7 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
       const patientItemInput = {
         suffix, firstName, middleName, lastName, firstNameUsed, prefferedName, previousFirstName,
         previouslastName, motherMaidenName, ssn: ssn || SSN_FORMAT, statementNote, language, patientNote,
-        email: basicEmail, facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill,
+        email: basicEmail, facilityId: selectedFacility, callToConsent, privacyNotice, releaseOfInfoBill, smsPermission,
         practiceId, medicationHistoryAuthority, ethnicity: selectedEthnicity as Ethnicity || Ethnicity.None,
         homeBound: homeBound ? Homebound.Yes : Homebound.No, holdStatement: holdStatement || Holdstatement.None,
         pronouns: selectedPronouns as Pronouns || Pronouns.None, race: selectedRace as Race || Race.White,
@@ -1165,6 +1167,22 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                           </FormGroup>
                         </FormControl>
                       </Box>
+
+                      <Box>
+                        <FormControl component="fieldset">
+                          <FormGroup>
+                            <Box mr={3} mb={2} mt={2}>
+                              <FormLabel component="legend">{CONSENT_TO_MESSAGES}</FormLabel>
+                              <FormControlLabel
+                                control={
+                                  <Checkbox color="primary" checked={state.smsPermission} onChange={handleChangeForCheckBox("smsPermission")} />
+                                }
+                                label={CONSENT_TO_MESSAGES_DESCRIPTION}
+                              />
+                            </Box>
+                          </FormGroup>
+                        </FormControl>
+                      </Box>
                     </Grid>
                   </>
                 )}
@@ -1216,21 +1234,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
               <CardComponent cardTitle={GUARANTOR}>
                 {getPatientLoading ? <ViewDataLoader rows={5} columns={6} hasMedia={false} /> : (
                   <>
-                    <FormControl component="fieldset">
-                      <FormGroup>
-                        <Box mr={3} mb={2} mt={2}>
-                          <FormControlLabel
-                            label={SAME_AS_PATIENT}
-                            control={
-                              <Checkbox color="primary" checked={sameAddress}
-                                onChange={({ target: { checked } }) => handleSameAddress(checked)}
-                              />
-                            }
-                          />
-                        </Box>
-                      </FormGroup>
-                    </FormControl>
-
                     <Grid item md={12} sm={12} xs={12}>
                       <Selector
                         isRequired
@@ -1282,6 +1285,29 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         />
                       </Grid>
                     </Grid>
+
+                    <Grid item md={12} sm={12} xs={12}>
+                      <InputController
+                        fieldType="text"
+                        controllerName="guarantorEmployerName"
+                        controllerLabel={EMPLOYER}
+                      />
+                    </Grid>
+
+                    <FormControl component="fieldset">
+                      <FormGroup>
+                        <Box mr={3} mb={2} mt={2}>
+                          <FormControlLabel
+                            label={SAME_AS_PATIENT}
+                            control={
+                              <Checkbox color="primary" checked={sameAddress}
+                                onChange={({ target: { checked } }) => handleSameAddress(checked)}
+                              />
+                            }
+                          />
+                        </Box>
+                      </FormGroup>
+                    </FormControl>
 
                     <Grid item md={12} sm={12} xs={12}>
                       <InputController
@@ -1360,14 +1386,6 @@ const PatientForm: FC<GeneralFormProps> = ({ id, isEdit }): JSX.Element => {
                         fieldType="email"
                         controllerName="guarantorEmail"
                         controllerLabel={EMAIL}
-                      />
-                    </Grid>
-
-                    <Grid item md={12} sm={12} xs={12}>
-                      <InputController
-                        fieldType="text"
-                        controllerName="guarantorEmployerName"
-                        controllerLabel={EMPLOYER}
                       />
                     </Grid>
                   </>
