@@ -18,13 +18,13 @@ import {
 
 const DropzoneImage: FC<any> = forwardRef(({
   imageModuleType, isEdit, attachmentId, itemId, handleClose, setAttachments, isDisabled, attachment,
-  reload, title, providerName
+  reload, title, providerName, filesLimit, attachmentMetadata
 }, ref): JSX.Element => {
   const { setIsLoggedIn, setUser } = useContext(AuthContext)
   const classes = useDropzoneStyles();
   const [loading, setLoading] = useState<boolean>(false);
   const [imageEdit, setImageEdit] = useState<boolean>(false);
-  const [file, setFile] = useState<File>();
+  const [files, setFiles] = useState<File[]>();
 
   const token = getToken();
   let moduleRoute = "";
@@ -54,106 +54,113 @@ const DropzoneImage: FC<any> = forwardRef(({
 
   useImperativeHandle(ref, () => ({
     submit() {
-      file && handleFileChange()
+      files && handleFileChange()
     }
   }));
 
   const handleFileChange = async () => {
-    const formData = new FormData();
-    file && formData.append("file", file);
-    title && formData.append("title", title);
-    itemId && formData.append("typeId", itemId);
-    attachmentId && formData.append("id", attachmentId);
-    providerName && formData.append("providerName", providerName);
-
-    setLoading(true);
-    await axios.post(
-      isEdit ?
-        `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
-        :
-        `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    ).then(response => {
-      const { status, data } = response;
-
-      if (status === 201 && data) {
-        switch (imageModuleType) {
-
-          case AttachmentType.Patient:
-            const patientData = data as unknown as MediaPatientDataType;
-
-            if (patientData) {
-              const { patient: { attachments: patientAttachment } } = patientData || {};
-              patientAttachment && setAttachments(patientAttachment)
-              setLoading(false);
-              handleModalClose();
-              reload()
-            }
-
-            break;
-
-          case AttachmentType.Doctor:
-            const doctorData = data as unknown as MediaDoctorDataType
-
-            if (doctorData) {
-              const { doctor: { attachments: doctorAttachments } } = doctorData || {};
-              doctorAttachments && setAttachments(doctorAttachments)
-              setLoading(false);
-              handleModalClose();
-              reload()
-            }
-
-            break;
-
-          case AttachmentType.Staff:
-            const staffData = data as unknown as MediaStaffDataType
-
-            if (staffData) {
-              const { staff: { attachments: staffAttachments } } = staffData || {};
-              staffAttachments && setAttachments(staffAttachments)
-              setLoading(false);
-              handleModalClose();
-              reload()
-            }
-
-            break;
-
-          case AttachmentType.SuperAdmin:
-            const userData = data as unknown as MediaUserDataType
-
-            if (userData) {
-              const { user: { attachments: staffAttachments } } = userData || {};
-              staffAttachments && setAttachments(staffAttachments)
-              setLoading(false);
-              handleModalClose();
-              reload()
-            }
-
-            break;
-
-          default:
-            break;
-        }
-      } else {
-        Alert.error("Something went wrong!");
-
-        if (status === 401) {
-          setIsLoggedIn(false)
-          setUser(null)
-          handleLogout();
+    files && files.map(async(file)=>{
+      const formData = new FormData();
+      file && formData.append("file", file);
+      title && formData.append("title", title);
+      itemId && formData.append("typeId", itemId);
+      attachmentId && formData.append("id", attachmentId);
+      providerName && formData.append("providerName", providerName);
+      if(attachmentMetadata){
+        for ( var key in attachmentMetadata ) {
+          formData.append(key, attachmentMetadata[key]);
         }
       }
-    }).then(data => {
-
-    }).catch(error => {
-      const { response: { data: { error: errorMessage } } } = error || {}
-      Alert.error(errorMessage);
-    });
+                                                        
+      setLoading(true);
+      await axios.post(
+        isEdit ?
+          `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/image/update`
+          :
+          `${process.env.REACT_APP_API_BASE_URL}/${moduleRoute}/upload`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ).then(response => {
+        const { status, data } = response;
+  
+        if (status === 201 && data) {
+          switch (imageModuleType) {
+  
+            case AttachmentType.Patient:
+              const patientData = data as unknown as MediaPatientDataType;
+  
+              if (patientData) {
+                const { patient: { attachments: patientAttachment } } = patientData || {};
+                patientAttachment && setAttachments(patientAttachment)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+  
+              break;
+  
+            case AttachmentType.Doctor:
+              const doctorData = data as unknown as MediaDoctorDataType
+  
+              if (doctorData) {
+                const { doctor: { attachments: doctorAttachments } } = doctorData || {};
+                doctorAttachments && setAttachments(doctorAttachments)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+  
+              break;
+  
+            case AttachmentType.Staff:
+              const staffData = data as unknown as MediaStaffDataType
+  
+              if (staffData) {
+                const { staff: { attachments: staffAttachments } } = staffData || {};
+                staffAttachments && setAttachments(staffAttachments)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+  
+              break;
+  
+            case AttachmentType.SuperAdmin:
+              const userData = data as unknown as MediaUserDataType
+  
+              if (userData) {
+                const { user: { attachments: staffAttachments } } = userData || {};
+                staffAttachments && setAttachments(staffAttachments)
+                setLoading(false);
+                handleModalClose();
+                reload()
+              }
+  
+              break;
+  
+            default:
+              break;
+          }
+        } else {
+          Alert.error("Something went wrong!");
+  
+          if (status === 401) {
+            setIsLoggedIn(false)
+            setUser(null)
+            handleLogout();
+          }
+        }
+      }).then(data => {
+  
+      }).catch(error => {
+        const { response: { data: { error: errorMessage } } } = error || {}
+        Alert.error(errorMessage);
+      });
+    })
   }
 
   const handleUpdateImage = () => setImageEdit(true)
@@ -202,10 +209,10 @@ const DropzoneImage: FC<any> = forwardRef(({
             )}
 
             <DropzoneArea
-              filesLimit={1}
+              filesLimit={filesLimit ?? 1}
               maxFileSize={5000000}
               acceptedFiles={ACCEPTABLE_FILES}
-              onChange={(files) => setFile(files[0])}
+              onChange={(files) => setFiles(files)}
               alertSnackbarProps={{ autoHideDuration: 3000 }}
               dropzoneText={isEdit ? PLEASE_CLICK_TO_UPDATE_DOCUMENT : PLEASE_ADD_DOCUMENT}
             />
