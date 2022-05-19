@@ -3,6 +3,7 @@ import { FC, Fragment, useState, useEffect } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { Box, Checkbox, FormControlLabel, IconButton, Typography } from "@material-ui/core";
 //components
+import Alert from "../../Alert";
 import InputController from "../../../../controller";
 // interfaces, reducers, constants and styles block
 import { EditOutlinedIcon, SaveIcon } from "../../../../assets/svgs";
@@ -10,7 +11,6 @@ import { AUTO_OPEN_NOTES, PATIENT_NOTE_ERROR_MESSAGE, PATIENT_NOTE_SUCCESS_MESSA
 import { PatientNoteModalProps } from "../../../../interfacesTypes";
 import { ActionType } from "../../../../reducers/patientReducer";
 import { PatientPayload, useUpdatePatientNoteInfoMutation } from "../../../../generated/graphql";
-import Alert from "../../Alert";
 
 export const PatientNoteModal: FC<PatientNoteModalProps> = ({ dispatcher, patientStates }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
