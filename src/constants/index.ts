@@ -30,7 +30,7 @@ import {
 
 // regex
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
-export const US_ROUTING_NUMBER_REGEX = /^([1-9]{1}[0-9]{8})$/g
+export const US_ROUTING_NUMBER_REGEX = /^[0-9]{9}$/g
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
@@ -66,7 +66,13 @@ export enum SYSTEM_ROLES {
   Patient = "patient",
 }
 // constants
-export const PAY_VIA_ACH = 'Pay via ACH'
+export const ACH_PAYMENT_AUTHORITY = 'I authorize Braintree to debit my bank account on my behalf.'
+export const LOCALITY = 'Locality'
+export const AUTHORITY = 'Authority'
+export const COMPANY_NAME = 'Company Name'
+export const ROUTING_NUMBER = 'Routing Number'
+export const ACCOUNT_TYPE = 'Account Type'
+export const PAY_VIA_ACH = 'Pay via ACH';
 export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
 export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";

@@ -1440,12 +1440,20 @@ export interface AccountPaymentInputs {
   lastName: string
   streetAddress: string
   locality: string
-  region: string
-  postalCode: string
+  region: SelectorOption
+  postalCode: string,
+  authority: boolean
 }
 
 export interface ACHPaymentComponentProps {
   token: string;
   dispatcher: Dispatch<ExternalPaymentAction>;
   states: ExternalPaymentState;
+  moveNext: Function
+}
+
+export interface CheckboxControllerProps extends IControlLabel {
+  controllerName: string;
+  isHelperText?: boolean;
+  autoFocus?: boolean
 }

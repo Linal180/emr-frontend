@@ -247,7 +247,9 @@ const ExternalPaymentComponent = (): JSX.Element => {
                     </Grid>
                   </Grid>
                 </Fragment>)}
-                {achPayment && <ACHPaymentComponent token={appointmentPaymentToken} dispatcher={dispatch} states={state} />}
+                {achPayment && <ACHPaymentComponent
+                  token={appointmentPaymentToken}
+                  dispatcher={dispatch} states={state} moveNext={moveNext} />}
               </Box>
             ) : (
               <BackdropLoader loading={true} />
