@@ -24,13 +24,12 @@ import {
 } from "../../../../reducers/mediaReducer";
 import {
   DELETE_WIDGET_DESCRIPTION, DELETE_WIDGET_TEXT, VIEW_CHART_TEXT, CHART_ROUTE, PATIENTS_ROUTE,
-  PROFILE_TOP_TABS,
-  UPCOMING_APPOINTMENTS,
-  PAST_APPOINTMENTS,
+  PROFILE_TOP_TABS, UPCOMING_APPOINTMENTS, PAST_APPOINTMENTS, areaChartOne, areaChartTwo,
 } from "../../../../constants";
 import BarChart2Component from '../../../common/charts/barChart2';
 import AppointmentsComponent from './appointmentsComponent';
 import CareTeamComponent from './careTeam';
+import AreaChartComponent from './charts';
 
 const PatientDetailsComponent = (): JSX.Element => {
   // const widgetId = "widget-menu";
@@ -83,14 +82,17 @@ const PatientDetailsComponent = (): JSX.Element => {
           />
 
           <TabPanel value="1">
-            <Box display="flex" justifyContent='flex-end'>
-
+            <Box display="flex">
+              <AreaChartComponent data={areaChartOne} />
+              <AreaChartComponent data={areaChartTwo} />
               <BarChart2Component />
             </Box>
+
             <AppointmentsComponent title={UPCOMING_APPOINTMENTS} />
+
             <Box display="flex">
               <CareTeamComponent />
-              <AppointmentsComponent title={PAST_APPOINTMENTS} />
+              <AppointmentsComponent title={PAST_APPOINTMENTS} isMinWidth={true}/>
             </Box>
 
 

@@ -566,3 +566,7 @@ body .MuiTabPanel-root {
 .media-inner-image > img {
   height: 150px !important;
 }
+
+.highcharts-container {
+  width:auto !important
+}

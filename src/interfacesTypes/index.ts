@@ -1307,6 +1307,7 @@ export interface BackButtonProps {
 
 export interface AppointmentsComponentProps {
   title: string;
+  isMinWidth?: boolean;
 }
 
 export interface PatientSearchInputProps {

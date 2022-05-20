@@ -354,6 +354,8 @@ export const SCHEDULE = "Schedule";
 export const FACILITY_MANAGEMENT = "Facility Management";
 export const PROVIDER_MANAGEMENT = "Provider Management";
 export const STAFF_MANAGEMENT = "Staff Management";
+export const ADD_PROVIDER_TEXT = "Add Provider";
+export const ADD_PROVIDER_INFORMATION = "Click here to add Provieder information";
 export const EMERGENCY_ACCESS = "Emergency Access";
 export const EMERGENCY_ACCESS_REVOKE_ROLES = [SUPER_ADMIN, "facility-admin", "practice-admin"]
 export const EMERGENCY_ACCESS_VALUE = "emergency-access";
@@ -800,7 +802,7 @@ export const PRN_FORMAT = 'AA123456';
 export const LAB_ORDER = "Lab Order";
 export const ETHNICITY = "Ethnicity";
 export const SIGNED_BY = "Signed by";
-export const SIGNED_AT   = "Signed at";
+export const SIGNED_AT = "Signed at";
 export const CASH_PAID = "Cash Paid";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
@@ -2997,25 +2999,25 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
-    specimenType: { id: '',name: '' },
-    collectionDate: '',
-    specimenNotes: '',
-    collectionTime: ''
+  specimenType: { id: '', name: '' },
+  collectionDate: '',
+  specimenNotes: '',
+  collectionTime: ''
 };
 
 export const TEST_FIELD_INITIAL_VALUES: TestOption = {
-  test: { id: '',name: '' },
+  test: { id: '', name: '' },
   testDate: '',
   testNotes: '',
   testTime: '',
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
-  normalRange:'',
-  normalRangeUnits:'',
-  resultUnits:'',
-  resultValue:'',
-  abnormalFlag: { id: '',name: '' },
+  normalRange: '',
+  normalRangeUnits: '',
+  resultUnits: '',
+  resultValue: '',
+  abnormalFlag: { id: '', name: '' },
 };
 
 
@@ -3390,3 +3392,140 @@ export const PROVIDERS_DUMMY_DATA = [
     icon: NewAvatarIcon,
   },
 ];
+
+export const areaChartOne = {
+  credits: { enabled: false },
+  chart: {
+    type: 'area',
+    styledMode: false,
+    renderTo: 'container',
+    backgroundColor: "#ffffff",
+    marginBottom: 0,
+  },
+  accessibility: {
+    description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
+  },
+  title: {
+    text: 'Blood Pressure',
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    margin: 10,
+    align: 'right'
+  },
+  subtitle: {
+    text: 'Last Reading: May 2, 2022',
+    style: { "color": "gray", "fontSize": "14px" },
+    align: 'right'
+  },
+  xAxis: {
+    allowDecimals: false,
+    accessibility: {
+      rangeDescription: 'Range: 1940 to 2017.'
+    }
+  },
+  yAxis: {
+    className: 'highcharts-color-0',
+    title: {
+      text: 'Nuclear weapon states'
+    },
+  },
+  tooltip: {
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  },
+  plotOptions: {
+    area: {
+      marker: {
+        enabled: false,
+        symbol: 'circle',
+        radius: 2,
+        states: {
+          hover: {
+            enabled: true
+          }
+        },
+      },
+      fillColor: '#F6E4E5'
+    },
+    column: {
+      pointPadding: 0.4,
+      borderWidth: 0,
+      borderRadius: 4,
+    }
+
+  },
+  series: [{
+    name: 'USA',
+    color: '#CA6B6E',
+    data: [
+      20434, 24126, 27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
+      26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
+    ]
+  }]
+}
+
+export const areaChartTwo = {
+  credits: { enabled: false },
+  chart: {
+    type: 'area',
+    styledMode: false,
+    backgroundColor: "#ffffff",
+    marginBottom: 0,
+  },
+  accessibility: {
+    description: 'Image description: An area chart compares the nuclear stockpiles of the USA and the USSR/Russia between 1945 and 2017. The number of nuclear weapons is plotted on the Y-axis and the years on the X-axis. The chart is interactive, and the year-on-year stockpile levels can be traced for each country. The US has a stockpile of 6 nuclear weapons at the dawn of the nuclear age in 1945. This number has gradually increased to 369 by 1950 when the USSR enters the arms race with 6 weapons. At this point, the US starts to rapidly build its stockpile culminating in 32,040 warheads by 1966 compared to the USSR’s 7,089. From this peak in 1966, the US stockpile gradually decreases as the USSR’s stockpile expands. By 1978 the USSR has closed the nuclear gap at 25,393. The USSR stockpile continues to grow until it reaches a peak of 45,000 in 1986 compared to the US arsenal of 24,401. From 1986, the nuclear stockpiles of both countries start to fall. By 2000, the numbers have fallen to 10,577 and 21,000 for the US and Russia, respectively. The decreases continue until 2017 at which point the US holds 4,018 weapons compared to Russia’s 4,500.'
+  },
+  title: {
+    text: 'Heart Rate',
+    style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
+    margin: 10,
+    align: 'right'
+  },
+  subtitle: {
+    text: 'Last Reading: May 2, 2022',
+    style: { "color": "gray", "fontSize": "14px" },
+    align: 'right'
+  },
+  xAxis: {
+    allowDecimals: false,
+    accessibility: {
+      rangeDescription: 'Range: 1940 to 2017.'
+    }
+  },
+  yAxis: {
+    className: 'highcharts-color-0',
+    title: {
+      text: 'Nuclear weapon states'
+    },
+  },
+  tooltip: {
+    pointFormat: '{series.name} had stockpiled <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+  },
+  plotOptions: {
+    area: {
+      marker: {
+        enabled: false,
+        symbol: 'circle',
+        radius: 2,
+        states: {
+          hover: {
+            enabled: true
+          }
+        },
+      },
+      fillColor: '#C9F7F5'
+    },
+    column: {
+      pointPadding: 0.4,
+      borderWidth: 0,
+      borderRadius: 4,
+    }
+
+  },
+  series: [{
+    color: '#1BC5BD',
+    name: 'USSR/Russia',
+    data: [
+      20434, 24126, 27387, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
+      26662, 26956, 27912, 28999, 28965, 29459, 31056, 31982, 32040, 31233, 29224, 27342,
+    ]
+  }]
+}

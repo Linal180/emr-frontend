@@ -9,9 +9,10 @@ import NoDataFoundComponent from "../../../common/NoDataFoundComponent";
 // import { Appointmentstatus } from "../../../../generated/graphql";
 import { AppointmentsComponentProps } from "../../../../interfacesTypes";
 
-const AppointmentsComponent: FC<AppointmentsComponentProps> = ({title}): JSX.Element => {
+const AppointmentsComponent: FC<AppointmentsComponentProps> = ({ title, isMinWidth }): JSX.Element => {
 
     return (
+        <Box mt={3} width={isMinWidth ? '50%' : 'auto'}>
             <CardComponent cardTitle={title}>
                 {/* <AppointmentList appointments={upComing} type={Appointmentstatus.Initiated} reload={() => fetchComing()} /> */}
 
@@ -33,6 +34,7 @@ const AppointmentsComponent: FC<AppointmentsComponentProps> = ({title}): JSX.Ele
                     </Box>
                 } */}
             </CardComponent>
+        </Box>
     )
 };
 
