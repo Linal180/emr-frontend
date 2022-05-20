@@ -27,6 +27,7 @@ import {
 
 // regex
 export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
+export const US_ROUTING_NUMBER_REGEX = /^([1-9]{1}[0-9]{8})$/g
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
@@ -1128,6 +1129,7 @@ export const FACILITY_LOCATION_ROUTE = "facility-location";
 export const FACILITY_SCHEDULE_ROUTE = "business-hours";
 
 // HELPER TEXT MESSAGES
+export const ROUTING_NO_VALIDATION_MESSAGE = `Invalid routing number`;
 export const MIN_LENGTH_MESSAGE = `Text too short`;
 export const ZIP_VALIDATION_MESSAGE = "Invalid Zip code";
 export const REQUIRED_MESSAGE = "This field is required";
@@ -3399,3 +3401,8 @@ export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
     id: "savings",
   }
 ];
+
+
+export const MAPPED_REGIONS: SelectorOption[] = states.map(
+  ({ name, abbreviation }) => ({ id: abbreviation, name: `${name} - ${abbreviation}` })
+);

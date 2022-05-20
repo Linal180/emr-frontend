@@ -13,7 +13,7 @@ import InputController from '../../../../controller';
 import BackdropLoader from '../../../common/Backdrop';
 //constants, reducers, interfaces, graphql 
 import { ActionType } from '../../../../reducers/externalPaymentReducer';
-import { ACH_PAYMENT_ACCOUNT_TYPE_ENUMS, ACH_PAYMENT_TABS, CANCEL_TEXT, SUBMIT } from '../../../../constants';
+import { ACH_PAYMENT_ACCOUNT_TYPE_ENUMS, ACH_PAYMENT_TABS, CANCEL_TEXT, MAPPED_REGIONS, SUBMIT } from '../../../../constants';
 import { AccountPaymentInputs, AchAccountType, ACHPaymentComponentProps, ParamsType } from '../../../../interfacesTypes';
 import { personalAchSchema, businessAchSchema } from '../../../../validationSchemas';
 import { useAchPaymentMutation } from '../../../../generated/graphql';
@@ -147,7 +147,7 @@ const ACHPaymentComponent = ({ token, dispatcher, states }: ACHPaymentComponentP
             <Box bgcolor={'white'} p={2} pt={4}>
               <InputController controllerName='routingNumber' controllerLabel={'Routing Number'} fieldType={'number'} notStep />
               <InputController controllerName='accountNumber' controllerLabel={'Account Number'} fieldType={'number'} notStep />
-              <Selector name='accountType' addEmpty options={ACH_PAYMENT_ACCOUNT_TYPE_ENUMS} label={'Account Type'} />
+              <Selector name='accountType'  options={ACH_PAYMENT_ACCOUNT_TYPE_ENUMS} label={'Account Type'} />
               <TabPanel value="personal">
                 <Grid container spacing={2}>
                   <Grid item xs={6}><InputController controllerName='firstName' controllerLabel={'First Name'} /></Grid>
@@ -157,12 +157,14 @@ const ACHPaymentComponent = ({ token, dispatcher, states }: ACHPaymentComponentP
               <TabPanel value="business">
                 <InputController controllerName='businessName' controllerLabel={'Company Name'} />
               </TabPanel>
+
               <Grid container spacing={2}>
                 <Grid item xs={6}><InputController controllerName='streetAddress' controllerLabel={'Street Address'} /></Grid>
                 <Grid item xs={6}><InputController controllerName='locality' controllerLabel={'Locality'} /></Grid>
                 <Grid item xs={6}><InputController controllerName='postalCode' controllerLabel={'Postal Code'} /></Grid>
-                <Grid item xs={6}><InputController controllerName='region' controllerLabel={'Region'} /></Grid>
+                <Grid item xs={6}><Selector name='region' options={MAPPED_REGIONS} label={'Region'} /></Grid>
               </Grid>
+
               <Box display={'flex'} justifyContent={'flex-end'}>
                 <Box pr={2}>
                   <Button variant='outlined' onClick={() => dispatcher({ type: ActionType.SET_ACH_PAYMENT, achPayment: false })}>
