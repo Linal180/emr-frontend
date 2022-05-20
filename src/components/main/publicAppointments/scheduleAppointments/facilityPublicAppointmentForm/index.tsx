@@ -1,11 +1,10 @@
 // packages block
-import { Reducer, useContext, useEffect, useState, useReducer, useCallback } from "react";
+import { Reducer, useContext, useEffect, useState, useReducer } from "react";
 import { useParams } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import { Box, Button, Checkbox, colors, FormControlLabel, Grid, Typography } from "@material-ui/core";
-import { PlaidLinkOnEvent, PlaidLinkStableEvent, PlaidLinkOnEventMetadata, usePlaidLink, PlaidLinkOnSuccess, PlaidLinkOnSuccessMetadata, PlaidLinkOnExit, PlaidLinkError, PlaidLinkOnExitMetadata } from 'react-plaid-link'
 // components block
 import Alert from "../../../../common/Alert";
 import Selector from "../../../../common/Selector";
@@ -37,7 +36,6 @@ import {
   AVAILABLE_SLOTS, FACILITY_NOT_FOUND, PATIENT_APPOINTMENT_FAIL, APPOINTMENT_SLOT_ERROR_MESSAGE,
   NO_SLOT_AVAILABLE, BOOK_YOUR_APPOINTMENT, AGREEMENT_HEADING, DAYS,
 } from "../../../../../constants";
-import ACHModal from '../../achModal'
 
 const FacilityPublicAppointmentForm = (): JSX.Element => {
   const classes = usePublicAppointmentStyles()
@@ -191,54 +189,6 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
     }
   };
 
-  const onSuccess = useCallback<PlaidLinkOnSuccess>(
-    (public_token: string, metadata: PlaidLinkOnSuccessMetadata) => {
-      debugger
-    }, [])
-
-  const onExit = useCallback<PlaidLinkOnExit>((error: PlaidLinkError | null, metadata: PlaidLinkOnExitMetadata) => {
-    // log and save error and metadata
-    // handle invalid link token
-    if (error != null && error.error_code === 'INVALID_LINK_TOKEN') {
-      // generate new link token
-    }
-    // to handle other error codes, see https://plaid.com/docs/errors/
-  },
-    [],
-  );
-
-  const onEvent = useCallback<PlaidLinkOnEvent>(
-    (
-      eventName: PlaidLinkStableEvent | string,
-      metadata: PlaidLinkOnEventMetadata,
-    ) => {
-      // log eventName and metadata
-    },
-    [],
-  );
-
-  const { ready, error, open, exit } = usePlaidLink({
-    onSuccess: onSuccess,
-    onExit: onExit,
-    onEvent: onEvent,
-    token: 'link-sandbox-dadf991a-af6f-4e14-b3db-60af0e362078',
-    env: 'sandbox'
-  })
-
-  const palidOpenHandler = useCallback(() => {
-    if (ready) {
-      open();
-    }
-    else {
-      console.log('error', error)
-    }
-  }, [open, ready, error])
-
-  // useEffect(() => {
-  //   palidOpenHandler()
-  // }, [palidOpenHandler])
-
-
   return (
     <Box bgcolor={GREY} minHeight="100vh" padding="30px 30px 30px 60px">
       <EMRLogo />
@@ -379,7 +329,6 @@ const FacilityPublicAppointmentForm = (): JSX.Element => {
           </form>
         </FormProvider>
       </Box>
-      <ACHModal open={true} onClose={() => { }} />
     </Box>
   )
 }

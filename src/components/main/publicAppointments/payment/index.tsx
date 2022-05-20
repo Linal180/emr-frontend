@@ -1,6 +1,6 @@
 // packages block
 import { useParams } from 'react-router';
-import { Reducer, useCallback, useEffect, useReducer, useState } from 'react';
+import { Fragment, Reducer, useCallback, useEffect, useReducer } from 'react';
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 import DropIn from 'braintree-web-drop-in-react';
 import {
@@ -16,22 +16,16 @@ import { EMRLogo } from '../../../../assets/svgs';
 import { ParamsType } from '../../../../interfacesTypes';
 import {
   APPOINTMENT_BOOKED_SUCCESSFULLY, CHOOSE_YOUR_PAYMENT_METHOD, PAY, SLOT_CONFIRMATION, appointmentChargesDescription,
-  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER,
+  PAY_VIA_PAYPAL, PAY_VIA_DEBIT_OR_CREDIT_CARD, CHECKOUT, USD, APPOINTMENT_NOT_EXIST, PAY_LATER, PAY_VIA_ACH,
 } from '../../../../constants';
-import { appointmentReducer, Action, initialState, State, ActionType, } from '../../../../reducers/appointmentReducer';
+import { externalPaymentReducer, Action, initialState, State, ActionType } from '../../../../reducers/externalPaymentReducer';
 import { useChargeAfterAppointmentMutation, useGetAppointmentLazyQuery, useGetTokenLazyQuery, BillingStatus, } from '../../../../generated/graphql';
-import ACHModal from '../achModal'
+import ACHPaymentComponent from '../achPayment'
 
 const ExternalPaymentComponent = (): JSX.Element => {
   const { id } = useParams<ParamsType>();
-  const [instance, setInstance] = useState<any>(null);
-  const [state, dispatch] = useReducer<Reducer<State, Action>>(appointmentReducer, initialState);
-  const { appointmentPaymentToken } = state;
-  const [showPayBtn, setShowPayBtn] = useState<boolean>(false);
-  const [patientId, setPatientId] = useState<string>('');
-  const [facilityId, setFacilityId] = useState<string>('');
-  const [providerId, setProviderId] = useState<string>('');
-  const [price, setPrice] = useState<string>('');
+  const [state, dispatch] = useReducer<Reducer<State, Action>>(externalPaymentReducer, initialState);
+  const { appointmentPaymentToken, price, patientId, facilityId, providerId, showPayBtn, instance, achPayment } = state;
 
   const moveNext = () => history.push(`${SLOT_CONFIRMATION}/${id}`)
 
@@ -61,7 +55,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
           const { clientToken } = getToken;
 
           dispatch({
-            type: ActionType.SET_APPOINTMENT_PAYMENT_TOKEN,
+            type: ActionType.SET_PAYMENT_TOKEN,
             appointmentPaymentToken: clientToken,
           });
         }
@@ -98,10 +92,10 @@ const ExternalPaymentComponent = (): JSX.Element => {
             const { id: providerId } = provider || {};
             const { id: facilityId } = facility || {};
 
-            price && setPrice(price);
-            patientId && setPatientId(patientId);
-            providerId && setProviderId(providerId);
-            facilityId && setFacilityId(facilityId);
+            price && dispatch({ type: ActionType.SET_PRICE, price: price })
+            patientId && dispatch({ type: ActionType.SET_PATIENT_ID, patientId: patientId });
+            providerId && dispatch({ type: ActionType.SET_PROVIDER_ID, providerId: providerId });
+            facilityId && dispatch({ type: ActionType.SET_FACILITY_ID, facilityId: facilityId });
 
             try {
               await getToken();
@@ -131,7 +125,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
   };
 
   const threeDSecurePayment = () => {
-    instance.requestPaymentMethod(
+    instance?.requestPaymentMethod(
       {
         threeDSecure: { amount: price },
       },
@@ -147,12 +141,12 @@ const ExternalPaymentComponent = (): JSX.Element => {
 
   const onPaymentOptionSelected = (payload: PaymentOptionSelectedPayload) => {
     if (payload.paymentOption === 'card') {
-      setShowPayBtn(true);
+      dispatch({ type: ActionType.SET_SHOW_PAY_BUTTON, showPayBtn: true })
     } else if (payload.paymentOption === 'paypal') {
-      setShowPayBtn(false);
+      dispatch({ type: ActionType.SET_SHOW_PAY_BUTTON, showPayBtn: false })
     }
     else {
-      setShowPayBtn(false);
+      dispatch({ type: ActionType.SET_SHOW_PAY_BUTTON, showPayBtn: false })
     }
   };
 
@@ -163,14 +157,12 @@ const ExternalPaymentComponent = (): JSX.Element => {
       if (payload.type === 'PayPalAccount') {
         threeDSecurePayment();
       } else if (payload.type === 'CreditCard') {
-        setShowPayBtn(false);
+        dispatch({ type: ActionType.SET_SHOW_PAY_BUTTON, showPayBtn: false })
       }
     }
   };
 
-  const achClickHandler = () => {
-    debugger
-  }
+  const achClickHandler = () => dispatch({ type: ActionType.SET_ACH_PAYMENT, achPayment: true })
 
   return (
     <Box bgcolor={GREY} minHeight='100vh' padding='30px 30px 30px 60px'>
@@ -188,71 +180,74 @@ const ExternalPaymentComponent = (): JSX.Element => {
           <Box mt={5} p={5}>
             {appointmentPaymentToken ? (
               <Box>
-                <DropIn
-                  options={{
-                    authorization: appointmentPaymentToken,
-                    translations: {
-                      PayPal: PAY_VIA_PAYPAL,
-                      Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
-                      chooseAWayToPay: '',
-                    },
-
-                    paypal: {
-                      flow: CHECKOUT,
-                      currency: USD,
-                      amount: price,
-                      commit: true,
-                      buttonStyle: {
-                        tagline: false,
+                {!achPayment && (<Fragment>
+                  <DropIn
+                    options={{
+                      authorization: appointmentPaymentToken,
+                      translations: {
+                        PayPal: PAY_VIA_PAYPAL,
+                        Card: PAY_VIA_DEBIT_OR_CREDIT_CARD,
+                        chooseAWayToPay: '',
                       },
-                    },
 
-                    card: {
-                      cardholderName: true,
-                      overrides: {
-                        styles: {
-                          input: {
-                            'font-size': '18px',
-                          },
-                          '.number': {
-                            color: 'green',
-                          },
-                          '.invalid': {
-                            color: 'red',
+                      paypal: {
+                        flow: CHECKOUT,
+                        currency: USD,
+                        amount: price,
+                        commit: true,
+                        buttonStyle: {
+                          tagline: false,
+                        },
+                      },
+
+                      card: {
+                        cardholderName: true,
+                        overrides: {
+                          styles: {
+                            input: {
+                              'font-size': '18px',
+                            },
+                            '.number': {
+                              color: 'green',
+                            },
+                            '.invalid': {
+                              color: 'red',
+                            },
                           },
                         },
                       },
-                    },
 
-                    threeDSecure: { amount: price },
-                    dataCollector: true,
-                    paymentOptionPriority: ['paypal', 'card'],
-                  }}
+                      threeDSecure: { amount: price },
+                      dataCollector: true,
+                      paymentOptionPriority: ['paypal', 'card'],
+                    }}
 
-                  onPaymentMethodRequestable={onPaymentMethodRequestable}
-                  onPaymentOptionSelected={onPaymentOptionSelected}
-                  onInstance={(data) => setInstance(data)}
-                />
-                <Grid container>
-                  {showPayBtn && (
+                    onPaymentMethodRequestable={onPaymentMethodRequestable}
+                    onPaymentOptionSelected={onPaymentOptionSelected}
+                    onInstance={(data) => dispatch({ type: ActionType.SET_INSTANCE, instance: data })}
+                  />
+                  <Grid container>
+                    {showPayBtn && (
+                      <Grid item>
+                        <Box pr={2}>
+                          <Button variant='contained' color='primary' onClick={threeDSecurePayment}>
+                            {PAY}
+                          </Button>
+                        </Box>
+                      </Grid>
+                    )}
+
                     <Grid item>
                       <Box pr={2}>
-                        <Button variant='contained' color='primary' onClick={threeDSecurePayment}>
-                          {PAY}
-                        </Button>
+                        <Button variant='contained' onClick={achClickHandler} color={'primary'}>{PAY_VIA_ACH}</Button>
                       </Box>
                     </Grid>
-                  )}
-
-                  <Grid item>
-                    <Box pr={2}>
-                      <Button variant='contained' onClick={achClickHandler} color={'primary'}>Pay via ACH</Button>
-                    </Box>
+                    <Grid item>
+                      <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
+                    </Grid>
                   </Grid>
-                  <Grid item>
-                    <Button variant='contained' onClick={moveNext}>{PAY_LATER}</Button>
-                  </Grid>
-                </Grid>
+                </Fragment>)}
+                {achPayment && <ACHPaymentComponent token={appointmentPaymentToken} dispatcher={dispatch} states={state} />}
               </Box>
             ) : (
               <BackdropLoader loading={true} />
@@ -260,7 +255,7 @@ const ExternalPaymentComponent = (): JSX.Element => {
           </Box>
         </Grid>
       </Grid>
-     
+
     </Box>
   );
 };

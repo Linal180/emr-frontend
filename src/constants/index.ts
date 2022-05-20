@@ -26,6 +26,7 @@ import {
 } from "../generated/graphql";
 
 // regex
+export const US_BANK_ACCOUNT_REGEX = /^[0-9]{7,14}$/g
 export const ZIP_REGEX = /^\d*[1-9\d,-]+$/;
 export const NPI_REGEX = /^\d{10}$/;
 export const TID_REGEX = /^9\d{8}$/;
@@ -61,6 +62,7 @@ export enum SYSTEM_ROLES {
   Patient = "patient",
 }
 // constants
+export const PAY_VIA_ACH = 'Pay via ACH'
 export const PATIENT_NOTE_SUCCESS_MESSAGE = 'Patient Notes is updated successfully'
 export const PATIENT_NOTE_ERROR_MESSAGE = 'Patient Notes is not updated'
 export const PINNED_NOTES = "Pinned Notes";
@@ -798,7 +800,7 @@ export const PRN_FORMAT = 'AA123456';
 export const LAB_ORDER = "Lab Order";
 export const ETHNICITY = "Ethnicity";
 export const SIGNED_BY = "Signed by";
-export const SIGNED_AT   = "Signed at";
+export const SIGNED_AT = "Signed at";
 export const CASH_PAID = "Cash Paid";
 export const HOMEBOUND = "Home Bound";
 export const PROFILE_TEXT = "Profile";
@@ -2991,25 +2993,25 @@ export const FIELD_EDIT_INITIAL_VALUES: FormInitialType = {
 };
 
 export const SPECIMEN_TYPE_INITIAL_VALUES: SpecimenTypeOption = {
-    specimenType: { id: '',name: '' },
-    collectionDate: '',
-    specimenNotes: '',
-    collectionTime: ''
+  specimenType: { id: '', name: '' },
+  collectionDate: '',
+  specimenNotes: '',
+  collectionTime: ''
 };
 
 export const TEST_FIELD_INITIAL_VALUES: TestOption = {
-  test: { id: '',name: '' },
+  test: { id: '', name: '' },
   testDate: '',
   testNotes: '',
   testTime: '',
 };
 
 export const ORDERS_RESULT_INITIAL_VALUES: LabOrdersResultOption = {
-  normalRange:'',
-  normalRangeUnits:'',
-  resultUnits:'',
-  resultValue:'',
-  abnormalFlag: { id: '',name: '' },
+  normalRange: '',
+  normalRangeUnits: '',
+  resultUnits: '',
+  resultValue: '',
+  abnormalFlag: { id: '', name: '' },
 };
 
 
@@ -3374,3 +3376,26 @@ export enum VITAL_LABELS {
   patientHeadCircumference = 'Head Circumference',
   patientTemperature = 'Temperature',
 }
+
+
+export const ACH_PAYMENT_TABS = [
+  {
+    title: "Personal",
+    value: "personal",
+  },
+  {
+    title: "Business",
+    value: "business",
+  }
+];
+
+export const ACH_PAYMENT_ACCOUNT_TYPE_ENUMS = [
+  {
+    name: "Checking",
+    id: "checking",
+  },
+  {
+    name: "Savings",
+    id: "savings",
+  }
+];
