@@ -5,7 +5,7 @@ import moment from "moment";
 import { pluck } from "underscore";
 import { SchedulerDateTime } from "@devexpress/dx-react-scheduler";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress } from "@material-ui/core";
+import { Typography, Box, TableCell, GridSize, Backdrop, CircularProgress, withStyles, Theme, Tooltip } from "@material-ui/core";
 // graphql, constants, history, apollo, interfaces/types and constants block
 import client from "../apollo";
 import history from "../history";
@@ -1098,6 +1098,7 @@ export const getDefaultWeight = (weightUnitType: WeightType, PatientWeight: stri
       return PatientWeight
   }
 }
+
 export const generateString = () => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   let result = '';
@@ -1119,3 +1120,14 @@ export const roundOffUpto2Decimal = (str: number | undefined | string | null): s
   }
   return ""
 }
+
+export const LightTooltip = withStyles((theme: Theme) => ({
+  tooltip: {
+    backgroundColor: theme.palette.common.white,
+    color: 'rgba(0, 0, 0, 0.87)',
+    boxShadow: theme.shadows[21],
+    fontSize: 11,
+    borderRadius: 4,
+    width: 320
+  },
+}))(Tooltip);

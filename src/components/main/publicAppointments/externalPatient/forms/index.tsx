@@ -49,7 +49,7 @@ import {
   PREFERRED_COMMUNICATION_METHOD, SELECT_PROVIDER, RELEASE_BILLING_INFO_PERMISSIONS, CONSENT_TO_MESSAGES_DESCRIPTION,
   DOCUMENT_VERIFICATION, CONTACT_METHOD, FRONT_SIDE, BACK_SIDE, PATIENT_APPOINTMENT_SUCCESS, NAME,
   MAPPED_STATES, MAPPED_COUNTRIES, NEXT, ATTACHMENT_TITLES, MORE_INFO, PATIENT_NOT_FOUND, DEMOGRAPHICS,
-  APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, N_A,
+  APARTMENT_SUITE_OTHER, EMERGENCY_CONTACT, RELATIONSHIP_TO_PATIENT, PHONE, DRIVING_LICENSE, INSURANCE_CARD, N_A, YES_TEXT, NO_TEXT,
 } from "../../../../../constants";
 import DoctorSelector from '../../../../common/Selector/DoctorSelector';
 
@@ -680,14 +680,14 @@ const PatientFormComponent: FC = (): JSX.Element => {
                                   <InputLabel shrink>{APPOINTMENT_CONFIRMATION_PERMISSIONS}</InputLabel>
 
                                   <label className="toggle-main">
-                                    <Box color={isAppointment ? WHITE : GREY_SEVEN}>Yes</Box>
+                                    <Box color={isAppointment ? WHITE : GREY_SEVEN}>{YES_TEXT}</Box>
 
                                     <AntSwitch checked={isAppointment}
                                       onChange={(event) => { handleChange(event) }}
                                       name='phonePermission'
                                     />
 
-                                    <Box color={isAppointment ? GREY_SEVEN : WHITE}>No</Box>
+                                    <Box color={isAppointment ? GREY_SEVEN : WHITE}>{NO_TEXT}</Box>
                                   </label>
                                 </FormControl>
                               )}
