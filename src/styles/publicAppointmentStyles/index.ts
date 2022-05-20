@@ -13,6 +13,7 @@ export const usePublicAppointmentStyles = makeStyles(() =>
       top: 100,
       zIndex: 1,
     },
+    
     timeSlots: {
       padding: 0,
       display: 'flex',
