@@ -3411,7 +3411,7 @@ export const areaChartOne = {
   title: {
     text: 'Blood Pressure',
     style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
-    margin: 10,
+    margin: 100,
     align: 'right'
   },
   subtitle: {
@@ -3479,7 +3479,7 @@ export const areaChartTwo = {
   title: {
     text: 'Heart Rate',
     style: { "color": "#464E5F", "fontSize": "24px", "fontWeight": "600" },
-    margin: 10,
+    margin: 100,
     align: 'right'
   },
   subtitle: {
