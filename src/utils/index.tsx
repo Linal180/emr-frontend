@@ -19,7 +19,7 @@ import {
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
   AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
+  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload, DoctorPatient,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -365,6 +365,21 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
         data.push({ id, name: `${firstName} ${lastName}`.trim() })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderDoctorPatients = (doctors: DoctorPatient[]) => {
+  const data: SelectorOption[] = [];
+  if (!!doctors) {
+    for (let doctor of doctors) {
+      if (doctor) {
+        const { doctor:doctorPatient } = doctor;
+        const {firstName, lastName, id} = doctorPatient ?? {}
+        data.push({ id: id ?? '', name: `${firstName} ${lastName}`.trim() })
       }
     }
   }

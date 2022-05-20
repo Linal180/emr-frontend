@@ -632,13 +632,19 @@ export type CreateLabTestInput = {
 };
 
 export type CreateLabTestItemInput = {
+  accessionNumber?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
+  labName?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId: Scalars['String'];
+  receivedDate?: Maybe<Scalars['String']>;
   status?: Maybe<LabTestStatus>;
   testDate?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
   testTime?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
 };
 
 export type CreateLabTestObservationInput = {
@@ -876,6 +882,7 @@ export type Doctor = {
   facilityId?: Maybe<Scalars['String']>;
   firstName?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  labTests?: Maybe<Array<LabTests>>;
   languagesSpoken?: Maybe<Scalars['String']>;
   lastName?: Maybe<Scalars['String']>;
   licenseActiveDate?: Maybe<Scalars['String']>;
@@ -1435,15 +1442,21 @@ export enum LabTestStatus {
 
 export type LabTests = {
   __typename?: 'LabTests';
+  accessionNumber?: Maybe<Scalars['String']>;
   appointment?: Maybe<Appointment>;
   appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
   createdAt?: Maybe<Scalars['String']>;
   diagnoses?: Maybe<Array<Maybe<IcdCodes>>>;
+  doctor?: Maybe<Doctor>;
+  doctorId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  labName?: Maybe<Scalars['String']>;
   labTestStatus: LabTestStatus;
   orderNumber?: Maybe<Scalars['String']>;
   patient?: Maybe<Patient>;
   patientId?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
   test?: Maybe<LoincCodes>;
   testDate?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
@@ -1451,6 +1464,7 @@ export type LabTests = {
   testSpecimens?: Maybe<Array<TestSpecimens>>;
   testTime?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
 };
 
 export type LabTestsPayload = {
@@ -3753,14 +3767,20 @@ export type UpdateLabTestInput = {
 };
 
 export type UpdateLabTestItemInput = {
+  accessionNumber?: Maybe<Scalars['String']>;
   appointmentId?: Maybe<Scalars['String']>;
+  collectedDate?: Maybe<Scalars['String']>;
+  doctorId?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  labName?: Maybe<Scalars['String']>;
   orderNumber?: Maybe<Scalars['String']>;
   patientId?: Maybe<Scalars['String']>;
+  receivedDate?: Maybe<Scalars['String']>;
   status?: Maybe<LabTestStatus>;
   testDate?: Maybe<Scalars['String']>;
   testNotes?: Maybe<Scalars['String']>;
   testTime?: Maybe<Scalars['String']>;
+  vendorName?: Maybe<Scalars['String']>;
 };
 
 export type UpdateLabTestObservationInput = {
@@ -4652,7 +4672,7 @@ export type FindLabTestsByOrderNumQueryVariables = Exact<{
 }>;
 
 
-export type FindLabTestsByOrderNumQuery = { __typename?: 'Query', findLabTestsByOrderNum: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null | undefined, testTime?: string | null | undefined, patientId?: string | null | undefined, createdAt?: string | null | undefined, testNotes?: string | null | undefined, patient?: { __typename?: 'Patient', firstName?: string | null | undefined, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined> | null | undefined, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null | undefined, component?: string | null | undefined, unitsRequired?: string | null | undefined } | null | undefined, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null | undefined, collectionTime?: string | null | undefined, specimenNotes?: string | null | undefined, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null | undefined, resultUnit?: string | null | undefined, resultValue?: string | null | undefined, normalRange?: string | null | undefined, normalRangeUnit?: string | null | undefined, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null | undefined, id: string, attachmentName?: string | null | undefined, url?: string | null | undefined }> | null | undefined }> | null | undefined, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null | undefined, appointmentType?: { __typename?: 'Service', name: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
+export type FindLabTestsByOrderNumQuery = { __typename?: 'Query', findLabTestsByOrderNum: { __typename?: 'LabTestsPayload', labTests?: Array<{ __typename?: 'LabTests', id: string, labTestStatus: LabTestStatus, testDate?: string | null | undefined, testTime?: string | null | undefined, patientId?: string | null | undefined, createdAt?: string | null | undefined, testNotes?: string | null | undefined, receivedDate?: string | null | undefined, labName?: string | null | undefined, vendorName?: string | null | undefined, accessionNumber?: string | null | undefined, collectedDate?: string | null | undefined, doctor?: { __typename?: 'Doctor', firstName?: string | null | undefined, lastName?: string | null | undefined, id: string } | null | undefined, patient?: { __typename?: 'Patient', firstName?: string | null | undefined, doctorPatients?: Array<{ __typename?: 'DoctorPatient', currentProvider?: boolean | null | undefined, doctor?: { __typename?: 'Doctor', firstName?: string | null | undefined, lastName?: string | null | undefined } | null | undefined }> | null | undefined } | null | undefined, diagnoses?: Array<{ __typename?: 'ICDCodes', id: string, code: string, description?: string | null | undefined } | null | undefined> | null | undefined, test?: { __typename?: 'LoincCodes', id: string, loincNum?: string | null | undefined, component?: string | null | undefined, unitsRequired?: string | null | undefined } | null | undefined, testSpecimens?: Array<{ __typename?: 'TestSpecimens', id: string, collectionDate?: string | null | undefined, collectionTime?: string | null | undefined, specimenNotes?: string | null | undefined, specimenTypes?: { __typename?: 'SpecimenTypes', id: string, name?: string | null | undefined } | null | undefined }> | null | undefined, testObservations?: Array<{ __typename?: 'Observations', id: string, doctorsSignOff?: boolean | null | undefined, resultUnit?: string | null | undefined, resultValue?: string | null | undefined, normalRange?: string | null | undefined, normalRangeUnit?: string | null | undefined, abnormalFlag: AbnormalFlag, attachments?: Array<{ __typename?: 'Attachment', title?: string | null | undefined, id: string, attachmentName?: string | null | undefined, url?: string | null | undefined }> | null | undefined }> | null | undefined, appointment?: { __typename?: 'Appointment', id: string, scheduleStartDateTime?: string | null | undefined, appointmentType?: { __typename?: 'Service', name: string } | null | undefined } | null | undefined } | null | undefined> | null | undefined, pagination?: { __typename?: 'PaginationPayload', page?: number | null | undefined, totalPages?: number | null | undefined } | null | undefined, response?: { __typename?: 'ResponsePayload', error?: string | null | undefined, status?: number | null | undefined, message?: string | null | undefined } | null | undefined } };
 
 export type CreateLabTestMutationVariables = Exact<{
   createLabTestInput: CreateLabTestInput;
@@ -8593,6 +8613,16 @@ export const FindLabTestsByOrderNumDocument = gql`
       patientId
       createdAt
       testNotes
+      doctor {
+        firstName
+        lastName
+        id
+      }
+      receivedDate
+      labName
+      vendorName
+      accessionNumber
+      collectedDate
       patient {
         doctorPatients {
           doctor {
@@ -9022,7 +9052,10 @@ export const GetPatientDocument = gql`
       pharmacy
       medicationHistoryAuthority
       releaseOfInfoBill
+<<<<<<< Updated upstream
       smsPermission
+=======
+>>>>>>> Stashed changes
       deceasedDate
       privacyNotice
       releaseOfInfoBill

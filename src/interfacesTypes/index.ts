@@ -369,6 +369,10 @@ export interface PatientSelectorProps {
   setValue: UseFormSetValue<ExtendedAppointmentInputProps>
 }
 
+export interface PatientProviderSelectorProps {
+  patientId: string
+}
+
 export interface FacilitySelectorProps {
   name: string
   label: string
@@ -892,6 +896,12 @@ export interface LoinsCodeFields {
 }
 
 export interface LabOrderResultsFormInput {
+  labName?: SelectorOption
+  assignedProvider?: SelectorOption
+  accessionNumber?:string
+  venderName?:string
+  collectedDate?:string
+  receivedDate?:string
   loinsCodeFields: LoinsCodeFields[]
 };
 

@@ -128,6 +128,7 @@ export const FORM_FAIL_DESCRIPTION = "Public form preview Link";
 export const EMPTY_OPTION = { id: "", name: "--" };
 export const EMPTY_MULTISELECT_OPTION = { value: "", label: "" };
 export const NO_RECORDS_OPTION = { id: "", name: "No Record Found" };
+export const OTHER_OPTION = { id: "Other", name: "Other" };
 export const EMPTY_WIDGETS = [];
 export enum DAYS {
   Monday = "Monday",
