@@ -19,7 +19,7 @@ import {
   ServicesPayload, PatientsPayload, ContactsPayload, SchedulesPayload, Schedule, RolesPayload,
   AppointmentsPayload, AttachmentsPayload, ElementType, UserForms, FormElement, ReactionsPayload,
   AttachmentType, HeadCircumferenceType, TempUnitType, WeightType,
-  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload,
+  UnitType, AllergySeverity, ProblemSeverity, IcdCodesPayload, LoincCodesPayload, TestSpecimenTypesPayload, DoctorPatient,
 } from "../generated/graphql"
 import {
   CLAIMS_ROUTE, DASHBOARD_ROUTE, DAYS, FACILITIES_ROUTE, INITIATED, INVOICES_ROUTE, N_A,
@@ -219,7 +219,7 @@ export const signedDateTime = (date: string) => moment(new Date(date), 'x').form
 export const getFormattedDateTime = (date: string) => moment(date, 'x').format(`YYYY-MM-DD hh:mm A`)
 
 export const getFormattedDate = (date: string) => {
-  return moment(date, "x").format("ddd MMM. DD, YYYY")
+  return moment(date, "x").format("ddd MMM. DD, YYYY hh:mm A")
 };
 
 export const deleteRecordTitle = (recordType: string) => {
@@ -365,6 +365,21 @@ export const renderDoctors = (doctors: AllDoctorPayload['doctors']) => {
       if (doctor) {
         const { id, firstName, lastName } = doctor;
         data.push({ id, name: `${firstName} ${lastName}`.trim() })
+      }
+    }
+  }
+
+  return data;
+}
+
+export const renderDoctorPatients = (doctors: DoctorPatient[]) => {
+  const data: SelectorOption[] = [];
+  if (!!doctors) {
+    for (let doctor of doctors) {
+      if (doctor) {
+        const { doctor:doctorPatient } = doctor;
+        const {firstName, lastName, id} = doctorPatient ?? {}
+        data.push({ id: id ?? '', name: `${firstName} ${lastName}`.trim() })
       }
     }
   }
@@ -549,6 +564,12 @@ export const getISOTime = (timestamp: string) => {
   if (!timestamp) return "";
 
   return new Date(parseInt(timestamp)).toISOString()
+};
+
+export const getAppointmentDateTime = (date: string) => {
+  const timeDate = moment(date, "x")
+
+  return `${timeDate.format("ddd MMM. DD, YYYY")} at ${timeDate.format("hh:mm A")}`
 };
 
 export const getStandardTime = (timestamp: string) => {
