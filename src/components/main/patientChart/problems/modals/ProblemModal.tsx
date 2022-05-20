@@ -33,7 +33,6 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
   const [typeStatus, setTypeStatus] = useState<string>(statuses[0])
   const severities = Object.keys(ProblemSeverity)
   const [severity, setSeverity] = useState<string>(severities[0])
-
   const methods = useForm<PatientProblemInputs>({
     mode: "all",
     resolver: yupResolver(patientProblemSchema)
@@ -233,6 +232,7 @@ const ProblemModal: FC<AddModalProps> = ({ dispatcher, fetch, isEdit, item, reco
         <ItemSelector
           label='SnoMed'
           name="appointmentId"
+          searchQuery={description || ''}
           modalName={ITEM_MODULE.snoMedCode}
         />
 

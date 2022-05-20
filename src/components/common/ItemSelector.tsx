@@ -10,17 +10,17 @@ import { ItemSelectorProps, SelectorOption } from "../../interfacesTypes";
 import { SnoMedCodesPayload, useSearchSnoMedCodesLazyQuery } from "../../generated/graphql";
 
 const ItemSelector: FC<ItemSelectorProps> = ({ 
-  name, label, disabled, isRequired, margin, modalName
+  name, label, disabled, isRequired, margin, modalName, searchQuery
 }): JSX.Element => {
   const { control } = useFormContext()
-  const [query, setQuery] = useState<string>('')
   const [options, setOptions] = useState<SelectorOption[]>([])
+  const [query, setQuery] = useState<string>('')
 
   const [getSnoMedCodes] = useSearchSnoMedCodesLazyQuery({
     variables: {
       searchSnoMedCodesInput: {
-        paginationOptions: { page: 1, limit: query ? 10 : INITIAL_PAGE_LIMIT },
-        searchTerm: query
+        paginationOptions: { page: 1, limit: searchQuery ? 10 : INITIAL_PAGE_LIMIT },
+        searchTerm: query ? query : searchQuery ? searchQuery : ''
       }
     },
 
@@ -35,7 +35,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
         if (searchSnoMedCodeByIcdCodes) {
           const { snoMedCodes } = searchSnoMedCodeByIcdCodes
 
-          snoMedCodes && setOptions(renderListOptions(snoMedCodes as SnoMedCodesPayload['snoMedCodes']))
+          !!snoMedCodes && setOptions(renderListOptions(snoMedCodes as SnoMedCodesPayload['snoMedCodes']))
         }
       }
     },
@@ -49,8 +49,8 @@ const ItemSelector: FC<ItemSelectorProps> = ({
 
   useEffect(() => {
     fetchList()
-  }, [fetchList, query])
-
+  }, [fetchList, searchQuery, query])
+  
   return (
     <Controller
       rules={{ required: true }}
@@ -68,6 +68,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
             renderOption={(option) => option.name}
             renderInput={(params) => (
               <FormControl fullWidth margin={margin || 'normal'} error={Boolean(invalid)}>
+                {JSON.stringify(options)}
                 <Box position="relative">
                   <InputLabel id={`${name}-autocomplete`} shrink>
                     {isRequired ? requiredLabel(label) : label}
@@ -79,6 +80,7 @@ const ItemSelector: FC<ItemSelectorProps> = ({
                   variant="outlined"
                   error={invalid}
                   className="selectorClass"
+                  onChange={({ target: { value }}) => value.length > 2 && setQuery(value) }
                 />
 
                 <FormHelperText>{message}</FormHelperText>

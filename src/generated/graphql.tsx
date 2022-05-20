@@ -4401,7 +4401,7 @@ export type SearchSnoMedCodesQueryVariables = Exact<{
 }>;
 
 
-export type SearchSnoMedCodesQuery = { __typename?: 'Query', searchSnoMedCodeByIcdCodes: { __typename?: 'snoMedCodesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, snoMedCodes?: Array<{ __typename?: 'SnoMedCodes', id: string, mapTarget?: string | null | undefined } | null | undefined> | null | undefined } };
+export type SearchSnoMedCodesQuery = { __typename?: 'Query', searchSnoMedCodeByIcdCodes: { __typename?: 'snoMedCodesPayload', response?: { __typename?: 'ResponsePayload', status?: number | null | undefined, message?: string | null | undefined } | null | undefined, snoMedCodes?: Array<{ __typename: 'SnoMedCodes', id: string, mapTarget?: string | null | undefined, mapAdvice?: string | null | undefined } | null | undefined> | null | undefined } };
 
 export type GetPatientVitalQueryVariables = Exact<{
   getPatientVital: GetPatientVital;
@@ -6772,6 +6772,8 @@ export const SearchSnoMedCodesDocument = gql`
     snoMedCodes {
       id
       mapTarget
+      mapAdvice
+      __typename
     }
   }
 }

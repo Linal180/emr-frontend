@@ -1075,6 +1075,7 @@ export interface CustomSelectControlProps extends IControlLabel {
 
 export interface ItemSelectorProps extends SelectorProps {
   modalName: ITEM_MODULE;
+  searchQuery?: string;
 }
 
 export interface FieldEditModalProps {
