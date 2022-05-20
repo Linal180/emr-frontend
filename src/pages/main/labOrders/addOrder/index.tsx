@@ -1,4 +1,4 @@
 // components block
-import ViewLabOrdersComponent from "../../../../components/main/labOrders/viewOrder";
+import { AddLabOrdersComponent } from "../../../../components/main/labOrders/addOrder";
 
-export const ViewLabOrders = () => <ViewLabOrdersComponent />;
+export const AddLabOrders = () => <AddLabOrdersComponent />;

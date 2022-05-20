@@ -293,6 +293,15 @@ export type OptionType = {
   label: string;
 };
 
+interface TextLoaderRow {
+  column: number
+  size: GridSize
+}
+
+export interface TextLoaderInterface {
+  rows: TextLoaderRow[]
+}
+
 export interface DataLoaderInterface {
   rows: number;
   hasMedia?: boolean;
@@ -887,6 +896,12 @@ export interface LabOrderResultsFormInput {
   loinsCodeFields: LoinsCodeFields[]
 };
 
+export interface LabOrderResultsAttachmentInput {
+  attachmentId: string
+  attachmentName: string
+  comments?: string
+};
+
 export interface LabOrdersResultSubFormProps {
   index: number
   setResultsToRemove: Function
@@ -906,6 +921,8 @@ export interface MediaModalTypes extends DialogTypes {
   reload: Function;
   setEdit: Function;
   setAttachments: Function;
+  filesLimit?: number;
+  attachmentMetadata?: any
 }
 
 export interface MediaCardsType {
@@ -921,6 +938,8 @@ export interface MediaCardsType {
   moduleType: AttachmentType;
   attachmentData?: Attachment;
   reload: Function;
+  filesLimit?: number;
+  attachmentMetadata?: any
 }
 
 export interface DropDownItems {
@@ -1327,6 +1346,11 @@ export interface FilterSearchProps {
 export interface PatientProfileHeroProps {
   isChart?: boolean;
   setPatient: Function;
+  setAttachmentsData: Function;
+}
+
+export interface DoctorProfileHeroProps {
+  setDoctor: Function;
   setAttachmentsData: Function;
 }
 

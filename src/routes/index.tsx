@@ -56,14 +56,11 @@ import { PracticeListing } from "../pages/main/practices/practiceListing";
 import { AddService } from "../pages/main/facilities/services/addService";
 import { AddAppointment } from "../pages/main/appointments/addAppointment";
 import { FormBuilderListing } from "../pages/main/formBuilder/formListing";
-import EditLabOrdersComponent from "../components/main/labOrders/editOrder";
 import { Services } from "../pages/main/facilities/services/serviceListing";
 import { AppointmentCancel } from "../pages/main/publicAppointments/cancel";
 import { ViewService } from "../pages/main/facilities/services/viewService";
-import ResultsLabOrdersComponent from "../components/main/labOrders/results";
 import { FacilityPublicAppointment } from "../pages/main/publicAppointments";
 import { ViewAppointment } from "../pages/main/appointments/viewAppointment";
-import { AddLabOrdersComponent } from "../components/main/labOrders/addOrder";
 import { Appointments } from "../pages/main/appointments/appointmentsListing";
 import { AppointmentSuccess } from "../pages/main/publicAppointments/success";
 import { PatientForm } from "../pages/main/publicAppointments/externalPatient";
@@ -90,6 +87,9 @@ import {
   FORM_BUILDER_RESPONSES, FORM_BUILDER_COPY_TEMPLATE_ROUTE, EDIT_LAB_ORDERS_ROUTE, ADD_LAB_ORDERS_RESULTS_ROUTE,
   ROOT_ROUTE
 } from "../constants";
+import { EditLabOrders } from "../pages/main/labOrders/editOrder";
+import { AddLabOrders } from "../pages/main/labOrders/addOrder";
+import { LabOrderResults } from "../pages/main/labOrders/orderResults";
 
 const Routes: FC = (): JSX.Element => {
   const { isLoggedIn, user } = useContext(AuthContext)
@@ -170,9 +170,9 @@ const Routes: FC = (): JSX.Element => {
       <PrivateRoute exact path={`${FACILITIES_ROUTE}/:facilityId${FACILITY_SERVICES_ROUTE}/:id`} component={ViewService} permission={USER_PERMISSIONS.updateService} />
       <PrivateRoute exact path={SETTINGS_ROUTE} component={Settings} />
       <PrivateRoute exact path={FORM_BUILDER_ROUTE} component={FormBuilderListing} />
-      <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:patientId`} component={AddLabOrdersComponent} />
-      <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrdersComponent} />
-      <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={ResultsLabOrdersComponent} />
+      <PrivateRoute exact path={`${CREATE_LAB_ORDERS_ROUTE}/:patientId`} component={AddLabOrders} />
+      <PrivateRoute exact path={`${EDIT_LAB_ORDERS_ROUTE}/:patientId/:orderNum`} component={EditLabOrders} />
+      <PrivateRoute exact path={`${ADD_LAB_ORDERS_RESULTS_ROUTE}/:patientId/:orderNum`} component={LabOrderResults} />
       <PrivateRoute exact path={`${FORM_BUILDER_ROUTE}/add`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_EDIT_ROUTE}/:id`} component={AddFormBuilder} />
       <PrivateRoute exact path={`${FORM_BUILDER_COPY_TEMPLATE_ROUTE}/:templateId`} component={AddFormBuilder} />
